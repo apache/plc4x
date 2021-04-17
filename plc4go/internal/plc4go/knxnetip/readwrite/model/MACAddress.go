@@ -168,14 +168,15 @@ func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m MACAddress) String() string {
-	return string(m.Box("MACAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m MACAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "MACAddress"
+	boxName := "MACAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

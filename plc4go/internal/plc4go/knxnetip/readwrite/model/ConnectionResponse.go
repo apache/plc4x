@@ -275,14 +275,15 @@ func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m ConnectionResponse) String() string {
-	return string(m.Box("ConnectionResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionResponse"
+	boxName := "ConnectionResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 		boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
@@ -290,5 +291,5 @@ func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("ConnectionResponseDataBlock", m.ConnectionResponseDataBlock, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

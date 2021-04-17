@@ -170,17 +170,18 @@ func (m *ComObjectTableRealisationType6) MarshalXML(e *xml.Encoder, start xml.St
 }
 
 func (m ComObjectTableRealisationType6) String() string {
-	return string(m.Box("ComObjectTableRealisationType6", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ComObjectTableRealisationType6"
+	boxName := "ComObjectTableRealisationType6"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

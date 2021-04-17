@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) MarshalXML(e *xml.E
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestWritePropertyMultiple", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestWritePropertyMultiple"
+	boxName := "BACnetConfirmedServiceRequestWritePropertyMultiple"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -142,16 +142,17 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) MarshalXML(e *xml.Encoder, s
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestWriteGroup", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestWriteGroup"
+	boxName := "BACnetUnconfirmedServiceRequestWriteGroup"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

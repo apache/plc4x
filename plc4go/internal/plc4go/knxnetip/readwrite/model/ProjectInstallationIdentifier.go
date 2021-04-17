@@ -175,15 +175,16 @@ func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.Sta
 }
 
 func (m ProjectInstallationIdentifier) String() string {
-	return string(m.Box("ProjectInstallationIdentifier", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ProjectInstallationIdentifier"
+	boxName := "ProjectInstallationIdentifier"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -280,19 +280,20 @@ func (m *LPollData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m LPollData) String() string {
-	return string(m.Box("LPollData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m LPollData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LPollData"
+	boxName := "LPollData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
 		boxes = append(boxes, utils.BoxAnything("TargetAddress", m.TargetAddress, width-2))
 		boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

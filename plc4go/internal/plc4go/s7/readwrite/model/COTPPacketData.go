@@ -201,18 +201,19 @@ func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m COTPPacketData) String() string {
-	return string(m.Box("COTPPacketData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m COTPPacketData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacketData"
+	boxName := "COTPPacketData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Eot", m.Eot, width-2))
 		boxes = append(boxes, utils.BoxAnything("TpduRef", m.TpduRef, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

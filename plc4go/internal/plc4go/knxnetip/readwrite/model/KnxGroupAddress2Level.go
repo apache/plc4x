@@ -199,18 +199,19 @@ func (m *KnxGroupAddress2Level) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m KnxGroupAddress2Level) String() string {
-	return string(m.Box("KnxGroupAddress2Level", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m KnxGroupAddress2Level) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxGroupAddress2Level"
+	boxName := "KnxGroupAddress2Level"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
 		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

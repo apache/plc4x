@@ -122,13 +122,14 @@ func (m *GroupObjectDescriptorRealisationType6) MarshalXML(e *xml.Encoder, start
 }
 
 func (m GroupObjectDescriptorRealisationType6) String() string {
-	return string(m.Box("GroupObjectDescriptorRealisationType6", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m GroupObjectDescriptorRealisationType6) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "GroupObjectDescriptorRealisationType6"
+	boxName := "GroupObjectDescriptorRealisationType6"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

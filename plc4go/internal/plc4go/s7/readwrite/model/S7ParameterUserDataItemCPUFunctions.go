@@ -436,14 +436,15 @@ func (m *S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) String() string {
-	return string(m.Box("S7ParameterUserDataItemCPUFunctions", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7ParameterUserDataItemCPUFunctions"
+	boxName := "S7ParameterUserDataItemCPUFunctions"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
 		boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))
@@ -455,5 +456,5 @@ func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.A
 		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

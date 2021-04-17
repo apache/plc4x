@@ -357,14 +357,15 @@ func (m *LDataExtended) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m LDataExtended) String() string {
-	return string(m.Box("LDataExtended", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LDataExtended"
+	boxName := "LDataExtended"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, width-2))
 		boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
@@ -374,5 +375,5 @@ func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

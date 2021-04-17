@@ -270,16 +270,17 @@ func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement
 }
 
 func (m S7VarPayloadDataItem) String() string {
-	return string(m.Box("S7VarPayloadDataItem", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m S7VarPayloadDataItem) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7VarPayloadDataItem"
+	boxName := "S7VarPayloadDataItem"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
 	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -171,17 +171,18 @@ func (m *KnxNetIpTunneling) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m KnxNetIpTunneling) String() string {
-	return string(m.Box("KnxNetIpTunneling", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m KnxNetIpTunneling) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxNetIpTunneling"
+	boxName := "KnxNetIpTunneling"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

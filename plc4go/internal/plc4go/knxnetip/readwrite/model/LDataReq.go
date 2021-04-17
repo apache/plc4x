@@ -261,19 +261,20 @@ func (m *LDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m LDataReq) String() string {
-	return string(m.Box("LDataReq", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m LDataReq) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LDataReq"
+	boxName := "LDataReq"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, width-2))
 		boxes = append(boxes, utils.BoxAnything("AdditionalInformation", m.AdditionalInformation, width-2))
 		boxes = append(boxes, utils.BoxAnything("DataFrame", m.DataFrame, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

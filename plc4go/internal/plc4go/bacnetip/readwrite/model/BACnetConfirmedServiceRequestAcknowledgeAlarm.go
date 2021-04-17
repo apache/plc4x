@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) MarshalXML(e *xml.Encode
 }
 
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestAcknowledgeAlarm", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestAcknowledgeAlarm"
+	boxName := "BACnetConfirmedServiceRequestAcknowledgeAlarm"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

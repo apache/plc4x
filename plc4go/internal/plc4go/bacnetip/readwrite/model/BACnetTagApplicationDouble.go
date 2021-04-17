@@ -175,17 +175,18 @@ func (m *BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m BACnetTagApplicationDouble) String() string {
-	return string(m.Box("BACnetTagApplicationDouble", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetTagApplicationDouble) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagApplicationDouble"
+	boxName := "BACnetTagApplicationDouble"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

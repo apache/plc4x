@@ -227,19 +227,20 @@ func (m *ApduDataExtPropertyDescriptionRead) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m ApduDataExtPropertyDescriptionRead) String() string {
-	return string(m.Box("ApduDataExtPropertyDescriptionRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataExtPropertyDescriptionRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtPropertyDescriptionRead"
+	boxName := "ApduDataExtPropertyDescriptionRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
 		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
 		boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

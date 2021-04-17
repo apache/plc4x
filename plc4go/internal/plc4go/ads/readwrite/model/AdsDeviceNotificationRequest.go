@@ -252,19 +252,20 @@ func (m *AdsDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m AdsDeviceNotificationRequest) String() string {
-	return string(m.Box("AdsDeviceNotificationRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsDeviceNotificationRequest"
+	boxName := "AdsDeviceNotificationRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
 		boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, width-2))
 		boxes = append(boxes, utils.BoxAnything("AdsStampHeaders", m.AdsStampHeaders, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

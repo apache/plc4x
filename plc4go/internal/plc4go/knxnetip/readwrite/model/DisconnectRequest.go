@@ -224,18 +224,19 @@ func (m *DisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m DisconnectRequest) String() string {
-	return string(m.Box("DisconnectRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m DisconnectRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DisconnectRequest"
+	boxName := "DisconnectRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 		boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -142,16 +142,17 @@ func (m *RoutingIndication) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m RoutingIndication) String() string {
-	return string(m.Box("RoutingIndication", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m RoutingIndication) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "RoutingIndication"
+	boxName := "RoutingIndication"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

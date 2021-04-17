@@ -218,15 +218,16 @@ func (m *TunnelingRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartEl
 }
 
 func (m TunnelingRequestDataBlock) String() string {
-	return string(m.Box("TunnelingRequestDataBlock", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m TunnelingRequestDataBlock) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "TunnelingRequestDataBlock"
+	boxName := "TunnelingRequestDataBlock"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("SequenceCounter", m.SequenceCounter, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

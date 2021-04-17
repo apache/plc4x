@@ -145,13 +145,14 @@ func (m *ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m ModbusConstants) String() string {
-	return string(m.Box("ModbusConstants", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusConstants) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusConstants"
+	boxName := "ModbusConstants"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

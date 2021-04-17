@@ -142,16 +142,17 @@ func (m *TDataConnectedReq) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m TDataConnectedReq) String() string {
-	return string(m.Box("TDataConnectedReq", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m TDataConnectedReq) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "TDataConnectedReq"
+	boxName := "TDataConnectedReq"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

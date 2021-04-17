@@ -409,14 +409,15 @@ func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestIAm", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestIAm"
+	boxName := "BACnetUnconfirmedServiceRequestIAm"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
 		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
@@ -426,5 +427,5 @@ func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.As
 		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

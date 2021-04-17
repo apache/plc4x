@@ -318,18 +318,19 @@ func (m *APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m APDU) String() string {
-	return string(m.Box("APDU", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *APDU) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *APDU) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "APDU"
+func (m *APDU) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "APDU"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

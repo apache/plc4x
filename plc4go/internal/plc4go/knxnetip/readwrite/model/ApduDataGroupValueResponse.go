@@ -218,18 +218,19 @@ func (m *ApduDataGroupValueResponse) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m ApduDataGroupValueResponse) String() string {
-	return string(m.Box("ApduDataGroupValueResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataGroupValueResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataGroupValueResponse"
+	boxName := "ApduDataGroupValueResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DataFirstByte", m.DataFirstByte, width-2))
 		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -402,16 +402,17 @@ func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m LDataFrame) String() string {
-	return string(m.Box("LDataFrame", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *LDataFrame) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *LDataFrame) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "LDataFrame"
+func (m *LDataFrame) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "LDataFrame"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, width-2))
@@ -419,6 +420,6 @@ func (m *LDataFrame) BoxParent(name string, width int, boxChild func() []utils.A
 	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
 	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, width-2))
 	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, width-2))
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

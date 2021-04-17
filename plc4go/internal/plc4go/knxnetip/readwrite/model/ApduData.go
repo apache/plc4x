@@ -486,18 +486,19 @@ func (m *ApduData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m ApduData) String() string {
-	return string(m.Box("ApduData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *ApduData) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *ApduData) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "ApduData"
+func (m *ApduData) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ApduData"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

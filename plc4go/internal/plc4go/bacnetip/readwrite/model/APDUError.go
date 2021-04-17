@@ -227,18 +227,19 @@ func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m APDUError) String() string {
-	return string(m.Box("APDUError", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m APDUError) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUError"
+	boxName := "APDUError"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 		boxes = append(boxes, utils.BoxAnything("Error", m.Error, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

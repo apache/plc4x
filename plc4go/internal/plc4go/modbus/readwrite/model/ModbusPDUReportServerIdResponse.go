@@ -215,17 +215,18 @@ func (m *ModbusPDUReportServerIdResponse) MarshalXML(e *xml.Encoder, start xml.S
 }
 
 func (m ModbusPDUReportServerIdResponse) String() string {
-	return string(m.Box("ModbusPDUReportServerIdResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUReportServerIdResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReportServerIdResponse"
+	boxName := "ModbusPDUReportServerIdResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

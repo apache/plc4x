@@ -265,17 +265,18 @@ func (m *ModbusPDUWriteFileRecordRequestItem) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m ModbusPDUWriteFileRecordRequestItem) String() string {
-	return string(m.Box("ModbusPDUWriteFileRecordRequestItem", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUWriteFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUWriteFileRecordRequestItem"
+	boxName := "ModbusPDUWriteFileRecordRequestItem"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
 	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("RecordData", m.RecordData, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

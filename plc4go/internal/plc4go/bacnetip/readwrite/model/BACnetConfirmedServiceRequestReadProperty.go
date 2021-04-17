@@ -315,14 +315,15 @@ func (m *BACnetConfirmedServiceRequestReadProperty) MarshalXML(e *xml.Encoder, s
 }
 
 func (m BACnetConfirmedServiceRequestReadProperty) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestReadProperty", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestReadProperty"
+	boxName := "BACnetConfirmedServiceRequestReadProperty"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
 		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
@@ -330,5 +331,5 @@ func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) u
 		boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

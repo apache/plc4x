@@ -229,19 +229,20 @@ func (m *COTPPacketConnectionResponse) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m COTPPacketConnectionResponse) String() string {
-	return string(m.Box("COTPPacketConnectionResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m COTPPacketConnectionResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacketConnectionResponse"
+	boxName := "COTPPacketConnectionResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
 		boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
 		boxes = append(boxes, utils.BoxAnything("ProtocolClass", m.ProtocolClass, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

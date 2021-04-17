@@ -224,18 +224,19 @@ func (m *ConnectionStateRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 }
 
 func (m ConnectionStateRequest) String() string {
-	return string(m.Box("ConnectionStateRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ConnectionStateRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionStateRequest"
+	boxName := "ConnectionStateRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 		boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

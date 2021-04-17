@@ -231,19 +231,20 @@ func (m *AdsReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m AdsReadRequest) String() string {
-	return string(m.Box("AdsReadRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsReadRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadRequest"
+	boxName := "AdsReadRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
 		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
 		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

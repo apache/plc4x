@@ -171,17 +171,18 @@ func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m COTPParameterCalledTsap) String() string {
-	return string(m.Box("COTPParameterCalledTsap", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPParameterCalledTsap"
+	boxName := "COTPParameterCalledTsap"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

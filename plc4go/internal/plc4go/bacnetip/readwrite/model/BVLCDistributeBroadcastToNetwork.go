@@ -142,16 +142,17 @@ func (m *BVLCDistributeBroadcastToNetwork) MarshalXML(e *xml.Encoder, start xml.
 }
 
 func (m BVLCDistributeBroadcastToNetwork) String() string {
-	return string(m.Box("BVLCDistributeBroadcastToNetwork", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BVLCDistributeBroadcastToNetwork) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BVLCDistributeBroadcastToNetwork"
+	boxName := "BVLCDistributeBroadcastToNetwork"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

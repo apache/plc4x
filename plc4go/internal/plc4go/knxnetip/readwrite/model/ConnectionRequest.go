@@ -227,19 +227,20 @@ func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m ConnectionRequest) String() string {
-	return string(m.Box("ConnectionRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionRequest"
+	boxName := "ConnectionRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
 		boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
 		boxes = append(boxes, utils.BoxAnything("ConnectionRequestInformation", m.ConnectionRequestInformation, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

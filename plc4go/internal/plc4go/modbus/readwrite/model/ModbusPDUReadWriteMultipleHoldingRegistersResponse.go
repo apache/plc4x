@@ -215,17 +215,18 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.E
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) String() string {
-	return string(m.Box("ModbusPDUReadWriteMultipleHoldingRegistersResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
+	boxName := "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

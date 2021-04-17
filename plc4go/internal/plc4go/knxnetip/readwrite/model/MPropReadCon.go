@@ -311,14 +311,15 @@ func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m MPropReadCon) String() string {
-	return string(m.Box("MPropReadCon", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "MPropReadCon"
+	boxName := "MPropReadCon"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
 		boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))
@@ -328,5 +329,5 @@ func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

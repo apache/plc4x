@@ -142,16 +142,17 @@ func (m *BACnetErrorRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, s
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) String() string {
-	return string(m.Box("BACnetErrorRemovedReadPropertyConditional", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetErrorRemovedReadPropertyConditional"
+	boxName := "BACnetErrorRemovedReadPropertyConditional"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

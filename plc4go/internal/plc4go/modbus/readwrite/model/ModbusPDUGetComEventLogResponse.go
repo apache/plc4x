@@ -299,14 +299,15 @@ func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.S
 }
 
 func (m ModbusPDUGetComEventLogResponse) String() string {
-	return string(m.Box("ModbusPDUGetComEventLogResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUGetComEventLogResponse"
+	boxName := "ModbusPDUGetComEventLogResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
 		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
@@ -314,5 +315,5 @@ func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.Ascii
 		boxes = append(boxes, utils.BoxAnything("Events", m.Events, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

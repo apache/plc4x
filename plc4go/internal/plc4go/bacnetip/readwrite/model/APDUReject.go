@@ -225,18 +225,19 @@ func (m *APDUReject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m APDUReject) String() string {
-	return string(m.Box("APDUReject", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m APDUReject) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUReject"
+	boxName := "APDUReject"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 		boxes = append(boxes, utils.BoxAnything("RejectReason", m.RejectReason, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

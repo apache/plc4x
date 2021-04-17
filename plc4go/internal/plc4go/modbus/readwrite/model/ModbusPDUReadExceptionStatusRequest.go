@@ -150,16 +150,17 @@ func (m *ModbusPDUReadExceptionStatusRequest) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) String() string {
-	return string(m.Box("ModbusPDUReadExceptionStatusRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadExceptionStatusRequest"
+	boxName := "ModbusPDUReadExceptionStatusRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

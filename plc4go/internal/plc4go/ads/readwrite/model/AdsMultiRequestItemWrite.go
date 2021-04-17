@@ -227,19 +227,20 @@ func (m *AdsMultiRequestItemWrite) MarshalXML(e *xml.Encoder, start xml.StartEle
 }
 
 func (m AdsMultiRequestItemWrite) String() string {
-	return string(m.Box("AdsMultiRequestItemWrite", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsMultiRequestItemWrite) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsMultiRequestItemWrite"
+	boxName := "AdsMultiRequestItemWrite"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
 		boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))
 		boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

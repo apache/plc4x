@@ -142,16 +142,17 @@ func (m *BACnetErrorCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m BACnetErrorCreateObject) String() string {
-	return string(m.Box("BACnetErrorCreateObject", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetErrorCreateObject) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetErrorCreateObject"
+	boxName := "BACnetErrorCreateObject"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

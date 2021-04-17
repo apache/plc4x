@@ -343,14 +343,15 @@ func (m *S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m S7AddressAny) String() string {
-	return string(m.Box("S7AddressAny", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7AddressAny"
+	boxName := "S7AddressAny"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
 		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
@@ -360,5 +361,5 @@ func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

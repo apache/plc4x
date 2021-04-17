@@ -207,18 +207,19 @@ func (m *ModbusPDUDiagnosticResponse) MarshalXML(e *xml.Encoder, start xml.Start
 }
 
 func (m ModbusPDUDiagnosticResponse) String() string {
-	return string(m.Box("ModbusPDUDiagnosticResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUDiagnosticResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUDiagnosticResponse"
+	boxName := "ModbusPDUDiagnosticResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
 		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

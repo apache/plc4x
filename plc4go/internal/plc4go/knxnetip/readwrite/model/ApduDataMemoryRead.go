@@ -199,18 +199,19 @@ func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m ApduDataMemoryRead) String() string {
-	return string(m.Box("ApduDataMemoryRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataMemoryRead"
+	boxName := "ApduDataMemoryRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, width-2))
 		boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

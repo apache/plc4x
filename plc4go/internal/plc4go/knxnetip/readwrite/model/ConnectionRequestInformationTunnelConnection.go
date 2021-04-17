@@ -196,17 +196,18 @@ func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder
 }
 
 func (m ConnectionRequestInformationTunnelConnection) String() string {
-	return string(m.Box("ConnectionRequestInformationTunnelConnection", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionRequestInformationTunnelConnection"
+	boxName := "ConnectionRequestInformationTunnelConnection"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

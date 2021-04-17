@@ -493,18 +493,19 @@ func (m *KnxNetIpMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m KnxNetIpMessage) String() string {
-	return string(m.Box("KnxNetIpMessage", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *KnxNetIpMessage) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *KnxNetIpMessage) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "KnxNetIpMessage"
+func (m *KnxNetIpMessage) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "KnxNetIpMessage"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

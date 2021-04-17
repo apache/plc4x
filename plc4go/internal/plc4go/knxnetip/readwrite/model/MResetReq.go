@@ -142,16 +142,17 @@ func (m *MResetReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m MResetReq) String() string {
-	return string(m.Box("MResetReq", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m MResetReq) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "MResetReq"
+	boxName := "MResetReq"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

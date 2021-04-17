@@ -142,16 +142,17 @@ func (m *ApduDataExtReadRouterStatusResponse) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m ApduDataExtReadRouterStatusResponse) String() string {
-	return string(m.Box("ApduDataExtReadRouterStatusResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataExtReadRouterStatusResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtReadRouterStatusResponse"
+	boxName := "ApduDataExtReadRouterStatusResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

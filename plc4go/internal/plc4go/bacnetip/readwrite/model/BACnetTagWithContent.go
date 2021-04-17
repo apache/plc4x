@@ -395,12 +395,13 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 }
 
 func (m BACnetTagWithContent) String() string {
-	return string(m.Box("BACnetTagWithContent", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagWithContent"
+	boxName := "BACnetTagWithContent"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
@@ -410,5 +411,5 @@ func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
 	boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
 	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

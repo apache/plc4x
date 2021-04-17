@@ -218,15 +218,16 @@ func (m *DeviceConfigurationRequestDataBlock) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m DeviceConfigurationRequestDataBlock) String() string {
-	return string(m.Box("DeviceConfigurationRequestDataBlock", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m DeviceConfigurationRequestDataBlock) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DeviceConfigurationRequestDataBlock"
+	boxName := "DeviceConfigurationRequestDataBlock"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
 	boxes = append(boxes, utils.BoxAnything("SequenceCounter", m.SequenceCounter, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

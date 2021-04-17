@@ -590,22 +590,23 @@ func (m *BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m BACnetTag) String() string {
-	return string(m.Box("BACnetTag", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *BACnetTag) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *BACnetTag) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTag"
+func (m *BACnetTag) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BACnetTag"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
 	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -142,16 +142,17 @@ func (m *ApduDataExtDomainAddressRead) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m ApduDataExtDomainAddressRead) String() string {
-	return string(m.Box("ApduDataExtDomainAddressRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataExtDomainAddressRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtDomainAddressRead"
+	boxName := "ApduDataExtDomainAddressRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

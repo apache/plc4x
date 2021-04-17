@@ -694,12 +694,13 @@ func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m NPDU) String() string {
-	return string(m.Box("NPDU", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m NPDU) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "NPDU"
+	boxName := "NPDU"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, width-2))
@@ -717,5 +718,5 @@ func (m NPDU) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
 	boxes = append(boxes, utils.BoxAnything("Nlm", m.Nlm, width-2))
 	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

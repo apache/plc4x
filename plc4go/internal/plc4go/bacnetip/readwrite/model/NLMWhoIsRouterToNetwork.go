@@ -184,17 +184,18 @@ func (m *NLMWhoIsRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m NLMWhoIsRouterToNetwork) String() string {
-	return string(m.Box("NLMWhoIsRouterToNetwork", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m NLMWhoIsRouterToNetwork) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "NLMWhoIsRouterToNetwork"
+	boxName := "NLMWhoIsRouterToNetwork"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

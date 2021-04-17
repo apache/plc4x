@@ -170,17 +170,18 @@ func (m *DeviceConfigurationAck) MarshalXML(e *xml.Encoder, start xml.StartEleme
 }
 
 func (m DeviceConfigurationAck) String() string {
-	return string(m.Box("DeviceConfigurationAck", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m DeviceConfigurationAck) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DeviceConfigurationAck"
+	boxName := "DeviceConfigurationAck"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DeviceConfigurationAckDataBlock", m.DeviceConfigurationAckDataBlock, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

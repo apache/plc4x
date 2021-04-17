@@ -171,17 +171,18 @@ func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartEle
 }
 
 func (m KnxGroupAddressFreeLevel) String() string {
-	return string(m.Box("KnxGroupAddressFreeLevel", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxGroupAddressFreeLevel"
+	boxName := "KnxGroupAddressFreeLevel"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -215,17 +215,18 @@ func (m *ModbusPDUReadCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m ModbusPDUReadCoilsResponse) String() string {
-	return string(m.Box("ModbusPDUReadCoilsResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUReadCoilsResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadCoilsResponse"
+	boxName := "ModbusPDUReadCoilsResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

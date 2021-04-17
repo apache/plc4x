@@ -142,16 +142,17 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Mars
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
+	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

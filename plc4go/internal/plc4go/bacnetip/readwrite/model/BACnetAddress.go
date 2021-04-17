@@ -185,15 +185,16 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m BACnetAddress) String() string {
-	return string(m.Box("BACnetAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetAddress"
+	boxName := "BACnetAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
 	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

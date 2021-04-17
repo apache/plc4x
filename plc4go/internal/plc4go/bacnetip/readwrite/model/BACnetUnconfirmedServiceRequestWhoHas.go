@@ -353,14 +353,15 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestWhoHas", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestWhoHas"
+	boxName := "BACnetUnconfirmedServiceRequestWhoHas"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimit", m.DeviceInstanceLowLimit, width-2))
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimit", m.DeviceInstanceHighLimit, width-2))
@@ -368,5 +369,5 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils
 		boxes = append(boxes, utils.BoxAnything("ObjectName", m.ObjectName, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -145,16 +145,17 @@ func (m *S7MessageRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (m S7MessageRequest) String() string {
-	return string(m.Box("S7MessageRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m S7MessageRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7MessageRequest"
+	boxName := "S7MessageRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

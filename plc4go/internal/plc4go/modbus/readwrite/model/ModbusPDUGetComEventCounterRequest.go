@@ -150,16 +150,17 @@ func (m *ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m ModbusPDUGetComEventCounterRequest) String() string {
-	return string(m.Box("ModbusPDUGetComEventCounterRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ModbusPDUGetComEventCounterRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUGetComEventCounterRequest"
+	boxName := "ModbusPDUGetComEventCounterRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

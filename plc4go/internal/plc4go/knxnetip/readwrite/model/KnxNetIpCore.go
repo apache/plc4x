@@ -171,17 +171,18 @@ func (m *KnxNetIpCore) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m KnxNetIpCore) String() string {
-	return string(m.Box("KnxNetIpCore", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m KnxNetIpCore) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxNetIpCore"
+	boxName := "KnxNetIpCore"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

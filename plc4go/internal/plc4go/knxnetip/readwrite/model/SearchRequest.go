@@ -170,17 +170,18 @@ func (m *SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m SearchRequest) String() string {
-	return string(m.Box("SearchRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m SearchRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "SearchRequest"
+	boxName := "SearchRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("HpaiIDiscoveryEndpoint", m.HpaiIDiscoveryEndpoint, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

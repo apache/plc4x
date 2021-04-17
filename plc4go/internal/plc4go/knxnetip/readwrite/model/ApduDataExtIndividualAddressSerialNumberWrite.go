@@ -142,16 +142,17 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) MarshalXML(e *xml.Encode
 }
 
 func (m ApduDataExtIndividualAddressSerialNumberWrite) String() string {
-	return string(m.Box("ApduDataExtIndividualAddressSerialNumberWrite", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduDataExtIndividualAddressSerialNumberWrite) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtIndividualAddressSerialNumberWrite"
+	boxName := "ApduDataExtIndividualAddressSerialNumberWrite"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

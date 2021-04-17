@@ -305,14 +305,15 @@ func (m *AdsReadDeviceInfoResponse) MarshalXML(e *xml.Encoder, start xml.StartEl
 }
 
 func (m AdsReadDeviceInfoResponse) String() string {
-	return string(m.Box("AdsReadDeviceInfoResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadDeviceInfoResponse"
+	boxName := "AdsReadDeviceInfoResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
 		boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, width-2))
@@ -321,5 +322,5 @@ func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("Device", m.Device, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

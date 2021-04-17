@@ -234,18 +234,19 @@ func (m *CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartEl
 }
 
 func (m CEMIAdditionalInformation) String() string {
-	return string(m.Box("CEMIAdditionalInformation", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *CEMIAdditionalInformation) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *CEMIAdditionalInformation) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "CEMIAdditionalInformation"
+func (m *CEMIAdditionalInformation) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "CEMIAdditionalInformation"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

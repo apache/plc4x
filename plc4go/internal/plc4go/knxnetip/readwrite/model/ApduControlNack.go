@@ -142,16 +142,17 @@ func (m *ApduControlNack) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m ApduControlNack) String() string {
-	return string(m.Box("ApduControlNack", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduControlNack) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduControlNack"
+	boxName := "ApduControlNack"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

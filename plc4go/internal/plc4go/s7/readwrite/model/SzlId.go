@@ -201,16 +201,17 @@ func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m SzlId) String() string {
-	return string(m.Box("SzlId", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m SzlId) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "SzlId"
+	boxName := "SzlId"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TypeClass", m.TypeClass, width-2))
 	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, width-2))
 	boxes = append(boxes, utils.BoxAnything("SublistList", m.SublistList, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

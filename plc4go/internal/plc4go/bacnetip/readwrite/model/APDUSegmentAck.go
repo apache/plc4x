@@ -309,14 +309,15 @@ func (m *APDUSegmentAck) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m APDUSegmentAck) String() string {
-	return string(m.Box("APDUSegmentAck", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m APDUSegmentAck) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUSegmentAck"
+	boxName := "APDUSegmentAck"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("NegativeAck", m.NegativeAck, width-2))
 		boxes = append(boxes, utils.BoxAnything("Server", m.Server, width-2))
@@ -325,5 +326,5 @@ func (m APDUSegmentAck) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

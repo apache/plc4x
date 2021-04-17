@@ -142,16 +142,17 @@ func (m *MFuncPropCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m MFuncPropCon) String() string {
-	return string(m.Box("MFuncPropCon", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m MFuncPropCon) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "MFuncPropCon"
+	boxName := "MFuncPropCon"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

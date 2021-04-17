@@ -142,16 +142,17 @@ func (m *BACnetServiceAckGetEventInformation) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m BACnetServiceAckGetEventInformation) String() string {
-	return string(m.Box("BACnetServiceAckGetEventInformation", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetServiceAckGetEventInformation) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetServiceAckGetEventInformation"
+	boxName := "BACnetServiceAckGetEventInformation"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

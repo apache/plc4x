@@ -142,16 +142,17 @@ func (m *BVLCWideBroadcastDistributionTable) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m BVLCWideBroadcastDistributionTable) String() string {
-	return string(m.Box("BVLCWideBroadcastDistributionTable", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BVLCWideBroadcastDistributionTable) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BVLCWideBroadcastDistributionTable"
+	boxName := "BVLCWideBroadcastDistributionTable"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

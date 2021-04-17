@@ -220,16 +220,17 @@ func (m *AdsNotificationSample) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m AdsNotificationSample) String() string {
-	return string(m.Box("AdsNotificationSample", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsNotificationSample"
+	boxName := "AdsNotificationSample"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
 	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, width-2))
 	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

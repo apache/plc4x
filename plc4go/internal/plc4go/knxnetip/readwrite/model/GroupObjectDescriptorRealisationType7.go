@@ -355,12 +355,13 @@ func (m *GroupObjectDescriptorRealisationType7) MarshalXML(e *xml.Encoder, start
 }
 
 func (m GroupObjectDescriptorRealisationType7) String() string {
-	return string(m.Box("GroupObjectDescriptorRealisationType7", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m GroupObjectDescriptorRealisationType7) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "GroupObjectDescriptorRealisationType7"
+	boxName := "GroupObjectDescriptorRealisationType7"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DataAddress", m.DataAddress, width-2))
@@ -372,5 +373,5 @@ func (m GroupObjectDescriptorRealisationType7) Box(name string, width int) utils
 	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, width-2))
 	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
 	boxes = append(boxes, utils.BoxAnything("ValueType", m.ValueType, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestVTData) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m BACnetConfirmedServiceRequestVTData) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestVTData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestVTData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestVTData"
+	boxName := "BACnetConfirmedServiceRequestVTData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

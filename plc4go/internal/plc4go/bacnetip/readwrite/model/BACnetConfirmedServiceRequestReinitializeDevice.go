@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) MarshalXML(e *xml.Enco
 }
 
 func (m BACnetConfirmedServiceRequestReinitializeDevice) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestReinitializeDevice", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestReinitializeDevice) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestReinitializeDevice"
+	boxName := "BACnetConfirmedServiceRequestReinitializeDevice"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

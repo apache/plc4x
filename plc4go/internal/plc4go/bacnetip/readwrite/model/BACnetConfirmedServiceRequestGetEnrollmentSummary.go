@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) MarshalXML(e *xml.En
 }
 
 func (m BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestGetEnrollmentSummary", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestGetEnrollmentSummary"
+	boxName := "BACnetConfirmedServiceRequestGetEnrollmentSummary"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

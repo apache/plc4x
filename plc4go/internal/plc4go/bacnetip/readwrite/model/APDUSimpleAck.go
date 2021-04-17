@@ -225,18 +225,19 @@ func (m *APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m APDUSimpleAck) String() string {
-	return string(m.Box("APDUSimpleAck", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m APDUSimpleAck) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUSimpleAck"
+	boxName := "APDUSimpleAck"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
 		boxes = append(boxes, utils.BoxAnything("ServiceChoice", m.ServiceChoice, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

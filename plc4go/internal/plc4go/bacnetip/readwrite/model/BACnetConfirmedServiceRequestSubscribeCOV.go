@@ -428,14 +428,15 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) MarshalXML(e *xml.Encoder, s
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOV) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestSubscribeCOV", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestSubscribeCOV"
+	boxName := "BACnetConfirmedServiceRequestSubscribeCOV"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, width-2))
 		boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, width-2))
@@ -445,5 +446,5 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) u
 		boxes = append(boxes, utils.BoxAnything("LifetimeSeconds", m.LifetimeSeconds, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

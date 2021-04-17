@@ -304,12 +304,13 @@ func (m *AmsSerialFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m AmsSerialFrame) String() string {
-	return string(m.Box("AmsSerialFrame", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AmsSerialFrame) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AmsSerialFrame"
+	boxName := "AmsSerialFrame"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
@@ -319,5 +320,5 @@ func (m AmsSerialFrame) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
 	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
 	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

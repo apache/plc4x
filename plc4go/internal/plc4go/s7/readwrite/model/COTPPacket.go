@@ -408,20 +408,21 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m COTPPacket) String() string {
-	return string(m.Box("COTPPacket", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *COTPPacket) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *COTPPacket) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacket"
+func (m *COTPPacket) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "COTPPacket"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
+	boxes = append(boxes, childBoxer()...)
 	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
 	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

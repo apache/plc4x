@@ -142,16 +142,17 @@ func (m *ApduControlConnect) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m ApduControlConnect) String() string {
-	return string(m.Box("ApduControlConnect", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m ApduControlConnect) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduControlConnect"
+	boxName := "ApduControlConnect"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

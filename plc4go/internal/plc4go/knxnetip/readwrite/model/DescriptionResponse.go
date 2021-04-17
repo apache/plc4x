@@ -197,18 +197,19 @@ func (m *DescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement)
 }
 
 func (m DescriptionResponse) String() string {
-	return string(m.Box("DescriptionResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m DescriptionResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DescriptionResponse"
+	boxName := "DescriptionResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
 		boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -647,18 +647,19 @@ func (m *CEMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m CEMI) String() string {
-	return string(m.Box("CEMI", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *CEMI) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *CEMI) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "CEMI"
+func (m *CEMI) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "CEMI"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

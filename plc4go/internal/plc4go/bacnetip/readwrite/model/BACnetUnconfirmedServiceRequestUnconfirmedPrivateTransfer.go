@@ -327,19 +327,20 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
+	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
 		boxes = append(boxes, utils.BoxAnything("ServiceNumber", m.ServiceNumber, width-2))
 		boxes = append(boxes, utils.BoxAnything("Values", m.Values, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

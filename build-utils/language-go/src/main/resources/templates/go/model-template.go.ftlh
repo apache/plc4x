@@ -1346,7 +1346,7 @@ func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m ${type.name}) String() string {
-	return string(m.Box("${type.name}", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
@@ -1354,21 +1354,22 @@ func (m *${type.name}) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *${type.name}) BoxParent(name string, width int, boxChild func() []utils.AsciiBox ) utils.AsciiBox {
+func (m *${type.name}) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox ) utils.AsciiBox {
 <#else>
 func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 </#if>
-	if name == "" {
-		name = "${type.name}"
+	boxName := "${type.name}"
+	if name != "" {
+		boxName += "/" + name
 	}
 	<#if helper.isDiscriminatedChildTypeDefinition()>
-	boxChild := func() []utils.AsciiBox {
+		childBoxer := func() []utils.AsciiBox {
 	</#if>
 	boxes := make([]utils.AsciiBox, 0)
 	<#if type.fields?has_content>
 		<#list type.fields as field>
 			<#if field.typeName == "switch">
-	boxes = append(boxes, boxChild()...)
+	boxes = append(boxes, childBoxer()...)
 			<#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
 	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
 			</#if>
@@ -1377,9 +1378,9 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 	<#else>
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 	</#if>
 }
 </@importSectionWithContentBelow>

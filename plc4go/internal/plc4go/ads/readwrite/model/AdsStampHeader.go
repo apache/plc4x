@@ -222,16 +222,17 @@ func (m *AdsStampHeader) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m AdsStampHeader) String() string {
-	return string(m.Box("AdsStampHeader", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m AdsStampHeader) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsStampHeader"
+	boxName := "AdsStampHeader"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
 	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, width-2))
 	boxes = append(boxes, utils.BoxAnything("AdsNotificationSamples", m.AdsNotificationSamples, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

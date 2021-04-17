@@ -383,12 +383,13 @@ func (m *State) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m State) String() string {
-	return string(m.Box("State", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m State) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "State"
+	boxName := "State"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, width-2))
@@ -400,5 +401,5 @@ func (m State) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, width-2))
 	boxes = append(boxes, utils.BoxAnything("Response", m.Response, width-2))
 	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

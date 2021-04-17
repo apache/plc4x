@@ -224,15 +224,16 @@ func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m DIBSuppSvcFamilies) String() string {
-	return string(m.Box("DIBSuppSvcFamilies", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DIBSuppSvcFamilies"
+	boxName := "DIBSuppSvcFamilies"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
 	boxes = append(boxes, utils.BoxAnything("ServiceIds", m.ServiceIds, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

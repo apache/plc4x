@@ -190,17 +190,18 @@ func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m UnknownMessage) String() string {
-	return string(m.Box("UnknownMessage", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "UnknownMessage"
+	boxName := "UnknownMessage"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("UnknownData", m.UnknownData, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -142,16 +142,17 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) MarshalXML(e
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
+	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

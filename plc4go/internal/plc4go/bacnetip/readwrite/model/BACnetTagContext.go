@@ -196,17 +196,18 @@ func (m *BACnetTagContext) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (m BACnetTagContext) String() string {
-	return string(m.Box("BACnetTagContext", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetTagContext) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagContext"
+	boxName := "BACnetTagContext"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

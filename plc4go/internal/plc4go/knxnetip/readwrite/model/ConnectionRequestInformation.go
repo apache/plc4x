@@ -258,18 +258,19 @@ func (m *ConnectionRequestInformation) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m ConnectionRequestInformation) String() string {
-	return string(m.Box("ConnectionRequestInformation", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m *ConnectionRequestInformation) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
-func (m *ConnectionRequestInformation) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionRequestInformation"
+func (m *ConnectionRequestInformation) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ConnectionRequestInformation"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, boxChild()...)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

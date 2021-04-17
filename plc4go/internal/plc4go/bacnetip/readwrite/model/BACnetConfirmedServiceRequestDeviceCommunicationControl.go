@@ -142,16 +142,17 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) MarshalXML(e *
 }
 
 func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestDeviceCommunicationControl", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
 func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestDeviceCommunicationControl"
+	boxName := "BACnetConfirmedServiceRequestDeviceCommunicationControl"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxChild := func() []utils.AsciiBox {
+	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		return boxes
 	}
-	return m.Parent.BoxParent(name, width, boxChild)
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }
