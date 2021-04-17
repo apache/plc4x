@@ -55,6 +55,7 @@ type IKnxGroupAddressChild interface {
 	InitializeParent(parent *KnxGroupAddress)
 	GetTypeName() string
 	IKnxGroupAddress
+	utils.AsciiBoxer
 }
 
 func NewKnxGroupAddress() *KnxGroupAddress {
@@ -234,11 +235,15 @@ func (m KnxGroupAddress) String() string {
 	return string(m.Box("KnxGroupAddress", utils.DefaultWidth*2))
 }
 
-func (m KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
+func (m *KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *KnxGroupAddress) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "KnxGroupAddress"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

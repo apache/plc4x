@@ -55,6 +55,7 @@ type IS7AddressChild interface {
 	InitializeParent(parent *S7Address)
 	GetTypeName() string
 	IS7Address
+	utils.AsciiBoxer
 }
 
 func NewS7Address() *S7Address {
@@ -222,11 +223,15 @@ func (m S7Address) String() string {
 	return string(m.Box("S7Address", utils.DefaultWidth*2))
 }
 
-func (m S7Address) Box(name string, width int) utils.AsciiBox {
+func (m *S7Address) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7Address) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "S7Address"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

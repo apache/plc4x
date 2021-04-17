@@ -242,9 +242,12 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) u
 	if name == "" {
 		name = "ModbusPDUMaskWriteHoldingRegisterResponse"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
-	boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
+		boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

@@ -334,11 +334,14 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Box(name string, widt
 	if name == "" {
 		name = "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReadStartingAddress", m.ReadStartingAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("ReadQuantity", m.ReadQuantity, width-2))
-	boxes = append(boxes, utils.BoxAnything("WriteStartingAddress", m.WriteStartingAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("WriteQuantity", m.WriteQuantity, width-2))
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("ReadStartingAddress", m.ReadStartingAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("ReadQuantity", m.ReadQuantity, width-2))
+		boxes = append(boxes, utils.BoxAnything("WriteStartingAddress", m.WriteStartingAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("WriteQuantity", m.WriteQuantity, width-2))
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

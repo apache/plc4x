@@ -63,6 +63,7 @@ type IS7MessageChild interface {
 	InitializeParent(parent *S7Message, tpduReference uint16, parameter *S7Parameter, payload *S7Payload)
 	GetTypeName() string
 	IS7Message
+	utils.AsciiBoxer
 }
 
 func NewS7Message(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) *S7Message {
@@ -462,14 +463,18 @@ func (m S7Message) String() string {
 	return string(m.Box("S7Message", utils.DefaultWidth*2))
 }
 
-func (m S7Message) Box(name string, width int) utils.AsciiBox {
+func (m *S7Message) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7Message) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "S7Message"
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("TpduReference", m.TpduReference, width-2))
+	boxes = append(boxes, boxChild()...)
 	boxes = append(boxes, utils.BoxAnything("Parameter", m.Parameter, width-2))
 	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

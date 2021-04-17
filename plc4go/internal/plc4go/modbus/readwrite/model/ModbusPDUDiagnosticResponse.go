@@ -214,8 +214,11 @@ func (m ModbusPDUDiagnosticResponse) Box(name string, width int) utils.AsciiBox 
 	if name == "" {
 		name = "ModbusPDUDiagnosticResponse"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
+		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

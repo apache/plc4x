@@ -55,6 +55,7 @@ type IBACnetConfirmedServiceACKChild interface {
 	InitializeParent(parent *BACnetConfirmedServiceACK)
 	GetTypeName() string
 	IBACnetConfirmedServiceACK
+	utils.AsciiBoxer
 }
 
 func NewBACnetConfirmedServiceACK() *BACnetConfirmedServiceACK {
@@ -502,11 +503,15 @@ func (m BACnetConfirmedServiceACK) String() string {
 	return string(m.Box("BACnetConfirmedServiceACK", utils.DefaultWidth*2))
 }
 
-func (m BACnetConfirmedServiceACK) Box(name string, width int) utils.AsciiBox {
+func (m *BACnetConfirmedServiceACK) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BACnetConfirmedServiceACK) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "BACnetConfirmedServiceACK"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

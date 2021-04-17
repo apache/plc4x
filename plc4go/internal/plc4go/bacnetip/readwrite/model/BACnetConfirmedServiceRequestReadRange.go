@@ -149,6 +149,9 @@ func (m BACnetConfirmedServiceRequestReadRange) Box(name string, width int) util
 	if name == "" {
 		name = "BACnetConfirmedServiceRequestReadRange"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

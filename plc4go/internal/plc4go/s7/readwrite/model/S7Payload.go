@@ -56,6 +56,7 @@ type IS7PayloadChild interface {
 	InitializeParent(parent *S7Payload)
 	GetTypeName() string
 	IS7Payload
+	utils.AsciiBoxer
 }
 
 func NewS7Payload() *S7Payload {
@@ -249,11 +250,15 @@ func (m S7Payload) String() string {
 	return string(m.Box("S7Payload", utils.DefaultWidth*2))
 }
 
-func (m S7Payload) Box(name string, width int) utils.AsciiBox {
+func (m *S7Payload) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7Payload) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "S7Payload"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

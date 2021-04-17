@@ -381,12 +381,15 @@ func (m APDUComplexAck) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "APDUComplexAck"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
-	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
-	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
-	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("ServiceAck", m.ServiceAck, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
+		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
+		boxes = append(boxes, utils.BoxAnything("ServiceAck", m.ServiceAck, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

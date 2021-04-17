@@ -416,12 +416,15 @@ func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.As
 	if name == "" {
 		name = "BACnetUnconfirmedServiceRequestIAm"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
-	boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
-	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
+		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, width-2))
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
+		boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
+		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

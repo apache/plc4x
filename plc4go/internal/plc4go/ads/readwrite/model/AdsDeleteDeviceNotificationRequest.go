@@ -182,7 +182,10 @@ func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.As
 	if name == "" {
 		name = "AdsDeleteDeviceNotificationRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

@@ -154,6 +154,7 @@ type I${type.name}Child interface {
 	InitializeParent(parent *${type.name}<#if type.getPropertyFields()?has_content>, <#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list></#if>)
 	GetTypeName() string
 	I${type.name}
+	utils.AsciiBoxer
 }
 	<#--list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
 	<#- If the discriminator name matches that of another field, suppress the methods generation ->
@@ -1348,22 +1349,38 @@ func (m ${type.name}) String() string {
 	return string(m.Box("${type.name}", utils.DefaultWidth*2))
 }
 
+<#if helper.isDiscriminatedParentTypeDefinition()>
+func (m *${type.name}) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *${type.name}) BoxParent(name string, width int, boxChild func() []utils.AsciiBox ) utils.AsciiBox {
+<#else>
 func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
+</#if>
 	if name == "" {
 		name = "${type.name}"
 	}
+	<#if helper.isDiscriminatedChildTypeDefinition()>
+	boxChild := func() []utils.AsciiBox {
+	</#if>
 	boxes := make([]utils.AsciiBox, 0)
 	<#if type.fields?has_content>
 		<#list type.fields as field>
-			<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
+			<#if field.typeName == "switch">
+	boxes = append(boxes, boxChild()...)
+			<#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
 	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
 			</#if>
 		</#list>
 	</#if>
-	<#if helper.isDiscriminatedParentTypeDefinition()>
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	</#if>
+	<#if helper.isDiscriminatedChildTypeDefinition()>
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
+	<#else>
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	</#if>
 }
 </@importSectionWithContentBelow>
 

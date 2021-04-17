@@ -312,11 +312,14 @@ func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "AdsReadDeviceInfoResponse"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-	boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, width-2))
-	boxes = append(boxes, utils.BoxAnything("MinorVersion", m.MinorVersion, width-2))
-	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
-	boxes = append(boxes, utils.BoxAnything("Device", m.Device, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
+		boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, width-2))
+		boxes = append(boxes, utils.BoxAnything("MinorVersion", m.MinorVersion, width-2))
+		boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
+		boxes = append(boxes, utils.BoxAnything("Device", m.Device, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

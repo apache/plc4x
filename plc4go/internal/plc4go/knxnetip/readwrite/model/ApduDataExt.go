@@ -55,6 +55,7 @@ type IApduDataExtChild interface {
 	InitializeParent(parent *ApduDataExt)
 	GetTypeName() string
 	IApduDataExt
+	utils.AsciiBoxer
 }
 
 func NewApduDataExt() *ApduDataExt {
@@ -1020,11 +1021,15 @@ func (m ApduDataExt) String() string {
 	return string(m.Box("ApduDataExt", utils.DefaultWidth*2))
 }
 
-func (m ApduDataExt) Box(name string, width int) utils.AsciiBox {
+func (m *ApduDataExt) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *ApduDataExt) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "ApduDataExt"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

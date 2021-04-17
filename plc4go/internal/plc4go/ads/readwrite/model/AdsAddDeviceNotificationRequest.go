@@ -349,12 +349,15 @@ func (m AdsAddDeviceNotificationRequest) Box(name string, width int) utils.Ascii
 	if name == "" {
 		name = "AdsAddDeviceNotificationRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
-	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransmissionMode", m.TransmissionMode, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaxDelay", m.MaxDelay, width-2))
-	boxes = append(boxes, utils.BoxAnything("CycleTime", m.CycleTime, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
+		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
+		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+		boxes = append(boxes, utils.BoxAnything("TransmissionMode", m.TransmissionMode, width-2))
+		boxes = append(boxes, utils.BoxAnything("MaxDelay", m.MaxDelay, width-2))
+		boxes = append(boxes, utils.BoxAnything("CycleTime", m.CycleTime, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

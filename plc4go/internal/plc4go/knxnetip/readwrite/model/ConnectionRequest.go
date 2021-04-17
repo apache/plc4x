@@ -234,9 +234,12 @@ func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "ConnectionRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
-	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
-	boxes = append(boxes, utils.BoxAnything("ConnectionRequestInformation", m.ConnectionRequestInformation, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("HpaiDiscoveryEndpoint", m.HpaiDiscoveryEndpoint, width-2))
+		boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
+		boxes = append(boxes, utils.BoxAnything("ConnectionRequestInformation", m.ConnectionRequestInformation, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

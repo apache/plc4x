@@ -55,6 +55,7 @@ type ICEMIAdditionalInformationChild interface {
 	InitializeParent(parent *CEMIAdditionalInformation)
 	GetTypeName() string
 	ICEMIAdditionalInformation
+	utils.AsciiBoxer
 }
 
 func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
@@ -236,11 +237,15 @@ func (m CEMIAdditionalInformation) String() string {
 	return string(m.Box("CEMIAdditionalInformation", utils.DefaultWidth*2))
 }
 
-func (m CEMIAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+func (m *CEMIAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *CEMIAdditionalInformation) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "CEMIAdditionalInformation"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

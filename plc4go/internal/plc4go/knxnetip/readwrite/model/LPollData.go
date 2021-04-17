@@ -287,9 +287,12 @@ func (m LPollData) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "LPollData"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("TargetAddress", m.TargetAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("TargetAddress", m.TargetAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

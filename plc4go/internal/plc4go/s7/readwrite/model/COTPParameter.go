@@ -55,6 +55,7 @@ type ICOTPParameterChild interface {
 	InitializeParent(parent *COTPParameter)
 	GetTypeName() string
 	ICOTPParameter
+	utils.AsciiBoxer
 }
 
 func NewCOTPParameter() *COTPParameter {
@@ -295,11 +296,15 @@ func (m COTPParameter) String() string {
 	return string(m.Box("COTPParameter", utils.DefaultWidth*2))
 }
 
-func (m COTPParameter) Box(name string, width int) utils.AsciiBox {
+func (m *COTPParameter) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *COTPParameter) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "COTPParameter"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

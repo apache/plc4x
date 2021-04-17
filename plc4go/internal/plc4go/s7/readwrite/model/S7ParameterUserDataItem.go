@@ -55,6 +55,7 @@ type IS7ParameterUserDataItemChild interface {
 	InitializeParent(parent *S7ParameterUserDataItem)
 	GetTypeName() string
 	IS7ParameterUserDataItem
+	utils.AsciiBoxer
 }
 
 func NewS7ParameterUserDataItem() *S7ParameterUserDataItem {
@@ -222,11 +223,15 @@ func (m S7ParameterUserDataItem) String() string {
 	return string(m.Box("S7ParameterUserDataItem", utils.DefaultWidth*2))
 }
 
-func (m S7ParameterUserDataItem) Box(name string, width int) utils.AsciiBox {
+func (m *S7ParameterUserDataItem) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7ParameterUserDataItem) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "S7ParameterUserDataItem"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -234,9 +234,12 @@ func (m KnxGroupAddress3Level) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "KnxGroupAddress3Level"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
+		boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
+		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

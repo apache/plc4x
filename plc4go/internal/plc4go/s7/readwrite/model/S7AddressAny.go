@@ -350,12 +350,15 @@ func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "S7AddressAny"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
-	boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("Area", m.Area, width-2))
-	boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
+		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
+		boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("Area", m.Area, width-2))
+		boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, width-2))
+		boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

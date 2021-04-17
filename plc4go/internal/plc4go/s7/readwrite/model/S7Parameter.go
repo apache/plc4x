@@ -56,6 +56,7 @@ type IS7ParameterChild interface {
 	InitializeParent(parent *S7Parameter)
 	GetTypeName() string
 	IS7Parameter
+	utils.AsciiBoxer
 }
 
 func NewS7Parameter() *S7Parameter {
@@ -293,11 +294,15 @@ func (m S7Parameter) String() string {
 	return string(m.Box("S7Parameter", utils.DefaultWidth*2))
 }
 
-func (m S7Parameter) Box(name string, width int) utils.AsciiBox {
+func (m *S7Parameter) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7Parameter) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "S7Parameter"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

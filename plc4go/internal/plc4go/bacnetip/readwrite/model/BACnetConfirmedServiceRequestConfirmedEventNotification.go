@@ -149,6 +149,9 @@ func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Box(name string
 	if name == "" {
 		name = "BACnetConfirmedServiceRequestConfirmedEventNotification"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

@@ -55,6 +55,7 @@ type IBACnetErrorChild interface {
 	InitializeParent(parent *BACnetError)
 	GetTypeName() string
 	IBACnetError
+	utils.AsciiBoxer
 }
 
 func NewBACnetError() *BACnetError {
@@ -495,11 +496,15 @@ func (m BACnetError) String() string {
 	return string(m.Box("BACnetError", utils.DefaultWidth*2))
 }
 
-func (m BACnetError) Box(name string, width int) utils.AsciiBox {
+func (m *BACnetError) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BACnetError) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "BACnetError"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

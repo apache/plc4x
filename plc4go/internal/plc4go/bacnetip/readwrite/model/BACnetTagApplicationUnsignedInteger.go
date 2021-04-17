@@ -203,7 +203,10 @@ func (m BACnetTagApplicationUnsignedInteger) Box(name string, width int) utils.A
 	if name == "" {
 		name = "BACnetTagApplicationUnsignedInteger"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

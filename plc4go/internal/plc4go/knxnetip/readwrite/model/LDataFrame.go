@@ -61,6 +61,7 @@ type ILDataFrameChild interface {
 	InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
 	GetTypeName() string
 	ILDataFrame
+	utils.AsciiBoxer
 }
 
 func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
@@ -404,7 +405,11 @@ func (m LDataFrame) String() string {
 	return string(m.Box("LDataFrame", utils.DefaultWidth*2))
 }
 
-func (m LDataFrame) Box(name string, width int) utils.AsciiBox {
+func (m *LDataFrame) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *LDataFrame) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "LDataFrame"
 	}
@@ -414,6 +419,6 @@ func (m LDataFrame) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
 	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, width-2))
 	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

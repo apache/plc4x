@@ -203,7 +203,10 @@ func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int
 	if name == "" {
 		name = "ConnectionRequestInformationTunnelConnection"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

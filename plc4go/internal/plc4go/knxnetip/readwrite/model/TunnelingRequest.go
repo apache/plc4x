@@ -207,8 +207,11 @@ func (m TunnelingRequest) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "TunnelingRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TunnelingRequestDataBlock", m.TunnelingRequestDataBlock, width-2))
-	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("TunnelingRequestDataBlock", m.TunnelingRequestDataBlock, width-2))
+		boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

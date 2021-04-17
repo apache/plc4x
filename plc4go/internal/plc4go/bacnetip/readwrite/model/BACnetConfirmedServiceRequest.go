@@ -55,6 +55,7 @@ type IBACnetConfirmedServiceRequestChild interface {
 	InitializeParent(parent *BACnetConfirmedServiceRequest)
 	GetTypeName() string
 	IBACnetConfirmedServiceRequest
+	utils.AsciiBoxer
 }
 
 func NewBACnetConfirmedServiceRequest() *BACnetConfirmedServiceRequest {
@@ -831,11 +832,15 @@ func (m BACnetConfirmedServiceRequest) String() string {
 	return string(m.Box("BACnetConfirmedServiceRequest", utils.DefaultWidth*2))
 }
 
-func (m BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+func (m *BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BACnetConfirmedServiceRequest) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "BACnetConfirmedServiceRequest"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

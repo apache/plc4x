@@ -55,6 +55,7 @@ type IAdsMultiRequestItemChild interface {
 	InitializeParent(parent *AdsMultiRequestItem)
 	GetTypeName() string
 	IAdsMultiRequestItem
+	utils.AsciiBoxer
 }
 
 func NewAdsMultiRequestItem() *AdsMultiRequestItem {
@@ -234,11 +235,15 @@ func (m AdsMultiRequestItem) String() string {
 	return string(m.Box("AdsMultiRequestItem", utils.DefaultWidth*2))
 }
 
-func (m AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+func (m *AdsMultiRequestItem) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *AdsMultiRequestItem) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "AdsMultiRequestItem"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -59,6 +59,7 @@ type IBVLCChild interface {
 	InitializeParent(parent *BVLC)
 	GetTypeName() string
 	IBVLC
+	utils.AsciiBoxer
 }
 
 func NewBVLC() *BVLC {
@@ -499,11 +500,15 @@ func (m BVLC) String() string {
 	return string(m.Box("BVLC", utils.DefaultWidth*2))
 }
 
-func (m BVLC) Box(name string, width int) utils.AsciiBox {
+func (m *BVLC) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BVLC) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "BVLC"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

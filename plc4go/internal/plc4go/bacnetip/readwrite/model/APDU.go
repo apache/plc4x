@@ -55,6 +55,7 @@ type IAPDUChild interface {
 	InitializeParent(parent *APDU)
 	GetTypeName() string
 	IAPDU
+	utils.AsciiBoxer
 }
 
 func NewAPDU() *APDU {
@@ -320,11 +321,15 @@ func (m APDU) String() string {
 	return string(m.Box("APDU", utils.DefaultWidth*2))
 }
 
-func (m APDU) Box(name string, width int) utils.AsciiBox {
+func (m *APDU) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *APDU) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "APDU"
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

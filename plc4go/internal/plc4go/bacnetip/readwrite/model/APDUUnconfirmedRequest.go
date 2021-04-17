@@ -206,7 +206,10 @@ func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "APDUUnconfirmedRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

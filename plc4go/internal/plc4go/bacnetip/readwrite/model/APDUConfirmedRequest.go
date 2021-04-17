@@ -465,15 +465,18 @@ func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "APDUConfirmedRequest"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
-	boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
-	boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, width-2))
-	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
-	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
+		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
+		boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, width-2))
+		boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, width-2))
+		boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, width-2))
+		boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
+		boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

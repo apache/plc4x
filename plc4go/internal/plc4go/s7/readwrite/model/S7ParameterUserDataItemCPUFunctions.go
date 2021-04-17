@@ -443,14 +443,17 @@ func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.A
 	if name == "" {
 		name = "S7ParameterUserDataItemCPUFunctions"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
-	boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))
-	boxes = append(boxes, utils.BoxAnything("CpuFunctionGroup", m.CpuFunctionGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("CpuSubfunction", m.CpuSubfunction, width-2))
-	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("DataUnitReferenceNumber", m.DataUnitReferenceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("LastDataUnit", m.LastDataUnit, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
+		boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))
+		boxes = append(boxes, utils.BoxAnything("CpuFunctionGroup", m.CpuFunctionGroup, width-2))
+		boxes = append(boxes, utils.BoxAnything("CpuSubfunction", m.CpuSubfunction, width-2))
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("DataUnitReferenceNumber", m.DataUnitReferenceNumber, width-2))
+		boxes = append(boxes, utils.BoxAnything("LastDataUnit", m.LastDataUnit, width-2))
+		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }

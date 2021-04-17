@@ -57,6 +57,7 @@ type INLMChild interface {
 	InitializeParent(parent *NLM, vendorId *uint16)
 	GetTypeName() string
 	INLM
+	utils.AsciiBoxer
 }
 
 func NewNLM(vendorId *uint16) *NLM {
@@ -280,12 +281,16 @@ func (m NLM) String() string {
 	return string(m.Box("NLM", utils.DefaultWidth*2))
 }
 
-func (m NLM) Box(name string, width int) utils.AsciiBox {
+func (m *NLM) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *NLM) BoxParent(name string, width int, boxChild func() []utils.AsciiBox) utils.AsciiBox {
 	if name == "" {
 		name = "NLM"
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
+	boxes = append(boxes, boxChild()...)
 	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
 }

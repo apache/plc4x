@@ -178,7 +178,10 @@ func (m COTPParameterChecksum) Box(name string, width int) utils.AsciiBox {
 	if name == "" {
 		name = "COTPParameterChecksum"
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	boxChild := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(name, width, boxChild)
 }
