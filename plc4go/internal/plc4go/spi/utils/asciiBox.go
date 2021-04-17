@@ -133,23 +133,39 @@ func BoxString(name string, data string, charWidth int) AsciiBox {
 	return AsciiBox(boxedString)
 }
 
-func AlignBoxes(boxes []AsciiBox, desiredWith int) AsciiBox {
+func AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
+	if len(boxes) == 0 {
+		return boxes[0]
+	}
+	actualWidth := desiredWidth
+	for _, box := range boxes {
+		boxWidth := box.Width()
+		if boxWidth > desiredWidth {
+			if DebugAsciiBox {
+				log.Debug().Msgf("Overflow by %d chars", boxWidth-desiredWidth)
+			}
+			actualWidth = boxWidth
+		}
+	}
+	if DebugAsciiBox {
+		log.Debug().Msgf("Working with %d chars", actualWidth)
+	}
 	bigBox := AsciiBox("")
 	currentBoxRow := make([]AsciiBox, 0)
 	currentRowLength := 0
 	for _, box := range boxes {
 		currentRowLength += box.Width()
-		currentBoxRow = append(currentBoxRow, box)
-		if currentRowLength >= desiredWith {
+		if currentRowLength > actualWidth {
 			mergedBoxes := mergeHorizontal(currentBoxRow)
 			if bigBox == "" {
 				bigBox = mergedBoxes
 			} else {
 				bigBox = BoxBelowBox(bigBox, mergedBoxes)
 			}
-			currentRowLength = 0
+			currentRowLength = box.Width()
 			currentBoxRow = make([]AsciiBox, 0)
 		}
+		currentBoxRow = append(currentBoxRow, box)
 	}
 	if len(currentBoxRow) > 0 {
 		// Special case where all boxes fit into one row
