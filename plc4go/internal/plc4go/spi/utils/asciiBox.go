@@ -27,7 +27,11 @@ import (
 	"strings"
 )
 
+// AsciiBox is a string surrounded by a ascii border (and a optional name)
 type AsciiBox string
+
+// DebugAsciiBox set to true to get debug messages
+var DebugAsciiBox bool
 
 // Width returns the width of the box without the newlines
 func (m AsciiBox) Width() int {
@@ -41,7 +45,7 @@ func (m AsciiBox) Width() int {
 	return maxWidth
 }
 
-// Boxer is used to render something in a box
+// AsciiBoxer is used to render something in a box
 type AsciiBoxer interface {
 	// Box where int param is the proposed width
 	Box(string, int) AsciiBox
@@ -96,7 +100,7 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 	}
 }
 
-// BoxString boxes a box
+// BoxBox boxes a box
 func BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
 	return BoxString(name, string(box), charWidth)
 }
@@ -105,7 +109,9 @@ func BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
 func BoxString(name string, data string, charWidth int) AsciiBox {
 	longestLine := AsciiBox(data).Width()
 	if charWidth < longestLine {
-		log.Debug().Msgf("Overflow by %d chars", longestLine-charWidth)
+		if DebugAsciiBox {
+			log.Debug().Msgf("Overflow by %d chars", longestLine-charWidth)
+		}
 		charWidth = longestLine + 2
 	}
 	boxedString := ""

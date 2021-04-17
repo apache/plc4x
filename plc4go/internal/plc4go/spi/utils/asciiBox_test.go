@@ -19,7 +19,10 @@
 
 package utils
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestBoxAnything(t *testing.T) {
 	type args struct {
@@ -39,9 +42,11 @@ func TestBoxAnything(t *testing.T) {
 				anything:  true,
 				charWidth: 0,
 			},
-			want: `╔═exampleBool╗
+			want: `
+╔═exampleBool╗
 ║    true    ║
-╚════════════╝`,
+╚════════════╝
+`,
 		},
 		{
 			name: "test int",
@@ -50,9 +55,11 @@ func TestBoxAnything(t *testing.T) {
 				anything:  1,
 				charWidth: 0,
 			},
-			want: `╔═exampleInt╗
+			want: `
+╔═exampleInt╗
 ║     1     ║
-╚═══════════╝`,
+╚═══════════╝
+`,
 		},
 		{
 			name: "test int 123123123",
@@ -61,13 +68,16 @@ func TestBoxAnything(t *testing.T) {
 				anything:  123123123,
 				charWidth: 0,
 			},
-			want: `╔═exampleInt╗
+			want: `
+╔═exampleInt╗
 ║ 123123123 ║
-╚═══════════╝`,
+╚═══════════╝
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.want = trimBox(tt.want)
 			if got := BoxAnything(tt.args.name, tt.args.anything, tt.args.charWidth); got != tt.want {
 				t.Errorf("BoxAnything() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
@@ -88,12 +98,15 @@ func TestBoxSideBySide(t *testing.T) {
 		{
 			name: "Test2Boxes",
 			args: args{
-				box1: `000 0x: 31  32  33  34  35  36  37  38  '12345678'
+				box1: `
+000 0x: 31  32  33  34  35  36  37  38  '12345678'
 008 0x: 39  30  61  62  63  64  65  66  '90abcdef'
 016 0x: 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'
 024 0x: 6f  70  71  72  73  74  75  76  'opqrstuv'
-032 0x: 77  78  79  7a                  'wxyz    '`,
-				box2: `╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+032 0x: 77  78  79  7a                  'wxyz    '
+`,
+				box2: `
+╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  000 0x: 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
 ║  024 0x: 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
 ║  048 0x: 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
@@ -101,9 +114,11 @@ func TestBoxSideBySide(t *testing.T) {
 ║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
 ║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
 ║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`,
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+`,
 			},
-			want: `000 0x: 31  32  33  34  35  36  37  38  '12345678'╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+			want: `
+000 0x: 31  32  33  34  35  36  37  38  '12345678'╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 008 0x: 39  30  61  62  63  64  65  66  '90abcdef'║  000 0x: 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
 016 0x: 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'║  024 0x: 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
 024 0x: 6f  70  71  72  73  74  75  76  'opqrstuv'║  048 0x: 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
@@ -111,58 +126,78 @@ func TestBoxSideBySide(t *testing.T) {
                                                   ║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
                                                   ║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
                                                   ║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-                                                  ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`,
+                                                  ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+`,
 		},
 		{
 			name: "another 2 boxes",
 			args: args{
-				box1: `╔═exampleInt╗
+				box1: `
+╔═exampleInt╗
 ║     4     ║
-╚═══════════╝`,
-				box2: `╔═exampleInt╗
+╚═══════════╝
+`,
+				box2: `
+╔═exampleInt╗
 ║     7     ║
-╚═══════════╝`,
+╚═══════════╝
+`,
 			},
-			want: `╔═exampleInt╗╔═exampleInt╗
+			want: `
+╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
-╚═══════════╝╚═══════════╝`,
+╚═══════════╝╚═══════════╝
+`,
 		},
 		{
 			name: "size difference first box",
 			args: args{
-				box1: `╔═exampleInt╗
+				box1: `
+╔═exampleInt╗
 ║     4     ║
 ║     4     ║
-╚═══════════╝`,
-				box2: `╔═exampleInt╗
+╚═══════════╝
+`,
+				box2: `
+╔═exampleInt╗
 ║     7     ║
-╚═══════════╝`,
+╚═══════════╝
+`,
 			},
-			want: `╔═exampleInt╗╔═exampleInt╗
+			want: `
+╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
 ║     4     ║╚═══════════╝
-╚═══════════╝             `,
+╚═══════════╝             
+`,
 		},
 		{
 			name: "size difference second box",
 			args: args{
-				box1: `╔═exampleInt╗
+				box1: `
+╔═exampleInt╗
 ║     4     ║
-╚═══════════╝`,
-				box2: `╔═exampleInt╗
+╚═══════════╝
+`,
+				box2: `
+╔═exampleInt╗
 ║     7     ║
 ║     7     ║
-╚═══════════╝`,
+╚═══════════╝
+`,
 			},
-			want: `╔═exampleInt╗╔═exampleInt╗
+			want: `
+╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
 ╚═══════════╝║     7     ║
-             ╚═══════════╝`,
+             ╚═══════════╝
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxSideBySide(tt.args.box1, tt.args.box2); got != tt.want {
+			tt.want = trimBox(tt.want)
+			if got := BoxSideBySide(trimBox(tt.args.box1), trimBox(tt.args.box2)); got != tt.want {
 				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -182,57 +217,69 @@ func TestBoxBelowBox(t *testing.T) {
 		{
 			name: "Test2Boxes",
 			args: args{
-				box1: `000 0x: 31  32  33  34  35  36  37  38  '12345678'
-008 0x: 39  30  61  62  63  64  65  66  '90abcdef'
-016 0x: 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'
-024 0x: 6f  70  71  72  73  74  75  76  'opqrstuv'
-032 0x: 77  78  79  7a                  'wxyz    '`,
-				box2: `╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  000 0x: 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
-║  024 0x: 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
-║  048 0x: 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
-║  072 0x: 7a  d3  61  61  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  'z.aa1234567890abcdefghij'  ║
-║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
-║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
-║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`,
+				box1: `
+000 31  32  33  34  35  36  37  38  '12345678'
+008 39  30  61  62  63  64  65  66  '90abcdef'
+016 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'
+024 6f  70  71  72  73  74  75  76  'opqrstuv'
+032 77  78  79  7a                  'wxyz    '
+`,
+				box2: `
+╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  000 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
+║  024 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
+║  048 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
+║  072 7a  d3  61  61  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  'z.aa1234567890abcdefghij'  ║
+║  096 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
+║  120 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
+║  144 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+`,
 			},
-			want: `000 0x: 31  32  33  34  35  36  37  38  '12345678'                                                                                      
-008 0x: 39  30  61  62  63  64  65  66  '90abcdef'                                                                                      
-016 0x: 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'                                                                                      
-024 0x: 6f  70  71  72  73  74  75  76  'opqrstuv'                                                                                      
-032 0x: 77  78  79  7a                  'wxyz    '                                                                                      
-╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║  000 0x: 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
-║  024 0x: 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
-║  048 0x: 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
-║  072 0x: 7a  d3  61  61  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  'z.aa1234567890abcdefghij'  ║
-║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
-║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
-║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`,
+			want: `
+000 31  32  33  34  35  36  37  38  '12345678'                                                                                      
+008 39  30  61  62  63  64  65  66  '90abcdef'                                                                                      
+016 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'                                                                                      
+024 6f  70  71  72  73  74  75  76  'opqrstuv'                                                                                      
+032 77  78  79  7a                  'wxyz    '                                                                                      
+╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║  000 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
+║  024 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  'opqrstuvwxyz.1234567890a'  ║
+║  048 62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  'bcdefghijklmnopqrstuvwxy'  ║
+║  072 7a  d3  61  61  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  'z.aa1234567890abcdefghij'  ║
+║  096 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
+║  120 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
+║  144 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`,
 		},
 		{
 			name: "different sized boxes",
 			args: args{
-				box1: `╔═sampleField════════════╗
+				box1: `
+╔═sampleField════════════╗
 ║123123123123123123123123║
-╚════════════════════════╝`,
-				box2: `╔═sampleField╗
+╚════════════════════════╝
+`,
+				box2: `
+╔═sampleField╗
 ║123123123123║
-╚════════════╝`,
+╚════════════╝
+`,
 			},
-			want: `╔═sampleField════════════╗
+			want: `
+╔═sampleField════════════╗
 ║123123123123123123123123║
 ╚════════════════════════╝
 ╔═sampleField╗            
 ║123123123123║            
-╚════════════╝            `,
+╚════════════╝            
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxBelowBox(tt.args.box1, tt.args.box2); got != tt.want {
+			tt.want = trimBox(tt.want)
+			if got := BoxBelowBox(trimBox(tt.args.box1), trimBox(tt.args.box2)); got != tt.want {
 				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -257,9 +304,11 @@ func TestBoxString(t *testing.T) {
 				data:      "123123123123",
 				charWidth: 1,
 			},
-			want: `╔═sampleField╗
+			want: `
+╔═sampleField╗
 ║123123123123║
-╚════════════╝`,
+╚════════════╝
+`,
 		},
 		{
 			name: "simplebox-unamed",
@@ -268,9 +317,11 @@ func TestBoxString(t *testing.T) {
 				data:      "123123123123",
 				charWidth: 1,
 			},
-			want: `╔════════════╗
+			want: `
+╔════════════╗
 ║123123123123║
-╚════════════╝`,
+╚════════════╝
+`,
 		},
 		{
 			name: "simplebox",
@@ -279,14 +330,17 @@ func TestBoxString(t *testing.T) {
 				data:      "123123123123\n123123123123123123123123",
 				charWidth: 1,
 			},
-			want: `╔═sampleField════════════╗
+			want: `
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
+╚════════════════════════╝
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			tt.want = trimBox(tt.want)
 			if got := BoxString(tt.args.name, tt.args.data, tt.args.charWidth); got != tt.want {
 				t.Errorf("BoxString() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
@@ -308,86 +362,115 @@ func TestAlignBoxes(t *testing.T) {
 			name: "enough space",
 			args: args{
 				boxes: []AsciiBox{
-					`╔═sampleField════════════╗
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
+╚════════════════════════╝
+`,
 				},
 				desiredWith: 1000,
 			},
-			want: `╔═sampleField════════════╗╔═sampleField════════════╗
+			want: `
+╔═sampleField════════════╗╔═sampleField════════════╗
 ║      123123123123      ║║      123123123123      ║
 ║123123ABABABABABAB123123║║123123123123123123123123║
-╚════════════════════════╝╚════════════════════════╝`,
+╚════════════════════════╝╚════════════════════════╝
+`,
 		},
 		{
 			name: "not enough space",
 			args: args{
 				boxes: []AsciiBox{
-					`╔═sampleField════════════╗
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
+╚════════════════════════╝
+`,
 				},
 				desiredWith: 0,
 			},
-			want: `╔═sampleField════════════╗
+			want: `
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
 ╚════════════════════════╝
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
+╚════════════════════════╝
+`,
 		},
 		{
 			name: "not enough space should result in multiple rows",
 			args: args{
 				boxes: []AsciiBox{
-					`╔═sampleField════════════╗
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝`,
-					`╔═sampleField════════════╗
+╚════════════════════════╝
+`,
+					`
+╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝`,
+╚════════════════════════╝
+`,
 				},
 				desiredWith: 65,
 			},
-			want: `╔═sampleField════════════╗╔═sampleField════════════╗╔═sampleField════════════╗
+			want: `
+╔═sampleField════════════╗╔═sampleField════════════╗╔═sampleField════════════╗
 ║      123123123123      ║║      123123123123      ║║      123123123123      ║
 ║123123ABABABABABAB123123║║123123123123123123123123║║123123ABABABABABAB123123║
 ╚════════════════════════╝╚════════════════════════╝╚════════════════════════╝
@@ -398,11 +481,16 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗╔═sampleField════════════╗                          
 ║      123123123123      ║║      123123123123      ║                          
 ║123123ABABABABABAB123123║║123123123123123123123123║                          
-╚════════════════════════╝╚════════════════════════╝                          `,
+╚════════════════════════╝╚════════════════════════╝                          
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			for i, box := range tt.args.boxes {
+				tt.args.boxes[i] = trimBox(box)
+			}
+			tt.want = trimBox(tt.want)
 			if got := AlignBoxes(tt.args.boxes, tt.args.desiredWith); got != tt.want {
 				t.Errorf("AlignBoxes() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
@@ -418,16 +506,20 @@ func TestAsciiBox_width(t *testing.T) {
 	}{
 		{
 			name: "same width",
-			m: `123123123123123
+			m: `
 123123123123123
-123123123123123`,
+123123123123123
+123123123123123
+`,
 			want: 15,
 		},
 		{
 			name: "different width",
-			m: `123123123123123
+			m: `
+123123123123123
 123123123123123123123123123123
-123123123123123`,
+123123123123123
+`,
 			want: 30,
 		},
 	}
@@ -453,46 +545,70 @@ func Test_mergeHorizontal(t *testing.T) {
 			name: "3 same",
 			args: args{
 				boxes: []AsciiBox{
-					`123123123
+					`
 123123123
-123123123`,
-					`abcabcabc
+123123123
+123123123
+`,
+					`
 abcabcabc
-abcabcabc`,
-					`zxyzxyzxy
+abcabcabc
+abcabcabc
+`,
+					`
 zxyzxyzxy
-zxyzxyzxy`,
+zxyzxyzxy
+zxyzxyzxy
+`,
 				},
 			},
-			want: `123123123abcabcabczxyzxyzxy
+			want: `
 123123123abcabcabczxyzxyzxy
-123123123abcabcabczxyzxyzxy`,
+123123123abcabcabczxyzxyzxy
+123123123abcabcabczxyzxyzxy
+`,
 		},
 		{
 			name: "3 different",
 			args: args{
 				boxes: []AsciiBox{
-					`123123123
+					`
 123123123
-123123123`,
-					`abcabcabc
+123123123
+123123123
+`,
+					`
+abcabcabc
 abcabcabcabcabcabcabcabcabc
-abcabcabc`,
-					`zxyzxyzxy
+abcabcabc
+`,
+					`
 zxyzxyzxy
-zxyzxyzxy`,
+zxyzxyzxy
+zxyzxyzxy
+`,
 				},
 			},
-			want: `123123123abcabcabc                  zxyzxyzxy
+			want: `
+123123123abcabcabc                  zxyzxyzxy
 123123123abcabcabcabcabcabcabcabcabczxyzxyzxy
-123123123abcabcabc                  zxyzxyzxy`,
+123123123abcabcabc                  zxyzxyzxy
+`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			for i, box := range tt.args.boxes {
+				tt.args.boxes[i] = trimBox(box)
+			}
+			tt.want = trimBox(tt.want)
 			if got := mergeHorizontal(tt.args.boxes); got != tt.want {
 				t.Errorf("mergeHorizontal() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
 	}
+}
+
+func trimBox(box AsciiBox) AsciiBox {
+	return AsciiBox(strings.Trim(string(box), "\n"))
 }
