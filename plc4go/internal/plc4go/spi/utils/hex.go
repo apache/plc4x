@@ -30,16 +30,19 @@ import (
 )
 
 // DefaultWidth defaults to a default screen dumps size
-const DefaultWidth = 56 // 10 bytes per line on a []byte < 999
+const DefaultWidth = 46 // 10 bytes per line on a []byte < 999
 
 // boxLineOverheat Overheat per line when drawing boxes
 const boxLineOverheat = 1 + 1
 
-// byteWidth required size of runes required to print one bytes 2 hex digits + 2 blanks
-const byteWidth = 2 + 2
-
-// blank size of blank
+// blankWidth blank size of blank
 const blankWidth = 1
+
+// byteWidth required size of runes required to print one bytes 2 hex digits + 1 blanks
+const byteWidth = 2 + 1
+
+// pipeWidth size of the pipe char
+const pipeWidth = 1
 
 // DebugHex set to true to get debug messages
 var DebugHex bool
@@ -82,12 +85,12 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	maxBytesPerRow, indexWidth := calculateBytesPerRowAndIndexWidth(len(data), desiredCharWidth)
 
 	for byteIndex, rowIndex := 0, 0; byteIndex < len(data); byteIndex, rowIndex = byteIndex+maxBytesPerRow, rowIndex+1 {
-		indexString := fmt.Sprintf("%0*d ", indexWidth, byteIndex)
+		indexString := fmt.Sprintf("%0*d|", indexWidth, byteIndex)
 		hexString += indexString
 		for columnIndex := 0; columnIndex < maxBytesPerRow; columnIndex++ {
 			absoluteIndex := byteIndex + columnIndex
 			if absoluteIndex < len(data) {
-				hexString += fmt.Sprintf("%02x  ", data[absoluteIndex])
+				hexString += fmt.Sprintf("%02x ", data[absoluteIndex])
 			} else {
 				// align with empty byte representation
 				hexString += strings.Repeat(" ", byteWidth)
@@ -112,7 +115,7 @@ func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (i
 		log.Debug().Msgf("Calculating max row and index for %d number of bytes and a desired string width of %d", numberOfBytes, desiredStringWidth)
 	}
 	indexDigits := int(math.Log10(float64(numberOfBytes))) + 1
-	requiredIndexWidth := indexDigits + blankWidth
+	requiredIndexWidth := indexDigits + pipeWidth
 	if DebugHex {
 		log.Debug().Msgf("index width %d for indexDigits %d for bytes %d", requiredIndexWidth, indexDigits, numberOfBytes)
 	}

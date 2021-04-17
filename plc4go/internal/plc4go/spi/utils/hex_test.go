@@ -44,10 +44,10 @@ func TestDump(t *testing.T) {
 				data: []byte("1234567890abcdefghijklmnopqrstuvwxyz"),
 			},
 			want: `
-00 31  32  33  34  35  36  37  38  39  30  '1234567890'
-10 61  62  63  64  65  66  67  68  69  6a  'abcdefghij'
-20 6b  6c  6d  6e  6f  70  71  72  73  74  'klmnopqrst'
-30 75  76  77  78  79  7a                  'uvwxyz    '
+00|31 32 33 34 35 36 37 38 39 30 '1234567890'
+10|61 62 63 64 65 66 67 68 69 6a 'abcdefghij'
+20|6b 6c 6d 6e 6f 70 71 72 73 74 'klmnopqrst'
+30|75 76 77 78 79 7a             'uvwxyz    '
 `,
 		},
 		{
@@ -56,113 +56,113 @@ func TestDump(t *testing.T) {
 				data: []byte(strings.Repeat("Lorem ipsum", 90)),
 			},
 			want: `
-000 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-010 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-020 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-030 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-040 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-050 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-060 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-070 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-080 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-090 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-100 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-110 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-120 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-130 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-140 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-150 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-160 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-170 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-180 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-190 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-200 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-210 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-220 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-230 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-240 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-250 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-260 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-270 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-280 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-290 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-300 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-310 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-320 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-330 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-340 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-350 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-360 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-370 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-380 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-390 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-400 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-410 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-420 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-430 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-440 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-450 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-460 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-470 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-480 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-490 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-500 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-510 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-520 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-530 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-540 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-550 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-560 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-570 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-580 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-590 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-600 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-610 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-620 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-630 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-640 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-650 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-660 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-670 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-680 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-690 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-700 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-710 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-720 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-730 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-740 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-750 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-760 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-770 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-780 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-790 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-800 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-810 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-820 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-830 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-840 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-850 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-860 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-870 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
-880 4c  6f  72  65  6d  20  69  70  73  75  'Lorem ipsu'
-890 6d  4c  6f  72  65  6d  20  69  70  73  'mLorem ips'
-900 75  6d  4c  6f  72  65  6d  20  69  70  'umLorem ip'
-910 73  75  6d  4c  6f  72  65  6d  20  69  'sumLorem i'
-920 70  73  75  6d  4c  6f  72  65  6d  20  'psumLorem '
-930 69  70  73  75  6d  4c  6f  72  65  6d  'ipsumLorem'
-940 20  69  70  73  75  6d  4c  6f  72  65  ' ipsumLore'
-950 6d  20  69  70  73  75  6d  4c  6f  72  'm ipsumLor'
-960 65  6d  20  69  70  73  75  6d  4c  6f  'em ipsumLo'
-970 72  65  6d  20  69  70  73  75  6d  4c  'rem ipsumL'
-980 6f  72  65  6d  20  69  70  73  75  6d  'orem ipsum'
+000|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+010|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+020|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+030|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+040|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+050|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+060|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+070|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+080|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+090|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+100|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+110|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+120|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+130|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+140|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+150|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+160|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+170|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+180|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+190|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+200|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+210|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+220|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+230|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+240|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+250|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+260|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+270|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+280|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+290|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+300|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+310|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+320|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+330|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+340|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+350|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+360|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+370|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+380|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+390|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+400|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+410|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+420|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+430|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+440|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+450|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+460|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+470|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+480|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+490|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+500|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+510|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+520|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+530|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+540|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+550|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+560|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+570|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+580|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+590|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+600|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+610|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+620|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+630|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+640|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+650|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+660|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+670|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+680|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+690|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+700|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+710|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+720|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+730|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+740|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+750|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+760|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+770|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+780|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+790|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+800|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+810|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+820|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+830|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+840|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+850|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+860|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+870|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
+880|4c 6f 72 65 6d 20 69 70 73 75 'Lorem ipsu'
+890|6d 4c 6f 72 65 6d 20 69 70 73 'mLorem ips'
+900|75 6d 4c 6f 72 65 6d 20 69 70 'umLorem ip'
+910|73 75 6d 4c 6f 72 65 6d 20 69 'sumLorem i'
+920|70 73 75 6d 4c 6f 72 65 6d 20 'psumLorem '
+930|69 70 73 75 6d 4c 6f 72 65 6d 'ipsumLorem'
+940|20 69 70 73 75 6d 4c 6f 72 65 ' ipsumLore'
+950|6d 20 69 70 73 75 6d 4c 6f 72 'm ipsumLor'
+960|65 6d 20 69 70 73 75 6d 4c 6f 'em ipsumLo'
+970|72 65 6d 20 69 70 73 75 6d 4c 'rem ipsumL'
+980|6f 72 65 6d 20 69 70 73 75 6d 'orem ipsum'
 `,
 		},
 		{
-			name: "minimum size",
+			name: "no size",
 			args: args{
 				[]byte("a"),
 			},
-			want: "0 61                                      'a         '",
+			want: "0|61                            'a         '",
 		},
 	}
 	for _, tt := range tests {
@@ -229,24 +229,24 @@ func TestBoxedDump(t *testing.T) {
 				data: []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
 			},
 			want: `
-╔═super nice data════════════════════════════════════════╗
-║000 31  32  33  34  35  36  37  38  39  30  '1234567890'║
-║010 61  62  63  64  65  66  67  68  69  6a  'abcdefghij'║
-║020 6b  6c  6d  6e  6f  70  71  72  73  74  'klmnopqrst'║
-║030 75  76  77  78  79  7a  d3  31  32  33  'uvwxyz.123'║
-║040 34  35  36  37  38  39  30  61  62  63  '4567890abc'║
-║050 64  65  66  67  68  69  6a  6b  6c  6d  'defghijklm'║
-║060 6e  6f  70  71  72  73  74  75  76  77  'nopqrstuvw'║
-║070 78  79  7a  d3  61  61  31  32  33  34  'xyz.aa1234'║
-║080 35  36  37  38  39  30  61  62  63  64  '567890abcd'║
-║090 65  66  67  68  69  6a  6b  6c  6d  6e  'efghijklmn'║
-║100 6f  70  71  72  73  74  75  76  77  78  'opqrstuvwx'║
-║110 79  7a  d3  31  32  33  34  35  36  37  'yz.1234567'║
-║120 38  39  30  61  62  63  64  65  66  67  '890abcdefg'║
-║130 68  69  6a  6b  6c  6d  6e  6f  70  71  'hijklmnopq'║
-║140 72  73  74  75  76  77  78  79  7a  d3  'rstuvwxyz.'║
-║150 61  61  62                              'aab       '║
-╚════════════════════════════════════════════════════════╝
+╔═super nice data══════════════════════════════╗
+║000|31 32 33 34 35 36 37 38 39 30 '1234567890'║
+║010|61 62 63 64 65 66 67 68 69 6a 'abcdefghij'║
+║020|6b 6c 6d 6e 6f 70 71 72 73 74 'klmnopqrst'║
+║030|75 76 77 78 79 7a d3 31 32 33 'uvwxyz.123'║
+║040|34 35 36 37 38 39 30 61 62 63 '4567890abc'║
+║050|64 65 66 67 68 69 6a 6b 6c 6d 'defghijklm'║
+║060|6e 6f 70 71 72 73 74 75 76 77 'nopqrstuvw'║
+║070|78 79 7a d3 61 61 31 32 33 34 'xyz.aa1234'║
+║080|35 36 37 38 39 30 61 62 63 64 '567890abcd'║
+║090|65 66 67 68 69 6a 6b 6c 6d 6e 'efghijklmn'║
+║100|6f 70 71 72 73 74 75 76 77 78 'opqrstuvwx'║
+║110|79 7a d3 31 32 33 34 35 36 37 'yz.1234567'║
+║120|38 39 30 61 62 63 64 65 66 67 '890abcdefg'║
+║130|68 69 6a 6b 6c 6d 6e 6f 70 71 'hijklmnopq'║
+║140|72 73 74 75 76 77 78 79 7a d3 'rstuvwxyz.'║
+║150|61 61 62                      'aab       '║
+╚══════════════════════════════════════════════╝
 `,
 		},
 	}
@@ -275,18 +275,18 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 			args: args{
 				name:      "super nice data",
 				data:      []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
-				charWidth: 136,
+				charWidth: 110,
 			},
 			want: `
-╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║ 000 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  '1234567890abcdefghijklmno'  ║
-║ 025 70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  62  63  'pqrstuvwxyz.1234567890abc'  ║
-║ 050 64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  61  'defghijklmnopqrstuvwxyz.a'  ║
-║ 075 61  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  'a1234567890abcdefghijklmn'  ║
-║ 100 6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  62  'opqrstuvwxyz.1234567890ab'  ║
-║ 125 63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  'cdefghijklmnopqrstuvwxyz.'  ║
-║ 150 61  61  62                                                                                          'aab                      '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+╔═super nice data════════════════════════════════════════════════════════════════════════════════════════════╗
+║ 000|31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f '1234567890abcdefghijklmno' ║
+║ 025|70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 'pqrstuvwxyz.1234567890abc' ║
+║ 050|64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 61 'defghijklmnopqrstuvwxyz.a' ║
+║ 075|61 31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 'a1234567890abcdefghijklmn' ║
+║ 100|6f 70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 'opqrstuvwxyz.1234567890ab' ║
+║ 125|63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 'cdefghijklmnopqrstuvwxyz.' ║
+║ 150|61 61 62                                                                   'aab                      ' ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
 		},
 	}
@@ -328,18 +328,18 @@ func TestDumpAnything(t *testing.T) {
 				}},
 			},
 			want: `
-000 25  ff  81  03  01  02  ff  82  00  01  '%.........'
-010 04  01  01  41  01  0c  00  01  01  42  '...A.....B'
-020 01  0c  00  01  01  43  01  0c  00  01  '.....C....'
-030 01  44  01  ff  84  00  00  00  37  ff  '.D......7.'
-040 83  03  01  01  1d  73  74  72  75  63  '.....struc'
-050 74  20  7b  20  45  20  73  74  72  69  't { E stri'
-060 6e  67  3b  20  46  20  73  74  72  69  'ng; F stri'
-070 6e  67  20  7d  01  ff  84  00  01  02  'ng }......'
-080 01  01  45  01  0c  00  01  01  46  01  '..E.....F.'
-090 0c  00  00  00  14  ff  82  01  01  61  '.........a'
-100 01  01  62  01  01  63  01  01  01  65  '..b..c...e'
-110 01  01  66  00  00                      '..f..     '
+000|25 ff 81 03 01 02 ff 82 00 01 '%.........'
+010|04 01 01 41 01 0c 00 01 01 42 '...A.....B'
+020|01 0c 00 01 01 43 01 0c 00 01 '.....C....'
+030|01 44 01 ff 84 00 00 00 37 ff '.D......7.'
+040|83 03 01 01 1d 73 74 72 75 63 '.....struc'
+050|74 20 7b 20 45 20 73 74 72 69 't { E stri'
+060|6e 67 3b 20 46 20 73 74 72 69 'ng; F stri'
+070|6e 67 20 7d 01 ff 84 00 01 02 'ng }......'
+080|01 01 45 01 0c 00 01 01 46 01 '..E.....F.'
+090|0c 00 00 00 14 ff 82 01 01 61 '.........a'
+100|01 01 62 01 01 63 01 01 01 65 '..b..c...e'
+110|01 01 66 00 00                '..f..     '
 `,
 		},
 		{
@@ -375,15 +375,15 @@ func TestDumpFixedWidth(t *testing.T) {
 			name: "Test Dump",
 			args: args{
 				data:      []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
-				charWidth: 136,
+				charWidth: 110,
 			},
 			want: `
-000 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  '1234567890abcdefghijklmnop'
-026 71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  'qrstuvwxyz.1234567890abcde'
-052 66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  61  61  31  32  'fghijklmnopqrstuvwxyz.aa12'
-078 33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  '34567890abcdefghijklmnopqr'
-104 73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  'stuvwxyz.1234567890abcdefg'
-130 68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  61  61  62              'hijklmnopqrstuvwxyz.aab   '
+000|31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 '1234567890abcdefghijklmnop'
+026|71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 'qrstuvwxyz.1234567890abcde'
+052|66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 61 61 31 32 'fghijklmnopqrstuvwxyz.aa12'
+078|33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f 70 71 72 '34567890abcdefghijklmnopqr'
+104|73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 'stuvwxyz.1234567890abcdefg'
+130|68 69 6a 6b 6c 6d 6e 6f 70 71 72 73 74 75 76 77 78 79 7a d3 61 61 62          'hijklmnopqrstuvwxyz.aab   '
 `,
 		},
 		{
@@ -392,7 +392,7 @@ func TestDumpFixedWidth(t *testing.T) {
 				[]byte("a"),
 				1,
 			},
-			want: "0 61  'a'",
+			want: "0|61 'a'",
 		},
 	}
 	for _, tt := range tests {
@@ -464,7 +464,7 @@ func Test_MinMax(t *testing.T) {
 				data:      []byte{0x1},
 				charWidth: -1,
 			},
-			want: "0 01  '.'",
+			want: "0|01 '.'",
 		},
 		{
 			name: "12",
@@ -564,7 +564,7 @@ func Test_calculateBytesPerRowAndIndexWidth(t *testing.T) {
 				numberOfBytes:    100,
 				desiredCharWidth: math.MaxInt32,
 			},
-			wantMaxBytesPerRow: 429496728,
+			wantMaxBytesPerRow: 536870910,
 			wantIndexWidth:     3,
 		},
 		{
@@ -582,7 +582,7 @@ func Test_calculateBytesPerRowAndIndexWidth(t *testing.T) {
 				numberOfBytes:    153,
 				desiredCharWidth: 136,
 			},
-			wantMaxBytesPerRow: 26,
+			wantMaxBytesPerRow: 32,
 			wantIndexWidth:     3,
 		},
 		{
