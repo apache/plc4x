@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -150,7 +151,7 @@ func (m DataTransportErrorCode) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	return nil
 }
 
-func (e DataTransportErrorCode) String() string {
+func (e DataTransportErrorCode) name() string {
 	switch e {
 	case DataTransportErrorCode_RESERVED:
 		return "RESERVED"
@@ -166,4 +167,16 @@ func (e DataTransportErrorCode) String() string {
 		return "OK"
 	}
 	return ""
+}
+
+func (e DataTransportErrorCode) String() string {
+	return e.name()
+}
+
+func (m DataTransportErrorCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "DataTransportErrorCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

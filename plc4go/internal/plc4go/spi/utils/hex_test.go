@@ -252,7 +252,7 @@ func TestBoxedDump(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDump(tt.args.name, tt.args.data); got != strings.Trim(tt.want, "\n") {
+			if got := BoxedDump(tt.args.name, tt.args.data); got != AsciiBox(strings.Trim(tt.want, "\n")) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})
@@ -292,7 +292,7 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BoxedDumpFixedWidth(tt.args.name, tt.args.data, tt.args.charWidth); got != strings.Trim(tt.want, "\n") {
+			if got := BoxedDumpFixedWidth(tt.args.name, tt.args.data, tt.args.charWidth); got != AsciiBox(strings.Trim(tt.want, "\n")) {
 				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
 			}
 		})

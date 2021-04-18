@@ -438,12 +438,36 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) u
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, width-2))
-		boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, width-2))
-		boxes = append(boxes, utils.BoxAnything("MonitoredObjectInstanceNumber", m.MonitoredObjectInstanceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotifications", m.IssueConfirmedNotifications, width-2))
-		boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("LifetimeSeconds", m.LifetimeSeconds, width-2))
+		// Const Field (subscriberProcessIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifierHeader", 0x09, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, -1))
+		// Const Field (monitoredObjectIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("MonitoredObjectIdentifierHeader", 0x1C, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MonitoredObjectInstanceNumber", m.MonitoredObjectInstanceNumber, -1))
+		// Const Field (issueConfirmedNotificationsHeader)
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsHeader", 0x29, -1))
+		// Const Field (issueConfirmedNotificationsSkipBits)
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsSkipBits", 0x00, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotifications", m.IssueConfirmedNotifications, -1))
+		// Const Field (lifetimeHeader)
+		boxes = append(boxes, utils.BoxAnything("LifetimeHeader", 0x07, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, -1))
+		// Array Field (lifetimeSeconds)
+		if m.LifetimeSeconds != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("LifetimeSeconds", m.LifetimeSeconds))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

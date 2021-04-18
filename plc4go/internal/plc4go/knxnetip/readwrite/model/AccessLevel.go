@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -203,7 +204,7 @@ func (m AccessLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e AccessLevel) String() string {
+func (e AccessLevel) name() string {
 	switch e {
 	case AccessLevel_Level0:
 		return "Level0"
@@ -217,4 +218,16 @@ func (e AccessLevel) String() string {
 		return "Level15"
 	}
 	return ""
+}
+
+func (e AccessLevel) String() string {
+	return e.name()
+}
+
+func (m AccessLevel) Box(s string, i int) utils.AsciiBox {
+	boxName := "AccessLevel"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

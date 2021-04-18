@@ -194,7 +194,13 @@ func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
+	// Array Field (address)
+	if m.Address != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Address", m.Address))
+	}
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

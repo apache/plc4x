@@ -343,12 +343,26 @@ func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) uti
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, width-2))
-		boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, width-2))
-		boxes = append(boxes, utils.BoxAnything("ParityErrorFlag", m.ParityErrorFlag, width-2))
-		boxes = append(boxes, utils.BoxAnything("UnknownFlag", m.UnknownFlag, width-2))
-		boxes = append(boxes, utils.BoxAnything("LostFlag", m.LostFlag, width-2))
-		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
+		// Const Field (len)
+		boxes = append(boxes, utils.BoxAnything("Len", 1, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ParityErrorFlag", m.ParityErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("UnknownFlag", m.UnknownFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("LostFlag", m.LostFlag, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

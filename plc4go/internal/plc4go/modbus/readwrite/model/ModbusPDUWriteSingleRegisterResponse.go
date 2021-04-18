@@ -217,8 +217,12 @@ func (m ModbusPDUWriteSingleRegisterResponse) Box(name string, width int) utils.
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

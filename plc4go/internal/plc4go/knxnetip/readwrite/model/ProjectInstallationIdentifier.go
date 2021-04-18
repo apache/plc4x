@@ -184,7 +184,11 @@ func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBo
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -237,9 +237,15 @@ func (m KnxGroupAddress3Level) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

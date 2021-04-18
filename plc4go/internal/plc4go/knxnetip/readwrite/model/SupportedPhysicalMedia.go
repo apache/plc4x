@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -427,7 +428,7 @@ func (m SupportedPhysicalMedia) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	return nil
 }
 
-func (e SupportedPhysicalMedia) String() string {
+func (e SupportedPhysicalMedia) name() string {
 	switch e {
 	case SupportedPhysicalMedia_OTHER:
 		return "OTHER"
@@ -473,4 +474,16 @@ func (e SupportedPhysicalMedia) String() string {
 		return "RADIO_CONVERTER"
 	}
 	return ""
+}
+
+func (e SupportedPhysicalMedia) String() string {
+	return e.name()
+}
+
+func (m SupportedPhysicalMedia) Box(s string, i int) utils.AsciiBox {
+	boxName := "SupportedPhysicalMedia"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

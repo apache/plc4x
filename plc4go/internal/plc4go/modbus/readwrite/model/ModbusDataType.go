@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -393,7 +394,7 @@ func (m ModbusDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	return nil
 }
 
-func (e ModbusDataType) String() string {
+func (e ModbusDataType) name() string {
 	switch e {
 	case ModbusDataType_BOOL:
 		return "BOOL"
@@ -451,4 +452,16 @@ func (e ModbusDataType) String() string {
 		return "LINT"
 	}
 	return ""
+}
+
+func (e ModbusDataType) String() string {
+	return e.name()
+}
+
+func (m ModbusDataType) Box(s string, i int) utils.AsciiBox {
+	boxName := "ModbusDataType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

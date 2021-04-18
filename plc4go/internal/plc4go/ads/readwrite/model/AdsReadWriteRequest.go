@@ -364,11 +364,33 @@ func (m AdsReadWriteRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
-		boxes = append(boxes, utils.BoxAnything("ReadLength", m.ReadLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
-		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReadLength", m.ReadLength, -1))
+		// Implicit Field (writeLength)
+		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), func() uint16 { return uint16(uint32(16)) }, func() uint16 { return uint16(uint32(12)) }))))) + uint32(uint32(len(m.Data))))
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteLength", writeLength, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

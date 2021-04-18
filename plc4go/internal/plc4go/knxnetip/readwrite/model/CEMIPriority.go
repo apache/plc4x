@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -138,7 +139,7 @@ func (m CEMIPriority) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e CEMIPriority) String() string {
+func (e CEMIPriority) name() string {
 	switch e {
 	case CEMIPriority_SYSTEM:
 		return "SYSTEM"
@@ -150,4 +151,16 @@ func (e CEMIPriority) String() string {
 		return "LOW"
 	}
 	return ""
+}
+
+func (e CEMIPriority) String() string {
+	return e.name()
+}
+
+func (m CEMIPriority) Box(s string, i int) utils.AsciiBox {
+	boxName := "CEMIPriority"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

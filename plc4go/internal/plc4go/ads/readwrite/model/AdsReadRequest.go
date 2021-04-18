@@ -241,9 +241,15 @@ func (m AdsReadRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
-		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

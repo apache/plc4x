@@ -291,7 +291,18 @@ func (m *NLM) BoxParent(name string, width int, childBoxer func() []utils.AsciiB
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+	// Discriminator Field (messageType) (Used as input to a switch field)
+	// messageType := uint8(child.MessageType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("MessageType", messageType, -1))
+	// Optional Field (vendorId) (Can be skipped, if the value is null)
+	var vendorId *uint16 = nil
+	if m.VendorId != nil {
+		vendorId = m.VendorId
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("VendorId", *(vendorId), -1))
+	}
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

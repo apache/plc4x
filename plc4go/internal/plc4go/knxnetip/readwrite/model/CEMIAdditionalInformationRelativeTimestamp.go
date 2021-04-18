@@ -202,7 +202,11 @@ func (m CEMIAdditionalInformationRelativeTimestamp) Box(name string, width int) 
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("RelativeTimestamp", m.RelativeTimestamp, width-2))
+		// Const Field (len)
+		boxes = append(boxes, utils.BoxAnything("Len", 2, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@3d235635
+		boxes = append(boxes, m.RelativeTimestamp.Box("relativeTimestamp", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

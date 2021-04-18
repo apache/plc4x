@@ -179,6 +179,9 @@ func (m ApduDataGroupValueRead) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

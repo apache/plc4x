@@ -233,6 +233,11 @@ func (m *S7Address) BoxParent(name string, width int, childBoxer func() []utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (addressType) (Used as input to a switch field)
+	// addressType := uint8(child.AddressType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("AddressType", addressType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

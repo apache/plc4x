@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -186,7 +187,7 @@ func (m Status) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e Status) String() string {
+func (e Status) name() string {
 	switch e {
 	case Status_NO_ERROR:
 		return "NO_ERROR"
@@ -214,4 +215,16 @@ func (e Status) String() string {
 		return "TUNNELLING_LAYER_NOT_SUPPORTED"
 	}
 	return ""
+}
+
+func (e Status) String() string {
+	return e.name()
+}
+
+func (m Status) Box(s string, i int) utils.AsciiBox {
+	boxName := "Status"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

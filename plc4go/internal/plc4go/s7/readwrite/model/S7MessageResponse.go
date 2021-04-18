@@ -212,8 +212,12 @@ func (m S7MessageResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
-		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

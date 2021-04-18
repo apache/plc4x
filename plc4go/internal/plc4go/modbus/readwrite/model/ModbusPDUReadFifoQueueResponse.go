@@ -233,7 +233,19 @@ func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiB
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("FifoValue", m.FifoValue, width-2))
+		// Implicit Field (byteCount)
+		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Implicit Field (fifoCount)
+		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("FifoCount", fifoCount, -1))
+		// Array Field (fifoValue)
+		if m.FifoValue != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("FifoValue", m.FifoValue))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -251,8 +251,20 @@ func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, -1))
+	// Const Field (protocolIdentifier)
+	boxes = append(boxes, utils.BoxAnything("ProtocolIdentifier", 0x0000, -1))
+	// Implicit Field (length)
+	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5600a278
+	boxes = append(boxes, m.Pdu.Box("pdu", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

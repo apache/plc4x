@@ -158,6 +158,8 @@ func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
+	// Enum field (returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
+	boxes = append(boxes, returnCode.Box("returnCode", -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

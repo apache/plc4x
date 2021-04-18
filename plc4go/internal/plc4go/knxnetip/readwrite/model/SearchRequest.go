@@ -180,7 +180,9 @@ func (m SearchRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("HpaiIDiscoveryEndpoint", m.HpaiIDiscoveryEndpoint, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@44aed6a4
+		boxes = append(boxes, m.HpaiIDiscoveryEndpoint.Box("hpaiIDiscoveryEndpoint", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

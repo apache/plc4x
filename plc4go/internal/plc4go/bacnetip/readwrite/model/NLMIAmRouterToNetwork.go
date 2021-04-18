@@ -194,7 +194,11 @@ func (m NLMIAmRouterToNetwork) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
+		// Array Field (destinationNetworkAddress)
+		if m.DestinationNetworkAddress != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("DestinationNetworkAddress", m.DestinationNetworkAddress))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

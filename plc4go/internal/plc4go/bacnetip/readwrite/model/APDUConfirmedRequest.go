@@ -468,15 +468,44 @@ func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
-		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
-		boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, width-2))
-		boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
-		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
-		boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SegmentedResponseAccepted", m.SegmentedResponseAccepted, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxSegmentsAccepted", m.MaxSegmentsAccepted, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxApduLengthAccepted", m.MaxApduLengthAccepted, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, -1))
+		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
+		var sequenceNumber *uint8 = nil
+		if m.SequenceNumber != nil {
+			sequenceNumber = m.SequenceNumber
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("SequenceNumber", *(sequenceNumber), -1))
+		}
+		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
+		var proposedWindowSize *uint8 = nil
+		if m.ProposedWindowSize != nil {
+			proposedWindowSize = m.ProposedWindowSize
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", *(proposedWindowSize), -1))
+		}
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@39449465
+		boxes = append(boxes, m.ServiceRequest.Box("serviceRequest", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -200,6 +200,15 @@ func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint16(0x0000), -1))
+	// Implicit Field (length)
+	length := uint32(m.Userdata.LengthInBytes())
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4da1f38a
+	boxes = append(boxes, m.Userdata.Box("userdata", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -309,10 +309,24 @@ func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.Ascii
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
-		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
-		boxes = append(boxes, utils.BoxAnything("MessageCount", m.MessageCount, width-2))
-		boxes = append(boxes, utils.BoxAnything("Events", m.Events, width-2))
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Status", m.Status, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MessageCount", m.MessageCount, -1))
+		// Array Field (events)
+		if m.Events != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Events", m.Events))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

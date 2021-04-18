@@ -352,12 +352,27 @@ func (m AdsAddDeviceNotificationRequest) Box(name string, width int) utils.Ascii
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, width-2))
-		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-		boxes = append(boxes, utils.BoxAnything("TransmissionMode", m.TransmissionMode, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaxDelay", m.MaxDelay, width-2))
-		boxes = append(boxes, utils.BoxAnything("CycleTime", m.CycleTime, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("TransmissionMode", m.TransmissionMode, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxDelay", m.MaxDelay, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CycleTime", m.CycleTime, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", big.NewInt(0x0000), -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

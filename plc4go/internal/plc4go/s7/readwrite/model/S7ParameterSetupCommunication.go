@@ -267,9 +267,18 @@ func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBo
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, width-2))
-		boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

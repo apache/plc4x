@@ -358,10 +358,23 @@ func (m *S7PayloadUserDataItem) BoxParent(name string, width int, childBoxer fun
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("SzlId", m.SzlId, width-2))
-	boxes = append(boxes, utils.BoxAnything("SzlIndex", m.SzlIndex, width-2))
+	// Enum field (returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
+	boxes = append(boxes, returnCode.Box("returnCode", -1))
+	// Enum field (transportSize)
+	transportSize := CastDataTransportSize(m.TransportSize)
+	boxes = append(boxes, transportSize.Box("transportSize", -1))
+	// Implicit Field (dataLength)
+	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5cb6abc8
+	boxes = append(boxes, m.SzlId.Box("szlId", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SzlIndex", m.SzlIndex, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

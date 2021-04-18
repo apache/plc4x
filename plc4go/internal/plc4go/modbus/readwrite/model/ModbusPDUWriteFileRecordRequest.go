@@ -233,9 +233,28 @@ func (m ModbusPDUWriteFileRecordRequest) Box(name string, width int) utils.Ascii
 	if name != "" {
 		boxName += "/" + name
 	}
+	itemsArraySizeInBytes := func(items []*ModbusPDUWriteFileRecordRequestItem) uint32 {
+		var sizeInBytes uint32 = 0
+		for _, v := range items {
+			sizeInBytes += uint32(v.LengthInBytes())
+		}
+		return sizeInBytes
+	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

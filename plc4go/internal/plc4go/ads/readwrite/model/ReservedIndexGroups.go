@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -294,7 +295,7 @@ func (m ReservedIndexGroups) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	return nil
 }
 
-func (e ReservedIndexGroups) String() string {
+func (e ReservedIndexGroups) name() string {
 	switch e {
 	case ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE:
 		return "ADSIOFFS_DEVDATA_ADSSTATE"
@@ -358,4 +359,16 @@ func (e ReservedIndexGroups) String() string {
 		return "ADSIGRP_DEVICE_DATA"
 	}
 	return ""
+}
+
+func (e ReservedIndexGroups) String() string {
+	return e.name()
+}
+
+func (m ReservedIndexGroups) Box(s string, i int) utils.AsciiBox {
+	boxName := "ReservedIndexGroups"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint32(m), m.name()), -1)
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -132,7 +133,7 @@ func (m BACnetNotifyType) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	return nil
 }
 
-func (e BACnetNotifyType) String() string {
+func (e BACnetNotifyType) name() string {
 	switch e {
 	case BACnetNotifyType_ALARM:
 		return "ALARM"
@@ -142,4 +143,16 @@ func (e BACnetNotifyType) String() string {
 		return "ACK_NOTIFICATION"
 	}
 	return ""
+}
+
+func (e BACnetNotifyType) String() string {
+	return e.name()
+}
+
+func (m BACnetNotifyType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNotifyType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

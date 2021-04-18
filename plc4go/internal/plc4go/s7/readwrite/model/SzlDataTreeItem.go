@@ -281,10 +281,22 @@ func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, width-2))
-	boxes = append(boxes, utils.BoxAnything("Mlfb", m.Mlfb, width-2))
-	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, width-2))
-	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, -1))
+	// Array Field (mlfb)
+	if m.Mlfb != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Mlfb", m.Mlfb))
+	}
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

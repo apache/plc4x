@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -6407,7 +6408,7 @@ func (m KnxDatapointType) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	return nil
 }
 
-func (e KnxDatapointType) String() string {
+func (e KnxDatapointType) name() string {
 	switch e {
 	case KnxDatapointType_DPT_UNKNOWN:
 		return "DPT_UNKNOWN"
@@ -7107,4 +7108,16 @@ func (e KnxDatapointType) String() string {
 		return "DPT_Value_Temp"
 	}
 	return ""
+}
+
+func (e KnxDatapointType) String() string {
+	return e.name()
+}
+
+func (m KnxDatapointType) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxDatapointType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint32(m), m.name()), -1)
 }

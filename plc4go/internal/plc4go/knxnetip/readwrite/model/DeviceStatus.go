@@ -184,6 +184,11 @@ func (m DeviceStatus) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, width-2))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

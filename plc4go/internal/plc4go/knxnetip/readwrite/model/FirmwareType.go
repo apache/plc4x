@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -210,7 +211,7 @@ func (m FirmwareType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e FirmwareType) String() string {
+func (e FirmwareType) name() string {
 	switch e {
 	case FirmwareType_SYSTEM_1:
 		return "SYSTEM_1"
@@ -246,4 +247,16 @@ func (e FirmwareType) String() string {
 		return "SYSTEM_7_KNX_NET_IP"
 	}
 	return ""
+}
+
+func (e FirmwareType) String() string {
+	return e.name()
+}
+
+func (m FirmwareType) Box(s string, i int) utils.AsciiBox {
+	boxName := "FirmwareType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

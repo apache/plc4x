@@ -317,6 +317,11 @@ func (m *ServiceId) BoxParent(name string, width int, childBoxer func() []utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (serviceType) (Used as input to a switch field)
+	// serviceType := uint8(child.ServiceType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ServiceType", serviceType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

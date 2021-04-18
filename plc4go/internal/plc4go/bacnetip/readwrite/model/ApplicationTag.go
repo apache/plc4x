@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -192,7 +193,7 @@ func (m ApplicationTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	return nil
 }
 
-func (e ApplicationTag) String() string {
+func (e ApplicationTag) name() string {
 	switch e {
 	case ApplicationTag_NULL:
 		return "NULL"
@@ -222,4 +223,16 @@ func (e ApplicationTag) String() string {
 		return "BACNET_OBJECT_IDENTIFIER"
 	}
 	return ""
+}
+
+func (e ApplicationTag) String() string {
+	return e.name()
+}
+
+func (m ApplicationTag) Box(s string, i int) utils.AsciiBox {
+	boxName := "ApplicationTag"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", int8(m), m.name()), -1)
 }

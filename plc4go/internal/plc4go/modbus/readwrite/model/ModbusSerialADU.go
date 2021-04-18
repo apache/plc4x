@@ -264,9 +264,20 @@ func (m ModbusSerialADU) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TransactionId", m.TransactionId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransactionId", m.TransactionId, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint16(0x0000), -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@16944b58
+	boxes = append(boxes, m.Pdu.Box("pdu", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -245,7 +245,21 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Box(name string, width 
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
+		// Const Field (szlItemLength)
+		boxes = append(boxes, utils.BoxAnything("SzlItemLength", 28, -1))
+		// Implicit Field (szlItemCount)
+		szlItemCount := uint16(uint16(len(m.Items)))
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SzlItemCount", szlItemCount, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

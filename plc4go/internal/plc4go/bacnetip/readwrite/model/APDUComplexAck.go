@@ -384,12 +384,35 @@ func (m APDUComplexAck) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, width-2))
-		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, width-2))
-		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
-		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", m.ProposedWindowSize, width-2))
-		boxes = append(boxes, utils.BoxAnything("ServiceAck", m.ServiceAck, width-2))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SegmentedMessage", m.SegmentedMessage, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MoreFollows", m.MoreFollows, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
+		var sequenceNumber *uint8 = nil
+		if m.SequenceNumber != nil {
+			sequenceNumber = m.SequenceNumber
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("SequenceNumber", *(sequenceNumber), -1))
+		}
+		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
+		var proposedWindowSize *uint8 = nil
+		if m.ProposedWindowSize != nil {
+			proposedWindowSize = m.ProposedWindowSize
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", *(proposedWindowSize), -1))
+		}
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7f22687e
+		boxes = append(boxes, m.ServiceAck.Box("serviceAck", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -191,7 +191,11 @@ func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

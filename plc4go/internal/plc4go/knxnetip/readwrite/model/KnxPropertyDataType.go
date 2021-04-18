@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -1043,7 +1044,7 @@ func (m KnxPropertyDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 	return nil
 }
 
-func (e KnxPropertyDataType) String() string {
+func (e KnxPropertyDataType) name() string {
 	switch e {
 	case KnxPropertyDataType_PDT_UNKNOWN:
 		return "PDT_UNKNOWN"
@@ -1147,4 +1148,16 @@ func (e KnxPropertyDataType) String() string {
 		return "PDT_LONG"
 	}
 	return ""
+}
+
+func (e KnxPropertyDataType) String() string {
+	return e.name()
+}
+
+func (m KnxPropertyDataType) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxPropertyDataType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

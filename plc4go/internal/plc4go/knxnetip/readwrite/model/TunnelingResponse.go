@@ -180,7 +180,9 @@ func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4b5798c2
+		boxes = append(boxes, m.TunnelingResponseDataBlock.Box("tunnelingResponseDataBlock", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

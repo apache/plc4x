@@ -200,7 +200,11 @@ func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("UnknownData", m.UnknownData, width-2))
+		// Array Field (unknownData)
+		if m.UnknownData != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("UnknownData", m.UnknownData))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

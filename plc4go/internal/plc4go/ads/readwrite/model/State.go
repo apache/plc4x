@@ -392,14 +392,35 @@ func (m State) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("TimestampAdded", m.TimestampAdded, width-2))
-	boxes = append(boxes, utils.BoxAnything("HighPriorityCommand", m.HighPriorityCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("SystemCommand", m.SystemCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("AdsCommand", m.AdsCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, width-2))
-	boxes = append(boxes, utils.BoxAnything("Response", m.Response, width-2))
-	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, width-2))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TimestampAdded", m.TimestampAdded, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("HighPriorityCommand", m.HighPriorityCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SystemCommand", m.SystemCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AdsCommand", m.AdsCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Response", m.Response, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", int8(0x0), -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

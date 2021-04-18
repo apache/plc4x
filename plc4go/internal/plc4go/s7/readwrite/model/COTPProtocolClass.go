@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -144,7 +145,7 @@ func (m COTPProtocolClass) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return nil
 }
 
-func (e COTPProtocolClass) String() string {
+func (e COTPProtocolClass) name() string {
 	switch e {
 	case COTPProtocolClass_CLASS_0:
 		return "CLASS_0"
@@ -158,4 +159,16 @@ func (e COTPProtocolClass) String() string {
 		return "CLASS_4"
 	}
 	return ""
+}
+
+func (e COTPProtocolClass) String() string {
+	return e.name()
+}
+
+func (m COTPProtocolClass) Box(s string, i int) utils.AsciiBox {
+	boxName := "COTPProtocolClass"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", int8(m), m.name()), -1)
 }

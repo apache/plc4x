@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -193,7 +194,7 @@ func (m DataTransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return nil
 }
 
-func (e DataTransportSize) String() string {
+func (e DataTransportSize) name() string {
 	switch e {
 	case DataTransportSize_NULL:
 		return "NULL"
@@ -211,4 +212,16 @@ func (e DataTransportSize) String() string {
 		return "OCTET_STRING"
 	}
 	return ""
+}
+
+func (e DataTransportSize) String() string {
+	return e.name()
+}
+
+func (m DataTransportSize) Box(s string, i int) utils.AsciiBox {
+	boxName := "DataTransportSize"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

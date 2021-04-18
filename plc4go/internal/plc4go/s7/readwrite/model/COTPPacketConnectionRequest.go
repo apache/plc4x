@@ -239,9 +239,15 @@ func (m COTPPacketConnectionRequest) Box(name string, width int) utils.AsciiBox 
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
-		boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, width-2))
-		boxes = append(boxes, utils.BoxAnything("ProtocolClass", m.ProtocolClass, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SourceReference", m.SourceReference, -1))
+		// Enum field (protocolClass)
+		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
+		boxes = append(boxes, protocolClass.Box("protocolClass", -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

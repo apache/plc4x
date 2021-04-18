@@ -342,10 +342,26 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Box(name string, width int) utils.
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitLength", m.DeviceInstanceRangeLowLimitLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimit", m.DeviceInstanceRangeLowLimit, width-2))
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitLength", m.DeviceInstanceRangeHighLimitLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimit", m.DeviceInstanceRangeHighLimit, width-2))
+		// Const Field (deviceInstanceRangeLowLimitHeader)
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitHeader", 0x01, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitLength", m.DeviceInstanceRangeLowLimitLength, -1))
+		// Array Field (deviceInstanceRangeLowLimit)
+		if m.DeviceInstanceRangeLowLimit != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("DeviceInstanceRangeLowLimit", m.DeviceInstanceRangeLowLimit))
+		}
+		// Const Field (deviceInstanceRangeHighLimitHeader)
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitHeader", 0x03, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitLength", m.DeviceInstanceRangeHighLimitLength, -1))
+		// Array Field (deviceInstanceRangeHighLimit)
+		if m.DeviceInstanceRangeHighLimit != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("DeviceInstanceRangeHighLimit", m.DeviceInstanceRangeHighLimit))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

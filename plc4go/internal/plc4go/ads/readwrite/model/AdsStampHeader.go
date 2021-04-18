@@ -231,8 +231,20 @@ func (m AdsStampHeader) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
-	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, width-2))
-	boxes = append(boxes, utils.BoxAnything("AdsNotificationSamples", m.AdsNotificationSamples, width-2))
+	// Simple field (case simple)
+	// uint64 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, -1))
+	// Array Field (adsNotificationSamples)
+	if m.AdsNotificationSamples != nil {
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.AdsNotificationSamples {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("AdsNotificationSamples", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

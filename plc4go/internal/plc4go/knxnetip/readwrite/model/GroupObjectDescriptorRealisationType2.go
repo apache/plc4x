@@ -364,14 +364,32 @@ func (m GroupObjectDescriptorRealisationType2) Box(name string, width int) utils
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DataPointer", m.DataPointer, width-2))
-	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransmitEnable", m.TransmitEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("SegmentSelectorEnable", m.SegmentSelectorEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("WriteEnable", m.WriteEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("ReadEnable", m.ReadEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, width-2))
-	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
-	boxes = append(boxes, utils.BoxAnything("ValueType", m.ValueType, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataPointer", m.DataPointer, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransmitEnable", m.TransmitEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SegmentSelectorEnable", m.SegmentSelectorEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("WriteEnable", m.WriteEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReadEnable", m.ReadEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@278de2b2
+	boxes = append(boxes, m.Priority.Box("priority", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@1fc1c7e
+	boxes = append(boxes, m.ValueType.Box("valueType", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

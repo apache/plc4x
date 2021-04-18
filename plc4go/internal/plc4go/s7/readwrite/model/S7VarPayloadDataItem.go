@@ -279,8 +279,30 @@ func (m S7VarPayloadDataItem) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	// Enum field (returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
+	boxes = append(boxes, returnCode.Box("returnCode", -1))
+	// Enum field (transportSize)
+	transportSize := CastDataTransportSize(m.TransportSize)
+	boxes = append(boxes, transportSize.Box("transportSize", -1))
+	// Implicit Field (dataLength)
+	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
+		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
+	}))))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+	// Array Field (data)
+	if m.Data != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+	}
+	// Padding Field (padding)
+	lastItem := false // TODO: not sure if its worth to calculate here
+	_ = lastItem
+	_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
+	for ; _timesPadding > 0; _timesPadding-- {
+		_paddingValue := uint8(uint8(0))
+		boxes = append(boxes, utils.BoxAnything("padding", _paddingValue, -1))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

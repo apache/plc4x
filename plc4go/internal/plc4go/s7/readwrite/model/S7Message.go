@@ -473,9 +473,39 @@ func (m *S7Message) BoxParent(name string, width int, childBoxer func() []utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TpduReference", m.TpduReference, width-2))
+	// Const Field (protocolId)
+	boxes = append(boxes, utils.BoxAnything("ProtocolId", 0x32, -1))
+	// Discriminator Field (messageType) (Used as input to a switch field)
+	// messageType := uint8(child.MessageType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("MessageType", messageType, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint16(0x0000), -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TpduReference", m.TpduReference, -1))
+	// Implicit Field (parameterLength)
+	parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), func() uint16 { return uint16(m.Parameter.LengthInBytes()) }, func() uint16 { return uint16(uint16(0)) }))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ParameterLength", parameterLength, -1))
+	// Implicit Field (payloadLength)
+	payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint16(0)) }))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("PayloadLength", payloadLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
-	boxes = append(boxes, utils.BoxAnything("Parameter", m.Parameter, width-2))
-	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	// Optional Field (parameter) (Can be skipped, if the value is null)
+	var parameter *S7Parameter = nil
+	if m.Parameter != nil {
+		parameter = m.Parameter
+		boxes = append(boxes, parameter.Box("parameter", width-2))
+	}
+	// Optional Field (payload) (Can be skipped, if the value is null)
+	var payload *S7Payload = nil
+	if m.Payload != nil {
+		payload = m.Payload
+		boxes = append(boxes, payload.Box("payload", width-2))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

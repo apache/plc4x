@@ -321,12 +321,24 @@ func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, width-2))
-		boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
-		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
-		boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, width-2))
-		boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

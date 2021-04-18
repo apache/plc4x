@@ -50,6 +50,7 @@ package model
 
 import (
     "encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
     "io"
 )
@@ -199,7 +200,7 @@ func (m ${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e ${type.name}) String() string {
+func (e ${type.name}) name() string {
 	switch e {
 	<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 	case ${type.name}_${enumValue.name}:
@@ -207,5 +208,17 @@ func (e ${type.name}) String() string {
 	</#list>
 	}
 	return ""
+}
+
+func (e ${type.name}) String() string {
+	return e.name()
+}
+
+func (m ${type.name}) Box(s string, i int) utils.AsciiBox {
+	boxName := "${type.name}"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", ${baseType}(m), m.name()), -1)
 }
 </#outputformat>

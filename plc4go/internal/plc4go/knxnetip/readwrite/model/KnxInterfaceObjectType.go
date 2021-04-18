@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -483,7 +484,7 @@ func (m KnxInterfaceObjectType) MarshalXML(e *xml.Encoder, start xml.StartElemen
 	return nil
 }
 
-func (e KnxInterfaceObjectType) String() string {
+func (e KnxInterfaceObjectType) name() string {
 	switch e {
 	case KnxInterfaceObjectType_OT_UNKNOWN:
 		return "OT_UNKNOWN"
@@ -537,4 +538,16 @@ func (e KnxInterfaceObjectType) String() string {
 		return "OT_LTE_ADDRESS_ROUTING_TABLE"
 	}
 	return ""
+}
+
+func (e KnxInterfaceObjectType) String() string {
+	return e.name()
+}
+
+func (m KnxInterfaceObjectType) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxInterfaceObjectType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

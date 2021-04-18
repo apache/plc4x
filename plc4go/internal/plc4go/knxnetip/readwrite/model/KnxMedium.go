@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -150,7 +151,7 @@ func (m KnxMedium) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e KnxMedium) String() string {
+func (e KnxMedium) name() string {
 	switch e {
 	case KnxMedium_MEDIUM_RESERVED_1:
 		return "MEDIUM_RESERVED_1"
@@ -166,4 +167,16 @@ func (e KnxMedium) String() string {
 		return "MEDIUM_KNX_IP"
 	}
 	return ""
+}
+
+func (e KnxMedium) String() string {
+	return e.name()
+}
+
+func (m KnxMedium) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxMedium"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

@@ -510,6 +510,17 @@ func (m *BVLC) BoxParent(name string, width int, childBoxer func() []utils.Ascii
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Const Field (bacnetType)
+	boxes = append(boxes, utils.BoxAnything("BacnetType", 0x81, -1))
+	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
+	// bvlcFunction := uint8(child.BvlcFunction())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("BvlcFunction", bvlcFunction, -1))
+	// Implicit Field (bvlcLength)
+	bvlcLength := uint16(uint16(m.LengthInBytes()))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("BvlcLength", bvlcLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

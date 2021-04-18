@@ -233,7 +233,21 @@ func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ServiceIds", m.ServiceIds, width-2))
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, -1))
+	// Array Field (serviceIds)
+	if m.ServiceIds != nil {
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.ServiceIds {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("ServiceIds", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

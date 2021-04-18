@@ -225,8 +225,18 @@ func (m HPAIControlEndpoint) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
-	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, width-2))
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6eaa6b0c
+	boxes = append(boxes, m.HostProtocolCode.Box("hostProtocolCode", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4afcae7
+	boxes = append(boxes, m.IpAddress.Box("ipAddress", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

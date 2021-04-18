@@ -185,7 +185,9 @@ func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.As
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -126,7 +127,7 @@ func (m HostProtocolCode) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	return nil
 }
 
-func (e HostProtocolCode) String() string {
+func (e HostProtocolCode) name() string {
 	switch e {
 	case HostProtocolCode_IPV4_UDP:
 		return "IPV4_UDP"
@@ -134,4 +135,16 @@ func (e HostProtocolCode) String() string {
 		return "IPV4_TCP"
 	}
 	return ""
+}
+
+func (e HostProtocolCode) String() string {
+	return e.name()
+}
+
+func (m HostProtocolCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "HostProtocolCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -693,7 +694,7 @@ func (m AdsDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e AdsDataType) String() string {
+func (e AdsDataType) name() string {
 	switch e {
 	case AdsDataType_BOOL:
 		return "BOOL"
@@ -777,4 +778,16 @@ func (e AdsDataType) String() string {
 		return "DT"
 	}
 	return ""
+}
+
+func (e AdsDataType) String() string {
+	return e.name()
+}
+
+func (m AdsDataType) Box(s string, i int) utils.AsciiBox {
+	boxName := "AdsDataType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", int8(m), m.name()), -1)
 }

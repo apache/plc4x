@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -180,7 +181,7 @@ func (m BACnetNetworkType) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 	return nil
 }
 
-func (e BACnetNetworkType) String() string {
+func (e BACnetNetworkType) name() string {
 	switch e {
 	case BACnetNetworkType_ETHERNET:
 		return "ETHERNET"
@@ -206,4 +207,16 @@ func (e BACnetNetworkType) String() string {
 		return "SERIAL"
 	}
 	return ""
+}
+
+func (e BACnetNetworkType) String() string {
+	return e.name()
+}
+
+func (m BACnetNetworkType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNetworkType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

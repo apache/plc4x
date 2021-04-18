@@ -246,9 +246,17 @@ func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Ip", m.Ip, width-2))
-		boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
-		boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
+		// Array Field (ip)
+		if m.Ip != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Ip", m.Ip))
+		}
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Port", m.Port, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@56fda064
+		boxes = append(boxes, m.Npdu.Box("npdu", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

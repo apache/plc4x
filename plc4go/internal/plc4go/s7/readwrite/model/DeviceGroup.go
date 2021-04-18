@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -132,7 +133,7 @@ func (m DeviceGroup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e DeviceGroup) String() string {
+func (e DeviceGroup) name() string {
 	switch e {
 	case DeviceGroup_PG_OR_PC:
 		return "PG_OR_PC"
@@ -142,4 +143,16 @@ func (e DeviceGroup) String() string {
 		return "OTHERS"
 	}
 	return ""
+}
+
+func (e DeviceGroup) String() string {
+	return e.name()
+}
+
+func (m DeviceGroup) Box(s string, i int) utils.AsciiBox {
+	boxName := "DeviceGroup"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", int8(m), m.name()), -1)
 }

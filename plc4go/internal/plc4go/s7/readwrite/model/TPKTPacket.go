@@ -225,6 +225,17 @@ func (m TPKTPacket) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	// Const Field (protocolId)
+	boxes = append(boxes, utils.BoxAnything("ProtocolId", 0x03, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+	// Implicit Field (len)
+	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Len", len, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@1e3dc24f
+	boxes = append(boxes, m.Payload.Box("payload", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

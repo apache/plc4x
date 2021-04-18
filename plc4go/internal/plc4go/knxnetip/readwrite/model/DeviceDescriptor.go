@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -539,7 +540,7 @@ func (m DeviceDescriptor) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	return nil
 }
 
-func (e DeviceDescriptor) String() string {
+func (e DeviceDescriptor) name() string {
 	switch e {
 	case DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0:
 		return "TP1_BCU_1_SYSTEM_1_0"
@@ -601,4 +602,16 @@ func (e DeviceDescriptor) String() string {
 		return "KNX_IP_SYSTEM7"
 	}
 	return ""
+}
+
+func (e DeviceDescriptor) String() string {
+	return e.name()
+}
+
+func (m DeviceDescriptor) Box(s string, i int) utils.AsciiBox {
+	boxName := "DeviceDescriptor"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

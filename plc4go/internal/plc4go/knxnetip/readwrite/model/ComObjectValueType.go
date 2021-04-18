@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -273,7 +274,7 @@ func (m ComObjectValueType) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 	return nil
 }
 
-func (e ComObjectValueType) String() string {
+func (e ComObjectValueType) name() string {
 	switch e {
 	case ComObjectValueType_BIT1:
 		return "BIT1"
@@ -307,4 +308,16 @@ func (e ComObjectValueType) String() string {
 		return "BYTE14"
 	}
 	return ""
+}
+
+func (e ComObjectValueType) String() string {
+	return e.name()
+}
+
+func (m ComObjectValueType) Box(s string, i int) utils.AsciiBox {
+	boxName := "ComObjectValueType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

@@ -337,11 +337,27 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Box(name string, widt
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ReadStartingAddress", m.ReadStartingAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("ReadQuantity", m.ReadQuantity, width-2))
-		boxes = append(boxes, utils.BoxAnything("WriteStartingAddress", m.WriteStartingAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("WriteQuantity", m.WriteQuantity, width-2))
-		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReadStartingAddress", m.ReadStartingAddress, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReadQuantity", m.ReadQuantity, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteStartingAddress", m.WriteStartingAddress, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteQuantity", m.WriteQuantity, -1))
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(len(m.Value)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Array Field (value)
+		if m.Value != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Value", m.Value))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

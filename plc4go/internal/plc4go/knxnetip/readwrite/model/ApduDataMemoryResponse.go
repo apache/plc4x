@@ -236,8 +236,18 @@ func (m ApduDataMemoryResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		// Implicit Field (numBytes)
+		numBytes := uint8(uint8(len(m.Data)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumBytes", numBytes, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

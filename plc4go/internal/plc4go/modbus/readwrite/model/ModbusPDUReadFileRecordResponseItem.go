@@ -222,7 +222,17 @@ func (m ModbusPDUReadFileRecordResponseItem) Box(name string, width int) utils.A
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	// Implicit Field (dataLength)
+	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, -1))
+	// Array Field (data)
+	if m.Data != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

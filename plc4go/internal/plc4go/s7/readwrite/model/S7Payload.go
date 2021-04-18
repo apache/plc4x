@@ -260,6 +260,7 @@ func (m *S7Payload) BoxParent(name string, width int, childBoxer func() []utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

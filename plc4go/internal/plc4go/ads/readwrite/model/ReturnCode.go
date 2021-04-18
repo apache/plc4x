@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -846,7 +847,7 @@ func (m ReturnCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e ReturnCode) String() string {
+func (e ReturnCode) name() string {
 	switch e {
 	case ReturnCode_OK:
 		return "OK"
@@ -1094,4 +1095,16 @@ func (e ReturnCode) String() string {
 		return "ADSERR_CLIENT_SYNCRESINVALID"
 	}
 	return ""
+}
+
+func (e ReturnCode) String() string {
+	return e.name()
+}
+
+func (m ReturnCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "ReturnCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint32(m), m.name()), -1)
 }

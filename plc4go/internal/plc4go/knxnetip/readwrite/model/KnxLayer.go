@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -132,7 +133,7 @@ func (m KnxLayer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e KnxLayer) String() string {
+func (e KnxLayer) name() string {
 	switch e {
 	case KnxLayer_TUNNEL_LINK_LAYER:
 		return "TUNNEL_LINK_LAYER"
@@ -142,4 +143,16 @@ func (e KnxLayer) String() string {
 		return "TUNNEL_BUSMONITOR"
 	}
 	return ""
+}
+
+func (e KnxLayer) String() string {
+	return e.name()
+}
+
+func (m KnxLayer) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxLayer"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

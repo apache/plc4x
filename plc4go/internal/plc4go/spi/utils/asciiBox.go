@@ -140,7 +140,7 @@ func AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
 	actualWidth := desiredWidth
 	for _, box := range boxes {
 		boxWidth := box.Width()
-		if boxWidth > desiredWidth {
+		if boxWidth > actualWidth {
 			if DebugAsciiBox {
 				log.Debug().Msgf("Overflow by %d chars", boxWidth-desiredWidth)
 			}

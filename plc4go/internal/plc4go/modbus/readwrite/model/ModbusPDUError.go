@@ -189,7 +189,9 @@ func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ExceptionCode", m.ExceptionCode, width-2))
+		// Enum field (exceptionCode)
+		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
+		boxes = append(boxes, exceptionCode.Box("exceptionCode", -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

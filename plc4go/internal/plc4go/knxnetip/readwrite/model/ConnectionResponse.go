@@ -285,10 +285,24 @@ func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
-		boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
-		boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
-		boxes = append(boxes, utils.BoxAnything("ConnectionResponseDataBlock", m.ConnectionResponseDataBlock, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5efe5b25
+		boxes = append(boxes, m.Status.Box("status", width-2))
+		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
+		var hpaiDataEndpoint *HPAIDataEndpoint = nil
+		if m.HpaiDataEndpoint != nil {
+			hpaiDataEndpoint = m.HpaiDataEndpoint
+			boxes = append(boxes, hpaiDataEndpoint.Box("hpaiDataEndpoint", width-2))
+		}
+		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
+		var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
+		if m.ConnectionResponseDataBlock != nil {
+			connectionResponseDataBlock = m.ConnectionResponseDataBlock
+			boxes = append(boxes, connectionResponseDataBlock.Box("connectionResponseDataBlock", width-2))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

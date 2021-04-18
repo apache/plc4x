@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -174,7 +175,7 @@ func (m ModbusErrorCode) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	return nil
 }
 
-func (e ModbusErrorCode) String() string {
+func (e ModbusErrorCode) name() string {
 	switch e {
 	case ModbusErrorCode_ILLEGAL_FUNCTION:
 		return "ILLEGAL_FUNCTION"
@@ -198,4 +199,16 @@ func (e ModbusErrorCode) String() string {
 		return "MEMORY_PARITY_ERROR"
 	}
 	return ""
+}
+
+func (e ModbusErrorCode) String() string {
+	return e.name()
+}
+
+func (m ModbusErrorCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "ModbusErrorCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

@@ -48,8 +48,8 @@ const pipeWidth = 1
 var DebugHex bool
 
 // BoxedDump dumps a 56+2 char wide hex string
-func BoxedDump(name string, data []byte) string {
-	return string(BoxString(name, DumpFixedWidth(data, DefaultWidth), DefaultWidth+boxLineOverheat))
+func BoxedDump(name string, data []byte) AsciiBox {
+	return BoxString(name, DumpFixedWidth(data, DefaultWidth), DefaultWidth+boxLineOverheat)
 }
 
 // Dump dumps a 56 char wide hex string
@@ -58,14 +58,29 @@ func Dump(data []byte) string {
 }
 
 // BoxedDumpFixedWidth dumps a hex into a beautiful box
-func BoxedDumpFixedWidth(name string, data []byte, charWidth int) string {
+func BoxedDumpFixedWidth(name string, data []byte, charWidth int) AsciiBox {
 	// we substract the 2 lines at the side
 	dumpWidth := charWidth - 1 - 1
-	return string(BoxString(name, DumpFixedWidth(data, dumpWidth), charWidth))
+	return BoxString(name, DumpFixedWidth(data, dumpWidth), charWidth)
+}
+
+// BoxedDumpAnything dumps anything as hex into a beautiful box
+func BoxedDumpAnything(name string, anything interface{}) AsciiBox {
+	return BoxString(name, DumpAnything(anything), 0)
+}
+
+// BoxedDumpAnythingFixedWidth dumps anything as hex into a beautiful box with a given width
+func BoxedDumpAnythingFixedWidth(name string, anything interface{}, charWidth int) AsciiBox {
+	return BoxString(name, DumpAnythingFixedWidth(anything, charWidth), 0)
 }
 
 // DumpAnything dumps anything as hex
 func DumpAnything(anything interface{}) string {
+	return DumpAnythingFixedWidth(anything, DefaultWidth)
+}
+
+// DumpAnythingFixedWidth dumps anything as hex
+func DumpAnythingFixedWidth(anything interface{}, charWidth int) string {
 	convertedBytes, err := toBytes(anything)
 	if err != nil {
 		if DebugHex {
@@ -73,7 +88,7 @@ func DumpAnything(anything interface{}) string {
 		}
 		return "<undumpable>"
 	}
-	return Dump(convertedBytes)
+	return DumpFixedWidth(convertedBytes, charWidth)
 }
 
 // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth

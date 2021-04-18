@@ -206,7 +206,12 @@ func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@1f408ab6
+		boxes = append(boxes, m.KnxLayer.Box("knxLayer", width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

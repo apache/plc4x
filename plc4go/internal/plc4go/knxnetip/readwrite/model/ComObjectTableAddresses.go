@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -17183,7 +17184,7 @@ func (m ComObjectTableAddresses) MarshalXML(e *xml.Encoder, start xml.StartEleme
 	return nil
 }
 
-func (e ComObjectTableAddresses) String() string {
+func (e ComObjectTableAddresses) name() string {
 	switch e {
 	case ComObjectTableAddresses_DEV0001914201:
 		return "DEV0001914201"
@@ -20599,4 +20600,16 @@ func (e ComObjectTableAddresses) String() string {
 		return "DEV0004109C13"
 	}
 	return ""
+}
+
+func (e ComObjectTableAddresses) String() string {
+	return e.name()
+}
+
+func (m ComObjectTableAddresses) Box(s string, i int) utils.AsciiBox {
+	boxName := "ComObjectTableAddresses"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

@@ -388,15 +388,35 @@ func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ManufacturerId", m.ManufacturerId, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceType", m.DeviceType, width-2))
-	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
-	boxes = append(boxes, utils.BoxAnything("ReadSupported", m.ReadSupported, width-2))
-	boxes = append(boxes, utils.BoxAnything("WriteSupported", m.WriteSupported, width-2))
-	boxes = append(boxes, utils.BoxAnything("LogicalTagBase", m.LogicalTagBase, width-2))
-	boxes = append(boxes, utils.BoxAnything("ChannelInfo1", m.ChannelInfo1, width-2))
-	boxes = append(boxes, utils.BoxAnything("ChannelInfo2", m.ChannelInfo2, width-2))
-	boxes = append(boxes, utils.BoxAnything("ChannelInfo3", m.ChannelInfo3, width-2))
-	boxes = append(boxes, utils.BoxAnything("ChannelInfo4", m.ChannelInfo4, width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ManufacturerId", m.ManufacturerId, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DeviceType", m.DeviceType, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Version", m.Version, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReadSupported", m.ReadSupported, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("WriteSupported", m.WriteSupported, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("LogicalTagBase", m.LogicalTagBase, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4f402027
+	boxes = append(boxes, m.ChannelInfo1.Box("channelInfo1", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@22aee519
+	boxes = append(boxes, m.ChannelInfo2.Box("channelInfo2", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7c226095
+	boxes = append(boxes, m.ChannelInfo3.Box("channelInfo3", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7ea07516
+	boxes = append(boxes, m.ChannelInfo4.Box("channelInfo4", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

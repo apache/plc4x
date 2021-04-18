@@ -265,10 +265,18 @@ func (m ApduDataExtPropertyValueRead) Box(name string, width int) utils.AsciiBox
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
-		boxes = append(boxes, utils.BoxAnything("Count", m.Count, width-2))
-		boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Count", m.Count, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Index", m.Index, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

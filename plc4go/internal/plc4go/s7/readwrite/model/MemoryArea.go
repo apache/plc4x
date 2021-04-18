@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -213,7 +214,7 @@ func (m MemoryArea) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e MemoryArea) String() string {
+func (e MemoryArea) name() string {
 	switch e {
 	case MemoryArea_COUNTERS:
 		return "COUNTERS"
@@ -235,4 +236,16 @@ func (e MemoryArea) String() string {
 		return "LOCAL_DATA"
 	}
 	return ""
+}
+
+func (e MemoryArea) String() string {
+	return e.name()
+}
+
+func (m MemoryArea) Box(s string, i int) utils.AsciiBox {
+	boxName := "MemoryArea"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

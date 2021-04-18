@@ -306,6 +306,15 @@ func (m *COTPParameter) BoxParent(name string, width int, childBoxer func() []ut
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (parameterType) (Used as input to a switch field)
+	// parameterType := uint8(child.ParameterType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ParameterType", parameterType, -1))
+	// Implicit Field (parameterLength)
+	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ParameterLength", parameterLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

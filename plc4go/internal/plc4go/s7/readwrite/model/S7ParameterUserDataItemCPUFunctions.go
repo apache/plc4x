@@ -446,14 +446,46 @@ func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.A
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Method", m.Method, width-2))
-		boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, width-2))
-		boxes = append(boxes, utils.BoxAnything("CpuFunctionGroup", m.CpuFunctionGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("CpuSubfunction", m.CpuSubfunction, width-2))
-		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("DataUnitReferenceNumber", m.DataUnitReferenceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("LastDataUnit", m.LastDataUnit, width-2))
-		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+		// Implicit Field (itemLength)
+		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemLength", itemLength, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Method", m.Method, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CpuFunctionType", m.CpuFunctionType, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CpuFunctionGroup", m.CpuFunctionGroup, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CpuSubfunction", m.CpuSubfunction, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, -1))
+		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
+		var dataUnitReferenceNumber *uint8 = nil
+		if m.DataUnitReferenceNumber != nil {
+			dataUnitReferenceNumber = m.DataUnitReferenceNumber
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("DataUnitReferenceNumber", *(dataUnitReferenceNumber), -1))
+		}
+		// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
+		var lastDataUnit *uint8 = nil
+		if m.LastDataUnit != nil {
+			lastDataUnit = m.LastDataUnit
+			// uint8 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("LastDataUnit", *(lastDataUnit), -1))
+		}
+		// Optional Field (errorCode) (Can be skipped, if the value is null)
+		var errorCode *uint16 = nil
+		if m.ErrorCode != nil {
+			errorCode = m.ErrorCode
+			// uint16 can be boxed as anything with the least amount of space
+			boxes = append(boxes, utils.BoxAnything("ErrorCode", *(errorCode), -1))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

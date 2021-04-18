@@ -1362,17 +1362,173 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 	if name != "" {
 		boxName += "/" + name
 	}
+	<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
+	<#if arraySizeInBytesHelpers?has_content>
+		<#list arraySizeInBytesHelpers?keys as key>
+			<#assign typeName=arraySizeInBytesHelpers[key]>
+			${key}ArraySizeInBytes := func(items []*${typeName}) uint32 {
+			var sizeInBytes uint32 = 0
+			for _, v := range items {
+			sizeInBytes += uint32(v.LengthInBytes())
+			}
+			return sizeInBytes
+			}
+		</#list>
+	</#if>
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 		childBoxer := func() []utils.AsciiBox {
 	</#if>
 	boxes := make([]utils.AsciiBox, 0)
 	<#if type.fields?has_content>
 		<#list type.fields as field>
-			<#if field.typeName == "switch">
+			<#switch field.typeName>
+				<#case "array">
+					<#assign arrayField = field>
+					<#assign simpleTypeReference = arrayField.type>
+	// Array Field (${arrayField.name})
+	if m.${arrayField.name?cap_first} != nil {
+					<#if helper.isSimpleTypeReference(arrayField.type)>
+						<#assign simpleTypeReference = arrayField.type>
+		<#--TODO: gob sends wrong data here-->
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("${arrayField.name?cap_first}", m.${arrayField.name?cap_first}))
+					<#else>
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.${arrayField.name?cap_first} {
+						<#assign complexTypeReference = arrayField.type>
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("${arrayField.name?cap_first}", utils.AlignBoxes(arrayBoxes, width-4), 0))
+					</#if>
+	}
+					<#break>
+				<#case "checksum">
+					<#assign checksumField = field>
+					<#assign simpleTypeReference = checksumField.type>
+	// Checksum Field (checksum) (Calculated)
+	_checksum := ${helper.getLanguageTypeNameForField(field)}(${helper.getNullValueForTypeReference(checksumField.type)})
+	// Create an array of all the bytes written in this message element so far.
+	checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
+	_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
+	boxes = append(boxes, utils.BoxAnything("${constField.name?cap_first}", _checksum, -1))
+					<#break>
+				<#case "const">
+					<#assign constField = field>
+					<#assign simpleTypeReference = constField.type>
+	// Const Field (${constField.name})
+	boxes = append(boxes, utils.BoxAnything("${constField.name?cap_first}", ${constField.referenceValue}, -1))
+					<#break>
+				<#case "discriminator">
+					<#assign discriminatorField = field>
+					<#assign simpleTypeReference = discriminatorField.type>
+	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+	// ${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
+					<#if helper.isEnumField(field)>
+	// TODO: implement boxing on enum
+	//_${discriminatorField.name}Err := ${discriminatorField.name}.Box(discriminatorField.name, -1)
+					<#else>
+	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", ${discriminatorField.name}, -1))
+					</#if>
+					<#break>
+				<#case "enum">
+				<#assign enumField = field>
+				<#if enumField.fieldName?has_content>
+					<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
+	// Enum field (${enumField.name}) with value
+	boxes = append(boxes, utils.BoxAnything("${enumField.name?cap_first}_"+m.${enumField.name?cap_first}.String(), ${enumValueFieldAccessor}, -1))
+				<#else>
+	// Enum field (${enumField.name})
+	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
+	boxes = append(boxes, ${enumField.name}.Box("${enumField.name}", -1))
+				</#if>
+				<#break>
+				<#case "implicit">
+					<#assign implicitField = field>
+					<#assign simpleTypeReference = implicitField.type>
+	// Implicit Field (${implicitField.name})
+	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
+	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("${implicitField.name?cap_first}", ${implicitField.name}, -1))
+					<#break>
+				<#case "manualArray">
+					<#assign manualArrayField = field>
+					// Manual Array Field (${manualArrayField.name})
+	if m.${manualArrayField.name?cap_first} != nil {
+		for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
+			// TODO ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
+		}
+	}
+					<#break>
+				<#case "manual">
+					<#assign manualField = field>
+	// Manual Field (${manualField.name})
+	// TODO: ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)}
+					<#break>
+				<#case "optional">
+					<#assign optionalField = field>
+	// Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
+	var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
+	if m.${optionalField.name?cap_first} != nil {
+					<#if helper.isSimpleTypeReference(optionalField.type)>
+						<#assign simpleTypeReference = optionalField.type>
+		${optionalField.name} = m.${optionalField.name?cap_first}
+		// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("${optionalField.name?cap_first}", *(${optionalField.name}), -1))
+					<#else>
+					<#assign complexTypeReference = optionalField.type>
+		${optionalField.name} = m.${optionalField.name?cap_first}
+		boxes = append(boxes, ${optionalField.name}.Box("${optionalField.name}", width-2))
+					</#if>
+	}
+					<#break>
+				<#case "padding">
+					<#assign paddingField = field>
+					<#assign simpleTypeReference = paddingField.type>
+	// Padding Field (padding)
+	lastItem:=false // TODO: not sure if its worth to calculate here
+	_=lastItem
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
+	for ;_timesPadding > 0; _timesPadding-- {
+		_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
+		boxes = append(boxes, utils.BoxAnything("padding", _paddingValue, -1))
+	}
+					<#break>
+				<#case "reserved">
+				<#assign reservedField = field>
+				<#assign simpleTypeReference = reservedField.type>
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", ${helper.getReservedValue(field)}, -1))
+				<#break>
+				<#case "simple">
+					<#assign simpleField = field>
+	// Simple field (case simple)
+						<#if helper.isSimpleTypeReference(simpleField.type)>
+							<#assign simpleTypeReference = simpleField.type>
+	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, -1))
+						<#else>
+							<#assign complexTypeReference = simpleField.type>
+	// TODO  waaaa ${complexTypeReference}
+	boxes = append(boxes, m.${simpleField.name?cap_first}.Box("${simpleField.name}", width-2))
+						</#if>
+					<#break>
+				<#case "switch">
+					<#assign switchField = field>
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
-			<#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
+					<#break>
+				<#default>
+					<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
+	// TODO: default case for "${field.name}" with type name "${field.typeName}" should not occur anymore
 	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
-			</#if>
+					<#else>
+	// TODO: field "${field.name}" with type name "${field.typeName}" unmapped
+					</#if>
+					<#break>
+			</#switch>
 		</#list>
 	</#if>
 	<#if helper.isDiscriminatedChildTypeDefinition()>

@@ -235,8 +235,15 @@ func (m APDUReject) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
-		boxes = append(boxes, utils.BoxAnything("RejectReason", m.RejectReason, width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("RejectReason", m.RejectReason, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

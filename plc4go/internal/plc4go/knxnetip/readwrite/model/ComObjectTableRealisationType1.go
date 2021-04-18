@@ -258,9 +258,21 @@ func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiB
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
-		boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))
-		boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, -1))
+		// Array Field (comObjectDescriptors)
+		if m.ComObjectDescriptors != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ComObjectDescriptors {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ComObjectDescriptors", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -274,9 +274,23 @@ func (m ModbusPDUWriteFileRecordResponseItem) Box(name string, width int) utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
-	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("RecordData", m.RecordData, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, -1))
+	// Implicit Field (recordLength)
+	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("RecordLength", recordLength, -1))
+	// Array Field (recordData)
+	if m.RecordData != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("RecordData", m.RecordData))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -200,7 +200,13 @@ func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.Asci
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
+		// Implicit Field (itemLength)
+		itemLength := uint8(m.Address.LengthInBytes())
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemLength", itemLength, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@129c322f
+		boxes = append(boxes, m.Address.Box("address", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

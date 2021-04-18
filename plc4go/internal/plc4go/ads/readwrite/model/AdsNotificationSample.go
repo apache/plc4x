@@ -229,8 +229,16 @@ func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
-	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, -1))
+	// Array Field (data)
+	if m.Data != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

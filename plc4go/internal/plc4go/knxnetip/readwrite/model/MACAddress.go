@@ -177,6 +177,10 @@ func (m MACAddress) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
+	// Array Field (addr)
+	if m.Addr != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("Addr", m.Addr))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

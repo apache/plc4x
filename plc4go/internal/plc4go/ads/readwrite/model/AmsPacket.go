@@ -381,14 +381,36 @@ func (m AmsPacket) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TargetAmsNetId", m.TargetAmsNetId, width-2))
-	boxes = append(boxes, utils.BoxAnything("TargetAmsPort", m.TargetAmsPort, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceAmsNetId", m.SourceAmsNetId, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceAmsPort", m.SourceAmsPort, width-2))
-	boxes = append(boxes, utils.BoxAnything("CommandId", m.CommandId, width-2))
-	boxes = append(boxes, utils.BoxAnything("State", m.State, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
-	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5eabff6b
+	boxes = append(boxes, m.TargetAmsNetId.Box("targetAmsNetId", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TargetAmsPort", m.TargetAmsPort, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5b000fe6
+	boxes = append(boxes, m.SourceAmsNetId.Box("sourceAmsNetId", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SourceAmsPort", m.SourceAmsPort, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4751e8b9
+	boxes = append(boxes, m.CommandId.Box("commandId", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7af443a3
+	boxes = append(boxes, m.State.Box("state", width-2))
+	// Implicit Field (length)
+	length := uint32(m.Data.LengthInBytes())
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@68ddd415
+	boxes = append(boxes, m.Data.Box("data", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -413,14 +413,40 @@ func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxMedium", m.KnxMedium, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceStatus", m.DeviceStatus, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("ProjectInstallationIdentifier", m.ProjectInstallationIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMulticastAddress", m.KnxNetIpDeviceMulticastAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMacAddress", m.KnxNetIpDeviceMacAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceFriendlyName", m.DeviceFriendlyName, width-2))
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5597ca3
+	boxes = append(boxes, m.KnxMedium.Box("knxMedium", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@31b741e2
+	boxes = append(boxes, m.DeviceStatus.Box("deviceStatus", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@573a078
+	boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@28f05b0c
+	boxes = append(boxes, m.ProjectInstallationIdentifier.Box("projectInstallationIdentifier", width-2))
+	// Array Field (knxNetIpDeviceSerialNumber)
+	if m.KnxNetIpDeviceSerialNumber != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber))
+	}
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@660296d5
+	boxes = append(boxes, m.KnxNetIpDeviceMulticastAddress.Box("knxNetIpDeviceMulticastAddress", width-2))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6d3163a6
+	boxes = append(boxes, m.KnxNetIpDeviceMacAddress.Box("knxNetIpDeviceMacAddress", width-2))
+	// Array Field (deviceFriendlyName)
+	if m.DeviceFriendlyName != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("DeviceFriendlyName", m.DeviceFriendlyName))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

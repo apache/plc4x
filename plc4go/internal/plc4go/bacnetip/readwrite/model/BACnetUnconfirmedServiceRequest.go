@@ -443,6 +443,11 @@ func (m *BACnetUnconfirmedServiceRequest) BoxParent(name string, width int, chil
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	// serviceChoice := uint8(child.ServiceChoice())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ServiceChoice", serviceChoice, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

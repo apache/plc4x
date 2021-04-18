@@ -288,11 +288,23 @@ func (m AmsNetId) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Octet1", m.Octet1, width-2))
-	boxes = append(boxes, utils.BoxAnything("Octet2", m.Octet2, width-2))
-	boxes = append(boxes, utils.BoxAnything("Octet3", m.Octet3, width-2))
-	boxes = append(boxes, utils.BoxAnything("Octet4", m.Octet4, width-2))
-	boxes = append(boxes, utils.BoxAnything("Octet5", m.Octet5, width-2))
-	boxes = append(boxes, utils.BoxAnything("Octet6", m.Octet6, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet1", m.Octet1, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet2", m.Octet2, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet3", m.Octet3, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet4", m.Octet4, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet5", m.Octet5, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Octet6", m.Octet6, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

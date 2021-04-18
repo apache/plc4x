@@ -262,9 +262,21 @@ func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-		boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, width-2))
-		boxes = append(boxes, utils.BoxAnything("AdsStampHeaders", m.AdsStampHeaders, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, -1))
+		// Array Field (adsStampHeaders)
+		if m.AdsStampHeaders != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.AdsStampHeaders {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("AdsStampHeaders", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

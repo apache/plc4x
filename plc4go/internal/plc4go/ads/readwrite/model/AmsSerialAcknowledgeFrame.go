@@ -288,11 +288,23 @@ func (m AmsSerialAcknowledgeFrame) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

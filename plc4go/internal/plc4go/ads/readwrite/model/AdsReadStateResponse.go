@@ -240,9 +240,15 @@ func (m AdsReadStateResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-		boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
-		boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@3becc950
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

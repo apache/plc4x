@@ -315,11 +315,23 @@ func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-		boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, width-2))
-		boxes = append(boxes, utils.BoxAnything("MinorVersion", m.MinorVersion, width-2))
-		boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
-		boxes = append(boxes, utils.BoxAnything("Device", m.Device, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@1f87607c
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MajorVersion", m.MajorVersion, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MinorVersion", m.MinorVersion, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Version", m.Version, -1))
+		// Array Field (device)
+		if m.Device != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Device", m.Device))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

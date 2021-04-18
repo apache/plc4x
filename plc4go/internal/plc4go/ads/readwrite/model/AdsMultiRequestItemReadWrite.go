@@ -265,10 +265,18 @@ func (m AdsMultiRequestItemReadWrite) Box(name string, width int) utils.AsciiBox
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
-		boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))
-		boxes = append(boxes, utils.BoxAnything("ItemReadLength", m.ItemReadLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemReadLength", m.ItemReadLength, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

@@ -419,12 +419,34 @@ func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.As
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
-		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
-		boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
-		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
+		// Const Field (objectIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", 0xC4, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, -1))
+		// Const Field (maximumApduLengthAcceptedHeader)
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedHeader", 0x04, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, -1))
+		// Array Field (maximumApduLengthAccepted)
+		if m.MaximumApduLengthAccepted != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted))
+		}
+		// Const Field (segmentationSupportedHeader)
+		boxes = append(boxes, utils.BoxAnything("SegmentationSupportedHeader", 0x91, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, -1))
+		// Const Field (vendorIdHeader)
+		boxes = append(boxes, utils.BoxAnything("VendorIdHeader", 0x21, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

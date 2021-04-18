@@ -499,6 +499,11 @@ func (m *ApduData) BoxParent(name string, width int, childBoxer func() []utils.A
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (apciType) (Used as input to a switch field)
+	// apciType := uint8(child.ApciType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ApciType", apciType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -180,7 +180,9 @@ func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiB
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@740c4868
+		boxes = append(boxes, m.ComObjectDescriptors.Box("comObjectDescriptors", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

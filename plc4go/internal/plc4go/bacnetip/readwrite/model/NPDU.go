@@ -703,20 +703,86 @@ func (m NPDU) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("MessageTypeFieldPresent", m.MessageTypeFieldPresent, width-2))
-	boxes = append(boxes, utils.BoxAnything("DestinationSpecified", m.DestinationSpecified, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceSpecified", m.SourceSpecified, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExpectingReply", m.ExpectingReply, width-2))
-	boxes = append(boxes, utils.BoxAnything("NetworkPriority", m.NetworkPriority, width-2))
-	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("DestinationLength", m.DestinationLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceNetworkAddress", m.SourceNetworkAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceLength", m.SourceLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
-	boxes = append(boxes, utils.BoxAnything("Nlm", m.Nlm, width-2))
-	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ProtocolVersionNumber", m.ProtocolVersionNumber, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MessageTypeFieldPresent", m.MessageTypeFieldPresent, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DestinationSpecified", m.DestinationSpecified, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SourceSpecified", m.SourceSpecified, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ExpectingReply", m.ExpectingReply, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NetworkPriority", m.NetworkPriority, -1))
+	// Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
+	var destinationNetworkAddress *uint16 = nil
+	if m.DestinationNetworkAddress != nil {
+		destinationNetworkAddress = m.DestinationNetworkAddress
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", *(destinationNetworkAddress), -1))
+	}
+	// Optional Field (destinationLength) (Can be skipped, if the value is null)
+	var destinationLength *uint8 = nil
+	if m.DestinationLength != nil {
+		destinationLength = m.DestinationLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DestinationLength", *(destinationLength), -1))
+	}
+	// Array Field (destinationAddress)
+	if m.DestinationAddress != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("DestinationAddress", m.DestinationAddress))
+	}
+	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
+	var sourceNetworkAddress *uint16 = nil
+	if m.SourceNetworkAddress != nil {
+		sourceNetworkAddress = m.SourceNetworkAddress
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SourceNetworkAddress", *(sourceNetworkAddress), -1))
+	}
+	// Optional Field (sourceLength) (Can be skipped, if the value is null)
+	var sourceLength *uint8 = nil
+	if m.SourceLength != nil {
+		sourceLength = m.SourceLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SourceLength", *(sourceLength), -1))
+	}
+	// Array Field (sourceAddress)
+	if m.SourceAddress != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("SourceAddress", m.SourceAddress))
+	}
+	// Optional Field (hopCount) (Can be skipped, if the value is null)
+	var hopCount *uint8 = nil
+	if m.HopCount != nil {
+		hopCount = m.HopCount
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("HopCount", *(hopCount), -1))
+	}
+	// Optional Field (nlm) (Can be skipped, if the value is null)
+	var nlm *NLM = nil
+	if m.Nlm != nil {
+		nlm = m.Nlm
+		boxes = append(boxes, nlm.Box("nlm", width-2))
+	}
+	// Optional Field (apdu) (Can be skipped, if the value is null)
+	var apdu *APDU = nil
+	if m.Apdu != nil {
+		apdu = m.Apdu
+		boxes = append(boxes, apdu.Box("apdu", width-2))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

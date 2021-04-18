@@ -234,9 +234,15 @@ func (m SearchResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
-		boxes = append(boxes, utils.BoxAnything("DibDeviceInfo", m.DibDeviceInfo, width-2))
-		boxes = append(boxes, utils.BoxAnything("DibSuppSvcFamilies", m.DibSuppSvcFamilies, width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@75d97e18
+		boxes = append(boxes, m.HpaiControlEndpoint.Box("hpaiControlEndpoint", width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5fdb7394
+		boxes = append(boxes, m.DibDeviceInfo.Box("dibDeviceInfo", width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@2d9de284
+		boxes = append(boxes, m.DibSuppSvcFamilies.Box("dibSuppSvcFamilies", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

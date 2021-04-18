@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -7833,7 +7834,7 @@ func (m KnxManufacturer) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	return nil
 }
 
-func (e KnxManufacturer) String() string {
+func (e KnxManufacturer) name() string {
 	switch e {
 	case KnxManufacturer_M_UNKNOWN:
 		return "M_UNKNOWN"
@@ -8937,4 +8938,16 @@ func (e KnxManufacturer) String() string {
 		return "M_PANASONIC"
 	}
 	return ""
+}
+
+func (e KnxManufacturer) String() string {
+	return e.name()
+}
+
+func (m KnxManufacturer) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxManufacturer"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

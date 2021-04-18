@@ -189,7 +189,9 @@ func (m ModbusPDUReadFifoQueueRequest) Box(name string, width int) utils.AsciiBo
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("FifoPointerAddress", m.FifoPointerAddress, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("FifoPointerAddress", m.FifoPointerAddress, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

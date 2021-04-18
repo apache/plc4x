@@ -603,10 +603,31 @@ func (m *BACnetTag) BoxParent(name string, width int, childBoxer func() []utils.
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, -1))
+	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
+	// contextSpecificTag := uint8(child.ContextSpecificTag())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", contextSpecificTag, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, -1))
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.ExtTagNumber != nil {
+		extTagNumber = m.ExtTagNumber
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtTagNumber", *(extTagNumber), -1))
+	}
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.ExtLength != nil {
+		extLength = m.ExtLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtLength", *(extLength), -1))
+	}
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

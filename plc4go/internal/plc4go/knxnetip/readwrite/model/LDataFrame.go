@@ -415,11 +415,30 @@ func (m *LDataFrame) BoxParent(name string, width int, childBoxer func() []utils
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, width-2))
-	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, width-2))
-	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
-	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, width-2))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, -1))
+	// Discriminator Field (polling) (Used as input to a switch field)
+	// polling := bool(child.Polling())
+	// bool can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("Polling", polling, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, -1))
+	// Discriminator Field (notAckFrame) (Used as input to a switch field)
+	// notAckFrame := bool(child.NotAckFrame())
+	// bool can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("NotAckFrame", notAckFrame, -1))
+	// Enum field (priority)
+	priority := CastCEMIPriority(m.Priority)
+	boxes = append(boxes, priority.Box("priority", -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

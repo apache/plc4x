@@ -210,8 +210,14 @@ func (m SzlId) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TypeClass", m.TypeClass, width-2))
-	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, width-2))
-	boxes = append(boxes, utils.BoxAnything("SublistList", m.SublistList, width-2))
+	// Enum field (typeClass)
+	typeClass := CastSzlModuleTypeClass(m.TypeClass)
+	boxes = append(boxes, typeClass.Box("typeClass", -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, -1))
+	// Enum field (sublistList)
+	sublistList := CastSzlSublist(m.SublistList)
+	boxes = append(boxes, sublistList.Box("sublistList", -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

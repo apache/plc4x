@@ -245,9 +245,15 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) u
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
-		boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

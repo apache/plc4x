@@ -367,12 +367,30 @@ func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
-		boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, width-2))
-		boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5bb97fe7
+		boxes = append(boxes, m.SourceAddress.Box("sourceAddress", width-2))
+		// Array Field (destinationAddress)
+		if m.DestinationAddress != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("DestinationAddress", m.DestinationAddress))
+		}
+		// Implicit Field (dataLength)
+		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@10b87ff6
+		boxes = append(boxes, m.Apdu.Box("apdu", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

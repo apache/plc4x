@@ -353,12 +353,26 @@ func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("TransportSize", m.TransportSize, width-2))
-		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, width-2))
-		boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("Area", m.Area, width-2))
-		boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, width-2))
-		boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, width-2))
+		// Enum field (transportSize) with value
+		boxes = append(boxes, utils.BoxAnything("TransportSize_"+m.TransportSize.String(), m.TransportSize.Code(), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, -1))
+		// Enum field (area)
+		area := CastMemoryArea(m.Area)
+		boxes = append(boxes, area.Box("area", -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

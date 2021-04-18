@@ -342,10 +342,26 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
-		boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
+		// Const Field (errorClassHeader)
+		boxes = append(boxes, utils.BoxAnything("ErrorClassHeader", 0x12, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, -1))
+		// Array Field (errorClass)
+		if m.ErrorClass != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("ErrorClass", m.ErrorClass))
+		}
+		// Const Field (errorCodeHeader)
+		boxes = append(boxes, utils.BoxAnything("ErrorCodeHeader", 0x12, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, -1))
+		// Array Field (errorCode)
+		if m.ErrorCode != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("ErrorCode", m.ErrorCode))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

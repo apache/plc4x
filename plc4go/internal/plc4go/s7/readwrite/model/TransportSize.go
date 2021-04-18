@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -1523,7 +1524,7 @@ func (m TransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 	return nil
 }
 
-func (e TransportSize) String() string {
+func (e TransportSize) name() string {
 	switch e {
 	case TransportSize_BOOL:
 		return "BOOL"
@@ -1579,4 +1580,16 @@ func (e TransportSize) String() string {
 		return "DT"
 	}
 	return ""
+}
+
+func (e TransportSize) String() string {
+	return e.name()
+}
+
+func (m TransportSize) Box(s string, i int) utils.AsciiBox {
+	boxName := "TransportSize"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", int8(m), m.name()), -1)
 }

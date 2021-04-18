@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -246,7 +247,7 @@ func (m BACnetNodeType) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 	return nil
 }
 
-func (e BACnetNodeType) String() string {
+func (e BACnetNodeType) name() string {
 	switch e {
 	case BACnetNodeType_UNKNOWN:
 		return "UNKNOWN"
@@ -294,4 +295,16 @@ func (e BACnetNodeType) String() string {
 		return "ZONE"
 	}
 	return ""
+}
+
+func (e BACnetNodeType) String() string {
+	return e.name()
+}
+
+func (m BACnetNodeType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNodeType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
 }

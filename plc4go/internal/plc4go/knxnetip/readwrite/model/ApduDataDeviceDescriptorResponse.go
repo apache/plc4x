@@ -228,8 +228,14 @@ func (m ApduDataDeviceDescriptorResponse) Box(name string, width int) utils.Asci
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, width-2))
-		boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

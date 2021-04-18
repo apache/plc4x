@@ -1031,6 +1031,11 @@ func (m *ApduDataExt) BoxParent(name string, width int, childBoxer func() []util
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (extApciType) (Used as input to a switch field)
+	// extApciType := uint8(child.ExtApciType())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("ExtApciType", extApciType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

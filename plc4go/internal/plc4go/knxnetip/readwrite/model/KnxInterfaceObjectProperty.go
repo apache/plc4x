@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -4905,7 +4906,7 @@ func (m KnxInterfaceObjectProperty) MarshalXML(e *xml.Encoder, start xml.StartEl
 	return nil
 }
 
-func (e KnxInterfaceObjectProperty) String() string {
+func (e KnxInterfaceObjectProperty) name() string {
 	switch e {
 	case KnxInterfaceObjectProperty_PID_UNKNOWN:
 		return "PID_UNKNOWN"
@@ -5341,4 +5342,16 @@ func (e KnxInterfaceObjectProperty) String() string {
 		return "PID_KNXIP_PARAMETER_KNXNETIP_ROUTING_CAPABILITIES"
 	}
 	return ""
+}
+
+func (e KnxInterfaceObjectProperty) String() string {
+	return e.name()
+}
+
+func (m KnxInterfaceObjectProperty) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxInterfaceObjectProperty"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint32(m), m.name()), -1)
 }

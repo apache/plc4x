@@ -225,7 +225,15 @@ func (m ModbusPDUReportServerIdResponse) Box(name string, width int) utils.Ascii
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(len(m.Value)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Array Field (value)
+		if m.Value != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("Value", m.Value))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

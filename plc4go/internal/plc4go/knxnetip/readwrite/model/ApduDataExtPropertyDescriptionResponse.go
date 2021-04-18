@@ -425,14 +425,36 @@ func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) util
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
-		boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
-		boxes = append(boxes, utils.BoxAnything("WriteEnabled", m.WriteEnabled, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyDataType", m.PropertyDataType, width-2))
-		boxes = append(boxes, utils.BoxAnything("MaxNrOfElements", m.MaxNrOfElements, width-2))
-		boxes = append(boxes, utils.BoxAnything("ReadLevel", m.ReadLevel, width-2))
-		boxes = append(boxes, utils.BoxAnything("WriteLevel", m.WriteLevel, width-2))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Index", m.Index, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteEnabled", m.WriteEnabled, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x0), -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@606b53a3
+		boxes = append(boxes, m.PropertyDataType.Box("propertyDataType", width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x0), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxNrOfElements", m.MaxNrOfElements, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@432c0f1
+		boxes = append(boxes, m.ReadLevel.Box("readLevel", width-2))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@37bda983
+		boxes = append(boxes, m.WriteLevel.Box("writeLevel", width-2))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

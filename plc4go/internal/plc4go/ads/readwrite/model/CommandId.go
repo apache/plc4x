@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -174,7 +175,7 @@ func (m CommandId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-func (e CommandId) String() string {
+func (e CommandId) name() string {
 	switch e {
 	case CommandId_INVALID:
 		return "INVALID"
@@ -198,4 +199,16 @@ func (e CommandId) String() string {
 		return "ADS_READ_WRITE"
 	}
 	return ""
+}
+
+func (e CommandId) String() string {
+	return e.name()
+}
+
+func (m CommandId) Box(s string, i int) utils.AsciiBox {
+	boxName := "CommandId"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }

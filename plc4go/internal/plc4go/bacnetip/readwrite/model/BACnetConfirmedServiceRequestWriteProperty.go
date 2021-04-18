@@ -436,12 +436,37 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) 
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
-		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, width-2))
-		boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
-		boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-		boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
+		// Const Field (objectIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", 0x0C, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, -1))
+		// Const Field (propertyIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierHeader", 0x03, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, -1))
+		// Array Field (propertyIdentifier)
+		if m.PropertyIdentifier != nil {
+			// Simple array base type
+			boxes = append(boxes, utils.BoxedDumpAnything("PropertyIdentifier", m.PropertyIdentifier))
+		}
+		// Const Field (openingTag)
+		boxes = append(boxes, utils.BoxAnything("OpeningTag", 0x3E, -1))
+		// Simple field (case simple)
+		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6321a5aa
+		boxes = append(boxes, m.Value.Box("value", width-2))
+		// Const Field (closingTag)
+		boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x3F, -1))
+		// Optional Field (priority) (Can be skipped, if the value is null)
+		var priority *BACnetTag = nil
+		if m.Priority != nil {
+			priority = m.Priority
+			boxes = append(boxes, priority.Box("priority", width-2))
+		}
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

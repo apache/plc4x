@@ -421,8 +421,30 @@ func (m *COTPPacket) BoxParent(name string, width int, childBoxer func() []utils
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
+	// Implicit Field (headerLength)
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint8(0)) })))+uint8(uint8(1)))))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("HeaderLength", headerLength, -1))
+	// Discriminator Field (tpduCode) (Used as input to a switch field)
+	// tpduCode := uint8(child.TpduCode())
+	// uint8 can be boxed as anything with the least amount of space
+	// boxes = append(boxes, utils.BoxAnything("TpduCode", tpduCode, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
-	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
-	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
+	// Array Field (parameters)
+	if m.Parameters != nil {
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Parameters {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Parameters", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Optional Field (payload) (Can be skipped, if the value is null)
+	var payload *S7Message = nil
+	if m.Payload != nil {
+		payload = m.Payload
+		boxes = append(boxes, payload.Box("payload", width-2))
+	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

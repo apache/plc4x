@@ -404,12 +404,40 @@ func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", m.ContextSpecificTag, width-2))
-	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("PropertyIdentifier", m.PropertyIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", m.ContextSpecificTag, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, -1))
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.ExtTagNumber != nil {
+		extTagNumber = m.ExtTagNumber
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtTagNumber", *(extTagNumber), -1))
+	}
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.ExtLength != nil {
+		extLength = m.ExtLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtLength", *(extLength), -1))
+	}
+	// Array Field (propertyIdentifier)
+	if m.PropertyIdentifier != nil {
+		// Simple array base type
+		boxes = append(boxes, utils.BoxedDumpAnything("PropertyIdentifier", m.PropertyIdentifier))
+	}
+	// Const Field (openTag)
+	boxes = append(boxes, utils.BoxAnything("OpenTag", 0x2e, -1))
+	// Simple field (case simple)
+	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@16e1219f
+	boxes = append(boxes, m.Value.Box("value", width-2))
+	// Const Field (closingTag)
+	boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x2f, -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

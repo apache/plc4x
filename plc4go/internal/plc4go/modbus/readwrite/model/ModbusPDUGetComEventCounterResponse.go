@@ -217,8 +217,12 @@ func (m ModbusPDUGetComEventCounterResponse) Box(name string, width int) utils.A
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
-		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Status", m.Status, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

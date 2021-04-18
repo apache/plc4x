@@ -21,6 +21,7 @@ package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -468,7 +469,7 @@ func (m BACnetObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 	return nil
 }
 
-func (e BACnetObjectType) String() string {
+func (e BACnetObjectType) name() string {
 	switch e {
 	case BACnetObjectType_ANALOG_INPUT:
 		return "ANALOG_INPUT"
@@ -590,4 +591,16 @@ func (e BACnetObjectType) String() string {
 		return "ESCALATOR"
 	}
 	return ""
+}
+
+func (e BACnetObjectType) String() string {
+	return e.name()
+}
+
+func (m BACnetObjectType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetObjectType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint16(m), m.name()), -1)
 }
