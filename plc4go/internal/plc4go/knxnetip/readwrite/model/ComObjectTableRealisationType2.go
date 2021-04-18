@@ -155,6 +155,7 @@ func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, 
 
 func (m *ComObjectTableRealisationType2) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ComObjectTableRealisationType2")
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.NumEntries)
@@ -180,6 +181,7 @@ func (m *ComObjectTableRealisationType2) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ComObjectTableRealisationType2")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

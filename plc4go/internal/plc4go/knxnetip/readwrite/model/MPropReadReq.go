@@ -169,6 +169,7 @@ func MPropReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropReadReq")
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
@@ -205,6 +206,7 @@ func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
+		io.PopContext("MPropReadReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

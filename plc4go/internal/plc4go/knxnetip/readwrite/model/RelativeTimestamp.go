@@ -93,6 +93,7 @@ func RelativeTimestampParse(io utils.ReadBuffer) (*RelativeTimestamp, error) {
 }
 
 func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("RelativeTimestamp")
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.Timestamp)
@@ -101,6 +102,7 @@ func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
+	io.PopContext("RelativeTimestamp")
 	return nil
 }
 

@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(io utils.ReadBuffer) (*BA
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestAtomicWriteFile")
 
+		io.PopContext("BACnetConfirmedServiceRequestAtomicWriteFile")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

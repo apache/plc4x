@@ -129,6 +129,7 @@ func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUError")
 
 		// Enum field (exceptionCode)
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
@@ -137,6 +138,7 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
+		io.PopContext("ModbusPDUError")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

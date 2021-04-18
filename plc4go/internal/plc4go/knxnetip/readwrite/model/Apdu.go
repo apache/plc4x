@@ -153,6 +153,7 @@ func (m *Apdu) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChildFunction func() error) error {
+	io.PushContext("Apdu")
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.Control())
@@ -182,6 +183,7 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("Apdu")
 	return nil
 }
 

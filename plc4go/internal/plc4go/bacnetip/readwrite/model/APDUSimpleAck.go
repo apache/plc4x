@@ -151,6 +151,7 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUSimpleAck")
 
 		// Reserved Field (reserved)
 		{
@@ -174,6 +175,7 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}
 
+		io.PopContext("APDUSimpleAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

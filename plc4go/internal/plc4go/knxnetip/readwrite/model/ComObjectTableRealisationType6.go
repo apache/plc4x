@@ -121,6 +121,7 @@ func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, 
 
 func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ComObjectTableRealisationType6")
 
 		// Simple Field (comObjectDescriptors)
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
@@ -128,6 +129,7 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
+		io.PopContext("ComObjectTableRealisationType6")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

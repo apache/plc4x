@@ -108,7 +108,9 @@ func BACnetConfirmedServiceACKGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnet
 
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceACKGetAlarmSummary")
 
+		io.PopContext("BACnetConfirmedServiceACKGetAlarmSummary")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

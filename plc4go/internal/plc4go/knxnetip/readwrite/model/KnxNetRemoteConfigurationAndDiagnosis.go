@@ -121,6 +121,7 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io utils.ReadBuffer) (*ServiceId
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetRemoteConfigurationAndDiagnosis")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -129,6 +130,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) 
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetRemoteConfigurationAndDiagnosis")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

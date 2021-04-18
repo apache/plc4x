@@ -131,6 +131,7 @@ func (m *S7VarRequestParameterItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child IS7VarRequestParameterItem, serializeChildFunction func() error) error {
+	io.PushContext("S7VarRequestParameterItem")
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
@@ -146,6 +147,7 @@ func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("S7VarRequestParameterItem")
 	return nil
 }
 

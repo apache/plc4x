@@ -159,6 +159,7 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsDeviceNotificationRequest")
 
 		// Simple Field (length)
 		length := uint32(m.Length)
@@ -184,6 +185,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("AdsDeviceNotificationRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

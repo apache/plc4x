@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
 
+		io.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

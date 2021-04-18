@@ -125,6 +125,7 @@ func S7ParameterWriteVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error)
 
 func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterWriteVarResponse")
 
 		// Simple Field (numItems)
 		numItems := uint8(m.NumItems)
@@ -133,6 +134,7 @@ func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
+		io.PopContext("S7ParameterWriteVarResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

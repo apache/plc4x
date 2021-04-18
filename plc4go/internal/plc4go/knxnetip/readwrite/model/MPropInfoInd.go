@@ -108,7 +108,9 @@ func MPropInfoIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropInfoInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropInfoInd")
 
+		io.PopContext("MPropInfoInd")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

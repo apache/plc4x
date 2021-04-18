@@ -254,6 +254,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestWriteProperty")
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -326,6 +327,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 			}
 		}
 
+		io.PopContext("BACnetConfirmedServiceRequestWriteProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

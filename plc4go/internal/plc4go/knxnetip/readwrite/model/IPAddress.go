@@ -102,6 +102,7 @@ func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 }
 
 func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("IPAddress")
 
 	// Array Field (addr)
 	if m.Addr != nil {
@@ -113,6 +114,7 @@ func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("IPAddress")
 	return nil
 }
 

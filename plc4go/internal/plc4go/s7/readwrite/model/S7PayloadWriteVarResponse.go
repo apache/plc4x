@@ -135,6 +135,7 @@ func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter)
 
 func (m *S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7PayloadWriteVarResponse")
 
 		// Array Field (items)
 		if m.Items != nil {
@@ -146,6 +147,7 @@ func (m *S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("S7PayloadWriteVarResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

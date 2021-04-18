@@ -108,7 +108,9 @@ func ApduDataExtMemoryBitWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtMemoryBitWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtMemoryBitWrite")
 
+		io.PopContext("ApduDataExtMemoryBitWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

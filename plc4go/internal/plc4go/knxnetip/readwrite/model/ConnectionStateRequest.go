@@ -151,6 +151,7 @@ func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 
 func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionStateRequest")
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -173,6 +174,7 @@ func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
+		io.PopContext("ConnectionStateRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -112,7 +112,9 @@ func BACnetTagApplicationNullParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationNull) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationNull")
 
+		io.PopContext("BACnetTagApplicationNull")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -108,7 +108,9 @@ func ApduDataExtNetworkParameterResponseParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtNetworkParameterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtNetworkParameterResponse")
 
+		io.PopContext("ApduDataExtNetworkParameterResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

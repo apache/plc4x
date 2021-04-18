@@ -187,6 +187,7 @@ func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUSegmentAck")
 
 		// Reserved Field (reserved)
 		{
@@ -231,6 +232,7 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 		}
 
+		io.PopContext("APDUSegmentAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

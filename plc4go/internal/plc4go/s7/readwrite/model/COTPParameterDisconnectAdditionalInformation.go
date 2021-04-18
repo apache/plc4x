@@ -128,6 +128,7 @@ func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterDisconnectAdditionalInformation")
 
 		// Array Field (data)
 		if m.Data != nil {
@@ -139,6 +140,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteB
 			}
 		}
 
+		io.PopContext("COTPParameterDisconnectAdditionalInformation")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

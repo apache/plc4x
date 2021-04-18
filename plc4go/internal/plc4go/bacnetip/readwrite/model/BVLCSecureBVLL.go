@@ -108,7 +108,9 @@ func BVLCSecureBVLLParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCSecureBVLL) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCSecureBVLL")
 
+		io.PopContext("BVLCSecureBVLL")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -143,6 +143,7 @@ func AmsSerialResetFrameParse(io utils.ReadBuffer) (*AmsSerialResetFrame, error)
 }
 
 func (m *AmsSerialResetFrame) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsSerialResetFrame")
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
@@ -186,6 +187,7 @@ func (m *AmsSerialResetFrame) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
+	io.PopContext("AmsSerialResetFrame")
 	return nil
 }
 

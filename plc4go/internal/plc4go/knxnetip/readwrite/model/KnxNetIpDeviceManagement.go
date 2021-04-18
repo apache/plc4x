@@ -121,6 +121,7 @@ func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetIpDeviceManagement")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -129,6 +130,7 @@ func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetIpDeviceManagement")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

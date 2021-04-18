@@ -127,6 +127,7 @@ func (m *ComObjectTable) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectTable, serializeChildFunction func() error) error {
+	io.PushContext("ComObjectTable")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -134,6 +135,7 @@ func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectT
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ComObjectTable")
 	return nil
 }
 

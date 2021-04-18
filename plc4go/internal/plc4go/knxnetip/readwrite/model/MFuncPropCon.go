@@ -108,7 +108,9 @@ func MFuncPropConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MFuncPropCon")
 
+		io.PopContext("MFuncPropCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

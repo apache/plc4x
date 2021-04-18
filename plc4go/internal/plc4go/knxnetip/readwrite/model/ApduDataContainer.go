@@ -123,6 +123,7 @@ func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error
 
 func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataContainer")
 
 		// Simple Field (dataApdu)
 		_dataApduErr := m.DataApdu.Serialize(io)
@@ -130,6 +131,7 @@ func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
 		}
 
+		io.PopContext("ApduDataContainer")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

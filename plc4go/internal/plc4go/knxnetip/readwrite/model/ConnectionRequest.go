@@ -145,6 +145,7 @@ func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionRequest")
 
 		// Simple Field (hpaiDiscoveryEndpoint)
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
@@ -164,6 +165,7 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}
 
+		io.PopContext("ConnectionRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

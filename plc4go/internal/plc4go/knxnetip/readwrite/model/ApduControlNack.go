@@ -108,7 +108,9 @@ func ApduControlNackParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlNack) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduControlNack")
 
+		io.PopContext("ApduControlNack")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

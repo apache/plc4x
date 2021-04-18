@@ -204,6 +204,7 @@ func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error)
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsAddDeviceNotificationRequest")
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -255,6 +256,7 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error 
 			}
 		}
 
+		io.PopContext("AdsAddDeviceNotificationRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

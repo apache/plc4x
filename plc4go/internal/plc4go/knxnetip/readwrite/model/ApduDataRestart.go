@@ -108,7 +108,9 @@ func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataRestart) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataRestart")
 
+		io.PopContext("ApduDataRestart")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

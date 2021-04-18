@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io utils.R
 
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional")
 
+		io.PopContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

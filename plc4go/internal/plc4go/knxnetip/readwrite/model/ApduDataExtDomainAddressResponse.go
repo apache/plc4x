@@ -108,7 +108,9 @@ func ApduDataExtDomainAddressResponseParse(io utils.ReadBuffer) (*ApduDataExt, e
 
 func (m *ApduDataExtDomainAddressResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtDomainAddressResponse")
 
+		io.PopContext("ApduDataExtDomainAddressResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

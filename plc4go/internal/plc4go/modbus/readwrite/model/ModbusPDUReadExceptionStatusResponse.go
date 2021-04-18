@@ -129,6 +129,7 @@ func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadExceptionStatusResponse")
 
 		// Simple Field (value)
 		value := uint8(m.Value)
@@ -137,6 +138,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		io.PopContext("ModbusPDUReadExceptionStatusResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

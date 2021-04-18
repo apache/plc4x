@@ -145,6 +145,7 @@ func AdsMultiRequestItemWriteParse(io utils.ReadBuffer) (*AdsMultiRequestItem, e
 
 func (m *AdsMultiRequestItemWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsMultiRequestItemWrite")
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.ItemIndexGroup)
@@ -167,6 +168,7 @@ func (m *AdsMultiRequestItemWrite) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_itemWriteLengthErr, "Error serializing 'itemWriteLength' field")
 		}
 
+		io.PopContext("AdsMultiRequestItemWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

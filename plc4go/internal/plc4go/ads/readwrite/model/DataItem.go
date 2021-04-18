@@ -213,6 +213,7 @@ func DataItemParse(io utils.ReadBuffer, dataFormatName string, stringLength int3
 }
 
 func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataFormatName string, stringLength int32) error {
+	io.PushContext("DataItem")
 	switch {
 	case dataFormatName == "IEC61131_BOOL": // BOOL
 
@@ -353,5 +354,6 @@ func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataFormatName 
 		// TODO: add more info which type it is actually
 		return errors.New("unsupported type")
 	}
+	io.PopContext("DataItem")
 	return nil
 }

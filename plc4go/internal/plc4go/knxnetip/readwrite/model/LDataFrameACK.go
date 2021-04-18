@@ -117,7 +117,9 @@ func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataFrameACK) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LDataFrameACK")
 
+		io.PopContext("LDataFrameACK")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

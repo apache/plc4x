@@ -108,7 +108,9 @@ func BACnetServiceAckConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnet
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckConfirmedPrivateTransfer")
 
+		io.PopContext("BACnetServiceAckConfirmedPrivateTransfer")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

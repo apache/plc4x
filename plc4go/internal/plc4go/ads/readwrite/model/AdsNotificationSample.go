@@ -122,6 +122,7 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 }
 
 func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AdsNotificationSample")
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.NotificationHandle)
@@ -147,6 +148,7 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("AdsNotificationSample")
 	return nil
 }
 

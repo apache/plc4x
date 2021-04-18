@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestGetEventInformation")
 
+		io.PopContext("BACnetConfirmedServiceRequestGetEventInformation")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

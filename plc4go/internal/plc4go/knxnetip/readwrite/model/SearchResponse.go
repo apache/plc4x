@@ -145,6 +145,7 @@ func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("SearchResponse")
 
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
@@ -164,6 +165,7 @@ func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
+		io.PopContext("SearchResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

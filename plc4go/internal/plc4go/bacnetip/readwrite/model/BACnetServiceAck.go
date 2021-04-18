@@ -157,6 +157,7 @@ func (m *BACnetServiceAck) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetServiceAck) SerializeParent(io utils.WriteBuffer, child IBACnetServiceAck, serializeChildFunction func() error) error {
+	io.PushContext("BACnetServiceAck")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
@@ -172,6 +173,7 @@ func (m *BACnetServiceAck) SerializeParent(io utils.WriteBuffer, child IBACnetSe
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BACnetServiceAck")
 	return nil
 }
 

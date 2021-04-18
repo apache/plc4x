@@ -131,6 +131,7 @@ func TunnelingRequestDataBlockParse(io utils.ReadBuffer) (*TunnelingRequestDataB
 }
 
 func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("TunnelingRequestDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -161,6 +162,7 @@ func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("TunnelingRequestDataBlock")
 	return nil
 }
 

@@ -121,6 +121,7 @@ func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterChecksum")
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
@@ -129,6 +130,7 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
+		io.PopContext("COTPParameterChecksum")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

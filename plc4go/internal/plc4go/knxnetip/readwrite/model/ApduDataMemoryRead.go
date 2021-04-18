@@ -133,6 +133,7 @@ func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataMemoryRead")
 
 		// Simple Field (numBytes)
 		numBytes := uint8(m.NumBytes)
@@ -148,6 +149,7 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
+		io.PopContext("ApduDataMemoryRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

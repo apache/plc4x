@@ -131,6 +131,7 @@ func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageT
 
 func (m *NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("NLMIAmRouterToNetwork")
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
@@ -142,6 +143,7 @@ func (m *NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("NLMIAmRouterToNetwork")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

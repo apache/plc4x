@@ -149,6 +149,7 @@ func AdsReadRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadRequest")
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -171,6 +172,7 @@ func (m *AdsReadRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
+		io.PopContext("AdsReadRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

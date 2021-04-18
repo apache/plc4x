@@ -136,6 +136,7 @@ func BACnetTagApplicationUnsignedIntegerParse(io utils.ReadBuffer, lengthValueTy
 
 func (m *BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationUnsignedInteger")
 
 		// Array Field (data)
 		if m.Data != nil {
@@ -147,6 +148,7 @@ func (m *BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) er
 			}
 		}
 
+		io.PopContext("BACnetTagApplicationUnsignedInteger")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

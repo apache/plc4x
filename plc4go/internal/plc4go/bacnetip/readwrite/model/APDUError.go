@@ -151,6 +151,7 @@ func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUError")
 
 		// Reserved Field (reserved)
 		{
@@ -173,6 +174,7 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}
 
+		io.PopContext("APDUError")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

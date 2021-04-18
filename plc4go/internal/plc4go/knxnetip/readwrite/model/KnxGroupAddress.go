@@ -127,6 +127,7 @@ func (m *KnxGroupAddress) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error {
+	io.PushContext("KnxGroupAddress")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -134,6 +135,7 @@ func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupA
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("KnxGroupAddress")
 	return nil
 }
 

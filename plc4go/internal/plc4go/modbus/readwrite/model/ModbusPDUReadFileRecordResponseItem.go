@@ -124,6 +124,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDURe
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
@@ -149,6 +150,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) er
 		}
 	}
 
+	io.PopContext("ModbusPDUReadFileRecordResponseItem")
 	return nil
 }
 

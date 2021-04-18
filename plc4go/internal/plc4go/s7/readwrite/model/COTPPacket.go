@@ -193,6 +193,7 @@ func (m *COTPPacket) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, serializeChildFunction func() error) error {
+	io.PushContext("COTPPacket")
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint8(0)) })))+uint8(uint8(1)))))
@@ -235,6 +236,7 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		}
 	}
 
+	io.PopContext("COTPPacket")
 	return nil
 }
 

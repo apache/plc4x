@@ -108,7 +108,9 @@ func ApduDataExtGroupPropertyValueWriteParse(io utils.ReadBuffer) (*ApduDataExt,
 
 func (m *ApduDataExtGroupPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtGroupPropertyValueWrite")
 
+		io.PopContext("ApduDataExtGroupPropertyValueWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

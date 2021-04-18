@@ -108,7 +108,9 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io utils.ReadBuf
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
 
+		io.PopContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

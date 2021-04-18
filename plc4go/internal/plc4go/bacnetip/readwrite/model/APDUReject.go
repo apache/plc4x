@@ -151,6 +151,7 @@ func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUReject")
 
 		// Reserved Field (reserved)
 		{
@@ -174,6 +175,7 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}
 
+		io.PopContext("APDUReject")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

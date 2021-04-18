@@ -108,7 +108,9 @@ func ApduDataMemoryWriteParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataMemoryWrite")
 
+		io.PopContext("ApduDataMemoryWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

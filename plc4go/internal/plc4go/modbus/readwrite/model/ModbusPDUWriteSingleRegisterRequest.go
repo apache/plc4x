@@ -141,6 +141,7 @@ func ModbusPDUWriteSingleRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUWriteSingleRegisterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUWriteSingleRegisterRequest")
 
 		// Simple Field (address)
 		address := uint16(m.Address)
@@ -156,6 +157,7 @@ func (m *ModbusPDUWriteSingleRegisterRequest) Serialize(io utils.WriteBuffer) er
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		io.PopContext("ModbusPDUWriteSingleRegisterRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

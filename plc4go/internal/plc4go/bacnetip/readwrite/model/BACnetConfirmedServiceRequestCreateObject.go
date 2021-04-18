@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestCreateObjectParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestCreateObject")
 
+		io.PopContext("BACnetConfirmedServiceRequestCreateObject")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

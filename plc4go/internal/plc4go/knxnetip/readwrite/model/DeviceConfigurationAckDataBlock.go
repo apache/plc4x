@@ -123,6 +123,7 @@ func DeviceConfigurationAckDataBlockParse(io utils.ReadBuffer) (*DeviceConfigura
 }
 
 func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DeviceConfigurationAckDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -151,6 +152,7 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
+	io.PopContext("DeviceConfigurationAckDataBlock")
 	return nil
 }
 

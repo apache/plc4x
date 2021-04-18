@@ -209,6 +209,7 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LDataExtended")
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.GroupAddress)
@@ -260,6 +261,7 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}
 
+		io.PopContext("LDataExtended")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

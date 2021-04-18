@@ -141,6 +141,7 @@ func ModbusPDUReadHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadHoldingRegistersRequest")
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -156,6 +157,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
+		io.PopContext("ModbusPDUReadHoldingRegistersRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

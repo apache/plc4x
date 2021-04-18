@@ -121,6 +121,7 @@ func KnxNetRemoteLoggingParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetRemoteLogging")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -129,6 +130,7 @@ func (m *KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetRemoteLogging")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

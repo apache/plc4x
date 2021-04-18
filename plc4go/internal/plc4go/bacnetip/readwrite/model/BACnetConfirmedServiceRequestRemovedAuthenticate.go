@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestRemovedAuthenticateParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestRemovedAuthenticate")
 
+		io.PopContext("BACnetConfirmedServiceRequestRemovedAuthenticate")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

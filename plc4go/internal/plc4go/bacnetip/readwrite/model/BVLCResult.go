@@ -108,7 +108,9 @@ func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCResult) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCResult")
 
+		io.PopContext("BVLCResult")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

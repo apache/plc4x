@@ -131,6 +131,7 @@ func NLMWhoIsRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messag
 
 func (m *NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("NLMWhoIsRouterToNetwork")
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
@@ -142,6 +143,7 @@ func (m *NLMWhoIsRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("NLMWhoIsRouterToNetwork")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -233,6 +233,7 @@ func (m *S7Message) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
+	io.PushContext("S7Message")
 
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x32)
@@ -303,6 +304,7 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 		}
 	}
 
+	io.PopContext("S7Message")
 	return nil
 }
 

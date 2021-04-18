@@ -108,7 +108,9 @@ func BACnetErrorReadRangeParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorReadRange) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorReadRange")
 
+		io.PopContext("BACnetErrorReadRange")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

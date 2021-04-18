@@ -183,6 +183,7 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 }
 
 func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DeviceDescriptorType2")
 
 	// Simple Field (manufacturerId)
 	manufacturerId := uint16(m.ManufacturerId)
@@ -250,6 +251,7 @@ func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
 	}
 
+	io.PopContext("DeviceDescriptorType2")
 	return nil
 }
 

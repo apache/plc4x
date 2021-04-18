@@ -234,6 +234,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 
 func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterUserDataItemCPUFunctions")
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
@@ -307,6 +308,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 			}
 		}
 
+		io.PopContext("S7ParameterUserDataItemCPUFunctions")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

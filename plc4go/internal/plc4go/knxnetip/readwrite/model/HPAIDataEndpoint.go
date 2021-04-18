@@ -123,6 +123,7 @@ func HPAIDataEndpointParse(io utils.ReadBuffer) (*HPAIDataEndpoint, error) {
 }
 
 func (m *HPAIDataEndpoint) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("HPAIDataEndpoint")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -150,6 +151,7 @@ func (m *HPAIDataEndpoint) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
 	}
 
+	io.PopContext("HPAIDataEndpoint")
 	return nil
 }
 

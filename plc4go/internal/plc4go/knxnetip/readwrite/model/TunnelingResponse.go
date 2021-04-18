@@ -121,6 +121,7 @@ func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TunnelingResponse")
 
 		// Simple Field (tunnelingResponseDataBlock)
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
@@ -128,6 +129,7 @@ func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
+		io.PopContext("TunnelingResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

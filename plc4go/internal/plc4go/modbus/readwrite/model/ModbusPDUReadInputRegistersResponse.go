@@ -148,6 +148,7 @@ func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUReadInputRegistersResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadInputRegistersResponse")
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
@@ -166,6 +167,7 @@ func (m *ModbusPDUReadInputRegistersResponse) Serialize(io utils.WriteBuffer) er
 			}
 		}
 
+		io.PopContext("ModbusPDUReadInputRegistersResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

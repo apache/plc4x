@@ -108,7 +108,9 @@ func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LPollDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LPollDataReq")
 
+		io.PopContext("LPollDataReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

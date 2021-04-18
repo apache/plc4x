@@ -211,6 +211,7 @@ func (m *ApduDataExt) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, serializeChildFunction func() error) error {
+	io.PushContext("ApduDataExt")
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.ExtApciType())
@@ -226,6 +227,7 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ApduDataExt")
 	return nil
 }
 

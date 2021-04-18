@@ -143,6 +143,7 @@ func (m *ServiceId) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, serializeChildFunction func() error) error {
+	io.PushContext("ServiceId")
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
@@ -158,6 +159,7 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ServiceId")
 	return nil
 }
 

@@ -240,6 +240,7 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtPropertyDescriptionResponse")
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -310,6 +311,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}
 
+		io.PopContext("ApduDataExtPropertyDescriptionResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

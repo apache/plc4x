@@ -103,6 +103,7 @@ func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallati
 }
 
 func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ProjectInstallationIdentifier")
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.ProjectNumber)
@@ -118,6 +119,7 @@ func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}
 
+	io.PopContext("ProjectInstallationIdentifier")
 	return nil
 }
 

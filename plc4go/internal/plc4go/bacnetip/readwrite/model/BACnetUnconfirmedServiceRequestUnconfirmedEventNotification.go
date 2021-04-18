@@ -108,7 +108,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io utils.R
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
 
+		io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

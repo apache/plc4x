@@ -125,6 +125,7 @@ func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, err
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsDeleteDeviceNotificationRequest")
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
@@ -133,6 +134,7 @@ func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) err
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
+		io.PopContext("AdsDeleteDeviceNotificationRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

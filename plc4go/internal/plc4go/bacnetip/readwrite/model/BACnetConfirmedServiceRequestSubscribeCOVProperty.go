@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
 
+		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -136,6 +136,7 @@ func BACnetTagApplicationEnumeratedParse(io utils.ReadBuffer, lengthValueType ui
 
 func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationEnumerated")
 
 		// Array Field (data)
 		if m.Data != nil {
@@ -147,6 +148,7 @@ func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("BACnetTagApplicationEnumerated")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

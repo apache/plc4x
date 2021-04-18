@@ -145,6 +145,7 @@ func S7ParameterUserDataParse(io utils.ReadBuffer) (*S7Parameter, error) {
 
 func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterUserData")
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
@@ -163,6 +164,7 @@ func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("S7ParameterUserData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

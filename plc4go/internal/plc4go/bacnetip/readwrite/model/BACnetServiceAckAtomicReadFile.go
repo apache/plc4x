@@ -108,7 +108,9 @@ func BACnetServiceAckAtomicReadFileParse(io utils.ReadBuffer) (*BACnetServiceAck
 
 func (m *BACnetServiceAckAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckAtomicReadFile")
 
+		io.PopContext("BACnetServiceAckAtomicReadFile")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

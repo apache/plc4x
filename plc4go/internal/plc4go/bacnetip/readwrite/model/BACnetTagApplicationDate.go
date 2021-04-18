@@ -112,7 +112,9 @@ func BACnetTagApplicationDateParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationDate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationDate")
 
+		io.PopContext("BACnetTagApplicationDate")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

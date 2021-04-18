@@ -145,6 +145,7 @@ func KnxGroupAddress3LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 
 func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxGroupAddress3Level")
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
@@ -167,6 +168,7 @@ func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
+		io.PopContext("KnxGroupAddress3Level")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

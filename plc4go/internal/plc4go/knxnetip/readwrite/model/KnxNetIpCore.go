@@ -121,6 +121,7 @@ func KnxNetIpCoreParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetIpCore")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -129,6 +130,7 @@ func (m *KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetIpCore")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

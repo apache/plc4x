@@ -181,6 +181,7 @@ func GroupObjectDescriptorRealisationType1Parse(io utils.ReadBuffer) (*GroupObje
 }
 
 func (m *GroupObjectDescriptorRealisationType1) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("GroupObjectDescriptorRealisationType1")
 
 	// Simple Field (dataPointer)
 	dataPointer := uint8(m.DataPointer)
@@ -244,6 +245,7 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(io utils.WriteBuffer) 
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
+	io.PopContext("GroupObjectDescriptorRealisationType1")
 	return nil
 }
 

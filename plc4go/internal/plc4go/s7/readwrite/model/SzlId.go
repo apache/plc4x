@@ -113,6 +113,7 @@ func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
 }
 
 func (m *SzlId) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("SzlId")
 
 	// Enum field (typeClass)
 	typeClass := CastSzlModuleTypeClass(m.TypeClass)
@@ -135,6 +136,7 @@ func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
 	}
 
+	io.PopContext("SzlId")
 	return nil
 }
 

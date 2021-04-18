@@ -108,7 +108,9 @@ func LPollDataConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LPollDataCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LPollDataCon")
 
+		io.PopContext("LPollDataCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

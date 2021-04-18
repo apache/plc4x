@@ -121,6 +121,7 @@ func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error
 
 func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataOther")
 
 		// Simple Field (extendedApdu)
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
@@ -128,6 +129,7 @@ func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
+		io.PopContext("ApduDataOther")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

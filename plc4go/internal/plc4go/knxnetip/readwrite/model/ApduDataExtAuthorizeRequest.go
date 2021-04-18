@@ -140,6 +140,7 @@ func ApduDataExtAuthorizeRequestParse(io utils.ReadBuffer) (*ApduDataExt, error)
 
 func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtAuthorizeRequest")
 
 		// Simple Field (level)
 		level := uint8(m.Level)
@@ -158,6 +159,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ApduDataExtAuthorizeRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

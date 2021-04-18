@@ -139,6 +139,7 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionRequestInformationTunnelConnection")
 
 		// Simple Field (knxLayer)
 		_knxLayerErr := m.KnxLayer.Serialize(io)
@@ -154,6 +155,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 			}
 		}
 
+		io.PopContext("ConnectionRequestInformationTunnelConnection")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

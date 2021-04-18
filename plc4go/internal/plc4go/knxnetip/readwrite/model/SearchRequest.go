@@ -121,6 +121,7 @@ func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("SearchRequest")
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
@@ -128,6 +129,7 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
+		io.PopContext("SearchRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

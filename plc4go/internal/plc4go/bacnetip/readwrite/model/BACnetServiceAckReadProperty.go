@@ -233,6 +233,7 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 
 func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckReadProperty")
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -295,6 +296,7 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
+		io.PopContext("BACnetServiceAckReadProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

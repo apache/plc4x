@@ -121,6 +121,7 @@ func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DescriptionRequest")
 
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
@@ -128,6 +129,7 @@ func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
+		io.PopContext("DescriptionRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -157,6 +157,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 		return sizeInBytes
 	}
 	ser := func() error {
+		io.PushContext("ModbusPDUWriteFileRecordRequest")
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
@@ -175,6 +176,7 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 			}
 		}
 
+		io.PopContext("ModbusPDUWriteFileRecordRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

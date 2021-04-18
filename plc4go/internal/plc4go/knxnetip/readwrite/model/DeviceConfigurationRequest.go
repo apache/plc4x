@@ -133,6 +133,7 @@ func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*
 
 func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DeviceConfigurationRequest")
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
@@ -146,6 +147,7 @@ func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
+		io.PopContext("DeviceConfigurationRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

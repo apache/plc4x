@@ -108,7 +108,9 @@ func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*Con
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionResponseDataBlockDeviceManagement")
 
+		io.PopContext("ConnectionResponseDataBlockDeviceManagement")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

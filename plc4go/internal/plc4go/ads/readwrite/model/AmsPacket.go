@@ -183,6 +183,7 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 }
 
 func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsPacket")
 
 	// Simple Field (targetAmsNetId)
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(io)
@@ -249,6 +250,7 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
+	io.PopContext("AmsPacket")
 	return nil
 }
 

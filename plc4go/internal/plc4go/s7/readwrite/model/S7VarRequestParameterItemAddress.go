@@ -131,6 +131,7 @@ func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestPa
 
 func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7VarRequestParameterItemAddress")
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.Address.LengthInBytes())
@@ -145,6 +146,7 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
+		io.PopContext("S7VarRequestParameterItemAddress")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

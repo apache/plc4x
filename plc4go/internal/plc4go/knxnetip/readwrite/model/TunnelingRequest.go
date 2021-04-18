@@ -133,6 +133,7 @@ func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMe
 
 func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TunnelingRequest")
 
 		// Simple Field (tunnelingRequestDataBlock)
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
@@ -146,6 +147,7 @@ func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
+		io.PopContext("TunnelingRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

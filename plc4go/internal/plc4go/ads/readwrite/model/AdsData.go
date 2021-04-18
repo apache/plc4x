@@ -162,6 +162,7 @@ func (m *AdsData) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializeChildFunction func() error) error {
+	io.PushContext("AdsData")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -169,6 +170,7 @@ func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("AdsData")
 	return nil
 }
 

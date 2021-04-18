@@ -220,6 +220,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 
 func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestWhoHas")
 
 		// Const Field (deviceInstanceLowLimitHeader)
 		_deviceInstanceLowLimitHeaderErr := io.WriteUint8("deviceInstanceLowLimitHeader", 8, 0x0B)
@@ -277,6 +278,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 			}
 		}
 
+		io.PopContext("BACnetUnconfirmedServiceRequestWhoHas")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

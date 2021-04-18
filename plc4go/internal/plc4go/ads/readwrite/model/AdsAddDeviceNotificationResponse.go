@@ -137,6 +137,7 @@ func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error
 
 func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsAddDeviceNotificationResponse")
 
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
@@ -151,6 +152,7 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
+		io.PopContext("AdsAddDeviceNotificationResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

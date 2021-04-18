@@ -175,6 +175,7 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LBusmonInd")
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -209,6 +210,7 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("LBusmonInd")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

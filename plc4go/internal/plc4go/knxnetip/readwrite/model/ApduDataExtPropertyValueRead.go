@@ -157,6 +157,7 @@ func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error
 
 func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtPropertyValueRead")
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -186,6 +187,7 @@ func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
+		io.PopContext("ApduDataExtPropertyValueRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -137,6 +137,7 @@ func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMI
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("CEMIAdditionalInformationRelativeTimestamp")
 
 		// Const Field (len)
 		_lenErr := io.WriteUint8("len", 8, 2)
@@ -150,6 +151,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuf
 			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}
 
+		io.PopContext("CEMIAdditionalInformationRelativeTimestamp")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

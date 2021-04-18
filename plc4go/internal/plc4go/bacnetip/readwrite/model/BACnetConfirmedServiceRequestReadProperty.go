@@ -195,6 +195,7 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestReadProperty")
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -239,6 +240,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuff
 			}
 		}
 
+		io.PopContext("BACnetConfirmedServiceRequestReadProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

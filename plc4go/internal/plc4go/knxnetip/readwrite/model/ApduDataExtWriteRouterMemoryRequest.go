@@ -108,7 +108,9 @@ func ApduDataExtWriteRouterMemoryRequestParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtWriteRouterMemoryRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtWriteRouterMemoryRequest")
 
+		io.PopContext("ApduDataExtWriteRouterMemoryRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

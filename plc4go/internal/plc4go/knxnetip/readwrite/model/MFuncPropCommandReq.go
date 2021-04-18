@@ -108,7 +108,9 @@ func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropCommandReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MFuncPropCommandReq")
 
+		io.PopContext("MFuncPropCommandReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

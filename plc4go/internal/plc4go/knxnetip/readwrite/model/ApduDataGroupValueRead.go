@@ -127,6 +127,7 @@ func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataGroupValueRead")
 
 		// Reserved Field (reserved)
 		{
@@ -136,6 +137,7 @@ func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ApduDataGroupValueRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

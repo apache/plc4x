@@ -151,6 +151,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 }
 
 func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
+	io.PushContext("S7VarPayloadDataItem")
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -197,6 +198,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 		}
 	}
 
+	io.PopContext("S7VarPayloadDataItem")
 	return nil
 }
 

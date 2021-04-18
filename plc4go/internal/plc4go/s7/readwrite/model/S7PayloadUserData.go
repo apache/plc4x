@@ -135,6 +135,7 @@ func S7PayloadUserDataParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Pay
 
 func (m *S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7PayloadUserData")
 
 		// Array Field (items)
 		if m.Items != nil {
@@ -146,6 +147,7 @@ func (m *S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("S7PayloadUserData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -127,6 +127,7 @@ func (m *AdsMultiRequestItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsMultiRequestItem) SerializeParent(io utils.WriteBuffer, child IAdsMultiRequestItem, serializeChildFunction func() error) error {
+	io.PushContext("AdsMultiRequestItem")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -134,6 +135,7 @@ func (m *AdsMultiRequestItem) SerializeParent(io utils.WriteBuffer, child IAdsMu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("AdsMultiRequestItem")
 	return nil
 }
 

@@ -112,7 +112,9 @@ func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadDeviceInfoRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadDeviceInfoRequest")
 
+		io.PopContext("AdsReadDeviceInfoRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

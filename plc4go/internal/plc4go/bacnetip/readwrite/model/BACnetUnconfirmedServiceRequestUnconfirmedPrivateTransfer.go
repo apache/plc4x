@@ -211,6 +211,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
 
 		// Const Field (vendorIdHeader)
 		_vendorIdHeaderErr := io.WriteUint8("vendorIdHeader", 8, 0x09)
@@ -260,6 +261,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
+		io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

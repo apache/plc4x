@@ -111,7 +111,9 @@ func S7MessageUserDataParse(io utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageUserData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7MessageUserData")
 
+		io.PopContext("S7MessageUserData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -121,6 +121,7 @@ func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) 
 
 func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterCallingTsap")
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
@@ -129,6 +130,7 @@ func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
+		io.PopContext("COTPParameterCallingTsap")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

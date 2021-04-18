@@ -150,6 +150,7 @@ func (m *NLM) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error {
+	io.PushContext("NLM")
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
@@ -175,6 +176,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("NLM")
 	return nil
 }
 

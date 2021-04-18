@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(io utils.ReadBuffer) (
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestReinitializeDevice")
 
+		io.PopContext("BACnetConfirmedServiceRequestReinitializeDevice")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

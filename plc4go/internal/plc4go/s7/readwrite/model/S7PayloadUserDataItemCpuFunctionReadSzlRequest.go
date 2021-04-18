@@ -112,7 +112,9 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 
+		io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

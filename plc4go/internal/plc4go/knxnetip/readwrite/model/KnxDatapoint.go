@@ -5841,6 +5841,7 @@ func KnxDatapointParse(io utils.ReadBuffer, datapointType KnxDatapointType) (api
 }
 
 func KnxDatapointSerialize(io utils.WriteBuffer, value api.PlcValue, datapointType KnxDatapointType) error {
+	io.PushContext("KnxDatapoint")
 	switch {
 	case datapointType == KnxDatapointType_BOOL: // BOOL
 
@@ -10136,5 +10137,6 @@ func KnxDatapointSerialize(io utils.WriteBuffer, value api.PlcValue, datapointTy
 		// TODO: add more info which type it is actually
 		return errors.New("unsupported type")
 	}
+	io.PopContext("KnxDatapoint")
 	return nil
 }

@@ -108,7 +108,9 @@ func LRawConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LRawCon")
 
+		io.PopContext("LRawCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

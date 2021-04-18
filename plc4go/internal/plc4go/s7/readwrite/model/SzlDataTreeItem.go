@@ -142,6 +142,7 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 }
 
 func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("SzlDataTreeItem")
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.ItemIndex)
@@ -181,6 +182,7 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
 	}
 
+	io.PopContext("SzlDataTreeItem")
 	return nil
 }
 

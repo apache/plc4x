@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 
+		io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

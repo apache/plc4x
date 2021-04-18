@@ -306,6 +306,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
 
 		// Const Field (subscriberProcessIdentifierHeader)
 		_subscriberProcessIdentifierHeaderErr := io.WriteUint8("subscriberProcessIdentifierHeader", 8, 0x09)
@@ -405,6 +406,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
+		io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

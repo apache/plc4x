@@ -139,6 +139,7 @@ func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error
 }
 
 func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusTcpADU")
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.TransactionIdentifier)
@@ -173,6 +174,7 @@ func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
+	io.PopContext("ModbusTcpADU")
 	return nil
 }
 

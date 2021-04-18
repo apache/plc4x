@@ -108,7 +108,9 @@ func LRawReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LRawReq")
 
+		io.PopContext("LRawReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

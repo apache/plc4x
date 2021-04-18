@@ -163,6 +163,7 @@ func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObje
 }
 
 func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("GroupObjectDescriptorRealisationTypeB")
 
 	// Simple Field (updateEnable)
 	updateEnable := bool(m.UpdateEnable)
@@ -218,6 +219,7 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) 
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
+	io.PopContext("GroupObjectDescriptorRealisationTypeB")
 	return nil
 }
 

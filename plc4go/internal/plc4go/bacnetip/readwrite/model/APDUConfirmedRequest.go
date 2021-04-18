@@ -248,6 +248,7 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 
 func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUConfirmedRequest")
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.SegmentedMessage)
@@ -325,6 +326,7 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
+		io.PopContext("APDUConfirmedRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

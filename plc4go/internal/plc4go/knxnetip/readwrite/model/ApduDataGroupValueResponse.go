@@ -142,6 +142,7 @@ func ApduDataGroupValueResponseParse(io utils.ReadBuffer, dataLength uint8) (*Ap
 
 func (m *ApduDataGroupValueResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataGroupValueResponse")
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.DataFirstByte)
@@ -160,6 +161,7 @@ func (m *ApduDataGroupValueResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ApduDataGroupValueResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

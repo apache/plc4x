@@ -141,6 +141,7 @@ func ModbusPDUDiagnosticRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUDiagnosticRequest")
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.SubFunction)
@@ -156,6 +157,7 @@ func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
+		io.PopContext("ModbusPDUDiagnosticRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

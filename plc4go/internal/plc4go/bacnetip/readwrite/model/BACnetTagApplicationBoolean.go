@@ -112,7 +112,9 @@ func BACnetTagApplicationBooleanParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationBoolean) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationBoolean")
 
+		io.PopContext("BACnetTagApplicationBoolean")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -175,6 +175,7 @@ func (m *S7PayloadUserDataItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error {
+	io.PushContext("S7PayloadUserDataItem")
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -216,6 +217,7 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("S7PayloadUserDataItem")
 	return nil
 }
 

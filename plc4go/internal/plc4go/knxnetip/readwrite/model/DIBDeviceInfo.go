@@ -199,6 +199,7 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 }
 
 func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DIBDeviceInfo")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -270,6 +271,7 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("DIBDeviceInfo")
 	return nil
 }
 

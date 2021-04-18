@@ -108,7 +108,9 @@ func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, er
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtFileStreamInfoReport")
 
+		io.PopContext("ApduDataExtFileStreamInfoReport")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

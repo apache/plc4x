@@ -112,7 +112,9 @@ func AdsDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsDeviceNotificationResponse")
 
+		io.PopContext("AdsDeviceNotificationResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

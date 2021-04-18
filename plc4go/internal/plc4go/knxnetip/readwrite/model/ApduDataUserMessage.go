@@ -108,7 +108,9 @@ func ApduDataUserMessageParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataUserMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataUserMessage")
 
+		io.PopContext("ApduDataUserMessage")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

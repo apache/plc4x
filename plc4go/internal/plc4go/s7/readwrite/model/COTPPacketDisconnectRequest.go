@@ -147,6 +147,7 @@ func COTPPacketDisconnectRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 
 func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPPacketDisconnectRequest")
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -169,6 +170,7 @@ func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
+		io.PopContext("COTPPacketDisconnectRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

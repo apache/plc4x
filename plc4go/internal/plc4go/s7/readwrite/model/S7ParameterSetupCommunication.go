@@ -167,6 +167,7 @@ func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, erro
 
 func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterSetupCommunication")
 
 		// Reserved Field (reserved)
 		{
@@ -197,6 +198,7 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}
 
+		io.PopContext("S7ParameterSetupCommunication")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

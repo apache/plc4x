@@ -108,7 +108,9 @@ func BACnetErrorRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorRemovedReadPropertyConditional")
 
+		io.PopContext("BACnetErrorRemovedReadPropertyConditional")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

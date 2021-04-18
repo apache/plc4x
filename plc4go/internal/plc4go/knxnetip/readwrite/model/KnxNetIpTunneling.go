@@ -121,6 +121,7 @@ func KnxNetIpTunnelingParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetIpTunneling")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -129,6 +130,7 @@ func (m *KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetIpTunneling")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

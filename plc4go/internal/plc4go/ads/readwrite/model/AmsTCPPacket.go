@@ -121,6 +121,7 @@ func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 }
 
 func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsTCPPacket")
 
 	// Reserved Field (reserved)
 	{
@@ -143,6 +144,7 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
+	io.PopContext("AmsTCPPacket")
 	return nil
 }
 

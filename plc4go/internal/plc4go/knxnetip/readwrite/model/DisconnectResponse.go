@@ -133,6 +133,7 @@ func DisconnectResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DisconnectResponse")
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -147,6 +148,7 @@ func (m *DisconnectResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
+		io.PopContext("DisconnectResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

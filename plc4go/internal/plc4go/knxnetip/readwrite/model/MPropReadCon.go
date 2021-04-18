@@ -181,6 +181,7 @@ func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropReadCon")
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
@@ -224,6 +225,7 @@ func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_unknownErr, "Error serializing 'unknown' field")
 		}
 
+		io.PopContext("MPropReadCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

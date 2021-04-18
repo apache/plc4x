@@ -93,6 +93,7 @@ func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, 
 }
 
 func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("S7VarPayloadStatusItem")
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -101,6 +102,7 @@ func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
+	io.PopContext("S7VarPayloadStatusItem")
 	return nil
 }
 

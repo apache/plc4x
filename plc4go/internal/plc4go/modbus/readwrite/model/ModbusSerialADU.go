@@ -141,6 +141,7 @@ func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU,
 }
 
 func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusSerialADU")
 
 	// Simple Field (transactionId)
 	transactionId := uint16(m.TransactionId)
@@ -177,6 +178,7 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
+	io.PopContext("ModbusSerialADU")
 	return nil
 }
 

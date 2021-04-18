@@ -136,6 +136,7 @@ func BACnetTagApplicationSignedIntegerParse(io utils.ReadBuffer, lengthValueType
 
 func (m *BACnetTagApplicationSignedInteger) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationSignedInteger")
 
 		// Array Field (data)
 		if m.Data != nil {
@@ -147,6 +148,7 @@ func (m *BACnetTagApplicationSignedInteger) Serialize(io utils.WriteBuffer) erro
 			}
 		}
 
+		io.PopContext("BACnetTagApplicationSignedInteger")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -108,7 +108,9 @@ func MResetIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MResetInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MResetInd")
 
+		io.PopContext("MResetInd")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

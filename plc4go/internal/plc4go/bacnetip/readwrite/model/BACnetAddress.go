@@ -110,6 +110,7 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 }
 
 func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("BACnetAddress")
 
 	// Array Field (address)
 	if m.Address != nil {
@@ -128,6 +129,7 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
+	io.PopContext("BACnetAddress")
 	return nil
 }
 

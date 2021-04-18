@@ -128,6 +128,13 @@ func TestS7MessageBytes(t *testing.T) {
 			if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
 				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 			}
+			boxWriter := utils.NewBoxedWriteBuffer()
+			err = tt.args.debuggable.Serialize(boxWriter)
+			if err != nil {
+				t.Error(err)
+			}
+			// TODO: seems like the boxWriteBuffer is still a WIP so we don't assert yet
+			println(boxWriter.GetBox())
 		})
 	}
 }

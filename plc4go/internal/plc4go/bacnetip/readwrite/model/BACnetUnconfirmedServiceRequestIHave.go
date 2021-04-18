@@ -108,7 +108,9 @@ func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnco
 
 func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestIHave")
 
+		io.PopContext("BACnetUnconfirmedServiceRequestIHave")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

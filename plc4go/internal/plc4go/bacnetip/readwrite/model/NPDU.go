@@ -325,6 +325,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 }
 
 func (m *NPDU) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("NPDU")
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber := uint8(m.ProtocolVersionNumber)
@@ -474,6 +475,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("NPDU")
 	return nil
 }
 

@@ -108,7 +108,9 @@ func BACnetServiceAckGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetServ
 
 func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckGetEnrollmentSummary")
 
+		io.PopContext("BACnetServiceAckGetEnrollmentSummary")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

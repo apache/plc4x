@@ -125,6 +125,7 @@ func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8,
 
 func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationDouble")
 
 		// Simple Field (value)
 		value := float64(m.Value)
@@ -133,6 +134,7 @@ func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		io.PopContext("BACnetTagApplicationDouble")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

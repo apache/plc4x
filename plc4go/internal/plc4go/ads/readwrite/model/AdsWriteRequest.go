@@ -168,6 +168,7 @@ func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsWriteRequest")
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -200,6 +201,7 @@ func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("AdsWriteRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

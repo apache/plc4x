@@ -133,6 +133,7 @@ func (m *CEMIAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error {
+	io.PushContext("CEMIAdditionalInformation")
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.AdditionalInformationType())
@@ -148,6 +149,7 @@ func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("CEMIAdditionalInformation")
 	return nil
 }
 

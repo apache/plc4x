@@ -108,7 +108,9 @@ func BACnetConfirmedServiceACKRemovedAuthenticateParse(io utils.ReadBuffer) (*BA
 
 func (m *BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceACKRemovedAuthenticate")
 
+		io.PopContext("BACnetConfirmedServiceACKRemovedAuthenticate")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

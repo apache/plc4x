@@ -172,6 +172,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io utils.ReadBuffer) (*ModbusPDU, e
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUWriteMultipleCoilsRequest")
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -204,6 +205,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(io utils.WriteBuffer) err
 			}
 		}
 
+		io.PopContext("ModbusPDUWriteMultipleCoilsRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -108,7 +108,9 @@ func BVLCWideBroadcastDistributionTableParse(io utils.ReadBuffer) (*BVLC, error)
 
 func (m *BVLCWideBroadcastDistributionTable) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCWideBroadcastDistributionTable")
 
+		io.PopContext("BVLCWideBroadcastDistributionTable")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

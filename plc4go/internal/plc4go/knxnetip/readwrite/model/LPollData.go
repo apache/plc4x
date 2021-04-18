@@ -181,6 +181,7 @@ func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LPollData")
 
 		// Simple Field (sourceAddress)
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
@@ -213,6 +214,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}
 
+		io.PopContext("LPollData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -153,6 +153,7 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io utils.ReadBuffer) (*Modbus
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUMaskWriteHoldingRegisterRequest")
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.ReferenceAddress)
@@ -175,6 +176,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io utils.WriteBuffe
 			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
 		}
 
+		io.PopContext("ModbusPDUMaskWriteHoldingRegisterRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

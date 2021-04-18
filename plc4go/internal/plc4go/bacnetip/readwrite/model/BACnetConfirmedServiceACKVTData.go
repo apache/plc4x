@@ -108,7 +108,9 @@ func BACnetConfirmedServiceACKVTDataParse(io utils.ReadBuffer) (*BACnetConfirmed
 
 func (m *BACnetConfirmedServiceACKVTData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceACKVTData")
 
+		io.PopContext("BACnetConfirmedServiceACKVTData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

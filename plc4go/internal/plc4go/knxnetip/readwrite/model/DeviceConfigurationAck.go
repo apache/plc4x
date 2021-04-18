@@ -121,6 +121,7 @@ func DeviceConfigurationAckParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 
 func (m *DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DeviceConfigurationAck")
 
 		// Simple Field (deviceConfigurationAckDataBlock)
 		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(io)
@@ -128,6 +129,7 @@ func (m *DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}
 
+		io.PopContext("DeviceConfigurationAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

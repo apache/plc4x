@@ -156,6 +156,7 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LDataReq")
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -180,6 +181,7 @@ func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
+		io.PopContext("LDataReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

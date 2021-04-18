@@ -824,6 +824,7 @@ func KnxPropertyParse(io utils.ReadBuffer, propertyType KnxPropertyDataType, dat
 }
 
 func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType KnxPropertyDataType, dataLengthInBytes uint8) error {
+	io.PushContext("KnxProperty")
 	switch {
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
@@ -1420,5 +1421,6 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 			}
 		}
 	}
+	io.PopContext("KnxProperty")
 	return nil
 }

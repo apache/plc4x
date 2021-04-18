@@ -168,6 +168,7 @@ func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsWriteControlRequest")
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
@@ -200,6 +201,7 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("AdsWriteControlRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

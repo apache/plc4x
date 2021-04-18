@@ -108,7 +108,9 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestWriteGroup")
 
+		io.PopContext("BACnetUnconfirmedServiceRequestWriteGroup")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

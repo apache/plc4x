@@ -116,7 +116,9 @@ func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReportServerIdRequest")
 
+		io.PopContext("ModbusPDUReportServerIdRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

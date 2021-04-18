@@ -258,6 +258,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestSubscribeCOV")
 
 		// Const Field (subscriberProcessIdentifierHeader)
 		_subscriberProcessIdentifierHeaderErr := io.WriteUint8("subscriberProcessIdentifierHeader", 8, 0x09)
@@ -334,6 +335,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 			}
 		}
 
+		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOV")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

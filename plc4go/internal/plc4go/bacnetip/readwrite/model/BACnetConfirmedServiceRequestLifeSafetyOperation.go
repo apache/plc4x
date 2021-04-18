@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
 
+		io.PopContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

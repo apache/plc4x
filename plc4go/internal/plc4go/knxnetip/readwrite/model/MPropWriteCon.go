@@ -108,7 +108,9 @@ func MPropWriteConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropWriteCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropWriteCon")
 
+		io.PopContext("MPropWriteCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

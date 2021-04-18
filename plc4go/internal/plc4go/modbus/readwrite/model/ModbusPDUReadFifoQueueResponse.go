@@ -156,6 +156,7 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadFifoQueueResponse")
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
@@ -181,6 +182,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ModbusPDUReadFifoQueueResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

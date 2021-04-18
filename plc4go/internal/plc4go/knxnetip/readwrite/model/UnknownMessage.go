@@ -130,6 +130,7 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 
 func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("UnknownMessage")
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
@@ -141,6 +142,7 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("UnknownMessage")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

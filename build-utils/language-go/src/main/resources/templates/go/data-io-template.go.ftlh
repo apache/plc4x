@@ -183,6 +183,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 }
 
 func ${type.name}Serialize(io utils.WriteBuffer, value api.PlcValue<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+	io.PushContext("${type.name}")
 	switch {
 	<#assign defaultSet=false>
 	<#list type.switchField.cases as case>
@@ -237,6 +238,7 @@ func ${type.name}Serialize(io utils.WriteBuffer, value api.PlcValue<#if type.par
 			return errors.New("unsupported type")<@emitImport import="github.com/pkg/errors" />
 	</#if>
 	}
+	io.PopContext("${type.name}")
 	return nil
 }
 </@importSectionWithContentBelow>

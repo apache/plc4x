@@ -121,6 +121,7 @@ func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataDeviceDescriptorRead")
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
@@ -129,6 +130,7 @@ func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
+		io.PopContext("ApduDataDeviceDescriptorRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

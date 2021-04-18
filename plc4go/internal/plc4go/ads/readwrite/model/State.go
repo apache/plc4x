@@ -191,6 +191,7 @@ func StateParse(io utils.ReadBuffer) (*State, error) {
 }
 
 func (m *State) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("State")
 
 	// Simple Field (initCommand)
 	initCommand := bool(m.InitCommand)
@@ -263,6 +264,7 @@ func (m *State) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("State")
 	return nil
 }
 

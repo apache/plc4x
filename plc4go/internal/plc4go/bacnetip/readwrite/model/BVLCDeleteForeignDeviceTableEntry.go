@@ -108,7 +108,9 @@ func BVLCDeleteForeignDeviceTableEntryParse(io utils.ReadBuffer) (*BVLC, error) 
 
 func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCDeleteForeignDeviceTableEntry")
 
+		io.PopContext("BVLCDeleteForeignDeviceTableEntry")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

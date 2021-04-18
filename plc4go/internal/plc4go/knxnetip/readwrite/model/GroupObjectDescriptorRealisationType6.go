@@ -82,7 +82,9 @@ func GroupObjectDescriptorRealisationType6Parse(io utils.ReadBuffer) (*GroupObje
 }
 
 func (m *GroupObjectDescriptorRealisationType6) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("GroupObjectDescriptorRealisationType6")
 
+	io.PopContext("GroupObjectDescriptorRealisationType6")
 	return nil
 }
 

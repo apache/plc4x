@@ -99,6 +99,7 @@ func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
 }
 
 func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusConstants")
 
 	// Const Field (modbusTcpDefaultPort)
 	_modbusTcpDefaultPortErr := io.WriteUint16("modbusTcpDefaultPort", 16, 502)
@@ -106,6 +107,7 @@ func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}
 
+	io.PopContext("ModbusConstants")
 	return nil
 }
 

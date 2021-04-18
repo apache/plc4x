@@ -135,6 +135,7 @@ func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPPacketTpduError")
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -150,6 +151,7 @@ func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_rejectCauseErr, "Error serializing 'rejectCause' field")
 		}
 
+		io.PopContext("COTPPacketTpduError")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

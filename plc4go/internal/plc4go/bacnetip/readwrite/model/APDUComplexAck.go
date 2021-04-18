@@ -212,6 +212,7 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUComplexAck")
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.SegmentedMessage)
@@ -268,6 +269,7 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceAckErr, "Error serializing 'serviceAck' field")
 		}
 
+		io.PopContext("APDUComplexAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

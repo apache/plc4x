@@ -181,6 +181,7 @@ func (m *BVLC) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
+	io.PushContext("BVLC")
 
 	// Const Field (bacnetType)
 	_bacnetTypeErr := io.WriteUint8("bacnetType", 8, 0x81)
@@ -209,6 +210,7 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BVLC")
 	return nil
 }
 

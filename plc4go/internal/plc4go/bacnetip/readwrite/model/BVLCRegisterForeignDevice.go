@@ -108,7 +108,9 @@ func BVLCRegisterForeignDeviceParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCRegisterForeignDevice) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCRegisterForeignDevice")
 
+		io.PopContext("BVLCRegisterForeignDevice")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

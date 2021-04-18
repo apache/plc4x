@@ -173,6 +173,7 @@ func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObje
 }
 
 func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("GroupObjectDescriptorRealisationType7")
 
 	// Simple Field (dataAddress)
 	dataAddress := uint16(m.DataAddress)
@@ -235,6 +236,7 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
+	io.PopContext("GroupObjectDescriptorRealisationType7")
 	return nil
 }
 

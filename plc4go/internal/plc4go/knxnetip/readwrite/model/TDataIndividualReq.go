@@ -108,7 +108,9 @@ func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataIndividualReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TDataIndividualReq")
 
+		io.PopContext("TDataIndividualReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

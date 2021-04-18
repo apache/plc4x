@@ -217,6 +217,7 @@ func (m *ModbusPDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error {
+	io.PushContext("ModbusPDU")
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
@@ -240,6 +241,7 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ModbusPDU")
 	return nil
 }
 

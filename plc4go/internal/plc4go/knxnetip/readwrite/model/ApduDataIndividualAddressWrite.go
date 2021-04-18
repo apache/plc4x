@@ -108,7 +108,9 @@ func ApduDataIndividualAddressWriteParse(io utils.ReadBuffer) (*ApduData, error)
 
 func (m *ApduDataIndividualAddressWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataIndividualAddressWrite")
 
+		io.PopContext("ApduDataIndividualAddressWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

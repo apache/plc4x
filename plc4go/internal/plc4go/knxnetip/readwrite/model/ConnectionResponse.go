@@ -169,6 +169,7 @@ func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionResponse")
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -203,6 +204,7 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ConnectionResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

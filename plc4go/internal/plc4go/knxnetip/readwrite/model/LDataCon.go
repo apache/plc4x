@@ -156,6 +156,7 @@ func LDataConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LDataCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LDataCon")
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -180,6 +181,7 @@ func (m *LDataCon) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
+		io.PopContext("LDataCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

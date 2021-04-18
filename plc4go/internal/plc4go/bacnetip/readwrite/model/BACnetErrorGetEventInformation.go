@@ -108,7 +108,9 @@ func BACnetErrorGetEventInformationParse(io utils.ReadBuffer) (*BACnetError, err
 
 func (m *BACnetErrorGetEventInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorGetEventInformation")
 
+		io.PopContext("BACnetErrorGetEventInformation")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

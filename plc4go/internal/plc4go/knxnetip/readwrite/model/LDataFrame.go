@@ -194,6 +194,7 @@ func (m *LDataFrame) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error {
+	io.PushContext("LDataFrame")
 
 	// Simple Field (frameType)
 	frameType := bool(m.FrameType)
@@ -252,6 +253,7 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("LDataFrame")
 	return nil
 }
 

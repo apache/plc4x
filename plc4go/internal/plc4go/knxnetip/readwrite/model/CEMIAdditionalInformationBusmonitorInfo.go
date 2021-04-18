@@ -197,6 +197,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io utils.ReadBuffer) (*CEMIAdd
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("CEMIAdditionalInformationBusmonitorInfo")
 
 		// Const Field (len)
 		_lenErr := io.WriteUint8("len", 8, 1)
@@ -246,6 +247,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
+		io.PopContext("CEMIAdditionalInformationBusmonitorInfo")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

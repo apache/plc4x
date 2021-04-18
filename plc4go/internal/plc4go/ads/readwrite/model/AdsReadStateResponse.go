@@ -149,6 +149,7 @@ func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadStateResponse")
 
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
@@ -170,6 +171,7 @@ func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
+		io.PopContext("AdsReadStateResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

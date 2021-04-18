@@ -141,6 +141,7 @@ func ModbusPDUGetComEventCounterResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUGetComEventCounterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUGetComEventCounterResponse")
 
 		// Simple Field (status)
 		status := uint16(m.Status)
@@ -156,6 +157,7 @@ func (m *ModbusPDUGetComEventCounterResponse) Serialize(io utils.WriteBuffer) er
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
+		io.PopContext("ModbusPDUGetComEventCounterResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

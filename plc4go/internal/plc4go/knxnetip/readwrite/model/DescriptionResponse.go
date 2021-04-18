@@ -133,6 +133,7 @@ func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DescriptionResponse")
 
 		// Simple Field (dibDeviceInfo)
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
@@ -146,6 +147,7 @@ func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
+		io.PopContext("DescriptionResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

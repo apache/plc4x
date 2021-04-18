@@ -108,7 +108,9 @@ func ApduControlConnectParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlConnect) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduControlConnect")
 
+		io.PopContext("ApduControlConnect")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

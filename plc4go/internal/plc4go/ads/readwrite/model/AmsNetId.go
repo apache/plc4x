@@ -143,6 +143,7 @@ func AmsNetIdParse(io utils.ReadBuffer) (*AmsNetId, error) {
 }
 
 func (m *AmsNetId) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsNetId")
 
 	// Simple Field (octet1)
 	octet1 := uint8(m.Octet1)
@@ -186,6 +187,7 @@ func (m *AmsNetId) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_octet6Err, "Error serializing 'octet6' field")
 	}
 
+	io.PopContext("AmsNetId")
 	return nil
 }
 

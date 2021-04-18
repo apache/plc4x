@@ -108,7 +108,9 @@ func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionRequestInformationDeviceManagement")
 
+		io.PopContext("ConnectionRequestInformationDeviceManagement")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

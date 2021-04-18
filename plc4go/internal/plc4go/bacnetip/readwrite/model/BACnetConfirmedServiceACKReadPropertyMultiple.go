@@ -108,7 +108,9 @@ func BACnetConfirmedServiceACKReadPropertyMultipleParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceACKReadPropertyMultiple")
 
+		io.PopContext("BACnetConfirmedServiceACKReadPropertyMultiple")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

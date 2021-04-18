@@ -153,6 +153,7 @@ func (m *BACnetUnconfirmedServiceRequest) Serialize(io utils.WriteBuffer) error 
 }
 
 func (m *BACnetUnconfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, child IBACnetUnconfirmedServiceRequest, serializeChildFunction func() error) error {
+	io.PushContext("BACnetUnconfirmedServiceRequest")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
@@ -168,6 +169,7 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BACnetUnconfirmedServiceRequest")
 	return nil
 }
 

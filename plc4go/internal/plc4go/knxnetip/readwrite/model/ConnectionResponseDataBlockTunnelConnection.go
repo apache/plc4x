@@ -121,6 +121,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*Con
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionResponseDataBlockTunnelConnection")
 
 		// Simple Field (knxAddress)
 		_knxAddressErr := m.KnxAddress.Serialize(io)
@@ -128,6 +129,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
+		io.PopContext("ConnectionResponseDataBlockTunnelConnection")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

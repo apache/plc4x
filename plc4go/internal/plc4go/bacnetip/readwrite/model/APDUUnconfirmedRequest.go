@@ -139,6 +139,7 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 
 func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUUnconfirmedRequest")
 
 		// Reserved Field (reserved)
 		{
@@ -154,6 +155,7 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
+		io.PopContext("APDUUnconfirmedRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

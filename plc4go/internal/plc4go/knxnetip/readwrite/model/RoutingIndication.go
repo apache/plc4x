@@ -108,7 +108,9 @@ func RoutingIndicationParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *RoutingIndication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("RoutingIndication")
 
+		io.PopContext("RoutingIndication")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

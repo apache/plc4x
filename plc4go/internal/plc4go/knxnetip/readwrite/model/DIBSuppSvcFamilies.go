@@ -124,6 +124,7 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 }
 
 func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DIBSuppSvcFamilies")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -149,6 +150,7 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("DIBSuppSvcFamilies")
 	return nil
 }
 

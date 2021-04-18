@@ -130,6 +130,7 @@ func (m *S7Payload) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, serializeChildFunction func() error) error {
+	io.PushContext("S7Payload")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -137,6 +138,7 @@ func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("S7Payload")
 	return nil
 }
 

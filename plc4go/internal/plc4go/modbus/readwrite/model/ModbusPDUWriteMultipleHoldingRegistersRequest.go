@@ -172,6 +172,7 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer) (*M
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -204,6 +205,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(io utils.Write
 			}
 		}
 
+		io.PopContext("ModbusPDUWriteMultipleHoldingRegistersRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

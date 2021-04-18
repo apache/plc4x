@@ -206,6 +206,7 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7AddressAny")
 
 		// Enum field (transportSize)
 		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
@@ -256,6 +257,7 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}
 
+		io.PopContext("S7AddressAny")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

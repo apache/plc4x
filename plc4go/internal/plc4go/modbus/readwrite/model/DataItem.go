@@ -381,6 +381,7 @@ func DataItemParse(io utils.ReadBuffer, dataType ModbusDataType, numberOfValues 
 }
 
 func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataType ModbusDataType, numberOfValues uint16) error {
+	io.PushContext("DataItem")
 	switch {
 	case dataType == ModbusDataType_BOOL && numberOfValues == 1: // BOOL
 
@@ -646,5 +647,6 @@ func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataType Modbus
 		// TODO: add more info which type it is actually
 		return errors.New("unsupported type")
 	}
+	io.PopContext("DataItem")
 	return nil
 }

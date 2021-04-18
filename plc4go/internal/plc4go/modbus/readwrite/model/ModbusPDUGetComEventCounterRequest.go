@@ -116,7 +116,9 @@ func ModbusPDUGetComEventCounterRequestParse(io utils.ReadBuffer) (*ModbusPDU, e
 
 func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUGetComEventCounterRequest")
 
+		io.PopContext("ModbusPDUGetComEventCounterRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

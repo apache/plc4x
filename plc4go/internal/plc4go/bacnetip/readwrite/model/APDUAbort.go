@@ -163,6 +163,7 @@ func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUAbort")
 
 		// Reserved Field (reserved)
 		{
@@ -193,6 +194,7 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}
 
+		io.PopContext("APDUAbort")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

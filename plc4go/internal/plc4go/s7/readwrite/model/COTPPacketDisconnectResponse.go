@@ -135,6 +135,7 @@ func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error)
 
 func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPPacketDisconnectResponse")
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -150,6 +151,7 @@ func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
+		io.PopContext("COTPPacketDisconnectResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

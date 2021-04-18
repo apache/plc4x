@@ -108,7 +108,9 @@ func LRawIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LRawInd")
 
+		io.PopContext("LRawInd")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

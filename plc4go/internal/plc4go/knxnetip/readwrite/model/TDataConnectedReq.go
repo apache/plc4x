@@ -108,7 +108,9 @@ func TDataConnectedReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataConnectedReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TDataConnectedReq")
 
+		io.PopContext("TDataConnectedReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

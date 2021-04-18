@@ -108,7 +108,9 @@ func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, err
 
 func (m *BVLCReadBroadcastDistributionTableAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCReadBroadcastDistributionTableAck")
 
+		io.PopContext("BVLCReadBroadcastDistributionTableAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

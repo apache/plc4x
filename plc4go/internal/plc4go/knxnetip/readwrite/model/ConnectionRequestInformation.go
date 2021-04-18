@@ -143,6 +143,7 @@ func (m *ConnectionRequestInformation) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, child IConnectionRequestInformation, serializeChildFunction func() error) error {
+	io.PushContext("ConnectionRequestInformation")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -165,6 +166,7 @@ func (m *ConnectionRequestInformation) SerializeParent(io utils.WriteBuffer, chi
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ConnectionRequestInformation")
 	return nil
 }
 

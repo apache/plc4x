@@ -102,6 +102,7 @@ func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
 }
 
 func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("MACAddress")
 
 	// Array Field (addr)
 	if m.Addr != nil {
@@ -113,6 +114,7 @@ func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("MACAddress")
 	return nil
 }
 

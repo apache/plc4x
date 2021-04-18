@@ -103,6 +103,7 @@ func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
 }
 
 func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ChannelInformation")
 
 	// Simple Field (numChannels)
 	numChannels := uint8(m.NumChannels)
@@ -118,6 +119,7 @@ func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}
 
+	io.PopContext("ChannelInformation")
 	return nil
 }
 

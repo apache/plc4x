@@ -150,6 +150,7 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataMemoryResponse")
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.Data)))
@@ -175,6 +176,7 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("ApduDataMemoryResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

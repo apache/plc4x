@@ -136,6 +136,7 @@ func S7MessageResponseDataParse(io utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7MessageResponseData")
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
@@ -151,6 +152,7 @@ func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
+		io.PopContext("S7MessageResponseData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

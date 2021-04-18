@@ -135,6 +135,7 @@ func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPPacketData")
 
 		// Simple Field (eot)
 		eot := bool(m.Eot)
@@ -150,6 +151,7 @@ func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}
 
+		io.PopContext("COTPPacketData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

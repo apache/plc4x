@@ -108,7 +108,9 @@ func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorCreateObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorCreateObject")
 
+		io.PopContext("BACnetErrorCreateObject")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -143,6 +143,7 @@ func AmsSerialAcknowledgeFrameParse(io utils.ReadBuffer) (*AmsSerialAcknowledgeF
 }
 
 func (m *AmsSerialAcknowledgeFrame) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsSerialAcknowledgeFrame")
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
@@ -186,6 +187,7 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
+	io.PopContext("AmsSerialAcknowledgeFrame")
 	return nil
 }
 

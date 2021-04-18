@@ -112,7 +112,9 @@ func AdsReadStateRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadStateRequest")
 
+		io.PopContext("AdsReadStateRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -204,6 +204,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 }
 
 func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("BACnetTagWithContent")
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
@@ -274,6 +275,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
+	io.PopContext("BACnetTagWithContent")
 	return nil
 }
 

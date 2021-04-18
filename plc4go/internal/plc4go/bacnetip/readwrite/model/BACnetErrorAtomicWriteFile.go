@@ -108,7 +108,9 @@ func BACnetErrorAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetError, error) 
 
 func (m *BACnetErrorAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorAtomicWriteFile")
 
+		io.PopContext("BACnetErrorAtomicWriteFile")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

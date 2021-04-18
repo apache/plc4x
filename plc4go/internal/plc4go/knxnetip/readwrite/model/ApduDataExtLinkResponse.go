@@ -108,7 +108,9 @@ func ApduDataExtLinkResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtLinkResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtLinkResponse")
 
+		io.PopContext("ApduDataExtLinkResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

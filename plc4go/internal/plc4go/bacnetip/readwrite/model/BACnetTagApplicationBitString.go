@@ -148,6 +148,7 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 
 func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationBitString")
 
 		// Simple Field (unusedBits)
 		unusedBits := uint8(m.UnusedBits)
@@ -166,6 +167,7 @@ func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("BACnetTagApplicationBitString")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

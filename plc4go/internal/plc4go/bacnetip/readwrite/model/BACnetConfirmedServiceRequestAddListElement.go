@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestAddListElementParse(io utils.ReadBuffer) (*BAC
 
 func (m *BACnetConfirmedServiceRequestAddListElement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestAddListElement")
 
+		io.PopContext("BACnetConfirmedServiceRequestAddListElement")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

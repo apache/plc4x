@@ -156,6 +156,7 @@ func AdsReadWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadWriteResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadWriteResponse")
 
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
@@ -180,6 +181,7 @@ func (m *AdsReadWriteResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("AdsReadWriteResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

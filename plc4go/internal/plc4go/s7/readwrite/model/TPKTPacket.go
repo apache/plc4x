@@ -137,6 +137,7 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 }
 
 func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("TPKTPacket")
 
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x03)
@@ -165,6 +166,7 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 
+	io.PopContext("TPKTPacket")
 	return nil
 }
 

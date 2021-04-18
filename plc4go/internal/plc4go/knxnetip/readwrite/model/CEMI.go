@@ -175,6 +175,7 @@ func (m *CEMI) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChildFunction func() error) error {
+	io.PushContext("CEMI")
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(child.MessageCode())
@@ -190,6 +191,7 @@ func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("CEMI")
 	return nil
 }
 

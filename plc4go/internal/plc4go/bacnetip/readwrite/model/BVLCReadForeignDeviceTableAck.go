@@ -108,7 +108,9 @@ func BVLCReadForeignDeviceTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCReadForeignDeviceTableAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCReadForeignDeviceTableAck")
 
+		io.PopContext("BVLCReadForeignDeviceTableAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

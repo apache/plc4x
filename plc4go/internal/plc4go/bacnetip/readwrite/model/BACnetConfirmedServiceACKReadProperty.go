@@ -108,7 +108,9 @@ func BACnetConfirmedServiceACKReadPropertyParse(io utils.ReadBuffer) (*BACnetCon
 
 func (m *BACnetConfirmedServiceACKReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceACKReadProperty")
 
+		io.PopContext("BACnetConfirmedServiceACKReadProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

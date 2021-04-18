@@ -108,7 +108,9 @@ func ApduDataExtKeyWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtKeyWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtKeyWrite")
 
+		io.PopContext("ApduDataExtKeyWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

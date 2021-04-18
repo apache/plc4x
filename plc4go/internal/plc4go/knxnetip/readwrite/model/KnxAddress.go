@@ -113,6 +113,7 @@ func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
 }
 
 func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("KnxAddress")
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.MainGroup)
@@ -135,6 +136,7 @@ func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}
 
+	io.PopContext("KnxAddress")
 	return nil
 }
 

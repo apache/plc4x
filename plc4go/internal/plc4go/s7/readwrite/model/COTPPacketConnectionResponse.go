@@ -147,6 +147,7 @@ func COTPPacketConnectionResponseParse(io utils.ReadBuffer) (*COTPPacket, error)
 
 func (m *COTPPacketConnectionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPPacketConnectionResponse")
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -169,6 +170,7 @@ func (m *COTPPacketConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
+		io.PopContext("COTPPacketConnectionResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

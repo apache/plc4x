@@ -108,7 +108,9 @@ func BACnetServiceAckRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetServi
 
 func (m *BACnetServiceAckRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckRemovedAuthenticate")
 
+		io.PopContext("BACnetServiceAckRemovedAuthenticate")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

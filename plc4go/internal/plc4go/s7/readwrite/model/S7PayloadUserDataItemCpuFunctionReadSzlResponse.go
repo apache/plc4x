@@ -161,6 +161,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 
 		// Const Field (szlItemLength)
 		_szlItemLengthErr := io.WriteUint16("szlItemLength", 16, 28)
@@ -185,6 +186,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 			}
 		}
 
+		io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

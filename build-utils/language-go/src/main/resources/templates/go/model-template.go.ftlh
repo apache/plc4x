@@ -891,6 +891,9 @@ func (m *${type.name}) SerializeParent(io utils.WriteBuffer, child I${type.name}
 <#else>
 func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 </#if>
+	<#if !helper.isDiscriminatedChildTypeDefinition()>
+	io.PushContext("${type.name}")
+	</#if>
 	<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
 	<#if arraySizeInBytesHelpers?has_content>
 		<#list arraySizeInBytesHelpers?keys as key>
@@ -906,6 +909,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#if>
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 	ser := func() error {
+		io.PushContext("${type.name}")
 	</#if>
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -1106,10 +1110,12 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#list>
 
 	<#if helper.isDiscriminatedChildTypeDefinition()>
+		io.PopContext("${type.name}")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 	<#else>
+	io.PopContext("${type.name}")
 	return nil
 	</#if>
 }

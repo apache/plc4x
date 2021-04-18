@@ -210,6 +210,7 @@ func (m *BACnetTag) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error {
+	io.PushContext("BACnetTag")
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
@@ -259,6 +260,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BACnetTag")
 	return nil
 }
 

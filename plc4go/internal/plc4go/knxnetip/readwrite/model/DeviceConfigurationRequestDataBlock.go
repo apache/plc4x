@@ -131,6 +131,7 @@ func DeviceConfigurationRequestDataBlockParse(io utils.ReadBuffer) (*DeviceConfi
 }
 
 func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DeviceConfigurationRequestDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -161,6 +162,7 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) er
 		}
 	}
 
+	io.PopContext("DeviceConfigurationRequestDataBlock")
 	return nil
 }
 

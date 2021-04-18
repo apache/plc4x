@@ -108,7 +108,9 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestDeleteObject")
 
+		io.PopContext("BACnetConfirmedServiceRequestDeleteObject")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

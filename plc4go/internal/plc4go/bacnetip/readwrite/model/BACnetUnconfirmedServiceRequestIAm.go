@@ -245,6 +245,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 
 func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetUnconfirmedServiceRequestIAm")
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0xC4)
@@ -315,6 +316,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
+		io.PopContext("BACnetUnconfirmedServiceRequestIAm")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

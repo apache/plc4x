@@ -131,6 +131,7 @@ func (m *S7Address) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, serializeChildFunction func() error) error {
+	io.PushContext("S7Address")
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.AddressType())
@@ -146,6 +147,7 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("S7Address")
 	return nil
 }
 

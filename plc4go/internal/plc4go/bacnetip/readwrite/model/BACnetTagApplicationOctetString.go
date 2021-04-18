@@ -112,7 +112,9 @@ func BACnetTagApplicationOctetStringParse(io utils.ReadBuffer) (*BACnetTag, erro
 
 func (m *BACnetTagApplicationOctetString) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationOctetString")
 
+		io.PopContext("BACnetTagApplicationOctetString")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

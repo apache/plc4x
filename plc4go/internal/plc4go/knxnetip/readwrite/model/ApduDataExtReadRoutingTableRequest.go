@@ -108,7 +108,9 @@ func ApduDataExtReadRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt,
 
 func (m *ApduDataExtReadRoutingTableRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtReadRoutingTableRequest")
 
+		io.PopContext("ApduDataExtReadRoutingTableRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

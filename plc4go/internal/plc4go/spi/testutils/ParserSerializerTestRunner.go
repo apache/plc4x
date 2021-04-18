@@ -155,7 +155,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					t.Error("Couldn't cast message to Serializable")
 					return
 				}
-				var writeBuffer utils.WriteBuffer
+				var writeBuffer utils.WriteBufferByteBased
 				if littleEndian {
 					writeBuffer = utils.NewLittleEndianWriteBuffer()
 				} else {

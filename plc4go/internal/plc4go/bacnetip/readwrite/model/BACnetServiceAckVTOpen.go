@@ -108,7 +108,9 @@ func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error)
 
 func (m *BACnetServiceAckVTOpen) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckVTOpen")
 
+		io.PopContext("BACnetServiceAckVTOpen")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

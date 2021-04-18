@@ -202,6 +202,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorReadProperty")
 
 		// Const Field (errorClassHeader)
 		_errorClassHeaderErr := io.WriteUint8("errorClassHeader", 5, 0x12)
@@ -249,6 +250,7 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("BACnetErrorReadProperty")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

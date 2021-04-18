@@ -121,6 +121,7 @@ func BVLCOriginalBroadcastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BV
 
 func (m *BVLCOriginalBroadcastNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCOriginalBroadcastNPDU")
 
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
@@ -128,6 +129,7 @@ func (m *BVLCOriginalBroadcastNPDU) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
+		io.PopContext("BVLCOriginalBroadcastNPDU")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

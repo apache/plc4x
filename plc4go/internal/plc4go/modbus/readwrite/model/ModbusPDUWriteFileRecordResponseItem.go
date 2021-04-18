@@ -144,6 +144,7 @@ func ModbusPDUWriteFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUW
 }
 
 func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusPDUWriteFileRecordResponseItem")
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
@@ -183,6 +184,7 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(io utils.WriteBuffer) e
 		}
 	}
 
+	io.PopContext("ModbusPDUWriteFileRecordResponseItem")
 	return nil
 }
 

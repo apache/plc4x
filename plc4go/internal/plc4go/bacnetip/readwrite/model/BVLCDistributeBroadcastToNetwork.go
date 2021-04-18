@@ -108,7 +108,9 @@ func BVLCDistributeBroadcastToNetworkParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCDistributeBroadcastToNetwork) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCDistributeBroadcastToNetwork")
 
+		io.PopContext("BVLCDistributeBroadcastToNetwork")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

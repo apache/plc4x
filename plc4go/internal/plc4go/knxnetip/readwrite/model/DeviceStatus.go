@@ -111,6 +111,7 @@ func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
 }
 
 func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DeviceStatus")
 
 	// Reserved Field (reserved)
 	{
@@ -127,6 +128,7 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}
 
+	io.PopContext("DeviceStatus")
 	return nil
 }
 

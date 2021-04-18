@@ -136,6 +136,7 @@ func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNum
 
 func (m *BACnetTagContext) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagContext")
 
 		// Array Field (data)
 		if m.Data != nil {
@@ -147,6 +148,7 @@ func (m *BACnetTagContext) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		io.PopContext("BACnetTagContext")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

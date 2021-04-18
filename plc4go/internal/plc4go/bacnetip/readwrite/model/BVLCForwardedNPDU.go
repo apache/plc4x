@@ -152,6 +152,7 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 
 func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCForwardedNPDU")
 
 		// Array Field (ip)
 		if m.Ip != nil {
@@ -176,6 +177,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
+		io.PopContext("BVLCForwardedNPDU")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

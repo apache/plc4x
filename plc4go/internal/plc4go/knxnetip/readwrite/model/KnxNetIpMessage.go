@@ -197,6 +197,7 @@ func (m *KnxNetIpMessage) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
+	io.PushContext("KnxNetIpMessage")
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
@@ -232,6 +233,7 @@ func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpM
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("KnxNetIpMessage")
 	return nil
 }
 

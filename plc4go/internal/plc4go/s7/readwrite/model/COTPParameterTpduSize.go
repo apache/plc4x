@@ -121,6 +121,7 @@ func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterTpduSize")
 
 		// Enum field (tpduSize)
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
@@ -129,6 +130,7 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
+		io.PopContext("COTPParameterTpduSize")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

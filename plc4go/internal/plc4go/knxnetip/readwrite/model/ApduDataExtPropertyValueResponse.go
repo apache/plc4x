@@ -176,6 +176,7 @@ func ApduDataExtPropertyValueResponseParse(io utils.ReadBuffer, length uint8) (*
 
 func (m *ApduDataExtPropertyValueResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtPropertyValueResponse")
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -215,6 +216,7 @@ func (m *ApduDataExtPropertyValueResponse) Serialize(io utils.WriteBuffer) error
 			}
 		}
 
+		io.PopContext("ApduDataExtPropertyValueResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

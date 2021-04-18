@@ -123,6 +123,7 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 }
 
 func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AdsStampHeader")
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.Timestamp)
@@ -148,6 +149,7 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
+	io.PopContext("AdsStampHeader")
 	return nil
 }
 
