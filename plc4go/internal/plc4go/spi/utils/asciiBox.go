@@ -20,10 +20,8 @@
 package utils
 
 import (
-	"fmt"
 	"github.com/rs/zerolog/log"
 	"math"
-	"reflect"
 	"strings"
 )
 
@@ -49,55 +47,6 @@ func (m AsciiBox) Width() int {
 type AsciiBoxer interface {
 	// Box where int param is the proposed width
 	Box(string, int) AsciiBox
-}
-
-func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
-	switch anything.(type) {
-	case nil:
-		return ""
-	case AsciiBoxer:
-		if reflect.ValueOf(anything).IsNil() {
-			return ""
-		}
-		// A box usually has its own name
-		return anything.(AsciiBoxer).Box(name, charWidth)
-	case bool:
-		return BoxString(name, fmt.Sprintf("%t", anything), 0)
-	case uint, uint8, uint16, uint32, uint64, int, int8, int16, int32, int64, float32, float64:
-		// TODO: include hex later with this line
-		//return BoxString(name, fmt.Sprintf("%#0*x %d", unsafe.Sizeof(anything)/2, anything, anything), 0)
-		return BoxString(name, fmt.Sprintf("%d", anything), 0)
-	case []byte:
-		return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
-	case string:
-		return BoxString(name, anything.(string), charWidth)
-	case fmt.Stringer:
-		return BoxString(name, anything.(fmt.Stringer).String(), 0)
-	default:
-		valueOf := reflect.ValueOf(anything)
-		if valueOf.IsNil() {
-			return ""
-		}
-		switch valueOf.Kind() {
-		case reflect.Bool:
-			return BoxString(name, fmt.Sprintf("%t", anything), 0)
-		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Int,
-			reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Float32, reflect.Float64:
-			// TODO: include hex here somehow. Seems that %x does print strange hex values here
-			return BoxString(name, fmt.Sprintf("%d", anything), 0)
-		case reflect.Slice, reflect.Array:
-			boxes := make([]AsciiBox, valueOf.Len())
-			for i := 0; i < valueOf.Len(); i++ {
-				index := valueOf.Index(i)
-				boxes[i] = BoxAnything("", index.Interface(), charWidth-2)
-			}
-			return BoxBox(name, AlignBoxes(boxes, charWidth), 0)
-		case reflect.Ptr, reflect.Uintptr:
-			return BoxAnything(name, valueOf.Elem().Interface(), charWidth)
-		default:
-			return BoxString(name, fmt.Sprintf("0x%x", anything.(interface{})), charWidth)
-		}
-	}
 }
 
 // BoxBox boxes a box

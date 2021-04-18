@@ -28,67 +28,6 @@ func init() {
 	DebugAsciiBox = true
 }
 
-func TestBoxAnything(t *testing.T) {
-	type args struct {
-		name      string
-		anything  interface{}
-		charWidth int
-	}
-	tests := []struct {
-		name string
-		args args
-		want AsciiBox
-	}{
-		{
-			name: "test bool",
-			args: args{
-				name:      "exampleBool",
-				anything:  true,
-				charWidth: 0,
-			},
-			want: `
-╔═exampleBool╗
-║    true    ║
-╚════════════╝
-`,
-		},
-		{
-			name: "test int",
-			args: args{
-				name:      "exampleInt",
-				anything:  1,
-				charWidth: 0,
-			},
-			want: `
-╔═exampleInt╗
-║     1     ║
-╚═══════════╝
-`,
-		},
-		{
-			name: "test int 123123123",
-			args: args{
-				name:      "exampleInt",
-				anything:  123123123,
-				charWidth: 0,
-			},
-			want: `
-╔═exampleInt╗
-║ 123123123 ║
-╚═══════════╝
-`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.want = trimBox(tt.want)
-			if got := BoxAnything(tt.args.name, tt.args.anything, tt.args.charWidth); got != tt.want {
-				t.Errorf("BoxAnything() = '\n%v\n', want '\n%v\n'", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestBoxSideBySide(t *testing.T) {
 	type args struct {
 		box1 AsciiBox
