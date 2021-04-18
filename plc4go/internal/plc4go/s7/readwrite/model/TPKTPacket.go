@@ -226,7 +226,7 @@ func (m TPKTPacket) Box(name string, width int) utils.AsciiBox {
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	// Const Field (protocolId)
-	boxes = append(boxes, utils.BoxAnything("ProtocolId", 0x03, -1))
+	boxes = append(boxes, utils.BoxAnything("ProtocolId", uint8(0x03), -1))
 	// Reserved Field (reserved)
 	// reserved field can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))

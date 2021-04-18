@@ -338,17 +338,17 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name stri
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (vendorIdHeader)
-		boxes = append(boxes, utils.BoxAnything("VendorIdHeader", 0x09, -1))
+		boxes = append(boxes, utils.BoxAnything("VendorIdHeader", uint8(0x09), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, -1))
 		// Const Field (serviceNumberHeader)
-		boxes = append(boxes, utils.BoxAnything("ServiceNumberHeader", 0x1A, -1))
+		boxes = append(boxes, utils.BoxAnything("ServiceNumberHeader", uint8(0x1A), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ServiceNumber", m.ServiceNumber, -1))
 		// Const Field (listOfValuesOpeningTag)
-		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", 0x2E, -1))
+		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", uint8(0x2E), -1))
 		// Array Field (values)
 		if m.Values != nil {
 			// Simple array base type int8 will be rendered one by one
@@ -359,7 +359,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name stri
 			boxes = append(boxes, utils.BoxBox("Values", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (listOfValuesClosingTag)
-		boxes = append(boxes, utils.BoxAnything("ListOfValuesClosingTag", 0x2F, -1))
+		boxes = append(boxes, utils.BoxAnything("ListOfValuesClosingTag", uint8(0x2F), -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

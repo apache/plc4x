@@ -364,17 +364,17 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (deviceInstanceLowLimitHeader)
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimitHeader", 0x0B, -1))
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimitHeader", uint8(0x0B), -1))
 		// Simple field (case simple)
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceLowLimit", m.DeviceInstanceLowLimit, -1))
 		// Const Field (deviceInstanceHighLimitHeader)
-		boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimitHeader", 0x1B, -1))
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimitHeader", uint8(0x1B), -1))
 		// Simple field (case simple)
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceHighLimit", m.DeviceInstanceHighLimit, -1))
 		// Const Field (objectNameHeader)
-		boxes = append(boxes, utils.BoxAnything("ObjectNameHeader", 0x3D, -1))
+		boxes = append(boxes, utils.BoxAnything("ObjectNameHeader", uint8(0x3D), -1))
 		// Implicit Field (objectNameLength)
 		objectNameLength := uint8(uint8(uint8(len(m.ObjectName))) + uint8(uint8(1)))
 		// uint8 can be boxed as anything with the least amount of space

@@ -474,11 +474,11 @@ func (m *S7Message) BoxParent(name string, width int, childBoxer func() []utils.
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	// Const Field (protocolId)
-	boxes = append(boxes, utils.BoxAnything("ProtocolId", 0x32, -1))
+	boxes = append(boxes, utils.BoxAnything("ProtocolId", uint8(0x32), -1))
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	// messageType := uint8(child.MessageType())
+	messageType := uint8(m.Child.MessageType())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("MessageType", messageType, -1))
+	boxes = append(boxes, utils.BoxAnything("MessageType", messageType, -1))
 	// Reserved Field (reserved)
 	// reserved field can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("reserved", uint16(0x0000), -1))

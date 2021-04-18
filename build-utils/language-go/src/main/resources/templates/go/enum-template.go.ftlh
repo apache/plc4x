@@ -219,6 +219,12 @@ func (m ${type.name}) Box(s string, i int) utils.AsciiBox {
 	if s != "" {
 		boxName += "/" + s
 	}
-	return utils.BoxString(boxName, fmt.Sprintf("%x %s", ${baseType}(m), m.name()), -1)
+	<#if helper.isSimpleTypeReference(type.type) && !helper.isStringTypeReference(type.type)>
+		<#assign simpleTypeReference=type.type>
+		<#assign hexDigits=(simpleTypeReference.getSizeInBits()/4)?ceiling>
+	<#else>
+		<#assign hexDigits=2>
+	</#if>
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", ${hexDigits}, ${baseType}(m), m.name()), -1)
 }
 </#outputformat>

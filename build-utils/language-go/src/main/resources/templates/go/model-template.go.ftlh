@@ -1426,20 +1426,20 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 				<#case "const">
 					<#assign constField = field>
 					<#assign simpleTypeReference = constField.type>
+					<#assign baseType = helper.getLanguageTypeNameForTypeReference(simpleTypeReference)>
 	// Const Field (${constField.name})
-	boxes = append(boxes, utils.BoxAnything("${constField.name?cap_first}", ${constField.referenceValue}, -1))
+	boxes = append(boxes, utils.BoxAnything("${constField.name?cap_first}", ${baseType}(${constField.referenceValue}), -1))
 					<#break>
 				<#case "discriminator">
 					<#assign discriminatorField = field>
 					<#assign simpleTypeReference = discriminatorField.type>
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-	// ${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
+	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(m.Child.${discriminatorField.name?cap_first}())
+	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", ${discriminatorField.name}, -1))
 					<#if helper.isEnumField(field)>
 	// TODO: implement boxing on enum
 	//_${discriminatorField.name}Err := ${discriminatorField.name}.Box(discriminatorField.name, -1)
-					<#else>
-	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", ${discriminatorField.name}, -1))
 					</#if>
 					<#break>
 				<#case "enum">

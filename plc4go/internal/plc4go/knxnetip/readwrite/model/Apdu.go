@@ -300,9 +300,9 @@ func (m *Apdu) BoxParent(name string, width int, childBoxer func() []utils.Ascii
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	// Discriminator Field (control) (Used as input to a switch field)
-	// control := uint8(child.Control())
+	control := uint8(m.Child.Control())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("Control", control, -1))
+	boxes = append(boxes, utils.BoxAnything("Control", control, -1))
 	// Simple field (case simple)
 	// bool can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("Numbered", m.Numbered, -1))

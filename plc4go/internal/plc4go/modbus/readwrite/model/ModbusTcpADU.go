@@ -255,7 +255,7 @@ func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
 	// uint16 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, -1))
 	// Const Field (protocolIdentifier)
-	boxes = append(boxes, utils.BoxAnything("ProtocolIdentifier", 0x0000, -1))
+	boxes = append(boxes, utils.BoxAnything("ProtocolIdentifier", uint16(0x0000), -1))
 	// Implicit Field (length)
 	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
 	// uint16 can be boxed as anything with the least amount of space

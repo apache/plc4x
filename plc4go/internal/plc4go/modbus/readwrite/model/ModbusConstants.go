@@ -155,6 +155,6 @@ func (m ModbusConstants) Box(name string, width int) utils.AsciiBox {
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	// Const Field (modbusTcpDefaultPort)
-	boxes = append(boxes, utils.BoxAnything("ModbusTcpDefaultPort", 502, -1))
+	boxes = append(boxes, utils.BoxAnything("ModbusTcpDefaultPort", uint16(502), -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

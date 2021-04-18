@@ -344,7 +344,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) uti
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (len)
-		boxes = append(boxes, utils.BoxAnything("Len", 1, -1))
+		boxes = append(boxes, utils.BoxAnything("Len", uint8(1), -1))
 		// Simple field (case simple)
 		// bool can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, -1))

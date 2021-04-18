@@ -218,5 +218,5 @@ func (m BACnetNetworkType) Box(s string, i int) utils.AsciiBox {
 	if s != "" {
 		boxName += "/" + s
 	}
-	return utils.BoxString(boxName, fmt.Sprintf("%x %s", uint8(m), m.name()), -1)
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

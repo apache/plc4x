@@ -246,7 +246,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Box(name string, width 
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (szlItemLength)
-		boxes = append(boxes, utils.BoxAnything("SzlItemLength", 28, -1))
+		boxes = append(boxes, utils.BoxAnything("SzlItemLength", uint16(28), -1))
 		// Implicit Field (szlItemCount)
 		szlItemCount := uint16(uint16(len(m.Items)))
 		// uint16 can be boxed as anything with the least amount of space

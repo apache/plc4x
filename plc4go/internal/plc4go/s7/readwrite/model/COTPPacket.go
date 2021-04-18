@@ -426,9 +426,9 @@ func (m *COTPPacket) BoxParent(name string, width int, childBoxer func() []utils
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("HeaderLength", headerLength, -1))
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	// tpduCode := uint8(child.TpduCode())
+	tpduCode := uint8(m.Child.TpduCode())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("TpduCode", tpduCode, -1))
+	boxes = append(boxes, utils.BoxAnything("TpduCode", tpduCode, -1))
 	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	// Array Field (parameters)

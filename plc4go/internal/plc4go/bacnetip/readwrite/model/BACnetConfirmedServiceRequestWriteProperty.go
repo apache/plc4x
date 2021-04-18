@@ -437,7 +437,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) 
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (objectIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", 0x0C, -1))
+		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", uint8(0x0C), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, -1))
@@ -445,7 +445,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) 
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, -1))
 		// Const Field (propertyIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierHeader", 0x03, -1))
+		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierHeader", uint8(0x03), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, -1))
@@ -459,11 +459,11 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) 
 			boxes = append(boxes, utils.BoxBox("PropertyIdentifier", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (openingTag)
-		boxes = append(boxes, utils.BoxAnything("OpeningTag", 0x3E, -1))
+		boxes = append(boxes, utils.BoxAnything("OpeningTag", uint8(0x3E), -1))
 		// Complex field (case complex)
 		boxes = append(boxes, m.Value.Box("value", width-2))
 		// Const Field (closingTag)
-		boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x3F, -1))
+		boxes = append(boxes, utils.BoxAnything("ClosingTag", uint8(0x3F), -1))
 		// Optional Field (priority) (Can be skipped, if the value is null)
 		var priority *BACnetTag = nil
 		if m.Priority != nil {

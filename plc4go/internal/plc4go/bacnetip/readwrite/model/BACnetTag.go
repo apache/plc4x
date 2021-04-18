@@ -607,9 +607,9 @@ func (m *BACnetTag) BoxParent(name string, width int, childBoxer func() []utils.
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, -1))
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-	// contextSpecificTag := uint8(child.ContextSpecificTag())
+	contextSpecificTag := uint8(m.Child.ContextSpecificTag())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", contextSpecificTag, -1))
+	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", contextSpecificTag, -1))
 	// Simple field (case simple)
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, -1))

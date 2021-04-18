@@ -439,12 +439,12 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) u
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (subscriberProcessIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifierHeader", 0x09, -1))
+		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifierHeader", uint8(0x09), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, -1))
 		// Const Field (monitoredObjectIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("MonitoredObjectIdentifierHeader", 0x1C, -1))
+		boxes = append(boxes, utils.BoxAnything("MonitoredObjectIdentifierHeader", uint8(0x1C), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, -1))
@@ -452,14 +452,14 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Box(name string, width int) u
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("MonitoredObjectInstanceNumber", m.MonitoredObjectInstanceNumber, -1))
 		// Const Field (issueConfirmedNotificationsHeader)
-		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsHeader", 0x29, -1))
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsHeader", uint8(0x29), -1))
 		// Const Field (issueConfirmedNotificationsSkipBits)
-		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsSkipBits", 0x00, -1))
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsSkipBits", uint8(0x00), -1))
 		// Simple field (case simple)
 		// bool can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotifications", m.IssueConfirmedNotifications, -1))
 		// Const Field (lifetimeHeader)
-		boxes = append(boxes, utils.BoxAnything("LifetimeHeader", 0x07, -1))
+		boxes = append(boxes, utils.BoxAnything("LifetimeHeader", uint8(0x07), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, -1))

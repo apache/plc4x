@@ -44,7 +44,7 @@ func TestBoxAnything(t *testing.T) {
 			},
 			want: `
 ╔═exampleBool╗
-║    true    ║
+║  b1 true   ║
 ╚════════════╝
 `,
 		},
@@ -56,9 +56,9 @@ func TestBoxAnything(t *testing.T) {
 				charWidth: 0,
 			},
 			want: `
-╔═exampleInt╗
-║     1     ║
-╚═══════════╝
+╔═exampleInt═════════╗
+║0x0000000000000001 1║
+╚════════════════════╝
 `,
 		},
 		{
@@ -69,9 +69,9 @@ func TestBoxAnything(t *testing.T) {
 				charWidth: 0,
 			},
 			want: `
-╔═exampleInt╗
-║ 123123123 ║
-╚═══════════╝
+╔═exampleInt═════════════════╗
+║0x000000000756b5b3 123123123║
+╚════════════════════════════╝
 `,
 		},
 	}

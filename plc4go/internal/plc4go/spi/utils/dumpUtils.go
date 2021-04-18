@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"reflect"
+	"unsafe"
 )
 
 // BoxedDump dumps a 56+2 char wide hex string
@@ -75,11 +76,14 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 		// A box usually has its own name
 		return anything.(AsciiBoxer).Box(name, charWidth)
 	case bool:
-		return BoxString(name, fmt.Sprintf("%t", anything), 0)
+		asInt := 0
+		if anything.(bool) {
+			asInt = 1
+		}
+		return BoxString(name, fmt.Sprintf("b%d %t", asInt, anything), 0)
 	case uint, uint8, uint16, uint32, uint64, int, int8, int16, int32, int64, float32, float64:
-		// TODO: include hex later with this line
-		//return BoxString(name, fmt.Sprintf("%#0*x %d", unsafe.Sizeof(anything)/2, anything, anything), 0)
-		return BoxString(name, fmt.Sprintf("%d", anything), 0)
+		hexDigits := reflect.TypeOf(anything).Bits() / 4
+		return BoxString(name, fmt.Sprintf("%#0*x %d", hexDigits, anything, anything), 0)
 	case []byte:
 		return AsciiBox(DumpFixedWidth(anything.([]byte), charWidth))
 	case string:
@@ -96,8 +100,7 @@ func BoxAnything(name string, anything interface{}, charWidth int) AsciiBox {
 			return BoxString(name, fmt.Sprintf("%t", anything), 0)
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Int,
 			reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Float32, reflect.Float64:
-			// TODO: include hex here somehow. Seems that %x does print strange hex values here
-			return BoxString(name, fmt.Sprintf("%d", anything), 0)
+			return BoxString(name, fmt.Sprintf("%#0*x %d", unsafe.Sizeof(valueOf.Elem())/2, valueOf.Elem(), anything), 0)
 		case reflect.Slice, reflect.Array:
 			boxes := make([]AsciiBox, valueOf.Len())
 			for i := 0; i < valueOf.Len(); i++ {

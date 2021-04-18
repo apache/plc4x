@@ -419,16 +419,16 @@ func (m *LDataFrame) BoxParent(name string, width int, childBoxer func() []utils
 	// bool can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, -1))
 	// Discriminator Field (polling) (Used as input to a switch field)
-	// polling := bool(child.Polling())
+	polling := bool(m.Child.Polling())
 	// bool can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("Polling", polling, -1))
+	boxes = append(boxes, utils.BoxAnything("Polling", polling, -1))
 	// Simple field (case simple)
 	// bool can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, -1))
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	// notAckFrame := bool(child.NotAckFrame())
+	notAckFrame := bool(m.Child.NotAckFrame())
 	// bool can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("NotAckFrame", notAckFrame, -1))
+	boxes = append(boxes, utils.BoxAnything("NotAckFrame", notAckFrame, -1))
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.Priority)
 	boxes = append(boxes, priority.Box("priority", -1))

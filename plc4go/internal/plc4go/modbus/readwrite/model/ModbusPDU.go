@@ -826,13 +826,13 @@ func (m *ModbusPDU) BoxParent(name string, width int, childBoxer func() []utils.
 	}
 	boxes := make([]utils.AsciiBox, 0)
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	// errorFlag := bool(child.ErrorFlag())
+	errorFlag := bool(m.Child.ErrorFlag())
 	// bool can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("ErrorFlag", errorFlag, -1))
+	boxes = append(boxes, utils.BoxAnything("ErrorFlag", errorFlag, -1))
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	// functionFlag := uint8(child.FunctionFlag())
+	functionFlag := uint8(m.Child.FunctionFlag())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("FunctionFlag", functionFlag, -1))
+	boxes = append(boxes, utils.BoxAnything("FunctionFlag", functionFlag, -1))
 	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)

@@ -536,12 +536,12 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (subscriberProcessIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifierHeader", 0x09, -1))
+		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifierHeader", uint8(0x09), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("SubscriberProcessIdentifier", m.SubscriberProcessIdentifier, -1))
 		// Const Field (monitoredObjectIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("MonitoredObjectIdentifierHeader", 0x1C, -1))
+		boxes = append(boxes, utils.BoxAnything("MonitoredObjectIdentifierHeader", uint8(0x1C), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("MonitoredObjectType", m.MonitoredObjectType, -1))
@@ -549,7 +549,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("MonitoredObjectInstanceNumber", m.MonitoredObjectInstanceNumber, -1))
 		// Const Field (issueConfirmedNotificationsHeader)
-		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsHeader", 0x2C, -1))
+		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsHeader", uint8(0x2C), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsType", m.IssueConfirmedNotificationsType, -1))
@@ -557,7 +557,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("IssueConfirmedNotificationsInstanceNumber", m.IssueConfirmedNotificationsInstanceNumber, -1))
 		// Const Field (lifetimeHeader)
-		boxes = append(boxes, utils.BoxAnything("LifetimeHeader", 0x07, -1))
+		boxes = append(boxes, utils.BoxAnything("LifetimeHeader", uint8(0x07), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, -1))
@@ -571,7 +571,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 			boxes = append(boxes, utils.BoxBox("LifetimeSeconds", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (listOfValuesOpeningTag)
-		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", 0x4E, -1))
+		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", uint8(0x4E), -1))
 		// Array Field (notifications)
 		if m.Notifications != nil {
 			// Complex array base type
@@ -582,7 +582,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 			boxes = append(boxes, utils.BoxBox("Notifications", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (listOfValuesClosingTag)
-		boxes = append(boxes, utils.BoxAnything("ListOfValuesClosingTag", 0x4F, -1))
+		boxes = append(boxes, utils.BoxAnything("ListOfValuesClosingTag", uint8(0x4F), -1))
 		return boxes
 	}
 	return m.Parent.BoxParent(boxName, width, childBoxer)

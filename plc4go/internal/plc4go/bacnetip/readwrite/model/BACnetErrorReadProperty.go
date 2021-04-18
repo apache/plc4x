@@ -343,7 +343,7 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (errorClassHeader)
-		boxes = append(boxes, utils.BoxAnything("ErrorClassHeader", 0x12, -1))
+		boxes = append(boxes, utils.BoxAnything("ErrorClassHeader", uint8(0x12), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, -1))
@@ -357,7 +357,7 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 			boxes = append(boxes, utils.BoxBox("ErrorClass", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (errorCodeHeader)
-		boxes = append(boxes, utils.BoxAnything("ErrorCodeHeader", 0x12, -1))
+		boxes = append(boxes, utils.BoxAnything("ErrorCodeHeader", uint8(0x12), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, -1))

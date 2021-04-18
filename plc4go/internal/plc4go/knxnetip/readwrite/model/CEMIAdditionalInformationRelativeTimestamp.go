@@ -203,7 +203,7 @@ func (m CEMIAdditionalInformationRelativeTimestamp) Box(name string, width int) 
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (len)
-		boxes = append(boxes, utils.BoxAnything("Len", 2, -1))
+		boxes = append(boxes, utils.BoxAnything("Len", uint8(2), -1))
 		// Complex field (case complex)
 		boxes = append(boxes, m.RelativeTimestamp.Box("relativeTimestamp", width-2))
 		return boxes

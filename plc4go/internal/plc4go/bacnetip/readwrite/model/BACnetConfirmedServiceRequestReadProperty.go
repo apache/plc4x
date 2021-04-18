@@ -326,7 +326,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) u
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Const Field (objectIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", 0x0C, -1))
+		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", uint8(0x0C), -1))
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, -1))
@@ -334,7 +334,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) u
 		// uint32 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, -1))
 		// Const Field (propertyIdentifierHeader)
-		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierHeader", 0x03, -1))
+		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierHeader", uint8(0x03), -1))
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, -1))

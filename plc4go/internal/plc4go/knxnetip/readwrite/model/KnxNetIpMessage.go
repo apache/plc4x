@@ -511,11 +511,11 @@ func (m *KnxNetIpMessage) BoxParent(name string, width int, childBoxer func() []
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("HeaderLength", headerLength, -1))
 	// Const Field (protocolVersion)
-	boxes = append(boxes, utils.BoxAnything("ProtocolVersion", 0x10, -1))
+	boxes = append(boxes, utils.BoxAnything("ProtocolVersion", uint8(0x10), -1))
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	// msgType := uint16(child.MsgType())
+	msgType := uint16(m.Child.MsgType())
 	// uint16 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("MsgType", msgType, -1))
+	boxes = append(boxes, utils.BoxAnything("MsgType", msgType, -1))
 	// Implicit Field (totalLength)
 	totalLength := uint16(uint16(m.LengthInBytes()))
 	// uint16 can be boxed as anything with the least amount of space

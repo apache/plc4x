@@ -276,9 +276,9 @@ func (m *ConnectionRequestInformation) BoxParent(name string, width int, childBo
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	// connectionType := uint8(child.ConnectionType())
+	connectionType := uint8(m.Child.ConnectionType())
 	// uint8 can be boxed as anything with the least amount of space
-	// boxes = append(boxes, utils.BoxAnything("ConnectionType", connectionType, -1))
+	boxes = append(boxes, utils.BoxAnything("ConnectionType", connectionType, -1))
 	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
 	boxes = append(boxes, childBoxer()...)
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)

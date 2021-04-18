@@ -439,10 +439,10 @@ func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxBox("PropertyIdentifier", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	// Const Field (openTag)
-	boxes = append(boxes, utils.BoxAnything("OpenTag", 0x2e, -1))
+	boxes = append(boxes, utils.BoxAnything("OpenTag", uint8(0x2e), -1))
 	// Complex field (case complex)
 	boxes = append(boxes, m.Value.Box("value", width-2))
 	// Const Field (closingTag)
-	boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x2f, -1))
+	boxes = append(boxes, utils.BoxAnything("ClosingTag", uint8(0x2f), -1))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }
