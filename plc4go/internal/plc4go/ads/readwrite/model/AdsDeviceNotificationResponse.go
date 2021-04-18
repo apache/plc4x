@@ -100,7 +100,7 @@ func (m *AdsDeviceNotificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationResponse{

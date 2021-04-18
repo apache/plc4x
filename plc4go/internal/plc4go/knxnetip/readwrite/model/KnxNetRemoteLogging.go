@@ -102,7 +102,7 @@ func (m *KnxNetRemoteLogging) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetRemoteLoggingParse(io *utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetRemoteLoggingParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)

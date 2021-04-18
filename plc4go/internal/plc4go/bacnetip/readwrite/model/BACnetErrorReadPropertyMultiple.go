@@ -96,7 +96,7 @@ func (m *BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadPropertyMultiple{

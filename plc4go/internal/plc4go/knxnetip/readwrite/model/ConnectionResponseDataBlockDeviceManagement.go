@@ -96,7 +96,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(io *utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockDeviceManagement{

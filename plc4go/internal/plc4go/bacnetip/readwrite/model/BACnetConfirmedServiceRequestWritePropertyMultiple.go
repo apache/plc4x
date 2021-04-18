@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBytes() uin
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWritePropertyMultiple{

@@ -98,7 +98,7 @@ func (m *ModbusTcpADU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
+func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)

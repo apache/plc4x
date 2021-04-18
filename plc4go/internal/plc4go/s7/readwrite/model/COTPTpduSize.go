@@ -155,7 +155,7 @@ func (m COTPTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPTpduSizeParse(io *utils.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(io utils.ReadBuffer) (COTPTpduSize, error) {
 	val, err := io.ReadInt8(8)
 	if err != nil {
 		return 0, nil

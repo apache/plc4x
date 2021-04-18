@@ -106,7 +106,7 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)

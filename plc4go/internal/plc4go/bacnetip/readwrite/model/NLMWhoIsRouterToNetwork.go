@@ -105,7 +105,7 @@ func (m *NLMWhoIsRouterToNetwork) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NLMWhoIsRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMWhoIsRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
 
 	// Array field (destinationNetworkAddress)
 	// Length array

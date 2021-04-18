@@ -96,7 +96,7 @@ func (m *BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadPropertyMultiple{

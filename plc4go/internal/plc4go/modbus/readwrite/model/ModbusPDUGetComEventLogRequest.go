@@ -104,7 +104,7 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{

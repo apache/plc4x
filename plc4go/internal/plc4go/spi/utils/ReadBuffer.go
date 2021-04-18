@@ -28,17 +28,33 @@ import (
 	"math/big"
 )
 
-type ReadBuffer struct {
-	data      []uint8
-	reader    *bitio.Reader
-	pos       uint64
-	byteOrder binary.ByteOrder
+type ReadBuffer interface {
+	Reset()
+	GetPos() uint16
+	GetBytes() []uint8
+	GetTotalBytes() uint64
+	HasMore(bitLength uint8) bool
+	PeekByte(offset uint8) uint8
+	ReadBit() (bool, error)
+	ReadUint8(bitLength uint8) (uint8, error)
+	ReadUint16(bitLength uint8) (uint16, error)
+	ReadUint32(bitLength uint8) (uint32, error)
+	ReadUint64(bitLength uint8) (uint64, error)
+	ReadInt8(bitLength uint8) (int8, error)
+	ReadInt16(bitLength uint8) (int16, error)
+	ReadInt32(bitLength uint8) (int32, error)
+	ReadInt64(bitLength uint8) (int64, error)
+	ReadBigInt(bitLength uint64) (*big.Int, error)
+	ReadFloat32(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float32, error)
+	ReadFloat64(_ bool, exponentBitLength uint8, mantissaBitLength uint8) (float64, error)
+	ReadBigFloat(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (*big.Float, error)
+	ReadString(bitLength uint32) (string, error)
 }
 
-func NewReadBuffer(data []uint8) *ReadBuffer {
+func NewReadBuffer(data []uint8) ReadBuffer {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
-	return &ReadBuffer{
+	return &readBuffer{
 		data:      data,
 		reader:    reader,
 		pos:       uint64(0),
@@ -46,10 +62,10 @@ func NewReadBuffer(data []uint8) *ReadBuffer {
 	}
 }
 
-func NewLittleEndianReadBuffer(data []uint8) *ReadBuffer {
+func NewLittleEndianReadBuffer(data []uint8) ReadBuffer {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
-	return &ReadBuffer{
+	return &readBuffer{
 		data:      data,
 		reader:    reader,
 		pos:       uint64(0),
@@ -57,37 +73,56 @@ func NewLittleEndianReadBuffer(data []uint8) *ReadBuffer {
 	}
 }
 
-func (rb *ReadBuffer) Reset() {
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type readBuffer struct {
+	data      []uint8
+	reader    *bitio.Reader
+	pos       uint64
+	byteOrder binary.ByteOrder
+}
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
+
+func (rb *readBuffer) Reset() {
 	rb.pos = uint64(0)
 	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
 }
 
-func (rb *ReadBuffer) GetPos() uint16 {
+func (rb *readBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
 
-func (rb *ReadBuffer) GetBytes() []uint8 {
+func (rb *readBuffer) GetBytes() []uint8 {
 	return rb.data
 }
 
-func (rb *ReadBuffer) GetTotalBytes() uint64 {
+func (rb *readBuffer) GetTotalBytes() uint64 {
 	return uint64(len(rb.data))
 }
 
-func (rb *ReadBuffer) HasMore(bitLength uint8) bool {
+func (rb *readBuffer) HasMore(bitLength uint8) bool {
 	return (rb.pos + uint64(bitLength)) <= (uint64(len(rb.data)) * 8)
 }
 
-func (rb *ReadBuffer) PeekByte(offset uint8) uint8 {
+func (rb *readBuffer) PeekByte(offset uint8) uint8 {
 	panic("Not implemented")
 }
 
-func (rb *ReadBuffer) ReadBit() (bool, error) {
+func (rb *readBuffer) ReadBit() (bool, error) {
 	rb.pos += 1
 	return rb.reader.ReadBool()
 }
 
-func (rb *ReadBuffer) ReadUint8(bitLength uint8) (uint8, error) {
+func (rb *readBuffer) ReadUint8(bitLength uint8) (uint8, error) {
 	rb.pos += uint64(bitLength)
 	res := uint8(rb.reader.TryReadBits(bitLength))
 	if rb.reader.TryError != nil {
@@ -96,7 +131,7 @@ func (rb *ReadBuffer) ReadUint8(bitLength uint8) (uint8, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadUint16(bitLength uint8) (uint16, error) {
+func (rb *readBuffer) ReadUint16(bitLength uint8) (uint16, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -113,7 +148,7 @@ func (rb *ReadBuffer) ReadUint16(bitLength uint8) (uint16, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadUint32(bitLength uint8) (uint32, error) {
+func (rb *readBuffer) ReadUint32(bitLength uint8) (uint32, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -130,7 +165,7 @@ func (rb *ReadBuffer) ReadUint32(bitLength uint8) (uint32, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadUint64(bitLength uint8) (uint64, error) {
+func (rb *readBuffer) ReadUint64(bitLength uint8) (uint64, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -147,7 +182,7 @@ func (rb *ReadBuffer) ReadUint64(bitLength uint8) (uint64, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadInt8(bitLength uint8) (int8, error) {
+func (rb *readBuffer) ReadInt8(bitLength uint8) (int8, error) {
 	rb.pos += uint64(bitLength)
 	res := int8(rb.reader.TryReadBits(bitLength))
 	if rb.reader.TryError != nil {
@@ -156,7 +191,7 @@ func (rb *ReadBuffer) ReadInt8(bitLength uint8) (int8, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadInt16(bitLength uint8) (int16, error) {
+func (rb *readBuffer) ReadInt16(bitLength uint8) (int16, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -173,7 +208,7 @@ func (rb *ReadBuffer) ReadInt16(bitLength uint8) (int16, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadInt32(bitLength uint8) (int32, error) {
+func (rb *readBuffer) ReadInt32(bitLength uint8) (int32, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -190,7 +225,7 @@ func (rb *ReadBuffer) ReadInt32(bitLength uint8) (int32, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
+func (rb *readBuffer) ReadInt64(bitLength uint8) (int64, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigInt(uint64(bitLength))
@@ -207,7 +242,7 @@ func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadBigInt(bitLength uint64) (*big.Int, error) {
+func (rb *readBuffer) ReadBigInt(bitLength uint64) (*big.Int, error) {
 	// TODO: highly experimental remove this comment when tested or verifyed
 	res := big.NewInt(0)
 
@@ -258,7 +293,7 @@ func (rb *ReadBuffer) ReadBigInt(bitLength uint64) (*big.Int, error) {
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadFloat32(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float32, error) {
+func (rb *readBuffer) ReadFloat32(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (float32, error) {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		bigInt, err := rb.ReadBigFloat(signed, exponentBitLength, mantissaBitLength)
@@ -306,7 +341,7 @@ func (rb *ReadBuffer) ReadFloat32(signed bool, exponentBitLength uint8, mantissa
 	}
 }
 
-func (rb *ReadBuffer) ReadFloat64(_ bool, exponentBitLength uint8, mantissaBitLength uint8) (float64, error) {
+func (rb *readBuffer) ReadFloat64(_ bool, exponentBitLength uint8, mantissaBitLength uint8) (float64, error) {
 	bitLength := 1 + exponentBitLength + mantissaBitLength
 	rb.pos += uint64(bitLength)
 	uintValue := rb.reader.TryReadBits(bitLength)
@@ -322,7 +357,7 @@ func (rb *ReadBuffer) ReadFloat64(_ bool, exponentBitLength uint8, mantissaBitLe
 	return res, nil
 }
 
-func (rb *ReadBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (*big.Float, error) {
+func (rb *readBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantissaBitLength uint8) (*big.Float, error) {
 	readFloat64, err := rb.ReadFloat64(signed, exponentBitLength, mantissaBitLength)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error reading float64")
@@ -330,7 +365,7 @@ func (rb *ReadBuffer) ReadBigFloat(signed bool, exponentBitLength uint8, mantiss
 	return big.NewFloat(readFloat64), nil
 }
 
-func (rb *ReadBuffer) ReadString(bitLength uint32) (string, error) {
+func (rb *readBuffer) ReadString(bitLength uint32) (string, error) {
 	bigInt, err := rb.ReadBigInt(uint64(bitLength))
 	if err != nil {
 		return "", errors.Wrap(err, "Error reading big int")

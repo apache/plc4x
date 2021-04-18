@@ -121,7 +121,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
 
 	// Const Field (szlItemLength)
 	szlItemLength, _szlItemLengthErr := io.ReadUint16(16)

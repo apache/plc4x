@@ -112,7 +112,7 @@ func (m *AdsMultiRequestItemWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsMultiRequestItemWriteParse(io *utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+func AdsMultiRequestItemWriteParse(io utils.ReadBuffer) (*AdsMultiRequestItem, error) {
 
 	// Simple Field (itemIndexGroup)
 	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)

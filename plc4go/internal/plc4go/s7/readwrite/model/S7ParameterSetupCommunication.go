@@ -120,7 +120,7 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

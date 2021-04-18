@@ -96,7 +96,7 @@ func (m *ApduDataIndividualAddressWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataIndividualAddressWriteParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataIndividualAddressWriteParse(io utils.ReadBuffer) (*ApduData, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressWrite{

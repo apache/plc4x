@@ -111,7 +111,7 @@ func (m *APDUReject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

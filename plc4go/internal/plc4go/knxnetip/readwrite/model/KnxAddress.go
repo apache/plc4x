@@ -88,7 +88,7 @@ func (m *KnxAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxAddressParse(io *utils.ReadBuffer) (*KnxAddress, error) {
+func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8(4)

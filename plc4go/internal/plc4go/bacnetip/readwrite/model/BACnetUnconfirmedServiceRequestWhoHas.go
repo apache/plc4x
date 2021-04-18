@@ -139,7 +139,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Const Field (deviceInstanceLowLimitHeader)
 	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)

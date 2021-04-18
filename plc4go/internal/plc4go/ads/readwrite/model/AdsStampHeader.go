@@ -93,7 +93,7 @@ func (m *AdsStampHeader) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
+func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint64(64)

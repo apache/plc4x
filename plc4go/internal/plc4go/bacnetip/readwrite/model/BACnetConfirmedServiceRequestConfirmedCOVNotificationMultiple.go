@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthIn
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{

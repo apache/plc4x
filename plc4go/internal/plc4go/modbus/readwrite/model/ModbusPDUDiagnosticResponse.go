@@ -115,7 +115,7 @@ func (m *ModbusPDUDiagnosticResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUDiagnosticResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (subFunction)
 	subFunction, _subFunctionErr := io.ReadUint16(16)

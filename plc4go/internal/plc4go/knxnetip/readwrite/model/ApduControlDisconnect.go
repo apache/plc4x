@@ -96,7 +96,7 @@ func (m *ApduControlDisconnect) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlDisconnectParse(io *utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlDisconnectParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduControlDisconnect{

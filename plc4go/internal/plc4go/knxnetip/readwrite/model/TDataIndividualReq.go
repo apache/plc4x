@@ -96,7 +96,7 @@ func (m *TDataIndividualReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataIndividualReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualReq{

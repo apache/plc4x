@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceACKReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKReadPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadProperty{

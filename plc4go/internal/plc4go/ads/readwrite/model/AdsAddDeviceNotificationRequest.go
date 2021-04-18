@@ -136,7 +136,7 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32(32)

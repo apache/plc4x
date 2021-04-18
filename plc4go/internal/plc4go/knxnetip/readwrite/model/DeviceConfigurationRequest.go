@@ -107,7 +107,7 @@ func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)

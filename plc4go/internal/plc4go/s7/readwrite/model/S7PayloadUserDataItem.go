@@ -116,7 +116,7 @@ func (m *S7PayloadUserDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7PayloadUserDataItem, error) {
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)

@@ -52,7 +52,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	tpktPacket := model.CastTPKTPacket(message)
 	// Serialize the request
 	wb := utils.NewWriteBuffer()
-	err := tpktPacket.Serialize(*wb)
+	err := tpktPacket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

@@ -117,7 +117,7 @@ func (m *ComObjectTableRealisationType2) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType2Parse(io *utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
 
 	// Simple Field (numEntries)
 	numEntries, _numEntriesErr := io.ReadUint8(8)

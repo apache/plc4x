@@ -4867,7 +4867,7 @@ func (m KnxInterfaceObjectProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxInterfaceObjectPropertyParse(io *utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyParse(io utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
 	val, err := io.ReadUint32(32)
 	if err != nil {
 		return 0, nil

@@ -102,7 +102,7 @@ func (m *DeviceConfigurationAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DeviceConfigurationAckParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(io)

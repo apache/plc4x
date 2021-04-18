@@ -124,7 +124,7 @@ func (m *LBusmonInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LBusmonIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)

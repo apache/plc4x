@@ -99,7 +99,7 @@ func (m *BACnetConfirmedServiceACK) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)

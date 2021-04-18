@@ -96,7 +96,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWriteGroup{

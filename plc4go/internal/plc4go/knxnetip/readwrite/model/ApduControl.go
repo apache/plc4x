@@ -99,7 +99,7 @@ func (m *ApduControl) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlParse(io *utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType, _controlTypeErr := io.ReadUint8(2)

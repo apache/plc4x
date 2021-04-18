@@ -107,7 +107,7 @@ func (m *TunnelingRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
 
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)

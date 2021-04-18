@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKVTOpenParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKVTOpenParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKVTOpen{

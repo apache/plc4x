@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKGetEventInformationParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKGetEventInformationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetEventInformation{

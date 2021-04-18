@@ -100,7 +100,7 @@ func (m *SzlDataTreeItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
+func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 
 	// Simple Field (itemIndex)
 	itemIndex, _itemIndexErr := io.ReadUint16(16)

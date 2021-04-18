@@ -114,7 +114,7 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
 
 	// Array field (ip)
 	// Count array

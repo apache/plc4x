@@ -134,7 +134,7 @@ func (m *BACnetErrorReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Const Field (errorClassHeader)
 	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)

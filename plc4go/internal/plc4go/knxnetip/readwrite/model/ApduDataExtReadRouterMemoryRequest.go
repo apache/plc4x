@@ -96,7 +96,7 @@ func (m *ApduDataExtReadRouterMemoryRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtReadRouterMemoryRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtReadRouterMemoryRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRouterMemoryRequest{

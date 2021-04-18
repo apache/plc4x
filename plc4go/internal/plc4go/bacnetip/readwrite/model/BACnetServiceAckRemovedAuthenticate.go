@@ -96,7 +96,7 @@ func (m *BACnetServiceAckRemovedAuthenticate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckRemovedAuthenticate{

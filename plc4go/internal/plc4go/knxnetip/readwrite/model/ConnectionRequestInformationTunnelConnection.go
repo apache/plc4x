@@ -106,7 +106,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)

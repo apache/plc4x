@@ -107,7 +107,7 @@ func (m *DescriptionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DescriptionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)

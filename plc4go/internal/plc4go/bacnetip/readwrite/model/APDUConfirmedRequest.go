@@ -151,7 +151,7 @@ func (m *APDUConfirmedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 
 	// Simple Field (segmentedMessage)
 	segmentedMessage, _segmentedMessageErr := io.ReadBit()

@@ -115,7 +115,7 @@ func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleRegisterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteSingleRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16(16)

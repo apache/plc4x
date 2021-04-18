@@ -104,7 +104,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadDeviceIdentificationResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationResponse{

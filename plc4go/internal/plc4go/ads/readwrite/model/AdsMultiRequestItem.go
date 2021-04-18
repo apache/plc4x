@@ -97,7 +97,7 @@ func (m *AdsMultiRequestItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsMultiRequestItemParse(io *utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
+func AdsMultiRequestItemParse(io utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsMultiRequestItem

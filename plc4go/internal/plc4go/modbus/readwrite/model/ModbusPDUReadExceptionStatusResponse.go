@@ -110,7 +110,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint8(8)

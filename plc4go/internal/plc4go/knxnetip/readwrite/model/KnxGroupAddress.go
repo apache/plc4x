@@ -97,7 +97,7 @@ func (m *KnxGroupAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress

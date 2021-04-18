@@ -808,7 +808,7 @@ func (m ReturnCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ReturnCodeParse(io *utils.ReadBuffer) (ReturnCode, error) {
+func ReturnCodeParse(io utils.ReadBuffer) (ReturnCode, error) {
 	val, err := io.ReadUint32(32)
 	if err != nil {
 		return 0, nil

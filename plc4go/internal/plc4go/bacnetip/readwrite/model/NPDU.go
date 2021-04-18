@@ -162,7 +162,7 @@ func (m *NPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
+func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)

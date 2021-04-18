@@ -96,7 +96,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberResponse) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtIndividualAddressSerialNumberResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberResponse{

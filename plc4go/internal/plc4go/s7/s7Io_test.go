@@ -120,7 +120,7 @@ func TestS7MessageBytes(t *testing.T) {
 				t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
 			}
 			buffer := utils.NewWriteBuffer()
-			err := tt.args.debuggable.Serialize(*buffer)
+			err := tt.args.debuggable.Serialize(buffer)
 			if err != nil {
 				t.Error(err)
 			}

@@ -115,7 +115,7 @@ func (m *AmsPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
+func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)

@@ -102,7 +102,7 @@ func (m *KnxGroupAddressFreeLevel) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint16(16)

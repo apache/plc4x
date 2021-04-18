@@ -122,7 +122,7 @@ func (m *LDataFrame) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Simple Field (frameType)
 	frameType, _frameTypeErr := io.ReadBit()

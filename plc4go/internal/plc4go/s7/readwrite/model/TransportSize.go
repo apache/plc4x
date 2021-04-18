@@ -1485,7 +1485,7 @@ func (m TransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TransportSizeParse(io *utils.ReadBuffer) (TransportSize, error) {
+func TransportSizeParse(io utils.ReadBuffer) (TransportSize, error) {
 	val, err := io.ReadInt8(8)
 	if err != nil {
 		return 0, nil

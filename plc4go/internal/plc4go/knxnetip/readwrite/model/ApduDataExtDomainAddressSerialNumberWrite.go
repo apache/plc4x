@@ -96,7 +96,7 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtDomainAddressSerialNumberWriteParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtDomainAddressSerialNumberWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSerialNumberWrite{

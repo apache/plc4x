@@ -17145,7 +17145,7 @@ func (m ComObjectTableAddresses) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableAddressesParse(io *utils.ReadBuffer) (ComObjectTableAddresses, error) {
+func ComObjectTableAddressesParse(io utils.ReadBuffer) (ComObjectTableAddresses, error) {
 	val, err := io.ReadUint16(16)
 	if err != nil {
 		return 0, nil

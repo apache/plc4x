@@ -96,7 +96,7 @@ func (m *ApduControlAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlAckParse(io *utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlAckParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduControlAck{

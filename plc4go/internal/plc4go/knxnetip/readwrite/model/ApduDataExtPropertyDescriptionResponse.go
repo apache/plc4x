@@ -144,7 +144,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8(8)

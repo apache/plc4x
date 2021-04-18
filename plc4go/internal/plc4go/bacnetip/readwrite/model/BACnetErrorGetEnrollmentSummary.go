@@ -96,7 +96,7 @@ func (m *BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetEnrollmentSummaryParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetEnrollmentSummary{

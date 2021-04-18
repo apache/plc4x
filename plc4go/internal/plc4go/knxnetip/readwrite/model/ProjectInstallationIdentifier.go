@@ -84,7 +84,7 @@ func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
+func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
 
 	// Simple Field (projectNumber)
 	projectNumber, _projectNumberErr := io.ReadUint8(8)

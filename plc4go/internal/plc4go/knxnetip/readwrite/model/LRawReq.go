@@ -96,7 +96,7 @@ func (m *LRawReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LRawReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LRawReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &LRawReq{

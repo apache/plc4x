@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestLifeSafetyOperation{

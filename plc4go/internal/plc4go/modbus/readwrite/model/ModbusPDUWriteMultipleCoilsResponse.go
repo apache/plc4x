@@ -115,7 +115,7 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteMultipleCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)

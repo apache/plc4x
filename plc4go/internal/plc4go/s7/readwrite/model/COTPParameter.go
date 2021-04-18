@@ -102,7 +102,7 @@ func (m *COTPParameter) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8(8)

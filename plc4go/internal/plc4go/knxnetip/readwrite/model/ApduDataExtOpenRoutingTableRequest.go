@@ -96,7 +96,7 @@ func (m *ApduDataExtOpenRoutingTableRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtOpenRoutingTableRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtOpenRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtOpenRoutingTableRequest{

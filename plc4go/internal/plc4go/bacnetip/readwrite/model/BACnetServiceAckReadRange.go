@@ -96,7 +96,7 @@ func (m *BACnetServiceAckReadRange) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadRangeParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadRangeParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadRange{

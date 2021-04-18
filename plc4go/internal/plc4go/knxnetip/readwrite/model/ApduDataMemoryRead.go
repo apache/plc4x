@@ -107,7 +107,7 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 	// Simple Field (numBytes)
 	numBytes, _numBytesErr := io.ReadUint8(6)

@@ -106,7 +106,7 @@ func (m *UnknownMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
 
 	// Array field (unknownData)
 	// Count array

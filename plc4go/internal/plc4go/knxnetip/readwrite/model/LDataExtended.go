@@ -143,7 +143,7 @@ func (m *LDataExtended) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataExtendedParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Simple Field (groupAddress)
 	groupAddress, _groupAddressErr := io.ReadBit()

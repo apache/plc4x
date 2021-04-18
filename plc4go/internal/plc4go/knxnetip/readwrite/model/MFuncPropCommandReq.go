@@ -96,7 +96,7 @@ func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MFuncPropCommandReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &MFuncPropCommandReq{

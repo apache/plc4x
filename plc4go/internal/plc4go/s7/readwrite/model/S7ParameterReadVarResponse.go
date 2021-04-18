@@ -106,7 +106,7 @@ func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterReadVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error) {
 
 	// Simple Field (numItems)
 	numItems, _numItemsErr := io.ReadUint8(8)

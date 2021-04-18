@@ -96,7 +96,7 @@ func (m *TDataConnectedReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataConnectedReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataConnectedReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &TDataConnectedReq{

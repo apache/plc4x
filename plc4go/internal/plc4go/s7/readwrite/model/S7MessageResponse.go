@@ -110,7 +110,7 @@ func (m *S7MessageResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageResponseParse(io *utils.ReadBuffer) (*S7Message, error) {
+func S7MessageResponseParse(io utils.ReadBuffer) (*S7Message, error) {
 
 	// Simple Field (errorClass)
 	errorClass, _errorClassErr := io.ReadUint8(8)

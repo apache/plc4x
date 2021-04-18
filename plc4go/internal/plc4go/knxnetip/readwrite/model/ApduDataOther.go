@@ -102,7 +102,7 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataOtherParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)

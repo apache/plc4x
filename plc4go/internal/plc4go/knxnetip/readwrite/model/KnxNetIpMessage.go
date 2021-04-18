@@ -112,7 +112,7 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := io.ReadUint8(8)

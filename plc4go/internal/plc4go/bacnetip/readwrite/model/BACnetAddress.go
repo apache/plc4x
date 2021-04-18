@@ -86,7 +86,7 @@ func (m *BACnetAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
+func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 
 	// Array field (address)
 	// Count array

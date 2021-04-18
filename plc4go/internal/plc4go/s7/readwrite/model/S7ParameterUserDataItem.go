@@ -99,7 +99,7 @@ func (m *S7ParameterUserDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterUserDataItemParse(io *utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
+func S7ParameterUserDataItemParse(io utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8(8)

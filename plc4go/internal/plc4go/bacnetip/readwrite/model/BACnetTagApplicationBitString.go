@@ -115,7 +115,7 @@ func (m *BACnetTagApplicationBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationBitStringParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := io.ReadUint8(8)

@@ -132,7 +132,7 @@ func (m *S7Message) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageParse(io *utils.ReadBuffer) (*S7Message, error) {
+func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8(8)

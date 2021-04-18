@@ -100,7 +100,7 @@ func (m *BACnetTagApplicationDate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDateParse(io *utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetTagApplicationDateParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationDate{

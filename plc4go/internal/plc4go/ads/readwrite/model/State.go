@@ -116,7 +116,7 @@ func (m *State) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func StateParse(io *utils.ReadBuffer) (*State, error) {
+func StateParse(io utils.ReadBuffer) (*State, error) {
 
 	// Simple Field (initCommand)
 	initCommand, _initCommandErr := io.ReadBit()

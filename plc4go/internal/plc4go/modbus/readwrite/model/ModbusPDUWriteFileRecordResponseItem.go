@@ -99,7 +99,7 @@ func (m *ModbusPDUWriteFileRecordResponseItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUWriteFileRecordResponseItem, error) {
+func ModbusPDUWriteFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUWriteFileRecordResponseItem, error) {
 
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)

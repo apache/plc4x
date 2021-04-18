@@ -96,7 +96,7 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataRestartParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataRestart{

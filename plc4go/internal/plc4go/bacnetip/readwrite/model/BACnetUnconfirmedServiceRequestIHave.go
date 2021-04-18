@@ -96,7 +96,7 @@ func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIHave{

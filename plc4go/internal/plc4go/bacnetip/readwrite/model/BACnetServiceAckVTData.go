@@ -96,7 +96,7 @@ func (m *BACnetServiceAckVTData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckVTDataParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTData{

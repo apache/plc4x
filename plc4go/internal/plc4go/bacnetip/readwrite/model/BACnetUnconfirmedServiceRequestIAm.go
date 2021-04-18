@@ -150,7 +150,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)

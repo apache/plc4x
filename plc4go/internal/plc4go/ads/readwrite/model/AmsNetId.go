@@ -100,7 +100,7 @@ func (m *AmsNetId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsNetIdParse(io *utils.ReadBuffer) (*AmsNetId, error) {
+func AmsNetIdParse(io utils.ReadBuffer) (*AmsNetId, error) {
 
 	// Simple Field (octet1)
 	octet1, _octet1Err := io.ReadUint8(8)

@@ -74,7 +74,7 @@ import (
 type ${protocolName?cap_first}ParserHelper struct {
 }
 
-func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
+func (m ${protocolName?cap_first}ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
 	case "${typeDefinition.name}":

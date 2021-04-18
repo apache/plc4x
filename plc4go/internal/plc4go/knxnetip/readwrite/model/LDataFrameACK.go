@@ -105,7 +105,7 @@ func (m *LDataFrameACK) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataFrameACKParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Create a partially initialized instance
 	_child := &LDataFrameACK{

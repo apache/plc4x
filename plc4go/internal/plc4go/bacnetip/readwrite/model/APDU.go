@@ -99,7 +99,7 @@ func (m *APDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType, _apduTypeErr := io.ReadUint8(4)

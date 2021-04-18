@@ -116,7 +116,7 @@ func (m *LDataInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)

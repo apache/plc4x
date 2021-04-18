@@ -137,7 +137,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (readStartingAddress)
 	readStartingAddress, _readStartingAddressErr := io.ReadUint16(16)

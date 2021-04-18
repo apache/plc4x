@@ -94,7 +94,7 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(io *utils.ReadBuffer) (BACnetNotifyType, error) {
+func BACnetNotifyTypeParse(io utils.ReadBuffer) (BACnetNotifyType, error) {
 	val, err := io.ReadUint8(4)
 	if err != nil {
 		return 0, nil

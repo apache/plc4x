@@ -121,7 +121,7 @@ func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (length)
 	length, _lengthErr := io.ReadUint32(32)

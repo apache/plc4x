@@ -111,7 +111,7 @@ func (m *S7PayloadReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadReadVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
 
 	// Array field (items)
 	// Count array

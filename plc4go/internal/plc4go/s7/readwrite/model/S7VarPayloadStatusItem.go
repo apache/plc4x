@@ -80,7 +80,7 @@ func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
+func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)

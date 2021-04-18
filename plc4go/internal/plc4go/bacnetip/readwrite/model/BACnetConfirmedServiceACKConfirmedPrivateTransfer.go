@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBytes() uint
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{

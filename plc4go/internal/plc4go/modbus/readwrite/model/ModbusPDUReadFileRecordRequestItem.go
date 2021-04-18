@@ -92,7 +92,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
+func ModbusPDUReadFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
 
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)

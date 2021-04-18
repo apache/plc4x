@@ -99,7 +99,7 @@ func (m *S7Address) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
+func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := io.ReadUint8(8)

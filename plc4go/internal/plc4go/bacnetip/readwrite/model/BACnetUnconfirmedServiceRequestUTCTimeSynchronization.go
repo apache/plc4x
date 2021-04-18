@@ -96,7 +96,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() 
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{

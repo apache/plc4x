@@ -104,7 +104,7 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdRequest{

@@ -111,7 +111,7 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

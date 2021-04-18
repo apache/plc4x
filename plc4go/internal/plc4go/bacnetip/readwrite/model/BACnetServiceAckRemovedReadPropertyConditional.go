@@ -96,7 +96,7 @@ func (m *BACnetServiceAckRemovedReadPropertyConditional) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckRemovedReadPropertyConditional{

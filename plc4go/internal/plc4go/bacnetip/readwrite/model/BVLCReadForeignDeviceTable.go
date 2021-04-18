@@ -96,7 +96,7 @@ func (m *BVLCReadForeignDeviceTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCReadForeignDeviceTableParse(io utils.ReadBuffer) (*BVLC, error) {
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTable{

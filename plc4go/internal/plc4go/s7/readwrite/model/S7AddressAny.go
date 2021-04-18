@@ -131,7 +131,7 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
+func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 	// Enum field (transportSize)
 	transportSizeCode, _transportSizeErr := io.ReadUint8(8)

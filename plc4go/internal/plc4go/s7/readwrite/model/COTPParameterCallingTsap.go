@@ -102,7 +102,7 @@ func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 	// Simple Field (tsapId)
 	tsapId, _tsapIdErr := io.ReadUint16(16)

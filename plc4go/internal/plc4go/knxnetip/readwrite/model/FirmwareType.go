@@ -172,7 +172,7 @@ func (m FirmwareType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmwareTypeParse(io *utils.ReadBuffer) (FirmwareType, error) {
+func FirmwareTypeParse(io utils.ReadBuffer) (FirmwareType, error) {
 	val, err := io.ReadUint16(16)
 	if err != nil {
 		return 0, nil

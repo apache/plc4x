@@ -102,7 +102,7 @@ func (m *TunnelingResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)

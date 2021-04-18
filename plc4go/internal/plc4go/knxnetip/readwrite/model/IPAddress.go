@@ -84,7 +84,7 @@ func (m *IPAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
+func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 
 	// Array field (addr)
 	// Count array

@@ -365,7 +365,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
-	var rb *utils.ReadBuffer
+	var rb utils.ReadBuffer
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch amsTcpPaket.Userdata.Data.Child.(type) {
 	case *readWriteModel.AdsReadResponse:

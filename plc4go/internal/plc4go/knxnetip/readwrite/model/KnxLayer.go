@@ -94,7 +94,7 @@ func (m KnxLayer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxLayerParse(io *utils.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParse(io utils.ReadBuffer) (KnxLayer, error) {
 	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil

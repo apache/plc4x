@@ -96,7 +96,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckGetEnrollmentSummaryParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEnrollmentSummary{

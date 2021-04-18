@@ -111,7 +111,7 @@ func (m *ApduDataDeviceDescriptorResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 
 	// Simple Field (descriptorType)
 	descriptorType, _descriptorTypeErr := io.ReadUint8(6)

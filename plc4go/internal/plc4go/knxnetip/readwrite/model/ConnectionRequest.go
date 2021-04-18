@@ -112,7 +112,7 @@ func (m *ConnectionRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)

@@ -100,7 +100,7 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoRequest{

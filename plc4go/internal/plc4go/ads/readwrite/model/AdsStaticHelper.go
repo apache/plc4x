@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -23,10 +24,10 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
-func StaticHelperParseAmsString(io *utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func StaticHelperParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	return "hurz", nil
 }
 
-func StaticHelperSerializeAmsString(io *utils.WriteBuffer, value values.PlcValue, stringLength int32, dataFormatName string) error {
+func StaticHelperSerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, dataFormatName string) error {
 	return nil
 }

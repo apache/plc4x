@@ -52,7 +52,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	tcpAdu := model.CastModbusTcpADU(message)
 	// Serialize the request
 	wb := utils.NewWriteBuffer()
-	err := tcpAdu.Serialize(*wb)
+	err := tcpAdu.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

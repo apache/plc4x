@@ -101,7 +101,7 @@ func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataGroupValueReadParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

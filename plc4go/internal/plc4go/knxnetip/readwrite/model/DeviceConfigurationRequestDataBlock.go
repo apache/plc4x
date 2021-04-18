@@ -91,7 +91,7 @@ func (m *DeviceConfigurationRequestDataBlock) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
+func DeviceConfigurationRequestDataBlockParse(io utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8(8)

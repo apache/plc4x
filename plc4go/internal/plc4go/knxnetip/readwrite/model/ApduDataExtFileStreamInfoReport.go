@@ -96,7 +96,7 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtFileStreamInfoReport{

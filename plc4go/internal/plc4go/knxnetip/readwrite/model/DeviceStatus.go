@@ -84,7 +84,7 @@ func (m *DeviceStatus) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
+func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

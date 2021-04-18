@@ -112,7 +112,7 @@ func (m *GroupObjectDescriptorRealisationType7) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType7Parse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
+func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
 
 	// Simple Field (dataAddress)
 	dataAddress, _dataAddressErr := io.ReadUint16(16)

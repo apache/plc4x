@@ -100,7 +100,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{

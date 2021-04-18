@@ -29,5 +29,5 @@ require (
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect
 	golang.org/x/tools v0.1.0 // indirect
-	gotest.tools/gotestsum v1.6.3 // indirect
+	gotest.tools/gotestsum v1.6.4 // indirect
 )

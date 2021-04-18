@@ -96,7 +96,7 @@ func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorAtomicReadFileParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorAtomicReadFileParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorAtomicReadFile{

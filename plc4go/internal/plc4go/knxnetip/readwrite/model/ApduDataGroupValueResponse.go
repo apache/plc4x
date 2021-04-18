@@ -111,7 +111,7 @@ func (m *ApduDataGroupValueResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataGroupValueResponseParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataGroupValueResponseParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 
 	// Simple Field (dataFirstByte)
 	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)

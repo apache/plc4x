@@ -92,7 +92,7 @@ func (m *AdsNotificationSample) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, error) {
+func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, error) {
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32(32)

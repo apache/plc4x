@@ -84,7 +84,7 @@ func (m *ChannelInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ChannelInformationParse(io *utils.ReadBuffer) (*ChannelInformation, error) {
+func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
 
 	// Simple Field (numChannels)
 	numChannels, _numChannelsErr := io.ReadUint8(3)

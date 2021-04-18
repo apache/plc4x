@@ -109,7 +109,7 @@ func (m *COTPPacketData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDataParse(io *utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 	// Simple Field (eot)
 	eot, _eotErr := io.ReadBit()

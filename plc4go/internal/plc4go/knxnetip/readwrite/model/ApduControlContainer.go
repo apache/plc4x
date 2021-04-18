@@ -104,7 +104,7 @@ func (m *ApduControlContainer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlContainerParse(io *utils.ReadBuffer) (*Apdu, error) {
+func ApduControlContainerParse(io utils.ReadBuffer) (*Apdu, error) {
 
 	// Simple Field (controlApdu)
 	controlApdu, _controlApduErr := ApduControlParse(io)

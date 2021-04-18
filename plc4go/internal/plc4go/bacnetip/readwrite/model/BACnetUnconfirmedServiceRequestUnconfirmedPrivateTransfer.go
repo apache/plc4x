@@ -135,7 +135,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInByte
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 
 	// Const Field (vendorIdHeader)
 	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)

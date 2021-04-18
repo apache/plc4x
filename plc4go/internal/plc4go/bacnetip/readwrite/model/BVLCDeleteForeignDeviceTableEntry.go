@@ -96,7 +96,7 @@ func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCDeleteForeignDeviceTableEntryParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCDeleteForeignDeviceTableEntryParse(io utils.ReadBuffer) (*BVLC, error) {
 
 	// Create a partially initialized instance
 	_child := &BVLCDeleteForeignDeviceTableEntry{

@@ -97,7 +97,7 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableParse(io *utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ComObjectTable

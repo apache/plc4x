@@ -96,7 +96,7 @@ func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorConfirmedPrivateTransferParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorConfirmedPrivateTransfer{

@@ -96,7 +96,7 @@ func (m *BACnetErrorGetAlarmSummary) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetAlarmSummaryParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetAlarmSummary{

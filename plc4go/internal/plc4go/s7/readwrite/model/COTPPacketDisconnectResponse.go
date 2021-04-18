@@ -109,7 +109,7 @@ func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16(16)

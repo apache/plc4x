@@ -96,7 +96,7 @@ func (m *ApduDataExtNetworkParameterWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterWriteParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterWrite{

@@ -110,7 +110,7 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)

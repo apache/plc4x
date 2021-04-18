@@ -96,7 +96,7 @@ func (m *BACnetErrorVTOpen) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorVTOpenParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorVTOpenParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorVTOpen{

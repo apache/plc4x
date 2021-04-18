@@ -99,7 +99,7 @@ func (m *ApduDataExt) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType, _extApciTypeErr := io.ReadUint8(6)

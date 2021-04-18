@@ -30,7 +30,7 @@ import (
 type AdsParserHelper struct {
 }
 
-func (m AdsParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
+func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])

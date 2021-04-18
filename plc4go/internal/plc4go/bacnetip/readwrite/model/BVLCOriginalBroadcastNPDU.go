@@ -102,7 +102,7 @@ func (m *BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCOriginalBroadcastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCOriginalBroadcastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))

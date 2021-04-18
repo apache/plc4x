@@ -172,7 +172,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)

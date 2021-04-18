@@ -99,7 +99,7 @@ func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8(8)

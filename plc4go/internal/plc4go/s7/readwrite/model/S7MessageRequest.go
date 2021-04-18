@@ -99,7 +99,7 @@ func (m *S7MessageRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageRequestParse(io *utils.ReadBuffer) (*S7Message, error) {
+func S7MessageRequestParse(io utils.ReadBuffer) (*S7Message, error) {
 
 	// Create a partially initialized instance
 	_child := &S7MessageRequest{

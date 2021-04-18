@@ -26,10 +26,10 @@ import (
 )
 
 type ValueDecoder struct {
-	rb *utils.ReadBuffer
+	rb utils.ReadBuffer
 }
 
-func NewValueDecoder(rb *utils.ReadBuffer) ValueDecoder {
+func NewValueDecoder(rb utils.ReadBuffer) ValueDecoder {
 	return ValueDecoder{
 		rb: rb,
 	}

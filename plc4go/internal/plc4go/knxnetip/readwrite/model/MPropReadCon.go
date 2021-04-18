@@ -127,7 +127,7 @@ func (m *MPropReadCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)

@@ -30,12 +30,12 @@ type PlcValueDecoder interface {
 }
 
 type RawPlcValue struct {
-	readBuffer *utils.ReadBuffer
+	readBuffer utils.ReadBuffer
 	decoder    PlcValueDecoder
 	PlcValueAdapter
 }
 
-func NewRawPlcValue(readBuffer *utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
+func NewRawPlcValue(readBuffer utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
 	return RawPlcValue{
 		readBuffer: readBuffer,
 		decoder:    decoder,

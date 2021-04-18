@@ -110,7 +110,7 @@ func (m *BACnetTagContext) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagContextParse(io *utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
 	// Array field (data)
 	// Length array

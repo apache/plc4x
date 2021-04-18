@@ -84,7 +84,7 @@ func (m *MACAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
+func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
 
 	// Array field (addr)
 	// Count array

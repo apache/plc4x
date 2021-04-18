@@ -30,7 +30,7 @@ import (
 type KnxnetipParserHelper struct {
 }
 
-func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
+func (m KnxnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "HPAIControlEndpoint":
 		return model.HPAIControlEndpointParse(io)

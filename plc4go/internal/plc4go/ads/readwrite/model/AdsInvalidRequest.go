@@ -100,7 +100,7 @@ func (m *AdsInvalidRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsInvalidRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsInvalidRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Create a partially initialized instance
 	_child := &AdsInvalidRequest{

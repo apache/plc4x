@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceRequestRemovedAuthenticate) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedAuthenticateParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemovedAuthenticate{

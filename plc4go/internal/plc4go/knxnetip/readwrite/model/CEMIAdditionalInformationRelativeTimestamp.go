@@ -109,7 +109,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
 
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8(8)

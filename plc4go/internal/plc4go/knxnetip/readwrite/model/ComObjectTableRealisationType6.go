@@ -102,7 +102,7 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType6Parse(io *utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
 
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)

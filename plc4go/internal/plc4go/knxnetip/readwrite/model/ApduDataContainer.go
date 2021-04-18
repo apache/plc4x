@@ -104,7 +104,7 @@ func (m *ApduDataContainer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataContainerParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 
 	// Simple Field (dataApdu)
 	dataApdu, _dataApduErr := ApduDataParse(io, dataLength)

@@ -108,7 +108,7 @@ func (m *GroupObjectDescriptorRealisationTypeB) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationTypeBParse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationTypeB, error) {
+func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationTypeB, error) {
 
 	// Simple Field (updateEnable)
 	updateEnable, _updateEnableErr := io.ReadBit()

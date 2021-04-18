@@ -96,7 +96,7 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBy
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{

@@ -122,7 +122,7 @@ func (m *BACnetTagWithContent) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, error) {
+func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, error) {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)

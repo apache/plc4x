@@ -98,7 +98,7 @@ func (m *AdsData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDataParse(io *utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData

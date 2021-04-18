@@ -123,7 +123,7 @@ func (m *AdsWriteRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32(32)

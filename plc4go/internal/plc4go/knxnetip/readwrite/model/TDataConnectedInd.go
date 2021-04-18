@@ -96,7 +96,7 @@ func (m *TDataConnectedInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataConnectedIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataConnectedIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &TDataConnectedInd{

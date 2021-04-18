@@ -96,7 +96,7 @@ func (m *LRawCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LRawConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LRawConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &LRawCon{

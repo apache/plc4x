@@ -49,7 +49,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	tcpPaket := model.CastAmsTCPPacket(message)
 	// Serialize the request
 	wb := utils.NewLittleEndianWriteBuffer()
-	err := tcpPaket.Serialize(*wb)
+	err := tcpPaket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}

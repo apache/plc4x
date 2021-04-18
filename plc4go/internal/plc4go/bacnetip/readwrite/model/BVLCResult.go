@@ -96,7 +96,7 @@ func (m *BVLCResult) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCResultParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
 
 	// Create a partially initialized instance
 	_child := &BVLCResult{

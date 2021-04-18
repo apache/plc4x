@@ -118,7 +118,7 @@ func (m *AdsReadWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadWriteResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)

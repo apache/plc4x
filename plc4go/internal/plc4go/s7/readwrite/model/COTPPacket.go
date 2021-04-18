@@ -116,7 +116,7 @@ func (m *COTPPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	var startPos = io.GetPos()
 	var curPos uint16
 

@@ -132,7 +132,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)

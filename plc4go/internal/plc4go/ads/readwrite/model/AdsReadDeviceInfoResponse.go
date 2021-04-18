@@ -130,7 +130,7 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)

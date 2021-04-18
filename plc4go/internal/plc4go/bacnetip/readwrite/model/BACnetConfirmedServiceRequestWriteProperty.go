@@ -152,7 +152,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	var startPos = io.GetPos()
 	var curPos uint16
 

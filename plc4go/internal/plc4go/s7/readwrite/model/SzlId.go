@@ -88,7 +88,7 @@ func (m *SzlId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlIdParse(io *utils.ReadBuffer) (*SzlId, error) {
+func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
 
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)

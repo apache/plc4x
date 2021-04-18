@@ -106,7 +106,7 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadFloat64(true, 11, 52)

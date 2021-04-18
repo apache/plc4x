@@ -96,7 +96,7 @@ func (m *RoutingIndication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func RoutingIndicationParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func RoutingIndicationParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Create a partially initialized instance
 	_child := &RoutingIndication{

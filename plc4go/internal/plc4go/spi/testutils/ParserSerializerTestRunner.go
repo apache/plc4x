@@ -105,7 +105,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					t.Errorf("Error decoding test input")
 					return
 				}
-				var readBuffer *utils.ReadBuffer
+				var readBuffer utils.ReadBuffer
 				if littleEndian {
 					readBuffer = utils.NewLittleEndianReadBuffer(rawInput)
 				} else {
@@ -114,7 +114,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 
 				// Parse the input according to the settings of the testcase
 				var helper interface {
-					Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error)
+					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
 				}
 				switch testsuiteName {
 				case "Modbus":
@@ -155,13 +155,13 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					t.Error("Couldn't cast message to Serializable")
 					return
 				}
-				var writeBuffer *utils.WriteBuffer
+				var writeBuffer utils.WriteBuffer
 				if littleEndian {
 					writeBuffer = utils.NewLittleEndianWriteBuffer()
 				} else {
 					writeBuffer = utils.NewWriteBuffer()
 				}
-				err = s.Serialize(*writeBuffer)
+				err = s.Serialize(writeBuffer)
 				if !ok {
 					t.Error("Couldn't serialize message back to byte array")
 					return

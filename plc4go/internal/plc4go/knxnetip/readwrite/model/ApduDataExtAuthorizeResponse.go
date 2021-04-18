@@ -102,7 +102,7 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Simple Field (level)
 	level, _levelErr := io.ReadUint8(8)

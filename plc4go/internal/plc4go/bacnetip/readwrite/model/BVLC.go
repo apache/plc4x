@@ -109,7 +109,7 @@ func (m *BVLC) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
 
 	// Const Field (bacnetType)
 	bacnetType, _bacnetTypeErr := io.ReadUint8(8)

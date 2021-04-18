@@ -117,7 +117,7 @@ func (m *ModbusPDUWriteFileRecordRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)

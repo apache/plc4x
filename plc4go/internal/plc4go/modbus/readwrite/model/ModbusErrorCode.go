@@ -136,7 +136,7 @@ func (m ModbusErrorCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
+func ModbusErrorCodeParse(io utils.ReadBuffer) (ModbusErrorCode, error) {
 	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil

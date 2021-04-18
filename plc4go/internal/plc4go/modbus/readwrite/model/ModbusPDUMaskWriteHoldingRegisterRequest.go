@@ -120,7 +120,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 	// Simple Field (referenceAddress)
 	referenceAddress, _referenceAddressErr := io.ReadUint16(16)

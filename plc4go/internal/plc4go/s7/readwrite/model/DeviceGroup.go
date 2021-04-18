@@ -94,7 +94,7 @@ func (m DeviceGroup) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceGroupParse(io *utils.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(io utils.ReadBuffer) (DeviceGroup, error) {
 	val, err := io.ReadInt8(8)
 	if err != nil {
 		return 0, nil

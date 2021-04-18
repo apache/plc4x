@@ -123,7 +123,7 @@ func (m *AdsWriteControlRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 	// Simple Field (adsState)
 	adsState, _adsStateErr := io.ReadUint16(16)

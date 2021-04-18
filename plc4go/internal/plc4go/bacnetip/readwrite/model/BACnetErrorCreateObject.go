@@ -96,7 +96,7 @@ func (m *BACnetErrorCreateObject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorCreateObjectParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorCreateObject{

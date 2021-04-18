@@ -112,7 +112,7 @@ func (m *GroupObjectDescriptorRealisationType1) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType1Parse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationType1, error) {
+func GroupObjectDescriptorRealisationType1Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType1, error) {
 
 	// Simple Field (dataPointer)
 	dataPointer, _dataPointerErr := io.ReadUint8(8)

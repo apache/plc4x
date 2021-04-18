@@ -100,7 +100,7 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
+func SzlModuleTypeClassParse(io utils.ReadBuffer) (SzlModuleTypeClass, error) {
 	val, err := io.ReadUint8(4)
 	if err != nil {
 		return 0, nil

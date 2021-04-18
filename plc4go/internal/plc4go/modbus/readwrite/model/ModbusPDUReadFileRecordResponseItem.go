@@ -91,7 +91,7 @@ func (m *ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
+func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8(8)

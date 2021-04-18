@@ -91,7 +91,7 @@ func (m *DIBSuppSvcFamilies) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
+func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8(8)

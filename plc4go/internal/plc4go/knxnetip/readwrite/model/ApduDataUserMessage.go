@@ -96,7 +96,7 @@ func (m *ApduDataUserMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataUserMessageParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataUserMessageParse(io utils.ReadBuffer) (*ApduData, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataUserMessage{

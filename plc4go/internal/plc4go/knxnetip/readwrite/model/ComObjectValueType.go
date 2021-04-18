@@ -235,7 +235,7 @@ func (m ComObjectValueType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectValueTypeParse(io *utils.ReadBuffer) (ComObjectValueType, error) {
+func ComObjectValueTypeParse(io utils.ReadBuffer) (ComObjectValueType, error) {
 	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil

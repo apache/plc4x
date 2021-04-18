@@ -116,7 +116,7 @@ func (m *DeviceDescriptorType2) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceDescriptorType2Parse(io *utils.ReadBuffer) (*DeviceDescriptorType2, error) {
+func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, error) {
 
 	// Simple Field (manufacturerId)
 	manufacturerId, _manufacturerIdErr := io.ReadUint16(16)

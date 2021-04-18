@@ -88,7 +88,7 @@ func (m HostProtocolCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HostProtocolCodeParse(io *utils.ReadBuffer) (HostProtocolCode, error) {
+func HostProtocolCodeParse(io utils.ReadBuffer) (HostProtocolCode, error) {
 	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil

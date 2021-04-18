@@ -96,7 +96,7 @@ func (m *MResetReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MResetReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MResetReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &MResetReq{

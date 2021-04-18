@@ -75,7 +75,7 @@ func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType6Parse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
+func GroupObjectDescriptorRealisationType6Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType6(), nil

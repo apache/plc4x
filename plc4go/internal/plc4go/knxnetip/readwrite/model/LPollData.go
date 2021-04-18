@@ -129,7 +129,7 @@ func (m *LPollData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)

@@ -96,7 +96,7 @@ func (m *LPollDataReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LPollDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &LPollDataReq{

@@ -121,7 +121,7 @@ func (m *ConnectionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)

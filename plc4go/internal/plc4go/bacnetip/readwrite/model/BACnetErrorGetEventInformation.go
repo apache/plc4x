@@ -96,7 +96,7 @@ func (m *BACnetErrorGetEventInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetEventInformationParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorGetEventInformationParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetEventInformation{

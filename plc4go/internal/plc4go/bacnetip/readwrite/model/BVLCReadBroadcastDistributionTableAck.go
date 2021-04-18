@@ -96,7 +96,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableAckParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTableAck{

@@ -102,7 +102,7 @@ func (m *ConnectionResponseDataBlock) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockParse(io *utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8(8)

@@ -102,7 +102,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)

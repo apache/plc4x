@@ -96,7 +96,7 @@ func (m *BACnetErrorReadRange) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadRangeParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorReadRangeParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadRange{

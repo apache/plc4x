@@ -208,7 +208,7 @@ func (m BACnetNodeType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNodeTypeParse(io *utils.ReadBuffer) (BACnetNodeType, error) {
+func BACnetNodeTypeParse(io utils.ReadBuffer) (BACnetNodeType, error) {
 	val, err := io.ReadUint8(8)
 	if err != nil {
 		return 0, nil

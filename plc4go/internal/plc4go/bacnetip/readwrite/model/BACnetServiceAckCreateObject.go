@@ -96,7 +96,7 @@ func (m *BACnetServiceAckCreateObject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckCreateObjectParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckCreateObjectParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckCreateObject{

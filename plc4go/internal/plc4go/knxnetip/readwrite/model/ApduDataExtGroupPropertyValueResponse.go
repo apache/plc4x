@@ -96,7 +96,7 @@ func (m *ApduDataExtGroupPropertyValueResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtGroupPropertyValueResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtGroupPropertyValueResponse{

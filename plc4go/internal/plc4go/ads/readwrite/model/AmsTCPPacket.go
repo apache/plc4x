@@ -87,7 +87,7 @@ func (m *AmsTCPPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsTCPPacketParse(io *utils.ReadBuffer) (*AmsTCPPacket, error) {
+func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

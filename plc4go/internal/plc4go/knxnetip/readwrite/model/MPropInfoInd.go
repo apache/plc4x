@@ -96,7 +96,7 @@ func (m *MPropInfoInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropInfoIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropInfoIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 	// Create a partially initialized instance
 	_child := &MPropInfoInd{

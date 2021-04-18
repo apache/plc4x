@@ -136,7 +136,7 @@ func (m *APDUComplexAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUComplexAckParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 	// Simple Field (segmentedMessage)
 	segmentedMessage, _segmentedMessageErr := io.ReadBit()

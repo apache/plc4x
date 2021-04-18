@@ -145,7 +145,7 @@ func (m *BACnetServiceAckReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)

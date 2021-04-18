@@ -102,7 +102,7 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)

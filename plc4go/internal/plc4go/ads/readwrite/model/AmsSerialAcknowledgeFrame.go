@@ -100,7 +100,7 @@ func (m *AmsSerialAcknowledgeFrame) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsSerialAcknowledgeFrameParse(io *utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {
+func AmsSerialAcknowledgeFrameParse(io utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {
 
 	// Simple Field (magicCookie)
 	magicCookie, _magicCookieErr := io.ReadUint16(16)
