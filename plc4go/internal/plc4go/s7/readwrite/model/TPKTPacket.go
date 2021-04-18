@@ -139,14 +139,14 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Const Field (protocolId)
-	_protocolIdErr := io.WriteUint8(8, 0x03)
+	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x03)
 	if _protocolIdErr != nil {
 		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(8, uint8(0x00))
+		_err := io.WriteUint8("reserved", 8, uint8(0x00))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -154,7 +154,7 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
-	_lenErr := io.WriteUint16(16, (len))
+	_lenErr := io.WriteUint16("len", 16, (len))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
 	}

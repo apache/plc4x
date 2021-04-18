@@ -128,7 +128,7 @@ func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (value)
 		value := float64(m.Value)
-		_valueErr := io.WriteFloat64(64, (value))
+		_valueErr := io.WriteFloat64("value", 64, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

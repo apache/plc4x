@@ -398,7 +398,7 @@ func SupportedPhysicalMediaParse(io utils.ReadBuffer) (SupportedPhysicalMedia, e
 }
 
 func (e SupportedPhysicalMedia) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("SupportedPhysicalMedia", 8, uint8(e))
 	return err
 }
 

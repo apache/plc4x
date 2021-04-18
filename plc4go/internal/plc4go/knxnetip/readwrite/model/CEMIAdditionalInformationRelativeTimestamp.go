@@ -139,7 +139,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuf
 	ser := func() error {
 
 		// Const Field (len)
-		_lenErr := io.WriteUint8(8, 2)
+		_lenErr := io.WriteUint8("len", 8, 2)
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}

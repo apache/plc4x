@@ -146,7 +146,7 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
-		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+		_notificationHandleErr := io.WriteUint32("notificationHandle", 32, (notificationHandle))
 		if _notificationHandleErr != nil {
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}

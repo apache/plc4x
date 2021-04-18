@@ -145,7 +145,7 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.DataFirstByte)
-		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+		_dataFirstByteErr := io.WriteInt8("dataFirstByte", 6, (dataFirstByte))
 		if _dataFirstByteErr != nil {
 			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
 		}
@@ -153,7 +153,7 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

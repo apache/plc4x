@@ -334,58 +334,64 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
+        // Fallback if somewhere the method gets called without a name
+        String logicalName = fieldName.replaceAll("[\"()*]","").replaceFirst("_","");
+        return getWriteBufferWriteMethodCall(logicalName,simpleTypeReference, fieldName, field);
+    }
+
+    public String getWriteBufferWriteMethodCall(String logicalName,SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.WriteBit(" + fieldName + ")";
+                return "io.WriteBit(\""+logicalName+"\", " + fieldName + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteUint8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint8(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteUint16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint16(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteUint32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint32(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteUint64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint64(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigInt(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteInt8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt8(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteInt16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt16(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteInt32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt32(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteInt64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt64(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigInt(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteFloat32(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteFloat32(\""+logicalName+"\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteFloat64(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteFloat64(\""+logicalName+"\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                return "io.WriteBigFloat(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigFloat(\""+logicalName+"\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
+                return "io.WriteString(\""+logicalName+"\", uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
                     encoding + "\", " + fieldName + ")";
             }
         }

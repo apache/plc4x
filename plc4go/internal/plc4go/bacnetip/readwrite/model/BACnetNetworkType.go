@@ -151,7 +151,7 @@ func BACnetNetworkTypeParse(io utils.ReadBuffer) (BACnetNetworkType, error) {
 }
 
 func (e BACnetNetworkType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("BACnetNetworkType", 4, uint8(e))
 	return err
 }
 

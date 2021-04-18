@@ -144,14 +144,14 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(io utils.Writ
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
-		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16("startingAddress", 16, (startingAddress))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
-		_quantityErr := io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16("quantity", 16, (quantity))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}

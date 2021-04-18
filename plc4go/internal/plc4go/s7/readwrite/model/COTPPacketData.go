@@ -138,14 +138,14 @@ func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (eot)
 		eot := bool(m.Eot)
-		_eotErr := io.WriteBit((eot))
+		_eotErr := io.WriteBit("eot", (eot))
 		if _eotErr != nil {
 			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
 		}
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.TpduRef)
-		_tpduRefErr := io.WriteUint8(7, (tpduRef))
+		_tpduRefErr := io.WriteUint8("tpduRef", 7, (tpduRef))
 		if _tpduRefErr != nil {
 			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}

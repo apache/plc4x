@@ -184,14 +184,14 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(io utils.WriteBuffer) 
 
 	// Simple Field (dataPointer)
 	dataPointer := uint8(m.DataPointer)
-	_dataPointerErr := io.WriteUint8(8, (dataPointer))
+	_dataPointerErr := io.WriteUint8("dataPointer", 8, (dataPointer))
 	if _dataPointerErr != nil {
 		return errors.Wrap(_dataPointerErr, "Error serializing 'dataPointer' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(1, uint8(0x1))
+		_err := io.WriteUint8("reserved", 1, uint8(0x1))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -199,35 +199,35 @@ func (m *GroupObjectDescriptorRealisationType1) Serialize(io utils.WriteBuffer) 
 
 	// Simple Field (transmitEnable)
 	transmitEnable := bool(m.TransmitEnable)
-	_transmitEnableErr := io.WriteBit((transmitEnable))
+	_transmitEnableErr := io.WriteBit("transmitEnable", (transmitEnable))
 	if _transmitEnableErr != nil {
 		return errors.Wrap(_transmitEnableErr, "Error serializing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
 	segmentSelectorEnable := bool(m.SegmentSelectorEnable)
-	_segmentSelectorEnableErr := io.WriteBit((segmentSelectorEnable))
+	_segmentSelectorEnableErr := io.WriteBit("segmentSelectorEnable", (segmentSelectorEnable))
 	if _segmentSelectorEnableErr != nil {
 		return errors.Wrap(_segmentSelectorEnableErr, "Error serializing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
 	writeEnable := bool(m.WriteEnable)
-	_writeEnableErr := io.WriteBit((writeEnable))
+	_writeEnableErr := io.WriteBit("writeEnable", (writeEnable))
 	if _writeEnableErr != nil {
 		return errors.Wrap(_writeEnableErr, "Error serializing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
 	readEnable := bool(m.ReadEnable)
-	_readEnableErr := io.WriteBit((readEnable))
+	_readEnableErr := io.WriteBit("readEnable", (readEnable))
 	if _readEnableErr != nil {
 		return errors.Wrap(_readEnableErr, "Error serializing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
 	communicationEnable := bool(m.CommunicationEnable)
-	_communicationEnableErr := io.WriteBit((communicationEnable))
+	_communicationEnableErr := io.WriteBit("communicationEnable", (communicationEnable))
 	if _communicationEnableErr != nil {
 		return errors.Wrap(_communicationEnableErr, "Error serializing 'communicationEnable' field")
 	}

@@ -237,42 +237,42 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (method)
 		method := uint8(m.Method)
-		_methodErr := io.WriteUint8(8, (method))
+		_methodErr := io.WriteUint8("method", 8, (method))
 		if _methodErr != nil {
 			return errors.Wrap(_methodErr, "Error serializing 'method' field")
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.CpuFunctionType)
-		_cpuFunctionTypeErr := io.WriteUint8(4, (cpuFunctionType))
+		_cpuFunctionTypeErr := io.WriteUint8("cpuFunctionType", 4, (cpuFunctionType))
 		if _cpuFunctionTypeErr != nil {
 			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.CpuFunctionGroup)
-		_cpuFunctionGroupErr := io.WriteUint8(4, (cpuFunctionGroup))
+		_cpuFunctionGroupErr := io.WriteUint8("cpuFunctionGroup", 4, (cpuFunctionGroup))
 		if _cpuFunctionGroupErr != nil {
 			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
 		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.CpuSubfunction)
-		_cpuSubfunctionErr := io.WriteUint8(8, (cpuSubfunction))
+		_cpuSubfunctionErr := io.WriteUint8("cpuSubfunction", 8, (cpuSubfunction))
 		if _cpuSubfunctionErr != nil {
 			return errors.Wrap(_cpuSubfunctionErr, "Error serializing 'cpuSubfunction' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8("sequenceNumber", 8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
@@ -281,7 +281,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 		var dataUnitReferenceNumber *uint8 = nil
 		if m.DataUnitReferenceNumber != nil {
 			dataUnitReferenceNumber = m.DataUnitReferenceNumber
-			_dataUnitReferenceNumberErr := io.WriteUint8(8, *(dataUnitReferenceNumber))
+			_dataUnitReferenceNumberErr := io.WriteUint8("dataUnitReferenceNumber", 8, *(dataUnitReferenceNumber))
 			if _dataUnitReferenceNumberErr != nil {
 				return errors.Wrap(_dataUnitReferenceNumberErr, "Error serializing 'dataUnitReferenceNumber' field")
 			}
@@ -291,7 +291,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 		var lastDataUnit *uint8 = nil
 		if m.LastDataUnit != nil {
 			lastDataUnit = m.LastDataUnit
-			_lastDataUnitErr := io.WriteUint8(8, *(lastDataUnit))
+			_lastDataUnitErr := io.WriteUint8("lastDataUnit", 8, *(lastDataUnit))
 			if _lastDataUnitErr != nil {
 				return errors.Wrap(_lastDataUnitErr, "Error serializing 'lastDataUnit' field")
 			}
@@ -301,7 +301,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 		var errorCode *uint16 = nil
 		if m.ErrorCode != nil {
 			errorCode = m.ErrorCode
-			_errorCodeErr := io.WriteUint16(16, *(errorCode))
+			_errorCodeErr := io.WriteUint16("errorCode", 16, *(errorCode))
 			if _errorCodeErr != nil {
 				return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 			}

@@ -156,21 +156,21 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuff
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.ReferenceAddress)
-		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
+		_referenceAddressErr := io.WriteUint16("referenceAddress", 16, (referenceAddress))
 		if _referenceAddressErr != nil {
 			return errors.Wrap(_referenceAddressErr, "Error serializing 'referenceAddress' field")
 		}
 
 		// Simple Field (andMask)
 		andMask := uint16(m.AndMask)
-		_andMaskErr := io.WriteUint16(16, (andMask))
+		_andMaskErr := io.WriteUint16("andMask", 16, (andMask))
 		if _andMaskErr != nil {
 			return errors.Wrap(_andMaskErr, "Error serializing 'andMask' field")
 		}
 
 		// Simple Field (orMask)
 		orMask := uint16(m.OrMask)
-		_orMaskErr := io.WriteUint16(16, (orMask))
+		_orMaskErr := io.WriteUint16("orMask", 16, (orMask))
 		if _orMaskErr != nil {
 			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
 		}

@@ -175,21 +175,21 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(io utils.Write
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
-		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16("startingAddress", 16, (startingAddress))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
-		_quantityErr := io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16("quantity", 16, (quantity))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
@@ -197,7 +197,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(io utils.Write
 		// Array Field (value)
 		if m.Value != nil {
 			for _, _element := range m.Value {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}

@@ -192,7 +192,7 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
-	_dataLengthErr := io.WriteUint16(16, (dataLength))
+	_dataLengthErr := io.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
@@ -205,7 +205,7 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 
 	// Simple Field (szlIndex)
 	szlIndex := uint16(m.SzlIndex)
-	_szlIndexErr := io.WriteUint16(16, (szlIndex))
+	_szlIndexErr := io.WriteUint16("szlIndex", 16, (szlIndex))
 	if _szlIndexErr != nil {
 		return errors.Wrap(_szlIndexErr, "Error serializing 'szlIndex' field")
 	}

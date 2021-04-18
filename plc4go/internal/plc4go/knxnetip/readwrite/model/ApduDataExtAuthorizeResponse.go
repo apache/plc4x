@@ -124,7 +124,7 @@ func (m *ApduDataExtAuthorizeResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (level)
 		level := uint8(m.Level)
-		_levelErr := io.WriteUint8(8, (level))
+		_levelErr := io.WriteUint8("level", 8, (level))
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}

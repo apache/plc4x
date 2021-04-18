@@ -171,21 +171,21 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
-		_adsStateErr := io.WriteUint16(16, (adsState))
+		_adsStateErr := io.WriteUint16("adsState", 16, (adsState))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
-		_deviceStateErr := io.WriteUint16(16, (deviceState))
+		_deviceStateErr := io.WriteUint16("deviceState", 16, (deviceState))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.Data)))
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -193,7 +193,7 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

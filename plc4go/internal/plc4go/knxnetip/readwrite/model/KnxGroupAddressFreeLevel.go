@@ -124,7 +124,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(16, (subGroup))
+		_subGroupErr := io.WriteUint16("subGroup", 16, (subGroup))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}

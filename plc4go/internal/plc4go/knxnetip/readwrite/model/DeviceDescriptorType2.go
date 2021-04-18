@@ -186,42 +186,42 @@ func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (manufacturerId)
 	manufacturerId := uint16(m.ManufacturerId)
-	_manufacturerIdErr := io.WriteUint16(16, (manufacturerId))
+	_manufacturerIdErr := io.WriteUint16("manufacturerId", 16, (manufacturerId))
 	if _manufacturerIdErr != nil {
 		return errors.Wrap(_manufacturerIdErr, "Error serializing 'manufacturerId' field")
 	}
 
 	// Simple Field (deviceType)
 	deviceType := uint16(m.DeviceType)
-	_deviceTypeErr := io.WriteUint16(16, (deviceType))
+	_deviceTypeErr := io.WriteUint16("deviceType", 16, (deviceType))
 	if _deviceTypeErr != nil {
 		return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
 	}
 
 	// Simple Field (version)
 	version := uint8(m.Version)
-	_versionErr := io.WriteUint8(8, (version))
+	_versionErr := io.WriteUint8("version", 8, (version))
 	if _versionErr != nil {
 		return errors.Wrap(_versionErr, "Error serializing 'version' field")
 	}
 
 	// Simple Field (readSupported)
 	readSupported := bool(m.ReadSupported)
-	_readSupportedErr := io.WriteBit((readSupported))
+	_readSupportedErr := io.WriteBit("readSupported", (readSupported))
 	if _readSupportedErr != nil {
 		return errors.Wrap(_readSupportedErr, "Error serializing 'readSupported' field")
 	}
 
 	// Simple Field (writeSupported)
 	writeSupported := bool(m.WriteSupported)
-	_writeSupportedErr := io.WriteBit((writeSupported))
+	_writeSupportedErr := io.WriteBit("writeSupported", (writeSupported))
 	if _writeSupportedErr != nil {
 		return errors.Wrap(_writeSupportedErr, "Error serializing 'writeSupported' field")
 	}
 
 	// Simple Field (logicalTagBase)
 	logicalTagBase := uint8(m.LogicalTagBase)
-	_logicalTagBaseErr := io.WriteUint8(6, (logicalTagBase))
+	_logicalTagBaseErr := io.WriteUint8("logicalTagBase", 6, (logicalTagBase))
 	if _logicalTagBaseErr != nil {
 		return errors.Wrap(_logicalTagBaseErr, "Error serializing 'logicalTagBase' field")
 	}

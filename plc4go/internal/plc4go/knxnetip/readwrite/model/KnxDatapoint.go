@@ -5845,4291 +5845,4291 @@ func KnxDatapointSerialize(io utils.WriteBuffer, value api.PlcValue, datapointTy
 	case datapointType == KnxDatapointType_BOOL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_BYTE: // BYTE
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WORD: // WORD
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DWORD: // DWORD
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LWORD: // LWORD
 
 		// Simple Field (value)
-		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+		if _err := io.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_USINT: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_SINT: // SINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+		if _err := io.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_UINT: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_INT: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_UDINT: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DINT: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_ULINT: // ULINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+		if _err := io.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LINT: // LINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_REAL: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LREAL: // LREAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
+		if _err := io.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_CHAR: // CHAR
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_WCHAR: // WCHAR
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME: // TIME
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_LTIME: // LTIME
 
 		// Simple Field (value)
-		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+		if _err := io.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DATE: // DATE
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TIME_OF_DAY: // TIME_OF_DAY
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_TOD: // TIME_OF_DAY
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DATE_AND_TIME: // DATE_AND_TIME
 
 		// Simple Field (year)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("year", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("day", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayOfWeek", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hour", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanos)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("nanos", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanos' field")
 		}
 	case datapointType == KnxDatapointType_DT: // DATE_AND_TIME
 
 		// Simple Field (year)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("year", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("day", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayOfWeek", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hour", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanos)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("nanos", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanos' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Switch: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Bool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Enable: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Ramp: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Alarm: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BinaryValue: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Step: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_UpDown: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OpenClose: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Start: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_State: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Invert: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DimSendStyle: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_InputSource: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Reset: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Ack: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Trigger: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Occupancy: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Window_Door: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LogicalFunction: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scene_AB: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ShutterBlinds_Mode: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DayNight: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Heat_Cool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Switch_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (on)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("on", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'on' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Bool_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (valueTrue)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("valueTrue", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'valueTrue' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Enable_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (enable)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("enable", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'enable' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Ramp_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (ramp)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("ramp", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ramp' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Alarm_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (alarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarm' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BinaryValue_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (high)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("high", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'high' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Step_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (increase)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("increase", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'increase' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Direction1_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (down)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("down", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'down' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Direction2_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (close)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("close", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'close' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Start_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (start)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("start", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'start' field")
 		}
 	case datapointType == KnxDatapointType_DPT_State_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (active)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("active", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'active' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Invert_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (control)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("control", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'control' field")
 		}
 
 		// Simple Field (inverted)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("inverted", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'inverted' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Control_Dimming: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (increase)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("increase", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'increase' field")
 		}
 
 		// Simple Field (stepcode)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepcode", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepcode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Control_Blinds: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (down)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("down", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'down' field")
 		}
 
 		// Simple Field (stepcode)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepcode", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepcode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Char_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(uint8((8)), "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString("value", uint8((8)), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Char_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(uint8((8)), "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := io.WriteString("value", uint8((8)), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Angle: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_U8: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DecimalFactor: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Tariff: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_1_Ucount: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FanStage: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_V8: // SINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+		if _err := io.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_1_Count: // SINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+		if _err := io.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Status_Mode3: // Struct
 
 		// Simple Field (statusA)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusA", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusA' field")
 		}
 
 		// Simple Field (statusB)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusB", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusB' field")
 		}
 
 		// Simple Field (statusC)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusC", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusC' field")
 		}
 
 		// Simple Field (statusD)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusD", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusD' field")
 		}
 
 		// Simple Field (statusE)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusE", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusE' field")
 		}
 
 		// Simple Field (mode)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("mode", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'mode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_2_Ucount: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodMsec: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriod10Msec: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriod100Msec: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodSec: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodMin: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimePeriodHrs: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PropDataType: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Length_mm: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_UElCurrentmA: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Absolute_Colour_Temperature: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_2_Count: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMsec: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTime10Msec: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTime100Msec: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeSec: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeMin: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaTimeHrs: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Percent_V16: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Rotation_Angle: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Length_m: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Temp: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempd: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Tempa: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Lux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Pres: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Humidity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirQuality: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AirFlow: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time1: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time2: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volt: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Curr: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PowerDensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_KelvinPerPercent: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Power: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flow: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Rain_Amount: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Temp_F: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Wsp_kmh: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Humidity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
 
 		// Simple Field (day)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("day", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (hour)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hour", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Date: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayOfMonth", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (year)
-		if _err := io.WriteUint8(7, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("year", 7, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_4_Ucount: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Sec: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Min: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongTimePeriod_Hrs: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_VolumeLiquid_Litre: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_m_3: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_4_Count: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FlowRate_m3h: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_kWh: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_kVAh: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_kVARh: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_MWh: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LongDeltaTimeSec: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaVolumeLiquid_Litre: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DeltaVolume_m_3: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Acceleration_Angular: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Activation_Energy: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Activity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Mol: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Amplitude: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AngleRad: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_AngleDeg: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Momentum: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Velocity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Area: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Capacitance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensitySurface: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Charge_DensityVolume: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Compressibility: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Conductance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electrical_Conductivity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Density: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Charge: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Current: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_CurrentDensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_DipoleMoment: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Displacement: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FieldStrength: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Flux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_FluxDensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Polarization: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_Potential: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electric_PotentialDifference: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_ElectromagneticMoment: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Electromotive_Force: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Energy: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Force: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Frequency: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Angular_Frequency: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Capacity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_FlowRate: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Heat_Quantity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Impedance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Length: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Light_Quantity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Flux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Luminous_Intensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FieldStrength: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Flux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_FluxDensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Moment: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetic_Polarization: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Magnetization: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_MagnetomotiveForce: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Mass: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_MassFlux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Momentum: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleRad: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Phase_AngleDeg: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Power: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Power_Factor: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Pressure: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Reactance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Resistance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Resistivity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_SelfInductance: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_SolidAngle: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Sound_Intensity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Speed: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Stress: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Surface_Tension: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Common_Temperature: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Absolute_Temperature: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_TemperatureDifference: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Capacity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Thermal_Conductivity: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_ThermoelectricPower: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Time: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Torque: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Volume_Flux: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Weight: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Value_Work: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_Meter: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Volume_Flux_ls: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Access_Data: // Struct
 
 		// Simple Field (hurz)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hurz", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hurz' field")
 		}
 
 		// Simple Field (value1)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value1", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value1' field")
 		}
 
 		// Simple Field (value2)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value2", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value2' field")
 		}
 
 		// Simple Field (value3)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value3", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value3' field")
 		}
 
 		// Simple Field (value4)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value4", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value4' field")
 		}
 
 		// Simple Field (value5)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value5", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value5' field")
 		}
 
 		// Simple Field (detectionError)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("detectionError", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'detectionError' field")
 		}
 
 		// Simple Field (permission)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("permission", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'permission' field")
 		}
 
 		// Simple Field (readDirection)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("readDirection", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'readDirection' field")
 		}
 
 		// Simple Field (encryptionOfAccessInformation)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("encryptionOfAccessInformation", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'encryptionOfAccessInformation' field")
 		}
 
 		// Simple Field (indexOfAccessIdentificationCode)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("indexOfAccessIdentificationCode", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'indexOfAccessIdentificationCode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_String_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(uint8((112)), "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString("value", uint8((112)), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_String_8859_1: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(uint8((112)), "ISO-8859-1", value.GetString()); _err != nil {
+		if _err := io.WriteString("value", uint8((112)), "ISO-8859-1", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneNumber: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneControl: // Struct
 
 		// Simple Field (learnTheSceneCorrespondingToTheFieldSceneNumber)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("learnTheSceneCorrespondingToTheFieldSceneNumber", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'learnTheSceneCorrespondingToTheFieldSceneNumber' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (sceneNumber)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("sceneNumber", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sceneNumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DateTime: // Struct
 
 		// Simple Field (year)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("year", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayofmonth)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayofmonth", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayofmonth' field")
 		}
 
 		// Simple Field (dayofweek)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayofweek", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayofweek' field")
 		}
 
 		// Simple Field (hourofday)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hourofday", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hourofday' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 
 		// Simple Field (workingDay)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("workingDay", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'workingDay' field")
 		}
 
 		// Simple Field (noWd)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noWd", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noWd' field")
 		}
 
 		// Simple Field (noYear)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noYear", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noYear' field")
 		}
 
 		// Simple Field (noDate)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noDate", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDate' field")
 		}
 
 		// Simple Field (noDayOfWeek)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noDayOfWeek", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDayOfWeek' field")
 		}
 
 		// Simple Field (noTime)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noTime' field")
 		}
 
 		// Simple Field (standardSummerTime)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("standardSummerTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'standardSummerTime' field")
 		}
 
 		// Simple Field (qualityOfClock)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("qualityOfClock", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'qualityOfClock' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_SCLOMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BuildingMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OccMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Priority: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightApplicationMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApplicationArea: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AlarmClassType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PSUMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ErrorClass_System: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ErrorClass_HVAC: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Time_Delay: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Beaufort_Wind_Force_Scale: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SensorSelect: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActuatorConnectType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Cloud_Cover: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PowerReturnMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FuelType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BurnerType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DHWMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadPriority: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACContrMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACEmergMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ChangeoverMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ValveMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DamperMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HeaterMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FanMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MasterSlaveMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRoomSetp: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Metering_DeviceType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HumDehumMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_EnableHCStage: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ADAType: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BackupMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StartSynchronization: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Behaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Fade_Time: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BlinkingMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightControlMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SwitchPBModel: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_PBAction: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DimmPBModel: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SwitchOnMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadTypeSet: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LoadTypeDetected: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SABBehaviour_Lock_Unlock: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SSSBMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BlindsControlMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CommMode: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AddInfoTypes: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_ModeSelect: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_FilterSelect: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusGen: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (alarmStatusOfCorrespondingDatapointIsNotAcknowledged)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmStatusOfCorrespondingDatapointIsNotAcknowledged", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmStatusOfCorrespondingDatapointIsNotAcknowledged' field")
 		}
 
 		// Simple Field (correspondingDatapointIsInAlarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("correspondingDatapointIsInAlarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'correspondingDatapointIsInAlarm' field")
 		}
 
 		// Simple Field (correspondingDatapointMainValueIsOverridden)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("correspondingDatapointMainValueIsOverridden", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'correspondingDatapointMainValueIsOverridden' field")
 		}
 
 		// Simple Field (correspondingDatapointMainValueIsCorruptedDueToFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("correspondingDatapointMainValueIsCorruptedDueToFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'correspondingDatapointMainValueIsCorruptedDueToFailure' field")
 		}
 
 		// Simple Field (correspondingDatapointValueIsOutOfService)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("correspondingDatapointValueIsOutOfService", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'correspondingDatapointValueIsOutOfService' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Device_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (verifyModeIsOn)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("verifyModeIsOn", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'verifyModeIsOn' field")
 		}
 
 		// Simple Field (aDatagramWithTheOwnIndividualAddressAsSourceAddressHasBeenReceived)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("aDatagramWithTheOwnIndividualAddressAsSourceAddressHasBeenReceived", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'aDatagramWithTheOwnIndividualAddressAsSourceAddressHasBeenReceived' field")
 		}
 
 		// Simple Field (theUserApplicationIsStopped)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("theUserApplicationIsStopped", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'theUserApplicationIsStopped' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ForceSign: // Struct
 
 		// Simple Field (roomhmax)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("roomhmax", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomhmax' field")
 		}
 
 		// Simple Field (roomhconf)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("roomhconf", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomhconf' field")
 		}
 
 		// Simple Field (dhwlegio)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dhwlegio", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dhwlegio' field")
 		}
 
 		// Simple Field (dhwnorm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dhwnorm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dhwnorm' field")
 		}
 
 		// Simple Field (overrun)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overrun", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overrun' field")
 		}
 
 		// Simple Field (oversupply)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("oversupply", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'oversupply' field")
 		}
 
 		// Simple Field (protection)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("protection", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'protection' field")
 		}
 
 		// Simple Field (forcerequest)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("forcerequest", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'forcerequest' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ForceSignCool: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRHC: // Struct
 
 		// Simple Field (summermode)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("summermode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'summermode' field")
 		}
 
 		// Simple Field (statusstopoptim)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusstopoptim", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusstopoptim' field")
 		}
 
 		// Simple Field (statusstartoptim)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusstartoptim", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusstartoptim' field")
 		}
 
 		// Simple Field (statusmorningboost)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusmorningboost", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusmorningboost' field")
 		}
 
 		// Simple Field (tempreturnlimit)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tempreturnlimit", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempreturnlimit' field")
 		}
 
 		// Simple Field (tempflowlimit)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tempflowlimit", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempflowlimit' field")
 		}
 
 		// Simple Field (satuseco)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("satuseco", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'satuseco' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusSDHWC: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (solarloadsufficient)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("solarloadsufficient", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'solarloadsufficient' field")
 		}
 
 		// Simple Field (sdhwloadactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("sdhwloadactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sdhwloadactive' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_FuelTypeSet: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (solidstate)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("solidstate", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'solidstate' field")
 		}
 
 		// Simple Field (gas)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("gas", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'gas' field")
 		}
 
 		// Simple Field (oil)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("oil", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'oil' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRCC: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusAHU: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cool)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cool", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cool' field")
 		}
 
 		// Simple Field (heat)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("heat", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heat' field")
 		}
 
 		// Simple Field (fanactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fanactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fanactive' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTSM: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (statusOfHvacModeUser)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusOfHvacModeUser", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusOfHvacModeUser' field")
 		}
 
 		// Simple Field (statusOfComfortProlongationUser)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusOfComfortProlongationUser", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusOfComfortProlongationUser' field")
 		}
 
 		// Simple Field (effectiveValueOfTheComfortPushButton)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("effectiveValueOfTheComfortPushButton", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'effectiveValueOfTheComfortPushButton' field")
 		}
 
 		// Simple Field (effectiveValueOfThePresenceStatus)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("effectiveValueOfThePresenceStatus", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'effectiveValueOfThePresenceStatus' field")
 		}
 
 		// Simple Field (effectiveValueOfTheWindowStatus)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("effectiveValueOfTheWindowStatus", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'effectiveValueOfTheWindowStatus' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LightActuatorErrorInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (overheat)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overheat", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overheat' field")
 		}
 
 		// Simple Field (lampfailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lampfailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lampfailure' field")
 		}
 
 		// Simple Field (defectiveload)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("defectiveload", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'defectiveload' field")
 		}
 
 		// Simple Field (underload)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("underload", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'underload' field")
 		}
 
 		// Simple Field (overcurrent)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overcurrent", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overcurrent' field")
 		}
 
 		// Simple Field (undervoltage)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("undervoltage", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'undervoltage' field")
 		}
 
 		// Simple Field (loaddetectionerror)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("loaddetectionerror", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'loaddetectionerror' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_ModeInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (bibatSlave)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("bibatSlave", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'bibatSlave' field")
 		}
 
 		// Simple Field (bibatMaster)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("bibatMaster", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'bibatMaster' field")
 		}
 
 		// Simple Field (asynchronous)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("asynchronous", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'asynchronous' field")
 		}
 	case datapointType == KnxDatapointType_DPT_RF_FilterInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (doa)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("doa", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'doa' field")
 		}
 
 		// Simple Field (knxSn)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("knxSn", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'knxSn' field")
 		}
 
 		// Simple Field (doaAndKnxSn)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("doaAndKnxSn", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'doaAndKnxSn' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_8: // Struct
 
 		// Simple Field (activationStateOfChannel1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
 		}
 
 		// Simple Field (activationStateOfChannel2)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel2", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel2' field")
 		}
 
 		// Simple Field (activationStateOfChannel3)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel3", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel3' field")
 		}
 
 		// Simple Field (activationStateOfChannel4)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel4", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel4' field")
 		}
 
 		// Simple Field (activationStateOfChannel5)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel5", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel5' field")
 		}
 
 		// Simple Field (activationStateOfChannel6)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel6", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel6' field")
 		}
 
 		// Simple Field (activationStateOfChannel7)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel7", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel7' field")
 		}
 
 		// Simple Field (activationStateOfChannel8)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel8", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel8' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusDHWC: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(8, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (tempoptimshiftactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tempoptimshiftactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempoptimshiftactive' field")
 		}
 
 		// Simple Field (solarenergysupport)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("solarenergysupport", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'solarenergysupport' field")
 		}
 
 		// Simple Field (solarenergyonly)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("solarenergyonly", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'solarenergyonly' field")
 		}
 
 		// Simple Field (otherenergysourceactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("otherenergysourceactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'otherenergysourceactive' field")
 		}
 
 		// Simple Field (dhwpushactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dhwpushactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dhwpushactive' field")
 		}
 
 		// Simple Field (legioprotactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("legioprotactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'legioprotactive' field")
 		}
 
 		// Simple Field (dhwloadactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dhwloadactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dhwloadactive' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusRHCC: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (overheatalarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overheatalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overheatalarm' field")
 		}
 
 		// Simple Field (frostalarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("frostalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'frostalarm' field")
 		}
 
 		// Simple Field (dewpointstatus)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dewpointstatus", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dewpointstatus' field")
 		}
 
 		// Simple Field (coolingdisabled)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("coolingdisabled", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'coolingdisabled' field")
 		}
 
 		// Simple Field (statusprecool)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusprecool", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusprecool' field")
 		}
 
 		// Simple Field (statusecoc)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusecoc", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusecoc' field")
 		}
 
 		// Simple Field (heatcoolmode)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("heatcoolmode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heatcoolmode' field")
 		}
 
 		// Simple Field (heatingdiabled)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("heatingdiabled", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heatingdiabled' field")
 		}
 
 		// Simple Field (statusstopoptim)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusstopoptim", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusstopoptim' field")
 		}
 
 		// Simple Field (statusstartoptim)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusstartoptim", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusstartoptim' field")
 		}
 
 		// Simple Field (statusmorningboosth)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusmorningboosth", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusmorningboosth' field")
 		}
 
 		// Simple Field (tempflowreturnlimit)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tempflowreturnlimit", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempflowreturnlimit' field")
 		}
 
 		// Simple Field (tempflowlimit)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tempflowlimit", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempflowlimit' field")
 		}
 
 		// Simple Field (statusecoh)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("statusecoh", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'statusecoh' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_HVA: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (calibrationMode)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("calibrationMode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'calibrationMode' field")
 		}
 
 		// Simple Field (lockedPosition)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lockedPosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lockedPosition' field")
 		}
 
 		// Simple Field (forcedPosition)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("forcedPosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'forcedPosition' field")
 		}
 
 		// Simple Field (manuaOperationOverridden)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("manuaOperationOverridden", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'manuaOperationOverridden' field")
 		}
 
 		// Simple Field (serviceMode)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("serviceMode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'serviceMode' field")
 		}
 
 		// Simple Field (valveKick)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("valveKick", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'valveKick' field")
 		}
 
 		// Simple Field (overload)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overload", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overload' field")
 		}
 
 		// Simple Field (shortCircuit)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("shortCircuit", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'shortCircuit' field")
 		}
 
 		// Simple Field (currentValvePosition)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("currentValvePosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'currentValvePosition' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedStatus_RTC: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (coolingModeEnabled)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("coolingModeEnabled", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'coolingModeEnabled' field")
 		}
 
 		// Simple Field (heatingModeEnabled)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("heatingModeEnabled", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heatingModeEnabled' field")
 		}
 
 		// Simple Field (additionalHeatingCoolingStage2Stage)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("additionalHeatingCoolingStage2Stage", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'additionalHeatingCoolingStage2Stage' field")
 		}
 
 		// Simple Field (controllerInactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("controllerInactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'controllerInactive' field")
 		}
 
 		// Simple Field (overheatAlarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overheatAlarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overheatAlarm' field")
 		}
 
 		// Simple Field (frostAlarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("frostAlarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'frostAlarm' field")
 		}
 
 		// Simple Field (dewPointStatus)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("dewPointStatus", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dewPointStatus' field")
 		}
 
 		// Simple Field (activeMode)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activeMode", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activeMode' field")
 		}
 
 		// Simple Field (generalFailureInformation)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("generalFailureInformation", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'generalFailureInformation' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Media: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint16(10, uint16(0x00)); _err != nil {
+		if _err := io.WriteUint16("reserved", 10, uint16(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (knxIp)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("knxIp", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'knxIp' field")
 		}
 
 		// Simple Field (rf)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("rf", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'rf' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (pl110)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("pl110", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'pl110' field")
 		}
 
 		// Simple Field (tp1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tp1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tp1' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_16: // Struct
 
 		// Simple Field (activationStateOfChannel1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
 		}
 
 		// Simple Field (activationStateOfChannel2)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel2", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel2' field")
 		}
 
 		// Simple Field (activationStateOfChannel3)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel3", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel3' field")
 		}
 
 		// Simple Field (activationStateOfChannel4)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel4", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel4' field")
 		}
 
 		// Simple Field (activationStateOfChannel5)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel5", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel5' field")
 		}
 
 		// Simple Field (activationStateOfChannel6)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel6", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel6' field")
 		}
 
 		// Simple Field (activationStateOfChannel7)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel7", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel7' field")
 		}
 
 		// Simple Field (activationStateOfChannel8)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel8", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel8' field")
 		}
 
 		// Simple Field (activationStateOfChannel9)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel9", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel9' field")
 		}
 
 		// Simple Field (activationStateOfChannel10)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel10", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel10' field")
 		}
 
 		// Simple Field (activationStateOfChannel11)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel11", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel11' field")
 		}
 
 		// Simple Field (activationStateOfChannel12)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel12", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel12' field")
 		}
 
 		// Simple Field (activationStateOfChannel13)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel13", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel13' field")
 		}
 
 		// Simple Field (activationStateOfChannel14)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel14", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel14' field")
 		}
 
 		// Simple Field (activationStateOfChannel15)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel15", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel15' field")
 		}
 
 		// Simple Field (activationStateOfChannel16)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel16", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel16' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OnOffAction: // USINT
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Alarm_Reaction: // USINT
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_UpDown_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVAC_PB_Action: // USINT
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DoubleNibble: // Struct
 
 		// Simple Field (busy)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("busy", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'busy' field")
 		}
 
 		// Simple Field (nak)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("nak", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nak' field")
 		}
 	case datapointType == KnxDatapointType_DPT_SceneInfo: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (sceneIsInactive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("sceneIsInactive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sceneIsInactive' field")
 		}
 
 		// Simple Field (scenenumber)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("scenenumber", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'scenenumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedInfoOnOff: // Struct
 
 		// Simple Field (maskBitInfoOnOffOutput16)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput16", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput16' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput15)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput15", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput15' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput14)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput14", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput14' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput13)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput13", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput13' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput12)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput12", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput12' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput11)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput11", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput11' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput10)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput10", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput10' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput9)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput9", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput9' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput8)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput8", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput8' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput7)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput7", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput7' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput6)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput6", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput6' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput5)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput5", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput5' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput4)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput4", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput4' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput3)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput3", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput3' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput2)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput2", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput2' field")
 		}
 
 		// Simple Field (maskBitInfoOnOffOutput1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskBitInfoOnOffOutput1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskBitInfoOnOffOutput1' field")
 		}
 
 		// Simple Field (infoOnOffOutput16)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput16", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput16' field")
 		}
 
 		// Simple Field (infoOnOffOutput15)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput15", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput15' field")
 		}
 
 		// Simple Field (infoOnOffOutput14)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput14", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput14' field")
 		}
 
 		// Simple Field (infoOnOffOutput13)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput13", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput13' field")
 		}
 
 		// Simple Field (infoOnOffOutput12)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput12", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput12' field")
 		}
 
 		// Simple Field (infoOnOffOutput11)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput11", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput11' field")
 		}
 
 		// Simple Field (infoOnOffOutput10)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput10", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput10' field")
 		}
 
 		// Simple Field (infoOnOffOutput9)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput9", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput9' field")
 		}
 
 		// Simple Field (infoOnOffOutput8)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput8", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput8' field")
 		}
 
 		// Simple Field (infoOnOffOutput7)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput7", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput7' field")
 		}
 
 		// Simple Field (infoOnOffOutput6)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput6", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput6' field")
 		}
 
 		// Simple Field (infoOnOffOutput5)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput5", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput5' field")
 		}
 
 		// Simple Field (infoOnOffOutput4)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput4", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput4' field")
 		}
 
 		// Simple Field (infoOnOffOutput3)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput3", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput3' field")
 		}
 
 		// Simple Field (infoOnOffOutput2)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput2", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput2' field")
 		}
 
 		// Simple Field (infoOnOffOutput1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("infoOnOffOutput1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'infoOnOffOutput1' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ActiveEnergy_V64: // LINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ApparantEnergy_V64: // LINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_ReactiveEnergy_V64: // LINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Channel_Activation_24: // Struct
 
 		// Simple Field (activationStateOfChannel1)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel1", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel1' field")
 		}
 
 		// Simple Field (activationStateOfChannel2)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel2", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel2' field")
 		}
 
 		// Simple Field (activationStateOfChannel3)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel3", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel3' field")
 		}
 
 		// Simple Field (activationStateOfChannel4)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel4", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel4' field")
 		}
 
 		// Simple Field (activationStateOfChannel5)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel5", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel5' field")
 		}
 
 		// Simple Field (activationStateOfChannel6)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel6", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel6' field")
 		}
 
 		// Simple Field (activationStateOfChannel7)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel7", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel7' field")
 		}
 
 		// Simple Field (activationStateOfChannel8)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel8", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel8' field")
 		}
 
 		// Simple Field (activationStateOfChannel9)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel9", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel9' field")
 		}
 
 		// Simple Field (activationStateOfChannel10)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel10", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel10' field")
 		}
 
 		// Simple Field (activationStateOfChannel11)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel11", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel11' field")
 		}
 
 		// Simple Field (activationStateOfChannel12)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel12", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel12' field")
 		}
 
 		// Simple Field (activationStateOfChannel13)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel13", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel13' field")
 		}
 
 		// Simple Field (activationStateOfChannel14)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel14", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel14' field")
 		}
 
 		// Simple Field (activationStateOfChannel15)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel15", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel15' field")
 		}
 
 		// Simple Field (activationStateOfChannel16)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel16", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel16' field")
 		}
 
 		// Simple Field (activationStateOfChannel17)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel17", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel17' field")
 		}
 
 		// Simple Field (activationStateOfChannel18)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel18", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel18' field")
 		}
 
 		// Simple Field (activationStateOfChannel19)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel19", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel19' field")
 		}
 
 		// Simple Field (activationStateOfChannel20)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel20", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel20' field")
 		}
 
 		// Simple Field (activationStateOfChannel21)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel21", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel21' field")
 		}
 
 		// Simple Field (activationStateOfChannel22)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel22", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel22' field")
 		}
 
 		// Simple Field (activationStateOfChannel23)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel23", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel23' field")
 		}
 
 		// Simple Field (activationStateOfChannel24)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("activationStateOfChannel24", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activationStateOfChannel24' field")
 		}
 	case datapointType == KnxDatapointType_DPT_HVACModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
 		}
 
 		// Simple Field (hvacMode)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hvacMode", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hvacMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DHWModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
 		}
 
 		// Simple Field (dhwMode)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dhwMode", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dhwMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_OccModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
 		}
 
 		// Simple Field (occupancyMode)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("occupancyMode", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'occupancyMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_BuildingModeNext: // Struct
 
 		// Simple Field (delayTimeMin)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("delayTimeMin", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'delayTimeMin' field")
 		}
 
 		// Simple Field (buildingMode)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("buildingMode", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'buildingMode' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Version: // Struct
 
 		// Simple Field (magicNumber)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("magicNumber", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'magicNumber' field")
 		}
 
 		// Simple Field (versionNumber)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("versionNumber", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'versionNumber' field")
 		}
 
 		// Simple Field (revisionNumber)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("revisionNumber", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'revisionNumber' field")
 		}
 	case datapointType == KnxDatapointType_DPT_AlarmInfo: // Struct
 
 		// Simple Field (logNumber)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("logNumber", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'logNumber' field")
 		}
 
 		// Simple Field (alarmPriority)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("alarmPriority", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmPriority' field")
 		}
 
 		// Simple Field (applicationArea)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("applicationArea", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'applicationArea' field")
 		}
 
 		// Simple Field (errorClass)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("errorClass", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorClass' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (errorcodeSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("errorcodeSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorcodeSup' field")
 		}
 
 		// Simple Field (alarmtextSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmtextSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmtextSup' field")
 		}
 
 		// Simple Field (timestampSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("timestampSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timestampSup' field")
 		}
 
 		// Simple Field (ackSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("ackSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ackSup' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (locked)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("locked", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'locked' field")
 		}
 
 		// Simple Field (alarmunack)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmunack", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmunack' field")
 		}
 
 		// Simple Field (inalarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("inalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'inalarm' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_3: // Struct
 
 		// Simple Field (tempsetpcomf)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpcomf", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpcomf' field")
 		}
 
 		// Simple Field (tempsetpstdby)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpstdby", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpstdby' field")
 		}
 
 		// Simple Field (tempsetpeco)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpeco", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpeco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3: // Struct
 
 		// Simple Field (tempsetpshiftcomf)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpshiftcomf", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshiftcomf' field")
 		}
 
 		// Simple Field (tempsetpshiftstdby)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpshiftstdby", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshiftstdby' field")
 		}
 
 		// Simple Field (tempsetpshifteco)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("tempsetpshifteco", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tempsetpshifteco' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling_Speed: // Struct
 
 		// Simple Field (timePeriod)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("timePeriod", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timePeriod' field")
 		}
 
 		// Simple Field (percent)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("percent", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'percent' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Scaling_Step_Time: // Struct
 
 		// Simple Field (timePeriod)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("timePeriod", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timePeriod' field")
 		}
 
 		// Simple Field (percent)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("percent", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'percent' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MeteringValue: // Struct
 
 		// Simple Field (countval)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("countval", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'countval' field")
 		}
 
 		// Simple Field (valinffield)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("valinffield", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'valinffield' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (alarmunack)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmunack", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmunack' field")
 		}
 
 		// Simple Field (inalarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("inalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'inalarm' field")
 		}
 
 		// Simple Field (overridden)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("overridden", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'overridden' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 
 		// Simple Field (outofservice)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("outofservice", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'outofservice' field")
 		}
 	case datapointType == KnxDatapointType_DPT_MBus_Address: // Struct
 
 		// Simple Field (manufactid)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("manufactid", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'manufactid' field")
 		}
 
 		// Simple Field (identnumber)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("identnumber", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'identnumber' field")
 		}
 
 		// Simple Field (version)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("version", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'version' field")
 		}
 
 		// Simple Field (medium)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("medium", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'medium' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_RGB: // Struct
 
 		// Simple Field (r)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("r", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'r' field")
 		}
 
 		// Simple Field (g)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("g", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'g' field")
 		}
 
 		// Simple Field (b)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("b", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'b' field")
 		}
 	case datapointType == KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII: // STRING
 
 		// Simple Field (value)
-		if _err := io.WriteString(uint8((16)), "ASCII", value.GetString()); _err != nil {
+		if _err := io.WriteString("value", uint8((16)), "ASCII", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Tariff_ActiveEnergy: // Struct
 
 		// Simple Field (activeelectricalenergy)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("activeelectricalenergy", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'activeelectricalenergy' field")
 		}
 
 		// Simple Field (tariff)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("tariff", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tariff' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (electricalengergyvalidity)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("electricalengergyvalidity", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'electricalengergyvalidity' field")
 		}
 
 		// Simple Field (tariffvalidity)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("tariffvalidity", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'tariffvalidity' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Prioritised_Mode_Control: // Struct
 
 		// Simple Field (deactivationOfPriority)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("deactivationOfPriority", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'deactivationOfPriority' field")
 		}
 
 		// Simple Field (priorityLevel)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("priorityLevel", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'priorityLevel' field")
 		}
 
 		// Simple Field (modeLevel)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("modeLevel", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'modeLevel' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (convertorError)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("convertorError", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'convertorError' field")
 		}
 
 		// Simple Field (ballastFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("ballastFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ballastFailure' field")
 		}
 
 		// Simple Field (lampFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lampFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lampFailure' field")
 		}
 
 		// Simple Field (readOrResponse)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("readOrResponse", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'readOrResponse' field")
 		}
 
 		// Simple Field (addressIndicator)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("addressIndicator", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'addressIndicator' field")
 		}
 
 		// Simple Field (daliDeviceAddressOrDaliGroupAddress)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("daliDeviceAddressOrDaliGroupAddress", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'daliDeviceAddressOrDaliGroupAddress' field")
 		}
 	case datapointType == KnxDatapointType_DPT_DALI_Diagnostics: // Struct
 
 		// Simple Field (ballastFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("ballastFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ballastFailure' field")
 		}
 
 		// Simple Field (lampFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lampFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lampFailure' field")
 		}
 
 		// Simple Field (deviceAddress)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("deviceAddress", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'deviceAddress' field")
 		}
 	case datapointType == KnxDatapointType_DPT_CombinedPosition: // Struct
 
 		// Simple Field (heightPosition)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("heightPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heightPosition' field")
 		}
 
 		// Simple Field (slatsPosition)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("slatsPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'slatsPosition' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (validityHeightPosition)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityHeightPosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityHeightPosition' field")
 		}
 
 		// Simple Field (validitySlatsPosition)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validitySlatsPosition", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validitySlatsPosition' field")
 		}
 	case datapointType == KnxDatapointType_DPT_StatusSAB: // Struct
 
 		// Simple Field (heightPosition)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("heightPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'heightPosition' field")
 		}
 
 		// Simple Field (slatsPosition)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("slatsPosition", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'slatsPosition' field")
 		}
 
 		// Simple Field (upperEndPosReached)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("upperEndPosReached", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'upperEndPosReached' field")
 		}
 
 		// Simple Field (lowerEndPosReached)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lowerEndPosReached", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lowerEndPosReached' field")
 		}
 
 		// Simple Field (lowerPredefPosReachedTypHeight100PercentSlatsAngle100Percent)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("lowerPredefPosReachedTypHeight100PercentSlatsAngle100Percent", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lowerPredefPosReachedTypHeight100PercentSlatsAngle100Percent' field")
 		}
 
 		// Simple Field (targetPosDrive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("targetPosDrive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'targetPosDrive' field")
 		}
 
 		// Simple Field (restrictionOfTargetHeightPosPosCanNotBeReached)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("restrictionOfTargetHeightPosPosCanNotBeReached", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'restrictionOfTargetHeightPosPosCanNotBeReached' field")
 		}
 
 		// Simple Field (restrictionOfSlatsHeightPosPosCanNotBeReached)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("restrictionOfSlatsHeightPosPosCanNotBeReached", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'restrictionOfSlatsHeightPosPosCanNotBeReached' field")
 		}
 
 		// Simple Field (atLeastOneOfTheInputsWindRainFrostAlarmIsInAlarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("atLeastOneOfTheInputsWindRainFrostAlarmIsInAlarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'atLeastOneOfTheInputsWindRainFrostAlarmIsInAlarm' field")
 		}
 
 		// Simple Field (upDownPositionIsForcedByMoveupdownforcedInput)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("upDownPositionIsForcedByMoveupdownforcedInput", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'upDownPositionIsForcedByMoveupdownforcedInput' field")
 		}
 
 		// Simple Field (movementIsLockedEGByDevicelockedInput)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("movementIsLockedEGByDevicelockedInput", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'movementIsLockedEGByDevicelockedInput' field")
 		}
 
 		// Simple Field (actuatorSetvalueIsLocallyOverriddenEGViaALocalUserInterface)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("actuatorSetvalueIsLocallyOverriddenEGViaALocalUserInterface", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'actuatorSetvalueIsLocallyOverriddenEGViaALocalUserInterface' field")
 		}
 
 		// Simple Field (generalFailureOfTheActuatorOrTheDrive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("generalFailureOfTheActuatorOrTheDrive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'generalFailureOfTheActuatorOrTheDrive' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (validityHeightPos)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityHeightPos", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityHeightPos' field")
 		}
 
 		// Simple Field (validitySlatsPos)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validitySlatsPos", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validitySlatsPos' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_xyY: // Struct
 
 		// Simple Field (xAxis)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("xAxis", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'xAxis' field")
 		}
 
 		// Simple Field (yAxis)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("yAxis", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'yAxis' field")
 		}
 
 		// Simple Field (brightness)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("brightness", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'brightness' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (validityXy)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityXy", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityXy' field")
 		}
 
 		// Simple Field (validityBrightness)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityBrightness", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityBrightness' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Status: // Struct
 
 		// Simple Field (converterModeAccordingToTheDaliConverterStateMachine)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("converterModeAccordingToTheDaliConverterStateMachine", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'converterModeAccordingToTheDaliConverterStateMachine' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (hardwiredSwitchIsActive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("hardwiredSwitchIsActive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hardwiredSwitchIsActive' field")
 		}
 
 		// Simple Field (hardwiredInhibitIsActive)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("hardwiredInhibitIsActive", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hardwiredInhibitIsActive' field")
 		}
 
 		// Simple Field (functionTestPending)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("functionTestPending", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'functionTestPending' field")
 		}
 
 		// Simple Field (durationTestPending)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("durationTestPending", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'durationTestPending' field")
 		}
 
 		// Simple Field (partialDurationTestPending)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("partialDurationTestPending", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'partialDurationTestPending' field")
 		}
 
 		// Simple Field (converterFailure)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("converterFailure", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'converterFailure' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Result: // Struct
 
 		// Simple Field (ltrf)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("ltrf", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ltrf' field")
 		}
 
 		// Simple Field (ltrd)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("ltrd", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ltrd' field")
 		}
 
 		// Simple Field (ltrp)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("ltrp", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ltrp' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (sf)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("sf", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sf' field")
 		}
 
 		// Simple Field (sd)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("sd", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sd' field")
 		}
 
 		// Simple Field (sp)
-		if _err := io.WriteUint8(2, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("sp", 2, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'sp' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (ldtr)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("ldtr", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ldtr' field")
 		}
 
 		// Simple Field (lpdtr)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("lpdtr", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'lpdtr' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Battery_Info: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (batteryFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("batteryFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'batteryFailure' field")
 		}
 
 		// Simple Field (batteryDurationFailure)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("batteryDurationFailure", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'batteryDurationFailure' field")
 		}
 
 		// Simple Field (batteryFullyCharged)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("batteryFullyCharged", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'batteryFullyCharged' field")
 		}
 
 		// Simple Field (batteryChargeLevel)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("batteryChargeLevel", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'batteryChargeLevel' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition: // Struct
 
 		// Simple Field (ms)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("ms", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ms' field")
 		}
 
 		// Simple Field (temperatureK)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("temperatureK", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'temperatureK' field")
 		}
 
 		// Simple Field (percent)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("percent", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'percent' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (validityOfTheTimePeriod)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityOfTheTimePeriod", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityOfTheTimePeriod' field")
 		}
 
 		// Simple Field (validityOfTheAbsoluteColourTemperature)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityOfTheAbsoluteColourTemperature", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityOfTheAbsoluteColourTemperature' field")
 		}
 
 		// Simple Field (validityOfTheAbsoluteBrightness)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("validityOfTheAbsoluteBrightness", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'validityOfTheAbsoluteBrightness' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Brightness_Colour_Temperature_Control: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cct)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cct", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cct' field")
 		}
 
 		// Simple Field (stepCodeColourTemperature)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourTemperature", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourTemperature' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cb)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cb' field")
 		}
 
 		// Simple Field (stepCodeBrightness)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeBrightness", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeBrightness' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(6, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 6, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cctAndStepCodeColourValidity)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cctAndStepCodeColourValidity", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cctAndStepCodeColourValidity' field")
 		}
 
 		// Simple Field (cbAndStepCodeBrightnessValidity)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cbAndStepCodeBrightnessValidity", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cbAndStepCodeBrightnessValidity' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Colour_RGBW: // Struct
 
 		// Simple Field (colourLevelRed)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("colourLevelRed", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'colourLevelRed' field")
 		}
 
 		// Simple Field (colourLevelGreen)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("colourLevelGreen", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'colourLevelGreen' field")
 		}
 
 		// Simple Field (colourLevelBlue)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("colourLevelBlue", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'colourLevelBlue' field")
 		}
 
 		// Simple Field (colourLevelWhite)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("colourLevelWhite", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'colourLevelWhite' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(8, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (mr)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("mr", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'mr' field")
 		}
 
 		// Simple Field (mg)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("mg", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'mg' field")
 		}
 
 		// Simple Field (mb)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("mb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'mb' field")
 		}
 
 		// Simple Field (mw)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("mw", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'mw' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGBW: // Struct
 
 		// Simple Field (maskcw)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskcw", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcw' field")
 		}
 
 		// Simple Field (maskcb)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskcb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcb' field")
 		}
 
 		// Simple Field (maskcg)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskcg", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcg' field")
 		}
 
 		// Simple Field (maskcr)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("maskcr", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcr' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cw)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cw", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cw' field")
 		}
 
 		// Simple Field (stepCodeColourWhite)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourWhite", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourWhite' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cb)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cb' field")
 		}
 
 		// Simple Field (stepCodeColourBlue)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourBlue", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourBlue' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cg)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cg", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cg' field")
 		}
 
 		// Simple Field (stepCodeColourGreen)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourGreen", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourGreen' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cr)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cr", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cr' field")
 		}
 
 		// Simple Field (stepCodeColourRed)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourRed", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourRed' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
 
 		// Simple Field (cb)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cb", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cb' field")
 		}
 
 		// Simple Field (stepCodeColourBlue)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourBlue", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourBlue' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cg)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cg", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cg' field")
 		}
 
 		// Simple Field (stepCodeColourGreen)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourGreen", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourGreen' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (cr)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("cr", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'cr' field")
 		}
 
 		// Simple Field (stepCodeColourRed)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("stepCodeColourRed", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourRed' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
 
 		// Simple Field (longitude)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("longitude", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'longitude' field")
 		}
 
 		// Simple Field (latitude)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("latitude", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'latitude' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetF16_4: // Struct
 
 		// Simple Field (roomTemperatureSetpointComfort)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointComfort", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointComfort' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointStandby)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointStandby", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointStandby' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointEconomy)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointEconomy", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointEconomy' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointBuildingProtection)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointBuildingProtection", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointBuildingProtection' field")
 		}
 	case datapointType == KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4: // Struct
 
 		// Simple Field (roomTemperatureSetpointShiftComfort)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointShiftComfort", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftComfort' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftStandby)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointShiftStandby", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftStandby' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftEconomy)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointShiftEconomy", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftEconomy' field")
 		}
 
 		// Simple Field (roomTemperatureSetpointShiftBuildingProtection)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("roomTemperatureSetpointShiftBuildingProtection", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'roomTemperatureSetpointShiftBuildingProtection' field")
 		}
 	default:

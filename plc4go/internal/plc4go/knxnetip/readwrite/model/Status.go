@@ -157,7 +157,7 @@ func StatusParse(io utils.ReadBuffer) (Status, error) {
 }
 
 func (e Status) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("Status", 8, uint8(e))
 	return err
 }
 

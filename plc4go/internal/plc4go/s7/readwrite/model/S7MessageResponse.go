@@ -139,14 +139,14 @@ func (m *S7MessageResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
-		_errorClassErr := io.WriteUint8(8, (errorClass))
+		_errorClassErr := io.WriteUint8("errorClass", 8, (errorClass))
 		if _errorClassErr != nil {
 			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
-		_errorCodeErr := io.WriteUint8(8, (errorCode))
+		_errorCodeErr := io.WriteUint8("errorCode", 8, (errorCode))
 		if _errorCodeErr != nil {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}

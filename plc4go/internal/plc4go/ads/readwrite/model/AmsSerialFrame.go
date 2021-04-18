@@ -156,35 +156,35 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
-	_magicCookieErr := io.WriteUint16(16, (magicCookie))
+	_magicCookieErr := io.WriteUint16("magicCookie", 16, (magicCookie))
 	if _magicCookieErr != nil {
 		return errors.Wrap(_magicCookieErr, "Error serializing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress := int8(m.TransmitterAddress)
-	_transmitterAddressErr := io.WriteInt8(8, (transmitterAddress))
+	_transmitterAddressErr := io.WriteInt8("transmitterAddress", 8, (transmitterAddress))
 	if _transmitterAddressErr != nil {
 		return errors.Wrap(_transmitterAddressErr, "Error serializing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress := int8(m.ReceiverAddress)
-	_receiverAddressErr := io.WriteInt8(8, (receiverAddress))
+	_receiverAddressErr := io.WriteInt8("receiverAddress", 8, (receiverAddress))
 	if _receiverAddressErr != nil {
 		return errors.Wrap(_receiverAddressErr, "Error serializing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber := int8(m.FragmentNumber)
-	_fragmentNumberErr := io.WriteInt8(8, (fragmentNumber))
+	_fragmentNumberErr := io.WriteInt8("fragmentNumber", 8, (fragmentNumber))
 	if _fragmentNumberErr != nil {
 		return errors.Wrap(_fragmentNumberErr, "Error serializing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length := int8(m.Length)
-	_lengthErr := io.WriteInt8(8, (length))
+	_lengthErr := io.WriteInt8("length", 8, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
@@ -197,7 +197,7 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (crc)
 	crc := uint16(m.Crc)
-	_crcErr := io.WriteUint16(16, (crc))
+	_crcErr := io.WriteUint16("crc", 16, (crc))
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}

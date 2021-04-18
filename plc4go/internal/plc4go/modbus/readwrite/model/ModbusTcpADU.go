@@ -142,27 +142,27 @@ func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.TransactionIdentifier)
-	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
+	_transactionIdentifierErr := io.WriteUint16("transactionIdentifier", 16, (transactionIdentifier))
 	if _transactionIdentifierErr != nil {
 		return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
-	_protocolIdentifierErr := io.WriteUint16(16, 0x0000)
+	_protocolIdentifierErr := io.WriteUint16("protocolIdentifier", 16, 0x0000)
 	if _protocolIdentifierErr != nil {
 		return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
-	_lengthErr := io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16("length", 16, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier := uint8(m.UnitIdentifier)
-	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
+	_unitIdentifierErr := io.WriteUint8("unitIdentifier", 8, (unitIdentifier))
 	if _unitIdentifierErr != nil {
 		return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
 	}

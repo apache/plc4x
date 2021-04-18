@@ -828,141 +828,141 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+		if _err := io.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(16, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayOfMonth", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(1, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (year)
-		if _err := io.WriteUint8(7, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("year", 7, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
 
 		// Simple Field (day)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("day", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (hour)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hour", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
+		if _err := io.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -972,31 +972,31 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 		// Array Field (groupAddress)
 		for i := uint32(0); i < uint32((2)); i++ {
 			groupAddress := value.GetValue("groupAddress")
-			_itemErr := io.WriteUint8(8, groupAddress.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, groupAddress.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 
 		// Simple Field (disable)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("disable", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'disable' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x0)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x0)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (pollingSoftNr)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("pollingSoftNr", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'pollingSoftNr' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1004,114 +1004,114 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
 
 		// Simple Field (year)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("year", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := io.WriteUint8(4, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("month", 4, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(3, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayofmonth)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayofmonth", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayofmonth' field")
 		}
 
 		// Simple Field (dayofweek)
-		if _err := io.WriteUint8(3, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("dayofweek", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayofweek' field")
 		}
 
 		// Simple Field (hourofday)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("hourofday", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hourofday' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(2, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (fault)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 
 		// Simple Field (workingDay)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("workingDay", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'workingDay' field")
 		}
 
 		// Simple Field (noWd)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noWd", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noWd' field")
 		}
 
 		// Simple Field (noYear)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noYear", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noYear' field")
 		}
 
 		// Simple Field (noDate)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noDate", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDate' field")
 		}
 
 		// Simple Field (noDayOfWeek)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noDayOfWeek", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDayOfWeek' field")
 		}
 
 		// Simple Field (noTime)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("noTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noTime' field")
 		}
 
 		// Simple Field (standardSummerTime)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("standardSummerTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'standardSummerTime' field")
 		}
 
 		// Simple Field (qualityOfClock)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("qualityOfClock", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'qualityOfClock' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((1)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1120,7 +1120,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((2)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1129,7 +1129,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((3)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1138,7 +1138,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((4)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1147,7 +1147,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1156,7 +1156,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((6)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1165,7 +1165,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((7)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1174,7 +1174,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1183,7 +1183,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((9)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1192,7 +1192,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1201,7 +1201,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((11)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1210,7 +1210,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((12)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1219,7 +1219,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((13)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1228,7 +1228,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((14)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1237,7 +1237,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((15)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1246,7 +1246,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1255,7 +1255,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((17)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1264,7 +1264,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((18)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1273,7 +1273,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((19)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1282,7 +1282,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((20)); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1290,101 +1290,101 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
 
 		// Simple Field (magicNumber)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("magicNumber", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'magicNumber' field")
 		}
 
 		// Simple Field (versionNumber)
-		if _err := io.WriteUint8(5, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("versionNumber", 5, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'versionNumber' field")
 		}
 
 		// Simple Field (revisionNumber)
-		if _err := io.WriteUint8(6, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("revisionNumber", 6, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'revisionNumber' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
 
 		// Simple Field (logNumber)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("logNumber", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'logNumber' field")
 		}
 
 		// Simple Field (alarmPriority)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("alarmPriority", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmPriority' field")
 		}
 
 		// Simple Field (applicationArea)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("applicationArea", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'applicationArea' field")
 		}
 
 		// Simple Field (errorClass)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("errorClass", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorClass' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(4, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (errorcodeSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("errorcodeSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorcodeSup' field")
 		}
 
 		// Simple Field (alarmtextSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmtextSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmtextSup' field")
 		}
 
 		// Simple Field (timestampSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("timestampSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timestampSup' field")
 		}
 
 		// Simple Field (ackSup)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("ackSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ackSup' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(5, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (locked)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("locked", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'locked' field")
 		}
 
 		// Simple Field (alarmunack)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("alarmunack", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmunack' field")
 		}
 
 		// Simple Field (inalarm)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("inalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'inalarm' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
+			_itemErr := io.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1393,7 +1393,7 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := io.WriteBit(value.GetIndex(i).GetBool())
+			_itemErr := io.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1401,20 +1401,20 @@ func KnxPropertySerialize(io utils.WriteBuffer, value api.PlcValue, propertyType
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default: // List
 
 		// Array Field (value)
 		for i := uint32(0); i < uint32(dataLengthInBytes); i++ {
-			_itemErr := io.WriteUint8(8, value.GetIndex(i).GetUint8())
+			_itemErr := io.WriteUint8("", 8, value.GetIndex(i).GetUint8())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

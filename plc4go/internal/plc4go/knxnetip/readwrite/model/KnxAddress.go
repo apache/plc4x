@@ -116,21 +116,21 @@ func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.MainGroup)
-	_mainGroupErr := io.WriteUint8(4, (mainGroup))
+	_mainGroupErr := io.WriteUint8("mainGroup", 4, (mainGroup))
 	if _mainGroupErr != nil {
 		return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
 	middleGroup := uint8(m.MiddleGroup)
-	_middleGroupErr := io.WriteUint8(4, (middleGroup))
+	_middleGroupErr := io.WriteUint8("middleGroup", 4, (middleGroup))
 	if _middleGroupErr != nil {
 		return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup := uint8(m.SubGroup)
-	_subGroupErr := io.WriteUint8(8, (subGroup))
+	_subGroupErr := io.WriteUint8("subGroup", 8, (subGroup))
 	if _subGroupErr != nil {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}

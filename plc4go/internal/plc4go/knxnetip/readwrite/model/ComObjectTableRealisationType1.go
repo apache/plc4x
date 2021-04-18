@@ -158,14 +158,14 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.NumEntries)
-		_numEntriesErr := io.WriteUint8(8, (numEntries))
+		_numEntriesErr := io.WriteUint8("numEntries", 8, (numEntries))
 		if _numEntriesErr != nil {
 			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
 		}
 
 		// Simple Field (ramFlagsTablePointer)
 		ramFlagsTablePointer := uint8(m.RamFlagsTablePointer)
-		_ramFlagsTablePointerErr := io.WriteUint8(8, (ramFlagsTablePointer))
+		_ramFlagsTablePointerErr := io.WriteUint8("ramFlagsTablePointer", 8, (ramFlagsTablePointer))
 		if _ramFlagsTablePointerErr != nil {
 			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}

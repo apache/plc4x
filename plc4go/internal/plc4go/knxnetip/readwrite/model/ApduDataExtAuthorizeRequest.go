@@ -143,7 +143,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (level)
 		level := uint8(m.Level)
-		_levelErr := io.WriteUint8(8, (level))
+		_levelErr := io.WriteUint8("level", 8, (level))
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
@@ -151,7 +151,7 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

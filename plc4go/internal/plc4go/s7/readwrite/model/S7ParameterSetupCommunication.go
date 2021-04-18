@@ -170,7 +170,7 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -178,21 +178,21 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (maxAmqCaller)
 		maxAmqCaller := uint16(m.MaxAmqCaller)
-		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
+		_maxAmqCallerErr := io.WriteUint16("maxAmqCaller", 16, (maxAmqCaller))
 		if _maxAmqCallerErr != nil {
 			return errors.Wrap(_maxAmqCallerErr, "Error serializing 'maxAmqCaller' field")
 		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.MaxAmqCallee)
-		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
+		_maxAmqCalleeErr := io.WriteUint16("maxAmqCallee", 16, (maxAmqCallee))
 		if _maxAmqCalleeErr != nil {
 			return errors.Wrap(_maxAmqCalleeErr, "Error serializing 'maxAmqCallee' field")
 		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.PduLength)
-		_pduLengthErr := io.WriteUint16(16, (pduLength))
+		_pduLengthErr := io.WriteUint16("pduLength", 16, (pduLength))
 		if _pduLengthErr != nil {
 			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}

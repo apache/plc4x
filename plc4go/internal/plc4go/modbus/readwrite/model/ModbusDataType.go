@@ -364,7 +364,7 @@ func ModbusDataTypeParse(io utils.ReadBuffer) (ModbusDataType, error) {
 }
 
 func (e ModbusDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("ModbusDataType", 8, uint8(e))
 	return err
 }
 

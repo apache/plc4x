@@ -114,7 +114,7 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(7, uint8(0x00))
+		_err := io.WriteUint8("reserved", 7, uint8(0x00))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -122,7 +122,7 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (programMode)
 	programMode := bool(m.ProgramMode)
-	_programModeErr := io.WriteBit((programMode))
+	_programModeErr := io.WriteBit("programMode", (programMode))
 	if _programModeErr != nil {
 		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}

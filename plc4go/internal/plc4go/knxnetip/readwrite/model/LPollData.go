@@ -191,7 +191,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
 			for _, _element := range m.TargetAddress {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
@@ -200,7 +200,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x00))
+			_err := io.WriteUint8("reserved", 4, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -208,7 +208,7 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (numberExpectedPollData)
 		numberExpectedPollData := uint8(m.NumberExpectedPollData)
-		_numberExpectedPollDataErr := io.WriteUint8(6, (numberExpectedPollData))
+		_numberExpectedPollDataErr := io.WriteUint8("numberExpectedPollData", 6, (numberExpectedPollData))
 		if _numberExpectedPollDataErr != nil {
 			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}

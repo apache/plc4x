@@ -144,14 +144,14 @@ func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) e
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
-		_valueErr := io.WriteUint16(16, (value))
+		_valueErr := io.WriteUint16("value", 16, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

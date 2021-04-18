@@ -124,7 +124,7 @@ func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (version)
 		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8("version", 8, (version))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

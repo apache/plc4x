@@ -256,34 +256,34 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 	ser := func() error {
 
 		// Const Field (objectIdentifierHeader)
-		_objectIdentifierHeaderErr := io.WriteUint8(8, 0x0C)
+		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
 		if _objectIdentifierHeaderErr != nil {
 			return errors.Wrap(_objectIdentifierHeaderErr, "Error serializing 'objectIdentifierHeader' field")
 		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
-		_objectTypeErr := io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16("objectType", 10, (objectType))
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
-		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32("objectInstanceNumber", 22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
 			return errors.Wrap(_objectInstanceNumberErr, "Error serializing 'objectInstanceNumber' field")
 		}
 
 		// Const Field (propertyIdentifierHeader)
-		_propertyIdentifierHeaderErr := io.WriteUint8(5, 0x03)
+		_propertyIdentifierHeaderErr := io.WriteUint8("propertyIdentifierHeader", 5, 0x03)
 		if _propertyIdentifierHeaderErr != nil {
 			return errors.Wrap(_propertyIdentifierHeaderErr, "Error serializing 'propertyIdentifierHeader' field")
 		}
 
 		// Simple Field (propertyIdentifierLength)
 		propertyIdentifierLength := uint8(m.PropertyIdentifierLength)
-		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
+		_propertyIdentifierLengthErr := io.WriteUint8("propertyIdentifierLength", 3, (propertyIdentifierLength))
 		if _propertyIdentifierLengthErr != nil {
 			return errors.Wrap(_propertyIdentifierLengthErr, "Error serializing 'propertyIdentifierLength' field")
 		}
@@ -291,7 +291,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
 			for _, _element := range m.PropertyIdentifier {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 				}
@@ -299,7 +299,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 		}
 
 		// Const Field (openingTag)
-		_openingTagErr := io.WriteUint8(8, 0x3E)
+		_openingTagErr := io.WriteUint8("openingTag", 8, 0x3E)
 		if _openingTagErr != nil {
 			return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 		}
@@ -311,7 +311,7 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 		}
 
 		// Const Field (closingTag)
-		_closingTagErr := io.WriteUint8(8, 0x3F)
+		_closingTagErr := io.WriteUint8("closingTag", 8, 0x3F)
 		if _closingTagErr != nil {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}

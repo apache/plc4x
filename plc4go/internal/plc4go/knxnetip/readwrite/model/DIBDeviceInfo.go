@@ -202,14 +202,14 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.DescriptionType)
-	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
+	_descriptionTypeErr := io.WriteUint8("descriptionType", 8, (descriptionType))
 	if _descriptionTypeErr != nil {
 		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}
@@ -241,7 +241,7 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
 		for _, _element := range m.KnxNetIpDeviceSerialNumber {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 			}
@@ -263,7 +263,7 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
 		for _, _element := range m.DeviceFriendlyName {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'deviceFriendlyName' field")
 			}

@@ -148,7 +148,7 @@ func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

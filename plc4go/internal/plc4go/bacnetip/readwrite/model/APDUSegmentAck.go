@@ -190,7 +190,7 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(2, uint8(0x00))
+			_err := io.WriteUint8("reserved", 2, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -198,35 +198,35 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (negativeAck)
 		negativeAck := bool(m.NegativeAck)
-		_negativeAckErr := io.WriteBit((negativeAck))
+		_negativeAckErr := io.WriteBit("negativeAck", (negativeAck))
 		if _negativeAckErr != nil {
 			return errors.Wrap(_negativeAckErr, "Error serializing 'negativeAck' field")
 		}
 
 		// Simple Field (server)
 		server := bool(m.Server)
-		_serverErr := io.WriteBit((server))
+		_serverErr := io.WriteBit("server", (server))
 		if _serverErr != nil {
 			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8("sequenceNumber", 8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (proposedWindowSize)
 		proposedWindowSize := uint8(m.ProposedWindowSize)
-		_proposedWindowSizeErr := io.WriteUint8(8, (proposedWindowSize))
+		_proposedWindowSizeErr := io.WriteUint8("proposedWindowSize", 8, (proposedWindowSize))
 		if _proposedWindowSizeErr != nil {
 			return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 		}

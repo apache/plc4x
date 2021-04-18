@@ -199,49 +199,49 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer
 	ser := func() error {
 
 		// Const Field (len)
-		_lenErr := io.WriteUint8(8, 1)
+		_lenErr := io.WriteUint8("len", 8, 1)
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (frameErrorFlag)
 		frameErrorFlag := bool(m.FrameErrorFlag)
-		_frameErrorFlagErr := io.WriteBit((frameErrorFlag))
+		_frameErrorFlagErr := io.WriteBit("frameErrorFlag", (frameErrorFlag))
 		if _frameErrorFlagErr != nil {
 			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
 		}
 
 		// Simple Field (bitErrorFlag)
 		bitErrorFlag := bool(m.BitErrorFlag)
-		_bitErrorFlagErr := io.WriteBit((bitErrorFlag))
+		_bitErrorFlagErr := io.WriteBit("bitErrorFlag", (bitErrorFlag))
 		if _bitErrorFlagErr != nil {
 			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
 		}
 
 		// Simple Field (parityErrorFlag)
 		parityErrorFlag := bool(m.ParityErrorFlag)
-		_parityErrorFlagErr := io.WriteBit((parityErrorFlag))
+		_parityErrorFlagErr := io.WriteBit("parityErrorFlag", (parityErrorFlag))
 		if _parityErrorFlagErr != nil {
 			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
 		}
 
 		// Simple Field (unknownFlag)
 		unknownFlag := bool(m.UnknownFlag)
-		_unknownFlagErr := io.WriteBit((unknownFlag))
+		_unknownFlagErr := io.WriteBit("unknownFlag", (unknownFlag))
 		if _unknownFlagErr != nil {
 			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
 		}
 
 		// Simple Field (lostFlag)
 		lostFlag := bool(m.LostFlag)
-		_lostFlagErr := io.WriteBit((lostFlag))
+		_lostFlagErr := io.WriteBit("lostFlag", (lostFlag))
 		if _lostFlagErr != nil {
 			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(3, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8("sequenceNumber", 3, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

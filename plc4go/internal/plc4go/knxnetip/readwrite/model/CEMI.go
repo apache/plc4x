@@ -178,7 +178,7 @@ func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChild
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(child.MessageCode())
-	_messageCodeErr := io.WriteUint8(8, (messageCode))
+	_messageCodeErr := io.WriteUint8("messageCode", 8, (messageCode))
 
 	if _messageCodeErr != nil {
 		return errors.Wrap(_messageCodeErr, "Error serializing 'messageCode' field")

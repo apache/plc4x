@@ -142,7 +142,7 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0))
+			_err := io.WriteUint8("reserved", 4, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

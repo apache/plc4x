@@ -1494,7 +1494,7 @@ func TransportSizeParse(io utils.ReadBuffer) (TransportSize, error) {
 }
 
 func (e TransportSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("TransportSize", 8, int8(e))
 	return err
 }
 

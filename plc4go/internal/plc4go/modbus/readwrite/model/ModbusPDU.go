@@ -220,7 +220,7 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
-	_errorFlagErr := io.WriteBit((errorFlag))
+	_errorFlagErr := io.WriteBit("errorFlag", (errorFlag))
 
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
@@ -228,7 +228,7 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.FunctionFlag())
-	_functionFlagErr := io.WriteUint8(7, (functionFlag))
+	_functionFlagErr := io.WriteUint8("functionFlag", 7, (functionFlag))
 
 	if _functionFlagErr != nil {
 		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")

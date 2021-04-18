@@ -153,14 +153,14 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.Data)))
-		_numBytesErr := io.WriteUint8(6, (numBytes))
+		_numBytesErr := io.WriteUint8("numBytes", 6, (numBytes))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
@@ -168,7 +168,7 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

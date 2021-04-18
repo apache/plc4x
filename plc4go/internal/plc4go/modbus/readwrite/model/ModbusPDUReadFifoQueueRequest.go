@@ -132,7 +132,7 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
-		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
+		_fifoPointerAddressErr := io.WriteUint16("fifoPointerAddress", 16, (fifoPointerAddress))
 		if _fifoPointerAddressErr != nil {
 			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}

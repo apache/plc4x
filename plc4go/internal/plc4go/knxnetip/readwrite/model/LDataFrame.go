@@ -197,14 +197,14 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 
 	// Simple Field (frameType)
 	frameType := bool(m.FrameType)
-	_frameTypeErr := io.WriteBit((frameType))
+	_frameTypeErr := io.WriteBit("frameType", (frameType))
 	if _frameTypeErr != nil {
 		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling := bool(child.Polling())
-	_pollingErr := io.WriteBit((polling))
+	_pollingErr := io.WriteBit("polling", (polling))
 
 	if _pollingErr != nil {
 		return errors.Wrap(_pollingErr, "Error serializing 'polling' field")
@@ -212,14 +212,14 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 
 	// Simple Field (notRepeated)
 	notRepeated := bool(m.NotRepeated)
-	_notRepeatedErr := io.WriteBit((notRepeated))
+	_notRepeatedErr := io.WriteBit("notRepeated", (notRepeated))
 	if _notRepeatedErr != nil {
 		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame := bool(child.NotAckFrame())
-	_notAckFrameErr := io.WriteBit((notAckFrame))
+	_notAckFrameErr := io.WriteBit("notAckFrame", (notAckFrame))
 
 	if _notAckFrameErr != nil {
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
@@ -234,14 +234,14 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.AcknowledgeRequested)
-	_acknowledgeRequestedErr := io.WriteBit((acknowledgeRequested))
+	_acknowledgeRequestedErr := io.WriteBit("acknowledgeRequested", (acknowledgeRequested))
 	if _acknowledgeRequestedErr != nil {
 		return errors.Wrap(_acknowledgeRequestedErr, "Error serializing 'acknowledgeRequested' field")
 	}
 
 	// Simple Field (errorFlag)
 	errorFlag := bool(m.ErrorFlag)
-	_errorFlagErr := io.WriteBit((errorFlag))
+	_errorFlagErr := io.WriteBit("errorFlag", (errorFlag))
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
 	}

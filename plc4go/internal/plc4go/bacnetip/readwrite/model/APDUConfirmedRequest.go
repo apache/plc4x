@@ -251,28 +251,28 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.SegmentedMessage)
-		_segmentedMessageErr := io.WriteBit((segmentedMessage))
+		_segmentedMessageErr := io.WriteBit("segmentedMessage", (segmentedMessage))
 		if _segmentedMessageErr != nil {
 			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
 		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.MoreFollows)
-		_moreFollowsErr := io.WriteBit((moreFollows))
+		_moreFollowsErr := io.WriteBit("moreFollows", (moreFollows))
 		if _moreFollowsErr != nil {
 			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
 		}
 
 		// Simple Field (segmentedResponseAccepted)
 		segmentedResponseAccepted := bool(m.SegmentedResponseAccepted)
-		_segmentedResponseAcceptedErr := io.WriteBit((segmentedResponseAccepted))
+		_segmentedResponseAcceptedErr := io.WriteBit("segmentedResponseAccepted", (segmentedResponseAccepted))
 		if _segmentedResponseAcceptedErr != nil {
 			return errors.Wrap(_segmentedResponseAcceptedErr, "Error serializing 'segmentedResponseAccepted' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(2, uint8(0))
+			_err := io.WriteUint8("reserved", 2, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -280,21 +280,21 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (maxSegmentsAccepted)
 		maxSegmentsAccepted := uint8(m.MaxSegmentsAccepted)
-		_maxSegmentsAcceptedErr := io.WriteUint8(3, (maxSegmentsAccepted))
+		_maxSegmentsAcceptedErr := io.WriteUint8("maxSegmentsAccepted", 3, (maxSegmentsAccepted))
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
 		}
 
 		// Simple Field (maxApduLengthAccepted)
 		maxApduLengthAccepted := uint8(m.MaxApduLengthAccepted)
-		_maxApduLengthAcceptedErr := io.WriteUint8(4, (maxApduLengthAccepted))
+		_maxApduLengthAcceptedErr := io.WriteUint8("maxApduLengthAccepted", 4, (maxApduLengthAccepted))
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.Wrap(_maxApduLengthAcceptedErr, "Error serializing 'maxApduLengthAccepted' field")
 		}
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.InvokeId)
-		_invokeIdErr := io.WriteUint8(8, (invokeId))
+		_invokeIdErr := io.WriteUint8("invokeId", 8, (invokeId))
 		if _invokeIdErr != nil {
 			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 		}
@@ -303,7 +303,7 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		var sequenceNumber *uint8 = nil
 		if m.SequenceNumber != nil {
 			sequenceNumber = m.SequenceNumber
-			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
+			_sequenceNumberErr := io.WriteUint8("sequenceNumber", 8, *(sequenceNumber))
 			if _sequenceNumberErr != nil {
 				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
@@ -313,7 +313,7 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		var proposedWindowSize *uint8 = nil
 		if m.ProposedWindowSize != nil {
 			proposedWindowSize = m.ProposedWindowSize
-			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
+			_proposedWindowSizeErr := io.WriteUint8("proposedWindowSize", 8, *(proposedWindowSize))
 			if _proposedWindowSizeErr != nil {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}

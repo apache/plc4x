@@ -32,19 +32,19 @@ type WriteBuffer interface {
 	GetPos() uint16
 	GetBytes() []uint8
 	GetTotalBytes() uint64
-	WriteBit(value bool) error
-	WriteUint8(bitLength uint8, value uint8) error
-	WriteUint16(bitLength uint8, value uint16) error
-	WriteUint32(bitLength uint8, value uint32) error
-	WriteUint64(bitLength uint8, value uint64) error
-	WriteInt8(bitLength uint8, value int8) error
-	WriteInt16(bitLength uint8, value int16) error
-	WriteInt32(bitLength uint8, value int32) error
-	WriteInt64(bitLength uint8, value int64) error
-	WriteBigInt(bitLength uint8, value *big.Int) error
-	WriteFloat32(bitLength uint8, value float32) error
-	WriteFloat64(bitLength uint8, value float64) error
-	WriteString(bitLength uint8, encoding string, value string) error
+	WriteBit(logicalName string, value bool) error
+	WriteUint8(logicalName string, bitLength uint8, value uint8) error
+	WriteUint16(logicalName string, bitLength uint8, value uint16) error
+	WriteUint32(logicalName string, bitLength uint8, value uint32) error
+	WriteUint64(logicalName string, bitLength uint8, value uint64) error
+	WriteInt8(logicalName string, bitLength uint8, value int8) error
+	WriteInt16(logicalName string, bitLength uint8, value int16) error
+	WriteInt32(logicalName string, bitLength uint8, value int32) error
+	WriteInt64(logicalName string, bitLength uint8, value int64) error
+	WriteBigInt(logicalName string, bitLength uint8, value *big.Int) error
+	WriteFloat32(logicalName string, bitLength uint8, value float32) error
+	WriteFloat64(logicalName string, bitLength uint8, value float64) error
+	WriteString(logicalName string, bitLength uint8, encoding string, value string) error
 }
 
 func NewWriteBuffer() WriteBuffer {
@@ -97,15 +97,15 @@ func (rb *writeBuffer) GetTotalBytes() uint64 {
 	return uint64(rb.data.Len())
 }
 
-func (rb *writeBuffer) WriteBit(value bool) error {
+func (rb *writeBuffer) WriteBit(_ string, value bool) error {
 	return rb.writer.WriteBool(value)
 }
 
-func (rb *writeBuffer) WriteUint8(bitLength uint8, value uint8) error {
+func (rb *writeBuffer) WriteUint8(_ string, bitLength uint8, value uint8) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteUint16(bitLength uint8, value uint16) error {
+func (rb *writeBuffer) WriteUint16(_ string, bitLength uint8, value uint16) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -114,7 +114,7 @@ func (rb *writeBuffer) WriteUint16(bitLength uint8, value uint16) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteUint32(bitLength uint8, value uint32) error {
+func (rb *writeBuffer) WriteUint32(_ string, bitLength uint8, value uint32) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -123,7 +123,7 @@ func (rb *writeBuffer) WriteUint32(bitLength uint8, value uint32) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteUint64(bitLength uint8, value uint64) error {
+func (rb *writeBuffer) WriteUint64(_ string, bitLength uint8, value uint64) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -132,11 +132,11 @@ func (rb *writeBuffer) WriteUint64(bitLength uint8, value uint64) error {
 	return rb.writer.WriteBits(value, bitLength)
 }
 
-func (rb *writeBuffer) WriteInt8(bitLength uint8, value int8) error {
+func (rb *writeBuffer) WriteInt8(_ string, bitLength uint8, value int8) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteInt16(bitLength uint8, value int16) error {
+func (rb *writeBuffer) WriteInt16(_ string, bitLength uint8, value int16) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -145,7 +145,7 @@ func (rb *writeBuffer) WriteInt16(bitLength uint8, value int16) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteInt32(bitLength uint8, value int32) error {
+func (rb *writeBuffer) WriteInt32(_ string, bitLength uint8, value int32) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -154,7 +154,7 @@ func (rb *writeBuffer) WriteInt32(bitLength uint8, value int32) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteInt64(bitLength uint8, value int64) error {
+func (rb *writeBuffer) WriteInt64(_ string, bitLength uint8, value int64) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -163,11 +163,11 @@ func (rb *writeBuffer) WriteInt64(bitLength uint8, value int64) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb *writeBuffer) WriteBigInt(bitLength uint8, value *big.Int) error {
+func (rb *writeBuffer) WriteBigInt(_ string, bitLength uint8, value *big.Int) error {
 	return errors.New("not implemented yet")
 }
 
-func (rb *writeBuffer) WriteFloat32(bitLength uint8, value float32) error {
+func (rb *writeBuffer) WriteFloat32(_ string, bitLength uint8, value float32) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -177,7 +177,7 @@ func (rb *writeBuffer) WriteFloat32(bitLength uint8, value float32) error {
 	return rb.writer.WriteBits(uint64(res), bitLength)
 }
 
-func (rb *writeBuffer) WriteFloat64(bitLength uint8, value float64) error {
+func (rb *writeBuffer) WriteFloat64(_ string, bitLength uint8, value float64) error {
 	if rb.byteOrder == binary.LittleEndian {
 		// TODO: indirection till we have a native LE implementation
 		// TODO: validate that this produces the desired result
@@ -187,6 +187,6 @@ func (rb *writeBuffer) WriteFloat64(bitLength uint8, value float64) error {
 	return rb.writer.WriteBits(res, bitLength)
 }
 
-func (rb *writeBuffer) WriteString(bitLength uint8, encoding string, value string) error {
+func (rb *writeBuffer) WriteString(_ string, bitLength uint8, encoding string, value string) error {
 	return errors.New("WriteString is currently not implemented")
 }

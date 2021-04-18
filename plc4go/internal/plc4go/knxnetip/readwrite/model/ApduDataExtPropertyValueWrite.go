@@ -179,28 +179,28 @@ func (m *ApduDataExtPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (count)
 		count := uint8(m.Count)
-		_countErr := io.WriteUint8(4, (count))
+		_countErr := io.WriteUint8("count", 4, (count))
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		// Simple Field (index)
 		index := uint16(m.Index)
-		_indexErr := io.WriteUint16(12, (index))
+		_indexErr := io.WriteUint16("index", 12, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
@@ -208,7 +208,7 @@ func (m *ApduDataExtPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

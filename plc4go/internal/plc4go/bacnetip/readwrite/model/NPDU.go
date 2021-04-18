@@ -328,21 +328,21 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber := uint8(m.ProtocolVersionNumber)
-	_protocolVersionNumberErr := io.WriteUint8(8, (protocolVersionNumber))
+	_protocolVersionNumberErr := io.WriteUint8("protocolVersionNumber", 8, (protocolVersionNumber))
 	if _protocolVersionNumberErr != nil {
 		return errors.Wrap(_protocolVersionNumberErr, "Error serializing 'protocolVersionNumber' field")
 	}
 
 	// Simple Field (messageTypeFieldPresent)
 	messageTypeFieldPresent := bool(m.MessageTypeFieldPresent)
-	_messageTypeFieldPresentErr := io.WriteBit((messageTypeFieldPresent))
+	_messageTypeFieldPresentErr := io.WriteBit("messageTypeFieldPresent", (messageTypeFieldPresent))
 	if _messageTypeFieldPresentErr != nil {
 		return errors.Wrap(_messageTypeFieldPresentErr, "Error serializing 'messageTypeFieldPresent' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(1, uint8(0))
+		_err := io.WriteUint8("reserved", 1, uint8(0))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -350,14 +350,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (destinationSpecified)
 	destinationSpecified := bool(m.DestinationSpecified)
-	_destinationSpecifiedErr := io.WriteBit((destinationSpecified))
+	_destinationSpecifiedErr := io.WriteBit("destinationSpecified", (destinationSpecified))
 	if _destinationSpecifiedErr != nil {
 		return errors.Wrap(_destinationSpecifiedErr, "Error serializing 'destinationSpecified' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(1, uint8(0))
+		_err := io.WriteUint8("reserved", 1, uint8(0))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -365,21 +365,21 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (sourceSpecified)
 	sourceSpecified := bool(m.SourceSpecified)
-	_sourceSpecifiedErr := io.WriteBit((sourceSpecified))
+	_sourceSpecifiedErr := io.WriteBit("sourceSpecified", (sourceSpecified))
 	if _sourceSpecifiedErr != nil {
 		return errors.Wrap(_sourceSpecifiedErr, "Error serializing 'sourceSpecified' field")
 	}
 
 	// Simple Field (expectingReply)
 	expectingReply := bool(m.ExpectingReply)
-	_expectingReplyErr := io.WriteBit((expectingReply))
+	_expectingReplyErr := io.WriteBit("expectingReply", (expectingReply))
 	if _expectingReplyErr != nil {
 		return errors.Wrap(_expectingReplyErr, "Error serializing 'expectingReply' field")
 	}
 
 	// Simple Field (networkPriority)
 	networkPriority := uint8(m.NetworkPriority)
-	_networkPriorityErr := io.WriteUint8(2, (networkPriority))
+	_networkPriorityErr := io.WriteUint8("networkPriority", 2, (networkPriority))
 	if _networkPriorityErr != nil {
 		return errors.Wrap(_networkPriorityErr, "Error serializing 'networkPriority' field")
 	}
@@ -388,7 +388,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	var destinationNetworkAddress *uint16 = nil
 	if m.DestinationNetworkAddress != nil {
 		destinationNetworkAddress = m.DestinationNetworkAddress
-		_destinationNetworkAddressErr := io.WriteUint16(16, *(destinationNetworkAddress))
+		_destinationNetworkAddressErr := io.WriteUint16("destinationNetworkAddress", 16, *(destinationNetworkAddress))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
@@ -398,7 +398,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	var destinationLength *uint8 = nil
 	if m.DestinationLength != nil {
 		destinationLength = m.DestinationLength
-		_destinationLengthErr := io.WriteUint8(8, *(destinationLength))
+		_destinationLengthErr := io.WriteUint8("destinationLength", 8, *(destinationLength))
 		if _destinationLengthErr != nil {
 			return errors.Wrap(_destinationLengthErr, "Error serializing 'destinationLength' field")
 		}
@@ -407,7 +407,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
 		for _, _element := range m.DestinationAddress {
-			_elementErr := io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 			}
@@ -418,7 +418,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	var sourceNetworkAddress *uint16 = nil
 	if m.SourceNetworkAddress != nil {
 		sourceNetworkAddress = m.SourceNetworkAddress
-		_sourceNetworkAddressErr := io.WriteUint16(16, *(sourceNetworkAddress))
+		_sourceNetworkAddressErr := io.WriteUint16("sourceNetworkAddress", 16, *(sourceNetworkAddress))
 		if _sourceNetworkAddressErr != nil {
 			return errors.Wrap(_sourceNetworkAddressErr, "Error serializing 'sourceNetworkAddress' field")
 		}
@@ -428,7 +428,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	var sourceLength *uint8 = nil
 	if m.SourceLength != nil {
 		sourceLength = m.SourceLength
-		_sourceLengthErr := io.WriteUint8(8, *(sourceLength))
+		_sourceLengthErr := io.WriteUint8("sourceLength", 8, *(sourceLength))
 		if _sourceLengthErr != nil {
 			return errors.Wrap(_sourceLengthErr, "Error serializing 'sourceLength' field")
 		}
@@ -437,7 +437,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
 		for _, _element := range m.SourceAddress {
-			_elementErr := io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 			}
@@ -448,7 +448,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	var hopCount *uint8 = nil
 	if m.HopCount != nil {
 		hopCount = m.HopCount
-		_hopCountErr := io.WriteUint8(8, *(hopCount))
+		_hopCountErr := io.WriteUint8("hopCount", 8, *(hopCount))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}

@@ -1014,7 +1014,7 @@ func KnxPropertyDataTypeParse(io utils.ReadBuffer) (KnxPropertyDataType, error) 
 }
 
 func (e KnxPropertyDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("KnxPropertyDataType", 8, uint8(e))
 	return err
 }
 

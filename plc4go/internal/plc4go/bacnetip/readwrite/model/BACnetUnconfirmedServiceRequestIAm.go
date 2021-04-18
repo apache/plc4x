@@ -247,34 +247,34 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 	ser := func() error {
 
 		// Const Field (objectIdentifierHeader)
-		_objectIdentifierHeaderErr := io.WriteUint8(8, 0xC4)
+		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0xC4)
 		if _objectIdentifierHeaderErr != nil {
 			return errors.Wrap(_objectIdentifierHeaderErr, "Error serializing 'objectIdentifierHeader' field")
 		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
-		_objectTypeErr := io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16("objectType", 10, (objectType))
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
-		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32("objectInstanceNumber", 22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
 			return errors.Wrap(_objectInstanceNumberErr, "Error serializing 'objectInstanceNumber' field")
 		}
 
 		// Const Field (maximumApduLengthAcceptedHeader)
-		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8(5, 0x04)
+		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8("maximumApduLengthAcceptedHeader", 5, 0x04)
 		if _maximumApduLengthAcceptedHeaderErr != nil {
 			return errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error serializing 'maximumApduLengthAcceptedHeader' field")
 		}
 
 		// Simple Field (maximumApduLengthAcceptedLength)
 		maximumApduLengthAcceptedLength := uint8(m.MaximumApduLengthAcceptedLength)
-		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		_maximumApduLengthAcceptedLengthErr := io.WriteUint8("maximumApduLengthAcceptedLength", 3, (maximumApduLengthAcceptedLength))
 		if _maximumApduLengthAcceptedLengthErr != nil {
 			return errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error serializing 'maximumApduLengthAcceptedLength' field")
 		}
@@ -282,7 +282,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
 			for _, _element := range m.MaximumApduLengthAccepted {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
@@ -290,27 +290,27 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 		}
 
 		// Const Field (segmentationSupportedHeader)
-		_segmentationSupportedHeaderErr := io.WriteUint8(8, 0x91)
+		_segmentationSupportedHeaderErr := io.WriteUint8("segmentationSupportedHeader", 8, 0x91)
 		if _segmentationSupportedHeaderErr != nil {
 			return errors.Wrap(_segmentationSupportedHeaderErr, "Error serializing 'segmentationSupportedHeader' field")
 		}
 
 		// Simple Field (segmentationSupported)
 		segmentationSupported := uint8(m.SegmentationSupported)
-		_segmentationSupportedErr := io.WriteUint8(8, (segmentationSupported))
+		_segmentationSupportedErr := io.WriteUint8("segmentationSupported", 8, (segmentationSupported))
 		if _segmentationSupportedErr != nil {
 			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
 		}
 
 		// Const Field (vendorIdHeader)
-		_vendorIdHeaderErr := io.WriteUint8(8, 0x21)
+		_vendorIdHeaderErr := io.WriteUint8("vendorIdHeader", 8, 0x21)
 		if _vendorIdHeaderErr != nil {
 			return errors.Wrap(_vendorIdHeaderErr, "Error serializing 'vendorIdHeader' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
-		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8("vendorId", 8, (vendorId))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}

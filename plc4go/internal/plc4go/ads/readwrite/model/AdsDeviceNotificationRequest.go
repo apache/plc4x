@@ -162,14 +162,14 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (length)
 		length := uint32(m.Length)
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.Stamps)
-		_stampsErr := io.WriteUint32(32, (stamps))
+		_stampsErr := io.WriteUint32("stamps", 32, (stamps))
 		if _stampsErr != nil {
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}

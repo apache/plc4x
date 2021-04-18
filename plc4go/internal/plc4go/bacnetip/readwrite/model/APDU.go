@@ -148,7 +148,7 @@ func (m *APDU) SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChild
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType := uint8(child.ApduType())
-	_apduTypeErr := io.WriteUint8(4, (apduType))
+	_apduTypeErr := io.WriteUint8("apduType", 4, (apduType))
 
 	if _apduTypeErr != nil {
 		return errors.Wrap(_apduTypeErr, "Error serializing 'apduType' field")

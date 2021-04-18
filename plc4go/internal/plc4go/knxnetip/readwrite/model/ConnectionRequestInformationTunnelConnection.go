@@ -148,7 +148,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

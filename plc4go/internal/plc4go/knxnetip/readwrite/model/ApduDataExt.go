@@ -214,7 +214,7 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.ExtApciType())
-	_extApciTypeErr := io.WriteUint8(6, (extApciType))
+	_extApciTypeErr := io.WriteUint8("extApciType", 6, (extApciType))
 
 	if _extApciTypeErr != nil {
 		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")

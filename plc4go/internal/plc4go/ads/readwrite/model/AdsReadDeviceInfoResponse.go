@@ -191,21 +191,21 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.MajorVersion)
-		_majorVersionErr := io.WriteUint8(8, (majorVersion))
+		_majorVersionErr := io.WriteUint8("majorVersion", 8, (majorVersion))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.MinorVersion)
-		_minorVersionErr := io.WriteUint8(8, (minorVersion))
+		_minorVersionErr := io.WriteUint8("minorVersion", 8, (minorVersion))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}
 
 		// Simple Field (version)
 		version := uint16(m.Version)
-		_versionErr := io.WriteUint16(16, (version))
+		_versionErr := io.WriteUint16("version", 16, (version))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
@@ -213,7 +213,7 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 		// Array Field (device)
 		if m.Device != nil {
 			for _, _element := range m.Device {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}

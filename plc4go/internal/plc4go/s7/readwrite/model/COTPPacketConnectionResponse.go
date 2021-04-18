@@ -150,14 +150,14 @@ func (m *COTPPacketConnectionResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
-		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+		_destinationReferenceErr := io.WriteUint16("destinationReference", 16, (destinationReference))
 		if _destinationReferenceErr != nil {
 			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.SourceReference)
-		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
+		_sourceReferenceErr := io.WriteUint16("sourceReference", 16, (sourceReference))
 		if _sourceReferenceErr != nil {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}

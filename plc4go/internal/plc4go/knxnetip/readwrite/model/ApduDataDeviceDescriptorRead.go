@@ -124,7 +124,7 @@ func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
-		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
+		_descriptorTypeErr := io.WriteUint8("descriptorType", 6, (descriptorType))
 		if _descriptorTypeErr != nil {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}

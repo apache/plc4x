@@ -163,14 +163,14 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 	ser := func() error {
 
 		// Const Field (szlItemLength)
-		_szlItemLengthErr := io.WriteUint16(16, 28)
+		_szlItemLengthErr := io.WriteUint16("szlItemLength", 16, 28)
 		if _szlItemLengthErr != nil {
 			return errors.Wrap(_szlItemLengthErr, "Error serializing 'szlItemLength' field")
 		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		szlItemCount := uint16(uint16(len(m.Items)))
-		_szlItemCountErr := io.WriteUint16(16, (szlItemCount))
+		_szlItemCountErr := io.WriteUint16("szlItemCount", 16, (szlItemCount))
 		if _szlItemCountErr != nil {
 			return errors.Wrap(_szlItemCountErr, "Error serializing 'szlItemCount' field")
 		}

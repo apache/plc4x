@@ -125,14 +125,14 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.NotificationHandle)
-	_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+	_notificationHandleErr := io.WriteUint32("notificationHandle", 32, (notificationHandle))
 	if _notificationHandleErr != nil {
 		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize := uint32(m.SampleSize)
-	_sampleSizeErr := io.WriteUint32(32, (sampleSize))
+	_sampleSizeErr := io.WriteUint32("sampleSize", 32, (sampleSize))
 	if _sampleSizeErr != nil {
 		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
 	}
@@ -140,7 +140,7 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 	// Array Field (data)
 	if m.Data != nil {
 		for _, _element := range m.Data {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

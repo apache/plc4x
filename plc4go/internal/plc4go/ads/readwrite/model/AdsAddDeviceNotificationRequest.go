@@ -207,49 +207,49 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error 
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
-		_indexGroupErr := io.WriteUint32(32, (indexGroup))
+		_indexGroupErr := io.WriteUint32("indexGroup", 32, (indexGroup))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.IndexOffset)
-		_indexOffsetErr := io.WriteUint32(32, (indexOffset))
+		_indexOffsetErr := io.WriteUint32("indexOffset", 32, (indexOffset))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (length)
 		length := uint32(m.Length)
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (transmissionMode)
 		transmissionMode := uint32(m.TransmissionMode)
-		_transmissionModeErr := io.WriteUint32(32, (transmissionMode))
+		_transmissionModeErr := io.WriteUint32("transmissionMode", 32, (transmissionMode))
 		if _transmissionModeErr != nil {
 			return errors.Wrap(_transmissionModeErr, "Error serializing 'transmissionMode' field")
 		}
 
 		// Simple Field (maxDelay)
 		maxDelay := uint32(m.MaxDelay)
-		_maxDelayErr := io.WriteUint32(32, (maxDelay))
+		_maxDelayErr := io.WriteUint32("maxDelay", 32, (maxDelay))
 		if _maxDelayErr != nil {
 			return errors.Wrap(_maxDelayErr, "Error serializing 'maxDelay' field")
 		}
 
 		// Simple Field (cycleTime)
 		cycleTime := uint32(m.CycleTime)
-		_cycleTimeErr := io.WriteUint32(32, (cycleTime))
+		_cycleTimeErr := io.WriteUint32("cycleTime", 32, (cycleTime))
 		if _cycleTimeErr != nil {
 			return errors.Wrap(_cycleTimeErr, "Error serializing 'cycleTime' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteBigInt(128, big.NewInt(0x0000))
+			_err := io.WriteBigInt("reserved", 128, big.NewInt(0x0000))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

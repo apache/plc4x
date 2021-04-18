@@ -260,66 +260,66 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 	ser := func() error {
 
 		// Const Field (subscriberProcessIdentifierHeader)
-		_subscriberProcessIdentifierHeaderErr := io.WriteUint8(8, 0x09)
+		_subscriberProcessIdentifierHeaderErr := io.WriteUint8("subscriberProcessIdentifierHeader", 8, 0x09)
 		if _subscriberProcessIdentifierHeaderErr != nil {
 			return errors.Wrap(_subscriberProcessIdentifierHeaderErr, "Error serializing 'subscriberProcessIdentifierHeader' field")
 		}
 
 		// Simple Field (subscriberProcessIdentifier)
 		subscriberProcessIdentifier := uint8(m.SubscriberProcessIdentifier)
-		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
+		_subscriberProcessIdentifierErr := io.WriteUint8("subscriberProcessIdentifier", 8, (subscriberProcessIdentifier))
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.Wrap(_subscriberProcessIdentifierErr, "Error serializing 'subscriberProcessIdentifier' field")
 		}
 
 		// Const Field (monitoredObjectIdentifierHeader)
-		_monitoredObjectIdentifierHeaderErr := io.WriteUint8(8, 0x1C)
+		_monitoredObjectIdentifierHeaderErr := io.WriteUint8("monitoredObjectIdentifierHeader", 8, 0x1C)
 		if _monitoredObjectIdentifierHeaderErr != nil {
 			return errors.Wrap(_monitoredObjectIdentifierHeaderErr, "Error serializing 'monitoredObjectIdentifierHeader' field")
 		}
 
 		// Simple Field (monitoredObjectType)
 		monitoredObjectType := uint16(m.MonitoredObjectType)
-		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
+		_monitoredObjectTypeErr := io.WriteUint16("monitoredObjectType", 10, (monitoredObjectType))
 		if _monitoredObjectTypeErr != nil {
 			return errors.Wrap(_monitoredObjectTypeErr, "Error serializing 'monitoredObjectType' field")
 		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
 		monitoredObjectInstanceNumber := uint32(m.MonitoredObjectInstanceNumber)
-		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		_monitoredObjectInstanceNumberErr := io.WriteUint32("monitoredObjectInstanceNumber", 22, (monitoredObjectInstanceNumber))
 		if _monitoredObjectInstanceNumberErr != nil {
 			return errors.Wrap(_monitoredObjectInstanceNumberErr, "Error serializing 'monitoredObjectInstanceNumber' field")
 		}
 
 		// Const Field (issueConfirmedNotificationsHeader)
-		_issueConfirmedNotificationsHeaderErr := io.WriteUint8(8, 0x29)
+		_issueConfirmedNotificationsHeaderErr := io.WriteUint8("issueConfirmedNotificationsHeader", 8, 0x29)
 		if _issueConfirmedNotificationsHeaderErr != nil {
 			return errors.Wrap(_issueConfirmedNotificationsHeaderErr, "Error serializing 'issueConfirmedNotificationsHeader' field")
 		}
 
 		// Const Field (issueConfirmedNotificationsSkipBits)
-		_issueConfirmedNotificationsSkipBitsErr := io.WriteUint8(7, 0x00)
+		_issueConfirmedNotificationsSkipBitsErr := io.WriteUint8("issueConfirmedNotificationsSkipBits", 7, 0x00)
 		if _issueConfirmedNotificationsSkipBitsErr != nil {
 			return errors.Wrap(_issueConfirmedNotificationsSkipBitsErr, "Error serializing 'issueConfirmedNotificationsSkipBits' field")
 		}
 
 		// Simple Field (issueConfirmedNotifications)
 		issueConfirmedNotifications := bool(m.IssueConfirmedNotifications)
-		_issueConfirmedNotificationsErr := io.WriteBit((issueConfirmedNotifications))
+		_issueConfirmedNotificationsErr := io.WriteBit("issueConfirmedNotifications", (issueConfirmedNotifications))
 		if _issueConfirmedNotificationsErr != nil {
 			return errors.Wrap(_issueConfirmedNotificationsErr, "Error serializing 'issueConfirmedNotifications' field")
 		}
 
 		// Const Field (lifetimeHeader)
-		_lifetimeHeaderErr := io.WriteUint8(5, 0x07)
+		_lifetimeHeaderErr := io.WriteUint8("lifetimeHeader", 5, 0x07)
 		if _lifetimeHeaderErr != nil {
 			return errors.Wrap(_lifetimeHeaderErr, "Error serializing 'lifetimeHeader' field")
 		}
 
 		// Simple Field (lifetimeLength)
 		lifetimeLength := uint8(m.LifetimeLength)
-		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
+		_lifetimeLengthErr := io.WriteUint8("lifetimeLength", 3, (lifetimeLength))
 		if _lifetimeLengthErr != nil {
 			return errors.Wrap(_lifetimeLengthErr, "Error serializing 'lifetimeLength' field")
 		}
@@ -327,7 +327,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
 			for _, _element := range m.LifetimeSeconds {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}

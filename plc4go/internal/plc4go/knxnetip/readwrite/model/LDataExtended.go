@@ -212,21 +212,21 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.GroupAddress)
-		_groupAddressErr := io.WriteBit((groupAddress))
+		_groupAddressErr := io.WriteBit("groupAddress", (groupAddress))
 		if _groupAddressErr != nil {
 			return errors.Wrap(_groupAddressErr, "Error serializing 'groupAddress' field")
 		}
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.HopCount)
-		_hopCountErr := io.WriteUint8(3, (hopCount))
+		_hopCountErr := io.WriteUint8("hopCount", 3, (hopCount))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}
 
 		// Simple Field (extendedFrameFormat)
 		extendedFrameFormat := uint8(m.ExtendedFrameFormat)
-		_extendedFrameFormatErr := io.WriteUint8(4, (extendedFrameFormat))
+		_extendedFrameFormatErr := io.WriteUint8("extendedFrameFormat", 4, (extendedFrameFormat))
 		if _extendedFrameFormatErr != nil {
 			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
 		}
@@ -240,7 +240,7 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
 			for _, _element := range m.DestinationAddress {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 				}
@@ -249,7 +249,7 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
-		_dataLengthErr := io.WriteUint8(8, (dataLength))
+		_dataLengthErr := io.WriteUint8("dataLength", 8, (dataLength))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 		}

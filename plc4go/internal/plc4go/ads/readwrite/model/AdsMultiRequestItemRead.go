@@ -148,21 +148,21 @@ func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.ItemIndexGroup)
-		_itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
+		_itemIndexGroupErr := io.WriteUint32("itemIndexGroup", 32, (itemIndexGroup))
 		if _itemIndexGroupErr != nil {
 			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
 		}
 
 		// Simple Field (itemIndexOffset)
 		itemIndexOffset := uint32(m.ItemIndexOffset)
-		_itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
+		_itemIndexOffsetErr := io.WriteUint32("itemIndexOffset", 32, (itemIndexOffset))
 		if _itemIndexOffsetErr != nil {
 			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
 		}
 
 		// Simple Field (itemReadLength)
 		itemReadLength := uint32(m.ItemReadLength)
-		_itemReadLengthErr := io.WriteUint32(32, (itemReadLength))
+		_itemReadLengthErr := io.WriteUint32("itemReadLength", 32, (itemReadLength))
 		if _itemReadLengthErr != nil {
 			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
 		}

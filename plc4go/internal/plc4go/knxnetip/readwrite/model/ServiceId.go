@@ -146,7 +146,7 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
-	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+	_serviceTypeErr := io.WriteUint8("serviceType", 8, (serviceType))
 
 	if _serviceTypeErr != nil {
 		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")

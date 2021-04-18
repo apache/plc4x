@@ -166,7 +166,7 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(3, uint8(0x00))
+			_err := io.WriteUint8("reserved", 3, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -174,21 +174,21 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (server)
 		server := bool(m.Server)
-		_serverErr := io.WriteBit((server))
+		_serverErr := io.WriteBit("server", (server))
 		if _serverErr != nil {
 			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (abortReason)
 		abortReason := uint8(m.AbortReason)
-		_abortReasonErr := io.WriteUint8(8, (abortReason))
+		_abortReasonErr := io.WriteUint8("abortReason", 8, (abortReason))
 		if _abortReasonErr != nil {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}

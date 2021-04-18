@@ -199,7 +199,7 @@ func SzlSublistParse(io utils.ReadBuffer) (SzlSublist, error) {
 }
 
 func (e SzlSublist) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("SzlSublist", 8, uint8(e))
 	return err
 }
 

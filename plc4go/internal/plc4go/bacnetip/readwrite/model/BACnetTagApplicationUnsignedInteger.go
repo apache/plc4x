@@ -140,7 +140,7 @@ func (m *BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) er
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

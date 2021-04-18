@@ -1194,7 +1194,7 @@ func KnxDatapointMainTypeParse(io utils.ReadBuffer) (KnxDatapointMainType, error
 }
 
 func (e KnxDatapointMainType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(16, uint16(e))
+	err := io.WriteUint16("KnxDatapointMainType", 16, uint16(e))
 	return err
 }
 

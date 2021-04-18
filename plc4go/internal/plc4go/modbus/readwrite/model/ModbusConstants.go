@@ -101,7 +101,7 @@ func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
 func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 
 	// Const Field (modbusTcpDefaultPort)
-	_modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
+	_modbusTcpDefaultPortErr := io.WriteUint16("modbusTcpDefaultPort", 16, 502)
 	if _modbusTcpDefaultPortErr != nil {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}

@@ -217,90 +217,90 @@ func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataFormatName 
 	case dataFormatName == "IEC61131_BOOL": // BOOL
 
 		// Reserved Field (Just skip the bytes)
-		if _err := io.WriteUint8(7, uint8(0x00)); _err != nil {
+		if _err := io.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := io.WriteBit(value.GetBool()); _err != nil {
+		if _err := io.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_BYTE": // BitString
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WORD": // BitString
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_DWORD": // BitString
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_SINT": // SINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt8(8, value.GetInt8()); _err != nil {
+		if _err := io.WriteInt8("value", 8, value.GetInt8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_USINT": // USINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint8(8, value.GetUint8()); _err != nil {
+		if _err := io.WriteUint8("value", 8, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_INT": // INT
 
 		// Simple Field (value)
-		if _err := io.WriteInt16(16, value.GetInt16()); _err != nil {
+		if _err := io.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_UINT": // UINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint16(16, value.GetUint16()); _err != nil {
+		if _err := io.WriteUint16("value", 16, value.GetUint16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_DINT": // DINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt32(32, value.GetInt32()); _err != nil {
+		if _err := io.WriteInt32("value", 32, value.GetInt32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_UDINT": // UDINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_LINT": // LINT
 
 		// Simple Field (value)
-		if _err := io.WriteInt64(64, value.GetInt64()); _err != nil {
+		if _err := io.WriteInt64("value", 64, value.GetInt64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_ULINT": // ULINT
 
 		// Simple Field (value)
-		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+		if _err := io.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_REAL": // REAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat32(32, value.GetFloat32()); _err != nil {
+		if _err := io.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_LREAL": // LREAL
 
 		// Simple Field (value)
-		if _err := io.WriteFloat64(64, value.GetFloat64()); _err != nil {
+		if _err := io.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_CHAR": // STRING
@@ -322,31 +322,31 @@ func DataItemSerialize(io utils.WriteBuffer, value api.PlcValue, dataFormatName 
 	case dataFormatName == "IEC61131_TIME": // TIME
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_LTIME": // LTIME
 
 		// Simple Field (value)
-		if _err := io.WriteUint64(64, value.GetUint64()); _err != nil {
+		if _err := io.WriteUint64("value", 64, value.GetUint64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_DATE": // DATE
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
 
 		// Simple Field (value)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("value", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 
 		// Simple Field (secondsSinceEpoch)
-		if _err := io.WriteUint32(32, value.GetUint32()); _err != nil {
+		if _err := io.WriteUint32("secondsSinceEpoch", 32, value.GetUint32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	default:

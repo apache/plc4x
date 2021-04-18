@@ -164,7 +164,7 @@ func DataTransportSizeParse(io utils.ReadBuffer) (DataTransportSize, error) {
 }
 
 func (e DataTransportSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("DataTransportSize", 8, uint8(e))
 	return err
 }
 

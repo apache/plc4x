@@ -154,7 +154,7 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0))
+			_err := io.WriteUint8("reserved", 4, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -162,14 +162,14 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (serviceChoice)
 		serviceChoice := uint8(m.ServiceChoice)
-		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+		_serviceChoiceErr := io.WriteUint8("serviceChoice", 8, (serviceChoice))
 		if _serviceChoiceErr != nil {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}

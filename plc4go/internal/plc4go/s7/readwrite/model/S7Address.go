@@ -134,7 +134,7 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.AddressType())
-	_addressTypeErr := io.WriteUint8(8, (addressType))
+	_addressTypeErr := io.WriteUint8("addressType", 8, (addressType))
 
 	if _addressTypeErr != nil {
 		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")

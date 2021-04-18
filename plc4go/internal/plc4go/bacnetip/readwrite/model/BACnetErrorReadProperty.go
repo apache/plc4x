@@ -204,14 +204,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 
 		// Const Field (errorClassHeader)
-		_errorClassHeaderErr := io.WriteUint8(5, 0x12)
+		_errorClassHeaderErr := io.WriteUint8("errorClassHeader", 5, 0x12)
 		if _errorClassHeaderErr != nil {
 			return errors.Wrap(_errorClassHeaderErr, "Error serializing 'errorClassHeader' field")
 		}
 
 		// Simple Field (errorClassLength)
 		errorClassLength := uint8(m.ErrorClassLength)
-		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
+		_errorClassLengthErr := io.WriteUint8("errorClassLength", 3, (errorClassLength))
 		if _errorClassLengthErr != nil {
 			return errors.Wrap(_errorClassLengthErr, "Error serializing 'errorClassLength' field")
 		}
@@ -219,7 +219,7 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
 			for _, _element := range m.ErrorClass {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
@@ -227,14 +227,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Const Field (errorCodeHeader)
-		_errorCodeHeaderErr := io.WriteUint8(5, 0x12)
+		_errorCodeHeaderErr := io.WriteUint8("errorCodeHeader", 5, 0x12)
 		if _errorCodeHeaderErr != nil {
 			return errors.Wrap(_errorCodeHeaderErr, "Error serializing 'errorCodeHeader' field")
 		}
 
 		// Simple Field (errorCodeLength)
 		errorCodeLength := uint8(m.ErrorCodeLength)
-		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
+		_errorCodeLengthErr := io.WriteUint8("errorCodeLength", 3, (errorCodeLength))
 		if _errorCodeLengthErr != nil {
 			return errors.Wrap(_errorCodeLengthErr, "Error serializing 'errorCodeLength' field")
 		}
@@ -242,7 +242,7 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
 			for _, _element := range m.ErrorCode {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}

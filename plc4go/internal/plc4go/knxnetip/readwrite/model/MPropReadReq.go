@@ -172,35 +172,35 @@ func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
-		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
+		_interfaceObjectTypeErr := io.WriteUint16("interfaceObjectType", 16, (interfaceObjectType))
 		if _interfaceObjectTypeErr != nil {
 			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.ObjectInstance)
-		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
+		_objectInstanceErr := io.WriteUint8("objectInstance", 8, (objectInstance))
 		if _objectInstanceErr != nil {
 			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.NumberOfElements)
-		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint8("numberOfElements", 4, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.StartIndex)
-		_startIndexErr := io.WriteUint16(12, (startIndex))
+		_startIndexErr := io.WriteUint16("startIndex", 12, (startIndex))
 		if _startIndexErr != nil {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}

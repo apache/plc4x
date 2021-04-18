@@ -148,21 +148,21 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(io utils.WriteBuffer) err
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.Index)
-		_indexErr := io.WriteUint8(8, (index))
+		_indexErr := io.WriteUint8("index", 8, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}

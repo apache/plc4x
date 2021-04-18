@@ -205,28 +205,28 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
-		_indexGroupErr := io.WriteUint32(32, (indexGroup))
+		_indexGroupErr := io.WriteUint32("indexGroup", 32, (indexGroup))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.IndexOffset)
-		_indexOffsetErr := io.WriteUint32(32, (indexOffset))
+		_indexOffsetErr := io.WriteUint32("indexOffset", 32, (indexOffset))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (readLength)
 		readLength := uint32(m.ReadLength)
-		_readLengthErr := io.WriteUint32(32, (readLength))
+		_readLengthErr := io.WriteUint32("readLength", 32, (readLength))
 		if _readLengthErr != nil {
 			return errors.Wrap(_readLengthErr, "Error serializing 'readLength' field")
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), func() uint16 { return uint16(uint32(16)) }, func() uint16 { return uint16(uint32(12)) }))))) + uint32(uint32(len(m.Data))))
-		_writeLengthErr := io.WriteUint32(32, (writeLength))
+		_writeLengthErr := io.WriteUint32("writeLength", 32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
 		}
@@ -244,7 +244,7 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

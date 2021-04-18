@@ -124,7 +124,7 @@ func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
-		_tsapIdErr := io.WriteUint16(16, (tsapId))
+		_tsapIdErr := io.WriteUint16("tsapId", 16, (tsapId))
 		if _tsapIdErr != nil {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}

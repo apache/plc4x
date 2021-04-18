@@ -124,7 +124,7 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint16(16, uint16(0x0000))
+		_err := io.WriteUint16("reserved", 16, uint16(0x0000))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -132,7 +132,7 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(m.Userdata.LengthInBytes())
-	_lengthErr := io.WriteUint32(32, (length))
+	_lengthErr := io.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}

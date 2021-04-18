@@ -124,7 +124,7 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
-		_crcErr := io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8("crc", 8, (crc))
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}

@@ -130,7 +130,7 @@ func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(6, uint8(0x00))
+			_err := io.WriteUint8("reserved", 6, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

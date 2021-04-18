@@ -103,7 +103,7 @@ func DeviceGroupParse(io utils.ReadBuffer) (DeviceGroup, error) {
 }
 
 func (e DeviceGroup) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("DeviceGroup", 8, int8(e))
 	return err
 }
 

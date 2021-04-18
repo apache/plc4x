@@ -183,14 +183,14 @@ func (m *BVLC) Serialize(io utils.WriteBuffer) error {
 func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
 
 	// Const Field (bacnetType)
-	_bacnetTypeErr := io.WriteUint8(8, 0x81)
+	_bacnetTypeErr := io.WriteUint8("bacnetType", 8, 0x81)
 	if _bacnetTypeErr != nil {
 		return errors.Wrap(_bacnetTypeErr, "Error serializing 'bacnetType' field")
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction := uint8(child.BvlcFunction())
-	_bvlcFunctionErr := io.WriteUint8(8, (bvlcFunction))
+	_bvlcFunctionErr := io.WriteUint8("bvlcFunction", 8, (bvlcFunction))
 
 	if _bvlcFunctionErr != nil {
 		return errors.Wrap(_bvlcFunctionErr, "Error serializing 'bvlcFunction' field")
@@ -198,7 +198,7 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.LengthInBytes()))
-	_bvlcLengthErr := io.WriteUint16(16, (bvlcLength))
+	_bvlcLengthErr := io.WriteUint16("bvlcLength", 16, (bvlcLength))
 	if _bvlcLengthErr != nil {
 		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}

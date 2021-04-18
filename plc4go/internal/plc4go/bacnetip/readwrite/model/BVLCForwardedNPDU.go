@@ -156,7 +156,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 		// Array Field (ip)
 		if m.Ip != nil {
 			for _, _element := range m.Ip {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
@@ -165,7 +165,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (port)
 		port := uint16(m.Port)
-		_portErr := io.WriteUint16(16, (port))
+		_portErr := io.WriteUint16("port", 16, (port))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}

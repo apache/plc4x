@@ -135,7 +135,7 @@ func (m *NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
 			for _, _element := range m.DestinationNetworkAddress {
-				_elementErr := io.WriteUint16(16, _element)
+				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 				}

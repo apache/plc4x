@@ -156,7 +156,7 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.Control())
-	_controlErr := io.WriteUint8(1, (control))
+	_controlErr := io.WriteUint8("control", 1, (control))
 
 	if _controlErr != nil {
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
@@ -164,14 +164,14 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 
 	// Simple Field (numbered)
 	numbered := bool(m.Numbered)
-	_numberedErr := io.WriteBit((numbered))
+	_numberedErr := io.WriteBit("numbered", (numbered))
 	if _numberedErr != nil {
 		return errors.Wrap(_numberedErr, "Error serializing 'numbered' field")
 	}
 
 	// Simple Field (counter)
 	counter := uint8(m.Counter)
-	_counterErr := io.WriteUint8(4, (counter))
+	_counterErr := io.WriteUint8("counter", 4, (counter))
 	if _counterErr != nil {
 		return errors.Wrap(_counterErr, "Error serializing 'counter' field")
 	}

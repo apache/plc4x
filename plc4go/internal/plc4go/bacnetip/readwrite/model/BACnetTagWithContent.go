@@ -207,21 +207,21 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8("typeOrTagNumber", 4, (typeOrTagNumber))
 	if _typeOrTagNumberErr != nil {
 		return errors.Wrap(_typeOrTagNumberErr, "Error serializing 'typeOrTagNumber' field")
 	}
 
 	// Simple Field (contextSpecificTag)
 	contextSpecificTag := uint8(m.ContextSpecificTag)
-	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8("contextSpecificTag", 1, (contextSpecificTag))
 	if _contextSpecificTagErr != nil {
 		return errors.Wrap(_contextSpecificTagErr, "Error serializing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8("lengthValueType", 3, (lengthValueType))
 	if _lengthValueTypeErr != nil {
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
@@ -230,7 +230,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	var extTagNumber *uint8 = nil
 	if m.ExtTagNumber != nil {
 		extTagNumber = m.ExtTagNumber
-		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
+		_extTagNumberErr := io.WriteUint8("extTagNumber", 8, *(extTagNumber))
 		if _extTagNumberErr != nil {
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
@@ -240,7 +240,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	var extLength *uint8 = nil
 	if m.ExtLength != nil {
 		extLength = m.ExtLength
-		_extLengthErr := io.WriteUint8(8, *(extLength))
+		_extLengthErr := io.WriteUint8("extLength", 8, *(extLength))
 		if _extLengthErr != nil {
 			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
@@ -249,7 +249,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
 		for _, _element := range m.PropertyIdentifier {
-			_elementErr := io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 			}
@@ -257,7 +257,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Const Field (openTag)
-	_openTagErr := io.WriteUint8(8, 0x2e)
+	_openTagErr := io.WriteUint8("openTag", 8, 0x2e)
 	if _openTagErr != nil {
 		return errors.Wrap(_openTagErr, "Error serializing 'openTag' field")
 	}
@@ -269,7 +269,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Const Field (closingTag)
-	_closingTagErr := io.WriteUint8(8, 0x2f)
+	_closingTagErr := io.WriteUint8("closingTag", 8, 0x2f)
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}

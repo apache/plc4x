@@ -145,7 +145,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
-		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
+		_descriptorTypeErr := io.WriteUint8("descriptorType", 6, (descriptorType))
 		if _descriptorTypeErr != nil {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
@@ -153,7 +153,7 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 		// Array Field (data)
 		if m.Data != nil {
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}

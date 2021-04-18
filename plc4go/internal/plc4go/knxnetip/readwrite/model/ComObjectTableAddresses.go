@@ -17154,7 +17154,7 @@ func ComObjectTableAddressesParse(io utils.ReadBuffer) (ComObjectTableAddresses,
 }
 
 func (e ComObjectTableAddresses) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(16, uint16(e))
+	err := io.WriteUint16("ComObjectTableAddresses", 16, uint16(e))
 	return err
 }
 

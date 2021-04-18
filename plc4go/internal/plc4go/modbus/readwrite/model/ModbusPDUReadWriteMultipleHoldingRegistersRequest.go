@@ -199,35 +199,35 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 
 		// Simple Field (readStartingAddress)
 		readStartingAddress := uint16(m.ReadStartingAddress)
-		_readStartingAddressErr := io.WriteUint16(16, (readStartingAddress))
+		_readStartingAddressErr := io.WriteUint16("readStartingAddress", 16, (readStartingAddress))
 		if _readStartingAddressErr != nil {
 			return errors.Wrap(_readStartingAddressErr, "Error serializing 'readStartingAddress' field")
 		}
 
 		// Simple Field (readQuantity)
 		readQuantity := uint16(m.ReadQuantity)
-		_readQuantityErr := io.WriteUint16(16, (readQuantity))
+		_readQuantityErr := io.WriteUint16("readQuantity", 16, (readQuantity))
 		if _readQuantityErr != nil {
 			return errors.Wrap(_readQuantityErr, "Error serializing 'readQuantity' field")
 		}
 
 		// Simple Field (writeStartingAddress)
 		writeStartingAddress := uint16(m.WriteStartingAddress)
-		_writeStartingAddressErr := io.WriteUint16(16, (writeStartingAddress))
+		_writeStartingAddressErr := io.WriteUint16("writeStartingAddress", 16, (writeStartingAddress))
 		if _writeStartingAddressErr != nil {
 			return errors.Wrap(_writeStartingAddressErr, "Error serializing 'writeStartingAddress' field")
 		}
 
 		// Simple Field (writeQuantity)
 		writeQuantity := uint16(m.WriteQuantity)
-		_writeQuantityErr := io.WriteUint16(16, (writeQuantity))
+		_writeQuantityErr := io.WriteUint16("writeQuantity", 16, (writeQuantity))
 		if _writeQuantityErr != nil {
 			return errors.Wrap(_writeQuantityErr, "Error serializing 'writeQuantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
@@ -235,7 +235,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 		// Array Field (value)
 		if m.Value != nil {
 			for _, _element := range m.Value {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}

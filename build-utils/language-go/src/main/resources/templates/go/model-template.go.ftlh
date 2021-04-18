@@ -922,7 +922,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		for _, _element := range m.${arrayField.name?cap_first} {
 				<#if helper.isSimpleTypeReference(arrayField.type)>
 					<#assign simpleTypeReference = arrayField.type>
-			_elementErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element", field)}
+			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", field)}
 				<#else>
 					<#assign complexTypeReference = arrayField.type>
 					<#if helper.needsVariable(arrayField, "lastItem", true)>
@@ -949,7 +949,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		// Create an array of all the bytes written in this message element so far.
 		checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
 		_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
-		_checksumErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)", field)}
+		_checksumErr := ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)}
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -960,7 +960,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue, field)}
+	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField.name, simpleTypeReference, constField.referenceValue, field)}
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -974,7 +974,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	<#if helper.isEnumField(field)>
 	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(io)
 	<#else>
-	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")", field)}
+	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", field)}
 	</#if>
 
 	if _${discriminatorField.name}Err != nil {
@@ -987,7 +987,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 					<#if enumField.fieldName?has_content>
 						<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
-	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField)}
+	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField)}
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1006,7 +1006,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
-	_${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")", field)}
+	_${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(implicitField.name, simpleTypeReference, "(" + implicitField.name + ")", field)}
 	if _${implicitField.name}Err != nil {
 		return errors.Wrap(_${implicitField.name}Err, "Error serializing '${implicitField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1036,7 +1036,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#if helper.isSimpleTypeReference(optionalField.type)>
 					<#assign simpleTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
-		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")", field)}
+		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "*(" + optionalField.name + ")", field)}
 				<#else>
 					<#assign complexTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
@@ -1056,7 +1056,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 		for ;_timesPadding > 0; _timesPadding-- {
 			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
-			_paddingErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)", field)}
+			_paddingErr := ${helper.getWriteBufferWriteMethodCall("padding", simpleTypeReference, "(_paddingValue)", field)}
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -1069,7 +1069,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Reserved Field (reserved)
 	{
-		_err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field), field)}
+		_err := ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, helper.getReservedValue(field), field)}
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -1082,7 +1082,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#if helper.isSimpleTypeReference(simpleField.type)>
 					<#assign simpleTypeReference = simpleField.type>
 	${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name?cap_first})
-	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
+	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
 				<#else>
 					<#assign complexTypeReference = simpleField.type>
 	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(io)

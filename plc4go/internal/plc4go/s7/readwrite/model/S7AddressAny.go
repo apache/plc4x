@@ -208,21 +208,21 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 
 		// Enum field (transportSize)
-		_transportSizeErr := io.WriteUint8(8, m.TransportSize.Code())
+		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.NumberOfElements)
-		_numberOfElementsErr := io.WriteUint16(16, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint16("numberOfElements", 16, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.DbNumber)
-		_dbNumberErr := io.WriteUint16(16, (dbNumber))
+		_dbNumberErr := io.WriteUint16("dbNumber", 16, (dbNumber))
 		if _dbNumberErr != nil {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
@@ -236,7 +236,7 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(5, uint8(0x00))
+			_err := io.WriteUint8("reserved", 5, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -244,14 +244,14 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (byteAddress)
 		byteAddress := uint16(m.ByteAddress)
-		_byteAddressErr := io.WriteUint16(16, (byteAddress))
+		_byteAddressErr := io.WriteUint16("byteAddress", 16, (byteAddress))
 		if _byteAddressErr != nil {
 			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
 		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.BitAddress)
-		_bitAddressErr := io.WriteUint8(3, (bitAddress))
+		_bitAddressErr := io.WriteUint8("bitAddress", 3, (bitAddress))
 		if _bitAddressErr != nil {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}

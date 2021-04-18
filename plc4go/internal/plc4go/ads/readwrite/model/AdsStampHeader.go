@@ -126,14 +126,14 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.Timestamp)
-	_timestampErr := io.WriteUint64(64, (timestamp))
+	_timestampErr := io.WriteUint64("timestamp", 64, (timestamp))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples := uint32(m.Samples)
-	_samplesErr := io.WriteUint32(32, (samples))
+	_samplesErr := io.WriteUint32("samples", 32, (samples))
 	if _samplesErr != nil {
 		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
 	}

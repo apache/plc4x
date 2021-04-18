@@ -215,21 +215,21 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.SegmentedMessage)
-		_segmentedMessageErr := io.WriteBit((segmentedMessage))
+		_segmentedMessageErr := io.WriteBit("segmentedMessage", (segmentedMessage))
 		if _segmentedMessageErr != nil {
 			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
 		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.MoreFollows)
-		_moreFollowsErr := io.WriteBit((moreFollows))
+		_moreFollowsErr := io.WriteBit("moreFollows", (moreFollows))
 		if _moreFollowsErr != nil {
 			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(2, uint8(0))
+			_err := io.WriteUint8("reserved", 2, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -237,7 +237,7 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
@@ -246,7 +246,7 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 		var sequenceNumber *uint8 = nil
 		if m.SequenceNumber != nil {
 			sequenceNumber = m.SequenceNumber
-			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
+			_sequenceNumberErr := io.WriteUint8("sequenceNumber", 8, *(sequenceNumber))
 			if _sequenceNumberErr != nil {
 				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
@@ -256,7 +256,7 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 		var proposedWindowSize *uint8 = nil
 		if m.ProposedWindowSize != nil {
 			proposedWindowSize = m.ProposedWindowSize
-			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
+			_proposedWindowSizeErr := io.WriteUint8("proposedWindowSize", 8, *(proposedWindowSize))
 			if _proposedWindowSizeErr != nil {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}

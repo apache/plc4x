@@ -192,7 +192,7 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort := uint16(m.TargetAmsPort)
-	_targetAmsPortErr := io.WriteUint16(16, (targetAmsPort))
+	_targetAmsPortErr := io.WriteUint16("targetAmsPort", 16, (targetAmsPort))
 	if _targetAmsPortErr != nil {
 		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
 	}
@@ -205,7 +205,7 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort := uint16(m.SourceAmsPort)
-	_sourceAmsPortErr := io.WriteUint16(16, (sourceAmsPort))
+	_sourceAmsPortErr := io.WriteUint16("sourceAmsPort", 16, (sourceAmsPort))
 	if _sourceAmsPortErr != nil {
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
@@ -224,21 +224,21 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(m.Data.LengthInBytes())
-	_lengthErr := io.WriteUint32(32, (length))
+	_lengthErr := io.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode := uint32(m.ErrorCode)
-	_errorCodeErr := io.WriteUint32(32, (errorCode))
+	_errorCodeErr := io.WriteUint32("errorCode", 32, (errorCode))
 	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId := uint32(m.InvokeId)
-	_invokeIdErr := io.WriteUint32(32, (invokeId))
+	_invokeIdErr := io.WriteUint32("invokeId", 32, (invokeId))
 	if _invokeIdErr != nil {
 		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 	}

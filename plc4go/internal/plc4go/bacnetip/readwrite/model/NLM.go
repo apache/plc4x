@@ -153,7 +153,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
-	_messageTypeErr := io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8("messageType", 8, (messageType))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
@@ -163,7 +163,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 	var vendorId *uint16 = nil
 	if m.VendorId != nil {
 		vendorId = m.VendorId
-		_vendorIdErr := io.WriteUint16(16, *(vendorId))
+		_vendorIdErr := io.WriteUint16("vendorId", 16, *(vendorId))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}

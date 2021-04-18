@@ -121,7 +121,7 @@ func DataTransportErrorCodeParse(io utils.ReadBuffer) (DataTransportErrorCode, e
 }
 
 func (e DataTransportErrorCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("DataTransportErrorCode", 8, uint8(e))
 	return err
 }
 

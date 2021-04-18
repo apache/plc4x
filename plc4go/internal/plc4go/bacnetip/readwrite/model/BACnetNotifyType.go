@@ -103,7 +103,7 @@ func BACnetNotifyTypeParse(io utils.ReadBuffer) (BACnetNotifyType, error) {
 }
 
 func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("BACnetNotifyType", 4, uint8(e))
 	return err
 }
 

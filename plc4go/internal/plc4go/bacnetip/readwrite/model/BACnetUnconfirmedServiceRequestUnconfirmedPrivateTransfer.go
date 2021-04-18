@@ -213,33 +213,33 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 	ser := func() error {
 
 		// Const Field (vendorIdHeader)
-		_vendorIdHeaderErr := io.WriteUint8(8, 0x09)
+		_vendorIdHeaderErr := io.WriteUint8("vendorIdHeader", 8, 0x09)
 		if _vendorIdHeaderErr != nil {
 			return errors.Wrap(_vendorIdHeaderErr, "Error serializing 'vendorIdHeader' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
-		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8("vendorId", 8, (vendorId))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
 		// Const Field (serviceNumberHeader)
-		_serviceNumberHeaderErr := io.WriteUint8(8, 0x1A)
+		_serviceNumberHeaderErr := io.WriteUint8("serviceNumberHeader", 8, 0x1A)
 		if _serviceNumberHeaderErr != nil {
 			return errors.Wrap(_serviceNumberHeaderErr, "Error serializing 'serviceNumberHeader' field")
 		}
 
 		// Simple Field (serviceNumber)
 		serviceNumber := uint16(m.ServiceNumber)
-		_serviceNumberErr := io.WriteUint16(16, (serviceNumber))
+		_serviceNumberErr := io.WriteUint16("serviceNumber", 16, (serviceNumber))
 		if _serviceNumberErr != nil {
 			return errors.Wrap(_serviceNumberErr, "Error serializing 'serviceNumber' field")
 		}
 
 		// Const Field (listOfValuesOpeningTag)
-		_listOfValuesOpeningTagErr := io.WriteUint8(8, 0x2E)
+		_listOfValuesOpeningTagErr := io.WriteUint8("listOfValuesOpeningTag", 8, 0x2E)
 		if _listOfValuesOpeningTagErr != nil {
 			return errors.Wrap(_listOfValuesOpeningTagErr, "Error serializing 'listOfValuesOpeningTag' field")
 		}
@@ -247,7 +247,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 		// Array Field (values)
 		if m.Values != nil {
 			for _, _element := range m.Values {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'values' field")
 				}
@@ -255,7 +255,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 		}
 
 		// Const Field (listOfValuesClosingTag)
-		_listOfValuesClosingTagErr := io.WriteUint8(8, 0x2F)
+		_listOfValuesClosingTagErr := io.WriteUint8("listOfValuesClosingTag", 8, 0x2F)
 		if _listOfValuesClosingTagErr != nil {
 			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}

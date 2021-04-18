@@ -265,7 +265,7 @@ func ReservedIndexGroupsParse(io utils.ReadBuffer) (ReservedIndexGroups, error) 
 }
 
 func (e ReservedIndexGroups) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32(32, uint32(e))
+	err := io.WriteUint32("ReservedIndexGroups", 32, uint32(e))
 	return err
 }
 

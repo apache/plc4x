@@ -106,14 +106,14 @@ func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (numChannels)
 	numChannels := uint8(m.NumChannels)
-	_numChannelsErr := io.WriteUint8(3, (numChannels))
+	_numChannelsErr := io.WriteUint8("numChannels", 3, (numChannels))
 	if _numChannelsErr != nil {
 		return errors.Wrap(_numChannelsErr, "Error serializing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
 	channelCode := uint16(m.ChannelCode)
-	_channelCodeErr := io.WriteUint16(13, (channelCode))
+	_channelCodeErr := io.WriteUint16("channelCode", 13, (channelCode))
 	if _channelCodeErr != nil {
 		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}

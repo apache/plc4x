@@ -243,35 +243,35 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.Index)
-		_indexErr := io.WriteUint8(8, (index))
+		_indexErr := io.WriteUint8("index", 8, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
 		// Simple Field (writeEnabled)
 		writeEnabled := bool(m.WriteEnabled)
-		_writeEnabledErr := io.WriteBit((writeEnabled))
+		_writeEnabledErr := io.WriteBit("writeEnabled", (writeEnabled))
 		if _writeEnabledErr != nil {
 			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(1, uint8(0x0))
+			_err := io.WriteUint8("reserved", 1, uint8(0x0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -285,7 +285,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x0))
+			_err := io.WriteUint8("reserved", 4, uint8(0x0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -293,7 +293,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 
 		// Simple Field (maxNrOfElements)
 		maxNrOfElements := uint16(m.MaxNrOfElements)
-		_maxNrOfElementsErr := io.WriteUint16(12, (maxNrOfElements))
+		_maxNrOfElementsErr := io.WriteUint16("maxNrOfElements", 12, (maxNrOfElements))
 		if _maxNrOfElementsErr != nil {
 			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
 		}

@@ -158,14 +158,14 @@ func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
-		_adsStateErr := io.WriteUint16(16, (adsState))
+		_adsStateErr := io.WriteUint16("adsState", 16, (adsState))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
-		_deviceStateErr := io.WriteUint16(16, (deviceState))
+		_deviceStateErr := io.WriteUint16("deviceState", 16, (deviceState))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}

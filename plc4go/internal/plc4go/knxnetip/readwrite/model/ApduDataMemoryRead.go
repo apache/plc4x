@@ -136,14 +136,14 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (numBytes)
 		numBytes := uint8(m.NumBytes)
-		_numBytesErr := io.WriteUint8(6, (numBytes))
+		_numBytesErr := io.WriteUint8("numBytes", 6, (numBytes))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

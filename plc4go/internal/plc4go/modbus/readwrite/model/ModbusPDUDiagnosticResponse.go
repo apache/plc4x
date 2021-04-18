@@ -144,14 +144,14 @@ func (m *ModbusPDUDiagnosticResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.SubFunction)
-		_subFunctionErr := io.WriteUint16(16, (subFunction))
+		_subFunctionErr := io.WriteUint16("subFunction", 16, (subFunction))
 		if _subFunctionErr != nil {
 			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.Data)
-		_dataErr := io.WriteUint16(16, (data))
+		_dataErr := io.WriteUint16("data", 16, (data))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}

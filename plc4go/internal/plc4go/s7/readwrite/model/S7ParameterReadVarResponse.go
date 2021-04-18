@@ -128,7 +128,7 @@ func (m *S7ParameterReadVarResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (numItems)
 		numItems := uint8(m.NumItems)
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
