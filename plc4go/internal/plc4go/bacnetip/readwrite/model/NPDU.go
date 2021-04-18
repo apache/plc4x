@@ -743,8 +743,14 @@ func (m NPDU) Box(name string, width int) utils.AsciiBox {
 	}
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
-		// Simple array base type
+		// Simple array base type uint8 will be hex dumped
 		boxes = append(boxes, utils.BoxedDumpAnything("DestinationAddress", m.DestinationAddress))
+		// Simple array base type uint8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.DestinationAddress {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("DestinationAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
 	var sourceNetworkAddress *uint16 = nil
@@ -762,8 +768,14 @@ func (m NPDU) Box(name string, width int) utils.AsciiBox {
 	}
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
-		// Simple array base type
+		// Simple array base type uint8 will be hex dumped
 		boxes = append(boxes, utils.BoxedDumpAnything("SourceAddress", m.SourceAddress))
+		// Simple array base type uint8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.SourceAddress {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("SourceAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	// Optional Field (hopCount) (Can be skipped, if the value is null)
 	var hopCount *uint8 = nil

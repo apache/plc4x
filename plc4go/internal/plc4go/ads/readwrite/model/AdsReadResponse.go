@@ -248,8 +248,7 @@ func (m AdsReadResponse) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6418e39e
+		// Complex field (case complex)
 		boxes = append(boxes, m.Result.Box("result", width-2))
 		// Implicit Field (length)
 		length := uint32(uint32(len(m.Data)))
@@ -257,8 +256,12 @@ func (m AdsReadResponse) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("Length", length, -1))
 		// Array Field (data)
 		if m.Data != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

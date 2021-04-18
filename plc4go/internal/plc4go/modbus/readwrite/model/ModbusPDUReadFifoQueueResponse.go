@@ -243,8 +243,12 @@ func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiB
 		boxes = append(boxes, utils.BoxAnything("FifoCount", fifoCount, -1))
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("FifoValue", m.FifoValue))
+			// Simple array base type uint16 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.FifoValue {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("FifoValue", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

@@ -503,8 +503,7 @@ func (m APDUConfirmedRequest) Box(name string, width int) utils.AsciiBox {
 			// uint8 can be boxed as anything with the least amount of space
 			boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", *(proposedWindowSize), -1))
 		}
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@39449465
+		// Complex field (case complex)
 		boxes = append(boxes, m.ServiceRequest.Box("serviceRequest", width-2))
 		return boxes
 	}

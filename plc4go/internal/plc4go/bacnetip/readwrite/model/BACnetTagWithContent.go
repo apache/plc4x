@@ -429,13 +429,18 @@ func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 	}
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
-		// Simple array base type
+		// Simple array base type uint8 will be hex dumped
 		boxes = append(boxes, utils.BoxedDumpAnything("PropertyIdentifier", m.PropertyIdentifier))
+		// Simple array base type uint8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.PropertyIdentifier {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("PropertyIdentifier", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	// Const Field (openTag)
 	boxes = append(boxes, utils.BoxAnything("OpenTag", 0x2e, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@16e1219f
+	// Complex field (case complex)
 	boxes = append(boxes, m.Value.Box("value", width-2))
 	// Const Field (closingTag)
 	boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x2f, -1))

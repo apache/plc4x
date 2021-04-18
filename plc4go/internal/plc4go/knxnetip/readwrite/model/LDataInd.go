@@ -283,8 +283,7 @@ func (m LDataInd) Box(name string, width int) utils.AsciiBox {
 			}
 			boxes = append(boxes, utils.BoxBox("AdditionalInformation", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@29c59b6e
+		// Complex field (case complex)
 		boxes = append(boxes, m.DataFrame.Box("dataFrame", width-2))
 		return boxes
 	}

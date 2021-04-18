@@ -434,8 +434,12 @@ func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.As
 		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, -1))
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.MaximumApduLengthAccepted {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("MaximumApduLengthAccepted", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (segmentationSupportedHeader)
 		boxes = append(boxes, utils.BoxAnything("SegmentationSupportedHeader", 0x91, -1))

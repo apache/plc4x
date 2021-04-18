@@ -356,11 +356,9 @@ func (m GroupObjectDescriptorRealisationTypeB) Box(name string, width int) utils
 	// Simple field (case simple)
 	// bool can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@77a2688d
+	// Complex field (case complex)
 	boxes = append(boxes, m.Priority.Box("priority", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@77c692b4
+	// Complex field (case complex)
 	boxes = append(boxes, m.ValueType.Box("valueType", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -231,8 +231,12 @@ func (m ModbusPDUReadHoldingRegistersResponse) Box(name string, width int) utils
 		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
 		// Array Field (value)
 		if m.Value != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("Value", m.Value))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Value {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Value", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

@@ -410,8 +410,7 @@ func (m APDUComplexAck) Box(name string, width int) utils.AsciiBox {
 			// uint8 can be boxed as anything with the least amount of space
 			boxes = append(boxes, utils.BoxAnything("ProposedWindowSize", *(proposedWindowSize), -1))
 		}
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7f22687e
+		// Complex field (case complex)
 		boxes = append(boxes, m.ServiceAck.Box("serviceAck", width-2))
 		return boxes
 	}

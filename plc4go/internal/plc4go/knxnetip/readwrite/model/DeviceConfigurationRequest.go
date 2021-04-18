@@ -210,11 +210,9 @@ func (m DeviceConfigurationRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@60f662bd
+		// Complex field (case complex)
 		boxes = append(boxes, m.DeviceConfigurationRequestDataBlock.Box("deviceConfigurationRequestDataBlock", width-2))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5df2023c
+		// Complex field (case complex)
 		boxes = append(boxes, m.Cemi.Box("cemi", width-2))
 		return boxes
 	}

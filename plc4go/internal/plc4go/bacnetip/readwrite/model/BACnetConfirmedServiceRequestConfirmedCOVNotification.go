@@ -563,8 +563,12 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, 
 		boxes = append(boxes, utils.BoxAnything("LifetimeLength", m.LifetimeLength, -1))
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("LifetimeSeconds", m.LifetimeSeconds))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.LifetimeSeconds {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("LifetimeSeconds", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (listOfValuesOpeningTag)
 		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", 0x4E, -1))

@@ -351,8 +351,12 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name stri
 		boxes = append(boxes, utils.BoxAnything("ListOfValuesOpeningTag", 0x2E, -1))
 		// Array Field (values)
 		if m.Values != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("Values", m.Values))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Values {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Values", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (listOfValuesClosingTag)
 		boxes = append(boxes, utils.BoxAnything("ListOfValuesClosingTag", 0x2F, -1))

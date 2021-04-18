@@ -180,8 +180,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int)
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@23bd047f
+		// Complex field (case complex)
 		boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
 		return boxes
 	}

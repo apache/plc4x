@@ -212,8 +212,7 @@ func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.Asci
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5eb5da12
+		// Complex field (case complex)
 		boxes = append(boxes, m.Result.Box("result", width-2))
 		// Simple field (case simple)
 		// uint32 can be boxed as anything with the least amount of space

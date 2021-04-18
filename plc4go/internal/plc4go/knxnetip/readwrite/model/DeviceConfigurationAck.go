@@ -180,8 +180,7 @@ func (m DeviceConfigurationAck) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5f3f3d00
+		// Complex field (case complex)
 		boxes = append(boxes, m.DeviceConfigurationAckDataBlock.Box("deviceConfigurationAckDataBlock", width-2))
 		return boxes
 	}

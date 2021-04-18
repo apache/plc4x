@@ -286,8 +286,12 @@ func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
 	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, -1))
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
-		// Simple array base type
-		boxes = append(boxes, utils.BoxedDumpAnything("Mlfb", m.Mlfb))
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Mlfb {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Mlfb", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	// Simple field (case simple)
 	// uint16 can be boxed as anything with the least amount of space

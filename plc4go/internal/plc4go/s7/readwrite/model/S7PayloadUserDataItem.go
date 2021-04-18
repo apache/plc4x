@@ -368,8 +368,7 @@ func (m *S7PayloadUserDataItem) BoxParent(name string, width int, childBoxer fun
 	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
 	// uint16 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5cb6abc8
+	// Complex field (case complex)
 	boxes = append(boxes, m.SzlId.Box("szlId", width-2))
 	// Simple field (case simple)
 	// uint16 can be boxed as anything with the least amount of space

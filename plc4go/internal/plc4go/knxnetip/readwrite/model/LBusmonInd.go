@@ -329,8 +329,7 @@ func (m LBusmonInd) Box(name string, width int) utils.AsciiBox {
 			}
 			boxes = append(boxes, utils.BoxBox("AdditionalInformation", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@70f85235
+		// Complex field (case complex)
 		boxes = append(boxes, m.DataFrame.Box("dataFrame", width-2))
 		// Optional Field (crc) (Can be skipped, if the value is null)
 		var crc *uint8 = nil

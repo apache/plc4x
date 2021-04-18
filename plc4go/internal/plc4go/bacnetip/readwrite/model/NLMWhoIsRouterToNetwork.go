@@ -196,8 +196,12 @@ func (m NLMWhoIsRouterToNetwork) Box(name string, width int) utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("DestinationNetworkAddress", m.DestinationNetworkAddress))
+			// Simple array base type uint16 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DestinationNetworkAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DestinationNetworkAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

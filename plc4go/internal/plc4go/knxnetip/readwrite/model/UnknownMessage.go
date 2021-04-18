@@ -202,8 +202,12 @@ func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("UnknownData", m.UnknownData))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.UnknownData {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("UnknownData", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

@@ -406,17 +406,13 @@ func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
 	// Simple field (case simple)
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("LogicalTagBase", m.LogicalTagBase, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4f402027
+	// Complex field (case complex)
 	boxes = append(boxes, m.ChannelInfo1.Box("channelInfo1", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@22aee519
+	// Complex field (case complex)
 	boxes = append(boxes, m.ChannelInfo2.Box("channelInfo2", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7c226095
+	// Complex field (case complex)
 	boxes = append(boxes, m.ChannelInfo3.Box("channelInfo3", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7ea07516
+	// Complex field (case complex)
 	boxes = append(boxes, m.ChannelInfo4.Box("channelInfo4", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

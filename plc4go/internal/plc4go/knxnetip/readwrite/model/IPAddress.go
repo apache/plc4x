@@ -179,8 +179,12 @@ func (m IPAddress) Box(name string, width int) utils.AsciiBox {
 	boxes := make([]utils.AsciiBox, 0)
 	// Array Field (addr)
 	if m.Addr != nil {
-		// Simple array base type
-		boxes = append(boxes, utils.BoxedDumpAnything("Addr", m.Addr))
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Addr {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Addr", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

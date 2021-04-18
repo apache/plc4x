@@ -440,8 +440,7 @@ func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) util
 		// Reserved Field (reserved)
 		// reserved field can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x0), -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@606b53a3
+		// Complex field (case complex)
 		boxes = append(boxes, m.PropertyDataType.Box("propertyDataType", width-2))
 		// Reserved Field (reserved)
 		// reserved field can be boxed as anything with the least amount of space
@@ -449,11 +448,9 @@ func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) util
 		// Simple field (case simple)
 		// uint16 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("MaxNrOfElements", m.MaxNrOfElements, -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@432c0f1
+		// Complex field (case complex)
 		boxes = append(boxes, m.ReadLevel.Box("readLevel", width-2))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@37bda983
+		// Complex field (case complex)
 		boxes = append(boxes, m.WriteLevel.Box("writeLevel", width-2))
 		return boxes
 	}

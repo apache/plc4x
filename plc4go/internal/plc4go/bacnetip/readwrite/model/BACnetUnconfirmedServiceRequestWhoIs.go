@@ -349,8 +349,12 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Box(name string, width int) utils.
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitLength", m.DeviceInstanceRangeLowLimitLength, -1))
 		// Array Field (deviceInstanceRangeLowLimit)
 		if m.DeviceInstanceRangeLowLimit != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("DeviceInstanceRangeLowLimit", m.DeviceInstanceRangeLowLimit))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DeviceInstanceRangeLowLimit {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DeviceInstanceRangeLowLimit", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (deviceInstanceRangeHighLimitHeader)
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitHeader", 0x03, -1))
@@ -359,8 +363,12 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Box(name string, width int) utils.
 		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitLength", m.DeviceInstanceRangeHighLimitLength, -1))
 		// Array Field (deviceInstanceRangeHighLimit)
 		if m.DeviceInstanceRangeHighLimit != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("DeviceInstanceRangeHighLimit", m.DeviceInstanceRangeHighLimit))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DeviceInstanceRangeHighLimit {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DeviceInstanceRangeHighLimit", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

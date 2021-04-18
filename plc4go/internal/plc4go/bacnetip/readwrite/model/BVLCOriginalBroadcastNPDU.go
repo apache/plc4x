@@ -180,8 +180,7 @@ func (m BVLCOriginalBroadcastNPDU) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@54ccb3
+		// Complex field (case complex)
 		boxes = append(boxes, m.Npdu.Box("npdu", width-2))
 		return boxes
 	}

@@ -376,20 +376,22 @@ func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5bb97fe7
+		// Complex field (case complex)
 		boxes = append(boxes, m.SourceAddress.Box("sourceAddress", width-2))
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("DestinationAddress", m.DestinationAddress))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DestinationAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DestinationAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Implicit Field (dataLength)
 		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@10b87ff6
+		// Complex field (case complex)
 		boxes = append(boxes, m.Apdu.Box("apdu", width-2))
 		return boxes
 	}

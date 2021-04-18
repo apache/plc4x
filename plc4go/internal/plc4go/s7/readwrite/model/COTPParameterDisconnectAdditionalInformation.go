@@ -193,8 +193,14 @@ func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int
 		boxes := make([]utils.AsciiBox, 0)
 		// Array Field (data)
 		if m.Data != nil {
-			// Simple array base type
+			// Simple array base type uint8 will be hex dumped
 			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+			// Simple array base type uint8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

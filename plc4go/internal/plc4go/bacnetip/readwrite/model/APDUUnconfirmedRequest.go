@@ -212,8 +212,7 @@ func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
 		// Reserved Field (reserved)
 		// reserved field can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4ee8051c
+		// Complex field (case complex)
 		boxes = append(boxes, m.ServiceRequest.Box("serviceRequest", width-2))
 		return boxes
 	}

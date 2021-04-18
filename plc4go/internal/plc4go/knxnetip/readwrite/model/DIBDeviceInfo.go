@@ -420,33 +420,35 @@ func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
 	// Simple field (case simple)
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@5597ca3
+	// Complex field (case complex)
 	boxes = append(boxes, m.KnxMedium.Box("knxMedium", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@31b741e2
+	// Complex field (case complex)
 	boxes = append(boxes, m.DeviceStatus.Box("deviceStatus", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@573a078
+	// Complex field (case complex)
 	boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@28f05b0c
+	// Complex field (case complex)
 	boxes = append(boxes, m.ProjectInstallationIdentifier.Box("projectInstallationIdentifier", width-2))
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
-		// Simple array base type
-		boxes = append(boxes, utils.BoxedDumpAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber))
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.KnxNetIpDeviceSerialNumber {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("KnxNetIpDeviceSerialNumber", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@660296d5
+	// Complex field (case complex)
 	boxes = append(boxes, m.KnxNetIpDeviceMulticastAddress.Box("knxNetIpDeviceMulticastAddress", width-2))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6d3163a6
+	// Complex field (case complex)
 	boxes = append(boxes, m.KnxNetIpDeviceMacAddress.Box("knxNetIpDeviceMacAddress", width-2))
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
-		// Simple array base type
-		boxes = append(boxes, utils.BoxedDumpAnything("DeviceFriendlyName", m.DeviceFriendlyName))
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.DeviceFriendlyName {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("DeviceFriendlyName", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

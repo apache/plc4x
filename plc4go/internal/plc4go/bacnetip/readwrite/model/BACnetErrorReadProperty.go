@@ -349,8 +349,12 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, -1))
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("ErrorClass", m.ErrorClass))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ErrorClass {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ErrorClass", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (errorCodeHeader)
 		boxes = append(boxes, utils.BoxAnything("ErrorCodeHeader", 0x12, -1))
@@ -359,8 +363,12 @@ func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 		boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, -1))
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("ErrorCode", m.ErrorCode))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ErrorCode {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ErrorCode", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}

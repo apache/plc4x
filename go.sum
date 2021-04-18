@@ -76,6 +76,8 @@ github.com/apache/plc4x/plc4go v0.0.0-20210417192203-152caa3a9f50 h1:Pt894MpsuMp
 github.com/apache/plc4x/plc4go v0.0.0-20210417192203-152caa3a9f50/go.mod h1:NfO8uGKPGwDxn1GqOb4oNhAtPF7St1A9LRk1J/qSlWU=
 github.com/apache/plc4x/plc4go v0.0.0-20210417204159-aa6f51489015 h1:12twvBpJiybV7A3Ju+31Xpra+Qh1MQgLOzSFZO8QhZk=
 github.com/apache/plc4x/plc4go v0.0.0-20210417204159-aa6f51489015/go.mod h1:NfO8uGKPGwDxn1GqOb4oNhAtPF7St1A9LRk1J/qSlWU=
+github.com/apache/plc4x/plc4go v0.0.0-20210418001949-8353c6ca0d6e h1:4rHtG/2mdCFK7J50PoZtnhg3jP6hplFQYsUn/kStjnM=
+github.com/apache/plc4x/plc4go v0.0.0-20210418001949-8353c6ca0d6e/go.mod h1:NfO8uGKPGwDxn1GqOb4oNhAtPF7St1A9LRk1J/qSlWU=
 github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dnephin/pflag v1.0.7/go.mod h1:uxE91IoWURlOiTUIA8Mq5ZZkAv3dPUfZNaT80Zm7OQE=

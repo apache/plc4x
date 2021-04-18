@@ -210,11 +210,9 @@ func (m TunnelingRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@a357c3e
+		// Complex field (case complex)
 		boxes = append(boxes, m.TunnelingRequestDataBlock.Box("tunnelingRequestDataBlock", width-2))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@7740b0ab
+		// Complex field (case complex)
 		boxes = append(boxes, m.Cemi.Box("cemi", width-2))
 		return boxes
 	}

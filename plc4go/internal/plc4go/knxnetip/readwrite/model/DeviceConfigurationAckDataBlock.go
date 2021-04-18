@@ -236,8 +236,7 @@ func (m DeviceConfigurationAckDataBlock) Box(name string, width int) utils.Ascii
 	// Simple field (case simple)
 	// uint8 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("SequenceCounter", m.SequenceCounter, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@1282f784
+	// Complex field (case complex)
 	boxes = append(boxes, m.Status.Box("status", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

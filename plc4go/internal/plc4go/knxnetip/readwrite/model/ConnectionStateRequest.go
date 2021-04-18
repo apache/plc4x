@@ -240,8 +240,7 @@ func (m ConnectionStateRequest) Box(name string, width int) utils.AsciiBox {
 		// Reserved Field (reserved)
 		// reserved field can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4bbc21bd
+		// Complex field (case complex)
 		boxes = append(boxes, m.HpaiControlEndpoint.Box("hpaiControlEndpoint", width-2))
 		return boxes
 	}

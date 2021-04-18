@@ -207,8 +207,7 @@ func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
 	length := uint32(m.Userdata.LengthInBytes())
 	// uint32 can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
-	// Simple field (case simple)
-	// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4da1f38a
+	// Complex field (case complex)
 	boxes = append(boxes, m.Userdata.Box("userdata", width-2))
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

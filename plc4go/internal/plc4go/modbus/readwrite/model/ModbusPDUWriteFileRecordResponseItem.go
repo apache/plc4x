@@ -289,8 +289,12 @@ func (m ModbusPDUWriteFileRecordResponseItem) Box(name string, width int) utils.
 	boxes = append(boxes, utils.BoxAnything("RecordLength", recordLength, -1))
 	// Array Field (recordData)
 	if m.RecordData != nil {
-		// Simple array base type
-		boxes = append(boxes, utils.BoxedDumpAnything("RecordData", m.RecordData))
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.RecordData {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("RecordData", utils.AlignBoxes(arrayBoxes, width-4), 0))
 	}
 	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

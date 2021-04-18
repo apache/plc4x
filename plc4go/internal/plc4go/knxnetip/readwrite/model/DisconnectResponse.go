@@ -211,8 +211,7 @@ func (m DisconnectResponse) Box(name string, width int) utils.AsciiBox {
 		// Simple field (case simple)
 		// uint8 can be boxed as anything with the least amount of space
 		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@722b2728
+		// Complex field (case complex)
 		boxes = append(boxes, m.Status.Box("status", width-2))
 		return boxes
 	}

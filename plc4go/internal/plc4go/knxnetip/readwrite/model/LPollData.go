@@ -290,13 +290,16 @@ func (m LPollData) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@55e91e61
+		// Complex field (case complex)
 		boxes = append(boxes, m.SourceAddress.Box("sourceAddress", width-2))
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("TargetAddress", m.TargetAddress))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.TargetAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("TargetAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Reserved Field (reserved)
 		// reserved field can be boxed as anything with the least amount of space

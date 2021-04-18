@@ -1389,9 +1389,19 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 	if m.${arrayField.name?cap_first} != nil {
 					<#if helper.isSimpleTypeReference(arrayField.type)>
 						<#assign simpleTypeReference = arrayField.type>
-		<#--TODO: gob sends wrong data here-->
-		// Simple array base type
+						<#switch helper.getLanguageTypeNameForTypeReference(arrayField.type)>
+						<#case "uint8">
+		// Simple array base type ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} will be hex dumped
 		boxes = append(boxes, utils.BoxedDumpAnything("${arrayField.name?cap_first}", m.${arrayField.name?cap_first}))
+						<#default>
+		// Simple array base type ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.${arrayField.name?cap_first} {
+							<#assign complexTypeReference = arrayField.type>
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("${arrayField.name?cap_first}", utils.AlignBoxes(arrayBoxes, width-4), 0))
+						</#switch>
 					<#else>
 		// Complex array base type
 		arrayBoxes := make([]utils.AsciiBox, 0)
@@ -1504,14 +1514,14 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 				<#break>
 				<#case "simple">
 					<#assign simpleField = field>
-	// Simple field (case simple)
 						<#if helper.isSimpleTypeReference(simpleField.type)>
 							<#assign simpleTypeReference = simpleField.type>
+	// Simple field (case simple)
 	// ${helper.getLanguageTypeNameForField(field)} can be boxed as anything with the least amount of space
 	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, -1))
 						<#else>
 							<#assign complexTypeReference = simpleField.type>
-	// TODO  waaaa ${complexTypeReference}
+	// Complex field (case complex)
 	boxes = append(boxes, m.${simpleField.name?cap_first}.Box("${simpleField.name}", width-2))
 						</#if>
 					<#break>

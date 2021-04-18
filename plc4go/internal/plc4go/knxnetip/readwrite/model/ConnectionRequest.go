@@ -237,14 +237,11 @@ func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@3d6778d5
+		// Complex field (case complex)
 		boxes = append(boxes, m.HpaiDiscoveryEndpoint.Box("hpaiDiscoveryEndpoint", width-2))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@a84338a
+		// Complex field (case complex)
 		boxes = append(boxes, m.HpaiDataEndpoint.Box("hpaiDataEndpoint", width-2))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4070ace9
+		// Complex field (case complex)
 		boxes = append(boxes, m.ConnectionRequestInformation.Box("connectionRequestInformation", width-2))
 		return boxes
 	}

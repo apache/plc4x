@@ -184,8 +184,7 @@ func (m AdsDeleteDeviceNotificationResponse) Box(name string, width int) utils.A
 	}
 	childBoxer := func() []utils.AsciiBox {
 		boxes := make([]utils.AsciiBox, 0)
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@4aa31ffc
+		// Complex field (case complex)
 		boxes = append(boxes, m.Result.Box("result", width-2))
 		return boxes
 	}

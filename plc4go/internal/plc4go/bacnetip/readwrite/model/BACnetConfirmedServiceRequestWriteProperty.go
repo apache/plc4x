@@ -451,13 +451,16 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Box(name string, width int) 
 		boxes = append(boxes, utils.BoxAnything("PropertyIdentifierLength", m.PropertyIdentifierLength, -1))
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("PropertyIdentifier", m.PropertyIdentifier))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.PropertyIdentifier {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("PropertyIdentifier", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		// Const Field (openingTag)
 		boxes = append(boxes, utils.BoxAnything("OpeningTag", 0x3E, -1))
-		// Simple field (case simple)
-		// TODO  waaaa org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference@6321a5aa
+		// Complex field (case complex)
 		boxes = append(boxes, m.Value.Box("value", width-2))
 		// Const Field (closingTag)
 		boxes = append(boxes, utils.BoxAnything("ClosingTag", 0x3F, -1))

@@ -384,8 +384,12 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils
 		boxes = append(boxes, utils.BoxAnything("ObjectNameCharacterSet", m.ObjectNameCharacterSet, -1))
 		// Array Field (objectName)
 		if m.ObjectName != nil {
-			// Simple array base type
-			boxes = append(boxes, utils.BoxedDumpAnything("ObjectName", m.ObjectName))
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ObjectName {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ObjectName", utils.AlignBoxes(arrayBoxes, width-4), 0))
 		}
 		return boxes
 	}
