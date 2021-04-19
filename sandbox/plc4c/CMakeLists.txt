@@ -43,7 +43,7 @@ elseif (BUILD_PHASE STREQUAL test-compile)
     include(CTest)
 
     # Make the Unity sources available to the build as "Unity" library
-    add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
+    #add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
 
     #add_library(Unity STATIC
     #  target/dependency/Unity-${UNITY_VERSION}/src/unity.c
