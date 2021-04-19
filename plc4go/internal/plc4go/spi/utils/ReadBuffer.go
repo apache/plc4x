@@ -24,12 +24,8 @@ import (
 )
 
 type ReadBuffer interface {
-	Reset()
 	GetPos() uint16
-	GetBytes() []uint8
-	GetTotalBytes() uint64
 	HasMore(bitLength uint8) bool
-	PeekByte(offset uint8) uint8
 	PullContext(logicalName string, readerArgs ...WithReaderArgs) error
 	ReadBit(logicalName string, readerArgs ...WithReaderArgs) (bool, error)
 	ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error)
@@ -42,7 +38,7 @@ type ReadBuffer interface {
 	ReadInt64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error)
 	ReadBigInt(logicalName string, bitLength uint64, readerArgs ...WithReaderArgs) (*big.Int, error)
 	ReadFloat32(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float32, error)
-	ReadFloat64(logicalName string, _ bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float64, error)
+	ReadFloat64(logicalName string, singed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float64, error)
 	ReadBigFloat(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error)
 	ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error)
 	CloseContext(logicalName string, readerArgs ...WithReaderArgs) error

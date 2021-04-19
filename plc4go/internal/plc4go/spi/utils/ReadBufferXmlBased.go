@@ -51,28 +51,12 @@ type xmlReadBuffer struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (x *xmlReadBuffer) Reset() {
-	panic("implement me")
-}
-
 func (x *xmlReadBuffer) GetPos() uint16 {
 	return uint16(x.pos / 8)
 }
 
-func (x *xmlReadBuffer) GetBytes() []uint8 {
-	panic("implement me")
-}
-
-func (x *xmlReadBuffer) GetTotalBytes() uint64 {
-	panic("implement me")
-}
-
 func (x *xmlReadBuffer) HasMore(bitLength uint8) bool {
 	return true
-}
-
-func (x *xmlReadBuffer) PeekByte(offset uint8) uint8 {
-	panic("implement me")
 }
 
 func (x *xmlReadBuffer) PullContext(logicalName string, readerArgs ...WithReaderArgs) error {

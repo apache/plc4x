@@ -28,7 +28,15 @@ import (
 	"math/big"
 )
 
-func NewReadBuffer(data []uint8) ReadBuffer {
+type ReadBufferByteBased interface {
+	ReadBuffer
+	Reset()
+	GetBytes() []uint8
+	GetTotalBytes() uint64
+	PeekByte(offset uint8) uint8
+}
+
+func NewReadBuffer(data []uint8) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{
@@ -39,7 +47,7 @@ func NewReadBuffer(data []uint8) ReadBuffer {
 	}
 }
 
-func NewLittleEndianReadBuffer(data []uint8) ReadBuffer {
+func NewLittleEndianReadBuffer(data []uint8) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{
