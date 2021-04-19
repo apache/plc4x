@@ -73,11 +73,11 @@ type writeBuffer struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (rb *writeBuffer) PushContext(_ string, writerArgs ...WithWriterArgs) error {
+func (rb *writeBuffer) PushContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 
-func (rb *writeBuffer) PopContext(_ string, writerArgs ...WithWriterArgs) error {
+func (rb *writeBuffer) PopContext(_ string, _ ...WithWriterArgs) error {
 	return nil
 }
 

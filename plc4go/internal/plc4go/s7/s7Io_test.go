@@ -42,6 +42,7 @@ func TestS7MessageBytes(t *testing.T) {
 		args                 args
 		wantString           string
 		wantStringSerialized string
+		wantStringXml        string
 		wantDump             string
 	}{
 		{
@@ -150,6 +151,63 @@ func TestS7MessageBytes(t *testing.T) {
 ║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
 ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
+			wantStringXml: `
+<TPKTPacket>
+  <protocolId dataType="uint8" bitLength="8">3</protocolId>
+  <reserved dataType="uint8" bitLength="8">0</reserved>
+  <len dataType="uint16" bitLength="16">29</len>
+  <COTPPacket>
+    <headerLength dataType="uint8" bitLength="8">5</headerLength>
+    <tpduCode dataType="uint8" bitLength="8">240</tpduCode>
+    <COTPPacketData>
+      <eot dataType="bit" bitLength="1">false</eot>
+      <tpduRef dataType="uint8" bitLength="7">13</tpduRef>
+    </COTPPacketData>
+    <parameters>
+      <COTPParameter>
+        <parameterType dataType="uint8" bitLength="8">192</parameterType>
+        <parameterLength dataType="uint8" bitLength="8">1</parameterLength>
+        <COTPParameterTpduSize>
+          <COTPTpduSize dataType="int8" bitLength="8" stringRepresentation="SIZE_4096">12</COTPTpduSize>
+        </COTPParameterTpduSize>
+      </COTPParameter>
+    </parameters>
+    <S7Message>
+      <protocolId dataType="uint8" bitLength="8">50</protocolId>
+      <messageType dataType="uint8" bitLength="8">3</messageType>
+      <reserved dataType="uint16" bitLength="16">0</reserved>
+      <tpduReference dataType="uint16" bitLength="16">11</tpduReference>
+      <parameterLength dataType="uint16" bitLength="16">2</parameterLength>
+      <payloadLength dataType="uint16" bitLength="16">5</payloadLength>
+      <S7MessageResponseData>
+        <errorClass dataType="uint8" bitLength="8">0</errorClass>
+        <errorCode dataType="uint8" bitLength="8">0</errorCode>
+      </S7MessageResponseData>
+      <S7Parameter>
+        <parameterType dataType="uint8" bitLength="8">4</parameterType>
+        <S7ParameterReadVarResponse>
+          <numItems dataType="uint8" bitLength="8">4</numItems>
+        </S7ParameterReadVarResponse>
+      </S7Parameter>
+      <S7Payload>
+        <S7PayloadReadVarResponse>
+          <items>
+            <S7VarPayloadDataItem>
+              <DataTransportErrorCode dataType="uint8" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+              <DataTransportSize dataType="uint8" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
+              <dataLength dataType="uint16" bitLength="16">1</dataLength>
+              <data>
+                <value dataType="int8" bitLength="8">1</value>
+              </data>
+              <padding></padding>
+            </S7VarPayloadDataItem>
+          </items>
+        </S7PayloadReadVarResponse>
+      </S7Payload>
+    </S7Message>
+  </COTPPacket>
+</TPKTPacket>
+`,
 			wantDump: `
 00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
 10|32 03 00 00 00 0b 00 02 00 05 '2.........'
@@ -171,9 +229,16 @@ func TestS7MessageBytes(t *testing.T) {
 			if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
 				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
 			}
+			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			if err := tt.args.debuggable.Serialize(xmlWriteBuffer); err != nil {
+				t.Error(err)
+			}
+			tt.wantStringXml = strings.Trim(tt.wantStringXml, "\n")
+			if got := xmlWriteBuffer.GetXmlString(); got != tt.wantStringXml {
+				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantStringXml)
+			}
 			buffer := utils.NewWriteBuffer()
-			err := tt.args.debuggable.Serialize(buffer)
-			if err != nil {
+			if err := tt.args.debuggable.Serialize(buffer); err != nil {
 				t.Error(err)
 			}
 			tt.wantDump = strings.Trim(tt.wantDump, "\n")
