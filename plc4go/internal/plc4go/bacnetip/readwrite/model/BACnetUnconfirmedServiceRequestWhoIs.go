@@ -163,6 +163,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeLowLimit[curItem] = _item
 	}
+	io.CloseContext("deviceInstanceRangeLowLimit")
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
 	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8("deviceInstanceRangeHighLimitHeader", 5)
@@ -190,6 +191,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
 	}
+	io.CloseContext("deviceInstanceRangeHighLimit")
 
 	io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs")
 

@@ -138,6 +138,7 @@ func ModbusPDUReadHoldingRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU
 		}
 		value[curItem] = _item
 	}
+	io.CloseContext("value")
 
 	io.CloseContext("ModbusPDUReadHoldingRegistersResponse")
 

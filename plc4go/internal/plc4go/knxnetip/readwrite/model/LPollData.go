@@ -149,6 +149,7 @@ func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		targetAddress[curItem] = _item
 	}
+	io.CloseContext("targetAddress")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

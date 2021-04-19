@@ -147,6 +147,7 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		adsStampHeaders[curItem] = _item
 	}
+	io.CloseContext("adsStampHeaders")
 
 	io.CloseContext("AdsDeviceNotificationRequest")
 

@@ -98,6 +98,7 @@ func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 		}
 		addr[curItem] = _item
 	}
+	io.CloseContext("addr")
 
 	io.CloseContext("IPAddress")
 

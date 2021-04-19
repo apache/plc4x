@@ -129,6 +129,7 @@ func ApduDataExtAuthorizeRequestParse(io utils.ReadBuffer) (*ApduDataExt, error)
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataExtAuthorizeRequest")
 

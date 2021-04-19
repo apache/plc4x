@@ -121,6 +121,7 @@ func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageT
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
+	io.CloseContext("destinationNetworkAddress")
 
 	io.CloseContext("NLMIAmRouterToNetwork")
 

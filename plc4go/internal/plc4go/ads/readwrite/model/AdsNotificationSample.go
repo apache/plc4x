@@ -118,6 +118,7 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("AdsNotificationSample")
 

@@ -126,6 +126,7 @@ func BACnetTagApplicationSignedIntegerParse(io utils.ReadBuffer, lengthValueType
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("BACnetTagApplicationSignedInteger")
 

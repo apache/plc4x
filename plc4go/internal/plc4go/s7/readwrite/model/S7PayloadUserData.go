@@ -125,6 +125,7 @@ func S7PayloadUserDataParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Pay
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 
 	io.CloseContext("S7PayloadUserData")
 

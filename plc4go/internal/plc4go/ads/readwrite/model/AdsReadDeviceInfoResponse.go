@@ -168,6 +168,7 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		device[curItem] = _item
 	}
+	io.CloseContext("device")
 
 	io.CloseContext("AdsReadDeviceInfoResponse")
 

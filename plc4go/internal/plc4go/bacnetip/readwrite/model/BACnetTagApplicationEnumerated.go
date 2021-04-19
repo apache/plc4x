@@ -126,6 +126,7 @@ func BACnetTagApplicationEnumeratedParse(io utils.ReadBuffer, lengthValueType ui
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("BACnetTagApplicationEnumerated")
 

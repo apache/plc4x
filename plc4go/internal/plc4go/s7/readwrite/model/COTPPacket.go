@@ -173,6 +173,7 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 		parameters = append(parameters, _item)
 		curPos = io.GetPos() - startPos
 	}
+	io.CloseContext("parameters")
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	curPos = io.GetPos() - startPos

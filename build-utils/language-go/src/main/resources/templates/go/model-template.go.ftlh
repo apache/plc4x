@@ -542,9 +542,9 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field>
-	io.PullContext("${arrayField.name}")
 
 	// Array field (${arrayField.name})
+	io.PullContext("${arrayField.name}")
 			<#-- Only update curPos if the length expression uses it -->
 				<#if arrayField.loopExpression.contains("curPos")>
 	curPos = io.GetPos() - startPos<@emitImport import="io" />
@@ -596,9 +596,9 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 					<#if arrayField.loopExpression.contains("curPos")>
 		curPos = io.GetPos() - startPos<@emitImport import="io" />
 					</#if>
-		io.CloseContext("${arrayField.name}")
 	}
 				</#if>
+	io.CloseContext("${arrayField.name}")
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>

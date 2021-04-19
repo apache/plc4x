@@ -126,6 +126,7 @@ func S7PayloadReadVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) 
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 
 	io.CloseContext("S7PayloadReadVarResponse")
 

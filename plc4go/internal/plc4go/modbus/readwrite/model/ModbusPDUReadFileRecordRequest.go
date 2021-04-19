@@ -140,6 +140,7 @@ func ModbusPDUReadFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, error
 		}
 		items = append(items, _item)
 	}
+	io.CloseContext("items")
 
 	io.CloseContext("ModbusPDUReadFileRecordRequest")
 

@@ -137,6 +137,7 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("BACnetTagApplicationBitString")
 

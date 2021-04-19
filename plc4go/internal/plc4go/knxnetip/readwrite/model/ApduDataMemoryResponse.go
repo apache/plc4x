@@ -139,6 +139,7 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataMemoryResponse")
 

@@ -207,6 +207,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 		}
 		objectName = append(objectName, _item)
 	}
+	io.CloseContext("objectName")
 
 	io.CloseContext("BACnetUnconfirmedServiceRequestWhoHas")
 

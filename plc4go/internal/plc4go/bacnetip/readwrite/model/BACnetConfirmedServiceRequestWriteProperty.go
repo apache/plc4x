@@ -204,6 +204,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 		}
 		propertyIdentifier[curItem] = _item
 	}
+	io.CloseContext("propertyIdentifier")
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8("openingTag", 8)

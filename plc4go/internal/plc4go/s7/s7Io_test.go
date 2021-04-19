@@ -57,7 +57,7 @@ func TestS7MessageBytes(t *testing.T) {
 							0,
 							0,
 							11,
-							model.NewS7ParameterReadVarResponse(4),
+							model.NewS7ParameterReadVarResponse(1),
 							model.NewS7PayloadReadVarResponse(
 								[]*model.S7VarPayloadDataItem{
 									model.NewS7VarPayloadDataItem(
@@ -90,7 +90,7 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝╚═══════════╝╚══════════╝║║║
 ║║║╔═S7Parameter/S7ParameterReadVarResponse/parameter╗                                                              ║║║
 ║║║║           ╔═ParameterType╗╔═NumItems╗           ║                                                              ║║║
-║║║║           ║    0x04 4    ║║ 0x04 4  ║           ║                                                              ║║║
+║║║║           ║    0x04 4    ║║ 0x01 1  ║           ║                                                              ║║║
 ║║║║           ╚══════════════╝╚═════════╝           ║                                                              ║║║
 ║║║╚═════════════════════════════════════════════════╝                                                              ║║║
 ║║║╔═S7Payload/S7PayloadReadVarResponse/payload════════════════════════════════════════════════════════════════╗    ║║║
@@ -130,7 +130,7 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║╔═S7MessageResponseData═══╗╔═S7Parameter═════════════════════════════════╗              ║                    ║║
 ║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse╗║              ║                    ║║
 ║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║        ╔═numItems╗        ║║              ║                    ║║
-║║║║╚═══════════╝╚══════════╝║║╚══════════════╝║        ║ 0x04 4  ║        ║║              ║                    ║║
+║║║║╚═══════════╝╚══════════╝║║╚══════════════╝║        ║ 0x01 1  ║        ║║              ║                    ║║
 ║║║╚═════════════════════════╝║                ║        ╚═════════╝        ║║              ║                    ║║
 ║║║                           ║                ╚═══════════════════════════╝║              ║                    ║║
 ║║║                           ╚═════════════════════════════════════════════╝              ║                    ║║
@@ -186,7 +186,7 @@ func TestS7MessageBytes(t *testing.T) {
       <S7Parameter>
         <parameterType dataType="uint8" bitLength="8">4</parameterType>
         <S7ParameterReadVarResponse>
-          <numItems dataType="uint8" bitLength="8">4</numItems>
+          <numItems dataType="uint8" bitLength="8">1</numItems>
         </S7ParameterReadVarResponse>
       </S7Parameter>
       <S7Payload>
@@ -211,7 +211,7 @@ func TestS7MessageBytes(t *testing.T) {
 			wantDump: `
 00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
 10|32 03 00 00 00 0b 00 02 00 05 '2.........'
-20|00 00 04 04 ff 03 00 01 01    '......... '
+20|00 00 04 01 ff 03 00 01 01    '......... '
 `,
 		},
 	}
@@ -244,6 +244,16 @@ func TestS7MessageBytes(t *testing.T) {
 			tt.wantDump = strings.Trim(tt.wantDump, "\n")
 			if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
 				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+			}
+			// and at least a roundtip
+			reader := strings.NewReader(tt.wantStringXml)
+			readBuffer := utils.NewXmlReadBuffer(reader)
+			if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+				if err != nil {
+					t.Error(err)
+				} else {
+					t.Errorf("Roundtrip = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+				}
 			}
 		})
 	}

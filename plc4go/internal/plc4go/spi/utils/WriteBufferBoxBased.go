@@ -153,6 +153,12 @@ func (b *boxedWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, val
 	return nil
 }
 
+func (b *boxedWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
+	additionalStringRepresentation := extractAdditionalStringRepresentation(writerArgs...)
+	b.PushBack(BoxString(logicalName, fmt.Sprintf("%#0*x %f%s", bitLength/4, value, value, additionalStringRepresentation), 0))
+	return nil
+}
+
 func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint8, _ string, value string, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := extractAdditionalStringRepresentation(writerArgs...)
 	b.PushBack(BoxString(logicalName, fmt.Sprintf("%#0*x %s%s", bitLength/4, value, value, additionalStringRepresentation), 0))

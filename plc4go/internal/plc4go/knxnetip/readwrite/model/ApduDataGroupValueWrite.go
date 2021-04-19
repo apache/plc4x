@@ -131,6 +131,7 @@ func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduD
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataGroupValueWrite")
 

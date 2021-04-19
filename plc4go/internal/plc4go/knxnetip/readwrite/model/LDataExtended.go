@@ -181,6 +181,7 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
+	io.CloseContext("destinationAddress")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)

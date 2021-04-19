@@ -176,6 +176,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		}
 		propertyIdentifier = append(propertyIdentifier, _item)
 	}
+	io.CloseContext("propertyIdentifier")
 
 	// Const Field (openTag)
 	openTag, _openTagErr := io.ReadUint8("openTag", 8)

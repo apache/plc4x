@@ -120,6 +120,7 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 		}
 		mlfb[curItem] = _item
 	}
+	io.CloseContext("mlfb")
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId, _moduleTypeIdErr := io.ReadUint16("moduleTypeId", 16)

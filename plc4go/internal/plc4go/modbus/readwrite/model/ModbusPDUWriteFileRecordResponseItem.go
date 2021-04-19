@@ -140,6 +140,7 @@ func ModbusPDUWriteFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUW
 		}
 		recordData = append(recordData, _item)
 	}
+	io.CloseContext("recordData")
 
 	io.CloseContext("ModbusPDUWriteFileRecordResponseItem")
 

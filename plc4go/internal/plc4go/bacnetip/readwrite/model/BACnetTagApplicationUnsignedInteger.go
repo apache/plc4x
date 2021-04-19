@@ -126,6 +126,7 @@ func BACnetTagApplicationUnsignedIntegerParse(io utils.ReadBuffer, lengthValueTy
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("BACnetTagApplicationUnsignedInteger")
 

@@ -160,6 +160,7 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io utils.ReadBuffer) (*ModbusPDU, e
 		}
 		value[curItem] = _item
 	}
+	io.CloseContext("value")
 
 	io.CloseContext("ModbusPDUWriteMultipleCoilsRequest")
 

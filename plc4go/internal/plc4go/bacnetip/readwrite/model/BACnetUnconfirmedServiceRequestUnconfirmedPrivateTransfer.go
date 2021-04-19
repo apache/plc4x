@@ -190,6 +190,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 		}
 		values = append(values, _item)
 	}
+	io.CloseContext("values")
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)

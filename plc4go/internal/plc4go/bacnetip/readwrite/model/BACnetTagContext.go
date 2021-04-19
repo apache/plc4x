@@ -126,6 +126,7 @@ func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNum
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("BACnetTagContext")
 

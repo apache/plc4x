@@ -138,6 +138,7 @@ func ModbusPDUReportServerIdResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		value[curItem] = _item
 	}
+	io.CloseContext("value")
 
 	io.CloseContext("ModbusPDUReportServerIdResponse")
 

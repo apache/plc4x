@@ -172,6 +172,7 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		}
 		knxNetIpDeviceSerialNumber[curItem] = _item
 	}
+	io.CloseContext("knxNetIpDeviceSerialNumber")
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(io)
@@ -196,6 +197,7 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		}
 		deviceFriendlyName[curItem] = _item
 	}
+	io.CloseContext("deviceFriendlyName")
 
 	io.CloseContext("DIBDeviceInfo")
 

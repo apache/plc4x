@@ -163,6 +163,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorClass[curItem] = _item
 	}
+	io.CloseContext("errorClass")
 
 	// Const Field (errorCodeHeader)
 	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8("errorCodeHeader", 5)
@@ -190,6 +191,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorCode[curItem] = _item
 	}
+	io.CloseContext("errorCode")
 
 	io.CloseContext("BACnetErrorReadProperty")
 

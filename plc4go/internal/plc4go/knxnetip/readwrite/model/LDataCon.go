@@ -138,6 +138,7 @@ func LDataConParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
+	io.CloseContext("additionalInformation")
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)

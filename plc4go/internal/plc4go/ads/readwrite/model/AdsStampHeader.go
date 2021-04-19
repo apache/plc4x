@@ -119,6 +119,7 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
+	io.CloseContext("adsNotificationSamples")
 
 	io.CloseContext("AdsStampHeader")
 

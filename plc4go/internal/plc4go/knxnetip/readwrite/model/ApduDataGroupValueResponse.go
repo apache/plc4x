@@ -131,6 +131,7 @@ func ApduDataGroupValueResponseParse(io utils.ReadBuffer, dataLength uint8) (*Ap
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataGroupValueResponse")
 

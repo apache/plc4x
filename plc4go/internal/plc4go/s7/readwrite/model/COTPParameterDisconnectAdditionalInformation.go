@@ -118,6 +118,7 @@ func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("COTPParameterDisconnectAdditionalInformation")
 

@@ -120,6 +120,7 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 		}
 		unknownData[curItem] = _item
 	}
+	io.CloseContext("unknownData")
 
 	io.CloseContext("UnknownMessage")
 

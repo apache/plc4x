@@ -182,6 +182,7 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 		}
 		propertyIdentifier[curItem] = _item
 	}
+	io.CloseContext("propertyIdentifier")
 
 	io.CloseContext("BACnetConfirmedServiceRequestReadProperty")
 

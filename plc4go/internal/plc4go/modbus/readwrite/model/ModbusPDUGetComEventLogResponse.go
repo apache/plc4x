@@ -171,6 +171,7 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		events[curItem] = _item
 	}
+	io.CloseContext("events")
 
 	io.CloseContext("ModbusPDUGetComEventLogResponse")
 

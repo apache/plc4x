@@ -177,6 +177,7 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 	io.PullContext("data")
 
 	// Array field (data)
@@ -189,6 +190,7 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("AdsReadWriteRequest")
 

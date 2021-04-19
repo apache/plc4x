@@ -120,6 +120,7 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 		}
 		serviceIds = append(serviceIds, _item)
 	}
+	io.CloseContext("serviceIds")
 
 	io.CloseContext("DIBSuppSvcFamilies")
 

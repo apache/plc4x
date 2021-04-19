@@ -121,6 +121,7 @@ func NLMWhoIsRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messag
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
+	io.CloseContext("destinationNetworkAddress")
 
 	io.CloseContext("NLMWhoIsRouterToNetwork")
 

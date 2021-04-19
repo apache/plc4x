@@ -135,6 +135,7 @@ func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 
 	io.CloseContext("S7ParameterReadVarRequest")
 

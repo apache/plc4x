@@ -131,6 +131,7 @@ func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataDeviceDescriptorResponse")
 

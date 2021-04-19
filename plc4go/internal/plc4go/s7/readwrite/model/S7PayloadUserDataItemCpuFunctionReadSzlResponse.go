@@ -151,6 +151,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 
 	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 

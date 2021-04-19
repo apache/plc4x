@@ -156,6 +156,7 @@ func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("AdsWriteControlRequest")
 

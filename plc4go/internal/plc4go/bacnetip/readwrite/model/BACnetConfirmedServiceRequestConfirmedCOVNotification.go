@@ -258,6 +258,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		lifetimeSeconds[curItem] = _item
 	}
+	io.CloseContext("lifetimeSeconds")
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8("listOfValuesOpeningTag", 8)
@@ -281,6 +282,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		notifications = append(notifications, _item)
 	}
+	io.CloseContext("notifications")
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)

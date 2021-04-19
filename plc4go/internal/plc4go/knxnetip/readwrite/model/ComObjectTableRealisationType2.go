@@ -143,6 +143,7 @@ func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, 
 		}
 		comObjectDescriptors[curItem] = _item
 	}
+	io.CloseContext("comObjectDescriptors")
 
 	io.CloseContext("ComObjectTableRealisationType2")
 

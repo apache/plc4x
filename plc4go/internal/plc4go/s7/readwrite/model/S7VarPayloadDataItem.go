@@ -135,6 +135,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	// Padding Field (padding)
 	{

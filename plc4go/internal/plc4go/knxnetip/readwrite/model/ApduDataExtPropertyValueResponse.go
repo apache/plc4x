@@ -162,6 +162,7 @@ func ApduDataExtPropertyValueResponseParse(io utils.ReadBuffer, length uint8) (*
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataExtPropertyValueResponse")
 

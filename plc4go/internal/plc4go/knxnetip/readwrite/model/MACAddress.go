@@ -98,6 +98,7 @@ func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
 		}
 		addr[curItem] = _item
 	}
+	io.CloseContext("addr")
 
 	io.CloseContext("MACAddress")
 

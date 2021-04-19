@@ -151,6 +151,13 @@ func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value
 	})
 }
 
+func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
+	return x.EncodeElement(value, xml.StartElement{
+		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
+		Attr: generateAttr("bigFloat", bitLength, writerArgs...),
+	})
+}
+
 func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := generateAttr("string", bitLength, writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: "encoding"}, Value: encoding})

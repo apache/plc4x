@@ -182,6 +182,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer)
 		}
 		value[curItem] = _item
 	}
+	io.CloseContext("value")
 
 	io.CloseContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 

@@ -146,6 +146,7 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 		}
 		fifoValue[curItem] = _item
 	}
+	io.CloseContext("fifoValue")
 
 	io.CloseContext("ModbusPDUReadFifoQueueResponse")
 

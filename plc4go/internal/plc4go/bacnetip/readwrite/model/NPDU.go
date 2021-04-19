@@ -260,6 +260,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
+	io.CloseContext("destinationAddress")
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
@@ -292,6 +293,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		sourceAddress[curItem] = _item
 	}
+	io.CloseContext("sourceAddress")
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil

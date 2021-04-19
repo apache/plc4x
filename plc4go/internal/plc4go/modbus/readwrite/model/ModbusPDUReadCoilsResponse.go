@@ -138,6 +138,7 @@ func ModbusPDUReadCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 		}
 		value[curItem] = _item
 	}
+	io.CloseContext("value")
 
 	io.CloseContext("ModbusPDUReadCoilsResponse")
 

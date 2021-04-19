@@ -243,6 +243,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 		}
 		lifetimeSeconds[curItem] = _item
 	}
+	io.CloseContext("lifetimeSeconds")
 
 	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOV")
 

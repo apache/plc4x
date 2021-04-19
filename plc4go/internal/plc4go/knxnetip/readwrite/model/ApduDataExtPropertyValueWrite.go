@@ -162,6 +162,7 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
 
 	io.CloseContext("ApduDataExtPropertyValueWrite")
 
