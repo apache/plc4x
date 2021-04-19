@@ -97,6 +97,9 @@ func (m *MPropWriteReq) LengthInBytes() uint16 {
 }
 
 func MPropWriteReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MPropWriteReq")
+
+	io.CloseContext("MPropWriteReq")
 
 	// Create a partially initialized instance
 	_child := &MPropWriteReq{

@@ -97,6 +97,9 @@ func (m *BACnetErrorAtomicWriteFile) LengthInBytes() uint16 {
 }
 
 func BACnetErrorAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorAtomicWriteFile")
+
+	io.CloseContext("BACnetErrorAtomicWriteFile")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorAtomicWriteFile{

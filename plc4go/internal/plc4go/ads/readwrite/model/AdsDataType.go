@@ -656,7 +656,7 @@ func (m AdsDataType) LengthInBytes() uint16 {
 }
 
 func AdsDataTypeParse(io utils.ReadBuffer) (AdsDataType, error) {
-	val, err := io.ReadInt8(8)
+	val, err := io.ReadInt8("AdsDataType", 8)
 	if err != nil {
 		return 0, nil
 	}

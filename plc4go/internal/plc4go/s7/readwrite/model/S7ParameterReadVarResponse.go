@@ -107,12 +107,15 @@ func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
 }
 
 func S7ParameterReadVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	io.PullContext("S7ParameterReadVarResponse")
 
 	// Simple Field (numItems)
-	numItems, _numItemsErr := io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
+
+	io.CloseContext("S7ParameterReadVarResponse")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterReadVarResponse{

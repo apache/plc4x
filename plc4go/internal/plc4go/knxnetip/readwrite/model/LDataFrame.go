@@ -123,27 +123,28 @@ func (m *LDataFrame) LengthInBytes() uint16 {
 }
 
 func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	io.PullContext("LDataFrame")
 
 	// Simple Field (frameType)
-	frameType, _frameTypeErr := io.ReadBit()
+	frameType, _frameTypeErr := io.ReadBit("frameType")
 	if _frameTypeErr != nil {
 		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field")
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling, _pollingErr := io.ReadBit()
+	polling, _pollingErr := io.ReadBit("polling")
 	if _pollingErr != nil {
 		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field")
 	}
 
 	// Simple Field (notRepeated)
-	notRepeated, _notRepeatedErr := io.ReadBit()
+	notRepeated, _notRepeatedErr := io.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
 		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field")
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame, _notAckFrameErr := io.ReadBit()
+	notAckFrame, _notAckFrameErr := io.ReadBit("notAckFrame")
 	if _notAckFrameErr != nil {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
@@ -155,13 +156,13 @@ func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit()
+	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
 		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field")
 	}
 
 	// Simple Field (errorFlag)
-	errorFlag, _errorFlagErr := io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
@@ -183,6 +184,8 @@ func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("LDataFrame")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, frameType, notRepeated, priority, acknowledgeRequested, errorFlag)

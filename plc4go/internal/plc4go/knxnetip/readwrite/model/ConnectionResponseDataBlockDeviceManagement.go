@@ -97,6 +97,9 @@ func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+	io.PullContext("ConnectionResponseDataBlockDeviceManagement")
+
+	io.CloseContext("ConnectionResponseDataBlockDeviceManagement")
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockDeviceManagement{

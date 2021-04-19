@@ -97,6 +97,9 @@ func (m *BVLCWideBroadcastDistributionTable) LengthInBytes() uint16 {
 }
 
 func BVLCWideBroadcastDistributionTableParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCWideBroadcastDistributionTable")
+
+	io.CloseContext("BVLCWideBroadcastDistributionTable")
 
 	// Create a partially initialized instance
 	_child := &BVLCWideBroadcastDistributionTable{

@@ -107,10 +107,11 @@ func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
 }
 
 func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+	io.PullContext("APDUUnconfirmedRequest")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -127,6 +128,8 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+
+	io.CloseContext("APDUUnconfirmedRequest")
 
 	// Create a partially initialized instance
 	_child := &APDUUnconfirmedRequest{

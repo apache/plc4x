@@ -109,39 +109,40 @@ func (m *GroupObjectDescriptorRealisationTypeB) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationTypeB, error) {
+	io.PullContext("GroupObjectDescriptorRealisationTypeB")
 
 	// Simple Field (updateEnable)
-	updateEnable, _updateEnableErr := io.ReadBit()
+	updateEnable, _updateEnableErr := io.ReadBit("updateEnable")
 	if _updateEnableErr != nil {
 		return nil, errors.Wrap(_updateEnableErr, "Error parsing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
-	transmitEnable, _transmitEnableErr := io.ReadBit()
+	transmitEnable, _transmitEnableErr := io.ReadBit("transmitEnable")
 	if _transmitEnableErr != nil {
 		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
-	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit()
+	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit("segmentSelectorEnable")
 	if _segmentSelectorEnableErr != nil {
 		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
-	writeEnable, _writeEnableErr := io.ReadBit()
+	writeEnable, _writeEnableErr := io.ReadBit("writeEnable")
 	if _writeEnableErr != nil {
 		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
-	readEnable, _readEnableErr := io.ReadBit()
+	readEnable, _readEnableErr := io.ReadBit("readEnable")
 	if _readEnableErr != nil {
 		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
-	communicationEnable, _communicationEnableErr := io.ReadBit()
+	communicationEnable, _communicationEnableErr := io.ReadBit("communicationEnable")
 	if _communicationEnableErr != nil {
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
@@ -157,6 +158,8 @@ func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObje
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
+
+	io.CloseContext("GroupObjectDescriptorRealisationTypeB")
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationTypeB(updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil

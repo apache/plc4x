@@ -104,15 +104,16 @@ func (m *ModbusPDU) LengthInBytes() uint16 {
 }
 
 func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDU")
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag, _errorFlagErr := io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag, _functionFlagErr := io.ReadUint8(7)
+	functionFlag, _functionFlagErr := io.ReadUint8("functionFlag", 7)
 	if _functionFlagErr != nil {
 		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field")
 	}
@@ -206,6 +207,8 @@ func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ModbusPDU")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

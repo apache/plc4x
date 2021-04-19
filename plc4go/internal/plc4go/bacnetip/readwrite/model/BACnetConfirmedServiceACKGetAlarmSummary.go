@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKGetAlarmSummary")
+
+	io.CloseContext("BACnetConfirmedServiceACKGetAlarmSummary")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetAlarmSummary{

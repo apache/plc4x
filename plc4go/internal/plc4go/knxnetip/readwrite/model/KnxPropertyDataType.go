@@ -1006,7 +1006,7 @@ func (m KnxPropertyDataType) LengthInBytes() uint16 {
 }
 
 func KnxPropertyDataTypeParse(io utils.ReadBuffer) (KnxPropertyDataType, error) {
-	val, err := io.ReadUint8(8)
+	val, err := io.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
 		return 0, nil
 	}

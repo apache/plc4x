@@ -145,34 +145,35 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtPropertyDescriptionResponse")
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint8(8)
+	index, _indexErr := io.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 
 	// Simple Field (writeEnabled)
-	writeEnabled, _writeEnabledErr := io.ReadBit()
+	writeEnabled, _writeEnabledErr := io.ReadBit("writeEnabled")
 	if _writeEnabledErr != nil {
 		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(1)
+		reserved, _err := io.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -192,7 +193,7 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -205,7 +206,7 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 	}
 
 	// Simple Field (maxNrOfElements)
-	maxNrOfElements, _maxNrOfElementsErr := io.ReadUint16(12)
+	maxNrOfElements, _maxNrOfElementsErr := io.ReadUint16("maxNrOfElements", 12)
 	if _maxNrOfElementsErr != nil {
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
@@ -221,6 +222,8 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
+
+	io.CloseContext("ApduDataExtPropertyDescriptionResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyDescriptionResponse{

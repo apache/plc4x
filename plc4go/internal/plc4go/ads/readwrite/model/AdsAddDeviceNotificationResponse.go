@@ -112,6 +112,7 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsAddDeviceNotificationResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
@@ -120,10 +121,12 @@ func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+
+	io.CloseContext("AdsAddDeviceNotificationResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsAddDeviceNotificationResponse{

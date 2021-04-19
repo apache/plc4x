@@ -103,12 +103,15 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 }
 
 func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduDataOther")
 
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
+
+	io.CloseContext("ApduDataOther")
 
 	// Create a partially initialized instance
 	_child := &ApduDataOther{

@@ -100,9 +100,10 @@ func (m *S7ParameterUserDataItem) LengthInBytes() uint16 {
 }
 
 func S7ParameterUserDataItemParse(io utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
+	io.PullContext("S7ParameterUserDataItem")
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := io.ReadUint8(8)
+	itemType, _itemTypeErr := io.ReadUint8("itemType", 8)
 	if _itemTypeErr != nil {
 		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
 	}
@@ -120,6 +121,8 @@ func S7ParameterUserDataItemParse(io utils.ReadBuffer) (*S7ParameterUserDataItem
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7ParameterUserDataItem")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

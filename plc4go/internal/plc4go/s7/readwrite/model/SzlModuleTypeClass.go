@@ -101,7 +101,7 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 }
 
 func SzlModuleTypeClassParse(io utils.ReadBuffer) (SzlModuleTypeClass, error) {
-	val, err := io.ReadUint8(4)
+	val, err := io.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
 		return 0, nil
 	}

@@ -107,12 +107,15 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationDouble")
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadFloat64(true, 11, 52)
+	value, _valueErr := io.ReadFloat64("value", true, 11, 52)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+
+	io.CloseContext("BACnetTagApplicationDouble")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationDouble{

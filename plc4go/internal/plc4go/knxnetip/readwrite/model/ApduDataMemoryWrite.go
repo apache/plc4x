@@ -97,6 +97,9 @@ func (m *ApduDataMemoryWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryWriteParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataMemoryWrite")
+
+	io.CloseContext("ApduDataMemoryWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryWrite{

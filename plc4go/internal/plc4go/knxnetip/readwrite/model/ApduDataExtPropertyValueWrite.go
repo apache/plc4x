@@ -125,41 +125,45 @@ func (m *ApduDataExtPropertyValueWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtPropertyValueWrite")
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (count)
-	count, _countErr := io.ReadUint8(4)
+	count, _countErr := io.ReadUint8("count", 4)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint16(12)
+	index, _indexErr := io.ReadUint16("index", 12)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]uint8, uint16(length)-uint16(uint16(5)))
 	for curItem := uint16(0); curItem < uint16(uint16(length)-uint16(uint16(5))); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("ApduDataExtPropertyValueWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyValueWrite{

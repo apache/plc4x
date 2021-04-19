@@ -118,7 +118,7 @@ func (m *Subscriber) handleValueChange(destinationAddress []int8, payload []int8
 						}
 						// If the size of the field is greater than 6, we have to skip the first byte
 						if groupAddressField.GetFieldType().LengthInBits() > 6 {
-							_, _ = rb.ReadUint8(8)
+							_, _ = rb.ReadUint8("groupAddress", 8)
 						}
 						elementType := *groupAddressField.GetFieldType()
 						numElements := groupAddressField.GetQuantity()

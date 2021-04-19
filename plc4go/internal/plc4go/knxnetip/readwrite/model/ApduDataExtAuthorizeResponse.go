@@ -103,12 +103,15 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtAuthorizeResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtAuthorizeResponse")
 
 	// Simple Field (level)
-	level, _levelErr := io.ReadUint8(8)
+	level, _levelErr := io.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
+
+	io.CloseContext("ApduDataExtAuthorizeResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeResponse{

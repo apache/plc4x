@@ -97,6 +97,9 @@ func (m *MPropInfoInd) LengthInBytes() uint16 {
 }
 
 func MPropInfoIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MPropInfoInd")
+
+	io.CloseContext("MPropInfoInd")
 
 	// Create a partially initialized instance
 	_child := &MPropInfoInd{

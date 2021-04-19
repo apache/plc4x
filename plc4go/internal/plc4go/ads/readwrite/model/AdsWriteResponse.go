@@ -107,12 +107,15 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 }
 
 func AdsWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsWriteResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+
+	io.CloseContext("AdsWriteResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsWriteResponse{

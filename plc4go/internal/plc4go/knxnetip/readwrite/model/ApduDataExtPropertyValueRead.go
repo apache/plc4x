@@ -118,30 +118,33 @@ func (m *ApduDataExtPropertyValueRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtPropertyValueRead")
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (count)
-	count, _countErr := io.ReadUint8(4)
+	count, _countErr := io.ReadUint8("count", 4)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint16(12)
+	index, _indexErr := io.ReadUint16("index", 12)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
+
+	io.CloseContext("ApduDataExtPropertyValueRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyValueRead{

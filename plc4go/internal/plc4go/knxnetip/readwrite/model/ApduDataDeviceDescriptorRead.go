@@ -103,12 +103,15 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBytes() uint16 {
 }
 
 func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataDeviceDescriptorRead")
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
+	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
+
+	io.CloseContext("ApduDataDeviceDescriptorRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorRead{

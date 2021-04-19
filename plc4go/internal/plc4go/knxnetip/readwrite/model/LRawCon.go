@@ -97,6 +97,9 @@ func (m *LRawCon) LengthInBytes() uint16 {
 }
 
 func LRawConParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LRawCon")
+
+	io.CloseContext("LRawCon")
 
 	// Create a partially initialized instance
 	_child := &LRawCon{

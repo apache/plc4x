@@ -118,13 +118,15 @@ func (m *ModbusPDUWriteFileRecordResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUWriteFileRecordResponse")
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
+	io.PullContext("items")
 
 	// Array field (items)
 	// Length array
@@ -138,6 +140,8 @@ func ModbusPDUWriteFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, err
 		}
 		items = append(items, _item)
 	}
+
+	io.CloseContext("ModbusPDUWriteFileRecordResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteFileRecordResponse{

@@ -100,9 +100,10 @@ func (m *S7Address) LengthInBytes() uint16 {
 }
 
 func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
+	io.PullContext("S7Address")
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType, _addressTypeErr := io.ReadUint8(8)
+	addressType, _addressTypeErr := io.ReadUint8("addressType", 8)
 	if _addressTypeErr != nil {
 		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field")
 	}
@@ -120,6 +121,8 @@ func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7Address")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

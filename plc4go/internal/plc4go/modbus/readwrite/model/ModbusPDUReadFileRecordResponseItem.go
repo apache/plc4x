@@ -92,19 +92,21 @@ func (m *ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
+	io.PullContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint8(8)
+	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Length array
@@ -112,12 +114,14 @@ func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDURe
 	_dataLength := uint16(dataLength) - uint16(uint16(1))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
+
+	io.CloseContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil

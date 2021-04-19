@@ -117,6 +117,7 @@ func (m *AdsReadStateResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadStateResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
@@ -125,16 +126,18 @@ func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := io.ReadUint16(16)
+	adsState, _adsStateErr := io.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := io.ReadUint16(16)
+	deviceState, _deviceStateErr := io.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
+
+	io.CloseContext("AdsReadStateResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsReadStateResponse{

@@ -84,15 +84,18 @@ func (m *ModbusConstants) LengthInBytes() uint16 {
 }
 
 func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
+	io.PullContext("ModbusConstants")
 
 	// Const Field (modbusTcpDefaultPort)
-	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
+	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16("modbusTcpDefaultPort", 16)
 	if _modbusTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field")
 	}
 	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))
 	}
+
+	io.CloseContext("ModbusConstants")
 
 	// Create the instance
 	return NewModbusConstants(), nil

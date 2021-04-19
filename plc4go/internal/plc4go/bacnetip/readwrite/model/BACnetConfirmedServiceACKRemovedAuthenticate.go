@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKRemovedAuthenticate")
+
+	io.CloseContext("BACnetConfirmedServiceACKRemovedAuthenticate")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKRemovedAuthenticate{

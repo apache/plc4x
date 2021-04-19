@@ -140,9 +140,10 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestWhoHas")
 
 	// Const Field (deviceInstanceLowLimitHeader)
-	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)
+	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8("deviceInstanceLowLimitHeader", 8)
 	if _deviceInstanceLowLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceLowLimitHeaderErr, "Error parsing 'deviceInstanceLowLimitHeader' field")
 	}
@@ -151,13 +152,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Simple Field (deviceInstanceLowLimit)
-	deviceInstanceLowLimit, _deviceInstanceLowLimitErr := io.ReadUint32(24)
+	deviceInstanceLowLimit, _deviceInstanceLowLimitErr := io.ReadUint32("deviceInstanceLowLimit", 24)
 	if _deviceInstanceLowLimitErr != nil {
 		return nil, errors.Wrap(_deviceInstanceLowLimitErr, "Error parsing 'deviceInstanceLowLimit' field")
 	}
 
 	// Const Field (deviceInstanceHighLimitHeader)
-	deviceInstanceHighLimitHeader, _deviceInstanceHighLimitHeaderErr := io.ReadUint8(8)
+	deviceInstanceHighLimitHeader, _deviceInstanceHighLimitHeaderErr := io.ReadUint8("deviceInstanceHighLimitHeader", 8)
 	if _deviceInstanceHighLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceHighLimitHeaderErr, "Error parsing 'deviceInstanceHighLimitHeader' field")
 	}
@@ -166,13 +167,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Simple Field (deviceInstanceHighLimit)
-	deviceInstanceHighLimit, _deviceInstanceHighLimitErr := io.ReadUint32(24)
+	deviceInstanceHighLimit, _deviceInstanceHighLimitErr := io.ReadUint32("deviceInstanceHighLimit", 24)
 	if _deviceInstanceHighLimitErr != nil {
 		return nil, errors.Wrap(_deviceInstanceHighLimitErr, "Error parsing 'deviceInstanceHighLimit' field")
 	}
 
 	// Const Field (objectNameHeader)
-	objectNameHeader, _objectNameHeaderErr := io.ReadUint8(8)
+	objectNameHeader, _objectNameHeaderErr := io.ReadUint8("objectNameHeader", 8)
 	if _objectNameHeaderErr != nil {
 		return nil, errors.Wrap(_objectNameHeaderErr, "Error parsing 'objectNameHeader' field")
 	}
@@ -181,17 +182,18 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	objectNameLength, _objectNameLengthErr := io.ReadUint8(8)
+	objectNameLength, _objectNameLengthErr := io.ReadUint8("objectNameLength", 8)
 	_ = objectNameLength
 	if _objectNameLengthErr != nil {
 		return nil, errors.Wrap(_objectNameLengthErr, "Error parsing 'objectNameLength' field")
 	}
 
 	// Simple Field (objectNameCharacterSet)
-	objectNameCharacterSet, _objectNameCharacterSetErr := io.ReadUint8(8)
+	objectNameCharacterSet, _objectNameCharacterSetErr := io.ReadUint8("objectNameCharacterSet", 8)
 	if _objectNameCharacterSetErr != nil {
 		return nil, errors.Wrap(_objectNameCharacterSetErr, "Error parsing 'objectNameCharacterSet' field")
 	}
+	io.PullContext("objectName")
 
 	// Array field (objectName)
 	// Length array
@@ -199,12 +201,14 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
 	_objectNameEndPos := io.GetPos() + uint16(_objectNameLength)
 	for io.GetPos() < _objectNameEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
 		}
 		objectName = append(objectName, _item)
 	}
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestWhoHas")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoHas{

@@ -97,6 +97,9 @@ func (m *MFuncPropCon) LengthInBytes() uint16 {
 }
 
 func MFuncPropConParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MFuncPropCon")
+
+	io.CloseContext("MFuncPropCon")
 
 	// Create a partially initialized instance
 	_child := &MFuncPropCon{

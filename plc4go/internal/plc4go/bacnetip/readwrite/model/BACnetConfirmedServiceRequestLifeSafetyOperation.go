@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) LengthInBytes() uint1
 }
 
 func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
+
+	io.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestLifeSafetyOperation{

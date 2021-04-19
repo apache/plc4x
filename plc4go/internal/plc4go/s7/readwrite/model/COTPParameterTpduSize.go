@@ -103,12 +103,15 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 }
 
 func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	io.PullContext("COTPParameterTpduSize")
 
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
+
+	io.CloseContext("COTPParameterTpduSize")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterTpduSize{

@@ -113,30 +113,34 @@ func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataMemoryResponse")
 
 	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	numBytes, _numBytesErr := io.ReadUint8(6)
+	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
 	_ = numBytes
 	if _numBytesErr != nil {
 		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]uint8, numBytes)
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("ApduDataMemoryResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryResponse{

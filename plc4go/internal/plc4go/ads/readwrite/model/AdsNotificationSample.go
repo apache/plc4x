@@ -93,29 +93,33 @@ func (m *AdsNotificationSample) LengthInBytes() uint16 {
 }
 
 func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, error) {
+	io.PullContext("AdsNotificationSample")
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
-	sampleSize, _sampleSizeErr := io.ReadUint32(32)
+	sampleSize, _sampleSizeErr := io.ReadUint32("sampleSize", 32)
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("AdsNotificationSample")
 
 	// Create the instance
 	return NewAdsNotificationSample(notificationHandle, sampleSize, data), nil

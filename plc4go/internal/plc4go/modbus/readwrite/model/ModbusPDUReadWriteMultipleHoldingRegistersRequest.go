@@ -138,48 +138,52 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint
 }
 
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
 	// Simple Field (readStartingAddress)
-	readStartingAddress, _readStartingAddressErr := io.ReadUint16(16)
+	readStartingAddress, _readStartingAddressErr := io.ReadUint16("readStartingAddress", 16)
 	if _readStartingAddressErr != nil {
 		return nil, errors.Wrap(_readStartingAddressErr, "Error parsing 'readStartingAddress' field")
 	}
 
 	// Simple Field (readQuantity)
-	readQuantity, _readQuantityErr := io.ReadUint16(16)
+	readQuantity, _readQuantityErr := io.ReadUint16("readQuantity", 16)
 	if _readQuantityErr != nil {
 		return nil, errors.Wrap(_readQuantityErr, "Error parsing 'readQuantity' field")
 	}
 
 	// Simple Field (writeStartingAddress)
-	writeStartingAddress, _writeStartingAddressErr := io.ReadUint16(16)
+	writeStartingAddress, _writeStartingAddressErr := io.ReadUint16("writeStartingAddress", 16)
 	if _writeStartingAddressErr != nil {
 		return nil, errors.Wrap(_writeStartingAddressErr, "Error parsing 'writeStartingAddress' field")
 	}
 
 	// Simple Field (writeQuantity)
-	writeQuantity, _writeQuantityErr := io.ReadUint16(16)
+	writeQuantity, _writeQuantityErr := io.ReadUint16("writeQuantity", 16)
 	if _writeQuantityErr != nil {
 		return nil, errors.Wrap(_writeQuantityErr, "Error parsing 'writeQuantity' field")
 	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
+	io.PullContext("value")
 
 	// Array field (value)
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
+
+	io.CloseContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{

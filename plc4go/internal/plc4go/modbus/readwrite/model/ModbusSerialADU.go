@@ -97,16 +97,17 @@ func (m *ModbusSerialADU) LengthInBytes() uint16 {
 }
 
 func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU, error) {
+	io.PullContext("ModbusSerialADU")
 
 	// Simple Field (transactionId)
-	transactionId, _transactionIdErr := io.ReadUint16(16)
+	transactionId, _transactionIdErr := io.ReadUint16("transactionId", 16)
 	if _transactionIdErr != nil {
 		return nil, errors.Wrap(_transactionIdErr, "Error parsing 'transactionId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint16(16)
+		reserved, _err := io.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -119,13 +120,13 @@ func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU,
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16("length", 16)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint8(8)
+	address, _addressErr := io.ReadUint8("address", 8)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
@@ -135,6 +136,8 @@ func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU,
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+
+	io.CloseContext("ModbusSerialADU")
 
 	// Create the instance
 	return NewModbusSerialADU(transactionId, length, address, pdu), nil

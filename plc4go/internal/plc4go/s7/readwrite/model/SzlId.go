@@ -89,6 +89,7 @@ func (m *SzlId) LengthInBytes() uint16 {
 }
 
 func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
+	io.PullContext("SzlId")
 
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
@@ -97,7 +98,7 @@ func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
 	}
 
 	// Simple Field (sublistExtract)
-	sublistExtract, _sublistExtractErr := io.ReadUint8(4)
+	sublistExtract, _sublistExtractErr := io.ReadUint8("sublistExtract", 4)
 	if _sublistExtractErr != nil {
 		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field")
 	}
@@ -107,6 +108,8 @@ func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
 	if _sublistListErr != nil {
 		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field")
 	}
+
+	io.CloseContext("SzlId")
 
 	// Create the instance
 	return NewSzlId(typeClass, sublistExtract, sublistList), nil

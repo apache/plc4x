@@ -107,17 +107,21 @@ func (m *UnknownMessage) LengthInBytes() uint16 {
 }
 
 func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	io.PullContext("UnknownMessage")
+	io.PullContext("unknownData")
 
 	// Array field (unknownData)
 	// Count array
 	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
 		}
 		unknownData[curItem] = _item
 	}
+
+	io.CloseContext("UnknownMessage")
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{

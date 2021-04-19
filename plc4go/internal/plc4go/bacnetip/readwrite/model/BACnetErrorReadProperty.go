@@ -135,9 +135,10 @@ func (m *BACnetErrorReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorReadProperty")
 
 	// Const Field (errorClassHeader)
-	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
+	errorClassHeader, _errorClassHeaderErr := io.ReadUint8("errorClassHeader", 5)
 	if _errorClassHeaderErr != nil {
 		return nil, errors.Wrap(_errorClassHeaderErr, "Error parsing 'errorClassHeader' field")
 	}
@@ -146,16 +147,17 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Simple Field (errorClassLength)
-	errorClassLength, _errorClassLengthErr := io.ReadUint8(3)
+	errorClassLength, _errorClassLengthErr := io.ReadUint8("errorClassLength", 3)
 	if _errorClassLengthErr != nil {
 		return nil, errors.Wrap(_errorClassLengthErr, "Error parsing 'errorClassLength' field")
 	}
+	io.PullContext("errorClass")
 
 	// Array field (errorClass)
 	// Count array
 	errorClass := make([]int8, errorClassLength)
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorClass' field")
 		}
@@ -163,7 +165,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Const Field (errorCodeHeader)
-	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8(5)
+	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8("errorCodeHeader", 5)
 	if _errorCodeHeaderErr != nil {
 		return nil, errors.Wrap(_errorCodeHeaderErr, "Error parsing 'errorCodeHeader' field")
 	}
@@ -172,21 +174,24 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Simple Field (errorCodeLength)
-	errorCodeLength, _errorCodeLengthErr := io.ReadUint8(3)
+	errorCodeLength, _errorCodeLengthErr := io.ReadUint8("errorCodeLength", 3)
 	if _errorCodeLengthErr != nil {
 		return nil, errors.Wrap(_errorCodeLengthErr, "Error parsing 'errorCodeLength' field")
 	}
+	io.PullContext("errorCode")
 
 	// Array field (errorCode)
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode[curItem] = _item
 	}
+
+	io.CloseContext("BACnetErrorReadProperty")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadProperty{

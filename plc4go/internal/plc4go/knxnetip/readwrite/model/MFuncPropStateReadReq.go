@@ -97,6 +97,9 @@ func (m *MFuncPropStateReadReq) LengthInBytes() uint16 {
 }
 
 func MFuncPropStateReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MFuncPropStateReadReq")
+
+	io.CloseContext("MFuncPropStateReadReq")
 
 	// Create a partially initialized instance
 	_child := &MFuncPropStateReadReq{

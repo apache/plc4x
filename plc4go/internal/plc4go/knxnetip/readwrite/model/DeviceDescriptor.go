@@ -502,7 +502,7 @@ func (m DeviceDescriptor) LengthInBytes() uint16 {
 }
 
 func DeviceDescriptorParse(io utils.ReadBuffer) (DeviceDescriptor, error) {
-	val, err := io.ReadUint16(16)
+	val, err := io.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, nil
 	}

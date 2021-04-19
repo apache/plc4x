@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKAtomicWriteFile) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKAtomicWriteFile")
+
+	io.CloseContext("BACnetConfirmedServiceACKAtomicWriteFile")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKAtomicWriteFile{

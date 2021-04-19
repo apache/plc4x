@@ -112,10 +112,11 @@ func (m *APDUReject) LengthInBytes() uint16 {
 }
 
 func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUReject")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -128,16 +129,18 @@ func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (rejectReason)
-	rejectReason, _rejectReasonErr := io.ReadUint8(8)
+	rejectReason, _rejectReasonErr := io.ReadUint8("rejectReason", 8)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
+
+	io.CloseContext("APDUReject")
 
 	// Create a partially initialized instance
 	_child := &APDUReject{

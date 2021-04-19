@@ -119,6 +119,7 @@ func (m *AdsReadWriteResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadWriteResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
@@ -127,22 +128,25 @@ func AdsReadWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("AdsReadWriteResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsReadWriteResponse{

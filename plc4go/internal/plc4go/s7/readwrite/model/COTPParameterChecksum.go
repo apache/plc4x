@@ -103,12 +103,15 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 }
 
 func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	io.PullContext("COTPParameterChecksum")
 
 	// Simple Field (crc)
-	crc, _crcErr := io.ReadUint8(8)
+	crc, _crcErr := io.ReadUint8("crc", 8)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
+
+	io.CloseContext("COTPParameterChecksum")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterChecksum{

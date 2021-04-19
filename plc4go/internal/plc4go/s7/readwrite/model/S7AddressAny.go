@@ -132,9 +132,10 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 }
 
 func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
+	io.PullContext("S7AddressAny")
 
 	// Enum field (transportSize)
-	transportSizeCode, _transportSizeErr := io.ReadUint8(8)
+	transportSizeCode, _transportSizeErr := io.ReadUint8("transportSize", 8)
 	var transportSize TransportSize
 	for _, value := range TransportSizeValues {
 		if value.Code() == transportSizeCode {
@@ -147,13 +148,13 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := io.ReadUint16(16)
+	numberOfElements, _numberOfElementsErr := io.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (dbNumber)
-	dbNumber, _dbNumberErr := io.ReadUint16(16)
+	dbNumber, _dbNumberErr := io.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
@@ -166,7 +167,7 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(5)
+		reserved, _err := io.ReadUint8("reserved", 5)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -179,16 +180,18 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (byteAddress)
-	byteAddress, _byteAddressErr := io.ReadUint16(16)
+	byteAddress, _byteAddressErr := io.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
 		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
 	}
 
 	// Simple Field (bitAddress)
-	bitAddress, _bitAddressErr := io.ReadUint8(3)
+	bitAddress, _bitAddressErr := io.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
+
+	io.CloseContext("S7AddressAny")
 
 	// Create a partially initialized instance
 	_child := &S7AddressAny{

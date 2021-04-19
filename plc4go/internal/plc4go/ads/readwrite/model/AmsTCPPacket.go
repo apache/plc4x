@@ -88,10 +88,11 @@ func (m *AmsTCPPacket) LengthInBytes() uint16 {
 }
 
 func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
+	io.PullContext("AmsTCPPacket")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint16(16)
+		reserved, _err := io.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -104,7 +105,7 @@ func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
@@ -115,6 +116,8 @@ func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+
+	io.CloseContext("AmsTCPPacket")
 
 	// Create the instance
 	return NewAmsTCPPacket(userdata), nil

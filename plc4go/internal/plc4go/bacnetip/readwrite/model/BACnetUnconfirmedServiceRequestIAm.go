@@ -151,9 +151,10 @@ func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestIAm")
 
 	// Const Field (objectIdentifierHeader)
-	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
+	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
 	if _objectIdentifierHeaderErr != nil {
 		return nil, errors.Wrap(_objectIdentifierHeaderErr, "Error parsing 'objectIdentifierHeader' field")
 	}
@@ -162,19 +163,19 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := io.ReadUint16(10)
+	objectType, _objectTypeErr := io.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
+	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
 
 	// Const Field (maximumApduLengthAcceptedHeader)
-	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8(5)
+	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8("maximumApduLengthAcceptedHeader", 5)
 	if _maximumApduLengthAcceptedHeaderErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error parsing 'maximumApduLengthAcceptedHeader' field")
 	}
@@ -183,16 +184,17 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Simple Field (maximumApduLengthAcceptedLength)
-	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8(3)
+	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8("maximumApduLengthAcceptedLength", 3)
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
+	io.PullContext("maximumApduLengthAccepted")
 
 	// Array field (maximumApduLengthAccepted)
 	// Count array
 	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'maximumApduLengthAccepted' field")
 		}
@@ -200,7 +202,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Const Field (segmentationSupportedHeader)
-	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8(8)
+	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8("segmentationSupportedHeader", 8)
 	if _segmentationSupportedHeaderErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedHeaderErr, "Error parsing 'segmentationSupportedHeader' field")
 	}
@@ -209,13 +211,13 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Simple Field (segmentationSupported)
-	segmentationSupported, _segmentationSupportedErr := io.ReadUint8(8)
+	segmentationSupported, _segmentationSupportedErr := io.ReadUint8("segmentationSupported", 8)
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
 
 	// Const Field (vendorIdHeader)
-	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
+	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8("vendorIdHeader", 8)
 	if _vendorIdHeaderErr != nil {
 		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
@@ -224,10 +226,12 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Simple Field (vendorId)
-	vendorId, _vendorIdErr := io.ReadUint8(8)
+	vendorId, _vendorIdErr := io.ReadUint8("vendorId", 8)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestIAm")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIAm{

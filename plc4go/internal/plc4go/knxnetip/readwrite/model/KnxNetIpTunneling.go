@@ -103,12 +103,15 @@ func (m *KnxNetIpTunneling) LengthInBytes() uint16 {
 }
 
 func KnxNetIpTunnelingParse(io utils.ReadBuffer) (*ServiceId, error) {
+	io.PullContext("KnxNetIpTunneling")
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+
+	io.CloseContext("KnxNetIpTunneling")
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpTunneling{

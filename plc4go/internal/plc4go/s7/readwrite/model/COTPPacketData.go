@@ -110,18 +110,21 @@ func (m *COTPPacketData) LengthInBytes() uint16 {
 }
 
 func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	io.PullContext("COTPPacketData")
 
 	// Simple Field (eot)
-	eot, _eotErr := io.ReadBit()
+	eot, _eotErr := io.ReadBit("eot")
 	if _eotErr != nil {
 		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field")
 	}
 
 	// Simple Field (tpduRef)
-	tpduRef, _tpduRefErr := io.ReadUint8(7)
+	tpduRef, _tpduRefErr := io.ReadUint8("tpduRef", 7)
 	if _tpduRefErr != nil {
 		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field")
 	}
+
+	io.CloseContext("COTPPacketData")
 
 	// Create a partially initialized instance
 	_child := &COTPPacketData{

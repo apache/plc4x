@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBytes() uint1
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestGetEventInformation")
+
+	io.CloseContext("BACnetConfirmedServiceRequestGetEventInformation")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestGetEventInformation{

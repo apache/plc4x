@@ -121,10 +121,11 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 }
 
 func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	io.PullContext("S7ParameterSetupCommunication")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -137,22 +138,24 @@ func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, erro
 	}
 
 	// Simple Field (maxAmqCaller)
-	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16(16)
+	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
 		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
 	}
 
 	// Simple Field (maxAmqCallee)
-	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16(16)
+	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
 		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
 	}
 
 	// Simple Field (pduLength)
-	pduLength, _pduLengthErr := io.ReadUint16(16)
+	pduLength, _pduLengthErr := io.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
+
+	io.CloseContext("S7ParameterSetupCommunication")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterSetupCommunication{

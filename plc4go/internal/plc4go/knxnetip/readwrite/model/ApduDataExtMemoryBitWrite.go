@@ -97,6 +97,9 @@ func (m *ApduDataExtMemoryBitWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtMemoryBitWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtMemoryBitWrite")
+
+	io.CloseContext("ApduDataExtMemoryBitWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtMemoryBitWrite{

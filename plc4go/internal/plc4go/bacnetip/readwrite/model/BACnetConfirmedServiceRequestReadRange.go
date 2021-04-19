@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestReadRangeParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestReadRange")
+
+	io.CloseContext("BACnetConfirmedServiceRequestReadRange")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadRange{

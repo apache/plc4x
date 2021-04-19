@@ -93,30 +93,33 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
+	io.PullContext("ModbusPDUReadFileRecordRequestItem")
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	fileNumber, _fileNumberErr := io.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
-	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	recordNumber, _recordNumberErr := io.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
-	recordLength, _recordLengthErr := io.ReadUint16(16)
+	recordLength, _recordLengthErr := io.ReadUint16("recordLength", 16)
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
+
+	io.CloseContext("ModbusPDUReadFileRecordRequestItem")
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength), nil

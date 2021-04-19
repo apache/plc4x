@@ -124,36 +124,40 @@ func (m *AdsWriteControlRequest) LengthInBytes() uint16 {
 }
 
 func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsWriteControlRequest")
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := io.ReadUint16(16)
+	adsState, _adsStateErr := io.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := io.ReadUint16(16)
+	deviceState, _deviceStateErr := io.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("AdsWriteControlRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsWriteControlRequest{

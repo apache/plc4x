@@ -139,31 +139,33 @@ func (m *AdsReadWriteRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadWriteRequest")
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := io.ReadUint32(32)
+	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := io.ReadUint32(32)
+	indexOffset, _indexOffsetErr := io.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Simple Field (readLength)
-	readLength, _readLengthErr := io.ReadUint32(32)
+	readLength, _readLengthErr := io.ReadUint32("readLength", 32)
 	if _readLengthErr != nil {
 		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field")
 	}
 
 	// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	writeLength, _writeLengthErr := io.ReadUint32(32)
+	writeLength, _writeLengthErr := io.ReadUint32("writeLength", 32)
 	_ = writeLength
 	if _writeLengthErr != nil {
 		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field")
 	}
+	io.PullContext("items")
 
 	// Array field (items)
 	// Count array
@@ -175,17 +177,20 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		items[curItem] = _item
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("AdsReadWriteRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsReadWriteRequest{

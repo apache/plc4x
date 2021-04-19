@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBytes() uin
 }
 
 func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
+
+	io.CloseContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWritePropertyMultiple{

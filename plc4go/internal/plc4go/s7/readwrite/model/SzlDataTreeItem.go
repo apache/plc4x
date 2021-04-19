@@ -101,18 +101,20 @@ func (m *SzlDataTreeItem) LengthInBytes() uint16 {
 }
 
 func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
+	io.PullContext("SzlDataTreeItem")
 
 	// Simple Field (itemIndex)
-	itemIndex, _itemIndexErr := io.ReadUint16(16)
+	itemIndex, _itemIndexErr := io.ReadUint16("itemIndex", 16)
 	if _itemIndexErr != nil {
 		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
 	}
+	io.PullContext("mlfb")
 
 	// Array field (mlfb)
 	// Count array
 	mlfb := make([]int8, uint16(20))
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'mlfb' field")
 		}
@@ -120,22 +122,24 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	}
 
 	// Simple Field (moduleTypeId)
-	moduleTypeId, _moduleTypeIdErr := io.ReadUint16(16)
+	moduleTypeId, _moduleTypeIdErr := io.ReadUint16("moduleTypeId", 16)
 	if _moduleTypeIdErr != nil {
 		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
-	ausbg, _ausbgErr := io.ReadUint16(16)
+	ausbg, _ausbgErr := io.ReadUint16("ausbg", 16)
 	if _ausbgErr != nil {
 		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
-	ausbe, _ausbeErr := io.ReadUint16(16)
+	ausbe, _ausbeErr := io.ReadUint16("ausbe", 16)
 	if _ausbeErr != nil {
 		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field")
 	}
+
+	io.CloseContext("SzlDataTreeItem")
 
 	// Create the instance
 	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil

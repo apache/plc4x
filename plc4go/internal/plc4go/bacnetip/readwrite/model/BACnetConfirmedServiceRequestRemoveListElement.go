@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBytes() uint16 
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestRemoveListElement")
+
+	io.CloseContext("BACnetConfirmedServiceRequestRemoveListElement")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemoveListElement{

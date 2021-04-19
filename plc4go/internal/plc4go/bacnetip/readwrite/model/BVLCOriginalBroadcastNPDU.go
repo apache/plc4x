@@ -103,12 +103,15 @@ func (m *BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
 }
 
 func BVLCOriginalBroadcastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+	io.PullContext("BVLCOriginalBroadcastNPDU")
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+
+	io.CloseContext("BVLCOriginalBroadcastNPDU")
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalBroadcastNPDU{

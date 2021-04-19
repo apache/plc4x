@@ -101,6 +101,9 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadDeviceInfoRequest")
+
+	io.CloseContext("AdsReadDeviceInfoRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoRequest{

@@ -176,7 +176,7 @@ func (m MemoryArea) LengthInBytes() uint16 {
 }
 
 func MemoryAreaParse(io utils.ReadBuffer) (MemoryArea, error) {
-	val, err := io.ReadUint8(8)
+	val, err := io.ReadUint8("MemoryArea", 8)
 	if err != nil {
 		return 0, nil
 	}

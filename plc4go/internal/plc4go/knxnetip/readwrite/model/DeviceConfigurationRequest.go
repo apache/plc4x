@@ -108,6 +108,7 @@ func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	io.PullContext("DeviceConfigurationRequest")
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
@@ -120,6 +121,8 @@ func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
+
+	io.CloseContext("DeviceConfigurationRequest")
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationRequest{

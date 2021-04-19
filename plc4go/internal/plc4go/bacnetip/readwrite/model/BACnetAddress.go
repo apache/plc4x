@@ -87,12 +87,14 @@ func (m *BACnetAddress) LengthInBytes() uint16 {
 }
 
 func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
+	io.PullContext("BACnetAddress")
+	io.PullContext("address")
 
 	// Array field (address)
 	// Count array
 	address := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'address' field")
 		}
@@ -100,10 +102,12 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 	}
 
 	// Simple Field (port)
-	port, _portErr := io.ReadUint16(16)
+	port, _portErr := io.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
+
+	io.CloseContext("BACnetAddress")
 
 	// Create the instance
 	return NewBACnetAddress(address, port), nil

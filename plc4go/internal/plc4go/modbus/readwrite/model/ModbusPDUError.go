@@ -111,12 +111,15 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 }
 
 func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUError")
 
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
+
+	io.CloseContext("ModbusPDUError")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUError{

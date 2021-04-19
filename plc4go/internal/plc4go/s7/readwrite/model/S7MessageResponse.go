@@ -111,18 +111,21 @@ func (m *S7MessageResponse) LengthInBytes() uint16 {
 }
 
 func S7MessageResponseParse(io utils.ReadBuffer) (*S7Message, error) {
+	io.PullContext("S7MessageResponse")
 
 	// Simple Field (errorClass)
-	errorClass, _errorClassErr := io.ReadUint8(8)
+	errorClass, _errorClassErr := io.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint8(8)
+	errorCode, _errorCodeErr := io.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
+
+	io.CloseContext("S7MessageResponse")
 
 	// Create a partially initialized instance
 	_child := &S7MessageResponse{

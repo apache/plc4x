@@ -81,12 +81,15 @@ func (m *RelativeTimestamp) LengthInBytes() uint16 {
 }
 
 func RelativeTimestampParse(io utils.ReadBuffer) (*RelativeTimestamp, error) {
+	io.PullContext("RelativeTimestamp")
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := io.ReadUint16(16)
+	timestamp, _timestampErr := io.ReadUint16("timestamp", 16)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
+
+	io.CloseContext("RelativeTimestamp")
 
 	// Create the instance
 	return NewRelativeTimestamp(timestamp), nil

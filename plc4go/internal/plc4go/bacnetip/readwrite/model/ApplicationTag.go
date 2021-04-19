@@ -155,7 +155,7 @@ func (m ApplicationTag) LengthInBytes() uint16 {
 }
 
 func ApplicationTagParse(io utils.ReadBuffer) (ApplicationTag, error) {
-	val, err := io.ReadInt8(4)
+	val, err := io.ReadInt8("ApplicationTag", 4)
 	if err != nil {
 		return 0, nil
 	}

@@ -117,24 +117,27 @@ func (m *AdsReadRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadRequest")
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := io.ReadUint32(32)
+	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := io.ReadUint32(32)
+	indexOffset, _indexOffsetErr := io.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+
+	io.CloseContext("AdsReadRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsReadRequest{

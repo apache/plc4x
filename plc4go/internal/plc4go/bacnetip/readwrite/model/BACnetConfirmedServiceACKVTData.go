@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKVTData) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKVTDataParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKVTData")
+
+	io.CloseContext("BACnetConfirmedServiceACKVTData")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKVTData{

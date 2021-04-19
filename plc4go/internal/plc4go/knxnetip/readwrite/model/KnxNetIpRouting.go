@@ -103,12 +103,15 @@ func (m *KnxNetIpRouting) LengthInBytes() uint16 {
 }
 
 func KnxNetIpRoutingParse(io utils.ReadBuffer) (*ServiceId, error) {
+	io.PullContext("KnxNetIpRouting")
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+
+	io.CloseContext("KnxNetIpRouting")
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpRouting{

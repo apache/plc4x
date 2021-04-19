@@ -116,12 +116,14 @@ func (m *BACnetTagApplicationBitString) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationBitString")
 
 	// Simple Field (unusedBits)
-	unusedBits, _unusedBitsErr := io.ReadUint8(8)
+	unusedBits, _unusedBitsErr := io.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
 		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Length array
@@ -129,12 +131,14 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
+
+	io.CloseContext("BACnetTagApplicationBitString")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationBitString{

@@ -100,9 +100,10 @@ func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	io.PullContext("CEMIAdditionalInformation")
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
+	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8("additionalInformationType", 8)
 	if _additionalInformationTypeErr != nil {
 		return nil, errors.Wrap(_additionalInformationTypeErr, "Error parsing 'additionalInformationType' field")
 	}
@@ -122,6 +123,8 @@ func CEMIAdditionalInformationParse(io utils.ReadBuffer) (*CEMIAdditionalInforma
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("CEMIAdditionalInformation")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

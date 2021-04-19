@@ -97,6 +97,9 @@ func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
 }
 
 func BACnetErrorRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorRemovedReadPropertyConditional")
+
+	io.CloseContext("BACnetErrorRemovedReadPropertyConditional")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedReadPropertyConditional{

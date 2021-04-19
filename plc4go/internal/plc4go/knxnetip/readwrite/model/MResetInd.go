@@ -97,6 +97,9 @@ func (m *MResetInd) LengthInBytes() uint16 {
 }
 
 func MResetIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MResetInd")
+
+	io.CloseContext("MResetInd")
 
 	// Create a partially initialized instance
 	_child := &MResetInd{

@@ -100,9 +100,10 @@ func (m *APDU) LengthInBytes() uint16 {
 }
 
 func APDUParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+	io.PullContext("APDU")
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType, _apduTypeErr := io.ReadUint8(4)
+	apduType, _apduTypeErr := io.ReadUint8("apduType", 4)
 	if _apduTypeErr != nil {
 		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
 	}
@@ -134,6 +135,8 @@ func APDUParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("APDU")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

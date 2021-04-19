@@ -113,7 +113,7 @@ func (m DeviceDescriptorMediumType) LengthInBytes() uint16 {
 }
 
 func DeviceDescriptorMediumTypeParse(io utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
-	val, err := io.ReadUint8(4)
+	val, err := io.ReadUint8("DeviceDescriptorMediumType", 4)
 	if err != nil {
 		return 0, nil
 	}

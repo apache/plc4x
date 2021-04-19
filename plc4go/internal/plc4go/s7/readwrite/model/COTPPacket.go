@@ -117,18 +117,19 @@ func (m *COTPPacket) LengthInBytes() uint16 {
 }
 
 func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+	io.PullContext("COTPPacket")
 	var startPos = io.GetPos()
 	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode, _tpduCodeErr := io.ReadUint8(8)
+	tpduCode, _tpduCodeErr := io.ReadUint8("tpduCode", 8)
 	if _tpduCodeErr != nil {
 		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field")
 	}
@@ -156,6 +157,7 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+	io.PullContext("parameters")
 
 	// Array field (parameters)
 	curPos = io.GetPos() - startPos
@@ -182,6 +184,8 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 		}
 		payload = _val
 	}
+
+	io.CloseContext("COTPPacket")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, parameters, payload)

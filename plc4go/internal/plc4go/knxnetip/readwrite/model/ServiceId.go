@@ -100,9 +100,10 @@ func (m *ServiceId) LengthInBytes() uint16 {
 }
 
 func ServiceIdParse(io utils.ReadBuffer) (*ServiceId, error) {
+	io.PullContext("ServiceId")
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType, _serviceTypeErr := io.ReadUint8(8)
+	serviceType, _serviceTypeErr := io.ReadUint8("serviceType", 8)
 	if _serviceTypeErr != nil {
 		return nil, errors.Wrap(_serviceTypeErr, "Error parsing 'serviceType' field")
 	}
@@ -132,6 +133,8 @@ func ServiceIdParse(io utils.ReadBuffer) (*ServiceId, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ServiceId")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

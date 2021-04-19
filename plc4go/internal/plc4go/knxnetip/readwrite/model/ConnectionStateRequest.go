@@ -112,16 +112,17 @@ func (m *ConnectionStateRequest) LengthInBytes() uint16 {
 }
 
 func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("ConnectionStateRequest")
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -138,6 +139,8 @@ func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+
+	io.CloseContext("ConnectionStateRequest")
 
 	// Create a partially initialized instance
 	_child := &ConnectionStateRequest{

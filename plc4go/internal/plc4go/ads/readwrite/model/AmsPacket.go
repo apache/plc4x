@@ -116,6 +116,7 @@ func (m *AmsPacket) LengthInBytes() uint16 {
 }
 
 func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
+	io.PullContext("AmsPacket")
 
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)
@@ -124,7 +125,7 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (targetAmsPort)
-	targetAmsPort, _targetAmsPortErr := io.ReadUint16(16)
+	targetAmsPort, _targetAmsPortErr := io.ReadUint16("targetAmsPort", 16)
 	if _targetAmsPortErr != nil {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
@@ -136,7 +137,7 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (sourceAmsPort)
-	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16(16)
+	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16("sourceAmsPort", 16)
 	if _sourceAmsPortErr != nil {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
@@ -154,20 +155,20 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint32(32)
+	errorCode, _errorCodeErr := io.ReadUint32("errorCode", 32)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
-	invokeId, _invokeIdErr := io.ReadUint32(32)
+	invokeId, _invokeIdErr := io.ReadUint32("invokeId", 32)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
@@ -177,6 +178,8 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+
+	io.CloseContext("AmsPacket")
 
 	// Create the instance
 	return NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, state, errorCode, invokeId, data), nil

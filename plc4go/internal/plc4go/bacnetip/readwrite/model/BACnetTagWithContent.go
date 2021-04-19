@@ -123,21 +123,22 @@ func (m *BACnetTagWithContent) LengthInBytes() uint16 {
 }
 
 func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, error) {
+	io.PullContext("BACnetTagWithContent")
 
 	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
 	if _typeOrTagNumberErr != nil {
 		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
 	}
 
 	// Simple Field (contextSpecificTag)
-	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8("contextSpecificTag", 1)
 	if _contextSpecificTagErr != nil {
 		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
@@ -145,7 +146,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
@@ -155,12 +156,13 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
 		}
 		extLength = &_val
 	}
+	io.PullContext("propertyIdentifier")
 
 	// Array field (propertyIdentifier)
 	// Length array
@@ -168,7 +170,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
 		}
@@ -176,7 +178,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	}
 
 	// Const Field (openTag)
-	openTag, _openTagErr := io.ReadUint8(8)
+	openTag, _openTagErr := io.ReadUint8("openTag", 8)
 	if _openTagErr != nil {
 		return nil, errors.Wrap(_openTagErr, "Error parsing 'openTag' field")
 	}
@@ -191,13 +193,15 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	}
 
 	// Const Field (closingTag)
-	closingTag, _closingTagErr := io.ReadUint8(8)
+	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
 	if closingTag != BACnetTagWithContent_CLOSINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
+
+	io.CloseContext("BACnetTagWithContent")
 
 	// Create the instance
 	return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil

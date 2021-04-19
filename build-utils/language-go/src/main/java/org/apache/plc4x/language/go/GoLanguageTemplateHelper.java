@@ -276,57 +276,65 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "optional".equals(field.getTypeName()) || (isComplexTypeReference(field.getType()) && !isEnumField(field));
     }
 
+    public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference) {
+        return getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, null);
+    }
+
     @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
+        return getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+    }
+
+    public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.ReadBit()";
+                return "io.ReadBit(\"" + logicalName + "\")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadUint8(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadUint16(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadUint32(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadUint64(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
+                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadInt8(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadInt16(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadInt32(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadInt64(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
+                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadFloat32(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "io.ReadFloat32(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadFloat64(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "io.ReadFloat64(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
-                return "io.ReadBigFloat(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                return "io.ReadBigFloat(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
+                return "io.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
             }
         }
         return "Hurz";

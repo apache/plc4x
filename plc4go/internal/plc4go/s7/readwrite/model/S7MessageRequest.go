@@ -100,6 +100,9 @@ func (m *S7MessageRequest) LengthInBytes() uint16 {
 }
 
 func S7MessageRequestParse(io utils.ReadBuffer) (*S7Message, error) {
+	io.PullContext("S7MessageRequest")
+
+	io.CloseContext("S7MessageRequest")
 
 	// Create a partially initialized instance
 	_child := &S7MessageRequest{

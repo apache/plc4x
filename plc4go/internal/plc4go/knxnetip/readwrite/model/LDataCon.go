@@ -117,12 +117,14 @@ func (m *LDataCon) LengthInBytes() uint16 {
 }
 
 func LDataConParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LDataCon")
 
 	// Simple Field (additionalInformationLength)
-	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
+	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
+	io.PullContext("additionalInformation")
 
 	// Array field (additionalInformation)
 	// Length array
@@ -142,6 +144,8 @@ func LDataConParse(io utils.ReadBuffer) (*CEMI, error) {
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+
+	io.CloseContext("LDataCon")
 
 	// Create a partially initialized instance
 	_child := &LDataCon{

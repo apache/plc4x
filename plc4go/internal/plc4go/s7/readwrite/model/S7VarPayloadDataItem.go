@@ -103,6 +103,7 @@ func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
 }
 
 func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
+	io.PullContext("S7VarPayloadDataItem")
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -117,17 +118,18 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint16(16)
+	dataLength, _dataLengthErr := io.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) })); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
@@ -136,15 +138,19 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 
 	// Padding Field (padding)
 	{
+		io.PullContext("padding")
 		_timesPadding := (utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(data))) % uint8(uint8(2))) }))
 		for ; (io.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
-			_, _err := io.ReadUint8(8)
+			_, _err := io.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
 			}
 		}
+		io.CloseContext("padding")
 	}
+
+	io.CloseContext("S7VarPayloadDataItem")
 
 	// Create the instance
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil

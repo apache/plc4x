@@ -133,9 +133,10 @@ func (m *S7Message) LengthInBytes() uint16 {
 }
 
 func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
+	io.PullContext("S7Message")
 
 	// Const Field (protocolId)
-	protocolId, _protocolIdErr := io.ReadUint8(8)
+	protocolId, _protocolIdErr := io.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
 		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
 	}
@@ -144,14 +145,14 @@ func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := io.ReadUint8(8)
+	messageType, _messageTypeErr := io.ReadUint8("messageType", 8)
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint16(16)
+		reserved, _err := io.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -164,20 +165,20 @@ func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 	}
 
 	// Simple Field (tpduReference)
-	tpduReference, _tpduReferenceErr := io.ReadUint16(16)
+	tpduReference, _tpduReferenceErr := io.ReadUint16("tpduReference", 16)
 	if _tpduReferenceErr != nil {
 		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := io.ReadUint16(16)
+	parameterLength, _parameterLengthErr := io.ReadUint16("parameterLength", 16)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength, _payloadLengthErr := io.ReadUint16(16)
+	payloadLength, _payloadLengthErr := io.ReadUint16("payloadLength", 16)
 	_ = payloadLength
 	if _payloadLengthErr != nil {
 		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field")
@@ -222,6 +223,8 @@ func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 		}
 		payload = _val
 	}
+
+	io.CloseContext("S7Message")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, tpduReference, parameter, payload)

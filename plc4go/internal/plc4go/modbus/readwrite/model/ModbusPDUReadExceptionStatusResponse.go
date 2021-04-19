@@ -111,12 +111,15 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadExceptionStatusResponse")
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint8(8)
+	value, _valueErr := io.ReadUint8("value", 8)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+
+	io.CloseContext("ModbusPDUReadExceptionStatusResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusResponse{

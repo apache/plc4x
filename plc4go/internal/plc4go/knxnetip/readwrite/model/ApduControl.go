@@ -100,9 +100,10 @@ func (m *ApduControl) LengthInBytes() uint16 {
 }
 
 func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
+	io.PullContext("ApduControl")
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType, _controlTypeErr := io.ReadUint8(2)
+	controlType, _controlTypeErr := io.ReadUint8("controlType", 2)
 	if _controlTypeErr != nil {
 		return nil, errors.Wrap(_controlTypeErr, "Error parsing 'controlType' field")
 	}
@@ -126,6 +127,8 @@ func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ApduControl")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

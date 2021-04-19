@@ -97,6 +97,9 @@ func (m *ApduDataExtDomainAddressSelectiveRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSelectiveReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtDomainAddressSelectiveRead")
+
+	io.CloseContext("ApduDataExtDomainAddressSelectiveRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSelectiveRead{

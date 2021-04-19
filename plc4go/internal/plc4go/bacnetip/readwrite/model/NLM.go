@@ -107,9 +107,10 @@ func (m *NLM) LengthInBytes() uint16 {
 }
 
 func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
+	io.PullContext("NLM")
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := io.ReadUint8(8)
+	messageType, _messageTypeErr := io.ReadUint8("messageType", 8)
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field")
 	}
@@ -117,7 +118,7 @@ func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
 	var vendorId *uint16 = nil
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
-		_val, _err := io.ReadUint16(16)
+		_val, _err := io.ReadUint16("vendorId", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
 		}
@@ -139,6 +140,8 @@ func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("NLM")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, vendorId)

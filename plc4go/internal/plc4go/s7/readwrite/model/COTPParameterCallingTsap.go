@@ -103,12 +103,15 @@ func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
 }
 
 func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	io.PullContext("COTPParameterCallingTsap")
 
 	// Simple Field (tsapId)
-	tsapId, _tsapIdErr := io.ReadUint16(16)
+	tsapId, _tsapIdErr := io.ReadUint16("tsapId", 16)
 	if _tsapIdErr != nil {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
+
+	io.CloseContext("COTPParameterCallingTsap")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterCallingTsap{

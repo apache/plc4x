@@ -103,16 +103,17 @@ func (m *ConnectionRequestInformation) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	io.PullContext("ConnectionRequestInformation")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType, _connectionTypeErr := io.ReadUint8(8)
+	connectionType, _connectionTypeErr := io.ReadUint8("connectionType", 8)
 	if _connectionTypeErr != nil {
 		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field")
 	}
@@ -132,6 +133,8 @@ func ConnectionRequestInformationParse(io utils.ReadBuffer) (*ConnectionRequestI
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ConnectionRequestInformation")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

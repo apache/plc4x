@@ -97,6 +97,9 @@ func (m *BACnetServiceAckVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckVTOpen")
+
+	io.CloseContext("BACnetServiceAckVTOpen")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTOpen{

@@ -257,7 +257,7 @@ func (m ReservedIndexGroups) LengthInBytes() uint16 {
 }
 
 func ReservedIndexGroupsParse(io utils.ReadBuffer) (ReservedIndexGroups, error) {
-	val, err := io.ReadUint32(32)
+	val, err := io.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, nil
 	}

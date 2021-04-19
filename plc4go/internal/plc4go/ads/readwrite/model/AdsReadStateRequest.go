@@ -101,6 +101,9 @@ func (m *AdsReadStateRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadStateRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadStateRequest")
+
+	io.CloseContext("AdsReadStateRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsReadStateRequest{

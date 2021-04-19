@@ -107,6 +107,7 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	io.PullContext("ConnectionRequestInformationTunnelConnection")
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
@@ -116,7 +117,7 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -127,6 +128,8 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("ConnectionRequestInformationTunnelConnection")
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationTunnelConnection{

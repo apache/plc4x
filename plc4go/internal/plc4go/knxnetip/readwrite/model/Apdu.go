@@ -108,21 +108,22 @@ func (m *Apdu) LengthInBytes() uint16 {
 }
 
 func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+	io.PullContext("Apdu")
 
 	// Discriminator Field (control) (Used as input to a switch field)
-	control, _controlErr := io.ReadUint8(1)
+	control, _controlErr := io.ReadUint8("control", 1)
 	if _controlErr != nil {
 		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field")
 	}
 
 	// Simple Field (numbered)
-	numbered, _numberedErr := io.ReadBit()
+	numbered, _numberedErr := io.ReadBit("numbered")
 	if _numberedErr != nil {
 		return nil, errors.Wrap(_numberedErr, "Error parsing 'numbered' field")
 	}
 
 	// Simple Field (counter)
-	counter, _counterErr := io.ReadUint8(4)
+	counter, _counterErr := io.ReadUint8("counter", 4)
 	if _counterErr != nil {
 		return nil, errors.Wrap(_counterErr, "Error parsing 'counter' field")
 	}
@@ -142,6 +143,8 @@ func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("Apdu")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, numbered, counter)

@@ -6370,7 +6370,7 @@ func (m KnxDatapointType) LengthInBytes() uint16 {
 }
 
 func KnxDatapointTypeParse(io utils.ReadBuffer) (KnxDatapointType, error) {
-	val, err := io.ReadUint32(32)
+	val, err := io.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, nil
 	}

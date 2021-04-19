@@ -107,12 +107,15 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsDeleteDeviceNotificationRequest")
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+
+	io.CloseContext("AdsDeleteDeviceNotificationRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationRequest{

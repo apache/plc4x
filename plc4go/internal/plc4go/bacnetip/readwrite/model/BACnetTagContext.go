@@ -111,6 +111,8 @@ func (m *BACnetTagContext) LengthInBytes() uint16 {
 }
 
 func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+	io.PullContext("BACnetTagContext")
+	io.PullContext("data")
 
 	// Array field (data)
 	// Length array
@@ -118,12 +120,14 @@ func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNum
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(extLength) }, func() uint16 { return uint16(lengthValueType) })
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
+
+	io.CloseContext("BACnetTagContext")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagContext{

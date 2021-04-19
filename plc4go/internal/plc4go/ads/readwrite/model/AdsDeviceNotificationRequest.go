@@ -122,18 +122,20 @@ func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsDeviceNotificationRequest")
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (stamps)
-	stamps, _stampsErr := io.ReadUint32(32)
+	stamps, _stampsErr := io.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
 		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
 	}
+	io.PullContext("adsStampHeaders")
 
 	// Array field (adsStampHeaders)
 	// Count array
@@ -145,6 +147,8 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		adsStampHeaders[curItem] = _item
 	}
+
+	io.CloseContext("AdsDeviceNotificationRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationRequest{

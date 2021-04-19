@@ -108,18 +108,21 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataMemoryRead")
 
 	// Simple Field (numBytes)
-	numBytes, _numBytesErr := io.ReadUint8(6)
+	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
 	if _numBytesErr != nil {
 		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+
+	io.CloseContext("ApduDataMemoryRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryRead{

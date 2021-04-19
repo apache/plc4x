@@ -92,19 +92,21 @@ func (m *DIBSuppSvcFamilies) LengthInBytes() uint16 {
 }
 
 func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
+	io.PullContext("DIBSuppSvcFamilies")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType, _descriptionTypeErr := io.ReadUint8(8)
+	descriptionType, _descriptionTypeErr := io.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
+	io.PullContext("serviceIds")
 
 	// Array field (serviceIds)
 	// Length array
@@ -118,6 +120,8 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 		}
 		serviceIds = append(serviceIds, _item)
 	}
+
+	io.CloseContext("DIBSuppSvcFamilies")
 
 	// Create the instance
 	return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil

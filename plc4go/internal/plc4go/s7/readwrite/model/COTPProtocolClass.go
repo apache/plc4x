@@ -107,7 +107,7 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
 }
 
 func COTPProtocolClassParse(io utils.ReadBuffer) (COTPProtocolClass, error) {
-	val, err := io.ReadInt8(8)
+	val, err := io.ReadInt8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, nil
 	}

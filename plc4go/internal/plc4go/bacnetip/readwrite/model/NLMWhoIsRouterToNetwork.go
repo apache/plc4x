@@ -106,6 +106,8 @@ func (m *NLMWhoIsRouterToNetwork) LengthInBytes() uint16 {
 }
 
 func NLMWhoIsRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+	io.PullContext("NLMWhoIsRouterToNetwork")
+	io.PullContext("destinationNetworkAddress")
 
 	// Array field (destinationNetworkAddress)
 	// Length array
@@ -113,12 +115,14 @@ func NLMWhoIsRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messag
 	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() uint16 { return uint16(uint16(3)) }, func() uint16 { return uint16(uint16(1)) })))
 	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
-		_item, _err := io.ReadUint16(16)
+		_item, _err := io.ReadUint16("", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
+
+	io.CloseContext("NLMWhoIsRouterToNetwork")
 
 	// Create a partially initialized instance
 	_child := &NLMWhoIsRouterToNetwork{

@@ -124,36 +124,40 @@ func (m *AdsWriteRequest) LengthInBytes() uint16 {
 }
 
 func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsWriteRequest")
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := io.ReadUint32(32)
+	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := io.ReadUint32(32)
+	indexOffset, _indexOffsetErr := io.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("AdsWriteRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsWriteRequest{

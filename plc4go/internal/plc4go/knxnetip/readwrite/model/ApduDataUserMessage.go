@@ -97,6 +97,9 @@ func (m *ApduDataUserMessage) LengthInBytes() uint16 {
 }
 
 func ApduDataUserMessageParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataUserMessage")
+
+	io.CloseContext("ApduDataUserMessage")
 
 	// Create a partially initialized instance
 	_child := &ApduDataUserMessage{

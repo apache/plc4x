@@ -100,9 +100,10 @@ func (m *ApduDataExt) LengthInBytes() uint16 {
 }
 
 func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExt")
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
-	extApciType, _extApciTypeErr := io.ReadUint8(6)
+	extApciType, _extApciTypeErr := io.ReadUint8("extApciType", 6)
 	if _extApciTypeErr != nil {
 		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field")
 	}
@@ -200,6 +201,8 @@ func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ApduDataExt")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

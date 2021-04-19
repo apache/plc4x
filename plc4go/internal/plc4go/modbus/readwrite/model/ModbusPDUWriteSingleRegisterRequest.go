@@ -116,18 +116,21 @@ func (m *ModbusPDUWriteSingleRegisterRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteSingleRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUWriteSingleRegisterRequest")
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint16(16)
+	value, _valueErr := io.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+
+	io.CloseContext("ModbusPDUWriteSingleRegisterRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleRegisterRequest{

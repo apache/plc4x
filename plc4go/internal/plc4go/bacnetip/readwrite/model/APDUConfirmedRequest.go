@@ -152,28 +152,29 @@ func (m *APDUConfirmedRequest) LengthInBytes() uint16 {
 }
 
 func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+	io.PullContext("APDUConfirmedRequest")
 
 	// Simple Field (segmentedMessage)
-	segmentedMessage, _segmentedMessageErr := io.ReadBit()
+	segmentedMessage, _segmentedMessageErr := io.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
 
 	// Simple Field (moreFollows)
-	moreFollows, _moreFollowsErr := io.ReadBit()
+	moreFollows, _moreFollowsErr := io.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
 
 	// Simple Field (segmentedResponseAccepted)
-	segmentedResponseAccepted, _segmentedResponseAcceptedErr := io.ReadBit()
+	segmentedResponseAccepted, _segmentedResponseAcceptedErr := io.ReadBit("segmentedResponseAccepted")
 	if _segmentedResponseAcceptedErr != nil {
 		return nil, errors.Wrap(_segmentedResponseAcceptedErr, "Error parsing 'segmentedResponseAccepted' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(2)
+		reserved, _err := io.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -186,19 +187,19 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 	}
 
 	// Simple Field (maxSegmentsAccepted)
-	maxSegmentsAccepted, _maxSegmentsAcceptedErr := io.ReadUint8(3)
+	maxSegmentsAccepted, _maxSegmentsAcceptedErr := io.ReadUint8("maxSegmentsAccepted", 3)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field")
 	}
 
 	// Simple Field (maxApduLengthAccepted)
-	maxApduLengthAccepted, _maxApduLengthAcceptedErr := io.ReadUint8(4)
+	maxApduLengthAccepted, _maxApduLengthAcceptedErr := io.ReadUint8("maxApduLengthAccepted", 4)
 	if _maxApduLengthAcceptedErr != nil {
 		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field")
 	}
 
 	// Simple Field (invokeId)
-	invokeId, _invokeIdErr := io.ReadUint8(8)
+	invokeId, _invokeIdErr := io.ReadUint8("invokeId", 8)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
@@ -206,7 +207,7 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("sequenceNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field")
 		}
@@ -216,7 +217,7 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("proposedWindowSize", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field")
 		}
@@ -228,6 +229,8 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+
+	io.CloseContext("APDUConfirmedRequest")
 
 	// Create a partially initialized instance
 	_child := &APDUConfirmedRequest{

@@ -110,9 +110,10 @@ func (m *BVLC) LengthInBytes() uint16 {
 }
 
 func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLC")
 
 	// Const Field (bacnetType)
-	bacnetType, _bacnetTypeErr := io.ReadUint8(8)
+	bacnetType, _bacnetTypeErr := io.ReadUint8("bacnetType", 8)
 	if _bacnetTypeErr != nil {
 		return nil, errors.Wrap(_bacnetTypeErr, "Error parsing 'bacnetType' field")
 	}
@@ -121,13 +122,13 @@ func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction, _bvlcFunctionErr := io.ReadUint8(8)
+	bvlcFunction, _bvlcFunctionErr := io.ReadUint8("bvlcFunction", 8)
 	if _bvlcFunctionErr != nil {
 		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	bvlcLength, _bvlcLengthErr := io.ReadUint16(16)
+	bvlcLength, _bvlcLengthErr := io.ReadUint16("bvlcLength", 16)
 	_ = bvlcLength
 	if _bvlcLengthErr != nil {
 		return nil, errors.Wrap(_bvlcLengthErr, "Error parsing 'bvlcLength' field")
@@ -170,6 +171,8 @@ func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BVLC")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

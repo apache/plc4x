@@ -116,18 +116,21 @@ func (m *ModbusPDUDiagnosticResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUDiagnosticResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUDiagnosticResponse")
 
 	// Simple Field (subFunction)
-	subFunction, _subFunctionErr := io.ReadUint16(16)
+	subFunction, _subFunctionErr := io.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
 
 	// Simple Field (data)
-	data, _dataErr := io.ReadUint16(16)
+	data, _dataErr := io.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+
+	io.CloseContext("ModbusPDUDiagnosticResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUDiagnosticResponse{

@@ -98,6 +98,7 @@ func (m *AdsMultiRequestItem) LengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemParse(io utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
+	io.PullContext("AdsMultiRequestItem")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsMultiRequestItem
@@ -116,6 +117,8 @@ func AdsMultiRequestItemParse(io utils.ReadBuffer, indexGroup uint32) (*AdsMulti
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("AdsMultiRequestItem")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

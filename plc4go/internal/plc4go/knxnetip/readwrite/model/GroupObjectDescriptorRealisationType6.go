@@ -76,6 +76,9 @@ func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType6Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
+	io.PullContext("GroupObjectDescriptorRealisationType6")
+
+	io.CloseContext("GroupObjectDescriptorRealisationType6")
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType6(), nil

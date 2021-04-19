@@ -100,9 +100,10 @@ func (m *BACnetUnconfirmedServiceRequest) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestParse(io utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequest")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -142,6 +143,8 @@ func BACnetUnconfirmedServiceRequestParse(io utils.ReadBuffer, len uint16) (*BAC
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BACnetUnconfirmedServiceRequest")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

@@ -121,24 +121,27 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUMaskWriteHoldingRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest")
 
 	// Simple Field (referenceAddress)
-	referenceAddress, _referenceAddressErr := io.ReadUint16(16)
+	referenceAddress, _referenceAddressErr := io.ReadUint16("referenceAddress", 16)
 	if _referenceAddressErr != nil {
 		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field")
 	}
 
 	// Simple Field (andMask)
-	andMask, _andMaskErr := io.ReadUint16(16)
+	andMask, _andMaskErr := io.ReadUint16("andMask", 16)
 	if _andMaskErr != nil {
 		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field")
 	}
 
 	// Simple Field (orMask)
-	orMask, _orMaskErr := io.ReadUint16(16)
+	orMask, _orMaskErr := io.ReadUint16("orMask", 16)
 	if _orMaskErr != nil {
 		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
 	}
+
+	io.CloseContext("ModbusPDUMaskWriteHoldingRegisterRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUMaskWriteHoldingRegisterRequest{

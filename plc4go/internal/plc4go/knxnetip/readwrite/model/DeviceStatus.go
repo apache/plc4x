@@ -85,10 +85,11 @@ func (m *DeviceStatus) LengthInBytes() uint16 {
 }
 
 func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
+	io.PullContext("DeviceStatus")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(7)
+		reserved, _err := io.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -101,10 +102,12 @@ func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
 	}
 
 	// Simple Field (programMode)
-	programMode, _programModeErr := io.ReadBit()
+	programMode, _programModeErr := io.ReadBit("programMode")
 	if _programModeErr != nil {
 		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
 	}
+
+	io.CloseContext("DeviceStatus")
 
 	// Create the instance
 	return NewDeviceStatus(programMode), nil

@@ -89,24 +89,27 @@ func (m *KnxAddress) LengthInBytes() uint16 {
 }
 
 func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
+	io.PullContext("KnxAddress")
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(4)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 4)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := io.ReadUint8(4)
+	middleGroup, _middleGroupErr := io.ReadUint8("middleGroup", 4)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint8(8)
+	subGroup, _subGroupErr := io.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+
+	io.CloseContext("KnxAddress")
 
 	// Create the instance
 	return NewKnxAddress(mainGroup, middleGroup, subGroup), nil

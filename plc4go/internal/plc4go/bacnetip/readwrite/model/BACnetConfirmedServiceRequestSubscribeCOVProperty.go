@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+
+	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{

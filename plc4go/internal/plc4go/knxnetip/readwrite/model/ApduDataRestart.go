@@ -97,6 +97,9 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 }
 
 func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataRestart")
+
+	io.CloseContext("ApduDataRestart")
 
 	// Create a partially initialized instance
 	_child := &ApduDataRestart{

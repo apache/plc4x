@@ -105,6 +105,9 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventLogRequest")
+
+	io.CloseContext("ModbusPDUGetComEventLogRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{

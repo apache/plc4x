@@ -128,22 +128,22 @@ func main() {
 			applicationVersionMajor := uint8(0)
 			applicationVersionMinor := uint8(0)
 			if rb.GetTotalBytes() == 5 {
-				manufacturerId, err = rb.ReadUint16(16)
+				manufacturerId, err = rb.ReadUint16("manufacturerId", 16)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading manufacturer id from")
 					return false
 				}
-				applicationId, err = rb.ReadUint16(16)
+				applicationId, err = rb.ReadUint16("applicationId", 16)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application id from")
 					return false
 				}
-				applicationVersionMajor, err = rb.ReadUint8(4)
+				applicationVersionMajor, err = rb.ReadUint8("applicationVersionMajor", 4)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application version major from %s", knxAddress)
 					return false
 				}
-				applicationVersionMinor, err = rb.ReadUint8(4)
+				applicationVersionMinor, err = rb.ReadUint8("applicationVersionMinor", 4)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application version minor from %s", knxAddress)
 					return false

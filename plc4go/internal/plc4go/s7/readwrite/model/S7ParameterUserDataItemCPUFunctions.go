@@ -148,40 +148,41 @@ func (m *S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
 }
 
 func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
+	io.PullContext("S7ParameterUserDataItemCPUFunctions")
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := io.ReadUint8(8)
+	itemLength, _itemLengthErr := io.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
 	// Simple Field (method)
-	method, _methodErr := io.ReadUint8(8)
+	method, _methodErr := io.ReadUint8("method", 8)
 	if _methodErr != nil {
 		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field")
 	}
 
 	// Simple Field (cpuFunctionType)
-	cpuFunctionType, _cpuFunctionTypeErr := io.ReadUint8(4)
+	cpuFunctionType, _cpuFunctionTypeErr := io.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
 		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field")
 	}
 
 	// Simple Field (cpuFunctionGroup)
-	cpuFunctionGroup, _cpuFunctionGroupErr := io.ReadUint8(4)
+	cpuFunctionGroup, _cpuFunctionGroupErr := io.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
 		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field")
 	}
 
 	// Simple Field (cpuSubfunction)
-	cpuSubfunction, _cpuSubfunctionErr := io.ReadUint8(8)
+	cpuSubfunction, _cpuSubfunctionErr := io.ReadUint8("cpuSubfunction", 8)
 	if _cpuSubfunctionErr != nil {
 		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field")
 	}
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
@@ -189,7 +190,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var dataUnitReferenceNumber *uint8 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("dataUnitReferenceNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'dataUnitReferenceNumber' field")
 		}
@@ -199,7 +200,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 	// Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
 	var lastDataUnit *uint8 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("lastDataUnit", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'lastDataUnit' field")
 		}
@@ -209,12 +210,14 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 	// Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
 	var errorCode *uint16 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val, _err := io.ReadUint16(16)
+		_val, _err := io.ReadUint16("errorCode", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode = &_val
 	}
+
+	io.CloseContext("S7ParameterUserDataItemCPUFunctions")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterUserDataItemCPUFunctions{

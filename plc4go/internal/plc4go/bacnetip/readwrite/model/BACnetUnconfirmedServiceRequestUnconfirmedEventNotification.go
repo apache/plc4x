@@ -97,6 +97,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInBy
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{

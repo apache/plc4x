@@ -208,7 +208,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 				}
 				// If the size of the field is greater than 6, we have to skip the first byte
 				if field.GetFieldType().LengthInBits() > 6 {
-					_, _ = rb.ReadUint8(8)
+					_, _ = rb.ReadUint8("fieldType", 8)
 				}
 				plcValue, err := driverModel.KnxDatapointParse(rb, *field.GetFieldType())
 				// If any of the values doesn't decode correctly, we can't return any

@@ -122,9 +122,10 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+	io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 
 	// Const Field (szlItemLength)
-	szlItemLength, _szlItemLengthErr := io.ReadUint16(16)
+	szlItemLength, _szlItemLengthErr := io.ReadUint16("szlItemLength", 16)
 	if _szlItemLengthErr != nil {
 		return nil, errors.Wrap(_szlItemLengthErr, "Error parsing 'szlItemLength' field")
 	}
@@ -133,11 +134,12 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 	}
 
 	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	szlItemCount, _szlItemCountErr := io.ReadUint16(16)
+	szlItemCount, _szlItemCountErr := io.ReadUint16("szlItemCount", 16)
 	_ = szlItemCount
 	if _szlItemCountErr != nil {
 		return nil, errors.Wrap(_szlItemCountErr, "Error parsing 'szlItemCount' field")
 	}
+	io.PullContext("items")
 
 	// Array field (items)
 	// Count array
@@ -149,6 +151,8 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 		}
 		items[curItem] = _item
 	}
+
+	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{

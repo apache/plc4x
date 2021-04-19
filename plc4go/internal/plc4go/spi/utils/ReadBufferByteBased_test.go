@@ -250,7 +250,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadBigFloat(tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadBigFloat("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadBigFloat() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -289,7 +289,7 @@ func TestReadBuffer_ReadBigInt(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadBigInt(tt.args.bitLength)
+			got, err := rb.ReadBigInt("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadBigInt() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -324,7 +324,7 @@ func TestReadBuffer_ReadBit(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadBit()
+			got, err := rb.ReadBit("")
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadBit() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -365,7 +365,7 @@ func TestReadBuffer_ReadFloat32(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadFloat32(tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadFloat32("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadFloat32() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1367,7 +1367,7 @@ func TestReadBuffer_ReadFloat64(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadFloat64(tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
+			got, err := rb.ReadFloat64("", tt.args.signed, tt.args.exponentBitLength, tt.args.mantissaBitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadFloat64() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1407,7 +1407,7 @@ func TestReadBuffer_ReadInt16(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadInt16(tt.args.bitLength)
+			got, err := rb.ReadInt16("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadInt16() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1446,7 +1446,7 @@ func TestReadBuffer_ReadInt32(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadInt32(tt.args.bitLength)
+			got, err := rb.ReadInt32("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadInt32() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1485,7 +1485,7 @@ func TestReadBuffer_ReadInt64(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadInt64(tt.args.bitLength)
+			got, err := rb.ReadInt64("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadInt64() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1524,7 +1524,7 @@ func TestReadBuffer_ReadInt8(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadInt8(tt.args.bitLength)
+			got, err := rb.ReadInt8("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadInt8() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1563,7 +1563,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadString(tt.args.bitLength)
+			got, err := rb.ReadString("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadString() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1602,7 +1602,7 @@ func TestReadBuffer_ReadUint16(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadUint16(tt.args.bitLength)
+			got, err := rb.ReadUint16("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadUint16() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1790,7 +1790,7 @@ func TestReadBuffer_ReadUint32(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadUint32(tt.args.bitLength)
+			got, err := rb.ReadUint32("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadUint32() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1829,7 +1829,7 @@ func TestReadBuffer_ReadUint64(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadUint64(tt.args.bitLength)
+			got, err := rb.ReadUint64("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadUint64() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -1868,7 +1868,7 @@ func TestReadBuffer_ReadUint8(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadUint8(tt.args.bitLength)
+			got, err := rb.ReadUint8("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadUint8() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -103,12 +103,15 @@ func (m *TunnelingResponse) LengthInBytes() uint16 {
 }
 
 func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("TunnelingResponse")
 
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
+
+	io.CloseContext("TunnelingResponse")
 
 	// Create a partially initialized instance
 	_child := &TunnelingResponse{

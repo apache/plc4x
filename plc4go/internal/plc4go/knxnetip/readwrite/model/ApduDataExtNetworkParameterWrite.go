@@ -97,6 +97,9 @@ func (m *ApduDataExtNetworkParameterWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtNetworkParameterWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtNetworkParameterWrite")
+
+	io.CloseContext("ApduDataExtNetworkParameterWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterWrite{

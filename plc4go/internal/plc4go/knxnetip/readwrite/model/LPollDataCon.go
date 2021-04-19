@@ -97,6 +97,9 @@ func (m *LPollDataCon) LengthInBytes() uint16 {
 }
 
 func LPollDataConParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LPollDataCon")
+
+	io.CloseContext("LPollDataCon")
 
 	// Create a partially initialized instance
 	_child := &LPollDataCon{

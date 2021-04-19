@@ -117,10 +117,11 @@ func (m *APDUAbort) LengthInBytes() uint16 {
 }
 
 func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUAbort")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(3)
+		reserved, _err := io.ReadUint8("reserved", 3)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -133,22 +134,24 @@ func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (server)
-	server, _serverErr := io.ReadBit()
+	server, _serverErr := io.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (abortReason)
-	abortReason, _abortReasonErr := io.ReadUint8(8)
+	abortReason, _abortReasonErr := io.ReadUint8("abortReason", 8)
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
+
+	io.CloseContext("APDUAbort")
 
 	// Create a partially initialized instance
 	_child := &APDUAbort{

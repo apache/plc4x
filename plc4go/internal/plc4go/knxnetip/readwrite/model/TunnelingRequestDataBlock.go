@@ -92,29 +92,30 @@ func (m *TunnelingRequestDataBlock) LengthInBytes() uint16 {
 }
 
 func TunnelingRequestDataBlockParse(io utils.ReadBuffer) (*TunnelingRequestDataBlock, error) {
+	io.PullContext("TunnelingRequestDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
-	sequenceCounter, _sequenceCounterErr := io.ReadUint8(8)
+	sequenceCounter, _sequenceCounterErr := io.ReadUint8("sequenceCounter", 8)
 	if _sequenceCounterErr != nil {
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -125,6 +126,8 @@ func TunnelingRequestDataBlockParse(io utils.ReadBuffer) (*TunnelingRequestDataB
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("TunnelingRequestDataBlock")
 
 	// Create the instance
 	return NewTunnelingRequestDataBlock(communicationChannelId, sequenceCounter), nil

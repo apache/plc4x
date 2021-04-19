@@ -101,9 +101,10 @@ func (m *S7Parameter) LengthInBytes() uint16 {
 }
 
 func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
+	io.PullContext("S7Parameter")
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := io.ReadUint8(8)
+	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
@@ -131,6 +132,8 @@ func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, err
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7Parameter")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

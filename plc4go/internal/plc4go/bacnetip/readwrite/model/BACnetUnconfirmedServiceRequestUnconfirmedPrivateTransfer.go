@@ -136,9 +136,10 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInByte
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
 
 	// Const Field (vendorIdHeader)
-	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
+	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8("vendorIdHeader", 8)
 	if _vendorIdHeaderErr != nil {
 		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
@@ -147,13 +148,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	}
 
 	// Simple Field (vendorId)
-	vendorId, _vendorIdErr := io.ReadUint8(8)
+	vendorId, _vendorIdErr := io.ReadUint8("vendorId", 8)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
 
 	// Const Field (serviceNumberHeader)
-	serviceNumberHeader, _serviceNumberHeaderErr := io.ReadUint8(8)
+	serviceNumberHeader, _serviceNumberHeaderErr := io.ReadUint8("serviceNumberHeader", 8)
 	if _serviceNumberHeaderErr != nil {
 		return nil, errors.Wrap(_serviceNumberHeaderErr, "Error parsing 'serviceNumberHeader' field")
 	}
@@ -162,19 +163,20 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	}
 
 	// Simple Field (serviceNumber)
-	serviceNumber, _serviceNumberErr := io.ReadUint16(16)
+	serviceNumber, _serviceNumberErr := io.ReadUint16("serviceNumber", 16)
 	if _serviceNumberErr != nil {
 		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field")
 	}
 
 	// Const Field (listOfValuesOpeningTag)
-	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8(8)
+	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8("listOfValuesOpeningTag", 8)
 	if _listOfValuesOpeningTagErr != nil {
 		return nil, errors.Wrap(_listOfValuesOpeningTagErr, "Error parsing 'listOfValuesOpeningTag' field")
 	}
 	if listOfValuesOpeningTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
 	}
+	io.PullContext("values")
 
 	// Array field (values)
 	// Length array
@@ -182,7 +184,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	_valuesLength := uint16(len) - uint16(uint16(8))
 	_valuesEndPos := io.GetPos() + uint16(_valuesLength)
 	for io.GetPos() < _valuesEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'values' field")
 		}
@@ -190,13 +192,15 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	}
 
 	// Const Field (listOfValuesClosingTag)
-	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8(8)
+	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)
 	if _listOfValuesClosingTagErr != nil {
 		return nil, errors.Wrap(_listOfValuesClosingTagErr, "Error parsing 'listOfValuesClosingTag' field")
 	}
 	if listOfValuesClosingTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
 	}
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{

@@ -144,21 +144,22 @@ func (m *LDataExtended) LengthInBytes() uint16 {
 }
 
 func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	io.PullContext("LDataExtended")
 
 	// Simple Field (groupAddress)
-	groupAddress, _groupAddressErr := io.ReadBit()
+	groupAddress, _groupAddressErr := io.ReadBit("groupAddress")
 	if _groupAddressErr != nil {
 		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field")
 	}
 
 	// Simple Field (hopCount)
-	hopCount, _hopCountErr := io.ReadUint8(3)
+	hopCount, _hopCountErr := io.ReadUint8("hopCount", 3)
 	if _hopCountErr != nil {
 		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field")
 	}
 
 	// Simple Field (extendedFrameFormat)
-	extendedFrameFormat, _extendedFrameFormatErr := io.ReadUint8(4)
+	extendedFrameFormat, _extendedFrameFormatErr := io.ReadUint8("extendedFrameFormat", 4)
 	if _extendedFrameFormatErr != nil {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
 	}
@@ -168,12 +169,13 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	io.PullContext("destinationAddress")
 
 	// Array field (destinationAddress)
 	// Count array
 	destinationAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
 		}
@@ -181,7 +183,7 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint8(8)
+	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
@@ -192,6 +194,8 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}
+
+	io.CloseContext("LDataExtended")
 
 	// Create a partially initialized instance
 	_child := &LDataExtended{

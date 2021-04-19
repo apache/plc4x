@@ -111,12 +111,15 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadFifoQueueRequest")
 
 	// Simple Field (fifoPointerAddress)
-	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
+	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16("fifoPointerAddress", 16)
 	if _fifoPointerAddressErr != nil {
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
+
+	io.CloseContext("ModbusPDUReadFifoQueueRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueRequest{

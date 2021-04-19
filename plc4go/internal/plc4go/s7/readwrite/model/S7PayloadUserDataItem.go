@@ -117,6 +117,7 @@ func (m *S7PayloadUserDataItem) LengthInBytes() uint16 {
 }
 
 func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7PayloadUserDataItem, error) {
+	io.PullContext("S7PayloadUserDataItem")
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -131,7 +132,7 @@ func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint16(16)
+	dataLength, _dataLengthErr := io.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
@@ -144,7 +145,7 @@ func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7
 	}
 
 	// Simple Field (szlIndex)
-	szlIndex, _szlIndexErr := io.ReadUint16(16)
+	szlIndex, _szlIndexErr := io.ReadUint16("szlIndex", 16)
 	if _szlIndexErr != nil {
 		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field")
 	}
@@ -164,6 +165,8 @@ func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7PayloadUserDataItem")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, returnCode, transportSize, szlId, szlIndex)

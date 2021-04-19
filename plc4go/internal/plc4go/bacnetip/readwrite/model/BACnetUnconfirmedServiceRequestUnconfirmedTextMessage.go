@@ -97,6 +97,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBytes() 
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{

@@ -108,6 +108,7 @@ func (m *DescriptionResponse) LengthInBytes() uint16 {
 }
 
 func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("DescriptionResponse")
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
@@ -120,6 +121,8 @@ func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+
+	io.CloseContext("DescriptionResponse")
 
 	// Create a partially initialized instance
 	_child := &DescriptionResponse{

@@ -118,24 +118,28 @@ func (m *ModbusPDUReadCoilsResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadCoilsResponse")
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
+	io.PullContext("value")
 
 	// Array field (value)
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
 	}
+
+	io.CloseContext("ModbusPDUReadCoilsResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadCoilsResponse{

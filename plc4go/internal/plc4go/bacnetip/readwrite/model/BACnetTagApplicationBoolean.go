@@ -101,6 +101,9 @@ func (m *BACnetTagApplicationBoolean) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationBooleanParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationBoolean")
+
+	io.CloseContext("BACnetTagApplicationBoolean")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationBoolean{

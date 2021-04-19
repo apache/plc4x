@@ -85,18 +85,21 @@ func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
 }
 
 func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
+	io.PullContext("ProjectInstallationIdentifier")
 
 	// Simple Field (projectNumber)
-	projectNumber, _projectNumberErr := io.ReadUint8(8)
+	projectNumber, _projectNumberErr := io.ReadUint8("projectNumber", 8)
 	if _projectNumberErr != nil {
 		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
-	installationNumber, _installationNumberErr := io.ReadUint8(8)
+	installationNumber, _installationNumberErr := io.ReadUint8("installationNumber", 8)
 	if _installationNumberErr != nil {
 		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
 	}
+
+	io.CloseContext("ProjectInstallationIdentifier")
 
 	// Create the instance
 	return NewProjectInstallationIdentifier(projectNumber, installationNumber), nil

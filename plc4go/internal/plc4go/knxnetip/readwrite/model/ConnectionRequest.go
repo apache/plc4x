@@ -113,6 +113,7 @@ func (m *ConnectionRequest) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("ConnectionRequest")
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
@@ -131,6 +132,8 @@ func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
+
+	io.CloseContext("ConnectionRequest")
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequest{

@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestReinitializeDevice")
+
+	io.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{

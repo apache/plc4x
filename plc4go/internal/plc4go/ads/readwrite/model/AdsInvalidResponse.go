@@ -101,6 +101,9 @@ func (m *AdsInvalidResponse) LengthInBytes() uint16 {
 }
 
 func AdsInvalidResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsInvalidResponse")
+
+	io.CloseContext("AdsInvalidResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsInvalidResponse{

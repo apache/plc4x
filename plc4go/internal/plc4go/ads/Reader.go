@@ -386,7 +386,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 				// TODO: the comment above seems strange as there is no such spec for response codes per field so maybe this is a speciality
 				break
 			}
-			responseCode, err := rb.ReadUint32(32)
+			responseCode, err := rb.ReadUint32("responseCode", 32)
 			if err != nil {
 				log.Error().Err(err).Str("fieldName", fieldName).Msgf("Error parsing field %s", fieldName)
 				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR

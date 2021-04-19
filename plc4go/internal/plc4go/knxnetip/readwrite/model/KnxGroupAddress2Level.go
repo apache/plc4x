@@ -108,18 +108,21 @@ func (m *KnxGroupAddress2Level) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddress2LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
+	io.PullContext("KnxGroupAddress2Level")
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(5)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(11)
+	subGroup, _subGroupErr := io.ReadUint16("subGroup", 11)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+
+	io.CloseContext("KnxGroupAddress2Level")
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress2Level{

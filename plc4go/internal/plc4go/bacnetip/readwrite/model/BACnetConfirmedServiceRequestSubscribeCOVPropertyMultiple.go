@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInByte
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
+
+	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{

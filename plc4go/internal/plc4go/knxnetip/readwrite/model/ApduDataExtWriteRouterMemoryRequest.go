@@ -97,6 +97,9 @@ func (m *ApduDataExtWriteRouterMemoryRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtWriteRouterMemoryRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtWriteRouterMemoryRequest")
+
+	io.CloseContext("ApduDataExtWriteRouterMemoryRequest")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtWriteRouterMemoryRequest{

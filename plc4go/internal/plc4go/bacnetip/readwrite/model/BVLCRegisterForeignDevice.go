@@ -97,6 +97,9 @@ func (m *BVLCRegisterForeignDevice) LengthInBytes() uint16 {
 }
 
 func BVLCRegisterForeignDeviceParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCRegisterForeignDevice")
+
+	io.CloseContext("BVLCRegisterForeignDevice")
 
 	// Create a partially initialized instance
 	_child := &BVLCRegisterForeignDevice{

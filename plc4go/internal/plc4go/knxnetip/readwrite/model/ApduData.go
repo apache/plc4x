@@ -100,9 +100,10 @@ func (m *ApduData) LengthInBytes() uint16 {
 }
 
 func ApduDataParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduData")
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
-	apciType, _apciTypeErr := io.ReadUint8(4)
+	apciType, _apciTypeErr := io.ReadUint8("apciType", 4)
 	if _apciTypeErr != nil {
 		return nil, errors.Wrap(_apciTypeErr, "Error parsing 'apciType' field")
 	}
@@ -150,6 +151,8 @@ func ApduDataParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ApduData")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

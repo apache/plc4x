@@ -107,12 +107,15 @@ func (m *AdsDeleteDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsDeleteDeviceNotificationResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+
+	io.CloseContext("AdsDeleteDeviceNotificationResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationResponse{

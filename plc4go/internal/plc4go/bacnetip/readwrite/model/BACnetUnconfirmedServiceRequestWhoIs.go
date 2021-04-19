@@ -135,9 +135,10 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestWhoIs")
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
-	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
+	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8("deviceInstanceRangeLowLimitHeader", 5)
 	if _deviceInstanceRangeLowLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeLowLimitHeaderErr, "Error parsing 'deviceInstanceRangeLowLimitHeader' field")
 	}
@@ -146,16 +147,17 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Simple Field (deviceInstanceRangeLowLimitLength)
-	deviceInstanceRangeLowLimitLength, _deviceInstanceRangeLowLimitLengthErr := io.ReadUint8(3)
+	deviceInstanceRangeLowLimitLength, _deviceInstanceRangeLowLimitLengthErr := io.ReadUint8("deviceInstanceRangeLowLimitLength", 3)
 	if _deviceInstanceRangeLowLimitLengthErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeLowLimitLengthErr, "Error parsing 'deviceInstanceRangeLowLimitLength' field")
 	}
+	io.PullContext("deviceInstanceRangeLowLimit")
 
 	// Array field (deviceInstanceRangeLowLimit)
 	// Count array
 	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		}
@@ -163,7 +165,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
-	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8(5)
+	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8("deviceInstanceRangeHighLimitHeader", 5)
 	if _deviceInstanceRangeHighLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeHighLimitHeaderErr, "Error parsing 'deviceInstanceRangeHighLimitHeader' field")
 	}
@@ -172,21 +174,24 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Simple Field (deviceInstanceRangeHighLimitLength)
-	deviceInstanceRangeHighLimitLength, _deviceInstanceRangeHighLimitLengthErr := io.ReadUint8(3)
+	deviceInstanceRangeHighLimitLength, _deviceInstanceRangeHighLimitLengthErr := io.ReadUint8("deviceInstanceRangeHighLimitLength", 3)
 	if _deviceInstanceRangeHighLimitLengthErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeHighLimitLengthErr, "Error parsing 'deviceInstanceRangeHighLimitLength' field")
 	}
+	io.PullContext("deviceInstanceRangeHighLimit")
 
 	// Array field (deviceInstanceRangeHighLimit)
 	// Count array
 	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
 	}
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoIs{

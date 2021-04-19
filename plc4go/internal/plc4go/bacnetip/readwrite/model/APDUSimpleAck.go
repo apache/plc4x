@@ -112,10 +112,11 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 }
 
 func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUSimpleAck")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -128,16 +129,18 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (serviceChoice)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
+
+	io.CloseContext("APDUSimpleAck")
 
 	// Create a partially initialized instance
 	_child := &APDUSimpleAck{

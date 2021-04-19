@@ -118,18 +118,20 @@ func (m *ComObjectTableRealisationType2) LengthInBytes() uint16 {
 }
 
 func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
+	io.PullContext("ComObjectTableRealisationType2")
 
 	// Simple Field (numEntries)
-	numEntries, _numEntriesErr := io.ReadUint8(8)
+	numEntries, _numEntriesErr := io.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
 		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
 	}
 
 	// Simple Field (ramFlagsTablePointer)
-	ramFlagsTablePointer, _ramFlagsTablePointerErr := io.ReadUint8(8)
+	ramFlagsTablePointer, _ramFlagsTablePointerErr := io.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
+	io.PullContext("comObjectDescriptors")
 
 	// Array field (comObjectDescriptors)
 	// Count array
@@ -141,6 +143,8 @@ func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, 
 		}
 		comObjectDescriptors[curItem] = _item
 	}
+
+	io.CloseContext("ComObjectTableRealisationType2")
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType2{

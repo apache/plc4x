@@ -103,12 +103,15 @@ func (m *DescriptionRequest) LengthInBytes() uint16 {
 }
 
 func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("DescriptionRequest")
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+
+	io.CloseContext("DescriptionRequest")
 
 	// Create a partially initialized instance
 	_child := &DescriptionRequest{

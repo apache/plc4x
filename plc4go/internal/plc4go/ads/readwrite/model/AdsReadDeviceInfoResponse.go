@@ -131,6 +131,7 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadDeviceInfoResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
@@ -139,33 +140,36 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Simple Field (majorVersion)
-	majorVersion, _majorVersionErr := io.ReadUint8(8)
+	majorVersion, _majorVersionErr := io.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field")
 	}
 
 	// Simple Field (minorVersion)
-	minorVersion, _minorVersionErr := io.ReadUint8(8)
+	minorVersion, _minorVersionErr := io.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field")
 	}
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint16(16)
+	version, _versionErr := io.ReadUint16("version", 16)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+	io.PullContext("device")
 
 	// Array field (device)
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'device' field")
 		}
 		device[curItem] = _item
 	}
+
+	io.CloseContext("AdsReadDeviceInfoResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoResponse{

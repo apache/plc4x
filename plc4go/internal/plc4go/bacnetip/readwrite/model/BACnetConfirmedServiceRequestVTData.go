@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestVTData) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestVTDataParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestVTData")
+
+	io.CloseContext("BACnetConfirmedServiceRequestVTData")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestVTData{

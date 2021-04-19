@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKConfirmedPrivateTransfer")
+
+	io.CloseContext("BACnetConfirmedServiceACKConfirmedPrivateTransfer")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKConfirmedPrivateTransfer{

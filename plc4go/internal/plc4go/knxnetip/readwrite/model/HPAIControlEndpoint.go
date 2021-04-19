@@ -92,9 +92,10 @@ func (m *HPAIControlEndpoint) LengthInBytes() uint16 {
 }
 
 func HPAIControlEndpointParse(io utils.ReadBuffer) (*HPAIControlEndpoint, error) {
+	io.PullContext("HPAIControlEndpoint")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
@@ -113,10 +114,12 @@ func HPAIControlEndpointParse(io utils.ReadBuffer) (*HPAIControlEndpoint, error)
 	}
 
 	// Simple Field (ipPort)
-	ipPort, _ipPortErr := io.ReadUint16(16)
+	ipPort, _ipPortErr := io.ReadUint16("ipPort", 16)
 	if _ipPortErr != nil {
 		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field")
 	}
+
+	io.CloseContext("HPAIControlEndpoint")
 
 	// Create the instance
 	return NewHPAIControlEndpoint(hostProtocolCode, ipAddress, ipPort), nil

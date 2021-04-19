@@ -97,6 +97,9 @@ func (m *LRawInd) LengthInBytes() uint16 {
 }
 
 func LRawIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LRawInd")
+
+	io.CloseContext("LRawInd")
 
 	// Create a partially initialized instance
 	_child := &LRawInd{

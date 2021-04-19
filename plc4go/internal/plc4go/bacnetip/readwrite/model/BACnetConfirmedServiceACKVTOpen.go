@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKVTOpenParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	io.PullContext("BACnetConfirmedServiceACKVTOpen")
+
+	io.CloseContext("BACnetConfirmedServiceACKVTOpen")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKVTOpen{

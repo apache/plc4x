@@ -97,6 +97,9 @@ func (m *ApduDataAdcRead) LengthInBytes() uint16 {
 }
 
 func ApduDataAdcReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataAdcRead")
+
+	io.CloseContext("ApduDataAdcRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataAdcRead{

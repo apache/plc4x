@@ -117,64 +117,65 @@ func (m *State) LengthInBytes() uint16 {
 }
 
 func StateParse(io utils.ReadBuffer) (*State, error) {
+	io.PullContext("State")
 
 	// Simple Field (initCommand)
-	initCommand, _initCommandErr := io.ReadBit()
+	initCommand, _initCommandErr := io.ReadBit("initCommand")
 	if _initCommandErr != nil {
 		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field")
 	}
 
 	// Simple Field (updCommand)
-	updCommand, _updCommandErr := io.ReadBit()
+	updCommand, _updCommandErr := io.ReadBit("updCommand")
 	if _updCommandErr != nil {
 		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field")
 	}
 
 	// Simple Field (timestampAdded)
-	timestampAdded, _timestampAddedErr := io.ReadBit()
+	timestampAdded, _timestampAddedErr := io.ReadBit("timestampAdded")
 	if _timestampAddedErr != nil {
 		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field")
 	}
 
 	// Simple Field (highPriorityCommand)
-	highPriorityCommand, _highPriorityCommandErr := io.ReadBit()
+	highPriorityCommand, _highPriorityCommandErr := io.ReadBit("highPriorityCommand")
 	if _highPriorityCommandErr != nil {
 		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field")
 	}
 
 	// Simple Field (systemCommand)
-	systemCommand, _systemCommandErr := io.ReadBit()
+	systemCommand, _systemCommandErr := io.ReadBit("systemCommand")
 	if _systemCommandErr != nil {
 		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field")
 	}
 
 	// Simple Field (adsCommand)
-	adsCommand, _adsCommandErr := io.ReadBit()
+	adsCommand, _adsCommandErr := io.ReadBit("adsCommand")
 	if _adsCommandErr != nil {
 		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field")
 	}
 
 	// Simple Field (noReturn)
-	noReturn, _noReturnErr := io.ReadBit()
+	noReturn, _noReturnErr := io.ReadBit("noReturn")
 	if _noReturnErr != nil {
 		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field")
 	}
 
 	// Simple Field (response)
-	response, _responseErr := io.ReadBit()
+	response, _responseErr := io.ReadBit("response")
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
 	}
 
 	// Simple Field (broadcast)
-	broadcast, _broadcastErr := io.ReadBit()
+	broadcast, _broadcastErr := io.ReadBit("broadcast")
 	if _broadcastErr != nil {
 		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadInt8(7)
+		reserved, _err := io.ReadInt8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -185,6 +186,8 @@ func StateParse(io utils.ReadBuffer) (*State, error) {
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("State")
 
 	// Create the instance
 	return NewState(initCommand, updCommand, timestampAdded, highPriorityCommand, systemCommand, adsCommand, noReturn, response, broadcast), nil

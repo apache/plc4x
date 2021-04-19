@@ -97,6 +97,9 @@ func (m *ApduDataExtLinkRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtLinkReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtLinkRead")
+
+	io.CloseContext("ApduDataExtLinkRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtLinkRead{

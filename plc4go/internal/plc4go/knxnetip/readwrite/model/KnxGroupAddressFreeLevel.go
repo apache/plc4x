@@ -103,12 +103,15 @@ func (m *KnxGroupAddressFreeLevel) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
+	io.PullContext("KnxGroupAddressFreeLevel")
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(16)
+	subGroup, _subGroupErr := io.ReadUint16("subGroup", 16)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+
+	io.CloseContext("KnxGroupAddressFreeLevel")
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddressFreeLevel{

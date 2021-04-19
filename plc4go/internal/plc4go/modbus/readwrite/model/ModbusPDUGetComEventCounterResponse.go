@@ -116,18 +116,21 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventCounterResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventCounterResponse")
 
 	// Simple Field (status)
-	status, _statusErr := io.ReadUint16(16)
+	status, _statusErr := io.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Simple Field (eventCount)
-	eventCount, _eventCountErr := io.ReadUint16(16)
+	eventCount, _eventCountErr := io.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
+
+	io.CloseContext("ModbusPDUGetComEventCounterResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventCounterResponse{

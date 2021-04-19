@@ -117,39 +117,40 @@ func (m *DeviceDescriptorType2) LengthInBytes() uint16 {
 }
 
 func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, error) {
+	io.PullContext("DeviceDescriptorType2")
 
 	// Simple Field (manufacturerId)
-	manufacturerId, _manufacturerIdErr := io.ReadUint16(16)
+	manufacturerId, _manufacturerIdErr := io.ReadUint16("manufacturerId", 16)
 	if _manufacturerIdErr != nil {
 		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field")
 	}
 
 	// Simple Field (deviceType)
-	deviceType, _deviceTypeErr := io.ReadUint16(16)
+	deviceType, _deviceTypeErr := io.ReadUint16("deviceType", 16)
 	if _deviceTypeErr != nil {
 		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field")
 	}
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
 	// Simple Field (readSupported)
-	readSupported, _readSupportedErr := io.ReadBit()
+	readSupported, _readSupportedErr := io.ReadBit("readSupported")
 	if _readSupportedErr != nil {
 		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field")
 	}
 
 	// Simple Field (writeSupported)
-	writeSupported, _writeSupportedErr := io.ReadBit()
+	writeSupported, _writeSupportedErr := io.ReadBit("writeSupported")
 	if _writeSupportedErr != nil {
 		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field")
 	}
 
 	// Simple Field (logicalTagBase)
-	logicalTagBase, _logicalTagBaseErr := io.ReadUint8(6)
+	logicalTagBase, _logicalTagBaseErr := io.ReadUint8("logicalTagBase", 6)
 	if _logicalTagBaseErr != nil {
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
 	}
@@ -177,6 +178,8 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")
 	}
+
+	io.CloseContext("DeviceDescriptorType2")
 
 	// Create the instance
 	return NewDeviceDescriptorType2(manufacturerId, deviceType, version, readSupported, writeSupported, logicalTagBase, channelInfo1, channelInfo2, channelInfo3, channelInfo4), nil

@@ -102,10 +102,11 @@ func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
 }
 
 func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataGroupValueRead")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(6)
+		reserved, _err := io.ReadUint8("reserved", 6)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -116,6 +117,8 @@ func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("ApduDataGroupValueRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueRead{

@@ -103,12 +103,15 @@ func (m *DeviceConfigurationAck) LengthInBytes() uint16 {
 }
 
 func DeviceConfigurationAckParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("DeviceConfigurationAck")
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(io)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
 	}
+
+	io.CloseContext("DeviceConfigurationAck")
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationAck{

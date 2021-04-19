@@ -98,6 +98,7 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 }
 
 func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+	io.PullContext("ComObjectTable")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ComObjectTable
@@ -116,6 +117,8 @@ func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComO
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ComObjectTable")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

@@ -110,9 +110,10 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	io.PullContext("CEMIAdditionalInformationRelativeTimestamp")
 
 	// Const Field (len)
-	len, _lenErr := io.ReadUint8(8)
+	len, _lenErr := io.ReadUint8("len", 8)
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
@@ -125,6 +126,8 @@ func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMI
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
+
+	io.CloseContext("CEMIAdditionalInformationRelativeTimestamp")
 
 	// Create a partially initialized instance
 	_child := &CEMIAdditionalInformationRelativeTimestamp{

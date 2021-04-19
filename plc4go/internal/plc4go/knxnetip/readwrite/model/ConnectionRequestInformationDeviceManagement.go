@@ -97,6 +97,9 @@ func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	io.PullContext("ConnectionRequestInformationDeviceManagement")
+
+	io.CloseContext("ConnectionRequestInformationDeviceManagement")
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationDeviceManagement{

@@ -97,6 +97,9 @@ func (m *BACnetServiceAckAtomicWriteFile) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckAtomicWriteFile")
+
+	io.CloseContext("BACnetServiceAckAtomicWriteFile")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckAtomicWriteFile{

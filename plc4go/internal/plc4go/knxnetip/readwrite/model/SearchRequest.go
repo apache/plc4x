@@ -103,12 +103,15 @@ func (m *SearchRequest) LengthInBytes() uint16 {
 }
 
 func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("SearchRequest")
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
+
+	io.CloseContext("SearchRequest")
 
 	// Create a partially initialized instance
 	_child := &SearchRequest{

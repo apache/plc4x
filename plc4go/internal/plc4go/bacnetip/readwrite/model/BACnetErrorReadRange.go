@@ -97,6 +97,9 @@ func (m *BACnetErrorReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetErrorReadRangeParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorReadRange")
+
+	io.CloseContext("BACnetErrorReadRange")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadRange{

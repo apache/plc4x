@@ -101,6 +101,9 @@ func (m *BACnetTagApplicationTime) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationTimeParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationTime")
+
+	io.CloseContext("BACnetTagApplicationTime")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationTime{

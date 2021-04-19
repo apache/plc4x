@@ -99,6 +99,7 @@ func (m *AdsData) LengthInBytes() uint16 {
 }
 
 func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+	io.PullContext("AdsData")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData
@@ -151,6 +152,8 @@ func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*Ad
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("AdsData")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

@@ -108,9 +108,10 @@ func (m *DisconnectResponse) LengthInBytes() uint16 {
 }
 
 func DisconnectResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("DisconnectResponse")
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
@@ -120,6 +121,8 @@ func DisconnectResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+
+	io.CloseContext("DisconnectResponse")
 
 	// Create a partially initialized instance
 	_child := &DisconnectResponse{

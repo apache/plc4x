@@ -95,9 +95,10 @@ func (m *TPKTPacket) LengthInBytes() uint16 {
 }
 
 func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
+	io.PullContext("TPKTPacket")
 
 	// Const Field (protocolId)
-	protocolId, _protocolIdErr := io.ReadUint8(8)
+	protocolId, _protocolIdErr := io.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
 		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field")
 	}
@@ -107,7 +108,7 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -120,7 +121,7 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := io.ReadUint16(16)
+	len, _lenErr := io.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
@@ -131,6 +132,8 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
+
+	io.CloseContext("TPKTPacket")
 
 	// Create the instance
 	return NewTPKTPacket(payload), nil

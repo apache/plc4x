@@ -110,18 +110,21 @@ func (m *COTPPacketTpduError) LengthInBytes() uint16 {
 }
 
 func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	io.PullContext("COTPPacketTpduError")
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (rejectCause)
-	rejectCause, _rejectCauseErr := io.ReadUint8(8)
+	rejectCause, _rejectCauseErr := io.ReadUint8("rejectCause", 8)
 	if _rejectCauseErr != nil {
 		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field")
 	}
+
+	io.CloseContext("COTPPacketTpduError")
 
 	// Create a partially initialized instance
 	_child := &COTPPacketTpduError{

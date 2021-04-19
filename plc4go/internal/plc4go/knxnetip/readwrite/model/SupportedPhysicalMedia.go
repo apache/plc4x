@@ -390,7 +390,7 @@ func (m SupportedPhysicalMedia) LengthInBytes() uint16 {
 }
 
 func SupportedPhysicalMediaParse(io utils.ReadBuffer) (SupportedPhysicalMedia, error) {
-	val, err := io.ReadUint8(8)
+	val, err := io.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
 		return 0, nil
 	}

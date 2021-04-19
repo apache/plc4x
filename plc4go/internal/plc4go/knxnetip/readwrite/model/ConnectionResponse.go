@@ -122,9 +122,10 @@ func (m *ConnectionResponse) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("ConnectionResponse")
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
@@ -154,6 +155,8 @@ func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		}
 		connectionResponseDataBlock = _val
 	}
+
+	io.CloseContext("ConnectionResponse")
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponse{

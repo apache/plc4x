@@ -97,6 +97,9 @@ func (m *BVLCReadForeignDeviceTable) LengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCReadForeignDeviceTable")
+
+	io.CloseContext("BVLCReadForeignDeviceTable")
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTable{

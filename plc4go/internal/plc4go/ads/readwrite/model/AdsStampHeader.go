@@ -94,18 +94,20 @@ func (m *AdsStampHeader) LengthInBytes() uint16 {
 }
 
 func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
+	io.PullContext("AdsStampHeader")
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := io.ReadUint64(64)
+	timestamp, _timestampErr := io.ReadUint64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
-	samples, _samplesErr := io.ReadUint32(32)
+	samples, _samplesErr := io.ReadUint32("samples", 32)
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
+	io.PullContext("adsNotificationSamples")
 
 	// Array field (adsNotificationSamples)
 	// Count array
@@ -117,6 +119,8 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
+
+	io.CloseContext("AdsStampHeader")
 
 	// Create the instance
 	return NewAdsStampHeader(timestamp, samples, adsNotificationSamples), nil

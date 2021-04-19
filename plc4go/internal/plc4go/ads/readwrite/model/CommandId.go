@@ -137,7 +137,7 @@ func (m CommandId) LengthInBytes() uint16 {
 }
 
 func CommandIdParse(io utils.ReadBuffer) (CommandId, error) {
-	val, err := io.ReadUint16(16)
+	val, err := io.ReadUint16("CommandId", 16)
 	if err != nil {
 		return 0, nil
 	}

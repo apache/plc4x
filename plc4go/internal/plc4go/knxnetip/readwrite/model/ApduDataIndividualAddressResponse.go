@@ -97,6 +97,9 @@ func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataIndividualAddressResponseParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataIndividualAddressResponse")
+
+	io.CloseContext("ApduDataIndividualAddressResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressResponse{

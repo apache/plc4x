@@ -110,18 +110,21 @@ func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
 }
 
 func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	io.PullContext("COTPPacketDisconnectResponse")
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (sourceReference)
-	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
+	sourceReference, _sourceReferenceErr := io.ReadUint16("sourceReference", 16)
 	if _sourceReferenceErr != nil {
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
+
+	io.CloseContext("COTPPacketDisconnectResponse")
 
 	// Create a partially initialized instance
 	_child := &COTPPacketDisconnectResponse{

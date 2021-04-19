@@ -103,12 +103,15 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+	io.PullContext("ConnectionResponseDataBlockTunnelConnection")
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+
+	io.CloseContext("ConnectionResponseDataBlockTunnelConnection")
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockTunnelConnection{

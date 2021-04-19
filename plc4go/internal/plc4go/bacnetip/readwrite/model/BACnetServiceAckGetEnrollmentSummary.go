@@ -97,6 +97,9 @@ func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckGetEnrollmentSummary")
+
+	io.CloseContext("BACnetServiceAckGetEnrollmentSummary")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEnrollmentSummary{

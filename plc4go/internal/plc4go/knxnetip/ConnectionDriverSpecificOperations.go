@@ -70,7 +70,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 		rb := utils.NewReadBuffer(utils.Int8ArrayToByteArray(payload))
 		// If the size of the field is greater than 6, we have to skip the first byte
 		if datapointType.DatapointMainType().SizeInBits() > 6 {
-			_, _ = rb.ReadUint8(8)
+			_, _ = rb.ReadUint8("datapointType", 8)
 		}
 		// Set a default datatype if none is provided
 		if *datapointType == driverModel.KnxDatapointType_DPT_UNKNOWN {

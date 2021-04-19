@@ -97,6 +97,9 @@ func (m *ApduDataExtReadRoutingTableRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtReadRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtReadRoutingTableRequest")
+
+	io.CloseContext("ApduDataExtReadRoutingTableRequest")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRoutingTableRequest{

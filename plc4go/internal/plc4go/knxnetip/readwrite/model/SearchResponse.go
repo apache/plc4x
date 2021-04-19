@@ -113,6 +113,7 @@ func (m *SearchResponse) LengthInBytes() uint16 {
 }
 
 func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("SearchResponse")
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
@@ -131,6 +132,8 @@ func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+
+	io.CloseContext("SearchResponse")
 
 	// Create a partially initialized instance
 	_child := &SearchResponse{

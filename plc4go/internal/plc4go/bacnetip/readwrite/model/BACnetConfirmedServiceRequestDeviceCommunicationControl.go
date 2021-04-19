@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBytes(
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
+
+	io.CloseContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{

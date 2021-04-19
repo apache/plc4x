@@ -101,42 +101,45 @@ func (m *AmsNetId) LengthInBytes() uint16 {
 }
 
 func AmsNetIdParse(io utils.ReadBuffer) (*AmsNetId, error) {
+	io.PullContext("AmsNetId")
 
 	// Simple Field (octet1)
-	octet1, _octet1Err := io.ReadUint8(8)
+	octet1, _octet1Err := io.ReadUint8("octet1", 8)
 	if _octet1Err != nil {
 		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field")
 	}
 
 	// Simple Field (octet2)
-	octet2, _octet2Err := io.ReadUint8(8)
+	octet2, _octet2Err := io.ReadUint8("octet2", 8)
 	if _octet2Err != nil {
 		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field")
 	}
 
 	// Simple Field (octet3)
-	octet3, _octet3Err := io.ReadUint8(8)
+	octet3, _octet3Err := io.ReadUint8("octet3", 8)
 	if _octet3Err != nil {
 		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field")
 	}
 
 	// Simple Field (octet4)
-	octet4, _octet4Err := io.ReadUint8(8)
+	octet4, _octet4Err := io.ReadUint8("octet4", 8)
 	if _octet4Err != nil {
 		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field")
 	}
 
 	// Simple Field (octet5)
-	octet5, _octet5Err := io.ReadUint8(8)
+	octet5, _octet5Err := io.ReadUint8("octet5", 8)
 	if _octet5Err != nil {
 		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field")
 	}
 
 	// Simple Field (octet6)
-	octet6, _octet6Err := io.ReadUint8(8)
+	octet6, _octet6Err := io.ReadUint8("octet6", 8)
 	if _octet6Err != nil {
 		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field")
 	}
+
+	io.CloseContext("AmsNetId")
 
 	// Create the instance
 	return NewAmsNetId(octet1, octet2, octet3, octet4, octet5, octet6), nil

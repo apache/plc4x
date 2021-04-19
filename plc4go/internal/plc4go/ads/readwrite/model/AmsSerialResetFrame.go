@@ -101,42 +101,45 @@ func (m *AmsSerialResetFrame) LengthInBytes() uint16 {
 }
 
 func AmsSerialResetFrameParse(io utils.ReadBuffer) (*AmsSerialResetFrame, error) {
+	io.PullContext("AmsSerialResetFrame")
 
 	// Simple Field (magicCookie)
-	magicCookie, _magicCookieErr := io.ReadUint16(16)
+	magicCookie, _magicCookieErr := io.ReadUint16("magicCookie", 16)
 	if _magicCookieErr != nil {
 		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
-	transmitterAddress, _transmitterAddressErr := io.ReadInt8(8)
+	transmitterAddress, _transmitterAddressErr := io.ReadInt8("transmitterAddress", 8)
 	if _transmitterAddressErr != nil {
 		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
-	receiverAddress, _receiverAddressErr := io.ReadInt8(8)
+	receiverAddress, _receiverAddressErr := io.ReadInt8("receiverAddress", 8)
 	if _receiverAddressErr != nil {
 		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
-	fragmentNumber, _fragmentNumberErr := io.ReadInt8(8)
+	fragmentNumber, _fragmentNumberErr := io.ReadInt8("fragmentNumber", 8)
 	if _fragmentNumberErr != nil {
 		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadInt8(8)
+	length, _lengthErr := io.ReadInt8("length", 8)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (crc)
-	crc, _crcErr := io.ReadUint16(16)
+	crc, _crcErr := io.ReadUint16("crc", 16)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
+
+	io.CloseContext("AmsSerialResetFrame")
 
 	// Create the instance
 	return NewAmsSerialResetFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, crc), nil

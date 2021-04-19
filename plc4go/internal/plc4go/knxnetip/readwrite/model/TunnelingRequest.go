@@ -108,6 +108,7 @@ func (m *TunnelingRequest) LengthInBytes() uint16 {
 }
 
 func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	io.PullContext("TunnelingRequest")
 
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
@@ -120,6 +121,8 @@ func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMe
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
+
+	io.CloseContext("TunnelingRequest")
 
 	// Create a partially initialized instance
 	_child := &TunnelingRequest{

@@ -85,18 +85,21 @@ func (m *ChannelInformation) LengthInBytes() uint16 {
 }
 
 func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
+	io.PullContext("ChannelInformation")
 
 	// Simple Field (numChannels)
-	numChannels, _numChannelsErr := io.ReadUint8(3)
+	numChannels, _numChannelsErr := io.ReadUint8("numChannels", 3)
 	if _numChannelsErr != nil {
 		return nil, errors.Wrap(_numChannelsErr, "Error parsing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
-	channelCode, _channelCodeErr := io.ReadUint16(13)
+	channelCode, _channelCodeErr := io.ReadUint16("channelCode", 13)
 	if _channelCodeErr != nil {
 		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field")
 	}
+
+	io.CloseContext("ChannelInformation")
 
 	// Create the instance
 	return NewChannelInformation(numChannels, channelCode), nil

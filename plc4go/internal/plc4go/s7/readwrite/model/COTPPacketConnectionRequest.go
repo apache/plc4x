@@ -115,15 +115,16 @@ func (m *COTPPacketConnectionRequest) LengthInBytes() uint16 {
 }
 
 func COTPPacketConnectionRequestParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	io.PullContext("COTPPacketConnectionRequest")
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (sourceReference)
-	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
+	sourceReference, _sourceReferenceErr := io.ReadUint16("sourceReference", 16)
 	if _sourceReferenceErr != nil {
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
@@ -133,6 +134,8 @@ func COTPPacketConnectionRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
+
+	io.CloseContext("COTPPacketConnectionRequest")
 
 	// Create a partially initialized instance
 	_child := &COTPPacketConnectionRequest{

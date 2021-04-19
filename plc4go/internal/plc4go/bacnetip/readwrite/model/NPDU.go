@@ -163,22 +163,23 @@ func (m *NPDU) LengthInBytes() uint16 {
 }
 
 func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
+	io.PullContext("NPDU")
 
 	// Simple Field (protocolVersionNumber)
-	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
+	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8("protocolVersionNumber", 8)
 	if _protocolVersionNumberErr != nil {
 		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field")
 	}
 
 	// Simple Field (messageTypeFieldPresent)
-	messageTypeFieldPresent, _messageTypeFieldPresentErr := io.ReadBit()
+	messageTypeFieldPresent, _messageTypeFieldPresentErr := io.ReadBit("messageTypeFieldPresent")
 	if _messageTypeFieldPresentErr != nil {
 		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(1)
+		reserved, _err := io.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -191,14 +192,14 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Simple Field (destinationSpecified)
-	destinationSpecified, _destinationSpecifiedErr := io.ReadBit()
+	destinationSpecified, _destinationSpecifiedErr := io.ReadBit("destinationSpecified")
 	if _destinationSpecifiedErr != nil {
 		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(1)
+		reserved, _err := io.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -211,19 +212,19 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Simple Field (sourceSpecified)
-	sourceSpecified, _sourceSpecifiedErr := io.ReadBit()
+	sourceSpecified, _sourceSpecifiedErr := io.ReadBit("sourceSpecified")
 	if _sourceSpecifiedErr != nil {
 		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field")
 	}
 
 	// Simple Field (expectingReply)
-	expectingReply, _expectingReplyErr := io.ReadBit()
+	expectingReply, _expectingReplyErr := io.ReadBit("expectingReply")
 	if _expectingReplyErr != nil {
 		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field")
 	}
 
 	// Simple Field (networkPriority)
-	networkPriority, _networkPriorityErr := io.ReadUint8(2)
+	networkPriority, _networkPriorityErr := io.ReadUint8("networkPriority", 2)
 	if _networkPriorityErr != nil {
 		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field")
 	}
@@ -231,7 +232,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var destinationNetworkAddress *uint16 = nil
 	if destinationSpecified {
-		_val, _err := io.ReadUint16(16)
+		_val, _err := io.ReadUint16("destinationNetworkAddress", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
@@ -241,18 +242,19 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
 	var destinationLength *uint8 = nil
 	if destinationSpecified {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("destinationLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field")
 		}
 		destinationLength = &_val
 	}
+	io.PullContext("destinationAddress")
 
 	// Array field (destinationAddress)
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
 		}
@@ -262,7 +264,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
 	if sourceSpecified {
-		_val, _err := io.ReadUint16(16)
+		_val, _err := io.ReadUint16("sourceNetworkAddress", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field")
 		}
@@ -272,18 +274,19 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
 	var sourceLength *uint8 = nil
 	if sourceSpecified {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("sourceLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field")
 		}
 		sourceLength = &_val
 	}
+	io.PullContext("sourceAddress")
 
 	// Array field (sourceAddress)
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
 		}
@@ -293,7 +296,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
 	if destinationSpecified {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("hopCount", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field")
 		}
@@ -319,6 +322,8 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		apdu = _val
 	}
+
+	io.CloseContext("NPDU")
 
 	// Create the instance
 	return NewNPDU(protocolVersionNumber, messageTypeFieldPresent, destinationSpecified, sourceSpecified, expectingReply, networkPriority, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu), nil

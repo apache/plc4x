@@ -97,6 +97,9 @@ func (m *BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
 }
 
 func BACnetErrorRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorRemovedAuthenticate")
+
+	io.CloseContext("BACnetErrorRemovedAuthenticate")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedAuthenticate{

@@ -119,31 +119,35 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadFifoQueueResponse")
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint16(16)
+	byteCount, _byteCountErr := io.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	fifoCount, _fifoCountErr := io.ReadUint16(16)
+	fifoCount, _fifoCountErr := io.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
 		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
 	}
+	io.PullContext("fifoValue")
 
 	// Array field (fifoValue)
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
-		_item, _err := io.ReadUint16(16)
+		_item, _err := io.ReadUint16("", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
 		}
 		fifoValue[curItem] = _item
 	}
+
+	io.CloseContext("ModbusPDUReadFifoQueueResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueResponse{

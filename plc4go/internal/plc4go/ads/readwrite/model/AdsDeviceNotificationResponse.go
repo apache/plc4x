@@ -101,6 +101,9 @@ func (m *AdsDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsDeviceNotificationResponse")
+
+	io.CloseContext("AdsDeviceNotificationResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationResponse{

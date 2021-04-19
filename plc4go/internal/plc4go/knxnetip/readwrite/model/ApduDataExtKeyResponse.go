@@ -97,6 +97,9 @@ func (m *ApduDataExtKeyResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtKeyResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtKeyResponse")
+
+	io.CloseContext("ApduDataExtKeyResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtKeyResponse{

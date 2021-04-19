@@ -112,23 +112,27 @@ func (m *ApduDataDeviceDescriptorResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduDataDeviceDescriptorResponse")
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
+	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("ApduDataDeviceDescriptorResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorResponse{

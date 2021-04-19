@@ -101,6 +101,9 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+	io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+
+	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{

@@ -125,12 +125,14 @@ func (m *LBusmonInd) LengthInBytes() uint16 {
 }
 
 func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LBusmonInd")
 
 	// Simple Field (additionalInformationLength)
-	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
+	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
+	io.PullContext("additionalInformation")
 
 	// Array field (additionalInformation)
 	// Length array
@@ -154,12 +156,14 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc *uint8 = nil
 	if CastLDataFrame(dataFrame).Child.NotAckFrame() {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("crc", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'crc' field")
 		}
 		crc = &_val
 	}
+
+	io.CloseContext("LBusmonInd")
 
 	// Create a partially initialized instance
 	_child := &LBusmonInd{

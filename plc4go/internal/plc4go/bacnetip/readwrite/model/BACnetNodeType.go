@@ -209,7 +209,7 @@ func (m BACnetNodeType) LengthInBytes() uint16 {
 }
 
 func BACnetNodeTypeParse(io utils.ReadBuffer) (BACnetNodeType, error) {
-	val, err := io.ReadUint8(8)
+	val, err := io.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
 		return 0, nil
 	}

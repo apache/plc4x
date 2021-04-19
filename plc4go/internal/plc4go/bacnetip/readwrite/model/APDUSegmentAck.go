@@ -127,10 +127,11 @@ func (m *APDUSegmentAck) LengthInBytes() uint16 {
 }
 
 func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUSegmentAck")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(2)
+		reserved, _err := io.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -143,34 +144,36 @@ func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (negativeAck)
-	negativeAck, _negativeAckErr := io.ReadBit()
+	negativeAck, _negativeAckErr := io.ReadBit("negativeAck")
 	if _negativeAckErr != nil {
 		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field")
 	}
 
 	// Simple Field (server)
-	server, _serverErr := io.ReadBit()
+	server, _serverErr := io.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
 
 	// Simple Field (proposedWindowSize)
-	proposedWindowSize, _proposedWindowSizeErr := io.ReadUint8(8)
+	proposedWindowSize, _proposedWindowSizeErr := io.ReadUint8("proposedWindowSize", 8)
 	if _proposedWindowSizeErr != nil {
 		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field")
 	}
+
+	io.CloseContext("APDUSegmentAck")
 
 	// Create a partially initialized instance
 	_child := &APDUSegmentAck{

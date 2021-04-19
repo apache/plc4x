@@ -97,6 +97,9 @@ func (m *TDataIndividualInd) LengthInBytes() uint16 {
 }
 
 func TDataIndividualIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("TDataIndividualInd")
+
+	io.CloseContext("TDataIndividualInd")
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualInd{

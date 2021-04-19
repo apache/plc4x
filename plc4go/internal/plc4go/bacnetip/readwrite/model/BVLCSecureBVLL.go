@@ -97,6 +97,9 @@ func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
 }
 
 func BVLCSecureBVLLParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCSecureBVLL")
+
+	io.CloseContext("BVLCSecureBVLL")
 
 	// Create a partially initialized instance
 	_child := &BVLCSecureBVLL{

@@ -97,6 +97,9 @@ func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
 }
 
 func BACnetErrorConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorConfirmedPrivateTransfer")
+
+	io.CloseContext("BACnetErrorConfirmedPrivateTransfer")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorConfirmedPrivateTransfer{

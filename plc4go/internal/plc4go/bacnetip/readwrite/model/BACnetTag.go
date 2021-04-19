@@ -121,21 +121,22 @@ func (m *BACnetTag) LengthInBytes() uint16 {
 }
 
 func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	io.PullContext("BACnetTag")
 
 	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
 	if _typeOrTagNumberErr != nil {
 		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8("contextSpecificTag", 1)
 	if _contextSpecificTagErr != nil {
 		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
@@ -143,7 +144,7 @@ func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
@@ -153,7 +154,7 @@ func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
 		}
@@ -199,6 +200,8 @@ func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BACnetTag")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, typeOrTagNumber, lengthValueType, extTagNumber, extLength)

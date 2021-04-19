@@ -116,18 +116,21 @@ func (m *ModbusPDUReadInputRegistersRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadInputRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadInputRegistersRequest")
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := io.ReadUint16(16)
+	startingAddress, _startingAddressErr := io.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := io.ReadUint16(16)
+	quantity, _quantityErr := io.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
+
+	io.CloseContext("ModbusPDUReadInputRegistersRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadInputRegistersRequest{

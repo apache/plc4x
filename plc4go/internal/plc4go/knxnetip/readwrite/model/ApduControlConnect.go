@@ -97,6 +97,9 @@ func (m *ApduControlConnect) LengthInBytes() uint16 {
 }
 
 func ApduControlConnectParse(io utils.ReadBuffer) (*ApduControl, error) {
+	io.PullContext("ApduControlConnect")
+
+	io.CloseContext("ApduControlConnect")
 
 	// Create a partially initialized instance
 	_child := &ApduControlConnect{

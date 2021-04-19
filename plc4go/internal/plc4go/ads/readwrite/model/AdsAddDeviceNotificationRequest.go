@@ -137,46 +137,47 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsAddDeviceNotificationRequest")
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := io.ReadUint32(32)
+	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := io.ReadUint32(32)
+	indexOffset, _indexOffsetErr := io.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (transmissionMode)
-	transmissionMode, _transmissionModeErr := io.ReadUint32(32)
+	transmissionMode, _transmissionModeErr := io.ReadUint32("transmissionMode", 32)
 	if _transmissionModeErr != nil {
 		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field")
 	}
 
 	// Simple Field (maxDelay)
-	maxDelay, _maxDelayErr := io.ReadUint32(32)
+	maxDelay, _maxDelayErr := io.ReadUint32("maxDelay", 32)
 	if _maxDelayErr != nil {
 		return nil, errors.Wrap(_maxDelayErr, "Error parsing 'maxDelay' field")
 	}
 
 	// Simple Field (cycleTime)
-	cycleTime, _cycleTimeErr := io.ReadUint32(32)
+	cycleTime, _cycleTimeErr := io.ReadUint32("cycleTime", 32)
 	if _cycleTimeErr != nil {
 		return nil, errors.Wrap(_cycleTimeErr, "Error parsing 'cycleTime' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadBigInt(128)
+		reserved, _err := io.ReadBigInt("reserved", 128)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -187,6 +188,8 @@ func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error)
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("AdsAddDeviceNotificationRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsAddDeviceNotificationRequest{

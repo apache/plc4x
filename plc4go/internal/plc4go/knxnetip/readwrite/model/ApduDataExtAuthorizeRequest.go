@@ -110,23 +110,27 @@ func (m *ApduDataExtAuthorizeRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtAuthorizeRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtAuthorizeRequest")
 
 	// Simple Field (level)
-	level, _levelErr := io.ReadUint8(8)
+	level, _levelErr := io.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("ApduDataExtAuthorizeRequest")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeRequest{

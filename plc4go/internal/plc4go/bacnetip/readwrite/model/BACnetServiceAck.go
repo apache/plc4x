@@ -100,9 +100,10 @@ func (m *BACnetServiceAck) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAck")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -146,6 +147,8 @@ func BACnetServiceAckParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BACnetServiceAck")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

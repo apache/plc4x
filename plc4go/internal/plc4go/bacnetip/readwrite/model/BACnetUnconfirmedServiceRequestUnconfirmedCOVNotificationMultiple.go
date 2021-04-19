@@ -97,6 +97,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Leng
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{

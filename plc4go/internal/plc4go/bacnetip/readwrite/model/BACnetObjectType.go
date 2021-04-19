@@ -431,7 +431,7 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
 }
 
 func BACnetObjectTypeParse(io utils.ReadBuffer) (BACnetObjectType, error) {
-	val, err := io.ReadUint16(10)
+	val, err := io.ReadUint16("BACnetObjectType", 10)
 	if err != nil {
 		return 0, nil
 	}

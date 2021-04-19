@@ -123,36 +123,39 @@ func (m *MPropReadReq) LengthInBytes() uint16 {
 }
 
 func MPropReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MPropReadReq")
 
 	// Simple Field (interfaceObjectType)
-	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
+	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
 
 	// Simple Field (objectInstance)
-	objectInstance, _objectInstanceErr := io.ReadUint8(8)
+	objectInstance, _objectInstanceErr := io.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := io.ReadUint8(4)
+	numberOfElements, _numberOfElementsErr := io.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (startIndex)
-	startIndex, _startIndexErr := io.ReadUint16(12)
+	startIndex, _startIndexErr := io.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
+
+	io.CloseContext("MPropReadReq")
 
 	// Create a partially initialized instance
 	_child := &MPropReadReq{

@@ -137,22 +137,23 @@ func (m *APDUComplexAck) LengthInBytes() uint16 {
 }
 
 func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUComplexAck")
 
 	// Simple Field (segmentedMessage)
-	segmentedMessage, _segmentedMessageErr := io.ReadBit()
+	segmentedMessage, _segmentedMessageErr := io.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field")
 	}
 
 	// Simple Field (moreFollows)
-	moreFollows, _moreFollowsErr := io.ReadBit()
+	moreFollows, _moreFollowsErr := io.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(2)
+		reserved, _err := io.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -165,7 +166,7 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
@@ -173,7 +174,7 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("sequenceNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field")
 		}
@@ -183,7 +184,7 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("proposedWindowSize", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field")
 		}
@@ -195,6 +196,8 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")
 	}
+
+	io.CloseContext("APDUComplexAck")
 
 	// Create a partially initialized instance
 	_child := &APDUComplexAck{

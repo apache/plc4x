@@ -115,12 +115,14 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 }
 
 func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+	io.PullContext("BVLCForwardedNPDU")
+	io.PullContext("ip")
 
 	// Array field (ip)
 	// Count array
 	ip := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
 		}
@@ -128,7 +130,7 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 	}
 
 	// Simple Field (port)
-	port, _portErr := io.ReadUint16(16)
+	port, _portErr := io.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
@@ -138,6 +140,8 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+
+	io.CloseContext("BVLCForwardedNPDU")
 
 	// Create a partially initialized instance
 	_child := &BVLCForwardedNPDU{

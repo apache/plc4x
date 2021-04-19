@@ -100,9 +100,10 @@ func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
 }
 
 func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+	io.PullContext("S7VarRequestParameterItem")
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := io.ReadUint8(8)
+	itemType, _itemTypeErr := io.ReadUint8("itemType", 8)
 	if _itemTypeErr != nil {
 		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
 	}
@@ -120,6 +121,8 @@ func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameter
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7VarRequestParameterItem")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

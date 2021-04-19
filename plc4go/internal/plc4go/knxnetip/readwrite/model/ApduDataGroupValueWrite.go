@@ -112,23 +112,27 @@ func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduDataGroupValueWrite")
 
 	// Simple Field (dataFirstByte)
-	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
+	dataFirstByte, _dataFirstByteErr := io.ReadInt8("dataFirstByte", 6)
 	if _dataFirstByteErr != nil {
 		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field")
 	}
+	io.PullContext("data")
 
 	// Array field (data)
 	// Count array
 	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+
+	io.CloseContext("ApduDataGroupValueWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueWrite{

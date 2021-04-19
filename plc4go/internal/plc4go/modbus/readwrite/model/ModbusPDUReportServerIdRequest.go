@@ -105,6 +105,9 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReportServerIdRequest")
+
+	io.CloseContext("ModbusPDUReportServerIdRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdRequest{

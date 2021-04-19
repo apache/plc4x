@@ -97,6 +97,9 @@ func (m *ApduDataExtKeyWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtKeyWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtKeyWrite")
+
+	io.CloseContext("ApduDataExtKeyWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtKeyWrite{

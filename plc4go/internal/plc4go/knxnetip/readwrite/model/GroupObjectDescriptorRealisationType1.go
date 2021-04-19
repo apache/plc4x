@@ -113,16 +113,17 @@ func (m *GroupObjectDescriptorRealisationType1) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType1Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType1, error) {
+	io.PullContext("GroupObjectDescriptorRealisationType1")
 
 	// Simple Field (dataPointer)
-	dataPointer, _dataPointerErr := io.ReadUint8(8)
+	dataPointer, _dataPointerErr := io.ReadUint8("dataPointer", 8)
 	if _dataPointerErr != nil {
 		return nil, errors.Wrap(_dataPointerErr, "Error parsing 'dataPointer' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(1)
+		reserved, _err := io.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -135,31 +136,31 @@ func GroupObjectDescriptorRealisationType1Parse(io utils.ReadBuffer) (*GroupObje
 	}
 
 	// Simple Field (transmitEnable)
-	transmitEnable, _transmitEnableErr := io.ReadBit()
+	transmitEnable, _transmitEnableErr := io.ReadBit("transmitEnable")
 	if _transmitEnableErr != nil {
 		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
-	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit()
+	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit("segmentSelectorEnable")
 	if _segmentSelectorEnableErr != nil {
 		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
-	writeEnable, _writeEnableErr := io.ReadBit()
+	writeEnable, _writeEnableErr := io.ReadBit("writeEnable")
 	if _writeEnableErr != nil {
 		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
-	readEnable, _readEnableErr := io.ReadBit()
+	readEnable, _readEnableErr := io.ReadBit("readEnable")
 	if _readEnableErr != nil {
 		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
-	communicationEnable, _communicationEnableErr := io.ReadBit()
+	communicationEnable, _communicationEnableErr := io.ReadBit("communicationEnable")
 	if _communicationEnableErr != nil {
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
@@ -175,6 +176,8 @@ func GroupObjectDescriptorRealisationType1Parse(io utils.ReadBuffer) (*GroupObje
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
+
+	io.CloseContext("GroupObjectDescriptorRealisationType1")
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType1(dataPointer, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil

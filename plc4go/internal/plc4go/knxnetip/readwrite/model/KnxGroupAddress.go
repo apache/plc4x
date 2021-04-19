@@ -98,6 +98,7 @@ func (m *KnxGroupAddress) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+	io.PullContext("KnxGroupAddress")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress
@@ -116,6 +117,8 @@ func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddres
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("KnxGroupAddress")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

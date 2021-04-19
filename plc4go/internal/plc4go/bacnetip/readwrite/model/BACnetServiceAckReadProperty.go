@@ -146,9 +146,10 @@ func (m *BACnetServiceAckReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckReadProperty")
 
 	// Const Field (objectIdentifierHeader)
-	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
+	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
 	if _objectIdentifierHeaderErr != nil {
 		return nil, errors.Wrap(_objectIdentifierHeaderErr, "Error parsing 'objectIdentifierHeader' field")
 	}
@@ -157,19 +158,19 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := io.ReadUint16(10)
+	objectType, _objectTypeErr := io.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
+	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
 
 	// Const Field (propertyIdentifierHeader)
-	propertyIdentifierHeader, _propertyIdentifierHeaderErr := io.ReadUint8(5)
+	propertyIdentifierHeader, _propertyIdentifierHeaderErr := io.ReadUint8("propertyIdentifierHeader", 5)
 	if _propertyIdentifierHeaderErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierHeaderErr, "Error parsing 'propertyIdentifierHeader' field")
 	}
@@ -178,16 +179,17 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength, _propertyIdentifierLengthErr := io.ReadUint8(3)
+	propertyIdentifierLength, _propertyIdentifierLengthErr := io.ReadUint8("propertyIdentifierLength", 3)
 	if _propertyIdentifierLengthErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierLengthErr, "Error parsing 'propertyIdentifierLength' field")
 	}
+	io.PullContext("propertyIdentifier")
 
 	// Array field (propertyIdentifier)
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
 		}
@@ -195,7 +197,7 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Const Field (openingTag)
-	openingTag, _openingTagErr := io.ReadUint8(8)
+	openingTag, _openingTagErr := io.ReadUint8("openingTag", 8)
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field")
 	}
@@ -210,13 +212,15 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Const Field (closingTag)
-	closingTag, _closingTagErr := io.ReadUint8(8)
+	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
 	if closingTag != BACnetServiceAckReadProperty_CLOSINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
+
+	io.CloseContext("BACnetServiceAckReadProperty")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadProperty{

@@ -115,13 +115,15 @@ func (m *S7ParameterReadVarRequest) LengthInBytes() uint16 {
 }
 
 func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	io.PullContext("S7ParameterReadVarRequest")
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
+	io.PullContext("items")
 
 	// Array field (items)
 	// Count array
@@ -133,6 +135,8 @@ func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
 		}
 		items[curItem] = _item
 	}
+
+	io.CloseContext("S7ParameterReadVarRequest")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterReadVarRequest{

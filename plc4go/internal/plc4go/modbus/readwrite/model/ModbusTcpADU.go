@@ -99,15 +99,16 @@ func (m *ModbusTcpADU) LengthInBytes() uint16 {
 }
 
 func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
+	io.PullContext("ModbusTcpADU")
 
 	// Simple Field (transactionIdentifier)
-	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)
+	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16("transactionIdentifier", 16)
 	if _transactionIdentifierErr != nil {
 		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
-	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16(16)
+	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16("protocolIdentifier", 16)
 	if _protocolIdentifierErr != nil {
 		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field")
 	}
@@ -116,14 +117,14 @@ func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16("length", 16)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
-	unitIdentifier, _unitIdentifierErr := io.ReadUint8(8)
+	unitIdentifier, _unitIdentifierErr := io.ReadUint8("unitIdentifier", 8)
 	if _unitIdentifierErr != nil {
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
@@ -133,6 +134,8 @@ func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+
+	io.CloseContext("ModbusTcpADU")
 
 	// Create the instance
 	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil

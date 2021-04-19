@@ -160,7 +160,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
 	<#assign simpleTypeReference = type.type>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(io utils.ReadBuffer) (${type.name}, error) {
-	val, err := ${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(type.typeReference))}
+	val, err := ${helper.getReadBufferReadMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference))}
 	if err != nil {
 		return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>, nil
 	}

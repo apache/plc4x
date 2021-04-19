@@ -100,31 +100,33 @@ func (m *ModbusPDUWriteFileRecordRequestItem) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUWriteFileRecordRequestItem, error) {
+	io.PullContext("ModbusPDUWriteFileRecordRequestItem")
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	fileNumber, _fileNumberErr := io.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
-	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	recordNumber, _recordNumberErr := io.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	recordLength, _recordLengthErr := io.ReadUint16(16)
+	recordLength, _recordLengthErr := io.ReadUint16("recordLength", 16)
 	_ = recordLength
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
+	io.PullContext("recordData")
 
 	// Array field (recordData)
 	// Length array
@@ -132,12 +134,14 @@ func ModbusPDUWriteFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUWr
 	_recordDataLength := uint16(recordLength) * uint16(uint16(2))
 	_recordDataEndPos := io.GetPos() + uint16(_recordDataLength)
 	for io.GetPos() < _recordDataEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'recordData' field")
 		}
 		recordData = append(recordData, _item)
 	}
+
+	io.CloseContext("ModbusPDUWriteFileRecordRequestItem")
 
 	// Create the instance
 	return NewModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData), nil

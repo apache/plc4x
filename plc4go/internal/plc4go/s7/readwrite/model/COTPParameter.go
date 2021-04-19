@@ -103,15 +103,16 @@ func (m *COTPParameter) LengthInBytes() uint16 {
 }
 
 func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+	io.PullContext("COTPParameter")
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := io.ReadUint8(8)
+	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := io.ReadUint8(8)
+	parameterLength, _parameterLengthErr := io.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
@@ -138,6 +139,8 @@ func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error)
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("COTPParameter")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

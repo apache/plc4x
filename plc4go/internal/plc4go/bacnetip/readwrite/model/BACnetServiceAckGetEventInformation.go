@@ -97,6 +97,9 @@ func (m *BACnetServiceAckGetEventInformation) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetEventInformationParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckGetEventInformation")
+
+	io.CloseContext("BACnetServiceAckGetEventInformation")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEventInformation{

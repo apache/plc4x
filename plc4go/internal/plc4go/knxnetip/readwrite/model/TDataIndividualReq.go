@@ -97,6 +97,9 @@ func (m *TDataIndividualReq) LengthInBytes() uint16 {
 }
 
 func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("TDataIndividualReq")
+
+	io.CloseContext("TDataIndividualReq")
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualReq{

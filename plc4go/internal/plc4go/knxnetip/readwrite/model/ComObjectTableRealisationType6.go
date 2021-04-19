@@ -103,12 +103,15 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 }
 
 func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
+	io.PullContext("ComObjectTableRealisationType6")
 
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
+
+	io.CloseContext("ComObjectTableRealisationType6")
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{

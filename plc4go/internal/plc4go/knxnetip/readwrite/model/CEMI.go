@@ -100,9 +100,10 @@ func (m *CEMI) LengthInBytes() uint16 {
 }
 
 func CEMIParse(io utils.ReadBuffer, size uint8) (*CEMI, error) {
+	io.PullContext("CEMI")
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode, _messageCodeErr := io.ReadUint8(8)
+	messageCode, _messageCodeErr := io.ReadUint8("messageCode", 8)
 	if _messageCodeErr != nil {
 		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field")
 	}
@@ -164,6 +165,8 @@ func CEMIParse(io utils.ReadBuffer, size uint8) (*CEMI, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("CEMI")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

@@ -101,6 +101,9 @@ func (m *BACnetTagApplicationObjectIdentifier) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationObjectIdentifierParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationObjectIdentifier")
+
+	io.CloseContext("BACnetTagApplicationObjectIdentifier")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationObjectIdentifier{

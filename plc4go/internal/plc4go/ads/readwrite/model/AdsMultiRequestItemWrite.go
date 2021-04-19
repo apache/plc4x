@@ -113,24 +113,27 @@ func (m *AdsMultiRequestItemWrite) LengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemWriteParse(io utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+	io.PullContext("AdsMultiRequestItemWrite")
 
 	// Simple Field (itemIndexGroup)
-	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
+	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
 		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
 
 	// Simple Field (itemIndexOffset)
-	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
+	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
 		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
 
 	// Simple Field (itemWriteLength)
-	itemWriteLength, _itemWriteLengthErr := io.ReadUint32(32)
+	itemWriteLength, _itemWriteLengthErr := io.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
 		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
 	}
+
+	io.CloseContext("AdsMultiRequestItemWrite")
 
 	// Create a partially initialized instance
 	_child := &AdsMultiRequestItemWrite{

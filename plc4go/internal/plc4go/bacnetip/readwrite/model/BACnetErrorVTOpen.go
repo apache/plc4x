@@ -97,6 +97,9 @@ func (m *BACnetErrorVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetErrorVTOpenParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorVTOpen")
+
+	io.CloseContext("BACnetErrorVTOpen")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorVTOpen{

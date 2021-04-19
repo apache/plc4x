@@ -97,6 +97,9 @@ func (m *ApduDataExtDomainAddressSerialNumberResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSerialNumberResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtDomainAddressSerialNumberResponse")
+
+	io.CloseContext("ApduDataExtDomainAddressSerialNumberResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSerialNumberResponse{

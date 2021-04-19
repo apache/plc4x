@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestCreateObject) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestCreateObjectParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestCreateObject")
+
+	io.CloseContext("BACnetConfirmedServiceRequestCreateObject")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestCreateObject{

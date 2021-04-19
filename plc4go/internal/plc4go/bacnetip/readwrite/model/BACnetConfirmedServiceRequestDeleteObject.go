@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestDeleteObjectParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestDeleteObject")
+
+	io.CloseContext("BACnetConfirmedServiceRequestDeleteObject")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeleteObject{

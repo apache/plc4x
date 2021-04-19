@@ -97,6 +97,9 @@ func (m *BVLCDistributeBroadcastToNetwork) LengthInBytes() uint16 {
 }
 
 func BVLCDistributeBroadcastToNetworkParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCDistributeBroadcastToNetwork")
+
+	io.CloseContext("BVLCDistributeBroadcastToNetwork")
 
 	// Create a partially initialized instance
 	_child := &BVLCDistributeBroadcastToNetwork{

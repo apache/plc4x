@@ -112,6 +112,8 @@ func (m *S7PayloadUserData) LengthInBytes() uint16 {
 }
 
 func S7PayloadUserDataParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
+	io.PullContext("S7PayloadUserData")
+	io.PullContext("items")
 
 	// Array field (items)
 	// Count array
@@ -123,6 +125,8 @@ func S7PayloadUserDataParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Pay
 		}
 		items[curItem] = _item
 	}
+
+	io.CloseContext("S7PayloadUserData")
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserData{

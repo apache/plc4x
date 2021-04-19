@@ -97,6 +97,9 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+
+	io.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{

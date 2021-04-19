@@ -105,6 +105,9 @@ func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventCounterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventCounterRequest")
+
+	io.CloseContext("ModbusPDUGetComEventCounterRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventCounterRequest{

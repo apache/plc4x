@@ -113,7 +113,7 @@ func (m DataTransportErrorCode) LengthInBytes() uint16 {
 }
 
 func DataTransportErrorCodeParse(io utils.ReadBuffer) (DataTransportErrorCode, error) {
-	val, err := io.ReadUint8(8)
+	val, err := io.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
 		return 0, nil
 	}

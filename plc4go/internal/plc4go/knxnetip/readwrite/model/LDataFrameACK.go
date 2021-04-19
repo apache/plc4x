@@ -106,6 +106,9 @@ func (m *LDataFrameACK) LengthInBytes() uint16 {
 }
 
 func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	io.PullContext("LDataFrameACK")
+
+	io.CloseContext("LDataFrameACK")
 
 	// Create a partially initialized instance
 	_child := &LDataFrameACK{

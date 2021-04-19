@@ -105,12 +105,15 @@ func (m *ApduDataContainer) LengthInBytes() uint16 {
 }
 
 func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
+	io.PullContext("ApduDataContainer")
 
 	// Simple Field (dataApdu)
 	dataApdu, _dataApduErr := ApduDataParse(io, dataLength)
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field")
 	}
+
+	io.CloseContext("ApduDataContainer")
 
 	// Create a partially initialized instance
 	_child := &ApduDataContainer{

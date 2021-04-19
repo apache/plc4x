@@ -113,16 +113,17 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 }
 
 func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("KnxNetIpMessage")
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := io.ReadUint8(8)
+	protocolVersion, _protocolVersionErr := io.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
 	}
@@ -131,13 +132,13 @@ func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType, _msgTypeErr := io.ReadUint16(16)
+	msgType, _msgTypeErr := io.ReadUint16("msgType", 16)
 	if _msgTypeErr != nil {
 		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := io.ReadUint16(16)
+	totalLength, _totalLengthErr := io.ReadUint16("totalLength", 16)
 	_ = totalLength
 	if _totalLengthErr != nil {
 		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field")
@@ -186,6 +187,8 @@ func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("KnxNetIpMessage")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)

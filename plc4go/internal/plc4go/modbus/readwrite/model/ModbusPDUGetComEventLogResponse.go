@@ -133,42 +133,46 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventLogResponse")
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Simple Field (status)
-	status, _statusErr := io.ReadUint16(16)
+	status, _statusErr := io.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Simple Field (eventCount)
-	eventCount, _eventCountErr := io.ReadUint16(16)
+	eventCount, _eventCountErr := io.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
 
 	// Simple Field (messageCount)
-	messageCount, _messageCountErr := io.ReadUint16(16)
+	messageCount, _messageCountErr := io.ReadUint16("messageCount", 16)
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
+	io.PullContext("events")
 
 	// Array field (events)
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'events' field")
 		}
 		events[curItem] = _item
 	}
+
+	io.CloseContext("ModbusPDUGetComEventLogResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogResponse{

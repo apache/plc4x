@@ -97,6 +97,9 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBytes() uin
 }
 
 func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	io.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
+
+	io.CloseContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestTimeSynchronization{
