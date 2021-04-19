@@ -33,6 +33,7 @@ import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -250,7 +251,7 @@ public class S7Field implements PlcField, XmlSerializable {
         } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches()) {
             try {
                 byte[] addressData = Hex.decodeHex(fieldString.replaceAll("[-]", ""));
-                ReadBuffer rb = new ReadBuffer(addressData);
+                ReadBuffer rb = new ReadBufferByteBased(addressData);
                 final S7Address s7Address = S7AddressIO.staticParse(rb);
                 if (s7Address instanceof S7AddressAny) {
                     S7AddressAny s7AddressAny = (S7AddressAny) s7Address;

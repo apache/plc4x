@@ -20,6 +20,7 @@ package org.apache.plc4x.java.canopen;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +45,7 @@ public class ManualParserTest {
 
     @Test
     public void readBufferTest() throws Exception {
-        ReadBuffer buffer = new ReadBuffer(new byte[]{(byte) 0xA1, 0x05, 0x00, 0x00}, true);
+        ReadBuffer buffer = new ReadBufferByteBased(new byte[]{(byte) 0xA1, 0x05, 0x00, 0x00}, true);
         int value = buffer.readInt(32);
 
         assertEquals(value, 0x5A1);
@@ -77,7 +78,7 @@ public class ManualParserTest {
     public final static SocketCanFrameStub parse(String hex) throws Exception {
         byte[] input = Hex.decodeHex(hex.toCharArray());
 
-        ReadBuffer readBuffer = new ReadBuffer(input, true);
+        ReadBufferByteBased readBuffer = new ReadBufferByteBased(input, true);
         int rawId = readBuffer.readInt(32);
         boolean extended = (rawId & EXTENDED_FRAME_FORMAT_FLAG) != 0;
         boolean remote = (rawId & REMOTE_TRANSMISSION_FLAG) != 0;

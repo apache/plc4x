@@ -28,6 +28,7 @@ import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
@@ -122,7 +123,7 @@ public class SimulatedDevice {
         byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
         new Random().nextBytes(b);
 
-        ReadBuffer io = new ReadBuffer(b);
+        ReadBuffer io = new ReadBufferByteBased(b);
         try {
             return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {

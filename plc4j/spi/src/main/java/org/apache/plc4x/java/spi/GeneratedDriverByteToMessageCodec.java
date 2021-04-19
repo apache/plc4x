@@ -22,10 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +46,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
         try {
-            WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(packet.getLengthInBytes(), !bigEndian);
             io.serialize(buffer, packet);
             byteBuf.writeBytes(buffer.getData());
             LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
@@ -74,7 +71,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 // Read the packet data into a new ReadBuffer
                 bytes = new byte[packetSize];
                 byteBuf.readBytes(bytes);
-                ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
+                ReadBuffer readBuffer = new ReadBufferByteBased(bytes, !bigEndian);
 
                 // Parse the packet.
                 T packet = io.parse(readBuffer, parserArgs);

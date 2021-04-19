@@ -20,12 +20,13 @@ package org.apache.plc4x.java.firmata.readwrite.utils;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class FirmataUtils {
 
     public static boolean isSysexEnd(ReadBuffer io) {
-        return io.getBytes(io.getPos(), io.getPos() + 1)[0] == (byte) 0xF7;
+        return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 1)[0] == (byte) 0xF7;
     }
 
     public static byte parseSysexString(ReadBuffer io) {

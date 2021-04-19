@@ -424,7 +424,7 @@ public class DriverTestsuiteRunner extends XmlTestsuiteRunner {
 
     private byte[] getBytesFromXml(Element referenceXml, boolean bigEndian) throws DriverTestsuiteException {
         final String className = referenceXml.attributeValue(new QName("className"));
-        final WriteBuffer writeBuffer = new WriteBuffer(1024, !bigEndian);
+        final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, !bigEndian);
         try {
             final MessageIO messageIO = getMessageIOType(className).newInstance();
             final String referenceXmlString = referenceXml.asXML();
@@ -449,7 +449,7 @@ public class DriverTestsuiteRunner extends XmlTestsuiteRunner {
 
     private void validateMessage(Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
         final ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
-        final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
+        final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, !bigEndian);
         try {
             final String className = referenceXml.attributeValue(new QName("className"));
             final MessageIO<?,?> messageIO = getMessageIOType(className).newInstance();
