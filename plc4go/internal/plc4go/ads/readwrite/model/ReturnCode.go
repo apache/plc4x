@@ -817,7 +817,7 @@ func ReturnCodeParse(io utils.ReadBuffer) (ReturnCode, error) {
 }
 
 func (e ReturnCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("ReturnCode", 32, uint32(e))
+	err := io.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

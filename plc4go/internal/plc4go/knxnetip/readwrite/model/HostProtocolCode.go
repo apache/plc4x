@@ -97,7 +97,7 @@ func HostProtocolCodeParse(io utils.ReadBuffer) (HostProtocolCode, error) {
 }
 
 func (e HostProtocolCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("HostProtocolCode", 8, uint8(e))
+	err := io.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

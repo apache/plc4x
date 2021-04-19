@@ -454,7 +454,7 @@ func KnxInterfaceObjectTypeParse(io utils.ReadBuffer) (KnxInterfaceObjectType, e
 }
 
 func (e KnxInterfaceObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("KnxInterfaceObjectType", 16, uint16(e))
+	err := io.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

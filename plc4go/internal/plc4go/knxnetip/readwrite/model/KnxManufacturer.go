@@ -7804,7 +7804,7 @@ func KnxManufacturerParse(io utils.ReadBuffer) (KnxManufacturer, error) {
 }
 
 func (e KnxManufacturer) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("KnxManufacturer", 16, uint16(e))
+	err := io.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

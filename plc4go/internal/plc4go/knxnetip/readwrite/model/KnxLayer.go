@@ -103,7 +103,7 @@ func KnxLayerParse(io utils.ReadBuffer) (KnxLayer, error) {
 }
 
 func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("KnxLayer", 8, uint8(e))
+	err := io.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

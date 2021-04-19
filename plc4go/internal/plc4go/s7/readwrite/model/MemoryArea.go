@@ -184,7 +184,7 @@ func MemoryAreaParse(io utils.ReadBuffer) (MemoryArea, error) {
 }
 
 func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("MemoryArea", 8, uint8(e))
+	err := io.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

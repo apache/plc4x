@@ -439,7 +439,7 @@ func BACnetObjectTypeParse(io utils.ReadBuffer) (BACnetObjectType, error) {
 }
 
 func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("BACnetObjectType", 10, uint16(e))
+	err := io.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

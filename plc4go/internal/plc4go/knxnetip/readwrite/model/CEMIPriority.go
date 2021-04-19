@@ -109,7 +109,7 @@ func CEMIPriorityParse(io utils.ReadBuffer) (CEMIPriority, error) {
 }
 
 func (e CEMIPriority) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("CEMIPriority", 2, uint8(e))
+	err := io.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

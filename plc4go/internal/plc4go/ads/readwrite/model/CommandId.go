@@ -145,7 +145,7 @@ func CommandIdParse(io utils.ReadBuffer) (CommandId, error) {
 }
 
 func (e CommandId) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("CommandId", 16, uint16(e))
+	err := io.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

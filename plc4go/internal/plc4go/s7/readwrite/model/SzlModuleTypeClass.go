@@ -109,7 +109,7 @@ func SzlModuleTypeClassParse(io utils.ReadBuffer) (SzlModuleTypeClass, error) {
 }
 
 func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("SzlModuleTypeClass", 4, uint8(e))
+	err := io.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

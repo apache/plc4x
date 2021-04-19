@@ -121,7 +121,7 @@ func DeviceDescriptorMediumTypeParse(io utils.ReadBuffer) (DeviceDescriptorMediu
 }
 
 func (e DeviceDescriptorMediumType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e))
+	err := io.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

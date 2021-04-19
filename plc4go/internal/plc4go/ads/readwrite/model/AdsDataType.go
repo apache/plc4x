@@ -664,7 +664,7 @@ func AdsDataTypeParse(io utils.ReadBuffer) (AdsDataType, error) {
 }
 
 func (e AdsDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("AdsDataType", 8, int8(e))
+	err := io.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

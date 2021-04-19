@@ -4876,7 +4876,7 @@ func KnxInterfaceObjectPropertyParse(io utils.ReadBuffer) (KnxInterfaceObjectPro
 }
 
 func (e KnxInterfaceObjectProperty) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(e))
+	err := io.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

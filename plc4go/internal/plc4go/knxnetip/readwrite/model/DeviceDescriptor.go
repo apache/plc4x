@@ -510,7 +510,7 @@ func DeviceDescriptorParse(io utils.ReadBuffer) (DeviceDescriptor, error) {
 }
 
 func (e DeviceDescriptor) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("DeviceDescriptor", 16, uint16(e))
+	err := io.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

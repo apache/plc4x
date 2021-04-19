@@ -6378,7 +6378,7 @@ func KnxDatapointTypeParse(io utils.ReadBuffer) (KnxDatapointType, error) {
 }
 
 func (e KnxDatapointType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("KnxDatapointType", 32, uint32(e))
+	err := io.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

@@ -163,7 +163,7 @@ func ApplicationTagParse(io utils.ReadBuffer) (ApplicationTag, error) {
 }
 
 func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("ApplicationTag", 4, int8(e))
+	err := io.WriteInt8("ApplicationTag", 4, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

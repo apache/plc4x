@@ -115,7 +115,7 @@ func COTPProtocolClassParse(io utils.ReadBuffer) (COTPProtocolClass, error) {
 }
 
 func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("COTPProtocolClass", 8, int8(e))
+	err := io.WriteInt8("COTPProtocolClass", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

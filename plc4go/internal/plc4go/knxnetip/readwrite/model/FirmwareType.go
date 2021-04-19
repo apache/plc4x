@@ -181,7 +181,7 @@ func FirmwareTypeParse(io utils.ReadBuffer) (FirmwareType, error) {
 }
 
 func (e FirmwareType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("FirmwareType", 16, uint16(e))
+	err := io.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 

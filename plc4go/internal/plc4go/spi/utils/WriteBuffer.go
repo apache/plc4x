@@ -24,19 +24,43 @@ import (
 )
 
 type WriteBuffer interface {
-	PushContext(logicalName string) error
-	WriteBit(logicalName string, value bool) error
-	WriteUint8(logicalName string, bitLength uint8, value uint8) error
-	WriteUint16(logicalName string, bitLength uint8, value uint16) error
-	WriteUint32(logicalName string, bitLength uint8, value uint32) error
-	WriteUint64(logicalName string, bitLength uint8, value uint64) error
-	WriteInt8(logicalName string, bitLength uint8, value int8) error
-	WriteInt16(logicalName string, bitLength uint8, value int16) error
-	WriteInt32(logicalName string, bitLength uint8, value int32) error
-	WriteInt64(logicalName string, bitLength uint8, value int64) error
-	WriteBigInt(logicalName string, bitLength uint8, value *big.Int) error
-	WriteFloat32(logicalName string, bitLength uint8, value float32) error
-	WriteFloat64(logicalName string, bitLength uint8, value float64) error
-	WriteString(logicalName string, bitLength uint8, encoding string, value string) error
-	PopContext(logicalName string) error
+	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
+	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error
+	WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error
+	WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error
+	WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error
+	WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error
+	WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error
+	WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error
+	WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error
+	WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error
+	WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error
+	WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error
+	WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error
+	WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error
+	PopContext(logicalName string, writerArgs ...WithWriterArgs) error
 }
+
+// WithWriterArgs is a marker interface for writer args supplied by the builders like WithAdditionalStringRepresentation
+type WithWriterArgs interface {
+	isWriterArgs() bool
+}
+
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type writerArg struct {
+}
+
+func (_ writerArg) isWriterArgs() bool {
+	return true
+}
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
