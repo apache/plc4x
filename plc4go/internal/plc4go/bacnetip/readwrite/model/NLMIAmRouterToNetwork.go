@@ -107,9 +107,9 @@ func (m *NLMIAmRouterToNetwork) LengthInBytes() uint16 {
 
 func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
 	io.PullContext("NLMIAmRouterToNetwork")
-	io.PullContext("destinationNetworkAddress")
 
 	// Array field (destinationNetworkAddress)
+	io.PullContext("destinationNetworkAddress")
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
 	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() uint16 { return uint16(uint16(3)) }, func() uint16 { return uint16(uint16(1)) })))

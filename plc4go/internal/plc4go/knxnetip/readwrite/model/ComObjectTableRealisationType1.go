@@ -131,9 +131,9 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
-	io.PullContext("comObjectDescriptors")
 
 	// Array field (comObjectDescriptors)
+	io.PullContext("comObjectDescriptors")
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType1, numEntries)
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {

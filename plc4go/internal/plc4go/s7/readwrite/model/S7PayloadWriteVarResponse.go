@@ -113,9 +113,9 @@ func (m *S7PayloadWriteVarResponse) LengthInBytes() uint16 {
 
 func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
 	io.PullContext("S7PayloadWriteVarResponse")
-	io.PullContext("items")
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
 	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {

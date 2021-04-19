@@ -193,9 +193,9 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	if _objectNameCharacterSetErr != nil {
 		return nil, errors.Wrap(_objectNameCharacterSetErr, "Error parsing 'objectNameCharacterSet' field")
 	}
-	io.PullContext("objectName")
 
 	// Array field (objectName)
+	io.PullContext("objectName")
 	// Length array
 	objectName := make([]int8, 0)
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))

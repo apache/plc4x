@@ -88,9 +88,9 @@ func (m *BACnetAddress) LengthInBytes() uint16 {
 
 func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 	io.PullContext("BACnetAddress")
-	io.PullContext("address")
 
 	// Array field (address)
+	io.PullContext("address")
 	// Count array
 	address := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {

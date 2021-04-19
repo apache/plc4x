@@ -113,9 +113,9 @@ func (m *S7PayloadUserData) LengthInBytes() uint16 {
 
 func S7PayloadUserDataParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
 	io.PullContext("S7PayloadUserData")
-	io.PullContext("items")
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
 	items := make([]*S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {

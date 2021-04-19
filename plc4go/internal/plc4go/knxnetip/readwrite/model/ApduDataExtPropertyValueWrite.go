@@ -150,9 +150,9 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]uint8, uint16(length)-uint16(uint16(5)))
 	for curItem := uint16(0); curItem < uint16(uint16(length)-uint16(uint16(5))); curItem++ {

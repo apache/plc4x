@@ -106,9 +106,9 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
 
 func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	io.PullContext("COTPParameterDisconnectAdditionalInformation")
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]uint8, rest)
 	for curItem := uint16(0); curItem < uint16(rest); curItem++ {

@@ -176,9 +176,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	if listOfValuesOpeningTag != BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
 	}
-	io.PullContext("values")
 
 	// Array field (values)
+	io.PullContext("values")
 	// Length array
 	values := make([]int8, 0)
 	_valuesLength := uint16(len) - uint16(uint16(8))

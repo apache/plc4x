@@ -170,9 +170,9 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 	if _propertyIdentifierLengthErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierLengthErr, "Error parsing 'propertyIdentifierLength' field")
 	}
-	io.PullContext("propertyIdentifier")
 
 	// Array field (propertyIdentifier)
+	io.PullContext("propertyIdentifier")
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {

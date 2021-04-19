@@ -231,9 +231,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 	if _lifetimeLengthErr != nil {
 		return nil, errors.Wrap(_lifetimeLengthErr, "Error parsing 'lifetimeLength' field")
 	}
-	io.PullContext("lifetimeSeconds")
 
 	// Array field (lifetimeSeconds)
+	io.PullContext("lifetimeSeconds")
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {

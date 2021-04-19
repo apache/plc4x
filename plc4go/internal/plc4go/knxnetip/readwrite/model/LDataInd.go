@@ -124,9 +124,9 @@ func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
-	io.PullContext("additionalInformation")
 
 	// Array field (additionalInformation)
+	io.PullContext("additionalInformation")
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength

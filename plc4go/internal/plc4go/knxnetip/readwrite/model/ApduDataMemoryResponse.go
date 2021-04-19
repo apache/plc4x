@@ -127,9 +127,9 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]uint8, numBytes)
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {

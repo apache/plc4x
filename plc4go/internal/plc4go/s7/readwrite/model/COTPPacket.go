@@ -157,9 +157,9 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
-	io.PullContext("parameters")
 
 	// Array field (parameters)
+	io.PullContext("parameters")
 	curPos = io.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)

@@ -123,9 +123,9 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) })); curItem++ {

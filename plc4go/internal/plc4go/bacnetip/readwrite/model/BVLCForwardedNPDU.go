@@ -116,9 +116,9 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 
 func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
 	io.PullContext("BVLCForwardedNPDU")
-	io.PullContext("ip")
 
 	// Array field (ip)
+	io.PullContext("ip")
 	// Count array
 	ip := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {

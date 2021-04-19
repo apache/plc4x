@@ -246,9 +246,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	if _lifetimeLengthErr != nil {
 		return nil, errors.Wrap(_lifetimeLengthErr, "Error parsing 'lifetimeLength' field")
 	}
-	io.PullContext("lifetimeSeconds")
 
 	// Array field (lifetimeSeconds)
+	io.PullContext("lifetimeSeconds")
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
@@ -268,9 +268,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	if listOfValuesOpeningTag != BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESOPENINGTAG {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESOPENINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesOpeningTag))
 	}
-	io.PullContext("notifications")
 
 	// Array field (notifications)
+	io.PullContext("notifications")
 	// Length array
 	notifications := make([]*BACnetTagWithContent, 0)
 	_notificationsLength := uint16(len) - uint16(uint16(18))

@@ -126,9 +126,9 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io utils.ReadBuffer
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
-	io.PullContext("value")
 
 	// Array field (value)
+	io.PullContext("value")
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {

@@ -86,9 +86,9 @@ func (m *MACAddress) LengthInBytes() uint16 {
 
 func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
 	io.PullContext("MACAddress")
-	io.PullContext("addr")
 
 	// Array field (addr)
+	io.PullContext("addr")
 	// Count array
 	addr := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {

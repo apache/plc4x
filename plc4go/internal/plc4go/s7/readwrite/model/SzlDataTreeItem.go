@@ -108,9 +108,9 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	if _itemIndexErr != nil {
 		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
 	}
-	io.PullContext("mlfb")
 
 	// Array field (mlfb)
+	io.PullContext("mlfb")
 	// Count array
 	mlfb := make([]int8, uint16(20))
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {

@@ -165,9 +165,9 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 	if _writeLengthErr != nil {
 		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field")
 	}
-	io.PullContext("items")
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
 	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -178,9 +178,9 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		items[curItem] = _item
 	}
 	io.CloseContext("items")
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {

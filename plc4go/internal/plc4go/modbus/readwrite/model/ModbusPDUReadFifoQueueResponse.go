@@ -134,9 +134,9 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 	if _fifoCountErr != nil {
 		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
 	}
-	io.PullContext("fifoValue")
 
 	// Array field (fifoValue)
+	io.PullContext("fifoValue")
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {

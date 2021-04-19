@@ -162,9 +162,9 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		}
 		extLength = &_val
 	}
-	io.PullContext("propertyIdentifier")
 
 	// Array field (propertyIdentifier)
+	io.PullContext("propertyIdentifier")
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
 	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })

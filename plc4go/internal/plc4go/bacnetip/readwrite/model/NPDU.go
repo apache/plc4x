@@ -248,9 +248,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		destinationLength = &_val
 	}
-	io.PullContext("destinationAddress")
 
 	// Array field (destinationAddress)
+	io.PullContext("destinationAddress")
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -281,9 +281,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		sourceLength = &_val
 	}
-	io.PullContext("sourceAddress")
 
 	// Array field (sourceAddress)
+	io.PullContext("sourceAddress")
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {

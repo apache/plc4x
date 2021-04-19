@@ -106,9 +106,9 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {

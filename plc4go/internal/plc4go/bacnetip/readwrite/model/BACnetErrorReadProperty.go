@@ -151,9 +151,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	if _errorClassLengthErr != nil {
 		return nil, errors.Wrap(_errorClassLengthErr, "Error parsing 'errorClassLength' field")
 	}
-	io.PullContext("errorClass")
 
 	// Array field (errorClass)
+	io.PullContext("errorClass")
 	// Count array
 	errorClass := make([]int8, errorClassLength)
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
@@ -179,9 +179,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	if _errorCodeLengthErr != nil {
 		return nil, errors.Wrap(_errorCodeLengthErr, "Error parsing 'errorCodeLength' field")
 	}
-	io.PullContext("errorCode")
 
 	// Array field (errorCode)
+	io.PullContext("errorCode")
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {

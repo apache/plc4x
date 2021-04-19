@@ -123,9 +123,9 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 	if _unusedBitsErr != nil {
 		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })

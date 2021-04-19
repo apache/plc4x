@@ -106,9 +106,9 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
-	io.PullContext("serviceIds")
 
 	// Array field (serviceIds)
+	io.PullContext("serviceIds")
 	// Length array
 	serviceIds := make([]*ServiceId, 0)
 	_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))

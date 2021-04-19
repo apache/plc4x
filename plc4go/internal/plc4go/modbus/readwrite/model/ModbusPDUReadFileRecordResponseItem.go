@@ -106,9 +106,9 @@ func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDURe
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := uint16(dataLength) - uint16(uint16(1))

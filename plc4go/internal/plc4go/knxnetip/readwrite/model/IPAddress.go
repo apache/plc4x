@@ -86,9 +86,9 @@ func (m *IPAddress) LengthInBytes() uint16 {
 
 func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 	io.PullContext("IPAddress")
-	io.PullContext("addr")
 
 	// Array field (addr)
+	io.PullContext("addr")
 	// Count array
 	addr := make([]int8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {

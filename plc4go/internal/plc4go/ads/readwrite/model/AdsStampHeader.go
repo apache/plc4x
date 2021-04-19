@@ -107,9 +107,9 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
-	io.PullContext("adsNotificationSamples")
 
 	// Array field (adsNotificationSamples)
+	io.PullContext("adsNotificationSamples")
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {

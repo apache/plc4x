@@ -160,9 +160,9 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
-	io.PullContext("knxNetIpDeviceSerialNumber")
 
 	// Array field (knxNetIpDeviceSerialNumber)
+	io.PullContext("knxNetIpDeviceSerialNumber")
 	// Count array
 	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
@@ -185,9 +185,9 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
-	io.PullContext("deviceFriendlyName")
 
 	// Array field (deviceFriendlyName)
+	io.PullContext("deviceFriendlyName")
 	// Count array
 	deviceFriendlyName := make([]int8, uint16(30))
 	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {

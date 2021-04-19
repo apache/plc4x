@@ -112,9 +112,9 @@ func (m *BACnetTagContext) LengthInBytes() uint16 {
 
 func BACnetTagContextParse(io utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 	io.PullContext("BACnetTagContext")
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(extLength) }, func() uint16 { return uint16(lengthValueType) })

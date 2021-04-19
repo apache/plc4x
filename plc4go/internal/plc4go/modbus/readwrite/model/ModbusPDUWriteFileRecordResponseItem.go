@@ -126,9 +126,9 @@ func ModbusPDUWriteFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUW
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
-	io.PullContext("recordData")
 
 	// Array field (recordData)
+	io.PullContext("recordData")
 	// Length array
 	recordData := make([]int8, 0)
 	_recordDataLength := recordLength

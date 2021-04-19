@@ -188,9 +188,9 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
-	io.PullContext("maximumApduLengthAccepted")
 
 	// Array field (maximumApduLengthAccepted)
+	io.PullContext("maximumApduLengthAccepted")
 	// Count array
 	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {

@@ -156,9 +156,9 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
-	io.PullContext("device")
 
 	// Array field (device)
+	io.PullContext("device")
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {

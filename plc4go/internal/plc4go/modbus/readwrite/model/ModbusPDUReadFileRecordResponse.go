@@ -126,9 +126,9 @@ func ModbusPDUReadFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
-	io.PullContext("items")
 
 	// Array field (items)
+	io.PullContext("items")
 	// Length array
 	items := make([]*ModbusPDUReadFileRecordResponseItem, 0)
 	_itemsLength := byteCount

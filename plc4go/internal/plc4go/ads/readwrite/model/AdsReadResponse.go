@@ -133,9 +133,9 @@ func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
-	io.PullContext("data")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {

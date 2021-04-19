@@ -169,9 +169,9 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
-	io.PullContext("destinationAddress")
 
 	// Array field (destinationAddress)
+	io.PullContext("destinationAddress")
 	// Count array
 	destinationAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {

@@ -159,9 +159,9 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
-	io.PullContext("events")
 
 	// Array field (events)
+	io.PullContext("events")
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
