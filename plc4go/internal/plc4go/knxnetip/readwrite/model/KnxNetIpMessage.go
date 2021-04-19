@@ -16,15 +16,16 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -45,6 +46,7 @@ type IKnxNetIpMessage interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IKnxNetIpMessageParent interface {
@@ -57,6 +59,7 @@ type IKnxNetIpMessageChild interface {
 	InitializeParent(parent *KnxNetIpMessage)
 	GetTypeName() string
 	IKnxNetIpMessage
+	utils.AsciiBoxer
 }
 
 func NewKnxNetIpMessage() *KnxNetIpMessage {
@@ -81,6 +84,14 @@ func (m *KnxNetIpMessage) GetTypeName() string {
 }
 
 func (m *KnxNetIpMessage) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetIpMessage) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *KnxNetIpMessage) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
@@ -88,15 +99,11 @@ func (m *KnxNetIpMessage) LengthInBits() uint16 {
 
 	// Const Field (protocolVersion)
 	lengthInBits += 8
-
 	// Discriminator Field (msgType)
 	lengthInBits += 16
 
 	// Implicit Field (totalLength)
 	lengthInBits += 16
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -105,31 +112,34 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("KnxNetIpMessage")
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8("headerLength", 8)
+	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := io.ReadUint8(8)
+	protocolVersion, _protocolVersionErr := io.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field")
 	}
 	if protocolVersion != KnxNetIpMessage_PROTOCOLVERSION {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(KnxNetIpMessage_PROTOCOLVERSION)) + " but got " + strconv.Itoa(int(protocolVersion)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", KnxNetIpMessage_PROTOCOLVERSION) + " but got " + fmt.Sprintf("%d", protocolVersion))
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType, _msgTypeErr := io.ReadUint16(16)
+	msgType, _msgTypeErr := io.ReadUint16("msgType", 16)
 	if _msgTypeErr != nil {
 		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := io.ReadUint16(16)
+	totalLength, _totalLengthErr := io.ReadUint16("totalLength", 16)
+	_ = totalLength
 	if _totalLengthErr != nil {
 		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field")
 	}
@@ -138,42 +148,47 @@ func KnxNetIpMessageParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	var _parent *KnxNetIpMessage
 	var typeSwitchError error
 	switch {
-	case msgType == 0x0201:
+	case msgType == 0x0201: // SearchRequest
 		_parent, typeSwitchError = SearchRequestParse(io)
-	case msgType == 0x0202:
+	case msgType == 0x0202: // SearchResponse
 		_parent, typeSwitchError = SearchResponseParse(io)
-	case msgType == 0x0203:
+	case msgType == 0x0203: // DescriptionRequest
 		_parent, typeSwitchError = DescriptionRequestParse(io)
-	case msgType == 0x0204:
+	case msgType == 0x0204: // DescriptionResponse
 		_parent, typeSwitchError = DescriptionResponseParse(io)
-	case msgType == 0x0205:
+	case msgType == 0x0205: // ConnectionRequest
 		_parent, typeSwitchError = ConnectionRequestParse(io)
-	case msgType == 0x0206:
+	case msgType == 0x0206: // ConnectionResponse
 		_parent, typeSwitchError = ConnectionResponseParse(io)
-	case msgType == 0x0207:
+	case msgType == 0x0207: // ConnectionStateRequest
 		_parent, typeSwitchError = ConnectionStateRequestParse(io)
-	case msgType == 0x0208:
+	case msgType == 0x0208: // ConnectionStateResponse
 		_parent, typeSwitchError = ConnectionStateResponseParse(io)
-	case msgType == 0x0209:
+	case msgType == 0x0209: // DisconnectRequest
 		_parent, typeSwitchError = DisconnectRequestParse(io)
-	case msgType == 0x020A:
+	case msgType == 0x020A: // DisconnectResponse
 		_parent, typeSwitchError = DisconnectResponseParse(io)
-	case msgType == 0x020B:
+	case msgType == 0x020B: // UnknownMessage
 		_parent, typeSwitchError = UnknownMessageParse(io, totalLength)
-	case msgType == 0x0310:
+	case msgType == 0x0310: // DeviceConfigurationRequest
 		_parent, typeSwitchError = DeviceConfigurationRequestParse(io, totalLength)
-	case msgType == 0x0311:
+	case msgType == 0x0311: // DeviceConfigurationAck
 		_parent, typeSwitchError = DeviceConfigurationAckParse(io)
-	case msgType == 0x0420:
+	case msgType == 0x0420: // TunnelingRequest
 		_parent, typeSwitchError = TunnelingRequestParse(io, totalLength)
-	case msgType == 0x0421:
+	case msgType == 0x0421: // TunnelingResponse
 		_parent, typeSwitchError = TunnelingResponseParse(io)
-	case msgType == 0x0530:
+	case msgType == 0x0530: // RoutingIndication
 		_parent, typeSwitchError = RoutingIndicationParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("KnxNetIpMessage")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -185,30 +200,32 @@ func (m *KnxNetIpMessage) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
+	io.PushContext("KnxNetIpMessage")
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
-	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	_headerLengthErr := io.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
-	_protocolVersionErr := io.WriteUint8(8, 0x10)
+	_protocolVersionErr := io.WriteUint8("protocolVersion", 8, 0x10)
 	if _protocolVersionErr != nil {
 		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType := uint16(child.MsgType())
-	_msgTypeErr := io.WriteUint16(16, (msgType))
+	_msgTypeErr := io.WriteUint16("msgType", 16, (msgType))
+
 	if _msgTypeErr != nil {
 		return errors.Wrap(_msgTypeErr, "Error serializing 'msgType' field")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.LengthInBytes()))
-	_totalLengthErr := io.WriteUint16(16, (totalLength))
+	_totalLengthErr := io.WriteUint16("totalLength", 16, (totalLength))
 	if _totalLengthErr != nil {
 		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
 	}
@@ -219,26 +236,48 @@ func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpM
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("KnxNetIpMessage")
 	return nil
 }
 
 func (m *KnxNetIpMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// RoutingIndication needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.RoutingIndication":
+			if m.Child == nil {
+				m.Child = &RoutingIndication{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of KnxNetIpMessage")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.SearchRequest":
 					var dt *SearchRequest
 					if m.Child != nil {
@@ -456,4 +495,37 @@ func (m *KnxNetIpMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetIpMessage) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *KnxNetIpMessage) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *KnxNetIpMessage) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "KnxNetIpMessage"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Implicit Field (headerLength)
+	headerLength := uint8(uint8(6))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("HeaderLength", headerLength, -1))
+	// Const Field (protocolVersion)
+	boxes = append(boxes, utils.BoxAnything("ProtocolVersion", uint8(0x10), -1))
+	// Discriminator Field (msgType) (Used as input to a switch field)
+	msgType := uint16(m.Child.MsgType())
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MsgType", msgType, -1))
+	// Implicit Field (totalLength)
+	totalLength := uint16(uint16(m.LengthInBytes()))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TotalLength", totalLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

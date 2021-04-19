@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IS7MessageResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *S7MessageResponse) GetTypeName() string {
 }
 
 func (m *S7MessageResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7MessageResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -104,19 +110,22 @@ func (m *S7MessageResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageResponseParse(io *utils.ReadBuffer) (*S7Message, error) {
+func S7MessageResponseParse(io utils.ReadBuffer) (*S7Message, error) {
+	io.PullContext("S7MessageResponse")
 
 	// Simple Field (errorClass)
-	errorClass, _errorClassErr := io.ReadUint8(8)
+	errorClass, _errorClassErr := io.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint8(8)
+	errorCode, _errorCodeErr := io.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
+
+	io.CloseContext("S7MessageResponse")
 
 	// Create a partially initialized instance
 	_child := &S7MessageResponse{
@@ -130,21 +139,23 @@ func S7MessageResponseParse(io *utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7MessageResponse")
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
-		_errorClassErr := io.WriteUint8(8, (errorClass))
+		_errorClassErr := io.WriteUint8("errorClass", 8, (errorClass))
 		if _errorClassErr != nil {
 			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
-		_errorCodeErr := io.WriteUint8(8, (errorCode))
+		_errorCodeErr := io.WriteUint8("errorCode", 8, (errorCode))
 		if _errorCodeErr != nil {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
+		io.PopContext("S7MessageResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -153,10 +164,12 @@ func (m *S7MessageResponse) Serialize(io utils.WriteBuffer) error {
 func (m *S7MessageResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "errorClass":
@@ -175,7 +188,7 @@ func (m *S7MessageResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -191,4 +204,26 @@ func (m *S7MessageResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m S7MessageResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7MessageResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7MessageResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

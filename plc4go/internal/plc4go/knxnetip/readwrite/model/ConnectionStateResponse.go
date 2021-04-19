@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IConnectionStateResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +88,11 @@ func (m *ConnectionStateResponse) GetTypeName() string {
 }
 
 func (m *ConnectionStateResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -101,10 +107,11 @@ func (m *ConnectionStateResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionStateResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("ConnectionStateResponse")
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
@@ -114,6 +121,8 @@ func ConnectionStateResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+
+	io.CloseContext("ConnectionStateResponse")
 
 	// Create a partially initialized instance
 	_child := &ConnectionStateResponse{
@@ -127,10 +136,11 @@ func ConnectionStateResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error
 
 func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionStateResponse")
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
-		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8("communicationChannelId", 8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
@@ -141,6 +151,7 @@ func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
+		io.PopContext("ConnectionStateResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -149,10 +160,12 @@ func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":
@@ -171,7 +184,7 @@ func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -187,4 +200,25 @@ func (m *ConnectionStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionStateResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ConnectionStateResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ConnectionStateResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Status.Box("status", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

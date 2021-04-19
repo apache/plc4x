@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type ISearchRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *SearchRequest) GetTypeName() string {
 }
 
 func (m *SearchRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SearchRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiIDiscoveryEndpoint)
 	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
@@ -96,13 +102,16 @@ func (m *SearchRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SearchRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("SearchRequest")
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
+
+	io.CloseContext("SearchRequest")
 
 	// Create a partially initialized instance
 	_child := &SearchRequest{
@@ -115,6 +124,7 @@ func SearchRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("SearchRequest")
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
@@ -122,6 +132,7 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
+		io.PopContext("SearchRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 func (m *SearchRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiIDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiIDiscoveryEndpoint = data
+				m.HpaiIDiscoveryEndpoint = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *SearchRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m SearchRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m SearchRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "SearchRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiIDiscoveryEndpoint.Box("hpaiIDiscoveryEndpoint", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

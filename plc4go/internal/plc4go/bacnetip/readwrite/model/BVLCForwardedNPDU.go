@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IBVLCForwardedNPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *BVLCForwardedNPDU) GetTypeName() string {
 }
 
 func (m *BVLCForwardedNPDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCForwardedNPDU) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -108,21 +114,24 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+	io.PullContext("BVLCForwardedNPDU")
 
 	// Array field (ip)
+	io.PullContext("ip")
 	// Count array
 	ip := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'ip' field")
 		}
 		ip[curItem] = _item
 	}
+	io.CloseContext("ip")
 
 	// Simple Field (port)
-	port, _portErr := io.ReadUint16(16)
+	port, _portErr := io.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
@@ -132,6 +141,8 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+
+	io.CloseContext("BVLCForwardedNPDU")
 
 	// Create a partially initialized instance
 	_child := &BVLCForwardedNPDU{
@@ -146,20 +157,23 @@ func BVLCForwardedNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, err
 
 func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCForwardedNPDU")
 
 		// Array Field (ip)
 		if m.Ip != nil {
+			io.PushContext("ip")
 			for _, _element := range m.Ip {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
 			}
+			io.PopContext("ip")
 		}
 
 		// Simple Field (port)
 		port := uint16(m.Port)
-		_portErr := io.WriteUint16(16, (port))
+		_portErr := io.WriteUint16("port", 16, (port))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
@@ -170,6 +184,7 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
+		io.PopContext("BVLCForwardedNPDU")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -178,10 +193,12 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "ip":
@@ -197,16 +214,16 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 				}
 				m.Port = data
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -215,13 +232,7 @@ func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 }
 
 func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Ip, xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "ip"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
@@ -231,4 +242,36 @@ func (m *BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m BVLCForwardedNPDU) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BVLCForwardedNPDU) Box(name string, width int) utils.AsciiBox {
+	boxName := "BVLCForwardedNPDU"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Array Field (ip)
+		if m.Ip != nil {
+			// Simple array base type uint8 will be hex dumped
+			boxes = append(boxes, utils.BoxedDumpAnything("Ip", m.Ip))
+			// Simple array base type uint8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Ip {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Ip", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Port", m.Port, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Npdu.Box("npdu", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

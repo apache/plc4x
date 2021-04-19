@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -24,14 +25,14 @@ import (
 )
 
 type DefaultPlcSubscriptionResponse struct {
-	request       model.PlcSubscriptionRequest
-	responseCodes map[string]model.PlcResponseCode
+	DefaultResponse
+	request model.PlcSubscriptionRequest
 }
 
 func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcSubscriptionResponse {
 	return DefaultPlcSubscriptionResponse{
-		request:       request,
-		responseCodes: responseCodes,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
 	}
 }
 
@@ -41,14 +42,13 @@ func (m DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionReques
 
 func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName := range m.responseCodes {
-		fieldNames = append(fieldNames, fieldName)
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range m.request.GetFieldNames() {
+		if _, ok := m.responseCodes[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
 	}
 	return fieldNames
-}
-
-func (m DefaultPlcSubscriptionResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcSubscriptionResponse) GetValue(name string) interface{} {

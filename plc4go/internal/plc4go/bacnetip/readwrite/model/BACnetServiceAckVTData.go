@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetServiceAckVTData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetServiceAckVTData) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckVTData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckVTData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetServiceAckVTData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckVTDataParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckVTDataParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckVTData")
+
+	io.CloseContext("BACnetServiceAckVTData")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTData{
@@ -102,7 +111,9 @@ func BACnetServiceAckVTDataParse(io *utils.ReadBuffer) (*BACnetServiceAck, error
 
 func (m *BACnetServiceAckVTData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckVTData")
 
+		io.PopContext("BACnetServiceAckVTData")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetServiceAckVTData) Serialize(io utils.WriteBuffer) error {
 func (m *BACnetServiceAckVTData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetServiceAckVTData) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 
 func (m *BACnetServiceAckVTData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckVTData) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetServiceAckVTData) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetServiceAckVTData"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

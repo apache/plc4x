@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IS7VarRequestParameterItemAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *S7VarRequestParameterItemAddress) GetTypeName() string {
 }
 
 func (m *S7VarRequestParameterItemAddress) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7VarRequestParameterItemAddress) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -99,10 +105,12 @@ func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+	io.PullContext("S7VarRequestParameterItemAddress")
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _itemLengthErr := io.ReadUint8(8)
+	itemLength, _itemLengthErr := io.ReadUint8("itemLength", 8)
+	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
@@ -112,6 +120,8 @@ func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestP
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+
+	io.CloseContext("S7VarRequestParameterItemAddress")
 
 	// Create a partially initialized instance
 	_child := &S7VarRequestParameterItemAddress{
@@ -124,10 +134,11 @@ func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (*S7VarRequestP
 
 func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7VarRequestParameterItemAddress")
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.Address.LengthInBytes())
-		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8("itemLength", 8, (itemLength))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
@@ -138,6 +149,7 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
+		io.PopContext("S7VarRequestParameterItemAddress")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -146,15 +158,20 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
 				var dt *S7Address
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Address = dt
@@ -162,7 +179,7 @@ func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xm
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -175,4 +192,26 @@ func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m S7VarRequestParameterItemAddress) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7VarRequestParameterItemAddress"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (itemLength)
+		itemLength := uint8(m.Address.LengthInBytes())
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemLength", itemLength, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Address.Box("address", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -43,6 +44,7 @@ type IAdsWriteControlRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,7 +96,11 @@ func (m *AdsWriteControlRequest) GetTypeName() string {
 }
 
 func (m *AdsWriteControlRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsWriteControlRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (adsState)
 	lengthInBits += 16
@@ -117,36 +123,42 @@ func (m *AdsWriteControlRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsWriteControlRequest")
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := io.ReadUint16(16)
+	adsState, _adsStateErr := io.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := io.ReadUint16(16)
+	deviceState, _deviceStateErr := io.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
+	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("AdsWriteControlRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsWriteControlRequest{
@@ -161,38 +173,42 @@ func AdsWriteControlRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsWriteControlRequest")
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
-		_adsStateErr := io.WriteUint16(16, (adsState))
+		_adsStateErr := io.WriteUint16("adsState", 16, (adsState))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
-		_deviceStateErr := io.WriteUint16(16, (deviceState))
+		_deviceStateErr := io.WriteUint16("deviceState", 16, (deviceState))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.Data)))
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
+		io.PopContext("AdsWriteControlRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -201,10 +217,12 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsWriteControlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "adsState":
@@ -234,7 +252,7 @@ func (m *AdsWriteControlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -255,4 +273,39 @@ func (m *AdsWriteControlRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m AdsWriteControlRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsWriteControlRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsWriteControlRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, -1))
+		// Implicit Field (length)
+		length := uint32(uint32(len(m.Data)))
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

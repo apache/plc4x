@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IApduDataDeviceDescriptorResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *ApduDataDeviceDescriptorResponse) GetTypeName() string {
 }
 
 func (m *ApduDataDeviceDescriptorResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataDeviceDescriptorResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -105,24 +111,29 @@ func (m *ApduDataDeviceDescriptorResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduDataDeviceDescriptorResponse")
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
+	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
-	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1)))))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1))))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("ApduDataDeviceDescriptorResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorResponse{
@@ -136,24 +147,28 @@ func ApduDataDeviceDescriptorResponseParse(io *utils.ReadBuffer, dataLength uint
 
 func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataDeviceDescriptorResponse")
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
-		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
+		_descriptorTypeErr := io.WriteUint8("descriptorType", 6, (descriptorType))
 		if _descriptorTypeErr != nil {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
+		io.PopContext("ApduDataDeviceDescriptorResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -162,10 +177,12 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 func (m *ApduDataDeviceDescriptorResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "descriptorType":
@@ -189,7 +206,7 @@ func (m *ApduDataDeviceDescriptorResponse) UnmarshalXML(d *xml.Decoder, start xm
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -207,4 +224,32 @@ func (m *ApduDataDeviceDescriptorResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataDeviceDescriptorResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataDeviceDescriptorResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataDeviceDescriptorResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

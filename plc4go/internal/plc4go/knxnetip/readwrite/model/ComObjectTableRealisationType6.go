@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IComObjectTableRealisationType6 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *ComObjectTableRealisationType6) GetTypeName() string {
 }
 
 func (m *ComObjectTableRealisationType6) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ComObjectTableRealisationType6) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (comObjectDescriptors)
 	lengthInBits += m.ComObjectDescriptors.LengthInBits()
@@ -96,13 +102,16 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType6Parse(io *utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
+	io.PullContext("ComObjectTableRealisationType6")
 
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
+
+	io.CloseContext("ComObjectTableRealisationType6")
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{
@@ -115,6 +124,7 @@ func ComObjectTableRealisationType6Parse(io *utils.ReadBuffer) (*ComObjectTable,
 
 func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ComObjectTableRealisationType6")
 
 		// Simple Field (comObjectDescriptors)
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
@@ -122,6 +132,7 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
+		io.PopContext("ComObjectTableRealisationType6")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 func (m *ComObjectTableRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "comObjectDescriptors":
-				var data *GroupObjectDescriptorRealisationType6
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data GroupObjectDescriptorRealisationType6
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.ComObjectDescriptors = data
+				m.ComObjectDescriptors = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *ComObjectTableRealisationType6) MarshalXML(e *xml.Encoder, start xml.St
 		return err
 	}
 	return nil
+}
+
+func (m ComObjectTableRealisationType6) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
+	boxName := "ComObjectTableRealisationType6"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.ComObjectDescriptors.Box("comObjectDescriptors", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

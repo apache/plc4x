@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IModbusPDUWriteSingleRegisterResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,7 +96,11 @@ func (m *ModbusPDUWriteSingleRegisterResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -109,19 +115,22 @@ func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteSingleRegisterResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUWriteSingleRegisterResponse")
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint16(16)
+	value, _valueErr := io.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+
+	io.CloseContext("ModbusPDUWriteSingleRegisterResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleRegisterResponse{
@@ -135,21 +144,23 @@ func ModbusPDUWriteSingleRegisterResponseParse(io *utils.ReadBuffer) (*ModbusPDU
 
 func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUWriteSingleRegisterResponse")
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
-		_valueErr := io.WriteUint16(16, (value))
+		_valueErr := io.WriteUint16("value", 16, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		io.PopContext("ModbusPDUWriteSingleRegisterResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -158,10 +169,12 @@ func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) e
 func (m *ModbusPDUWriteSingleRegisterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
@@ -180,7 +193,7 @@ func (m *ModbusPDUWriteSingleRegisterResponse) UnmarshalXML(d *xml.Decoder, star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -196,4 +209,26 @@ func (m *ModbusPDUWriteSingleRegisterResponse) MarshalXML(e *xml.Encoder, start 
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUWriteSingleRegisterResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUWriteSingleRegisterResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUWriteSingleRegisterResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

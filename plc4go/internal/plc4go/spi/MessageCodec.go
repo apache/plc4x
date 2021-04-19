@@ -16,29 +16,45 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package spi
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-// If this function returns true, the message is forwarded to the message handler
+type Expectation interface {
+	GetExpiration() time.Time
+	GetAcceptsMessage() AcceptsMessage
+	GetHandleMessage() HandleMessage
+	GetHandleError() HandleError
+	fmt.Stringer
+}
+
+// AcceptsMessage If this function returns true, the message is forwarded to the message handler
 type AcceptsMessage func(message interface{}) bool
 
-// Function for handling the message, returns an error if anything goes wrong
+// HandleMessage Function for handling the message, returns an error if anything goes wrong
 type HandleMessage func(message interface{}) error
 
-// Function for handling the message, returns an error if anything goes wrong
+// HandleError Function for handling the message, returns an error if anything goes wrong
 type HandleError func(err error) error
 
 type MessageCodec interface {
+	// Connect connects this codec
 	Connect() error
+	// Disconnect Disconnects this codec
 	Disconnect() error
+	// IsRunning returns tur if the codec (workers are running)
+	IsRunning() bool
 
-	// Sends a given message
+	// Send Sends a given message
 	Send(message interface{}) error
-	// Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
+	// Expect Wait for a given timespan for a message to come in, which returns 'true' for 'acceptMessage'
 	// and is then forwarded to the 'handleMessage' function
 	Expect(acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
-	// A combination that sends a message first and then waits for a response
+	// SendRequest A combination that sends a message first and then waits for a response
 	SendRequest(message interface{}, acceptsMessage AcceptsMessage, handleMessage HandleMessage, handleError HandleError, ttl time.Duration) error
 
 	GetDefaultIncomingMessageChannel() chan interface{}

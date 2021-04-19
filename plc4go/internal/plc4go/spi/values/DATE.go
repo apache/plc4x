@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package values
 
 import (
@@ -48,11 +49,15 @@ func NewPlcDATE(value interface{}) PlcDATE {
 	}
 }
 
-func (m PlcDATE) IsTime() bool {
+func (m PlcDATE) IsDate() bool {
 	return true
 }
-func (m PlcDATE) GetTime() time.Time {
-	return m.value
+func (m PlcDATE) GetDate() time.Time {
+	return time.Date(m.value.Year(), m.value.Month(), m.value.Day(), 0, 0, 0, 0, time.UTC)
+}
+
+func (m PlcDATE) GetString() string {
+	return m.GetDate().Format("2006-01-02")
 }
 
 func (m PlcDATE) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

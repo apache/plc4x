@@ -100,7 +100,7 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
-    <plc4x-code-generation.version>1.4.0</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
 
     <antlr.version>4.9.1</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
@@ -149,7 +149,7 @@
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
     <logstash.version>7.10.0</logstash.version>
-    <milo.version>0.5.3</milo.version>
+    <milo.version>0.5.4</milo.version>
     <mockito.version>3.6.28</mockito.version>
     <netty.version>4.1.54.Final</netty.version>
     <owasp-dependency-check.version>6.0.3</owasp-dependency-check.version>
@@ -676,6 +676,11 @@
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
         </dependencies>
       </plugin>
 
@@ -750,6 +755,17 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+            <exclude>**/*.make</exclude>
+            <exclude>**/*.cmake</exclude>
+            <exclude>**/*.internal</exclude>
+            <exclude>**/link.txt</exclude>
+            <!-- Not sure why I can't exclude all Makefile's from just the plc4c directory -->
+            <!-- exclude>**/Makefile</exclude -->
+            <exclude>**/Makefile</exclude>
+            <exclude>**/*.includecache</exclude>
+            <exclude>**/CMakeFiles/**</exclude>
+            <exclude>**/CMakeCache.txt</exclude>
+            <exclude>**/DartConfiguration.tcl</exclude>
 
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>

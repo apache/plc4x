@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataExtReadRouterStatusResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataExtReadRouterStatusResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtReadRouterStatusResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtReadRouterStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataExtReadRouterStatusResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtReadRouterStatusResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtReadRouterStatusResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtReadRouterStatusResponse")
+
+	io.CloseContext("ApduDataExtReadRouterStatusResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRouterStatusResponse{
@@ -102,7 +111,9 @@ func ApduDataExtReadRouterStatusResponseParse(io *utils.ReadBuffer) (*ApduDataEx
 
 func (m *ApduDataExtReadRouterStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtReadRouterStatusResponse")
 
+		io.PopContext("ApduDataExtReadRouterStatusResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataExtReadRouterStatusResponse) Serialize(io utils.WriteBuffer) er
 func (m *ApduDataExtReadRouterStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataExtReadRouterStatusResponse) UnmarshalXML(d *xml.Decoder, start
 
 func (m *ApduDataExtReadRouterStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtReadRouterStatusResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtReadRouterStatusResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtReadRouterStatusResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

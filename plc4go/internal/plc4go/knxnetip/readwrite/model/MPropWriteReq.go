@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IMPropWriteReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *MPropWriteReq) GetTypeName() string {
 }
 
 func (m *MPropWriteReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MPropWriteReq) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *MPropWriteReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropWriteReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropWriteReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MPropWriteReq")
+
+	io.CloseContext("MPropWriteReq")
 
 	// Create a partially initialized instance
 	_child := &MPropWriteReq{
@@ -102,7 +111,9 @@ func MPropWriteReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropWriteReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropWriteReq")
 
+		io.PopContext("MPropWriteReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *MPropWriteReq) Serialize(io utils.WriteBuffer) error {
 func (m *MPropWriteReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *MPropWriteReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 
 func (m *MPropWriteReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MPropWriteReq) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m MPropWriteReq) Box(name string, width int) utils.AsciiBox {
+	boxName := "MPropWriteReq"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

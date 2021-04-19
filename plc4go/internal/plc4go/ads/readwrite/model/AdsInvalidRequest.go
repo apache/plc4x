@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IAdsInvalidRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +87,11 @@ func (m *AdsInvalidRequest) GetTypeName() string {
 }
 
 func (m *AdsInvalidRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsInvalidRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -94,7 +100,10 @@ func (m *AdsInvalidRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsInvalidRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsInvalidRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsInvalidRequest")
+
+	io.CloseContext("AdsInvalidRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsInvalidRequest{
@@ -106,7 +115,9 @@ func AdsInvalidRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsInvalidRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsInvalidRequest")
 
+		io.PopContext("AdsInvalidRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -115,17 +126,19 @@ func (m *AdsInvalidRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsInvalidRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -135,4 +148,20 @@ func (m *AdsInvalidRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *AdsInvalidRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m AdsInvalidRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsInvalidRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsInvalidRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

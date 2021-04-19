@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IModbusSerialADU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu *ModbusPDU) *ModbusSerialADU {
@@ -66,6 +68,10 @@ func (m *ModbusSerialADU) GetTypeName() string {
 }
 
 func (m *ModbusSerialADU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusSerialADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionId)
@@ -90,17 +96,18 @@ func (m *ModbusSerialADU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (*ModbusSerialADU, error) {
+func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU, error) {
+	io.PullContext("ModbusSerialADU")
 
 	// Simple Field (transactionId)
-	transactionId, _transactionIdErr := io.ReadUint16(16)
+	transactionId, _transactionIdErr := io.ReadUint16("transactionId", 16)
 	if _transactionIdErr != nil {
 		return nil, errors.Wrap(_transactionIdErr, "Error parsing 'transactionId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint16(16)
+		reserved, _err := io.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -113,13 +120,13 @@ func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (*ModbusSerialADU
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16("length", 16)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint8(8)
+	address, _addressErr := io.ReadUint8("address", 8)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
@@ -130,22 +137,25 @@ func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (*ModbusSerialADU
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
 
+	io.CloseContext("ModbusSerialADU")
+
 	// Create the instance
 	return NewModbusSerialADU(transactionId, length, address, pdu), nil
 }
 
 func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusSerialADU")
 
 	// Simple Field (transactionId)
 	transactionId := uint16(m.TransactionId)
-	_transactionIdErr := io.WriteUint16(16, (transactionId))
+	_transactionIdErr := io.WriteUint16("transactionId", 16, (transactionId))
 	if _transactionIdErr != nil {
 		return errors.Wrap(_transactionIdErr, "Error serializing 'transactionId' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint16(16, uint16(0x0000))
+		_err := io.WriteUint16("reserved", 16, uint16(0x0000))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -153,14 +163,14 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (length)
 	length := uint16(m.Length)
-	_lengthErr := io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16("length", 16, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (address)
 	address := uint8(m.Address)
-	_addressErr := io.WriteUint8(8, (address))
+	_addressErr := io.WriteUint8("address", 8, (address))
 	if _addressErr != nil {
 		return errors.Wrap(_addressErr, "Error serializing 'address' field")
 	}
@@ -171,22 +181,25 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
+	io.PopContext("ModbusSerialADU")
 	return nil
 }
 
 func (m *ModbusSerialADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "transactionId":
@@ -210,6 +223,9 @@ func (m *ModbusSerialADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 			case "pdu":
 				var dt *ModbusPDU
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Pdu = dt
@@ -241,4 +257,31 @@ func (m *ModbusSerialADU) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m ModbusSerialADU) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusSerialADU) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusSerialADU"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransactionId", m.TransactionId, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint16(0x0000), -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Pdu.Box("pdu", width-2))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -25,33 +26,32 @@ import (
 )
 
 type DefaultPlcReadResponse struct {
-	request       model.PlcReadRequest
-	responseCodes map[string]model.PlcResponseCode
-	values        map[string]values.PlcValue
+	DefaultResponse
+	request model.PlcReadRequest
+	values  map[string]values.PlcValue
 }
 
-func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) DefaultPlcReadResponse {
+func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse {
 	return DefaultPlcReadResponse{
-		request:       request,
-		responseCodes: responseCodes,
-		values:        values,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
+		values:          values,
 	}
 }
 
 func (m DefaultPlcReadResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName := range m.values {
-		fieldNames = append(fieldNames, fieldName)
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range m.request.GetFieldNames() {
+		if _, ok := m.values[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
 	}
 	return fieldNames
 }
 
 func (m DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
 	return m.request
-}
-
-func (m DefaultPlcReadResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {

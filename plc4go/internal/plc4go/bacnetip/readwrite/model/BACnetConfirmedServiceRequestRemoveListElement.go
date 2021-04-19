@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetConfirmedServiceRequestRemoveListElement interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemoveListElementParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemoveListElementParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequestRemoveListElement")
+
+	io.CloseContext("BACnetConfirmedServiceRequestRemoveListElement")
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemoveListElement{
@@ -102,7 +111,9 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(io *utils.ReadBuffer) (
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetConfirmedServiceRequestRemoveListElement")
 
+		io.PopContext("BACnetConfirmedServiceRequestRemoveListElement")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(io utils.Writ
 func (m *BACnetConfirmedServiceRequestRemoveListElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) UnmarshalXML(d *xml.Dec
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequestRemoveListElement) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetConfirmedServiceRequestRemoveListElement) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetConfirmedServiceRequestRemoveListElement"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IServiceId interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IServiceIdParent interface {
@@ -53,6 +55,7 @@ type IServiceIdChild interface {
 	InitializeParent(parent *ServiceId)
 	GetTypeName() string
 	IServiceId
+	utils.AsciiBoxer
 }
 
 func NewServiceId() *ServiceId {
@@ -77,13 +80,17 @@ func (m *ServiceId) GetTypeName() string {
 }
 
 func (m *ServiceId) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *ServiceId) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ServiceId) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (serviceType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *ServiceId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
+func ServiceIdParse(io utils.ReadBuffer) (*ServiceId, error) {
+	io.PullContext("ServiceId")
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType, _serviceTypeErr := io.ReadUint8(8)
+	serviceType, _serviceTypeErr := io.ReadUint8("serviceType", 8)
 	if _serviceTypeErr != nil {
 		return nil, errors.Wrap(_serviceTypeErr, "Error parsing 'serviceType' field")
 	}
@@ -104,24 +112,29 @@ func ServiceIdParse(io *utils.ReadBuffer) (*ServiceId, error) {
 	var _parent *ServiceId
 	var typeSwitchError error
 	switch {
-	case serviceType == 0x02:
+	case serviceType == 0x02: // KnxNetIpCore
 		_parent, typeSwitchError = KnxNetIpCoreParse(io)
-	case serviceType == 0x03:
+	case serviceType == 0x03: // KnxNetIpDeviceManagement
 		_parent, typeSwitchError = KnxNetIpDeviceManagementParse(io)
-	case serviceType == 0x04:
+	case serviceType == 0x04: // KnxNetIpTunneling
 		_parent, typeSwitchError = KnxNetIpTunnelingParse(io)
-	case serviceType == 0x05:
+	case serviceType == 0x05: // KnxNetIpRouting
 		_parent, typeSwitchError = KnxNetIpRoutingParse(io)
-	case serviceType == 0x06:
+	case serviceType == 0x06: // KnxNetRemoteLogging
 		_parent, typeSwitchError = KnxNetRemoteLoggingParse(io)
-	case serviceType == 0x07:
+	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
 		_parent, typeSwitchError = KnxNetRemoteConfigurationAndDiagnosisParse(io)
-	case serviceType == 0x08:
+	case serviceType == 0x08: // KnxNetObjectServer
 		_parent, typeSwitchError = KnxNetObjectServerParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ServiceId")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -133,10 +146,12 @@ func (m *ServiceId) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, serializeChildFunction func() error) error {
+	io.PushContext("ServiceId")
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
-	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+	_serviceTypeErr := io.WriteUint8("serviceType", 8, (serviceType))
+
 	if _serviceTypeErr != nil {
 		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")
 	}
@@ -147,26 +162,41 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ServiceId")
 	return nil
 }
 
 func (m *ServiceId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ServiceId")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore":
 					var dt *KnxNetIpCore
 					if m.Child != nil {
@@ -276,4 +306,27 @@ func (m *ServiceId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m ServiceId) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *ServiceId) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *ServiceId) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ServiceId"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (serviceType) (Used as input to a switch field)
+	serviceType := uint8(m.Child.ServiceType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ServiceType", serviceType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

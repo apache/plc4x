@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IApduDataMemoryRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +88,11 @@ func (m *ApduDataMemoryRead) GetTypeName() string {
 }
 
 func (m *ApduDataMemoryRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataMemoryRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numBytes)
 	lengthInBits += 6
@@ -101,19 +107,22 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataMemoryRead")
 
 	// Simple Field (numBytes)
-	numBytes, _numBytesErr := io.ReadUint8(6)
+	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
 	if _numBytesErr != nil {
 		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+
+	io.CloseContext("ApduDataMemoryRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryRead{
@@ -127,21 +136,23 @@ func ApduDataMemoryReadParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataMemoryRead")
 
 		// Simple Field (numBytes)
 		numBytes := uint8(m.NumBytes)
-		_numBytesErr := io.WriteUint8(6, (numBytes))
+		_numBytesErr := io.WriteUint8("numBytes", 6, (numBytes))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
+		io.PopContext("ApduDataMemoryRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -150,10 +161,12 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "numBytes":
@@ -172,7 +185,7 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -188,4 +201,26 @@ func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataMemoryRead) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataMemoryRead"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumBytes", m.NumBytes, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

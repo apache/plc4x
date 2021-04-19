@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package modbus
 
 import (
@@ -65,7 +66,9 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+		}()
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -75,11 +78,14 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	if err != nil {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+		go func() {
+			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+		}()
 		return ch
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
+	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan interface{})
 	go func() {
 		for {
@@ -93,7 +99,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 			}
 		}
 	}()
-	codec := NewMessageCodec(transportInstance, nil)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1

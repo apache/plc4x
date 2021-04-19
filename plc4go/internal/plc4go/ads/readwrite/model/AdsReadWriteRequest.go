@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -45,6 +46,7 @@ type IAdsReadWriteRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -98,7 +100,11 @@ func (m *AdsReadWriteRequest) GetTypeName() string {
 }
 
 func (m *AdsReadWriteRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadWriteRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -114,8 +120,9 @@ func (m *AdsReadWriteRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -131,53 +138,61 @@ func (m *AdsReadWriteRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsReadWriteRequest")
 
 	// Simple Field (indexGroup)
-	indexGroup, _indexGroupErr := io.ReadUint32(32)
+	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field")
 	}
 
 	// Simple Field (indexOffset)
-	indexOffset, _indexOffsetErr := io.ReadUint32(32)
+	indexOffset, _indexOffsetErr := io.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field")
 	}
 
 	// Simple Field (readLength)
-	readLength, _readLengthErr := io.ReadUint32(32)
+	readLength, _readLengthErr := io.ReadUint32("readLength", 32)
 	if _readLengthErr != nil {
 		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field")
 	}
 
 	// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	writeLength, _writeLengthErr := io.ReadUint32(32)
+	writeLength, _writeLengthErr := io.ReadUint32("writeLength", 32)
+	_ = writeLength
 	if _writeLengthErr != nil {
 		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field")
 	}
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
-	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0))))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), uint16(indexOffset), uint16(uint16(0)))); curItem++ {
+	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) }))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
 		_item, _err := AdsMultiRequestItemParse(io, indexGroup)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("AdsReadWriteRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsReadWriteRequest{
@@ -194,55 +209,61 @@ func AdsReadWriteRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsReadWriteRequest")
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
-		_indexGroupErr := io.WriteUint32(32, (indexGroup))
+		_indexGroupErr := io.WriteUint32("indexGroup", 32, (indexGroup))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.IndexOffset)
-		_indexOffsetErr := io.WriteUint32(32, (indexOffset))
+		_indexOffsetErr := io.WriteUint32("indexOffset", 32, (indexOffset))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (readLength)
 		readLength := uint32(m.ReadLength)
-		_readLengthErr := io.WriteUint32(32, (readLength))
+		_readLengthErr := io.WriteUint32("readLength", 32, (readLength))
 		if _readLengthErr != nil {
 			return errors.Wrap(_readLengthErr, "Error serializing 'readLength' field")
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), uint16(uint32(16)), uint16(uint32(12))))))) + uint32(uint32(len(m.Data))))
-		_writeLengthErr := io.WriteUint32(32, (writeLength))
+		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), func() uint16 { return uint16(uint32(16)) }, func() uint16 { return uint16(uint32(12)) }))))) + uint32(uint32(len(m.Data))))
+		_writeLengthErr := io.WriteUint32("writeLength", 32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
 		}
 
 		// Array Field (items)
 		if m.Items != nil {
+			io.PushContext("items")
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
+			io.PopContext("items")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
+		io.PopContext("AdsReadWriteRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -251,10 +272,12 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "indexGroup":
@@ -276,13 +299,21 @@ func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 				}
 				m.ReadLength = data
 			case "items":
-				var _values []*AdsMultiRequestItem
-				var dt *AdsMultiRequestItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *AdsMultiRequestItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Items = _values
 			case "data":
 				var _encoded string
 				if err := d.DecodeElement(&_encoded, &tok); err != nil {
@@ -298,7 +329,7 @@ func (m *AdsReadWriteRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -319,8 +350,10 @@ func (m *AdsReadWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement)
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
@@ -331,4 +364,51 @@ func (m *AdsReadWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m AdsReadWriteRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsReadWriteRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsReadWriteRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexGroup", m.IndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("IndexOffset", m.IndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReadLength", m.ReadLength, -1))
+		// Implicit Field (writeLength)
+		writeLength := uint32(uint32(uint32(uint32(uint32(len(m.Items)))*uint32(uint32(utils.InlineIf(bool(bool((m.IndexGroup) == (61570))), func() uint16 { return uint16(uint32(16)) }, func() uint16 { return uint16(uint32(12)) }))))) + uint32(uint32(len(m.Data))))
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteLength", writeLength, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

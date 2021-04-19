@@ -38,19 +38,19 @@
     [reserved   uint 16  '0x0000']
     [enum Direction 'direction']
     [typeSwitch 'operation', 'direction'
-        ['Operation.DISCOVERY', 'Direction.REQUEST' DiscoveryRequest
+        ['DISCOVERY', 'REQUEST' DiscoveryRequest
             [simple AmsNetId 'amsNetId']
             [reserved uint 16 '0x1027']
             [reserved uint 32 '0x00000000L']
         ]
-        ['Operation.DISCOVERY', 'Direction.RESPONSE' DiscoveryResponse
+        ['DISCOVERY', 'RESPONSE' DiscoveryResponse
             [simple AmsNetId 'amsNetId']
             [reserved uint 16 '0x1027']
             [reserved uint 16 '0x0400']
             [reserved uint 24 '0x000005L']
             [simple AmsMagicString 'name']
         ]
-        ['Operation.ROUTE', 'Direction.REQUEST' RouteRequest
+        ['ROUTE', 'REQUEST' RouteRequest
             [simple     AmsNetId 'sender']
             [reserved   uint 16  '0x1027']
             [reserved   uint 16  '0x0500']
@@ -68,7 +68,7 @@
             [simple AmsMagicString 'address']
 
         ]
-        ['Operation.ROUTE', 'Direction.RESPONSE' RouteResponse
+        ['ROUTE', 'RESPONSE' RouteResponse
             [simple AmsNetId 'amsNetId']
             [reserved uint 16 '0x1027']
             [reserved uint 16 '0x0100']

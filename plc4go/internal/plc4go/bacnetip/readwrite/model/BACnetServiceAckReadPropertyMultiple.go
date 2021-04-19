@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetServiceAckReadPropertyMultiple interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetServiceAckReadPropertyMultiple) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckReadPropertyMultiple) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckReadPropertyMultiple) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckReadPropertyMultiple")
+
+	io.CloseContext("BACnetServiceAckReadPropertyMultiple")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadPropertyMultiple{
@@ -102,7 +111,9 @@ func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (*BACnetSer
 
 func (m *BACnetServiceAckReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckReadPropertyMultiple")
 
+		io.PopContext("BACnetServiceAckReadPropertyMultiple")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetServiceAckReadPropertyMultiple) Serialize(io utils.WriteBuffer) e
 func (m *BACnetServiceAckReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetServiceAckReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, star
 
 func (m *BACnetServiceAckReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckReadPropertyMultiple) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetServiceAckReadPropertyMultiple) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetServiceAckReadPropertyMultiple"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

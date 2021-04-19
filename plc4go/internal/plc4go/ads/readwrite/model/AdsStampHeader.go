@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IAdsStampHeader interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []*AdsNotificationSample) *AdsStampHeader {
@@ -64,6 +66,10 @@ func (m *AdsStampHeader) GetTypeName() string {
 }
 
 func (m *AdsStampHeader) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsStampHeader) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -74,8 +80,9 @@ func (m *AdsStampHeader) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.AdsNotificationSamples) > 0 {
-		for _, element := range m.AdsNotificationSamples {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.AdsNotificationSamples {
+			last := i == len(m.AdsNotificationSamples)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -86,21 +93,23 @@ func (m *AdsStampHeader) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
+func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
+	io.PullContext("AdsStampHeader")
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := io.ReadUint64(64)
+	timestamp, _timestampErr := io.ReadUint64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
-	samples, _samplesErr := io.ReadUint32(32)
+	samples, _samplesErr := io.ReadUint32("samples", 32)
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field")
 	}
 
 	// Array field (adsNotificationSamples)
+	io.PullContext("adsNotificationSamples")
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
@@ -110,53 +119,62 @@ func AdsStampHeaderParse(io *utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
+	io.CloseContext("adsNotificationSamples")
+
+	io.CloseContext("AdsStampHeader")
 
 	// Create the instance
 	return NewAdsStampHeader(timestamp, samples, adsNotificationSamples), nil
 }
 
 func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AdsStampHeader")
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.Timestamp)
-	_timestampErr := io.WriteUint64(64, (timestamp))
+	_timestampErr := io.WriteUint64("timestamp", 64, (timestamp))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples := uint32(m.Samples)
-	_samplesErr := io.WriteUint32(32, (samples))
+	_samplesErr := io.WriteUint32("samples", 32, (samples))
 	if _samplesErr != nil {
 		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
 	}
 
 	// Array Field (adsNotificationSamples)
 	if m.AdsNotificationSamples != nil {
+		io.PushContext("adsNotificationSamples")
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 			}
 		}
+		io.PopContext("adsNotificationSamples")
 	}
 
+	io.PopContext("AdsStampHeader")
 	return nil
 }
 
 func (m *AdsStampHeader) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "timestamp":
@@ -198,8 +216,10 @@ func (m *AdsStampHeader) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.AdsNotificationSamples, xml.StartElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdsNotificationSamples {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsNotificationSamples"}}); err != nil {
 		return err
@@ -208,4 +228,32 @@ func (m *AdsStampHeader) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m AdsStampHeader) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsStampHeader) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsStampHeader"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint64 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Samples", m.Samples, -1))
+	// Array Field (adsNotificationSamples)
+	if m.AdsNotificationSamples != nil {
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.AdsNotificationSamples {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("AdsNotificationSamples", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -20,6 +20,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -122,12 +123,12 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public abstract String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
-        return getReadBufferReadMethodCall(simpleTypeReference, null);
+        return getReadBufferReadMethodCall(simpleTypeReference,null, null);
     }
 
-    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString);
+    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
 
-    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName);
+    public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field);
 
     public abstract String getNullValueForTypeReference(TypeReference typeReference);
 
@@ -253,6 +254,14 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (implicitFieldOptional.isPresent()) {
             final ImplicitField implicitField = implicitFieldOptional.get();
             return Optional.of(implicitField.getType());
+        }
+        // Check if the expression is a VirtualField
+        final Optional<VirtualField> virtualFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof VirtualField).map(field -> (VirtualField) field).filter(
+            virtualField -> virtualField.getName().equals(propertyName)).findFirst();
+        if(virtualFieldOptional.isPresent()) {
+            final VirtualField virtualField = virtualFieldOptional.get();
+            return Optional.of(virtualField.getType());
         }
         // Check if the expression root is referencing an argument
         if (baseType.getParserArguments() != null) {
@@ -899,9 +908,62 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public SimpleTypeReference getEnumFieldSimpleTypeReference(TypeReference type, String fieldName) {
         TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(type);
+
         if (typeDefinition instanceof EnumTypeDefinition) {
             if (((EnumTypeDefinition) typeDefinition).getConstantType(fieldName) instanceof SimpleTypeReference) {
                 return (SimpleTypeReference) ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Confirms if a variable is an implicit variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return boolean returns true if the variable's name is an implicit field
+    */
+    protected boolean isVariableLiteralImplicitField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return false;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals("implicit")) {
+                ImplicitField implicitField = (ImplicitField) field;
+                if (vl.getName().equals(implicitField.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the implicit field that has the same name as the variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return ImplicitField returns the implicit field that corresponds to the variable's name.
+     */
+    protected ImplicitField getReferencedImplicitField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return null;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals("implicit")) {
+                ImplicitField implicitField = (ImplicitField) field;
+                if (vl.getName().equals(implicitField.getName())) {
+                    return implicitField;
+                }
             }
         }
         return null;

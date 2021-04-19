@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IComObjectTable interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IComObjectTableParent interface {
@@ -53,6 +55,7 @@ type IComObjectTableChild interface {
 	InitializeParent(parent *ComObjectTable)
 	GetTypeName() string
 	IComObjectTable
+	utils.AsciiBoxer
 }
 
 func NewComObjectTable() *ComObjectTable {
@@ -77,10 +80,15 @@ func (m *ComObjectTable) GetTypeName() string {
 }
 
 func (m *ComObjectTable) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *ComObjectTable) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ComObjectTable) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -89,22 +97,28 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableParse(io *utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+	io.PullContext("ComObjectTable")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ComObjectTable
 	var typeSwitchError error
 	switch {
-	case *firmwareType == FirmwareType_SYSTEM_1:
+	case *firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
 		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_2:
+	case *firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
 		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(io)
-	case *firmwareType == FirmwareType_SYSTEM_300:
+	case *firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("ComObjectTable")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -116,6 +130,7 @@ func (m *ComObjectTable) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectTable, serializeChildFunction func() error) error {
+	io.PushContext("ComObjectTable")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -123,26 +138,41 @@ func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectT
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("ComObjectTable")
 	return nil
 }
 
 func (m *ComObjectTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of ComObjectTable")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.ComObjectTableRealisationType1":
 					var dt *ComObjectTableRealisationType1
 					if m.Child != nil {
@@ -204,4 +234,23 @@ func (m *ComObjectTable) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m ComObjectTable) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *ComObjectTable) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *ComObjectTable) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ComObjectTable"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

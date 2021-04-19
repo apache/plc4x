@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -51,16 +52,18 @@ func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHan
 	}
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) {
+func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) model.PlcWriteRequestBuilder {
 	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.values[name] = value
+	return m
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) {
+func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) model.PlcWriteRequestBuilder {
 	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.values[name] = value
+	return m
 }
 
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
@@ -83,31 +86,21 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 		}
 		plcValues[name] = value
 	}
-	return DefaultPlcWriteRequest{
-		fields:     m.fields,
-		fieldNames: m.fieldNames,
-		values:     plcValues,
-		writer:     m.writer,
-	}, nil
+	return NewDefaultPlcWriteRequest(m.fields, m.fieldNames, plcValues, m.writer), nil
 }
 
 type DefaultPlcWriteRequest struct {
-	fields     map[string]model.PlcField
-	fieldNames []string
-	values     map[string]values.PlcValue
-	writer     spi.PlcWriter
+	DefaultRequest
+	values map[string]values.PlcValue
+	writer spi.PlcWriter
+}
+
+func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter) model.PlcWriteRequest {
+	return DefaultPlcWriteRequest{NewDefaultRequest(fields, fieldNames), values, writer}
 }
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 	return m.writer.Write(m)
-}
-
-func (m DefaultPlcWriteRequest) GetFieldNames() []string {
-	return m.fieldNames
-}
-
-func (m DefaultPlcWriteRequest) GetField(name string) model.PlcField {
-	return m.fields[name]
 }
 
 func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {

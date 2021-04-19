@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IHPAIControlEndpoint interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress *IPAddress, ipPort uint16) *HPAIControlEndpoint {
@@ -64,6 +66,10 @@ func (m *HPAIControlEndpoint) GetTypeName() string {
 }
 
 func (m *HPAIControlEndpoint) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *HPAIControlEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -85,10 +91,12 @@ func (m *HPAIControlEndpoint) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HPAIControlEndpointParse(io *utils.ReadBuffer) (*HPAIControlEndpoint, error) {
+func HPAIControlEndpointParse(io utils.ReadBuffer) (*HPAIControlEndpoint, error) {
+	io.PullContext("HPAIControlEndpoint")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
@@ -106,20 +114,23 @@ func HPAIControlEndpointParse(io *utils.ReadBuffer) (*HPAIControlEndpoint, error
 	}
 
 	// Simple Field (ipPort)
-	ipPort, _ipPortErr := io.ReadUint16(16)
+	ipPort, _ipPortErr := io.ReadUint16("ipPort", 16)
 	if _ipPortErr != nil {
 		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field")
 	}
+
+	io.CloseContext("HPAIControlEndpoint")
 
 	// Create the instance
 	return NewHPAIControlEndpoint(hostProtocolCode, ipAddress, ipPort), nil
 }
 
 func (m *HPAIControlEndpoint) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("HPAIControlEndpoint")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
@@ -138,27 +149,30 @@ func (m *HPAIControlEndpoint) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (ipPort)
 	ipPort := uint16(m.IpPort)
-	_ipPortErr := io.WriteUint16(16, (ipPort))
+	_ipPortErr := io.WriteUint16("ipPort", 16, (ipPort))
 	if _ipPortErr != nil {
 		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
 	}
 
+	io.PopContext("HPAIControlEndpoint")
 	return nil
 }
 
 func (m *HPAIControlEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hostProtocolCode":
@@ -168,11 +182,11 @@ func (m *HPAIControlEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 				}
 				m.HostProtocolCode = data
 			case "ipAddress":
-				var data *IPAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data IPAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.IpAddress = data
+				m.IpAddress = &data
 			case "ipPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -204,4 +218,28 @@ func (m *HPAIControlEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement)
 		return err
 	}
 	return nil
+}
+
+func (m HPAIControlEndpoint) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m HPAIControlEndpoint) Box(name string, width int) utils.AsciiBox {
+	boxName := "HPAIControlEndpoint"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.HostProtocolCode.Box("hostProtocolCode", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.IpAddress.Box("ipAddress", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

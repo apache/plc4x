@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package plc4go
 
 import (
@@ -28,24 +29,24 @@ import (
 
 // This is the main entry point for PLC4Go applications
 type PlcDriverManager interface {
-	// Manually register a new driver
+	// RegisterDriver Manually register a new driver
 	RegisterDriver(driver PlcDriver)
-	// List the names of all drivers registered in the system
+	// ListDriverNames List the names of all drivers registered in the system
 	ListDriverNames() []string
-	// Get access to a driver instance for a given driver-name
+	// GetDriver Get access to a driver instance for a given driver-name
 	GetDriver(driverName string) (PlcDriver, error)
 
-	// Manually register a new driver
+	// RegisterTransport Manually register a new driver
 	RegisterTransport(transport transports.Transport)
-	// List the names of all drivers registered in the system
+	// ListTransportNames List the names of all drivers registered in the system
 	ListTransportNames() []string
-	// Get access to a driver instance for a given driver-name
+	// GetTransport Get access to a driver instance for a given driver-name
 	GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error)
 
-	// Get a connection to a remote PLC for a given plc4x connection-string
+	// GetConnection Get a connection to a remote PLC for a given plc4x connection-string
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
-	// Execute all available discovery methods on all available drivers using all transports
+	// Discover Execute all available discovery methods on all available drivers using all transports
 	Discover(func(event model.PlcDiscoveryEvent)) error
 }
 
@@ -121,13 +122,12 @@ func (m PlcDriverManger) ListTransportNames() []string {
 	return transportNames
 }
 
-func (m PlcDriverManger) GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error) {
-	// TODO: what are the parameters above for? If not needed we can blank ("_") them
+func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
 	if val, ok := m.transports[transportName]; ok {
-		log.Debug().Str("transportName", transportName).Msg("Returning transport name")
+		log.Debug().Str("transportName", transportName).Msg("Returning transport")
 		return val, nil
 	}
-	return nil, errors.New("couldn't find transport " + transportName)
+	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
 func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
@@ -213,8 +213,7 @@ func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent)) 
 		if driver.SupportsDiscovery() {
 			err := driver.Discover(callback)
 			if err != nil {
-				return errors.New("Error running Discover on driver " + driver.GetProtocolName() +
-					". Got error: " + err.Error())
+				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}
 		}
 	}

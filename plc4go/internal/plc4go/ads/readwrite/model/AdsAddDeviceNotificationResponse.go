@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IAdsAddDeviceNotificationResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -90,7 +92,11 @@ func (m *AdsAddDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *AdsAddDeviceNotificationResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsAddDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -105,7 +111,8 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsAddDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsAddDeviceNotificationResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
@@ -114,10 +121,12 @@ func AdsAddDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, erro
 	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
+
+	io.CloseContext("AdsAddDeviceNotificationResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsAddDeviceNotificationResponse{
@@ -131,6 +140,7 @@ func AdsAddDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, erro
 
 func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsAddDeviceNotificationResponse")
 
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
@@ -140,11 +150,12 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
-		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+		_notificationHandleErr := io.WriteUint32("notificationHandle", 32, (notificationHandle))
 		if _notificationHandleErr != nil {
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
+		io.PopContext("AdsAddDeviceNotificationResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -153,10 +164,12 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 func (m *AdsAddDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -175,7 +188,7 @@ func (m *AdsAddDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xm
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -191,4 +204,25 @@ func (m *AdsAddDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.
 		return err
 	}
 	return nil
+}
+
+func (m AdsAddDeviceNotificationResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsAddDeviceNotificationResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

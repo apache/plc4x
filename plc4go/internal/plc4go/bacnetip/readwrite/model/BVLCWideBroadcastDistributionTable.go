@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBVLCWideBroadcastDistributionTable interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BVLCWideBroadcastDistributionTable) GetTypeName() string {
 }
 
 func (m *BVLCWideBroadcastDistributionTable) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCWideBroadcastDistributionTable) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BVLCWideBroadcastDistributionTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCWideBroadcastDistributionTableParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCWideBroadcastDistributionTableParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCWideBroadcastDistributionTable")
+
+	io.CloseContext("BVLCWideBroadcastDistributionTable")
 
 	// Create a partially initialized instance
 	_child := &BVLCWideBroadcastDistributionTable{
@@ -102,7 +111,9 @@ func BVLCWideBroadcastDistributionTableParse(io *utils.ReadBuffer) (*BVLC, error
 
 func (m *BVLCWideBroadcastDistributionTable) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCWideBroadcastDistributionTable")
 
+		io.PopContext("BVLCWideBroadcastDistributionTable")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BVLCWideBroadcastDistributionTable) Serialize(io utils.WriteBuffer) err
 func (m *BVLCWideBroadcastDistributionTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BVLCWideBroadcastDistributionTable) UnmarshalXML(d *xml.Decoder, start 
 
 func (m *BVLCWideBroadcastDistributionTable) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCWideBroadcastDistributionTable) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BVLCWideBroadcastDistributionTable) Box(name string, width int) utils.AsciiBox {
+	boxName := "BVLCWideBroadcastDistributionTable"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

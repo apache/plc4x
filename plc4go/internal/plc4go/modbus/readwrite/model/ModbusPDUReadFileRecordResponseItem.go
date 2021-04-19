@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IModbusPDUReadFileRecordResponseItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) *ModbusPDUReadFileRecordResponseItem {
@@ -65,6 +67,10 @@ func (m *ModbusPDUReadFileRecordResponseItem) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadFileRecordResponseItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (dataLength)
@@ -85,79 +91,91 @@ func (m *ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
+func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordResponseItem, error) {
+	io.PullContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint8(8)
+	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
+	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Array field (data)
+	io.PullContext("data")
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := uint16(dataLength) - uint16(uint16(1))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data = append(data, _item)
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("ModbusPDUReadFileRecordResponseItem")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
-	_dataLengthErr := io.WriteUint8(8, (dataLength))
+	_dataLengthErr := io.WriteUint8("dataLength", 8, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
-	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8("referenceType", 8, (referenceType))
 	if _referenceTypeErr != nil {
 		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Array Field (data)
 	if m.Data != nil {
+		io.PushContext("data")
 		for _, _element := range m.Data {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
+		io.PopContext("data")
 	}
 
+	io.PopContext("ModbusPDUReadFileRecordResponseItem")
 	return nil
 }
 
 func (m *ModbusPDUReadFileRecordResponseItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "referenceType":
@@ -201,4 +219,33 @@ func (m *ModbusPDUReadFileRecordResponseItem) MarshalXML(e *xml.Encoder, start x
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadFileRecordResponseItem) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUReadFileRecordResponseItem) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUReadFileRecordResponseItem"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Implicit Field (dataLength)
+	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, -1))
+	// Array Field (data)
+	if m.Data != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Data {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

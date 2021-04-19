@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package tests
 
 import (
@@ -26,6 +27,5 @@ import (
 )
 
 func TestAdsDriver(t *testing.T) {
-	t.Skip("Still a work in progress")
 	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml")
 }

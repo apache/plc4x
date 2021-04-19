@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IModbusPDUDiagnosticRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,7 +96,11 @@ func (m *ModbusPDUDiagnosticRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUDiagnosticRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -109,19 +115,22 @@ func (m *ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUDiagnosticRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUDiagnosticRequest")
 
 	// Simple Field (subFunction)
-	subFunction, _subFunctionErr := io.ReadUint16(16)
+	subFunction, _subFunctionErr := io.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
 
 	// Simple Field (data)
-	data, _dataErr := io.ReadUint16(16)
+	data, _dataErr := io.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+
+	io.CloseContext("ModbusPDUDiagnosticRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUDiagnosticRequest{
@@ -135,21 +144,23 @@ func ModbusPDUDiagnosticRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUDiagnosticRequest")
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.SubFunction)
-		_subFunctionErr := io.WriteUint16(16, (subFunction))
+		_subFunctionErr := io.WriteUint16("subFunction", 16, (subFunction))
 		if _subFunctionErr != nil {
 			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.Data)
-		_dataErr := io.WriteUint16(16, (data))
+		_dataErr := io.WriteUint16("data", 16, (data))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
+		io.PopContext("ModbusPDUDiagnosticRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -158,10 +169,12 @@ func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusPDUDiagnosticRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "subFunction":
@@ -180,7 +193,7 @@ func (m *ModbusPDUDiagnosticRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -196,4 +209,26 @@ func (m *ModbusPDUDiagnosticRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUDiagnosticRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUDiagnosticRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUDiagnosticRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Data", m.Data, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

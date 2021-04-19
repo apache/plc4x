@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IBACnetError interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetErrorParent interface {
@@ -53,6 +55,7 @@ type IBACnetErrorChild interface {
 	InitializeParent(parent *BACnetError)
 	GetTypeName() string
 	IBACnetError
+	utils.AsciiBoxer
 }
 
 func NewBACnetError() *BACnetError {
@@ -77,13 +80,17 @@ func (m *BACnetError) GetTypeName() string {
 }
 
 func (m *BACnetError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *BACnetError) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetError) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *BACnetError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetError")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -104,38 +112,43 @@ func BACnetErrorParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	var _parent *BACnetError
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x03:
+	case serviceChoice == 0x03: // BACnetErrorGetAlarmSummary
 		_parent, typeSwitchError = BACnetErrorGetAlarmSummaryParse(io)
-	case serviceChoice == 0x04:
+	case serviceChoice == 0x04: // BACnetErrorGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetErrorGetEnrollmentSummaryParse(io)
-	case serviceChoice == 0x1D:
+	case serviceChoice == 0x1D: // BACnetErrorGetEventInformation
 		_parent, typeSwitchError = BACnetErrorGetEventInformationParse(io)
-	case serviceChoice == 0x06:
+	case serviceChoice == 0x06: // BACnetErrorAtomicReadFile
 		_parent, typeSwitchError = BACnetErrorAtomicReadFileParse(io)
-	case serviceChoice == 0x07:
+	case serviceChoice == 0x07: // BACnetErrorAtomicWriteFile
 		_parent, typeSwitchError = BACnetErrorAtomicWriteFileParse(io)
-	case serviceChoice == 0x0A:
+	case serviceChoice == 0x0A: // BACnetErrorCreateObject
 		_parent, typeSwitchError = BACnetErrorCreateObjectParse(io)
-	case serviceChoice == 0x0C:
+	case serviceChoice == 0x0C: // BACnetErrorReadProperty
 		_parent, typeSwitchError = BACnetErrorReadPropertyParse(io)
-	case serviceChoice == 0x0E:
+	case serviceChoice == 0x0E: // BACnetErrorReadPropertyMultiple
 		_parent, typeSwitchError = BACnetErrorReadPropertyMultipleParse(io)
-	case serviceChoice == 0x1A:
+	case serviceChoice == 0x1A: // BACnetErrorReadRange
 		_parent, typeSwitchError = BACnetErrorReadRangeParse(io)
-	case serviceChoice == 0x12:
+	case serviceChoice == 0x12: // BACnetErrorConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetErrorConfirmedPrivateTransferParse(io)
-	case serviceChoice == 0x15:
+	case serviceChoice == 0x15: // BACnetErrorVTOpen
 		_parent, typeSwitchError = BACnetErrorVTOpenParse(io)
-	case serviceChoice == 0x17:
+	case serviceChoice == 0x17: // BACnetErrorVTData
 		_parent, typeSwitchError = BACnetErrorVTDataParse(io)
-	case serviceChoice == 0x18:
+	case serviceChoice == 0x18: // BACnetErrorRemovedAuthenticate
 		_parent, typeSwitchError = BACnetErrorRemovedAuthenticateParse(io)
-	case serviceChoice == 0x0D:
+	case serviceChoice == 0x0D: // BACnetErrorRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetErrorRemovedReadPropertyConditionalParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BACnetError")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -147,10 +160,12 @@ func (m *BACnetError) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetError) SerializeParent(io utils.WriteBuffer, child IBACnetError, serializeChildFunction func() error) error {
+	io.PushContext("BACnetError")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
-	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8("serviceChoice", 8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
@@ -161,26 +176,132 @@ func (m *BACnetError) SerializeParent(io utils.WriteBuffer, child IBACnetError, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BACnetError")
 	return nil
 }
 
 func (m *BACnetError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetErrorGetAlarmSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetAlarmSummary{
+					Parent: m,
+				}
+			}
+		// BACnetErrorGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetErrorGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetErrorGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetErrorAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetErrorAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetErrorAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetErrorAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetErrorCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetErrorCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetErrorReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetErrorReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetErrorReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetErrorReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetErrorConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetErrorConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetErrorVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetErrorVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetErrorVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorVTData":
+			if m.Child == nil {
+				m.Child = &BACnetErrorVTData{
+					Parent: m,
+				}
+			}
+		// BACnetErrorRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetErrorRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetErrorRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetErrorRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetError")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorGetAlarmSummary":
 					var dt *BACnetErrorGetAlarmSummary
 					if m.Child != nil {
@@ -374,4 +495,27 @@ func (m *BACnetError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m BACnetError) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *BACnetError) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BACnetError) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BACnetError"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(m.Child.ServiceChoice())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ServiceChoice", serviceChoice, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

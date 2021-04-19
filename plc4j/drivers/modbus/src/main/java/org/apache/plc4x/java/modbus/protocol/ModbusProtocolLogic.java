@@ -36,9 +36,7 @@ import org.apache.plc4x.java.modbus.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -378,11 +376,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             }
             ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
-            ReadBuffer io = new ReadBuffer(resp.getValue());
+            ReadBuffer io = new ReadBufferByteBased(resp.getValue());
             if(fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -390,11 +388,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             }
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
-            ReadBuffer io = new ReadBuffer(resp.getValue());
-            if(fieldDataTypeSize < 2) {
+            ReadBuffer io = new ReadBufferByteBased(resp.getValue());
+            if((dataType != ModbusDataType.STRING) && fieldDataTypeSize < 2) {
                 io.readByte(8);
             }
-            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/Math.max(fieldDataTypeSize/2.0f, 1)));
+            return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -407,11 +405,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
 
             if (resp.getItems().length == 2 && resp.getItems().length == req.getItems().length) {
               //If request was split over file records, two groups in reponse should be received.
-              io = new ReadBuffer(ArrayUtils.addAll(resp.getItems()[0].getData(), resp.getItems()[1].getData()));
+              io = new ReadBufferByteBased(ArrayUtils.addAll(resp.getItems()[0].getData(), resp.getItems()[1].getData()));
               dataLength = (short) (resp.getItems()[0].getLengthInBytes() + resp.getItems()[1].getLengthInBytes() - (2 * FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH));
             } else if (resp.getItems().length == 1 && resp.getItems().length == req.getItems().length) {
               //If request was within a single file record, one group should be received.
-              io = new ReadBuffer(resp.getItems()[0].getData());
+              io = new ReadBufferByteBased(resp.getItems()[0].getData());
               dataLength = (short) (resp.getItems()[0].getLengthInBytes() - FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH);
             } else {
               throw new PlcRuntimeException("Unexpected number of groups in response. " +
@@ -428,7 +426,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
         ModbusDataType fieldDataType = ((ModbusField) field).getDataType();
         try {
-            WriteBuffer buffer;
+            WriteBufferByteBased buffer;
             if(plcValue instanceof PlcList) {
                 buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
                 byte[] data = buffer.getData();
@@ -445,7 +443,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, 1, false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {
@@ -469,7 +467,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     }
 
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
-        ReadBuffer io = new ReadBuffer(data);
+        ReadBuffer io = new ReadBufferByteBased(data);
         if(count == 1) {
             return DataItemIO.staticParse(io, ModbusDataType.BOOL, 1);
         }

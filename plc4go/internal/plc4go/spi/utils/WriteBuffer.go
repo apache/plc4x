@@ -16,92 +16,52 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package utils
 
 import (
-	"bytes"
-	"errors"
-	"github.com/icza/bitio"
-	"math"
 	"math/big"
 )
 
-type WriteBuffer struct {
-	data   *bytes.Buffer
-	writer *bitio.Writer
+type WriteBuffer interface {
+	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
+	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error
+	WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error
+	WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error
+	WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error
+	WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error
+	WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error
+	WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error
+	WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error
+	WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error
+	WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error
+	WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error
+	WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error
+	WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error
+	WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error
+	PopContext(logicalName string, writerArgs ...WithWriterArgs) error
 }
 
-func NewWriteBuffer() *WriteBuffer {
-	data := &bytes.Buffer{}
-	writer := bitio.NewWriter(data)
-	return &WriteBuffer{
-		data:   data,
-		writer: writer,
-	}
+// WithWriterArgs is a marker interface for writer args supplied by the builders like WithAdditionalStringRepresentation
+type WithWriterArgs interface {
+	isWriterArgs() bool
 }
 
-func (rb WriteBuffer) GetPos() uint16 {
-	return 0
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type writerArg struct {
 }
 
-func (rb WriteBuffer) GetBytes() []uint8 {
-	return rb.data.Bytes()
+func (_ writerArg) isWriterArgs() bool {
+	return true
 }
 
-func (rb WriteBuffer) GetTotalBytes() uint64 {
-	return uint64(rb.data.Len())
-}
-
-func (rb WriteBuffer) WriteBit(value bool) error {
-	return rb.writer.WriteBool(value)
-}
-
-func (rb WriteBuffer) WriteUint8(bitLength uint8, value uint8) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteUint16(bitLength uint8, value uint16) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteUint32(bitLength uint8, value uint32) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteUint64(bitLength uint8, value uint64) error {
-	return rb.writer.WriteBits(value, bitLength)
-}
-
-func (rb WriteBuffer) WriteInt8(bitLength uint8, value int8) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteInt16(bitLength uint8, value int16) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteInt32(bitLength uint8, value int32) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteInt64(bitLength uint8, value int64) error {
-	return rb.writer.WriteBits(uint64(value), bitLength)
-}
-
-func (rb WriteBuffer) WriteBigInt(bitLength uint8, value *big.Int) error {
-	return errors.New("not implemented yet")
-}
-
-func (rb WriteBuffer) WriteFloat32(bitLength uint8, value float32) error {
-	res := math.Float32bits(value)
-	return rb.writer.WriteBits(uint64(res), bitLength)
-}
-
-func (rb WriteBuffer) WriteFloat64(bitLength uint8, value float64) error {
-	res := math.Float64bits(value)
-	return rb.writer.WriteBits(res, bitLength)
-}
-
-func (rb WriteBuffer) WriteString(bitLength uint8, encoding string, value string) error {
-	return errors.New("WriteString is currently not implemented")
-}
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////

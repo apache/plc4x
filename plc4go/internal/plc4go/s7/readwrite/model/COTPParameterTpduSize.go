@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type ICOTPParameterTpduSize interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *COTPParameterTpduSize) GetTypeName() string {
 }
 
 func (m *COTPParameterTpduSize) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (tpduSize)
 	lengthInBits += 8
@@ -96,13 +102,16 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	io.PullContext("COTPParameterTpduSize")
 
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
+
+	io.CloseContext("COTPParameterTpduSize")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterTpduSize{
@@ -115,6 +124,7 @@ func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterTpduSize")
 
 		// Enum field (tpduSize)
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
@@ -123,6 +133,7 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
+		io.PopContext("COTPParameterTpduSize")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -131,10 +142,12 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 func (m *COTPParameterTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tpduSize":
@@ -147,7 +160,7 @@ func (m *COTPParameterTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,4 +173,23 @@ func (m *COTPParameterTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterTpduSize) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m COTPParameterTpduSize) Box(name string, width int) utils.AsciiBox {
+	boxName := "COTPParameterTpduSize"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Enum field (tpduSize)
+		tpduSize := CastCOTPTpduSize(m.TpduSize)
+		boxes = append(boxes, tpduSize.Box("tpduSize", -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

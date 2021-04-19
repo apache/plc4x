@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -46,6 +47,7 @@ type IGroupObjectDescriptorRealisationType7 interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *GroupObjectDescriptorRealisationType7 {
@@ -70,6 +72,10 @@ func (m *GroupObjectDescriptorRealisationType7) GetTypeName() string {
 }
 
 func (m *GroupObjectDescriptorRealisationType7) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *GroupObjectDescriptorRealisationType7) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (dataAddress)
@@ -106,46 +112,47 @@ func (m *GroupObjectDescriptorRealisationType7) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func GroupObjectDescriptorRealisationType7Parse(io *utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
+func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
+	io.PullContext("GroupObjectDescriptorRealisationType7")
 
 	// Simple Field (dataAddress)
-	dataAddress, _dataAddressErr := io.ReadUint16(16)
+	dataAddress, _dataAddressErr := io.ReadUint16("dataAddress", 16)
 	if _dataAddressErr != nil {
 		return nil, errors.Wrap(_dataAddressErr, "Error parsing 'dataAddress' field")
 	}
 
 	// Simple Field (updateEnable)
-	updateEnable, _updateEnableErr := io.ReadBit()
+	updateEnable, _updateEnableErr := io.ReadBit("updateEnable")
 	if _updateEnableErr != nil {
 		return nil, errors.Wrap(_updateEnableErr, "Error parsing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
-	transmitEnable, _transmitEnableErr := io.ReadBit()
+	transmitEnable, _transmitEnableErr := io.ReadBit("transmitEnable")
 	if _transmitEnableErr != nil {
 		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
-	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit()
+	segmentSelectorEnable, _segmentSelectorEnableErr := io.ReadBit("segmentSelectorEnable")
 	if _segmentSelectorEnableErr != nil {
 		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
-	writeEnable, _writeEnableErr := io.ReadBit()
+	writeEnable, _writeEnableErr := io.ReadBit("writeEnable")
 	if _writeEnableErr != nil {
 		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
-	readEnable, _readEnableErr := io.ReadBit()
+	readEnable, _readEnableErr := io.ReadBit("readEnable")
 	if _readEnableErr != nil {
 		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
-	communicationEnable, _communicationEnableErr := io.ReadBit()
+	communicationEnable, _communicationEnableErr := io.ReadBit("communicationEnable")
 	if _communicationEnableErr != nil {
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
@@ -162,57 +169,60 @@ func GroupObjectDescriptorRealisationType7Parse(io *utils.ReadBuffer) (*GroupObj
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
 
+	io.CloseContext("GroupObjectDescriptorRealisationType7")
+
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType7(dataAddress, updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
 }
 
 func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("GroupObjectDescriptorRealisationType7")
 
 	// Simple Field (dataAddress)
 	dataAddress := uint16(m.DataAddress)
-	_dataAddressErr := io.WriteUint16(16, (dataAddress))
+	_dataAddressErr := io.WriteUint16("dataAddress", 16, (dataAddress))
 	if _dataAddressErr != nil {
 		return errors.Wrap(_dataAddressErr, "Error serializing 'dataAddress' field")
 	}
 
 	// Simple Field (updateEnable)
 	updateEnable := bool(m.UpdateEnable)
-	_updateEnableErr := io.WriteBit((updateEnable))
+	_updateEnableErr := io.WriteBit("updateEnable", (updateEnable))
 	if _updateEnableErr != nil {
 		return errors.Wrap(_updateEnableErr, "Error serializing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
 	transmitEnable := bool(m.TransmitEnable)
-	_transmitEnableErr := io.WriteBit((transmitEnable))
+	_transmitEnableErr := io.WriteBit("transmitEnable", (transmitEnable))
 	if _transmitEnableErr != nil {
 		return errors.Wrap(_transmitEnableErr, "Error serializing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
 	segmentSelectorEnable := bool(m.SegmentSelectorEnable)
-	_segmentSelectorEnableErr := io.WriteBit((segmentSelectorEnable))
+	_segmentSelectorEnableErr := io.WriteBit("segmentSelectorEnable", (segmentSelectorEnable))
 	if _segmentSelectorEnableErr != nil {
 		return errors.Wrap(_segmentSelectorEnableErr, "Error serializing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
 	writeEnable := bool(m.WriteEnable)
-	_writeEnableErr := io.WriteBit((writeEnable))
+	_writeEnableErr := io.WriteBit("writeEnable", (writeEnable))
 	if _writeEnableErr != nil {
 		return errors.Wrap(_writeEnableErr, "Error serializing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
 	readEnable := bool(m.ReadEnable)
-	_readEnableErr := io.WriteBit((readEnable))
+	_readEnableErr := io.WriteBit("readEnable", (readEnable))
 	if _readEnableErr != nil {
 		return errors.Wrap(_readEnableErr, "Error serializing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
 	communicationEnable := bool(m.CommunicationEnable)
-	_communicationEnableErr := io.WriteBit((communicationEnable))
+	_communicationEnableErr := io.WriteBit("communicationEnable", (communicationEnable))
 	if _communicationEnableErr != nil {
 		return errors.Wrap(_communicationEnableErr, "Error serializing 'communicationEnable' field")
 	}
@@ -229,22 +239,25 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
+	io.PopContext("GroupObjectDescriptorRealisationType7")
 	return nil
 }
 
 func (m *GroupObjectDescriptorRealisationType7) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dataAddress":
@@ -344,4 +357,42 @@ func (m *GroupObjectDescriptorRealisationType7) MarshalXML(e *xml.Encoder, start
 		return err
 	}
 	return nil
+}
+
+func (m GroupObjectDescriptorRealisationType7) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m GroupObjectDescriptorRealisationType7) Box(name string, width int) utils.AsciiBox {
+	boxName := "GroupObjectDescriptorRealisationType7"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DataAddress", m.DataAddress, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UpdateEnable", m.UpdateEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransmitEnable", m.TransmitEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SegmentSelectorEnable", m.SegmentSelectorEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("WriteEnable", m.WriteEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReadEnable", m.ReadEnable, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("CommunicationEnable", m.CommunicationEnable, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Priority.Box("priority", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.ValueType.Box("valueType", width-2))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

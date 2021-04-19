@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IBVLCOriginalUnicastNPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *BVLCOriginalUnicastNPDU) GetTypeName() string {
 }
 
 func (m *BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCOriginalUnicastNPDU) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.LengthInBits()
@@ -96,13 +102,16 @@ func (m *BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCOriginalUnicastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+	io.PullContext("BVLCOriginalUnicastNPDU")
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+
+	io.CloseContext("BVLCOriginalUnicastNPDU")
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalUnicastNPDU{
@@ -115,6 +124,7 @@ func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVL
 
 func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCOriginalUnicastNPDU")
 
 		// Simple Field (npdu)
 		_npduErr := m.Npdu.Serialize(io)
@@ -122,6 +132,7 @@ func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
+		io.PopContext("BVLCOriginalUnicastNPDU")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "npdu":
-				var data *NPDU
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data NPDU
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.Npdu = data
+				m.Npdu = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m BVLCOriginalUnicastNPDU) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BVLCOriginalUnicastNPDU) Box(name string, width int) utils.AsciiBox {
+	boxName := "BVLCOriginalUnicastNPDU"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Npdu.Box("npdu", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

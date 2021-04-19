@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IAdsData interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IAdsDataParent interface {
@@ -54,6 +56,7 @@ type IAdsDataChild interface {
 	InitializeParent(parent *AdsData)
 	GetTypeName() string
 	IAdsData
+	utils.AsciiBoxer
 }
 
 func NewAdsData() *AdsData {
@@ -78,10 +81,15 @@ func (m *AdsData) GetTypeName() string {
 }
 
 func (m *AdsData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *AdsData) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -90,56 +98,62 @@ func (m *AdsData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDataParse(io *utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+	io.PullContext("AdsData")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData
 	var typeSwitchError error
 	switch {
-	case *commandId == CommandId_INVALID && response == false:
+	case *commandId == CommandId_INVALID && response == false: // AdsInvalidRequest
 		_parent, typeSwitchError = AdsInvalidRequestParse(io)
-	case *commandId == CommandId_INVALID && response == true:
+	case *commandId == CommandId_INVALID && response == true: // AdsInvalidResponse
 		_parent, typeSwitchError = AdsInvalidResponseParse(io)
-	case *commandId == CommandId_ADS_READ_DEVICE_INFO && response == false:
+	case *commandId == CommandId_ADS_READ_DEVICE_INFO && response == false: // AdsReadDeviceInfoRequest
 		_parent, typeSwitchError = AdsReadDeviceInfoRequestParse(io)
-	case *commandId == CommandId_ADS_READ_DEVICE_INFO && response == true:
+	case *commandId == CommandId_ADS_READ_DEVICE_INFO && response == true: // AdsReadDeviceInfoResponse
 		_parent, typeSwitchError = AdsReadDeviceInfoResponseParse(io)
-	case *commandId == CommandId_ADS_READ && response == false:
+	case *commandId == CommandId_ADS_READ && response == false: // AdsReadRequest
 		_parent, typeSwitchError = AdsReadRequestParse(io)
-	case *commandId == CommandId_ADS_READ && response == true:
+	case *commandId == CommandId_ADS_READ && response == true: // AdsReadResponse
 		_parent, typeSwitchError = AdsReadResponseParse(io)
-	case *commandId == CommandId_ADS_WRITE && response == false:
+	case *commandId == CommandId_ADS_WRITE && response == false: // AdsWriteRequest
 		_parent, typeSwitchError = AdsWriteRequestParse(io)
-	case *commandId == CommandId_ADS_WRITE && response == true:
+	case *commandId == CommandId_ADS_WRITE && response == true: // AdsWriteResponse
 		_parent, typeSwitchError = AdsWriteResponseParse(io)
-	case *commandId == CommandId_ADS_READ_STATE && response == false:
+	case *commandId == CommandId_ADS_READ_STATE && response == false: // AdsReadStateRequest
 		_parent, typeSwitchError = AdsReadStateRequestParse(io)
-	case *commandId == CommandId_ADS_READ_STATE && response == true:
+	case *commandId == CommandId_ADS_READ_STATE && response == true: // AdsReadStateResponse
 		_parent, typeSwitchError = AdsReadStateResponseParse(io)
-	case *commandId == CommandId_ADS_WRITE_CONTROL && response == false:
+	case *commandId == CommandId_ADS_WRITE_CONTROL && response == false: // AdsWriteControlRequest
 		_parent, typeSwitchError = AdsWriteControlRequestParse(io)
-	case *commandId == CommandId_ADS_WRITE_CONTROL && response == true:
+	case *commandId == CommandId_ADS_WRITE_CONTROL && response == true: // AdsWriteControlResponse
 		_parent, typeSwitchError = AdsWriteControlResponseParse(io)
-	case *commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == false:
+	case *commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == false: // AdsAddDeviceNotificationRequest
 		_parent, typeSwitchError = AdsAddDeviceNotificationRequestParse(io)
-	case *commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == true:
+	case *commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == true: // AdsAddDeviceNotificationResponse
 		_parent, typeSwitchError = AdsAddDeviceNotificationResponseParse(io)
-	case *commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == false:
+	case *commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == false: // AdsDeleteDeviceNotificationRequest
 		_parent, typeSwitchError = AdsDeleteDeviceNotificationRequestParse(io)
-	case *commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == true:
+	case *commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == true: // AdsDeleteDeviceNotificationResponse
 		_parent, typeSwitchError = AdsDeleteDeviceNotificationResponseParse(io)
-	case *commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == false:
+	case *commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == false: // AdsDeviceNotificationRequest
 		_parent, typeSwitchError = AdsDeviceNotificationRequestParse(io)
-	case *commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == true:
+	case *commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == true: // AdsDeviceNotificationResponse
 		_parent, typeSwitchError = AdsDeviceNotificationResponseParse(io)
-	case *commandId == CommandId_ADS_READ_WRITE && response == false:
+	case *commandId == CommandId_ADS_READ_WRITE && response == false: // AdsReadWriteRequest
 		_parent, typeSwitchError = AdsReadWriteRequestParse(io)
-	case *commandId == CommandId_ADS_READ_WRITE && response == true:
+	case *commandId == CommandId_ADS_READ_WRITE && response == true: // AdsReadWriteResponse
 		_parent, typeSwitchError = AdsReadWriteResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("AdsData")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -151,6 +165,7 @@ func (m *AdsData) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializeChildFunction func() error) error {
+	io.PushContext("AdsData")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -158,26 +173,76 @@ func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("AdsData")
 	return nil
 }
 
 func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// AdsInvalidRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidRequest":
+			if m.Child == nil {
+				m.Child = &AdsInvalidRequest{
+					Parent: m,
+				}
+			}
+		// AdsInvalidResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidResponse":
+			if m.Child == nil {
+				m.Child = &AdsInvalidResponse{
+					Parent: m,
+				}
+			}
+		// AdsReadDeviceInfoRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadDeviceInfoRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadDeviceInfoRequest{
+					Parent: m,
+				}
+			}
+		// AdsReadStateRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadStateRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadStateRequest{
+					Parent: m,
+				}
+			}
+		// AdsDeviceNotificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsDeviceNotificationResponse":
+			if m.Child == nil {
+				m.Child = &AdsDeviceNotificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of AdsData")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.ads.readwrite.AdsInvalidRequest":
 					var dt *AdsInvalidRequest
 					if m.Child != nil {
@@ -443,4 +508,23 @@ func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m AdsData) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *AdsData) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *AdsData) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "AdsData"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

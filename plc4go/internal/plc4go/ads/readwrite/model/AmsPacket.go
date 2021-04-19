@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -46,6 +47,7 @@ type IAmsPacket interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAmsPacket(targetAmsNetId *AmsNetId, targetAmsPort uint16, sourceAmsNetId *AmsNetId, sourceAmsPort uint16, commandId CommandId, state *State, errorCode uint32, invokeId uint32, data *AdsData) *AmsPacket {
@@ -70,6 +72,10 @@ func (m *AmsPacket) GetTypeName() string {
 }
 
 func (m *AmsPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsPacket) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)
@@ -109,7 +115,8 @@ func (m *AmsPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
+func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
+	io.PullContext("AmsPacket")
 
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)
@@ -118,7 +125,7 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (targetAmsPort)
-	targetAmsPort, _targetAmsPortErr := io.ReadUint16(16)
+	targetAmsPort, _targetAmsPortErr := io.ReadUint16("targetAmsPort", 16)
 	if _targetAmsPortErr != nil {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
@@ -130,7 +137,7 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Simple Field (sourceAmsPort)
-	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16(16)
+	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16("sourceAmsPort", 16)
 	if _sourceAmsPortErr != nil {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
@@ -148,19 +155,20 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
+	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint32(32)
+	errorCode, _errorCodeErr := io.ReadUint32("errorCode", 32)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
-	invokeId, _invokeIdErr := io.ReadUint32(32)
+	invokeId, _invokeIdErr := io.ReadUint32("invokeId", 32)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
@@ -171,11 +179,14 @@ func AmsPacketParse(io *utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
 
+	io.CloseContext("AmsPacket")
+
 	// Create the instance
 	return NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, state, errorCode, invokeId, data), nil
 }
 
 func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AmsPacket")
 
 	// Simple Field (targetAmsNetId)
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(io)
@@ -185,7 +196,7 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort := uint16(m.TargetAmsPort)
-	_targetAmsPortErr := io.WriteUint16(16, (targetAmsPort))
+	_targetAmsPortErr := io.WriteUint16("targetAmsPort", 16, (targetAmsPort))
 	if _targetAmsPortErr != nil {
 		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
 	}
@@ -198,7 +209,7 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort := uint16(m.SourceAmsPort)
-	_sourceAmsPortErr := io.WriteUint16(16, (sourceAmsPort))
+	_sourceAmsPortErr := io.WriteUint16("sourceAmsPort", 16, (sourceAmsPort))
 	if _sourceAmsPortErr != nil {
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
@@ -217,21 +228,21 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(m.Data.LengthInBytes())
-	_lengthErr := io.WriteUint32(32, (length))
+	_lengthErr := io.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode := uint32(m.ErrorCode)
-	_errorCodeErr := io.WriteUint32(32, (errorCode))
+	_errorCodeErr := io.WriteUint32("errorCode", 32, (errorCode))
 	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId := uint32(m.InvokeId)
-	_invokeIdErr := io.WriteUint32(32, (invokeId))
+	_invokeIdErr := io.WriteUint32("invokeId", 32, (invokeId))
 	if _invokeIdErr != nil {
 		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 	}
@@ -242,30 +253,33 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
+	io.PopContext("AmsPacket")
 	return nil
 }
 
 func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "targetAmsNetId":
-				var data *AmsNetId
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsNetId
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TargetAmsNetId = data
+				m.TargetAmsNetId = &data
 			case "targetAmsPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -273,11 +287,11 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.TargetAmsPort = data
 			case "sourceAmsNetId":
-				var data *AmsNetId
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data AmsNetId
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.SourceAmsNetId = data
+				m.SourceAmsNetId = &data
 			case "sourceAmsPort":
 				var data uint16
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -291,11 +305,11 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.CommandId = data
 			case "state":
-				var data *State
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data State
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.State = data
+				m.State = &data
 			case "errorCode":
 				var data uint32
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -311,6 +325,9 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "data":
 				var dt *AdsData
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Data = dt
@@ -357,4 +374,43 @@ func (m *AmsPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m AmsPacket) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AmsPacket) Box(name string, width int) utils.AsciiBox {
+	boxName := "AmsPacket"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Complex field (case complex)
+	boxes = append(boxes, m.TargetAmsNetId.Box("targetAmsNetId", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TargetAmsPort", m.TargetAmsPort, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.SourceAmsNetId.Box("sourceAmsNetId", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SourceAmsPort", m.SourceAmsPort, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.CommandId.Box("commandId", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.State.Box("state", width-2))
+	// Implicit Field (length)
+	length := uint32(m.Data.LengthInBytes())
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InvokeId", m.InvokeId, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Data.Box("data", width-2))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

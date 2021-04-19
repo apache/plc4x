@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetErrorRemovedReadPropertyConditional interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetErrorRemovedReadPropertyConditional) GetTypeName() string {
 }
 
 func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorRemovedReadPropertyConditional")
+
+	io.CloseContext("BACnetErrorRemovedReadPropertyConditional")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedReadPropertyConditional{
@@ -102,7 +111,9 @@ func BACnetErrorRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACn
 
 func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorRemovedReadPropertyConditional")
 
+		io.PopContext("BACnetErrorRemovedReadPropertyConditional")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuff
 func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder,
 
 func (m *BACnetErrorRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorRemovedReadPropertyConditional) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetErrorRemovedReadPropertyConditional) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetErrorRemovedReadPropertyConditional"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

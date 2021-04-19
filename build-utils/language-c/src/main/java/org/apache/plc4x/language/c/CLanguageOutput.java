@@ -50,22 +50,22 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template-h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/pojo-template-c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/pojo-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/pojo-template.c.ftlh"));
     }
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/c/enum-template-h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/enum-template-c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/enum-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/enum-template.c.ftlh"));
     }
 
     @Override
     protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/c/data-io-template-h.ftlh"),
-            freemarkerConfiguration.getTemplate("templates/c/data-io-template-c.ftlh"));
+            freemarkerConfiguration.getTemplate("templates/c/data-io-template.h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/data-io-template.c.ftlh"));
     }
 
     @Override

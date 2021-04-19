@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type ITDataConnectedInd interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *TDataConnectedInd) GetTypeName() string {
 }
 
 func (m *TDataConnectedInd) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TDataConnectedInd) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *TDataConnectedInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataConnectedIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataConnectedIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("TDataConnectedInd")
+
+	io.CloseContext("TDataConnectedInd")
 
 	// Create a partially initialized instance
 	_child := &TDataConnectedInd{
@@ -102,7 +111,9 @@ func TDataConnectedIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataConnectedInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TDataConnectedInd")
 
+		io.PopContext("TDataConnectedInd")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *TDataConnectedInd) Serialize(io utils.WriteBuffer) error {
 func (m *TDataConnectedInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *TDataConnectedInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *TDataConnectedInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataConnectedInd) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m TDataConnectedInd) Box(name string, width int) utils.AsciiBox {
+	boxName := "TDataConnectedInd"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

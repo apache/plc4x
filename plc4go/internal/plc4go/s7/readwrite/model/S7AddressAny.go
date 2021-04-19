@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -45,6 +46,7 @@ type IS7AddressAny interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -95,7 +97,11 @@ func (m *S7AddressAny) GetTypeName() string {
 }
 
 func (m *S7AddressAny) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (transportSize)
 	lengthInBits += 8
@@ -125,22 +131,30 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
+func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
+	io.PullContext("S7AddressAny")
 
 	// Enum field (transportSize)
-	transportSize, _transportSizeErr := TransportSizeParse(io)
+	transportSizeCode, _transportSizeErr := io.ReadUint8("transportSize", 8)
+	var transportSize TransportSize
+	for _, value := range TransportSizeValues {
+		if value.Code() == transportSizeCode {
+			transportSize = value
+			break
+		}
+	}
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := io.ReadUint16(16)
+	numberOfElements, _numberOfElementsErr := io.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (dbNumber)
-	dbNumber, _dbNumberErr := io.ReadUint16(16)
+	dbNumber, _dbNumberErr := io.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
@@ -153,7 +167,7 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(5)
+		reserved, _err := io.ReadUint8("reserved", 5)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -166,16 +180,18 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 	}
 
 	// Simple Field (byteAddress)
-	byteAddress, _byteAddressErr := io.ReadUint16(16)
+	byteAddress, _byteAddressErr := io.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
 		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field")
 	}
 
 	// Simple Field (bitAddress)
-	bitAddress, _bitAddressErr := io.ReadUint8(3)
+	bitAddress, _bitAddressErr := io.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
+
+	io.CloseContext("S7AddressAny")
 
 	// Create a partially initialized instance
 	_child := &S7AddressAny{
@@ -193,24 +209,24 @@ func S7AddressAnyParse(io *utils.ReadBuffer) (*S7Address, error) {
 
 func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7AddressAny")
 
 		// Enum field (transportSize)
-		transportSize := CastTransportSize(m.TransportSize)
-		_transportSizeErr := transportSize.Serialize(io)
+		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.NumberOfElements)
-		_numberOfElementsErr := io.WriteUint16(16, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint16("numberOfElements", 16, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.DbNumber)
-		_dbNumberErr := io.WriteUint16(16, (dbNumber))
+		_dbNumberErr := io.WriteUint16("dbNumber", 16, (dbNumber))
 		if _dbNumberErr != nil {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
@@ -224,7 +240,7 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(5, uint8(0x00))
+			_err := io.WriteUint8("reserved", 5, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -232,18 +248,19 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (byteAddress)
 		byteAddress := uint16(m.ByteAddress)
-		_byteAddressErr := io.WriteUint16(16, (byteAddress))
+		_byteAddressErr := io.WriteUint16("byteAddress", 16, (byteAddress))
 		if _byteAddressErr != nil {
 			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
 		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.BitAddress)
-		_bitAddressErr := io.WriteUint8(3, (bitAddress))
+		_bitAddressErr := io.WriteUint8("bitAddress", 3, (bitAddress))
 		if _bitAddressErr != nil {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}
 
+		io.PopContext("S7AddressAny")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -252,10 +269,12 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "transportSize":
@@ -298,7 +317,7 @@ func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -326,4 +345,40 @@ func (m *S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m S7AddressAny) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7AddressAny"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Enum field (transportSize) with value
+		boxes = append(boxes, utils.BoxAnything("TransportSize_"+m.TransportSize.String(), m.TransportSize.Code(), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DbNumber", m.DbNumber, -1))
+		// Enum field (area)
+		area := CastMemoryArea(m.Area)
+		boxes = append(boxes, area.Box("area", -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteAddress", m.ByteAddress, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("BitAddress", m.BitAddress, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

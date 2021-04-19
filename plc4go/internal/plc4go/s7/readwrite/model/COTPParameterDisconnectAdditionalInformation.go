@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type ICOTPParameterDisconnectAdditionalInformation interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *COTPParameterDisconnectAdditionalInformation) GetTypeName() string {
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterDisconnectAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -98,18 +104,23 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+	io.PullContext("COTPParameterDisconnectAdditionalInformation")
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]uint8, rest)
 	for curItem := uint16(0); curItem < uint16(rest); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("COTPParameterDisconnectAdditionalInformation")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterDisconnectAdditionalInformation{
@@ -122,17 +133,21 @@ func COTPParameterDisconnectAdditionalInformationParse(io *utils.ReadBuffer, res
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterDisconnectAdditionalInformation")
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
+		io.PopContext("COTPParameterDisconnectAdditionalInformation")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -141,10 +156,12 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteB
 func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "data":
@@ -157,7 +174,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decod
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -166,14 +183,35 @@ func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decod
 }
 
 func (m *COTPParameterDisconnectAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
 	return nil
+}
+
+func (m COTPParameterDisconnectAdditionalInformation) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+	boxName := "COTPParameterDisconnectAdditionalInformation"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type uint8 will be hex dumped
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+			// Simple array base type uint8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

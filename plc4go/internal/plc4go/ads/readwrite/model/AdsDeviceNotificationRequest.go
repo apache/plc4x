@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IAdsDeviceNotificationRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +94,11 @@ func (m *AdsDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (length)
 	lengthInBits += 32
@@ -102,8 +108,9 @@ func (m *AdsDeviceNotificationRequest) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.AdsStampHeaders) > 0 {
-		for _, element := range m.AdsStampHeaders {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.AdsStampHeaders {
+			last := i == len(m.AdsStampHeaders)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -114,21 +121,23 @@ func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsDeviceNotificationRequest")
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (stamps)
-	stamps, _stampsErr := io.ReadUint32(32)
+	stamps, _stampsErr := io.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
 		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field")
 	}
 
 	// Array field (adsStampHeaders)
+	io.PullContext("adsStampHeaders")
 	// Count array
 	adsStampHeaders := make([]*AdsStampHeader, stamps)
 	for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
@@ -138,6 +147,9 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 		}
 		adsStampHeaders[curItem] = _item
 	}
+	io.CloseContext("adsStampHeaders")
+
+	io.CloseContext("AdsDeviceNotificationRequest")
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationRequest{
@@ -152,31 +164,35 @@ func AdsDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsDeviceNotificationRequest")
 
 		// Simple Field (length)
 		length := uint32(m.Length)
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.Stamps)
-		_stampsErr := io.WriteUint32(32, (stamps))
+		_stampsErr := io.WriteUint32("stamps", 32, (stamps))
 		if _stampsErr != nil {
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}
 
 		// Array Field (adsStampHeaders)
 		if m.AdsStampHeaders != nil {
+			io.PushContext("adsStampHeaders")
 			for _, _element := range m.AdsStampHeaders {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
 				}
 			}
+			io.PopContext("adsStampHeaders")
 		}
 
+		io.PopContext("AdsDeviceNotificationRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -185,10 +201,12 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "length":
@@ -213,7 +231,7 @@ func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -231,11 +249,44 @@ func (m *AdsDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.Star
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.AdsStampHeaders, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdsStampHeaders {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "adsStampHeaders"}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m AdsDeviceNotificationRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsDeviceNotificationRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Stamps", m.Stamps, -1))
+		// Array Field (adsStampHeaders)
+		if m.AdsStampHeaders != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.AdsStampHeaders {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("AdsStampHeaders", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

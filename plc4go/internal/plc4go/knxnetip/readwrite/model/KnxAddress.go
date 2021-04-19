@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IKnxAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *KnxAddress {
@@ -64,6 +66,10 @@ func (m *KnxAddress) GetTypeName() string {
 }
 
 func (m *KnxAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (mainGroup)
@@ -82,69 +88,76 @@ func (m *KnxAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxAddressParse(io *utils.ReadBuffer) (*KnxAddress, error) {
+func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
+	io.PullContext("KnxAddress")
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(4)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 4)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := io.ReadUint8(4)
+	middleGroup, _middleGroupErr := io.ReadUint8("middleGroup", 4)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint8(8)
+	subGroup, _subGroupErr := io.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+
+	io.CloseContext("KnxAddress")
 
 	// Create the instance
 	return NewKnxAddress(mainGroup, middleGroup, subGroup), nil
 }
 
 func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("KnxAddress")
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.MainGroup)
-	_mainGroupErr := io.WriteUint8(4, (mainGroup))
+	_mainGroupErr := io.WriteUint8("mainGroup", 4, (mainGroup))
 	if _mainGroupErr != nil {
 		return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
 	middleGroup := uint8(m.MiddleGroup)
-	_middleGroupErr := io.WriteUint8(4, (middleGroup))
+	_middleGroupErr := io.WriteUint8("middleGroup", 4, (middleGroup))
 	if _middleGroupErr != nil {
 		return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup := uint8(m.SubGroup)
-	_subGroupErr := io.WriteUint8(8, (subGroup))
+	_subGroupErr := io.WriteUint8("subGroup", 8, (subGroup))
 	if _subGroupErr != nil {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}
 
+	io.PopContext("KnxAddress")
 	return nil
 }
 
 func (m *KnxAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "mainGroup":
@@ -190,4 +203,26 @@ func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m KnxAddress) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
+	boxName := "KnxAddress"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

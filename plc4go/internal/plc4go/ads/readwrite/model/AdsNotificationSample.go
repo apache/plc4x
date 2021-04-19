@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IAdsNotificationSample interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []int8) *AdsNotificationSample {
@@ -66,6 +68,10 @@ func (m *AdsNotificationSample) GetTypeName() string {
 }
 
 func (m *AdsNotificationSample) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsNotificationSample) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (notificationHandle)
@@ -86,77 +92,88 @@ func (m *AdsNotificationSample) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsNotificationSampleParse(io *utils.ReadBuffer) (*AdsNotificationSample, error) {
+func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, error) {
+	io.PullContext("AdsNotificationSample")
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
-	sampleSize, _sampleSizeErr := io.ReadUint32(32)
+	sampleSize, _sampleSizeErr := io.ReadUint32("sampleSize", 32)
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field")
 	}
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("AdsNotificationSample")
 
 	// Create the instance
 	return NewAdsNotificationSample(notificationHandle, sampleSize, data), nil
 }
 
 func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("AdsNotificationSample")
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.NotificationHandle)
-	_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+	_notificationHandleErr := io.WriteUint32("notificationHandle", 32, (notificationHandle))
 	if _notificationHandleErr != nil {
 		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize := uint32(m.SampleSize)
-	_sampleSizeErr := io.WriteUint32(32, (sampleSize))
+	_sampleSizeErr := io.WriteUint32("sampleSize", 32, (sampleSize))
 	if _sampleSizeErr != nil {
 		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
 	}
 
 	// Array Field (data)
 	if m.Data != nil {
+		io.PushContext("data")
 		for _, _element := range m.Data {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
+		io.PopContext("data")
 	}
 
+	io.PopContext("AdsNotificationSample")
 	return nil
 }
 
 func (m *AdsNotificationSample) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "notificationHandle":
@@ -209,4 +226,32 @@ func (m *AdsNotificationSample) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m AdsNotificationSample) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsNotificationSample"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, -1))
+	// Simple field (case simple)
+	// uint32 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SampleSize", m.SampleSize, -1))
+	// Array Field (data)
+	if m.Data != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Data {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

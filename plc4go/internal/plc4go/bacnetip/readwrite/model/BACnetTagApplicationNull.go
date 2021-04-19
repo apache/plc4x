@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetTagApplicationNull interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +87,11 @@ func (m *BACnetTagApplicationNull) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationNull) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationNull) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -94,7 +100,10 @@ func (m *BACnetTagApplicationNull) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationNullParse(io *utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetTagApplicationNullParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	io.PullContext("BACnetTagApplicationNull")
+
+	io.CloseContext("BACnetTagApplicationNull")
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationNull{
@@ -106,7 +115,9 @@ func BACnetTagApplicationNullParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationNull) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetTagApplicationNull")
 
+		io.PopContext("BACnetTagApplicationNull")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -115,17 +126,19 @@ func (m *BACnetTagApplicationNull) Serialize(io utils.WriteBuffer) error {
 func (m *BACnetTagApplicationNull) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -135,4 +148,20 @@ func (m *BACnetTagApplicationNull) UnmarshalXML(d *xml.Decoder, start xml.StartE
 
 func (m *BACnetTagApplicationNull) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetTagApplicationNull) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetTagApplicationNull) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetTagApplicationNull"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

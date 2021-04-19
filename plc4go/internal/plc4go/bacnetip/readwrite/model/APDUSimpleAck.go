@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IAPDUSimpleAck interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +89,11 @@ func (m *APDUSimpleAck) GetTypeName() string {
 }
 
 func (m *APDUSimpleAck) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUSimpleAck) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -105,11 +111,12 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUSimpleAck")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -122,16 +129,18 @@ func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (serviceChoice)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
+
+	io.CloseContext("APDUSimpleAck")
 
 	// Create a partially initialized instance
 	_child := &APDUSimpleAck{
@@ -145,10 +154,11 @@ func APDUSimpleAckParse(io *utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUSimpleAck")
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0))
+			_err := io.WriteUint8("reserved", 4, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -156,18 +166,19 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (serviceChoice)
 		serviceChoice := uint8(m.ServiceChoice)
-		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+		_serviceChoiceErr := io.WriteUint8("serviceChoice", 8, (serviceChoice))
 		if _serviceChoiceErr != nil {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}
 
+		io.PopContext("APDUSimpleAck")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -176,10 +187,12 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "originalInvokeId":
@@ -198,7 +211,7 @@ func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -214,4 +227,29 @@ func (m *APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m APDUSimpleAck) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m APDUSimpleAck) Box(name string, width int) utils.AsciiBox {
+	boxName := "APDUSimpleAck"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ServiceChoice", m.ServiceChoice, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

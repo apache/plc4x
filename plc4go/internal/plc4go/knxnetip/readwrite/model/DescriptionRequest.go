@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IDescriptionRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *DescriptionRequest) GetTypeName() string {
 }
 
 func (m *DescriptionRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -96,13 +102,16 @@ func (m *DescriptionRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DescriptionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("DescriptionRequest")
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+
+	io.CloseContext("DescriptionRequest")
 
 	// Create a partially initialized instance
 	_child := &DescriptionRequest{
@@ -115,6 +124,7 @@ func DescriptionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("DescriptionRequest")
 
 		// Simple Field (hpaiControlEndpoint)
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
@@ -122,6 +132,7 @@ func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
+		io.PopContext("DescriptionRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
-				var data *HPAIControlEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIControlEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiControlEndpoint = data
+				m.HpaiControlEndpoint = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m DescriptionRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "DescriptionRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiControlEndpoint.Box("hpaiControlEndpoint", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

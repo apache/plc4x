@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IModbusPDUGetComEventLogRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *ModbusPDUGetComEventLogRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUGetComEventLogRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUGetComEventLogRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -98,7 +104,10 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventLogRequest")
+
+	io.CloseContext("ModbusPDUGetComEventLogRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{
@@ -110,7 +119,9 @@ func ModbusPDUGetComEventLogRequestParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 
 func (m *ModbusPDUGetComEventLogRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUGetComEventLogRequest")
 
+		io.PopContext("ModbusPDUGetComEventLogRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -119,17 +130,19 @@ func (m *ModbusPDUGetComEventLogRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusPDUGetComEventLogRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -139,4 +152,20 @@ func (m *ModbusPDUGetComEventLogRequest) UnmarshalXML(d *xml.Decoder, start xml.
 
 func (m *ModbusPDUGetComEventLogRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUGetComEventLogRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUGetComEventLogRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUGetComEventLogRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

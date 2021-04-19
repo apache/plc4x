@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IModbusPDUReadDeviceIdentificationResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -98,7 +104,10 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadDeviceIdentificationResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadDeviceIdentificationResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadDeviceIdentificationResponse")
+
+	io.CloseContext("ModbusPDUReadDeviceIdentificationResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationResponse{
@@ -110,7 +119,9 @@ func ModbusPDUReadDeviceIdentificationResponseParse(io *utils.ReadBuffer) (*Modb
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadDeviceIdentificationResponse")
 
+		io.PopContext("ModbusPDUReadDeviceIdentificationResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -119,17 +130,19 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(io utils.WriteBuff
 func (m *ModbusPDUReadDeviceIdentificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -139,4 +152,20 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) UnmarshalXML(d *xml.Decoder,
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUReadDeviceIdentificationResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUReadDeviceIdentificationResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUReadDeviceIdentificationResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

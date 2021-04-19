@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IModbusPDUReadExceptionStatusResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +94,11 @@ func (m *ModbusPDUReadExceptionStatusResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -104,13 +110,16 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReadExceptionStatusResponse")
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint8(8)
+	value, _valueErr := io.ReadUint8("value", 8)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+
+	io.CloseContext("ModbusPDUReadExceptionStatusResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusResponse{
@@ -123,14 +132,16 @@ func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReadExceptionStatusResponse")
 
 		// Simple Field (value)
 		value := uint8(m.Value)
-		_valueErr := io.WriteUint8(8, (value))
+		_valueErr := io.WriteUint8("value", 8, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		io.PopContext("ModbusPDUReadExceptionStatusResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -139,10 +150,12 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) e
 func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "value":
@@ -155,7 +168,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -168,4 +181,23 @@ func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start 
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUReadExceptionStatusResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUReadExceptionStatusResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

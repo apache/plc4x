@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -24,31 +25,30 @@ import (
 )
 
 type DefaultPlcWriteResponse struct {
-	request       model.PlcWriteRequest
-	responseCodes map[string]model.PlcResponseCode
+	DefaultResponse
+	request model.PlcWriteRequest
 }
 
 func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcWriteResponse {
 	return DefaultPlcWriteResponse{
-		request:       request,
-		responseCodes: responseCodes,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
 	}
 }
 
 func (m DefaultPlcWriteResponse) GetFieldNames() []string {
 	var fieldNames []string
-	for fieldName := range m.responseCodes {
-		fieldNames = append(fieldNames, fieldName)
+	// We take the field names from the request to keep order as map is not ordered
+	for _, name := range m.request.GetFieldNames() {
+		if _, ok := m.responseCodes[name]; ok {
+			fieldNames = append(fieldNames, name)
+		}
 	}
 	return fieldNames
 }
 
 func (m DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
 	return m.request
-}
-
-func (m DefaultPlcWriteResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

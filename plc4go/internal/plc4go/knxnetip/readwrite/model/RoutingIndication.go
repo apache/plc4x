@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IRoutingIndication interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *RoutingIndication) GetTypeName() string {
 }
 
 func (m *RoutingIndication) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *RoutingIndication) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *RoutingIndication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func RoutingIndicationParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func RoutingIndicationParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("RoutingIndication")
+
+	io.CloseContext("RoutingIndication")
 
 	// Create a partially initialized instance
 	_child := &RoutingIndication{
@@ -102,7 +111,9 @@ func RoutingIndicationParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *RoutingIndication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("RoutingIndication")
 
+		io.PopContext("RoutingIndication")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *RoutingIndication) Serialize(io utils.WriteBuffer) error {
 func (m *RoutingIndication) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *RoutingIndication) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 
 func (m *RoutingIndication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m RoutingIndication) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m RoutingIndication) Box(name string, width int) utils.AsciiBox {
+	boxName := "RoutingIndication"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

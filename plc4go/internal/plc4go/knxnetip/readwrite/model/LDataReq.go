@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type ILDataReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *LDataReq) GetTypeName() string {
 }
 
 func (m *LDataReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataReq) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -110,15 +116,17 @@ func (m *LDataReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("LDataReq")
 
 	// Simple Field (additionalInformationLength)
-	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
+	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field")
 	}
 
 	// Array field (additionalInformation)
+	io.PullContext("additionalInformation")
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -130,12 +138,15 @@ func LDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
+	io.CloseContext("additionalInformation")
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+
+	io.CloseContext("LDataReq")
 
 	// Create a partially initialized instance
 	_child := &LDataReq{
@@ -150,22 +161,25 @@ func LDataReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("LDataReq")
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
-		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
+		_additionalInformationLengthErr := io.WriteUint8("additionalInformationLength", 8, (additionalInformationLength))
 		if _additionalInformationLengthErr != nil {
 			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
+			io.PushContext("additionalInformation")
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
+			io.PopContext("additionalInformation")
 		}
 
 		// Simple Field (dataFrame)
@@ -174,6 +188,7 @@ func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
+		io.PopContext("LDataReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -182,10 +197,12 @@ func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 func (m *LDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "additionalInformationLength":
@@ -195,16 +212,27 @@ func (m *LDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.AdditionalInformationLength = data
 			case "additionalInformation":
-				var _values []*CEMIAdditionalInformation
-				var dt *CEMIAdditionalInformation
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *CEMIAdditionalInformation
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.AdditionalInformation = append(m.AdditionalInformation, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.AdditionalInformation = _values
 			case "dataFrame":
 				var dt *LDataFrame
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.DataFrame = dt
@@ -212,7 +240,7 @@ func (m *LDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -227,8 +255,10 @@ func (m *LDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.AdditionalInformation, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
-		return err
+	for _, arrayElement := range m.AdditionalInformation {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
 		return err
@@ -237,4 +267,34 @@ func (m *LDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m LDataReq) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m LDataReq) Box(name string, width int) utils.AsciiBox {
+	boxName := "LDataReq"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AdditionalInformationLength", m.AdditionalInformationLength, -1))
+		// Array Field (additionalInformation)
+		if m.AdditionalInformation != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.AdditionalInformation {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("AdditionalInformation", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Complex field (case complex)
+		boxes = append(boxes, m.DataFrame.Box("dataFrame", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IDeviceConfigurationAckDataBlock interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *DeviceConfigurationAckDataBlock {
@@ -64,6 +66,10 @@ func (m *DeviceConfigurationAckDataBlock) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceConfigurationAckDataBlock) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -85,22 +91,24 @@ func (m *DeviceConfigurationAckDataBlock) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigurationAckDataBlock, error) {
+func DeviceConfigurationAckDataBlockParse(io utils.ReadBuffer) (*DeviceConfigurationAckDataBlock, error) {
+	io.PullContext("DeviceConfigurationAckDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
+	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
-	sequenceCounter, _sequenceCounterErr := io.ReadUint8(8)
+	sequenceCounter, _sequenceCounterErr := io.ReadUint8("sequenceCounter", 8)
 	if _sequenceCounterErr != nil {
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
@@ -111,29 +119,32 @@ func DeviceConfigurationAckDataBlockParse(io *utils.ReadBuffer) (*DeviceConfigur
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
+	io.CloseContext("DeviceConfigurationAckDataBlock")
+
 	// Create the instance
 	return NewDeviceConfigurationAckDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
 func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("DeviceConfigurationAckDataBlock")
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.CommunicationChannelId)
-	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+	_communicationChannelIdErr := io.WriteUint8("communicationChannelId", 8, (communicationChannelId))
 	if _communicationChannelIdErr != nil {
 		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.SequenceCounter)
-	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
+	_sequenceCounterErr := io.WriteUint8("sequenceCounter", 8, (sequenceCounter))
 	if _sequenceCounterErr != nil {
 		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
 	}
@@ -144,22 +155,25 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
+	io.PopContext("DeviceConfigurationAckDataBlock")
 	return nil
 }
 
 func (m *DeviceConfigurationAckDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":
@@ -205,4 +219,29 @@ func (m *DeviceConfigurationAckDataBlock) MarshalXML(e *xml.Encoder, start xml.S
 		return err
 	}
 	return nil
+}
+
+func (m DeviceConfigurationAckDataBlock) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m DeviceConfigurationAckDataBlock) Box(name string, width int) utils.AsciiBox {
+	boxName := "DeviceConfigurationAckDataBlock"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SequenceCounter", m.SequenceCounter, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Status.Box("status", width-2))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

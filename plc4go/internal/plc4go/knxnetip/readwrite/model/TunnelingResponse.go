@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type ITunnelingResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *TunnelingResponse) GetTypeName() string {
 }
 
 func (m *TunnelingResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
@@ -96,13 +102,16 @@ func (m *TunnelingResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("TunnelingResponse")
 
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
+
+	io.CloseContext("TunnelingResponse")
 
 	// Create a partially initialized instance
 	_child := &TunnelingResponse{
@@ -115,6 +124,7 @@ func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TunnelingResponse")
 
 		// Simple Field (tunnelingResponseDataBlock)
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
@@ -122,6 +132,7 @@ func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
+		io.PopContext("TunnelingResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingResponseDataBlock":
-				var data *TunnelingResponseDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingResponseDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingResponseDataBlock = data
+				m.TunnelingResponseDataBlock = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m TunnelingResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "TunnelingResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.TunnelingResponseDataBlock.Box("tunnelingResponseDataBlock", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

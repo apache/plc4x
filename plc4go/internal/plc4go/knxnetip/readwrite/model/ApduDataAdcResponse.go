@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataAdcResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataAdcResponse) GetTypeName() string {
 }
 
 func (m *ApduDataAdcResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataAdcResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataAdcResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataAdcResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataAdcResponseParse(io utils.ReadBuffer) (*ApduData, error) {
+	io.PullContext("ApduDataAdcResponse")
+
+	io.CloseContext("ApduDataAdcResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataAdcResponse{
@@ -102,7 +111,9 @@ func ApduDataAdcResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataAdcResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataAdcResponse")
 
+		io.PopContext("ApduDataAdcResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataAdcResponse) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataAdcResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataAdcResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 
 func (m *ApduDataAdcResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataAdcResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataAdcResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataAdcResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

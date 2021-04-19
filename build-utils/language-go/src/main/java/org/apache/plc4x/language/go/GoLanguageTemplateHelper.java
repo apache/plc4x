@@ -21,18 +21,27 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.plc4x.language.go.utils.FieldUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
+
+    // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
+
+    public SortedSet<String> requiredImports = new TreeSet<>();
+
+    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);
@@ -64,6 +73,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return getLanguageTypeNameForTypeReference(((TypedField) field).getType());
     }
 
+    public boolean isComplex(Field field) {
+        return field instanceof PropertyField && ((PropertyField) field).getType() instanceof ComplexTypeReference;
+    }
+
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         if (typeReference instanceof SimpleTypeReference) {
@@ -86,6 +99,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "uint64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Int";
                 }
                 case INT: {
@@ -102,6 +116,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "int64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Int";
                 }
                 case FLOAT:
@@ -115,6 +130,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (sizeInBits <= 64) {
                         return "float64";
                     }
+                    emitRequiredImport("math/big");
                     return "*big.Float";
                 }
                 case STRING: {
@@ -247,8 +263,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return floatTypeReference.getSizeInBits();
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return integerTypeReference.getSizeInBits();
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return stringTypeReference.getSizeInBits();
             }
             default: {
                 return 0;
@@ -260,116 +276,135 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "optional".equals(field.getTypeName()) || (isComplexTypeReference(field.getType()) && !isEnumField(field));
     }
 
-    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
+    public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference) {
+        return getReadBufferReadMethodCall(logicalName, simpleTypeReference, null, null);
+    }
+
+    @Override
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
+        return getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+    }
+
+    public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.ReadBit()";
+                return "io.ReadBit(\"" + logicalName + "\")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadUint8(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadUint16(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadUint32(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadUint64(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
+                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadInt8(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadInt16(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadInt32(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadInt64(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(" + integerTypeReference.getSizeInBits() + ")";
+                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadFloat32(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "io.ReadFloat32(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadFloat64(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "io.ReadFloat64(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
-                return "io.ReadBigFloat(true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                return "io.ReadBigFloat(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ")";
+                return "io.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
             }
         }
         return "Hurz";
     }
 
     @Override
-    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
+        // Fallback if somewhere the method gets called without a name
+        String logicalName = fieldName.replaceAll("[\"()*]", "").replaceFirst("_", "");
+        return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, fieldName, field);
+    }
+
+    public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
+        String writerArgsString = "";
+        if (writerArgs.length > 0) {
+            writerArgsString += ", " + StringUtils.join(writerArgs, ", ");
+        }
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.WriteBit(" + fieldName + ")";
+                return "io.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteUint8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteUint16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteUint32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteUint64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteInt8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteInt16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteInt32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteInt64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigInt(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteFloat32(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteFloat64(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "io.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigFloat(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                return "io.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(" + stringTypeReference.getSizeInBits() + ", \"" +
-                    encoding + "\", " + fieldName + ")";
+                return "io.WriteString(\"" + logicalName + "\", uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
+                    encoding + "\", " + fieldName + writerArgsString + ")";
             }
         }
         return "Hurz";
@@ -379,8 +414,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
         switch (languageTypeName) {
             case "*big.Int":
+                emitRequiredImport("math/big");
                 return "big.NewInt(" + reservedField.getReferenceValue() + ")";
             case "*big.Float":
+                emitRequiredImport("math/big");
                 return "*big.Float(" + reservedField.getReferenceValue() + ")";
             default:
                 return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
@@ -392,6 +429,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (languageTypeName) {
             case "*big.Int":
             case "*big.Float":
+                emitRequiredImport("math/big");
                 return "reserved.Cmp(" + getReservedValue(reservedField) + ") != 0";
             default:
                 return "reserved != " + getReservedValue(reservedField);
@@ -450,7 +488,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             } else if (term instanceof BooleanLiteral) {
                 return getCastExpressionForTypeReference(fieldType) + "(" + ((BooleanLiteral) term).getValue() + ")";
             } else if (term instanceof NumericLiteral) {
-                return getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                if (getCastExpressionForTypeReference(fieldType).equals("string")) {
+                    return "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                } else {
+                    return getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
+                }
             } else if (term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {
@@ -478,6 +520,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String operation = bt.getOperation();
             switch (operation) {
                 case "^":
+                    emitRequiredImport("math");
                     return "Math.pow(" +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) + "), " +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + "))";
@@ -496,6 +539,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         operation +
                         " (" + toExpression(null, b, parserArguments, serializerArguments, serialize, suppressPointerAccessOverride) + "))";
                 default:
+                    if (fieldType instanceof StringTypeReference) {
+                        return toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) +
+                            operation + " " +
+                            toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false);
+                    }
                     return getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, a, parserArguments, serializerArguments, serialize, false) + ") " +
                         operation + " " +
                         getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")";
@@ -508,8 +556,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 Term c = tt.getC();
                 // TODO: This is not quite correct with the cast to uint16
                 return "utils.InlineIf(" + toExpression(new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                    "uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + "), " +
-                    "uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + "))";
+                    "func() uint16 {return uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                    "func() uint16 {return uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -523,6 +571,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBytes()" + (serialize ? ")" : "");
         } else if ("lengthInBits".equals(vl.getName())) {
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBits()" + (serialize ? ")" : "");
+        }
+        if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
+            return (serialize ? ("len(m." + StringUtils.capitalize(vl.getName()) + ")") : ("(" + vl.getName() + ")"));
         }
         // If this literal references an Enum type, then we have to output it differently.
         else if (getTypeDefinitions().get(vl.getName()) instanceof EnumTypeDefinition) {
@@ -542,6 +593,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 ((vl.getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess) : "");
         }
+        // If we are accessing implicit fields, we need to rely on local variable instead.
+        //else if (isVariableLiteralImplicitField(vl)) {
+        //    return (serialize ? vl.getName() : vl.getName()) + ((vl.getChild() != null) ?
+        //        "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
+        //}
+        // If we are accessing implicit fields, we need to rely on a local variable instead.
+
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         else if ("CAST".equals(vl.getName())) {
             if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
@@ -653,6 +711,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term va = vl.getArgs().get(0);
             // The Ceil function expects 64 bit floating point values.
             TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 11, 52);
+            emitRequiredImport("math");
             return "math.Ceil(" + toExpression(tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
         }
         // All uppercase names are not fields, but utility methods.
@@ -676,10 +735,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return sb.toString() + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
+
         // If the current property references a discriminator value, we have to serialize it differently.
         else if ((getFieldForNameFromCurrentOrParent(vl.getName()) != null) && (getFieldForNameFromCurrentOrParent(vl.getName()) instanceof DiscriminatorField)) {
             final DiscriminatorField discriminatorField = (DiscriminatorField) getFieldForNameFromCurrentOrParent(vl.getName());
-            System.out.println(discriminatorField);
+            // TODO: Should this return something?
         }
         // If the current property references a parserArguments property and that is a discriminator property, we also have to serialize it differently..
         else if ((vl.getChild() != null) && (getTypeReferenceForProperty(((ComplexTypeDefinition) getThisTypeDefinition()), vl.getName()) != null)) {
@@ -696,13 +756,25 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                 }
             }
+        } else if (isVariableLiteralImplicitField(vl)) {
+            if (serialize) {
+                return toSerializationExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
+            } else {
+                return vl.getName();
+                //return toParseExpression(getReferencedImplicitField(vl), getReferencedImplicitField(vl).getSerializeExpression(), serializerArguments);
+            }
         }
         // If the current term references a serialization argument, handle it differently (don't prefix it with "m.")
         else if ((serializerArguments != null) && Arrays.stream(serializerArguments).anyMatch(argument -> argument.getName().equals(vl.getName()))) {
             return vl.getName() + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
+        String indexCall = "";
+        if (vl.getIndex() >= 0) {
+            // We have a index call
+            indexCall = "[" + vl.getIndex() + "]";
+        }
+        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + indexCall + ((vl.getChild() != null) ?
             "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
     }
 
@@ -800,80 +872,32 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return new ArrayList<>(switchCases.values());
     }
 
-    public List<String> getRequiredImports() {
-        ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) getThisTypeDefinition();
-        List<String> imports = new ArrayList<>();
-
-        if (complexTypeDefinition.getAllPropertyFields().stream().anyMatch(field -> isArrayField(field) && getLanguageTypeNameForField(field).equals("int8"))) {
-            imports.add("\"encoding/hex\"");
-            imports.add("\"strings\"");
-        }
-
-        imports.add("\"encoding/xml\"");
-
-        // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
-        if (!complexTypeDefinition.getFields().isEmpty()) {
-            imports.add("\"github.com/pkg/errors\"");
-        }
-
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
-
-        // At least one reserved field or simple field with complex type
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            (field instanceof ReservedField))) {
-            imports.add("\"github.com/rs/zerolog/log\"");
-        }
-
-        imports.add("\"io\"");
-
-        // For CEIL functions: "math"
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            FieldUtils.contains(field, "CEIL"))) {
-            imports.add("\"math\"");
-        }
-
-        // For Constant field: "strconv"
-        if (complexTypeDefinition.getFields().stream().anyMatch(field ->
-            (field instanceof ConstField))/* || complexTypeDefinition.getAllPropertyFields().stream().anyMatch(
-                propertyField -> isSimpleField(propertyField))*/) {
-            imports.add("\"strconv\"");
-        }
-
-        if (isDiscriminatedParentTypeDefinition()) {
-            imports.add("\"reflect\"");
-            imports.add("\"strings\"");
-        }
-
-        if (complexTypeDefinition.getFields().stream()
-            .filter(field -> field instanceof TypedField)
-            .map(TypedField.class::cast)
-            .map(TypedField::getType)
-            .filter(type -> type instanceof SimpleTypeReference)
-            .map(SimpleTypeReference.class::cast)
-            .anyMatch((simpleTypeReference) -> simpleTypeReference.getSizeInBits() > 64)) {
-            imports.add("\"math/big\"");
-        }
-
-        return imports;
+    public void emitRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting import '\"{}\"'", requiredImport);
+        requiredImports.add('"' + requiredImport + '"');
     }
 
-    public List<String> getRequiredImportsForDataIo() {
-        DataIoTypeDefinition dataIo = (DataIoTypeDefinition) getThisTypeDefinition();
+    public void emitRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting import '{} \"{}'\"", alias, requiredImport);
+        requiredImports.add(alias + ' ' + '"' + requiredImport + '"');
+    }
 
-        List<String> imports = new ArrayList<>();
+    public Set<String> getRequiredImports() {
+        return requiredImports;
+    }
 
-        imports.add("\"github.com/pkg/errors\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values\"");
-        imports.add("\"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils\"");
-        imports.add("api \"github.com/apache/plc4x/plc4go/pkg/plc4go/values\"");
+    public void emitDataIoRequiredImport(String requiredImport) {
+        LOGGER.debug("emitting io import '\"{}\"'", requiredImport);
+        requiredImportsForDataIo.add('"' + requiredImport + '"');
+    }
 
-        if (dataIo.getSwitchField().getCases().stream().anyMatch(typeCase ->
-            (typeCase.getName().equals("TIME_OF_DAY") && hasFieldsWithNames(typeCase.getFields(), "hour", "minutes", "seconds")) ||
-                (typeCase.getName().equals("DATE") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day")) ||
-                (typeCase.getName().equals("DATE_AND_TIME") && hasFieldsWithNames(typeCase.getFields(), "year", "month", "day", "hour", "minutes", "seconds")))) {
-            imports.add("\"time\"");
-        }
-        return imports;
+    public void emitDataIoRequiredImport(String alias, String requiredImport) {
+        LOGGER.debug("emitting data io import '{} \"{}'\"", alias, requiredImport);
+        requiredImportsForDataIo.add(alias + ' ' + '"' + requiredImport + '"');
+    }
+
+    public Set<String> getRequiredImportsForDataIo() {
+        return requiredImportsForDataIo;
     }
 
     public String getVariableName(Field field) {
@@ -1108,7 +1132,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public boolean needsReferenceForParserArgument(String propertyName, TypeReference argumentType) {
         // Check if this is a local field.
-        if(argumentType instanceof ComplexTypeReference) {
+        if (argumentType instanceof ComplexTypeReference) {
             Field field = getFieldForNameFromCurrent(propertyName);
             if (field instanceof TypedField) {
                 TypedField typedField = (TypedField) field;

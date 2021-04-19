@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IIPAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewIPAddress(addr []int8) *IPAddress {
@@ -64,6 +66,10 @@ func (m *IPAddress) GetTypeName() string {
 }
 
 func (m *IPAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *IPAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -78,51 +84,62 @@ func (m *IPAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func IPAddressParse(io *utils.ReadBuffer) (*IPAddress, error) {
+func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
+	io.PullContext("IPAddress")
 
 	// Array field (addr)
+	io.PullContext("addr")
 	// Count array
 	addr := make([]int8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'addr' field")
 		}
 		addr[curItem] = _item
 	}
+	io.CloseContext("addr")
+
+	io.CloseContext("IPAddress")
 
 	// Create the instance
 	return NewIPAddress(addr), nil
 }
 
 func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("IPAddress")
 
 	// Array Field (addr)
 	if m.Addr != nil {
+		io.PushContext("addr")
 		for _, _element := range m.Addr {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
+		io.PopContext("addr")
 	}
 
+	io.PopContext("IPAddress")
 	return nil
 }
 
 func (m *IPAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "addr":
@@ -157,4 +174,26 @@ func (m *IPAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m IPAddress) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m IPAddress) Box(name string, width int) utils.AsciiBox {
+	boxName := "IPAddress"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Array Field (addr)
+	if m.Addr != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Addr {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Addr", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

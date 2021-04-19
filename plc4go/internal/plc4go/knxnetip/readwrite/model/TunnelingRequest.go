@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type ITunnelingRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +88,11 @@ func (m *TunnelingRequest) GetTypeName() string {
 }
 
 func (m *TunnelingRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
@@ -101,7 +107,8 @@ func (m *TunnelingRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	io.PullContext("TunnelingRequest")
 
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
@@ -115,6 +122,8 @@ func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpM
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
 
+	io.CloseContext("TunnelingRequest")
+
 	// Create a partially initialized instance
 	_child := &TunnelingRequest{
 		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
@@ -127,6 +136,7 @@ func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpM
 
 func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TunnelingRequest")
 
 		// Simple Field (tunnelingRequestDataBlock)
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
@@ -140,6 +150,7 @@ func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
+		io.PopContext("TunnelingRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -148,21 +159,26 @@ func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingRequestDataBlock":
-				var data *TunnelingRequestDataBlock
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data TunnelingRequestDataBlock
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.TunnelingRequestDataBlock = data
+				m.TunnelingRequestDataBlock = &data
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Cemi = dt
@@ -170,7 +186,7 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -186,4 +202,24 @@ func (m *TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m TunnelingRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m TunnelingRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "TunnelingRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.TunnelingRequestDataBlock.Box("tunnelingRequestDataBlock", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Cemi.Box("cemi", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

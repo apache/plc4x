@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -47,6 +48,7 @@ type IApduDataExtPropertyDescriptionResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,7 +101,11 @@ func (m *ApduDataExtPropertyDescriptionResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtPropertyDescriptionResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -117,7 +123,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBits() uint16 {
 	lengthInBits += 1
 
 	// Simple field (propertyDataType)
-	lengthInBits += 6
+	lengthInBits += 8
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -138,35 +144,36 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtPropertyDescriptionResponse")
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint8(8)
+	index, _indexErr := io.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 
 	// Simple Field (writeEnabled)
-	writeEnabled, _writeEnabledErr := io.ReadBit()
+	writeEnabled, _writeEnabledErr := io.ReadBit("writeEnabled")
 	if _writeEnabledErr != nil {
 		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(1)
+		reserved, _err := io.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -186,7 +193,7 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -199,7 +206,7 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 	}
 
 	// Simple Field (maxNrOfElements)
-	maxNrOfElements, _maxNrOfElementsErr := io.ReadUint16(12)
+	maxNrOfElements, _maxNrOfElementsErr := io.ReadUint16("maxNrOfElements", 12)
 	if _maxNrOfElementsErr != nil {
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
@@ -215,6 +222,8 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
+
+	io.CloseContext("ApduDataExtPropertyDescriptionResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyDescriptionResponse{
@@ -234,38 +243,39 @@ func ApduDataExtPropertyDescriptionResponseParse(io *utils.ReadBuffer) (*ApduDat
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtPropertyDescriptionResponse")
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.Index)
-		_indexErr := io.WriteUint8(8, (index))
+		_indexErr := io.WriteUint8("index", 8, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
 		// Simple Field (writeEnabled)
 		writeEnabled := bool(m.WriteEnabled)
-		_writeEnabledErr := io.WriteBit((writeEnabled))
+		_writeEnabledErr := io.WriteBit("writeEnabled", (writeEnabled))
 		if _writeEnabledErr != nil {
 			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(1, uint8(0x0))
+			_err := io.WriteUint8("reserved", 1, uint8(0x0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -279,7 +289,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x0))
+			_err := io.WriteUint8("reserved", 4, uint8(0x0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -287,7 +297,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 
 		// Simple Field (maxNrOfElements)
 		maxNrOfElements := uint16(m.MaxNrOfElements)
-		_maxNrOfElementsErr := io.WriteUint16(12, (maxNrOfElements))
+		_maxNrOfElementsErr := io.WriteUint16("maxNrOfElements", 12, (maxNrOfElements))
 		if _maxNrOfElementsErr != nil {
 			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
 		}
@@ -304,6 +314,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}
 
+		io.PopContext("ApduDataExtPropertyDescriptionResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -312,10 +323,12 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 func (m *ApduDataExtPropertyDescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectIndex":
@@ -370,7 +383,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) UnmarshalXML(d *xml.Decoder, st
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -404,4 +417,47 @@ func (m *ApduDataExtPropertyDescriptionResponse) MarshalXML(e *xml.Encoder, star
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataExtPropertyDescriptionResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtPropertyDescriptionResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Index", m.Index, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("WriteEnabled", m.WriteEnabled, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x0), -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.PropertyDataType.Box("propertyDataType", width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x0), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxNrOfElements", m.MaxNrOfElements, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.ReadLevel.Box("readLevel", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.WriteLevel.Box("writeLevel", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

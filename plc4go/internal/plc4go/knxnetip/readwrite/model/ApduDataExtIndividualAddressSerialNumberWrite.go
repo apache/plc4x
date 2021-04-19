@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataExtIndividualAddressSerialNumberWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) GetTypeName() string {
 }
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtIndividualAddressSerialNumberWriteParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtIndividualAddressSerialNumberWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtIndividualAddressSerialNumberWrite")
+
+	io.CloseContext("ApduDataExtIndividualAddressSerialNumberWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberWrite{
@@ -102,7 +111,9 @@ func ApduDataExtIndividualAddressSerialNumberWriteParse(io *utils.ReadBuffer) (*
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtIndividualAddressSerialNumberWrite")
 
+		io.PopContext("ApduDataExtIndividualAddressSerialNumberWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(io utils.Write
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) UnmarshalXML(d *xml.Deco
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtIndividualAddressSerialNumberWrite) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtIndividualAddressSerialNumberWrite) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtIndividualAddressSerialNumberWrite"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

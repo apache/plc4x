@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IModbusPDUReportServerIdRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *ModbusPDUReportServerIdRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReportServerIdRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReportServerIdRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -98,7 +104,10 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUReportServerIdRequest")
+
+	io.CloseContext("ModbusPDUReportServerIdRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdRequest{
@@ -110,7 +119,9 @@ func ModbusPDUReportServerIdRequestParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 
 func (m *ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUReportServerIdRequest")
 
+		io.PopContext("ModbusPDUReportServerIdRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -119,17 +130,19 @@ func (m *ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -139,4 +152,20 @@ func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.
 
 func (m *ModbusPDUReportServerIdRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUReportServerIdRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUReportServerIdRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUReportServerIdRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

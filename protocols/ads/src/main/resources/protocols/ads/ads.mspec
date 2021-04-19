@@ -192,11 +192,11 @@
 
 [discriminatedType 'AdsData' [CommandId 'commandId', bit 'response']
     [typeSwitch 'commandId', 'response'
-        ['CommandId.INVALID', 'false' AdsInvalidRequest]
-        ['CommandId.INVALID', 'true' AdsInvalidResponse]
+        ['INVALID', 'false' AdsInvalidRequest]
+        ['INVALID', 'true' AdsInvalidResponse]
 
-        ['CommandId.ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
-        ['CommandId.ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
+        ['ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
+        ['ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
             // 4 bytes	ADS error number.
             [simple ReturnCode 'result']
             // Version	1 byte	Major version number
@@ -209,7 +209,7 @@
             [array int 8  'device' count '16']
         ]
 
-        ['CommandId.ADS_READ', 'false' AdsReadRequest
+        ['ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be read.
@@ -217,7 +217,7 @@
             // 4 bytes	Length of the data (in bytes) which should be read.
             [simple uint 32 'length']
         ]
-        ['CommandId.ADS_READ', 'true' AdsReadResponse
+        ['ADS_READ', 'true' AdsReadResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
             // 4 bytes	Length of data which are supplied back.
@@ -226,7 +226,7 @@
             [array int 8 'data' count 'length']
         ]
 
-        ['CommandId.ADS_WRITE', 'false' AdsWriteRequest
+        ['ADS_WRITE', 'false' AdsWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be written.
@@ -236,13 +236,13 @@
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'length']
         ]
-        ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
+        ['ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
         ]
 
-        ['CommandId.ADS_READ_STATE', 'false' AdsReadStateRequest]
-        ['CommandId.ADS_READ_STATE', 'true' AdsReadStateResponse
+        ['ADS_READ_STATE', 'false' AdsReadStateRequest]
+        ['ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
@@ -251,7 +251,7 @@
             [simple uint 16 'deviceState']
         ]
 
-        ['CommandId.ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
+        ['ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
             [simple uint 16 'adsState']
             // 2 bytes	New device status.
@@ -261,12 +261,12 @@
             // n bytes	Additional data which are sent to the ADS device
             [array int 8 'data' count 'length']
         ]
-        ['CommandId.ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
+        ['ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
         ]
 
-        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
+        ['ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data, which should be sent per notification.
@@ -283,23 +283,23 @@
             // 16bytes	Must be set to 0
             [reserved   uint       128       '0x0000' ]
         ]
-        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
+        ['ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
             // 4 bytes	Handle of notification
             [simple uint 32 'notificationHandle']
         ]
 
-        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
+        ['ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
             // 4 bytes	Handle of notification
             [simple uint 32 'notificationHandle']
         ]
-        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
+        ['ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
         ]
 
-        ['CommandId.ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
+        ['ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
             [simple uint 32 'length']
             // 4 bytes	Number of elements of type AdsStampHeader.
@@ -307,9 +307,9 @@
             // n bytes	Array with elements of type AdsStampHeader.
             [array AdsStampHeader 'adsStampHeaders' count 'stamps']
         ]
-        ['CommandId.ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
+        ['ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
 
-        ['CommandId.ADS_READ_WRITE', 'false' AdsReadWriteRequest
+        ['ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be written.
@@ -323,7 +323,7 @@
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
-        ['CommandId.ADS_READ_WRITE', 'true' AdsReadWriteResponse
+        ['ADS_READ_WRITE', 'true' AdsReadWriteResponse
             // 4 bytes	ADS error number
             [simple ReturnCode 'result']
             // 4 bytes	Length of data in byte.
@@ -386,7 +386,7 @@
     [array int 8 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' [string 'dataFormatName', int 32 'stringLength']
+[dataIo 'DataItem' [string '-1' 'dataFormatName', int 32 'stringLength']
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -458,16 +458,16 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' STRING
-//            [simple string 8 'UTF-8' 'value']
+//            [simple string '8' 'UTF-8' 'value']
         ]
         ['IEC61131_WCHAR' STRING
-//            [simple string 16 'UTF-16' 'value']
+//            [simple string '16' 'UTF-16' 'value']
         ]
         ['IEC61131_STRING' STRING
-            [manual   string  'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [manual   string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -490,17 +490,17 @@
             [simple uint 32 'value']
         ]
         // Interpreted as "seconds since epoch"
-        // TODO: Fix this
-        //['IEC61131_DATE_AND_TIME' DATE_AND_TIME
-        //    [simple uint 32 'value']
-        //]
+        ['IEC61131_DATE_AND_TIME' DATE_AND_TIME
+            [simple uint 32 'secondsSinceEpoch']
+        ]
     ]
 ]
 
-[enum int 8 'AdsDataType' [uint 16 'numBytes', string 'dataFormatName']
+[enum int 8 'AdsDataType' [uint 16 'numBytes', string '-1' 'dataFormatName']
     ['0x01' BOOL       ['1', 'IEC61131_BOOL']]
     ['0x02' BIT        ['1', 'IEC61131_BOOL']]
     ['0x03' BIT8       ['1', 'IEC61131_BOOL']]
+
     // -----------------------------------------
     // Bit-strings
     // -----------------------------------------

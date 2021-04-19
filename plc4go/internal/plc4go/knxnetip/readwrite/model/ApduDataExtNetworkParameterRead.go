@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataExtNetworkParameterRead interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataExtNetworkParameterRead) GetTypeName() string {
 }
 
 func (m *ApduDataExtNetworkParameterRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtNetworkParameterRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataExtNetworkParameterRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterReadParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtNetworkParameterRead")
+
+	io.CloseContext("ApduDataExtNetworkParameterRead")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterRead{
@@ -102,7 +111,9 @@ func ApduDataExtNetworkParameterReadParse(io *utils.ReadBuffer) (*ApduDataExt, e
 
 func (m *ApduDataExtNetworkParameterRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtNetworkParameterRead")
 
+		io.PopContext("ApduDataExtNetworkParameterRead")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataExtNetworkParameterRead) Serialize(io utils.WriteBuffer) error 
 func (m *ApduDataExtNetworkParameterRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataExtNetworkParameterRead) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *ApduDataExtNetworkParameterRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtNetworkParameterRead) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtNetworkParameterRead) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtNetworkParameterRead"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

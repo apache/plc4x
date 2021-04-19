@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IApduDataGroupValueWrite interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *ApduDataGroupValueWrite) GetTypeName() string {
 }
 
 func (m *ApduDataGroupValueWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataGroupValueWrite) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -105,24 +111,29 @@ func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	io.PullContext("ApduDataGroupValueWrite")
 
 	// Simple Field (dataFirstByte)
-	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
+	dataFirstByte, _dataFirstByteErr := io.ReadInt8("dataFirstByte", 6)
 	if _dataFirstByteErr != nil {
 		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field")
 	}
 
 	// Array field (data)
+	io.PullContext("data")
 	// Count array
-	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1)))))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), uint16(uint16(0)), uint16(uint16(dataLength)-uint16(uint16(1))))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
 	}
+	io.CloseContext("data")
+
+	io.CloseContext("ApduDataGroupValueWrite")
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueWrite{
@@ -136,24 +147,28 @@ func ApduDataGroupValueWriteParse(io *utils.ReadBuffer, dataLength uint8) (*Apdu
 
 func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataGroupValueWrite")
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.DataFirstByte)
-		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+		_dataFirstByteErr := io.WriteInt8("dataFirstByte", 6, (dataFirstByte))
 		if _dataFirstByteErr != nil {
 			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
+		io.PopContext("ApduDataGroupValueWrite")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -162,10 +177,12 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataGroupValueWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "dataFirstByte":
@@ -189,7 +206,7 @@ func (m *ApduDataGroupValueWrite) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -207,4 +224,32 @@ func (m *ApduDataGroupValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElem
 		return err
 	}
 	return nil
+}
+
+func (m ApduDataGroupValueWrite) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataGroupValueWrite) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataGroupValueWrite"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// int8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DataFirstByte", m.DataFirstByte, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

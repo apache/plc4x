@@ -16,14 +16,15 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package modbus
 
 import (
-	"errors"
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
 	"regexp"
 )
 
@@ -94,5 +95,5 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	} else if match := utils.GetSubgroupMatches(m.numericExtendedRegisterPattern, query); match != nil {
 		return NewModbusPlcFieldFromStrings(ExtendedRegister, match["address"], match["quantity"], model2.ModbusDataTypeByName(match["datatype"]))
 	}
-	return nil, errors.New("Invalid address format for address '" + query + "'")
+	return nil, errors.Errorf("Invalid address format for address '%s'", query)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IAPDUAbort interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *APDUAbort) GetTypeName() string {
 }
 
 func (m *APDUAbort) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUAbort) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -110,11 +116,12 @@ func (m *APDUAbort) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUAbort")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(3)
+		reserved, _err := io.ReadUint8("reserved", 3)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -127,22 +134,24 @@ func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (server)
-	server, _serverErr := io.ReadBit()
+	server, _serverErr := io.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field")
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (abortReason)
-	abortReason, _abortReasonErr := io.ReadUint8(8)
+	abortReason, _abortReasonErr := io.ReadUint8("abortReason", 8)
 	if _abortReasonErr != nil {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
+
+	io.CloseContext("APDUAbort")
 
 	// Create a partially initialized instance
 	_child := &APDUAbort{
@@ -157,10 +166,11 @@ func APDUAbortParse(io *utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUAbort")
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(3, uint8(0x00))
+			_err := io.WriteUint8("reserved", 3, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -168,25 +178,26 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (server)
 		server := bool(m.Server)
-		_serverErr := io.WriteBit((server))
+		_serverErr := io.WriteBit("server", (server))
 		if _serverErr != nil {
 			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (abortReason)
 		abortReason := uint8(m.AbortReason)
-		_abortReasonErr := io.WriteUint8(8, (abortReason))
+		_abortReasonErr := io.WriteUint8("abortReason", 8, (abortReason))
 		if _abortReasonErr != nil {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}
 
+		io.PopContext("APDUAbort")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -195,10 +206,12 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "server":
@@ -223,7 +236,7 @@ func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -242,4 +255,32 @@ func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDUAbort) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
+	boxName := "APDUAbort"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Server", m.Server, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AbortReason", m.AbortReason, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

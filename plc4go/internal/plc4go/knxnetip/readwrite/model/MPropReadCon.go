@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -44,6 +45,7 @@ type IMPropReadCon interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -94,7 +96,11 @@ func (m *MPropReadCon) GetTypeName() string {
 }
 
 func (m *MPropReadCon) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MPropReadCon) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -121,43 +127,46 @@ func (m *MPropReadCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MPropReadCon")
 
 	// Simple Field (interfaceObjectType)
-	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
+	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field")
 	}
 
 	// Simple Field (objectInstance)
-	objectInstance, _objectInstanceErr := io.ReadUint8(8)
+	objectInstance, _objectInstanceErr := io.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (numberOfElements)
-	numberOfElements, _numberOfElementsErr := io.ReadUint8(4)
+	numberOfElements, _numberOfElementsErr := io.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field")
 	}
 
 	// Simple Field (startIndex)
-	startIndex, _startIndexErr := io.ReadUint16(12)
+	startIndex, _startIndexErr := io.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
 
 	// Simple Field (unknown)
-	unknown, _unknownErr := io.ReadUint16(16)
+	unknown, _unknownErr := io.ReadUint16("unknown", 16)
 	if _unknownErr != nil {
 		return nil, errors.Wrap(_unknownErr, "Error parsing 'unknown' field")
 	}
+
+	io.CloseContext("MPropReadCon")
 
 	// Create a partially initialized instance
 	_child := &MPropReadCon{
@@ -175,49 +184,51 @@ func MPropReadConParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MPropReadCon")
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
-		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
+		_interfaceObjectTypeErr := io.WriteUint16("interfaceObjectType", 16, (interfaceObjectType))
 		if _interfaceObjectTypeErr != nil {
 			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.ObjectInstance)
-		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
+		_objectInstanceErr := io.WriteUint8("objectInstance", 8, (objectInstance))
 		if _objectInstanceErr != nil {
 			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.NumberOfElements)
-		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint8("numberOfElements", 4, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.StartIndex)
-		_startIndexErr := io.WriteUint16(12, (startIndex))
+		_startIndexErr := io.WriteUint16("startIndex", 12, (startIndex))
 		if _startIndexErr != nil {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
 		// Simple Field (unknown)
 		unknown := uint16(m.Unknown)
-		_unknownErr := io.WriteUint16(16, (unknown))
+		_unknownErr := io.WriteUint16("unknown", 16, (unknown))
 		if _unknownErr != nil {
 			return errors.Wrap(_unknownErr, "Error serializing 'unknown' field")
 		}
 
+		io.PopContext("MPropReadCon")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -226,10 +237,12 @@ func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "interfaceObjectType":
@@ -272,7 +285,7 @@ func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -300,4 +313,38 @@ func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 		return err
 	}
 	return nil
+}
+
+func (m MPropReadCon) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
+	boxName := "MPropReadCon"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("InterfaceObjectType", m.InterfaceObjectType, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectInstance", m.ObjectInstance, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumberOfElements", m.NumberOfElements, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("StartIndex", m.StartIndex, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Unknown", m.Unknown, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

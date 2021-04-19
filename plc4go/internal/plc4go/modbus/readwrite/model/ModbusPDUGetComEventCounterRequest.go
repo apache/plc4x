@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IModbusPDUGetComEventCounterRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -89,7 +91,11 @@ func (m *ModbusPDUGetComEventCounterRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUGetComEventCounterRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUGetComEventCounterRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -98,7 +104,10 @@ func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventCounterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventCounterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventCounterRequest")
+
+	io.CloseContext("ModbusPDUGetComEventCounterRequest")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventCounterRequest{
@@ -110,7 +119,9 @@ func ModbusPDUGetComEventCounterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUGetComEventCounterRequest")
 
+		io.PopContext("ModbusPDUGetComEventCounterRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -119,17 +130,19 @@ func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) err
 func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -139,4 +152,20 @@ func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start 
 
 func (m *ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ModbusPDUGetComEventCounterRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUGetComEventCounterRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUGetComEventCounterRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

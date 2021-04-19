@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -38,6 +39,7 @@ type IS7VarPayloadStatusItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *S7VarPayloadStatusItem {
@@ -62,6 +64,10 @@ func (m *S7VarPayloadStatusItem) GetTypeName() string {
 }
 
 func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)
@@ -74,7 +80,8 @@ func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
+func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
+	io.PullContext("S7VarPayloadStatusItem")
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -82,11 +89,14 @@ func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem,
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
 
+	io.CloseContext("S7VarPayloadStatusItem")
+
 	// Create the instance
 	return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
 func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("S7VarPayloadStatusItem")
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -95,22 +105,25 @@ func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
+	io.PopContext("S7VarPayloadStatusItem")
 	return nil
 }
 
 func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "returnCode":
@@ -138,4 +151,20 @@ func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	return nil
+}
+
+func (m S7VarPayloadStatusItem) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7VarPayloadStatusItem"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Enum field (returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
+	boxes = append(boxes, returnCode.Box("returnCode", -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

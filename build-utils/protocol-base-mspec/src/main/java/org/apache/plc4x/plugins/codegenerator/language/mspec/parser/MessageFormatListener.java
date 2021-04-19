@@ -42,6 +42,8 @@ import java.util.*;
 
 public class MessageFormatListener extends MSpecBaseListener {
 
+
+
     private Deque<List<Field>> parserContexts;
 
     private Deque<List<EnumValue>> enumContexts;
@@ -185,7 +187,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
-        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         Field field = new DefaultDiscriminatorField(null, type, name);
         if (parserContexts.peek() != null) {
@@ -436,11 +438,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
-        // String types need an additional "encoding" field and an optional size.
-        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
-            int size = (ctx.size != null) ? Integer.parseInt(ctx.size.getText()) : -1;
+        // String types need an additional "encoding" field and length expression.
+        if(simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
             String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
-            return new DefaultStringTypeReference(simpleBaseType, size, encoding);
+            Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
+            return new DefaultStringTypeReference(simpleBaseType, lengthExpression, encoding);
         }
         // If a size it specified its a simple integer length based type.
         if (ctx.size != null) {

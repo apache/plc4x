@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -49,6 +51,7 @@ type IBACnetTagWithContent interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
@@ -73,6 +76,10 @@ func (m *BACnetTagWithContent) GetTypeName() string {
 }
 
 func (m *BACnetTagWithContent) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagWithContent) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeOrTagNumber)
@@ -115,22 +122,23 @@ func (m *BACnetTagWithContent) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, error) {
+func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, error) {
+	io.PullContext("BACnetTagWithContent")
 
 	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
 	if _typeOrTagNumberErr != nil {
 		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
 	}
 
 	// Simple Field (contextSpecificTag)
-	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8("contextSpecificTag", 1)
 	if _contextSpecificTagErr != nil {
 		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
@@ -138,7 +146,7 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
@@ -148,7 +156,7 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
 		}
@@ -156,25 +164,27 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
 	}
 
 	// Array field (propertyIdentifier)
+	io.PullContext("propertyIdentifier")
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
-	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), uint16((*extLength)), uint16(lengthValueType))
+	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'propertyIdentifier' field")
 		}
 		propertyIdentifier = append(propertyIdentifier, _item)
 	}
+	io.CloseContext("propertyIdentifier")
 
 	// Const Field (openTag)
-	openTag, _openTagErr := io.ReadUint8(8)
+	openTag, _openTagErr := io.ReadUint8("openTag", 8)
 	if _openTagErr != nil {
 		return nil, errors.Wrap(_openTagErr, "Error parsing 'openTag' field")
 	}
 	if openTag != BACnetTagWithContent_OPENTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetTagWithContent_OPENTAG)) + " but got " + strconv.Itoa(int(openTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_OPENTAG) + " but got " + fmt.Sprintf("%d", openTag))
 	}
 
 	// Simple Field (value)
@@ -184,37 +194,40 @@ func BACnetTagWithContentParse(io *utils.ReadBuffer) (*BACnetTagWithContent, err
 	}
 
 	// Const Field (closingTag)
-	closingTag, _closingTagErr := io.ReadUint8(8)
+	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field")
 	}
 	if closingTag != BACnetTagWithContent_CLOSINGTAG {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetTagWithContent_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
+
+	io.CloseContext("BACnetTagWithContent")
 
 	// Create the instance
 	return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
 }
 
 func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("BACnetTagWithContent")
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8("typeOrTagNumber", 4, (typeOrTagNumber))
 	if _typeOrTagNumberErr != nil {
 		return errors.Wrap(_typeOrTagNumberErr, "Error serializing 'typeOrTagNumber' field")
 	}
 
 	// Simple Field (contextSpecificTag)
 	contextSpecificTag := uint8(m.ContextSpecificTag)
-	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8("contextSpecificTag", 1, (contextSpecificTag))
 	if _contextSpecificTagErr != nil {
 		return errors.Wrap(_contextSpecificTagErr, "Error serializing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8("lengthValueType", 3, (lengthValueType))
 	if _lengthValueTypeErr != nil {
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
@@ -223,7 +236,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	var extTagNumber *uint8 = nil
 	if m.ExtTagNumber != nil {
 		extTagNumber = m.ExtTagNumber
-		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
+		_extTagNumberErr := io.WriteUint8("extTagNumber", 8, *(extTagNumber))
 		if _extTagNumberErr != nil {
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
@@ -233,7 +246,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	var extLength *uint8 = nil
 	if m.ExtLength != nil {
 		extLength = m.ExtLength
-		_extLengthErr := io.WriteUint8(8, *(extLength))
+		_extLengthErr := io.WriteUint8("extLength", 8, *(extLength))
 		if _extLengthErr != nil {
 			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
@@ -241,16 +254,18 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
+		io.PushContext("propertyIdentifier")
 		for _, _element := range m.PropertyIdentifier {
-			_elementErr := io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 			}
 		}
+		io.PopContext("propertyIdentifier")
 	}
 
 	// Const Field (openTag)
-	_openTagErr := io.WriteUint8(8, 0x2e)
+	_openTagErr := io.WriteUint8("openTag", 8, 0x2e)
 	if _openTagErr != nil {
 		return errors.Wrap(_openTagErr, "Error serializing 'openTag' field")
 	}
@@ -262,27 +277,30 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Const Field (closingTag)
-	_closingTagErr := io.WriteUint8(8, 0x2f)
+	_closingTagErr := io.WriteUint8("closingTag", 8, 0x2f)
 	if _closingTagErr != nil {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
+	io.PopContext("BACnetTagWithContent")
 	return nil
 }
 
 func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "typeOrTagNumber":
@@ -304,17 +322,33 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 				}
 				m.LengthValueType = data
 			case "extTagNumber":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtTagNumber = data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtTagNumber = &data
+				}
 			case "extLength":
-				var data *uint8
-				if err := d.DecodeElement(data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtLength = data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtLength = &data
+				}
 			case "propertyIdentifier":
 				var data []uint8
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -324,6 +358,9 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 			case "value":
 				var dt *BACnetTag
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Value = dt
@@ -354,13 +391,7 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 	if err := e.EncodeElement(m.ExtLength, xml.StartElement{Name: xml.Name{Local: "extLength"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeElement(m.PropertyIdentifier, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
@@ -370,4 +401,57 @@ func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 	return nil
+}
+
+func (m BACnetTagWithContent) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetTagWithContent"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", m.ContextSpecificTag, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, -1))
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.ExtTagNumber != nil {
+		extTagNumber = m.ExtTagNumber
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtTagNumber", *(extTagNumber), -1))
+	}
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.ExtLength != nil {
+		extLength = m.ExtLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtLength", *(extLength), -1))
+	}
+	// Array Field (propertyIdentifier)
+	if m.PropertyIdentifier != nil {
+		// Simple array base type uint8 will be hex dumped
+		boxes = append(boxes, utils.BoxedDumpAnything("PropertyIdentifier", m.PropertyIdentifier))
+		// Simple array base type uint8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.PropertyIdentifier {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("PropertyIdentifier", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Const Field (openTag)
+	boxes = append(boxes, utils.BoxAnything("OpenTag", uint8(0x2e), -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Value.Box("value", width-2))
+	// Const Field (closingTag)
+	boxes = append(boxes, utils.BoxAnything("ClosingTag", uint8(0x2f), -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

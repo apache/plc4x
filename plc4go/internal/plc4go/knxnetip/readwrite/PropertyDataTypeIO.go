@@ -30,7 +30,7 @@ func ParsePropertyDataType(io utils.ReadBuffer, dataType model.KnxPropertyDataTy
 	parseArray := func(num uint8) values2.PlcByteArray {
 		var data []byte
 		for i := uint8(0); i < num; i++ {
-			b, _ := io.ReadUint8(8)
+			b, _ := io.ReadUint8("", 8)
 			data = append(data, b)
 		}
 		return values2.NewPlcByteArray(data)
@@ -42,16 +42,16 @@ func ParsePropertyDataType(io utils.ReadBuffer, dataType model.KnxPropertyDataTy
 	case model.KnxPropertyDataType_PDT_CONTROL: // 10 Bytes
 		return parseArray(10)
 	case model.KnxPropertyDataType_PDT_CHAR: // 1 Byte
-		val, _ := io.ReadUint8(8)
+		val, _ := io.ReadUint8("", 8)
 		return values2.NewPlcCHAR(val)
 	case model.KnxPropertyDataType_PDT_UNSIGNED_CHAR: // 1 Byte
-		val, _ := io.ReadUint8(8)
+		val, _ := io.ReadUint8("", 8)
 		return values2.NewPlcCHAR(val)
 	case model.KnxPropertyDataType_PDT_INT: // 2 Bytes
-		val, _ := io.ReadInt16(16)
+		val, _ := io.ReadInt16("", 16)
 		return values2.NewPlcINT(val)
 	case model.KnxPropertyDataType_PDT_UNSIGNED_INT: // 2 Bytes
-		val, _ := io.ReadUint16(16)
+		val, _ := io.ReadUint16("", 16)
 		return values2.NewPlcUINT(val)
 	case model.KnxPropertyDataType_PDT_KNX_FLOAT: // 2 Bytes
 		// TODO: Implement this ...
@@ -60,16 +60,16 @@ func ParsePropertyDataType(io utils.ReadBuffer, dataType model.KnxPropertyDataTy
 	case model.KnxPropertyDataType_PDT_TIME: // 3 Bytes
 		// TODO: Implement this ...
 	case model.KnxPropertyDataType_PDT_LONG: // 4 Bytes
-		val, _ := io.ReadInt64(64)
+		val, _ := io.ReadInt64("", 64)
 		return values2.NewPlcLINT(val)
 	case model.KnxPropertyDataType_PDT_UNSIGNED_LONG: // 4 Bytes
-		val, _ := io.ReadUint64(64)
+		val, _ := io.ReadUint64("", 64)
 		return values2.NewPlcULINT(val)
 	case model.KnxPropertyDataType_PDT_FLOAT: // 4 Bytes
-		val, _ := io.ReadFloat32(true, 8, 23)
+		val, _ := io.ReadFloat32("", true, 8, 23)
 		return values2.NewPlcREAL(val)
 	case model.KnxPropertyDataType_PDT_DOUBLE: // 8 Bytes
-		val, _ := io.ReadFloat64(true, 11, 52)
+		val, _ := io.ReadFloat64("", true, 11, 52)
 		return values2.NewPlcLREAL(val)
 	case model.KnxPropertyDataType_PDT_CHAR_BLOCK: // 10 Bytes
 		return parseArray(10)
@@ -130,16 +130,16 @@ func ParsePropertyDataType(io utils.ReadBuffer, dataType model.KnxPropertyDataTy
 	case model.KnxPropertyDataType_PDT_BINARY_INFORMATION: // 1 Bytes
 		// TODO: Implement this ...
 	case model.KnxPropertyDataType_PDT_BITSET8: // 1 Bytes
-		val, _ := io.ReadUint8(8)
+		val, _ := io.ReadUint8("", 8)
 		return values2.NewPlcBitString(val)
 	case model.KnxPropertyDataType_PDT_BITSET16: // 2 Bytes
-		val, _ := io.ReadUint16(16)
+		val, _ := io.ReadUint16("", 16)
 		return values2.NewPlcBitString(val)
 	case model.KnxPropertyDataType_PDT_ENUM8: // 1 Bytes
-		val, _ := io.ReadUint8(8)
+		val, _ := io.ReadUint8("", 8)
 		return values2.NewPlcCHAR(val)
 	case model.KnxPropertyDataType_PDT_SCALING: // 1 Bytes
-		val, _ := io.ReadUint8(8)
+		val, _ := io.ReadUint8("", 8)
 		return values2.NewPlcCHAR(val)
 	case model.KnxPropertyDataType_PDT_NE_VL: // Var Number of Bytes
 		return parseArray(numBytes)

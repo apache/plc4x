@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetServiceAckAtomicWriteFile interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetServiceAckAtomicWriteFile) GetTypeName() string {
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAckAtomicWriteFile) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetServiceAckAtomicWriteFile) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	io.PullContext("BACnetServiceAckAtomicWriteFile")
+
+	io.CloseContext("BACnetServiceAckAtomicWriteFile")
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckAtomicWriteFile{
@@ -102,7 +111,9 @@ func BACnetServiceAckAtomicWriteFileParse(io *utils.ReadBuffer) (*BACnetServiceA
 
 func (m *BACnetServiceAckAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetServiceAckAtomicWriteFile")
 
+		io.PopContext("BACnetServiceAckAtomicWriteFile")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetServiceAckAtomicWriteFile) Serialize(io utils.WriteBuffer) error 
 func (m *BACnetServiceAckAtomicWriteFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetServiceAckAtomicWriteFile) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *BACnetServiceAckAtomicWriteFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetServiceAckAtomicWriteFile) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetServiceAckAtomicWriteFile) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetServiceAckAtomicWriteFile"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

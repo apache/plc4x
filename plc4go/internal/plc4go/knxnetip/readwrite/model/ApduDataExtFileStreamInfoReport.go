@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataExtFileStreamInfoReport interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataExtFileStreamInfoReport) GetTypeName() string {
 }
 
 func (m *ApduDataExtFileStreamInfoReport) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtFileStreamInfoReport) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtFileStreamInfoReport")
+
+	io.CloseContext("ApduDataExtFileStreamInfoReport")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtFileStreamInfoReport{
@@ -102,7 +111,9 @@ func ApduDataExtFileStreamInfoReportParse(io *utils.ReadBuffer) (*ApduDataExt, e
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtFileStreamInfoReport")
 
+		io.PopContext("ApduDataExtFileStreamInfoReport")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataExtFileStreamInfoReport) Serialize(io utils.WriteBuffer) error 
 func (m *ApduDataExtFileStreamInfoReport) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataExtFileStreamInfoReport) UnmarshalXML(d *xml.Decoder, start xml
 
 func (m *ApduDataExtFileStreamInfoReport) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtFileStreamInfoReport) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtFileStreamInfoReport) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtFileStreamInfoReport"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

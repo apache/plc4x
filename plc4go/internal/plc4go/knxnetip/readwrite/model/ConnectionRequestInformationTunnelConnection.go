@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -40,6 +41,7 @@ type IConnectionRequestInformationTunnelConnection interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +87,11 @@ func (m *ConnectionRequestInformationTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequestInformationTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxLayer)
 	lengthInBits += 8
@@ -100,7 +106,8 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	io.PullContext("ConnectionRequestInformationTunnelConnection")
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
@@ -110,7 +117,7 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -121,6 +128,8 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 			}).Msg("Got unexpected response.")
 		}
 	}
+
+	io.CloseContext("ConnectionRequestInformationTunnelConnection")
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationTunnelConnection{
@@ -133,6 +142,7 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionRequestInformationTunnelConnection")
 
 		// Simple Field (knxLayer)
 		_knxLayerErr := m.KnxLayer.Serialize(io)
@@ -142,12 +152,13 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
+		io.PopContext("ConnectionRequestInformationTunnelConnection")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -156,10 +167,12 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxLayer":
@@ -172,7 +185,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -185,4 +198,25 @@ func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionRequestInformationTunnelConnection) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	boxName := "ConnectionRequestInformationTunnelConnection"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.KnxLayer.Box("knxLayer", width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

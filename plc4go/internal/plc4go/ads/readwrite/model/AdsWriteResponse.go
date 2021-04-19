@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IAdsWriteResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *AdsWriteResponse) GetTypeName() string {
 }
 
 func (m *AdsWriteResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsWriteResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -100,13 +106,16 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	io.PullContext("AdsWriteResponse")
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+
+	io.CloseContext("AdsWriteResponse")
 
 	// Create a partially initialized instance
 	_child := &AdsWriteResponse{
@@ -119,6 +128,7 @@ func AdsWriteResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("AdsWriteResponse")
 
 		// Simple Field (result)
 		_resultErr := m.Result.Serialize(io)
@@ -126,6 +136,7 @@ func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
+		io.PopContext("AdsWriteResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -134,10 +145,12 @@ func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 func (m *AdsWriteResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -150,7 +163,7 @@ func (m *AdsWriteResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -163,4 +176,22 @@ func (m *AdsWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 		return err
 	}
 	return nil
+}
+
+func (m AdsWriteResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m AdsWriteResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "AdsWriteResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

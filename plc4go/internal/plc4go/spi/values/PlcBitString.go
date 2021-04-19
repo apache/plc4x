@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package values
 
 import (
@@ -34,22 +35,22 @@ func NewPlcBitString(value interface{}) PlcBitString {
 	case uint8:
 		bools = make([]api.PlcValue, 8)
 		for i := 0; i < 8; i++ {
-			bools[0] = NewPlcBOOL(((value.(uint8) >> uint8((8-1)-i)) & 0x01) == 0x01)
+			bools[i] = NewPlcBOOL(((value.(uint8) >> uint8((8-1)-i)) & 0x01) == 0x01)
 		}
 	case uint16:
 		bools = make([]api.PlcValue, 16)
 		for i := 0; i < 16; i++ {
-			bools[0] = NewPlcBOOL(((value.(uint16) >> uint8((16-1)-i)) & 0x01) == 0x01)
+			bools[i] = NewPlcBOOL(((value.(uint16) >> uint8((16-1)-i)) & 0x01) == 0x01)
 		}
 	case uint32:
 		bools = make([]api.PlcValue, 32)
 		for i := 0; i < 32; i++ {
-			bools[0] = NewPlcBOOL(((value.(uint32) >> uint8((32-1)-i)) & 0x01) == 0x01)
+			bools[i] = NewPlcBOOL(((value.(uint32) >> uint8((32-1)-i)) & 0x01) == 0x01)
 		}
 	case uint64:
 		bools = make([]api.PlcValue, 64)
 		for i := 0; i < 64; i++ {
-			bools[0] = NewPlcBOOL(((value.(uint64) >> uint8((64-1)-i)) & 0x01) == 0x01)
+			bools[i] = NewPlcBOOL(((value.(uint64) >> uint8((64-1)-i)) & 0x01) == 0x01)
 		}
 	}
 

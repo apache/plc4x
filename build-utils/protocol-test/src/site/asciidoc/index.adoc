@@ -26,6 +26,10 @@
 Some times no matter what content is coming, the same type is used. In this case a `type` is used:
 
 [source]
+include::{mspecdir}/protocols/test/test.mspec[tag=SimpleBitTypeTest]
+
+
+[source]
 ----
 include::{mspecdir}/protocols/test/test.mspec[lines=24..40]
 ----

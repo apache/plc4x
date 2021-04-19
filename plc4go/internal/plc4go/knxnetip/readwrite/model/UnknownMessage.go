@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IUnknownMessage interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -86,7 +88,11 @@ func (m *UnknownMessage) GetTypeName() string {
 }
 
 func (m *UnknownMessage) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *UnknownMessage) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.UnknownData) > 0 {
@@ -100,18 +106,23 @@ func (m *UnknownMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	io.PullContext("UnknownMessage")
 
 	// Array field (unknownData)
+	io.PullContext("unknownData")
 	// Count array
 	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
 		}
 		unknownData[curItem] = _item
 	}
+	io.CloseContext("unknownData")
+
+	io.CloseContext("UnknownMessage")
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{
@@ -124,17 +135,21 @@ func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMes
 
 func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("UnknownMessage")
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
+			io.PushContext("unknownData")
 			for _, _element := range m.UnknownData {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
+			io.PopContext("unknownData")
 		}
 
+		io.PopContext("UnknownMessage")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -143,10 +158,12 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "unknownData":
@@ -164,7 +181,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -179,4 +196,29 @@ func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m UnknownMessage) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
+	boxName := "UnknownMessage"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Array Field (unknownData)
+		if m.UnknownData != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.UnknownData {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("UnknownData", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

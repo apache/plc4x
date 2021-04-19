@@ -129,7 +129,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
-        ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw(), testSuite.isLittleEndian());
+        ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
 
         MessageIO messageIO = getMessageIOForTestcase(testcase);
@@ -141,7 +141,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
                 System.out.println(xmlString);
                 throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
-            WriteBuffer writeBuffer = new WriteBuffer(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
             if (testcase.getRaw().length != data.length) {

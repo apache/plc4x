@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IApduDataExtLinkResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *ApduDataExtLinkResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtLinkResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtLinkResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *ApduDataExtLinkResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtLinkResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtLinkResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	io.PullContext("ApduDataExtLinkResponse")
+
+	io.CloseContext("ApduDataExtLinkResponse")
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtLinkResponse{
@@ -102,7 +111,9 @@ func ApduDataExtLinkResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtLinkResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ApduDataExtLinkResponse")
 
+		io.PopContext("ApduDataExtLinkResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *ApduDataExtLinkResponse) Serialize(io utils.WriteBuffer) error {
 func (m *ApduDataExtLinkResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *ApduDataExtLinkResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 
 func (m *ApduDataExtLinkResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m ApduDataExtLinkResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ApduDataExtLinkResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ApduDataExtLinkResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

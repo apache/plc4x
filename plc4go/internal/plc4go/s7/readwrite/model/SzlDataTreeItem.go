@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -44,6 +45,7 @@ type ISzlDataTreeItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) *SzlDataTreeItem {
@@ -68,6 +70,10 @@ func (m *SzlDataTreeItem) GetTypeName() string {
 }
 
 func (m *SzlDataTreeItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SzlDataTreeItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (itemIndex)
@@ -94,103 +100,114 @@ func (m *SzlDataTreeItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(io *utils.ReadBuffer) (*SzlDataTreeItem, error) {
+func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
+	io.PullContext("SzlDataTreeItem")
 
 	// Simple Field (itemIndex)
-	itemIndex, _itemIndexErr := io.ReadUint16(16)
+	itemIndex, _itemIndexErr := io.ReadUint16("itemIndex", 16)
 	if _itemIndexErr != nil {
 		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
 	}
 
 	// Array field (mlfb)
+	io.PullContext("mlfb")
 	// Count array
 	mlfb := make([]int8, uint16(20))
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'mlfb' field")
 		}
 		mlfb[curItem] = _item
 	}
+	io.CloseContext("mlfb")
 
 	// Simple Field (moduleTypeId)
-	moduleTypeId, _moduleTypeIdErr := io.ReadUint16(16)
+	moduleTypeId, _moduleTypeIdErr := io.ReadUint16("moduleTypeId", 16)
 	if _moduleTypeIdErr != nil {
 		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
-	ausbg, _ausbgErr := io.ReadUint16(16)
+	ausbg, _ausbgErr := io.ReadUint16("ausbg", 16)
 	if _ausbgErr != nil {
 		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
-	ausbe, _ausbeErr := io.ReadUint16(16)
+	ausbe, _ausbeErr := io.ReadUint16("ausbe", 16)
 	if _ausbeErr != nil {
 		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field")
 	}
+
+	io.CloseContext("SzlDataTreeItem")
 
 	// Create the instance
 	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
 }
 
 func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
+	io.PushContext("SzlDataTreeItem")
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.ItemIndex)
-	_itemIndexErr := io.WriteUint16(16, (itemIndex))
+	_itemIndexErr := io.WriteUint16("itemIndex", 16, (itemIndex))
 	if _itemIndexErr != nil {
 		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
 	}
 
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
+		io.PushContext("mlfb")
 		for _, _element := range m.Mlfb {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
 			}
 		}
+		io.PopContext("mlfb")
 	}
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId := uint16(m.ModuleTypeId)
-	_moduleTypeIdErr := io.WriteUint16(16, (moduleTypeId))
+	_moduleTypeIdErr := io.WriteUint16("moduleTypeId", 16, (moduleTypeId))
 	if _moduleTypeIdErr != nil {
 		return errors.Wrap(_moduleTypeIdErr, "Error serializing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
 	ausbg := uint16(m.Ausbg)
-	_ausbgErr := io.WriteUint16(16, (ausbg))
+	_ausbgErr := io.WriteUint16("ausbg", 16, (ausbg))
 	if _ausbgErr != nil {
 		return errors.Wrap(_ausbgErr, "Error serializing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
 	ausbe := uint16(m.Ausbe)
-	_ausbeErr := io.WriteUint16(16, (ausbe))
+	_ausbeErr := io.WriteUint16("ausbe", 16, (ausbe))
 	if _ausbeErr != nil {
 		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
 	}
 
+	io.PopContext("SzlDataTreeItem")
 	return nil
 }
 
 func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "itemIndex":
@@ -261,4 +278,38 @@ func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m SzlDataTreeItem) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
+	boxName := "SzlDataTreeItem"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ItemIndex", m.ItemIndex, -1))
+	// Array Field (mlfb)
+	if m.Mlfb != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Mlfb {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Mlfb", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ModuleTypeId", m.ModuleTypeId, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Ausbg", m.Ausbg, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Ausbe", m.Ausbe, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

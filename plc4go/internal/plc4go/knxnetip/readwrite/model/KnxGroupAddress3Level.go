@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IKnxGroupAddress3Level interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *KnxGroupAddress3Level) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress3Level) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddress3Level) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -106,25 +112,28 @@ func (m *KnxGroupAddress3Level) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddress3LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddress3LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
+	io.PullContext("KnxGroupAddress3Level")
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(5)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := io.ReadUint8(3)
+	middleGroup, _middleGroupErr := io.ReadUint8("middleGroup", 3)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint8(8)
+	subGroup, _subGroupErr := io.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
+
+	io.CloseContext("KnxGroupAddress3Level")
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress3Level{
@@ -139,28 +148,30 @@ func KnxGroupAddress3LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) 
 
 func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxGroupAddress3Level")
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
-		_mainGroupErr := io.WriteUint8(5, (mainGroup))
+		_mainGroupErr := io.WriteUint8("mainGroup", 5, (mainGroup))
 		if _mainGroupErr != nil {
 			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (middleGroup)
 		middleGroup := uint8(m.MiddleGroup)
-		_middleGroupErr := io.WriteUint8(3, (middleGroup))
+		_middleGroupErr := io.WriteUint8("middleGroup", 3, (middleGroup))
 		if _middleGroupErr != nil {
 			return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint8(m.SubGroup)
-		_subGroupErr := io.WriteUint8(8, (subGroup))
+		_subGroupErr := io.WriteUint8("subGroup", 8, (subGroup))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
+		io.PopContext("KnxGroupAddress3Level")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -169,10 +180,12 @@ func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 func (m *KnxGroupAddress3Level) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "mainGroup":
@@ -197,7 +210,7 @@ func (m *KnxGroupAddress3Level) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -216,4 +229,29 @@ func (m *KnxGroupAddress3Level) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddress3Level) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m KnxGroupAddress3Level) Box(name string, width int) utils.AsciiBox {
+	boxName := "KnxGroupAddress3Level"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

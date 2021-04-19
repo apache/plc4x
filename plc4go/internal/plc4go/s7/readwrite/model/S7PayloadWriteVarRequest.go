@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IS7PayloadWriteVarRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,12 +90,17 @@ func (m *S7PayloadWriteVarRequest) GetTypeName() string {
 }
 
 func (m *S7PayloadWriteVarRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7PayloadWriteVarRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -104,9 +111,11 @@ func (m *S7PayloadWriteVarRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadWriteVarRequestParse(io *utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
+	io.PullContext("S7PayloadWriteVarRequest")
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
 	items := make([]*S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
@@ -117,6 +126,9 @@ func S7PayloadWriteVarRequestParse(io *utils.ReadBuffer, parameter *S7Parameter)
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
+
+	io.CloseContext("S7PayloadWriteVarRequest")
 
 	// Create a partially initialized instance
 	_child := &S7PayloadWriteVarRequest{
@@ -129,9 +141,11 @@ func S7PayloadWriteVarRequestParse(io *utils.ReadBuffer, parameter *S7Parameter)
 
 func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7PayloadWriteVarRequest")
 
 		// Array Field (items)
 		if m.Items != nil {
+			io.PushContext("items")
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -142,8 +156,10 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
+			io.PopContext("items")
 		}
 
+		io.PopContext("S7PayloadWriteVarRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -152,10 +168,12 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
@@ -168,7 +186,7 @@ func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -180,11 +198,38 @@ func (m *S7PayloadWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartEle
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m S7PayloadWriteVarRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7PayloadWriteVarRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7PayloadWriteVarRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

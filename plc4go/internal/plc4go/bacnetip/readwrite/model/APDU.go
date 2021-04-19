@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IAPDU interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IAPDUParent interface {
@@ -53,6 +55,7 @@ type IAPDUChild interface {
 	InitializeParent(parent *APDU)
 	GetTypeName() string
 	IAPDU
+	utils.AsciiBoxer
 }
 
 func NewAPDU() *APDU {
@@ -77,13 +80,17 @@ func (m *APDU) GetTypeName() string {
 }
 
 func (m *APDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *APDU) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *APDU) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (apduType)
 	lengthInBits += 4
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *APDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+	io.PullContext("APDU")
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType, _apduTypeErr := io.ReadUint8(4)
+	apduType, _apduTypeErr := io.ReadUint8("apduType", 4)
 	if _apduTypeErr != nil {
 		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field")
 	}
@@ -104,26 +112,31 @@ func APDUParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	var _parent *APDU
 	var typeSwitchError error
 	switch {
-	case apduType == 0x0:
+	case apduType == 0x0: // APDUConfirmedRequest
 		_parent, typeSwitchError = APDUConfirmedRequestParse(io, apduLength)
-	case apduType == 0x1:
+	case apduType == 0x1: // APDUUnconfirmedRequest
 		_parent, typeSwitchError = APDUUnconfirmedRequestParse(io, apduLength)
-	case apduType == 0x2:
+	case apduType == 0x2: // APDUSimpleAck
 		_parent, typeSwitchError = APDUSimpleAckParse(io)
-	case apduType == 0x3:
+	case apduType == 0x3: // APDUComplexAck
 		_parent, typeSwitchError = APDUComplexAckParse(io)
-	case apduType == 0x4:
+	case apduType == 0x4: // APDUSegmentAck
 		_parent, typeSwitchError = APDUSegmentAckParse(io)
-	case apduType == 0x5:
+	case apduType == 0x5: // APDUError
 		_parent, typeSwitchError = APDUErrorParse(io)
-	case apduType == 0x6:
+	case apduType == 0x6: // APDUReject
 		_parent, typeSwitchError = APDURejectParse(io)
-	case apduType == 0x7:
+	case apduType == 0x7: // APDUAbort
 		_parent, typeSwitchError = APDUAbortParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("APDU")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -135,10 +148,12 @@ func (m *APDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *APDU) SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChildFunction func() error) error {
+	io.PushContext("APDU")
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType := uint8(child.ApduType())
-	_apduTypeErr := io.WriteUint8(4, (apduType))
+	_apduTypeErr := io.WriteUint8("apduType", 4, (apduType))
+
 	if _apduTypeErr != nil {
 		return errors.Wrap(_apduTypeErr, "Error serializing 'apduType' field")
 	}
@@ -149,26 +164,41 @@ func (m *APDU) SerializeParent(io utils.WriteBuffer, child IAPDU, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("APDU")
 	return nil
 }
 
 func (m *APDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of APDU")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
 					var dt *APDUConfirmedRequest
 					if m.Child != nil {
@@ -290,4 +320,27 @@ func (m *APDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDU) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *APDU) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *APDU) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "APDU"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (apduType) (Used as input to a switch field)
+	apduType := uint8(m.Child.ApduType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ApduType", apduType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

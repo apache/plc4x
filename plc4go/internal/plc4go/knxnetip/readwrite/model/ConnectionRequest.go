@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IConnectionRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,7 +90,11 @@ func (m *ConnectionRequest) GetTypeName() string {
 }
 
 func (m *ConnectionRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
@@ -106,7 +112,8 @@ func (m *ConnectionRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	io.PullContext("ConnectionRequest")
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
@@ -126,6 +133,8 @@ func ConnectionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
 
+	io.CloseContext("ConnectionRequest")
+
 	// Create a partially initialized instance
 	_child := &ConnectionRequest{
 		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
@@ -139,6 +148,7 @@ func ConnectionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionRequest")
 
 		// Simple Field (hpaiDiscoveryEndpoint)
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
@@ -158,6 +168,7 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}
 
+		io.PopContext("ConnectionRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -166,27 +177,32 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiDiscoveryEndpoint":
-				var data *HPAIDiscoveryEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDiscoveryEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDiscoveryEndpoint = data
+				m.HpaiDiscoveryEndpoint = &data
 			case "hpaiDataEndpoint":
-				var data *HPAIDataEndpoint
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data HPAIDataEndpoint
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.HpaiDataEndpoint = data
+				m.HpaiDataEndpoint = &data
 			case "connectionRequestInformation":
 				var dt *ConnectionRequestInformation
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ConnectionRequestInformation = dt
@@ -194,7 +210,7 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -213,4 +229,26 @@ func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "ConnectionRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiDiscoveryEndpoint.Box("hpaiDiscoveryEndpoint", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiDataEndpoint.Box("hpaiDataEndpoint", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.ConnectionRequestInformation.Box("connectionRequestInformation", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

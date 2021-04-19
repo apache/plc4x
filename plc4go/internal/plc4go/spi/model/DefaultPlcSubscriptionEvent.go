@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -26,22 +27,22 @@ import (
 )
 
 type DefaultPlcSubscriptionEvent struct {
-	fields        map[string]model.PlcField
-	types         map[string]SubscriptionType
-	intervals     map[string]time.Duration
-	responseCodes map[string]model.PlcResponseCode
-	values        map[string]values.PlcValue
+	DefaultResponse
+	fields    map[string]model.PlcField
+	types     map[string]SubscriptionType
+	intervals map[string]time.Duration
+	values    map[string]values.PlcValue
 }
 
 func NewDefaultPlcSubscriptionEvent(fields map[string]model.PlcField, types map[string]SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]model.PlcResponseCode,
 	values map[string]values.PlcValue) DefaultPlcSubscriptionEvent {
 	return DefaultPlcSubscriptionEvent{
-		fields:        fields,
-		types:         types,
-		intervals:     intervals,
-		responseCodes: responseCodes,
-		values:        values,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		fields:          fields,
+		types:           types,
+		intervals:       intervals,
+		values:          values,
 	}
 }
 
@@ -63,10 +64,6 @@ func (m DefaultPlcSubscriptionEvent) GetType(name string) SubscriptionType {
 
 func (m DefaultPlcSubscriptionEvent) GetInterval(name string) time.Duration {
 	return m.intervals[name]
-}
-
-func (m DefaultPlcSubscriptionEvent) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcSubscriptionEvent) GetAddress(name string) string {

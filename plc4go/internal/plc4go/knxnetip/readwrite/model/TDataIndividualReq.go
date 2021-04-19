@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type ITDataIndividualReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *TDataIndividualReq) GetTypeName() string {
 }
 
 func (m *TDataIndividualReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TDataIndividualReq) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *TDataIndividualReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataIndividualReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("TDataIndividualReq")
+
+	io.CloseContext("TDataIndividualReq")
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualReq{
@@ -102,7 +111,9 @@ func TDataIndividualReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataIndividualReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("TDataIndividualReq")
 
+		io.PopContext("TDataIndividualReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *TDataIndividualReq) Serialize(io utils.WriteBuffer) error {
 func (m *TDataIndividualReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *TDataIndividualReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 
 func (m *TDataIndividualReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m TDataIndividualReq) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m TDataIndividualReq) Box(name string, width int) utils.AsciiBox {
+	boxName := "TDataIndividualReq"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

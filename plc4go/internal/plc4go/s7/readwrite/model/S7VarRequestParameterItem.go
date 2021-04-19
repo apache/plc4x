@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IS7VarRequestParameterItem interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IS7VarRequestParameterItemParent interface {
@@ -53,6 +55,7 @@ type IS7VarRequestParameterItemChild interface {
 	InitializeParent(parent *S7VarRequestParameterItem)
 	GetTypeName() string
 	IS7VarRequestParameterItem
+	utils.AsciiBoxer
 }
 
 func NewS7VarRequestParameterItem() *S7VarRequestParameterItem {
@@ -77,13 +80,17 @@ func (m *S7VarRequestParameterItem) GetTypeName() string {
 }
 
 func (m *S7VarRequestParameterItem) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *S7VarRequestParameterItem) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7VarRequestParameterItem) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
+	io.PullContext("S7VarRequestParameterItem")
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := io.ReadUint8(8)
+	itemType, _itemTypeErr := io.ReadUint8("itemType", 8)
 	if _itemTypeErr != nil {
 		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field")
 	}
@@ -104,12 +112,17 @@ func S7VarRequestParameterItemParse(io *utils.ReadBuffer) (*S7VarRequestParamete
 	var _parent *S7VarRequestParameterItem
 	var typeSwitchError error
 	switch {
-	case itemType == 0x12:
+	case itemType == 0x12: // S7VarRequestParameterItemAddress
 		_parent, typeSwitchError = S7VarRequestParameterItemAddressParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("S7VarRequestParameterItem")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -121,10 +134,12 @@ func (m *S7VarRequestParameterItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child IS7VarRequestParameterItem, serializeChildFunction func() error) error {
+	io.PushContext("S7VarRequestParameterItem")
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
-	_itemTypeErr := io.WriteUint8(8, (itemType))
+	_itemTypeErr := io.WriteUint8("itemType", 8, (itemType))
+
 	if _itemTypeErr != nil {
 		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")
 	}
@@ -135,26 +150,41 @@ func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("S7VarRequestParameterItem")
 	return nil
 }
 
 func (m *S7VarRequestParameterItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of S7VarRequestParameterItem")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress":
 					var dt *S7VarRequestParameterItemAddress
 					if m.Child != nil {
@@ -192,4 +222,27 @@ func (m *S7VarRequestParameterItem) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m S7VarRequestParameterItem) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *S7VarRequestParameterItem) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *S7VarRequestParameterItem) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "S7VarRequestParameterItem"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (itemType) (Used as input to a switch field)
+	itemType := uint8(m.Child.ItemType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ItemType", itemType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

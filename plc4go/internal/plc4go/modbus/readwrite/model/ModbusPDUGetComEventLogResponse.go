@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -44,6 +45,7 @@ type IModbusPDUGetComEventLogResponse interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -100,7 +102,11 @@ func (m *ModbusPDUGetComEventLogResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUGetComEventLogResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -126,42 +132,48 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUGetComEventLogResponse")
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
+	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Simple Field (status)
-	status, _statusErr := io.ReadUint16(16)
+	status, _statusErr := io.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
 
 	// Simple Field (eventCount)
-	eventCount, _eventCountErr := io.ReadUint16(16)
+	eventCount, _eventCountErr := io.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
 
 	// Simple Field (messageCount)
-	messageCount, _messageCountErr := io.ReadUint16(16)
+	messageCount, _messageCountErr := io.ReadUint16("messageCount", 16)
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
 
 	// Array field (events)
+	io.PullContext("events")
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'events' field")
 		}
 		events[curItem] = _item
 	}
+	io.CloseContext("events")
+
+	io.CloseContext("ModbusPDUGetComEventLogResponse")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogResponse{
@@ -177,45 +189,49 @@ func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (*ModbusPDU, err
 
 func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUGetComEventLogResponse")
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Simple Field (status)
 		status := uint16(m.Status)
-		_statusErr := io.WriteUint16(16, (status))
+		_statusErr := io.WriteUint16("status", 16, (status))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.EventCount)
-		_eventCountErr := io.WriteUint16(16, (eventCount))
+		_eventCountErr := io.WriteUint16("eventCount", 16, (eventCount))
 		if _eventCountErr != nil {
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.MessageCount)
-		_messageCountErr := io.WriteUint16(16, (messageCount))
+		_messageCountErr := io.WriteUint16("messageCount", 16, (messageCount))
 		if _messageCountErr != nil {
 			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
 		}
 
 		// Array Field (events)
 		if m.Events != nil {
+			io.PushContext("events")
 			for _, _element := range m.Events {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'events' field")
 				}
 			}
+			io.PopContext("events")
 		}
 
+		io.PopContext("ModbusPDUGetComEventLogResponse")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -224,10 +240,12 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "status":
@@ -263,7 +281,7 @@ func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -287,4 +305,42 @@ func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.S
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUGetComEventLogResponse) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUGetComEventLogResponse"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Status", m.Status, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("EventCount", m.EventCount, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MessageCount", m.MessageCount, -1))
+		// Array Field (events)
+		if m.Events != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Events {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Events", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

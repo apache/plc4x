@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IKnxNetObjectServer interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *KnxNetObjectServer) GetTypeName() string {
 }
 
 func (m *KnxNetObjectServer) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetObjectServer) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -96,13 +102,16 @@ func (m *KnxNetObjectServer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(io *utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetObjectServerParse(io utils.ReadBuffer) (*ServiceId, error) {
+	io.PullContext("KnxNetObjectServer")
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
+
+	io.CloseContext("KnxNetObjectServer")
 
 	// Create a partially initialized instance
 	_child := &KnxNetObjectServer{
@@ -115,14 +124,16 @@ func KnxNetObjectServerParse(io *utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("KnxNetObjectServer")
 
 		// Simple Field (version)
 		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8("version", 8, (version))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		io.PopContext("KnxNetObjectServer")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -131,10 +142,12 @@ func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "version":
@@ -147,7 +160,7 @@ func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,4 +173,23 @@ func (m *KnxNetObjectServer) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 		return err
 	}
 	return nil
+}
+
+func (m KnxNetObjectServer) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m KnxNetObjectServer) Box(name string, width int) utils.AsciiBox {
+	boxName := "KnxNetObjectServer"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Version", m.Version, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

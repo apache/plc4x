@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type ICEMIAdditionalInformation interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type ICEMIAdditionalInformationParent interface {
@@ -53,6 +55,7 @@ type ICEMIAdditionalInformationChild interface {
 	InitializeParent(parent *CEMIAdditionalInformation)
 	GetTypeName() string
 	ICEMIAdditionalInformation
+	utils.AsciiBoxer
 }
 
 func NewCEMIAdditionalInformation() *CEMIAdditionalInformation {
@@ -77,13 +80,17 @@ func (m *CEMIAdditionalInformation) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformation) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *CEMIAdditionalInformation) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *CEMIAdditionalInformation) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (additionalInformationType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	io.PullContext("CEMIAdditionalInformation")
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
+	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8("additionalInformationType", 8)
 	if _additionalInformationTypeErr != nil {
 		return nil, errors.Wrap(_additionalInformationTypeErr, "Error parsing 'additionalInformationType' field")
 	}
@@ -104,14 +112,19 @@ func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (*CEMIAdditionalInform
 	var _parent *CEMIAdditionalInformation
 	var typeSwitchError error
 	switch {
-	case additionalInformationType == 0x03:
+	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
 		_parent, typeSwitchError = CEMIAdditionalInformationBusmonitorInfoParse(io)
-	case additionalInformationType == 0x04:
+	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
 		_parent, typeSwitchError = CEMIAdditionalInformationRelativeTimestampParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("CEMIAdditionalInformation")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -123,10 +136,12 @@ func (m *CEMIAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error {
+	io.PushContext("CEMIAdditionalInformation")
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.AdditionalInformationType())
-	_additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
+	_additionalInformationTypeErr := io.WriteUint8("additionalInformationType", 8, (additionalInformationType))
+
 	if _additionalInformationTypeErr != nil {
 		return errors.Wrap(_additionalInformationTypeErr, "Error serializing 'additionalInformationType' field")
 	}
@@ -137,26 +152,41 @@ func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("CEMIAdditionalInformation")
 	return nil
 }
 
 func (m *CEMIAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of CEMIAdditionalInformation")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
 					var dt *CEMIAdditionalInformationBusmonitorInfo
 					if m.Child != nil {
@@ -206,4 +236,27 @@ func (m *CEMIAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartEl
 		return err
 	}
 	return nil
+}
+
+func (m CEMIAdditionalInformation) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *CEMIAdditionalInformation) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *CEMIAdditionalInformation) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "CEMIAdditionalInformation"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
+	additionalInformationType := uint8(m.Child.AdditionalInformationType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AdditionalInformationType", additionalInformationType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

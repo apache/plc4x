@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBACnetErrorGetAlarmSummary interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BACnetErrorGetAlarmSummary) GetTypeName() string {
 }
 
 func (m *BACnetErrorGetAlarmSummary) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetErrorGetAlarmSummary) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BACnetErrorGetAlarmSummary) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetAlarmSummaryParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
+	io.PullContext("BACnetErrorGetAlarmSummary")
+
+	io.CloseContext("BACnetErrorGetAlarmSummary")
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetAlarmSummary{
@@ -102,7 +111,9 @@ func BACnetErrorGetAlarmSummaryParse(io *utils.ReadBuffer) (*BACnetError, error)
 
 func (m *BACnetErrorGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BACnetErrorGetAlarmSummary")
 
+		io.PopContext("BACnetErrorGetAlarmSummary")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BACnetErrorGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 func (m *BACnetErrorGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BACnetErrorGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.Star
 
 func (m *BACnetErrorGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BACnetErrorGetAlarmSummary) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BACnetErrorGetAlarmSummary) Box(name string, width int) utils.AsciiBox {
+	boxName := "BACnetErrorGetAlarmSummary"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

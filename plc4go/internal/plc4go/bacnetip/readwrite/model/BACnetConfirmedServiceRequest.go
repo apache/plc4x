@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IBACnetConfirmedServiceRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IBACnetConfirmedServiceRequestParent interface {
@@ -53,6 +55,7 @@ type IBACnetConfirmedServiceRequestChild interface {
 	InitializeParent(parent *BACnetConfirmedServiceRequest)
 	GetTypeName() string
 	IBACnetConfirmedServiceRequest
+	utils.AsciiBoxer
 }
 
 func NewBACnetConfirmedServiceRequest() *BACnetConfirmedServiceRequest {
@@ -77,13 +80,17 @@ func (m *BACnetConfirmedServiceRequest) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
+func (m *BACnetConfirmedServiceRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetConfirmedServiceRequest) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,11 @@ func (m *BACnetConfirmedServiceRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestParse(io utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
+	io.PullContext("BACnetConfirmedServiceRequest")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -104,72 +112,77 @@ func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (*BACn
 	var _parent *BACnetConfirmedServiceRequest
 	var typeSwitchError error
 	switch {
-	case serviceChoice == 0x00:
+	case serviceChoice == 0x00: // BACnetConfirmedServiceRequestAcknowledgeAlarm
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io)
-	case serviceChoice == 0x01:
+	case serviceChoice == 0x01: // BACnetConfirmedServiceRequestConfirmedCOVNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io, len)
-	case serviceChoice == 0x02:
+	case serviceChoice == 0x02: // BACnetConfirmedServiceRequestConfirmedEventNotification
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io)
-	case serviceChoice == 0x04:
+	case serviceChoice == 0x04: // BACnetConfirmedServiceRequestGetEnrollmentSummary
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io)
-	case serviceChoice == 0x05:
+	case serviceChoice == 0x05: // BACnetConfirmedServiceRequestSubscribeCOV
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParse(io)
-	case serviceChoice == 0x06:
+	case serviceChoice == 0x06: // BACnetConfirmedServiceRequestAtomicReadFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParse(io)
-	case serviceChoice == 0x07:
+	case serviceChoice == 0x07: // BACnetConfirmedServiceRequestAtomicWriteFile
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAtomicWriteFileParse(io)
-	case serviceChoice == 0x08:
+	case serviceChoice == 0x08: // BACnetConfirmedServiceRequestAddListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestAddListElementParse(io)
-	case serviceChoice == 0x09:
+	case serviceChoice == 0x09: // BACnetConfirmedServiceRequestRemoveListElement
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemoveListElementParse(io)
-	case serviceChoice == 0x0A:
+	case serviceChoice == 0x0A: // BACnetConfirmedServiceRequestCreateObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestCreateObjectParse(io)
-	case serviceChoice == 0x0B:
+	case serviceChoice == 0x0B: // BACnetConfirmedServiceRequestDeleteObject
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeleteObjectParse(io)
-	case serviceChoice == 0x0C:
+	case serviceChoice == 0x0C: // BACnetConfirmedServiceRequestReadProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParse(io)
-	case serviceChoice == 0x0E:
+	case serviceChoice == 0x0E: // BACnetConfirmedServiceRequestReadPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(io)
-	case serviceChoice == 0x0F:
+	case serviceChoice == 0x0F: // BACnetConfirmedServiceRequestWriteProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParse(io, len)
-	case serviceChoice == 0x10:
+	case serviceChoice == 0x10: // BACnetConfirmedServiceRequestWritePropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyMultipleParse(io)
-	case serviceChoice == 0x11:
+	case serviceChoice == 0x11: // BACnetConfirmedServiceRequestDeviceCommunicationControl
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io)
-	case serviceChoice == 0x12:
+	case serviceChoice == 0x12: // BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io)
-	case serviceChoice == 0x13:
+	case serviceChoice == 0x13: // BACnetConfirmedServiceRequestConfirmedTextMessage
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedTextMessageParse(io)
-	case serviceChoice == 0x14:
+	case serviceChoice == 0x14: // BACnetConfirmedServiceRequestReinitializeDevice
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReinitializeDeviceParse(io)
-	case serviceChoice == 0x15:
+	case serviceChoice == 0x15: // BACnetConfirmedServiceRequestVTOpen
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTOpenParse(io)
-	case serviceChoice == 0x16:
+	case serviceChoice == 0x16: // BACnetConfirmedServiceRequestVTClose
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTCloseParse(io)
-	case serviceChoice == 0x17:
+	case serviceChoice == 0x17: // BACnetConfirmedServiceRequestVTData
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestVTDataParse(io)
-	case serviceChoice == 0x18:
+	case serviceChoice == 0x18: // BACnetConfirmedServiceRequestRemovedAuthenticate
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedAuthenticateParse(io)
-	case serviceChoice == 0x19:
+	case serviceChoice == 0x19: // BACnetConfirmedServiceRequestRemovedRequestKey
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedRequestKeyParse(io)
-	case serviceChoice == 0x0D:
+	case serviceChoice == 0x0D: // BACnetConfirmedServiceRequestRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io)
-	case serviceChoice == 0x1A:
+	case serviceChoice == 0x1A: // BACnetConfirmedServiceRequestReadRange
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParse(io)
-	case serviceChoice == 0x1B:
+	case serviceChoice == 0x1B: // BACnetConfirmedServiceRequestLifeSafetyOperation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParse(io)
-	case serviceChoice == 0x1C:
+	case serviceChoice == 0x1C: // BACnetConfirmedServiceRequestSubscribeCOVProperty
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io)
-	case serviceChoice == 0x1D:
+	case serviceChoice == 0x1D: // BACnetConfirmedServiceRequestGetEventInformation
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParse(io)
-	case serviceChoice == 0x1E:
+	case serviceChoice == 0x1E: // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io)
-	case serviceChoice == 0x1F:
+	case serviceChoice == 0x1F: // BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 		_parent, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("BACnetConfirmedServiceRequest")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -181,10 +194,12 @@ func (m *BACnetConfirmedServiceRequest) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetConfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, child IBACnetConfirmedServiceRequest, serializeChildFunction func() error) error {
+	io.PushContext("BACnetConfirmedServiceRequest")
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
-	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8("serviceChoice", 8, (serviceChoice))
+
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 	}
@@ -195,26 +210,230 @@ func (m *BACnetConfirmedServiceRequest) SerializeParent(io utils.WriteBuffer, ch
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("BACnetConfirmedServiceRequest")
 	return nil
 }
 
 func (m *BACnetConfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetConfirmedServiceRequestAcknowledgeAlarm needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAcknowledgeAlarm{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedEventNotification needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedEventNotification":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedEventNotification{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestAddListElement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAddListElement":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestAddListElement{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemoveListElement needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemoveListElement":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemoveListElement{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestDeleteObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeleteObject":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestDeleteObject{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestWritePropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWritePropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestWritePropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestDeviceCommunicationControl needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeviceCommunicationControl":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestDeviceCommunicationControl{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedTextMessage needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedTextMessage":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedTextMessage{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReinitializeDevice needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReinitializeDevice":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReinitializeDevice{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTClose needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTClose":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTClose{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTData":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestVTData{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedRequestKey needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedRequestKey":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedRequestKey{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestLifeSafetyOperation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestLifeSafetyOperation":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestLifeSafetyOperation{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestSubscribeCOVProperty needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVProperty":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestSubscribeCOVProperty{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of BACnetConfirmedServiceRequest")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
 					var dt *BACnetConfirmedServiceRequestAcknowledgeAlarm
 					if m.Child != nil {
@@ -612,4 +831,27 @@ func (m *BACnetConfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m BACnetConfirmedServiceRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *BACnetConfirmedServiceRequest) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *BACnetConfirmedServiceRequest) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BACnetConfirmedServiceRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(m.Child.ServiceChoice())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ServiceChoice", serviceChoice, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

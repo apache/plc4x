@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type ICOTPParameterCallingTsap interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *COTPParameterCallingTsap) GetTypeName() string {
 }
 
 func (m *COTPParameterCallingTsap) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterCallingTsap) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -96,13 +102,16 @@ func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	io.PullContext("COTPParameterCallingTsap")
 
 	// Simple Field (tsapId)
-	tsapId, _tsapIdErr := io.ReadUint16(16)
+	tsapId, _tsapIdErr := io.ReadUint16("tsapId", 16)
 	if _tsapIdErr != nil {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
+
+	io.CloseContext("COTPParameterCallingTsap")
 
 	// Create a partially initialized instance
 	_child := &COTPParameterCallingTsap{
@@ -115,14 +124,16 @@ func COTPParameterCallingTsapParse(io *utils.ReadBuffer) (*COTPParameter, error)
 
 func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("COTPParameterCallingTsap")
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
-		_tsapIdErr := io.WriteUint16(16, (tsapId))
+		_tsapIdErr := io.WriteUint16("tsapId", 16, (tsapId))
 		if _tsapIdErr != nil {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
+		io.PopContext("COTPParameterCallingTsap")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -131,10 +142,12 @@ func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 func (m *COTPParameterCallingTsap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tsapId":
@@ -147,7 +160,7 @@ func (m *COTPParameterCallingTsap) UnmarshalXML(d *xml.Decoder, start xml.StartE
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,4 +173,23 @@ func (m *COTPParameterCallingTsap) MarshalXML(e *xml.Encoder, start xml.StartEle
 		return err
 	}
 	return nil
+}
+
+func (m COTPParameterCallingTsap) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m COTPParameterCallingTsap) Box(name string, width int) utils.AsciiBox {
+	boxName := "COTPParameterCallingTsap"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

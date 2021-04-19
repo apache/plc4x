@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IS7ParameterWriteVarRequest interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -88,15 +90,20 @@ func (m *S7ParameterWriteVarRequest) GetTypeName() string {
 }
 
 func (m *S7ParameterWriteVarRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterWriteVarRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
 
 	// Array field
 	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.Items {
+			last := i == len(m.Items)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -107,15 +114,18 @@ func (m *S7ParameterWriteVarRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterWriteVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	io.PullContext("S7ParameterWriteVarRequest")
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
+	_ = numItems
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
 	// Array field (items)
+	io.PullContext("items")
 	// Count array
 	items := make([]*S7VarRequestParameterItem, numItems)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
@@ -125,6 +135,9 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 		}
 		items[curItem] = _item
 	}
+	io.CloseContext("items")
+
+	io.CloseContext("S7ParameterWriteVarRequest")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterWriteVarRequest{
@@ -137,24 +150,28 @@ func S7ParameterWriteVarRequestParse(io *utils.ReadBuffer) (*S7Parameter, error)
 
 func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterWriteVarRequest")
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
 		// Array Field (items)
 		if m.Items != nil {
+			io.PushContext("items")
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
+			io.PopContext("items")
 		}
 
+		io.PopContext("S7ParameterWriteVarRequest")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -163,25 +180,35 @@ func (m *S7ParameterWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 func (m *S7ParameterWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
-				var _values []*S7VarRequestParameterItem
-				var dt *S7VarRequestParameterItem
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
+			arrayLoop:
+				for {
+					token, err = d.Token()
+					switch token.(type) {
+					case xml.StartElement:
+						tok := token.(xml.StartElement)
+						var dt *S7VarRequestParameterItem
+						if err := d.DecodeElement(&dt, &tok); err != nil {
+							return err
+						}
+						m.Items = append(m.Items, dt)
+					default:
+						break arrayLoop
+					}
 				}
-				_values = append(_values, dt)
-				m.Items = _values
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -193,11 +220,42 @@ func (m *S7ParameterWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-		return err
+	for _, arrayElement := range m.Items {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterWriteVarRequest) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7ParameterWriteVarRequest) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7ParameterWriteVarRequest"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (numItems)
+		numItems := uint8(uint8(len(m.Items)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumItems", numItems, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

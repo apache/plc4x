@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IMResetReq interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *MResetReq) GetTypeName() string {
 }
 
 func (m *MResetReq) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MResetReq) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *MResetReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MResetReqParse(io *utils.ReadBuffer) (*CEMI, error) {
+func MResetReqParse(io utils.ReadBuffer) (*CEMI, error) {
+	io.PullContext("MResetReq")
+
+	io.CloseContext("MResetReq")
 
 	// Create a partially initialized instance
 	_child := &MResetReq{
@@ -102,7 +111,9 @@ func MResetReqParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MResetReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("MResetReq")
 
+		io.PopContext("MResetReq")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *MResetReq) Serialize(io utils.WriteBuffer) error {
 func (m *MResetReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *MResetReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 func (m *MResetReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m MResetReq) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m MResetReq) Box(name string, width int) utils.AsciiBox {
+	boxName := "MResetReq"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

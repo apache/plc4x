@@ -16,13 +16,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package utils
 
 // InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a uint16, b uint16) uint16 {
+func InlineIf(test bool, a func() uint16, b func() uint16) uint16 {
 	if test {
-		return a
+		return a()
 	} else {
-		return b
+		return b()
 	}
 }

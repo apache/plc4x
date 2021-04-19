@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -37,6 +38,7 @@ type IBVLCReadForeignDeviceTable interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -81,7 +83,11 @@ func (m *BVLCReadForeignDeviceTable) GetTypeName() string {
 }
 
 func (m *BVLCReadForeignDeviceTable) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCReadForeignDeviceTable) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -90,7 +96,10 @@ func (m *BVLCReadForeignDeviceTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCReadForeignDeviceTableParse(io utils.ReadBuffer) (*BVLC, error) {
+	io.PullContext("BVLCReadForeignDeviceTable")
+
+	io.CloseContext("BVLCReadForeignDeviceTable")
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTable{
@@ -102,7 +111,9 @@ func BVLCReadForeignDeviceTableParse(io *utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCReadForeignDeviceTable) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("BVLCReadForeignDeviceTable")
 
+		io.PopContext("BVLCReadForeignDeviceTable")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -111,17 +122,19 @@ func (m *BVLCReadForeignDeviceTable) Serialize(io utils.WriteBuffer) error {
 func (m *BVLCReadForeignDeviceTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -131,4 +144,20 @@ func (m *BVLCReadForeignDeviceTable) UnmarshalXML(d *xml.Decoder, start xml.Star
 
 func (m *BVLCReadForeignDeviceTable) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
+}
+
+func (m BVLCReadForeignDeviceTable) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m BVLCReadForeignDeviceTable) Box(name string, width int) utils.AsciiBox {
+	boxName := "BVLCReadForeignDeviceTable"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

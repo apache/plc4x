@@ -16,12 +16,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package testutils
 
 import (
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"os"
 )
 
@@ -42,11 +44,25 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 		return errors.Wrap(err, "Error comparing xml trees")
 	}
 	if diff != nil {
+		cleanDiff := make([]xdiff.Delta, 0)
+		for _, delta := range diff {
+			if delta.Object.Value == nil && delta.Subject.Value == nil {
+				log.Warn().Msgf("%v seems to be an empty element", delta)
+				continue
+			}
+			cleanDiff = append(cleanDiff, delta)
+		}
+
 		enc := xdiff.NewTextEncoder(os.Stdout)
 		if err := enc.Encode(diff); err != nil {
 			return errors.Wrap(err, "Error outputting results")
 		}
-		return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
+		if len(cleanDiff) <= 0 {
+			log.Warn().Msg("We only found non relevant changes")
+			return nil
+		} else {
+			return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
+		}
 	}
 	return nil
 }

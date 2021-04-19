@@ -56,7 +56,7 @@ else ()
     message(FATAL_ERROR "Given BUILD_PHASE unknown. Known values are 'compile' and 'test-compile'")
 endif ()
 
-set(DEBUG_OUTPUT OFF CACHE BOOL "Enable outputting of debug information")
+set(DEBUG_OUTPUT ON CACHE BOOL "Enable outputting of debug information")
 if (DEBUG_OUTPUT)
     # Trace all CMAKE Variables
     get_cmake_property(_variableNames VARIABLES)

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IKnxGroupAddress interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 type IKnxGroupAddressParent interface {
@@ -53,6 +55,7 @@ type IKnxGroupAddressChild interface {
 	InitializeParent(parent *KnxGroupAddress)
 	GetTypeName() string
 	IKnxGroupAddress
+	utils.AsciiBoxer
 }
 
 func NewKnxGroupAddress() *KnxGroupAddress {
@@ -77,10 +80,15 @@ func (m *KnxGroupAddress) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *KnxGroupAddress) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *KnxGroupAddress) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -89,22 +97,28 @@ func (m *KnxGroupAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+	io.PullContext("KnxGroupAddress")
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress
 	var typeSwitchError error
 	switch {
-	case numLevels == 1:
+	case numLevels == 1: // KnxGroupAddressFreeLevel
 		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(io)
-	case numLevels == 2:
+	case numLevels == 2: // KnxGroupAddress2Level
 		_parent, typeSwitchError = KnxGroupAddress2LevelParse(io)
-	case numLevels == 3:
+	case numLevels == 3: // KnxGroupAddress3Level
 		_parent, typeSwitchError = KnxGroupAddress3LevelParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
+
+	io.CloseContext("KnxGroupAddress")
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -116,6 +130,7 @@ func (m *KnxGroupAddress) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error {
+	io.PushContext("KnxGroupAddress")
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -123,26 +138,41 @@ func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupA
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	io.PopContext("KnxGroupAddress")
 	return nil
 }
 
 func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
-				switch start.Attr[0].Value {
+				attr := start.Attr
+				if attr == nil || len(attr) <= 0 {
+					// TODO: workaround for bug with nested lists
+					attr = tok.Attr
+				}
+				if attr == nil || len(attr) <= 0 {
+					panic("Couldn't determine class type for childs of KnxGroupAddress")
+				}
+				switch attr[0].Value {
 				case "org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel":
 					var dt *KnxGroupAddressFreeLevel
 					if m.Child != nil {
@@ -204,4 +234,23 @@ func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 	return nil
+}
+
+func (m KnxGroupAddress) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m *KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+func (m *KnxGroupAddress) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "KnxGroupAddress"
+	if name != "" {
+		boxName += "/" + name
+	}
+	boxes := make([]utils.AsciiBox, 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -41,6 +42,7 @@ type IAPDUReject interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,7 +89,11 @@ func (m *APDUReject) GetTypeName() string {
 }
 
 func (m *APDUReject) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUReject) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -105,11 +111,12 @@ func (m *APDUReject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
+	io.PullContext("APDUReject")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -122,16 +129,18 @@ func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
 	// Simple Field (rejectReason)
-	rejectReason, _rejectReasonErr := io.ReadUint8(8)
+	rejectReason, _rejectReasonErr := io.ReadUint8("rejectReason", 8)
 	if _rejectReasonErr != nil {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
+
+	io.CloseContext("APDUReject")
 
 	// Create a partially initialized instance
 	_child := &APDUReject{
@@ -145,10 +154,11 @@ func APDURejectParse(io *utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("APDUReject")
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x00))
+			_err := io.WriteUint8("reserved", 4, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -156,18 +166,19 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (rejectReason)
 		rejectReason := uint8(m.RejectReason)
-		_rejectReasonErr := io.WriteUint8(8, (rejectReason))
+		_rejectReasonErr := io.WriteUint8("rejectReason", 8, (rejectReason))
 		if _rejectReasonErr != nil {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}
 
+		io.PopContext("APDUReject")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -176,10 +187,12 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 func (m *APDUReject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "originalInvokeId":
@@ -198,7 +211,7 @@ func (m *APDUReject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -214,4 +227,29 @@ func (m *APDUReject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return nil
+}
+
+func (m APDUReject) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m APDUReject) Box(name string, width int) utils.AsciiBox {
+	boxName := "APDUReject"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("RejectReason", m.RejectReason, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

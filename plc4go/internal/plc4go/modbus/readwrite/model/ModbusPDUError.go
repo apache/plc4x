@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IModbusPDUError interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -92,7 +94,11 @@ func (m *ModbusPDUError) GetTypeName() string {
 }
 
 func (m *ModbusPDUError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (exceptionCode)
 	lengthInBits += 8
@@ -104,13 +110,16 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	io.PullContext("ModbusPDUError")
 
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
+
+	io.CloseContext("ModbusPDUError")
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUError{
@@ -123,6 +132,7 @@ func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ModbusPDUError")
 
 		// Enum field (exceptionCode)
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
@@ -131,6 +141,7 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
+		io.PopContext("ModbusPDUError")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -139,10 +150,12 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "exceptionCode":
@@ -155,7 +168,7 @@ func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -168,4 +181,23 @@ func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 		return err
 	}
 	return nil
+}
+
+func (m ModbusPDUError) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
+	boxName := "ModbusPDUError"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Enum field (exceptionCode)
+		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
+		boxes = append(boxes, exceptionCode.Box("exceptionCode", -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

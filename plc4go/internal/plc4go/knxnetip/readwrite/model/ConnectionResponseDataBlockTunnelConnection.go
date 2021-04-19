@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -39,6 +40,7 @@ type IConnectionResponseDataBlockTunnelConnection interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -84,7 +86,11 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.LengthInBits()
@@ -96,13 +102,16 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+	io.PullContext("ConnectionResponseDataBlockTunnelConnection")
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+
+	io.CloseContext("ConnectionResponseDataBlockTunnelConnection")
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockTunnelConnection{
@@ -115,6 +124,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*Co
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("ConnectionResponseDataBlockTunnelConnection")
 
 		// Simple Field (knxAddress)
 		_knxAddressErr := m.KnxAddress.Serialize(io)
@@ -122,6 +132,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
+		io.PopContext("ConnectionResponseDataBlockTunnelConnection")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -130,23 +141,25 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxAddress":
-				var data *KnxAddress
-				if err := d.DecodeElement(data, &tok); err != nil {
+				var data KnxAddress
+				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
-				m.KnxAddress = data
+				m.KnxAddress = &data
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,4 +172,22 @@ func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder,
 		return err
 	}
 	return nil
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
+	boxName := "ConnectionResponseDataBlockTunnelConnection"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

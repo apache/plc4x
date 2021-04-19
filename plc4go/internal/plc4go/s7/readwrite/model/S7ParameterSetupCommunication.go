@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -42,6 +43,7 @@ type IS7ParameterSetupCommunication interface {
 	LengthInBits() uint16
 	Serialize(io utils.WriteBuffer) error
 	xml.Marshaler
+	xml.Unmarshaler
 }
 
 ///////////////////////////////////////////////////////////
@@ -93,7 +95,11 @@ func (m *S7ParameterSetupCommunication) GetTypeName() string {
 }
 
 func (m *S7ParameterSetupCommunication) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterSetupCommunication) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -114,11 +120,12 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	io.PullContext("S7ParameterSetupCommunication")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -131,22 +138,24 @@ func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, err
 	}
 
 	// Simple Field (maxAmqCaller)
-	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16(16)
+	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
 		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field")
 	}
 
 	// Simple Field (maxAmqCallee)
-	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16(16)
+	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
 		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field")
 	}
 
 	// Simple Field (pduLength)
-	pduLength, _pduLengthErr := io.ReadUint16(16)
+	pduLength, _pduLengthErr := io.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
+
+	io.CloseContext("S7ParameterSetupCommunication")
 
 	// Create a partially initialized instance
 	_child := &S7ParameterSetupCommunication{
@@ -161,10 +170,11 @@ func S7ParameterSetupCommunicationParse(io *utils.ReadBuffer) (*S7Parameter, err
 
 func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		io.PushContext("S7ParameterSetupCommunication")
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -172,25 +182,26 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (maxAmqCaller)
 		maxAmqCaller := uint16(m.MaxAmqCaller)
-		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
+		_maxAmqCallerErr := io.WriteUint16("maxAmqCaller", 16, (maxAmqCaller))
 		if _maxAmqCallerErr != nil {
 			return errors.Wrap(_maxAmqCallerErr, "Error serializing 'maxAmqCaller' field")
 		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.MaxAmqCallee)
-		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
+		_maxAmqCalleeErr := io.WriteUint16("maxAmqCallee", 16, (maxAmqCallee))
 		if _maxAmqCalleeErr != nil {
 			return errors.Wrap(_maxAmqCalleeErr, "Error serializing 'maxAmqCallee' field")
 		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.PduLength)
-		_pduLengthErr := io.WriteUint16(16, (pduLength))
+		_pduLengthErr := io.WriteUint16("pduLength", 16, (pduLength))
 		if _pduLengthErr != nil {
 			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}
 
+		io.PopContext("S7ParameterSetupCommunication")
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
@@ -199,10 +210,12 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "maxAmqCaller":
@@ -227,7 +240,7 @@ func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.S
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -246,4 +259,32 @@ func (m *S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.Sta
 		return err
 	}
 	return nil
+}
+
+func (m S7ParameterSetupCommunication) String() string {
+	return string(m.Box("", 120))
+}
+
+func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBox {
+	boxName := "S7ParameterSetupCommunication"
+	if name != "" {
+		boxName += "/" + name
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxAmqCaller", m.MaxAmqCaller, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaxAmqCallee", m.MaxAmqCallee, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PduLength", m.PduLength, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }
