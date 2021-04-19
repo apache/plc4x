@@ -145,7 +145,9 @@ pipeline {
             // Only the official build nodes have the credentials to deploy setup.
             agent {
                 node {
-                    label 'nexus-deploy'
+                    // TODO: Disabled as H50 seems to be the only node with this label and it's currently offline for quite some time.
+                    // label 'nexus-deploy'
+                    label 'ubuntu'
                 }
             }
             steps {
