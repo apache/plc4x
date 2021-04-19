@@ -82,6 +82,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer();
 
+    protected ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer(Transport transport) {
+        return getStackConfigurer();
+    }
+
     protected void initializePipeline(ChannelFactory channelFactory) {
         // Override in derived drivers.
     }
@@ -101,7 +105,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         final String paramString = matcher.group("paramString");
 
         // Check if the protocol code matches this driver.
-        if(!protocolCode.equals(getProtocolCode())) {
+        if (!protocolCode.equals(getProtocolCode())) {
             // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
             throw new PlcConnectionException(
                 "This driver is not suited to handle this connection string");
@@ -110,7 +114,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // Create the configuration object.
         Configuration configuration = new ConfigurationFactory().createConfiguration(
             getConfigurationType(), paramString);
-        if(configuration == null) {
+        if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
 
@@ -119,12 +123,12 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
         for (Transport curTransport : transportLoader) {
-            if(curTransport.getTransportCode().equals(transportCode)) {
+            if (curTransport.getTransportCode().equals(transportCode)) {
                 transport = curTransport;
                 break;
             }
         }
-        if(transport == null) {
+        if (transport == null) {
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
@@ -168,7 +172,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,
-            getStackConfigurer(),
+            getStackConfigurer(transport),
             getOptimizer());
     }
 

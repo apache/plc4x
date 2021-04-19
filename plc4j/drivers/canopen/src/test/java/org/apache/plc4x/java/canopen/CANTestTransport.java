@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.connection;
+package org.apache.plc4x.java.canopen;
 
-import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.api.listener.EventListener;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.transport.CANTransport;
+import org.apache.plc4x.java.canopen.transport.socketcan.io.CANOpenSocketCANFrameIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.transport.test.TestTransport;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+public class CANTestTransport extends TestTransport implements CANTransport {
 
-public interface ProtocolStackConfigurer<T extends Message> {
-
-    default Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive) {
-        return configurePipeline(configuration, pipeline, passive, Collections.emptyList());
+    @Override
+    public MessageIO<CANOpenFrame, CANOpenFrame> getMessageIO(Configuration cfg) {
+        return new CANOpenSocketCANFrameIO();
     }
 
-    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> listeners);
-
+    @Override
+    public Class<CANOpenFrame> getMessageType() {
+        return CANOpenFrame.class;
+    }
 }
