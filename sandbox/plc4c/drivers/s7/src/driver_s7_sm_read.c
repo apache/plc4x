@@ -160,7 +160,6 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
 
   // Locals
   plc4c_s7_read_write_s7_message* s7_packet;
-  //plc4c_s7_read_write_s7_payload* payload;
   plc4c_list_element* request_list_element;
   plc4c_list_element* response_list_element;
   plc4c_item* cur_request_item;
@@ -177,6 +176,7 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
   int32_t string_length;
   uint8_t* byte_array;
   size_t list_size;
+  size_t idx;
   enum plc4c_return_code result;
 
   // Iterate over the request items and use the types to decode the
@@ -213,9 +213,21 @@ plc4c_return_code plc4c_driver_s7_parse_read_responce(
     result = plc4c_spi_read_buffer_create(byte_array, list_size, &read_buffer);
     if (result != OK) 
       return result;
-
-    // Parse the data item.
-    plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+  
+    // TODO: check if elements > 1 is always a list
+    if (num_elements > 1) {
+      plc4c_list *all_list;
+      plc4c_data* all_data_item;
+      plc4c_utils_list_create(&all_list);
+      all_data_item = plc4c_data_create_list_data(*all_list);
+      for (idx = 0; idx < num_elements ; idx++) {
+        plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+        plc4c_utils_list_insert_head_value(&all_data_item->data.list_value, (void*)data_item);
+      }
+      data_item = all_data_item;
+    } else {
+      plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+    }
 
     // Create a new response value-item
     response_value_item = malloc(sizeof(plc4c_response_value_item));

@@ -179,15 +179,19 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_write_request(connection, &write_request);
         CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
 
-        float valuestowrite[] = {1.23,2.34};
+        float valuestowrite[] = {1.1,2.2};
         printf("Writing %f %f to %%DB2:4.0:REAL[2] ...\n", valuestowrite[0], valuestowrite[1]);
         loopback_data = plc4c_data_create_float_array(valuestowrite, 2);
-        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:REAL[2]", loopback_data);
+        result = plc4c_write_request_add_item(write_request, "%DB2:0.0:REAL[2]", loopback_data);
+        
+        float valuetowrite = {4.4};
+        loopback_data = plc4c_data_create_float_data(valuetowrite);
+        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:REAL", loopback_data);
         
         /*
         printf("Writing %d to %%DB2:0.0:BOOL ...\n", (bool) loopback_value[0]);
-        loopback_data = plc4c_data_create_bool_data((bool) loopback_value[0]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:0.0:BOOL", loopback_data);
+        loopback_data = plc4c_data_create_bool_data(true);
+        result = plc4c_write_request_add_item(write_request, "%DB2:100.0:BOOL", loopback_data);
         
         printf("Writing %d to %%DB2:4.0:USINT ...\n", (uint8_t) loopback_value[1]);
         loopback_data = plc4c_data_create_uint8_t_data((uint8_t) loopback_value[1]);
@@ -280,10 +284,14 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_read_request(connection, &read_request);
         CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
         
-        result = plc4c_read_request_add_item(read_request, "REAL", "%DB2:4.0:REAL[2]");
+        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:0.0:WORD[163]");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        
+        result = plc4c_read_request_add_item(read_request, "REAL","%DB2:8.0:REAL[63]");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+        
         /*
-        result = plc4c_read_request_add_item(read_request, "BOOL", "%DB2:0.0:BOOL");
+        result = plc4c_read_request_add_item(read_request, "BOOL", "%DB2:100.0:BOOL");
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
         
         result = plc4c_read_request_add_item(read_request, "USINT", "%DB2:4.0:USINT");
