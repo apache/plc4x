@@ -142,12 +142,14 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (serviceIds)
 	if m.ServiceIds != nil {
+		io.PushContext("serviceIds")
 		for _, _element := range m.ServiceIds {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 			}
 		}
+		io.PopContext("serviceIds")
 	}
 
 	io.PopContext("DIBSuppSvcFamilies")

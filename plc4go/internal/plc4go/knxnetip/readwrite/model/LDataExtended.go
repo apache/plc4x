@@ -240,12 +240,14 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
+			io.PushContext("destinationAddress")
 			for _, _element := range m.DestinationAddress {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 				}
 			}
+			io.PopContext("destinationAddress")
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

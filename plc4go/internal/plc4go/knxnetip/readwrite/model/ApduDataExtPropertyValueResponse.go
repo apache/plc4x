@@ -208,12 +208,14 @@ func (m *ApduDataExtPropertyValueResponse) Serialize(io utils.WriteBuffer) error
 
 		// Array Field (data)
 		if m.Data != nil {
+			io.PushContext("data")
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			io.PopContext("data")
 		}
 
 		io.PopContext("ApduDataExtPropertyValueResponse")

@@ -140,6 +140,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
+			io.PushContext("items")
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -150,6 +151,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
+			io.PopContext("items")
 		}
 
 		io.PopContext("S7PayloadReadVarResponse")

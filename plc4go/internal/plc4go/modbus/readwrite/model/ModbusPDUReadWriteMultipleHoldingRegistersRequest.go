@@ -235,12 +235,14 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 
 		// Array Field (value)
 		if m.Value != nil {
+			io.PushContext("value")
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
+			io.PopContext("value")
 		}
 
 		io.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")

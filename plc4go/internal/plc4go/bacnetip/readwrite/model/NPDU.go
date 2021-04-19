@@ -407,12 +407,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
+		io.PushContext("destinationAddress")
 		for _, _element := range m.DestinationAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 			}
 		}
+		io.PopContext("destinationAddress")
 	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
@@ -437,12 +439,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
+		io.PushContext("sourceAddress")
 		for _, _element := range m.SourceAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 			}
 		}
+		io.PopContext("sourceAddress")
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if the value is null)

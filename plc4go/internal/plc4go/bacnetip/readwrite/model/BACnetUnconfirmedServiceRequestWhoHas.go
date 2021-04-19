@@ -270,12 +270,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 
 		// Array Field (objectName)
 		if m.ObjectName != nil {
+			io.PushContext("objectName")
 			for _, _element := range m.ObjectName {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'objectName' field")
 				}
 			}
+			io.PopContext("objectName")
 		}
 
 		io.PopContext("BACnetUnconfirmedServiceRequestWhoHas")

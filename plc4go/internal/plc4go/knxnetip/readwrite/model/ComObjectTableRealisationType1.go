@@ -173,12 +173,14 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (comObjectDescriptors)
 		if m.ComObjectDescriptors != nil {
+			io.PushContext("comObjectDescriptors")
 			for _, _element := range m.ComObjectDescriptors {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 				}
 			}
+			io.PopContext("comObjectDescriptors")
 		}
 
 		io.PopContext("ComObjectTableRealisationType1")

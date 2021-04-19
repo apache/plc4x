@@ -241,12 +241,14 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
+		io.PushContext("knxNetIpDeviceSerialNumber")
 		for _, _element := range m.KnxNetIpDeviceSerialNumber {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 			}
 		}
+		io.PopContext("knxNetIpDeviceSerialNumber")
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -263,12 +265,14 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
+		io.PushContext("deviceFriendlyName")
 		for _, _element := range m.DeviceFriendlyName {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'deviceFriendlyName' field")
 			}
 		}
+		io.PopContext("deviceFriendlyName")
 	}
 
 	io.PopContext("DIBDeviceInfo")

@@ -376,12 +376,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
+			io.PushContext("lifetimeSeconds")
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
+			io.PopContext("lifetimeSeconds")
 		}
 
 		// Const Field (listOfValuesOpeningTag)
@@ -392,12 +394,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (notifications)
 		if m.Notifications != nil {
+			io.PushContext("notifications")
 			for _, _element := range m.Notifications {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'notifications' field")
 				}
 			}
+			io.PopContext("notifications")
 		}
 
 		// Const Field (listOfValuesClosingTag)

@@ -186,12 +186,14 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
+			io.PushContext("additionalInformation")
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
+			io.PopContext("additionalInformation")
 		}
 
 		// Simple Field (dataFrame)

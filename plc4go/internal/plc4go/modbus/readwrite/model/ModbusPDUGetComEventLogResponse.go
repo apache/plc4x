@@ -216,12 +216,14 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (events)
 		if m.Events != nil {
+			io.PushContext("events")
 			for _, _element := range m.Events {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'events' field")
 				}
 			}
+			io.PopContext("events")
 		}
 
 		io.PopContext("ModbusPDUGetComEventLogResponse")

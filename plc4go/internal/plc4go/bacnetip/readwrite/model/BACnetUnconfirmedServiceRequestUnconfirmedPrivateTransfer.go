@@ -247,12 +247,14 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 
 		// Array Field (values)
 		if m.Values != nil {
+			io.PushContext("values")
 			for _, _element := range m.Values {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'values' field")
 				}
 			}
+			io.PopContext("values")
 		}
 
 		// Const Field (listOfValuesClosingTag)

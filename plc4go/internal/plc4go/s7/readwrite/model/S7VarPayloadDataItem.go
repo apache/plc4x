@@ -178,24 +178,28 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 
 	// Array Field (data)
 	if m.Data != nil {
+		io.PushContext("data")
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
+		io.PopContext("data")
 	}
 
 	// Padding Field (padding)
 	{
+		io.PushContext("padding")
 		_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
-			_paddingErr := io.WriteUint8("padding", 8, (_paddingValue))
+			_paddingErr := io.WriteUint8("", 8, (_paddingValue))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}
 		}
+		io.PopContext("padding")
 	}
 
 	io.PopContext("S7VarPayloadDataItem")

@@ -219,12 +219,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
+			io.PushContext("errorClass")
 			for _, _element := range m.ErrorClass {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
 			}
+			io.PopContext("errorClass")
 		}
 
 		// Const Field (errorCodeHeader)
@@ -242,12 +244,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
+			io.PushContext("errorCode")
 			for _, _element := range m.ErrorCode {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}
 			}
+			io.PopContext("errorCode")
 		}
 
 		io.PopContext("BACnetErrorReadProperty")

@@ -327,12 +327,14 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
+			io.PushContext("lifetimeSeconds")
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
+			io.PopContext("lifetimeSeconds")
 		}
 
 		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOV")

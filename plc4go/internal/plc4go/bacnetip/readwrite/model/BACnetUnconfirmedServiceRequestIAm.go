@@ -282,12 +282,14 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
+			io.PushContext("maximumApduLengthAccepted")
 			for _, _element := range m.MaximumApduLengthAccepted {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
 			}
+			io.PopContext("maximumApduLengthAccepted")
 		}
 
 		// Const Field (segmentationSupportedHeader)

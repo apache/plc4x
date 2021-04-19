@@ -141,12 +141,14 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (adsNotificationSamples)
 	if m.AdsNotificationSamples != nil {
+		io.PushContext("adsNotificationSamples")
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 			}
 		}
+		io.PopContext("adsNotificationSamples")
 	}
 
 	io.PopContext("AdsStampHeader")

@@ -919,6 +919,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
+		io.PushContext("${arrayField.name}")
 				<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
@@ -941,6 +942,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			curItem++
 				</#if>
 		}
+		io.PopContext("${arrayField.name}")
 	}
 				<#break>
 			<#case "checksum">
@@ -1057,14 +1059,16 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Padding Field (padding)
 	{
+		io.PushContext("padding")
 		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 		for ;_timesPadding > 0; _timesPadding-- {
 			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
-			_paddingErr := ${helper.getWriteBufferWriteMethodCall("padding", simpleTypeReference, "(_paddingValue)", field)}
+			_paddingErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", field)}
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
 		}
+		io.PopContext("padding")
 	}
 				<#break>
 			<#case "reserved">

@@ -249,12 +249,14 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
+		io.PushContext("propertyIdentifier")
 		for _, _element := range m.PropertyIdentifier {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 			}
 		}
+		io.PopContext("propertyIdentifier")
 	}
 
 	// Const Field (openTag)

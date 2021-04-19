@@ -114,12 +114,14 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (address)
 	if m.Address != nil {
+		io.PushContext("address")
 		for _, _element := range m.Address {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'address' field")
 			}
 		}
+		io.PopContext("address")
 	}
 
 	// Simple Field (port)

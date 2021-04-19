@@ -218,12 +218,14 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 
 	// Array Field (parameters)
 	if m.Parameters != nil {
+		io.PushContext("parameters")
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
 		}
+		io.PopContext("parameters")
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)

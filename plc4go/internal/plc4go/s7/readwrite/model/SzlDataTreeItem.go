@@ -153,12 +153,14 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
+		io.PushContext("mlfb")
 		for _, _element := range m.Mlfb {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
 			}
 		}
+		io.PopContext("mlfb")
 	}
 
 	// Simple Field (moduleTypeId)

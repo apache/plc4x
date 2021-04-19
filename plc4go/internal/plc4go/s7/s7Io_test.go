@@ -38,10 +38,11 @@ func TestS7MessageBytes(t *testing.T) {
 		debuggable debuggable
 	}
 	tests := []struct {
-		name       string
-		args       args
-		wantString string
-		wantDump   string
+		name                 string
+		args                 args
+		wantString           string
+		wantStringSerialized string
+		wantDump             string
 	}{
 		{
 			name: "TPKT Packet with Read var response data",
@@ -106,6 +107,49 @@ func TestS7MessageBytes(t *testing.T) {
 ║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
 ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
+			wantStringSerialized: `
+╔═TPKTPacket═════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                             ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                             ║
+║╚═══════════╝╚═════════╝╚═════════╝                                                                             ║
+║╔═COTPPacket═══════════════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗╔═parameters═════════════════════════════════════════════════╗║║
+║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║║╔═COTPParameter════════════════════════════════════════════╗║║║
+║║╚═════════════╝╚═════════╝║║b0 false║║0x0d 13 ║║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize╗║║║║
+║║                          ║╚════════╝╚════════╝║║║║   0xc0 192   ║║     0x01 1     ║║   ╔═COTPTpduSize╗    ║║║║║
+║║                          ╚════════════════════╝║║╚══════════════╝╚════════════════╝║   ║   0x0c 12   ║    ║║║║║
+║║                                                ║║                                  ║   ╚═════════════╝    ║║║║║
+║║                                                ║║                                  ╚══════════════════════╝║║║║
+║║                                                ║╚══════════════════════════════════════════════════════════╝║║║
+║║                                                ╚════════════════════════════════════════════════════════════╝║║
+║║╔═S7Message══════════════════════════════════════════════════════════════════════════════╗                    ║║
+║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗║                    ║║
+║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║║                    ║║
+║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝║                    ║║
+║║║╔═S7MessageResponseData═══╗╔═S7Parameter═════════════════════════════════╗              ║                    ║║
+║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse╗║              ║                    ║║
+║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║        ╔═numItems╗        ║║              ║                    ║║
+║║║║╚═══════════╝╚══════════╝║║╚══════════════╝║        ║ 0x04 4  ║        ║║              ║                    ║║
+║║║╚═════════════════════════╝║                ║        ╚═════════╝        ║║              ║                    ║║
+║║║                           ║                ╚═══════════════════════════╝║              ║                    ║║
+║║║                           ╚═════════════════════════════════════════════╝              ║                    ║║
+║║║╔═S7Payload══════════════════════════════════════════════════════════════════════════╗  ║                    ║║
+║║║║╔═S7PayloadReadVarResponse═════════════════════════════════════════════════════════╗║  ║                    ║║
+║║║║║╔═items══════════════════════════════════════════════════════════════════════════╗║║  ║                    ║║
+║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════════════════════╗║║║  ║                    ║║
+║║║║║║║╔═DataTransportErrorCode╗╔═DataTransportSize╗╔═dataLength╗╔═data═══╗╔═padding╗║║║║  ║                    ║║
+║║║║║║║║       0xff 255        ║║      0x03 3      ║║ 0x0001 1  ║║╔══════╗║║        ║║║║║  ║                    ║║
+║║║║║║║╚═══════════════════════╝╚══════════════════╝╚═══════════╝║║0x01 1║║╚════════╝║║║║  ║                    ║║
+║║║║║║║                                                          ║╚══════╝║          ║║║║  ║                    ║║
+║║║║║║║                                                          ╚════════╝          ║║║║  ║                    ║║
+║║║║║║╚══════════════════════════════════════════════════════════════════════════════╝║║║  ║                    ║║
+║║║║║╚════════════════════════════════════════════════════════════════════════════════╝║║  ║                    ║║
+║║║║╚══════════════════════════════════════════════════════════════════════════════════╝║  ║                    ║║
+║║║╚════════════════════════════════════════════════════════════════════════════════════╝  ║                    ║║
+║║╚════════════════════════════════════════════════════════════════════════════════════════╝                    ║║
+║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+`,
 			wantDump: `
 00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
 10|32 03 00 00 00 0b 00 02 00 05 '2.........'
@@ -119,6 +163,14 @@ func TestS7MessageBytes(t *testing.T) {
 			if got := tt.args.debuggable.String(); got != tt.wantString {
 				t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
 			}
+			boxWriter := utils.NewBoxedWriteBuffer()
+			if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
+				t.Error(err)
+			}
+			tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
+			if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
+				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
+			}
 			buffer := utils.NewWriteBuffer()
 			err := tt.args.debuggable.Serialize(buffer)
 			if err != nil {
@@ -128,13 +180,6 @@ func TestS7MessageBytes(t *testing.T) {
 			if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
 				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 			}
-			boxWriter := utils.NewBoxedWriteBuffer()
-			err = tt.args.debuggable.Serialize(boxWriter)
-			if err != nil {
-				t.Error(err)
-			}
-			// TODO: seems like the boxWriteBuffer is still a WIP so we don't assert yet
-			println(boxWriter.GetBox())
 		})
 	}
 }

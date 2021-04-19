@@ -219,12 +219,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeLowLimit)
 		if m.DeviceInstanceRangeLowLimit != nil {
+			io.PushContext("deviceInstanceRangeLowLimit")
 			for _, _element := range m.DeviceInstanceRangeLowLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
 				}
 			}
+			io.PopContext("deviceInstanceRangeLowLimit")
 		}
 
 		// Const Field (deviceInstanceRangeHighLimitHeader)
@@ -242,12 +244,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeHighLimit)
 		if m.DeviceInstanceRangeHighLimit != nil {
+			io.PushContext("deviceInstanceRangeHighLimit")
 			for _, _element := range m.DeviceInstanceRangeHighLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
 				}
 			}
+			io.PopContext("deviceInstanceRangeHighLimit")
 		}
 
 		io.PopContext("BACnetUnconfirmedServiceRequestWhoIs")

@@ -191,12 +191,14 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
+			io.PushContext("targetAddress")
 			for _, _element := range m.TargetAddress {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
 			}
+			io.PopContext("targetAddress")
 		}
 
 		// Reserved Field (reserved)

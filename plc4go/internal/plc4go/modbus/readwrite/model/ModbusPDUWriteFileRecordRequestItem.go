@@ -176,12 +176,14 @@ func (m *ModbusPDUWriteFileRecordRequestItem) Serialize(io utils.WriteBuffer) er
 
 	// Array Field (recordData)
 	if m.RecordData != nil {
+		io.PushContext("recordData")
 		for _, _element := range m.RecordData {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'recordData' field")
 			}
 		}
+		io.PopContext("recordData")
 	}
 
 	io.PopContext("ModbusPDUWriteFileRecordRequestItem")

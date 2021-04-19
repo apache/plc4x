@@ -106,12 +106,14 @@ func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (addr)
 	if m.Addr != nil {
+		io.PushContext("addr")
 		for _, _element := range m.Addr {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
+		io.PopContext("addr")
 	}
 
 	io.PopContext("IPAddress")

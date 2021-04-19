@@ -213,12 +213,14 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (device)
 		if m.Device != nil {
+			io.PushContext("device")
 			for _, _element := range m.Device {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}
 			}
+			io.PopContext("device")
 		}
 
 		io.PopContext("AdsReadDeviceInfoResponse")

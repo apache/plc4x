@@ -84,7 +84,7 @@ func BoxString(name string, data string, charWidth int) AsciiBox {
 
 func AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
 	if len(boxes) == 0 {
-		return boxes[0]
+		return ""
 	}
 	actualWidth := desiredWidth
 	for _, box := range boxes {

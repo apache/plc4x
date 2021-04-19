@@ -174,12 +174,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
+			io.PushContext("fifoValue")
 			for _, _element := range m.FifoValue {
 				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
+			io.PopContext("fifoValue")
 		}
 
 		io.PopContext("ModbusPDUReadFifoQueueResponse")

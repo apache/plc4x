@@ -134,12 +134,14 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
+			io.PushContext("unknownData")
 			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
+			io.PopContext("unknownData")
 		}
 
 		io.PopContext("UnknownMessage")
