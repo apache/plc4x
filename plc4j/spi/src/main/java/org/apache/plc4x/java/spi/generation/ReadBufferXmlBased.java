@@ -74,25 +74,25 @@ public class ReadBufferXmlBased implements ReadBuffer {
     @Override
     public byte readUnsignedByte(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Byte.parseByte(decode(logicalName, "uint8", bitLength));
+        return Byte.parseByte(decode(logicalName, "uint", bitLength));
     }
 
     @Override
     public short readUnsignedShort(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Short.parseShort(decode(logicalName, "uint16", bitLength));
+        return Short.parseShort(decode(logicalName, "uint", bitLength));
     }
 
     @Override
     public int readUnsignedInt(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Integer.parseInt(decode(logicalName, "uint32", bitLength));
+        return Integer.parseInt(decode(logicalName, "uint", bitLength));
     }
 
     @Override
     public long readUnsignedLong(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Long.parseLong(decode(logicalName, "uint32", bitLength));
+        return Long.parseLong(decode(logicalName, "uint", bitLength));
     }
 
     @Override
@@ -104,49 +104,49 @@ public class ReadBufferXmlBased implements ReadBuffer {
     @Override
     public byte readByte(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Byte.parseByte(decode(logicalName, "int8", bitLength));
+        return Byte.parseByte(decode(logicalName, "int", bitLength));
     }
 
     @Override
     public short readShort(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Short.parseShort(decode(logicalName, "int16", bitLength));
+        return Short.parseShort(decode(logicalName, "int", bitLength));
     }
 
     @Override
     public int readInt(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Integer.parseInt(decode(logicalName, "int32", bitLength));
+        return Integer.parseInt(decode(logicalName, "int", bitLength));
     }
 
     @Override
     public long readLong(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Long.parseLong(decode(logicalName, "int64", bitLength));
+        return Long.parseLong(decode(logicalName, "int", bitLength));
     }
 
     @Override
     public BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        throw new PlcRuntimeException("not implemented yet");
+        return new BigInteger(decode(logicalName,"int",bitLength));
     }
 
     @Override
     public float readFloat(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Float.parseFloat(decode(logicalName, "float32", bitLength));
+        return Float.parseFloat(decode(logicalName, "float", bitLength));
     }
 
     @Override
     public double readDouble(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Double.parseDouble(decode(logicalName, "float64", bitLength));
+        return Double.parseDouble(decode(logicalName, "float", bitLength));
     }
 
     @Override
     public BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        throw new PlcRuntimeException("not implemented yet");
+        return new BigDecimal(decode(logicalName, "float", bitLength));
     }
 
     @Override
@@ -204,7 +204,7 @@ public class ReadBufferXmlBased implements ReadBuffer {
     private String decode(String logicalName, String dataType, int bitLength) {
         StartElement startElement = travelToNextStartElement();
         validateStartElement(startElement, logicalName, dataType, bitLength);
-        Characters characters = null;
+        Characters characters;
         try {
             characters = reader.nextEvent().asCharacters();
         } catch (XMLStreamException e) {
@@ -212,7 +212,7 @@ public class ReadBufferXmlBased implements ReadBuffer {
         }
         String data = characters.getData();
         try {
-            XMLEvent endEvent = reader.nextEvent().asEndElement();
+            reader.nextEvent().asEndElement();
         } catch (XMLStreamException e) {
             throw new PlcRuntimeException(e);
         }

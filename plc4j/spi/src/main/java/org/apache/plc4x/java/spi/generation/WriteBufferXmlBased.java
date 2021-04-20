@@ -90,81 +90,81 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value) throws ParseException {
-        createAndAppend(logicalName, "uint8", bitLength, Byte.valueOf(value).toString());
+        createAndAppend(logicalName, "uint", bitLength, Byte.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedShort(String logicalName, int bitLength, short value) throws ParseException {
-        createAndAppend(logicalName, "uint16", bitLength, Short.valueOf(value).toString());
+        createAndAppend(logicalName, "uint", bitLength, Short.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedInt(String logicalName, int bitLength, int value) throws ParseException {
-        createAndAppend(logicalName, "uint32", bitLength, Integer.valueOf(value).toString());
+        createAndAppend(logicalName, "uint", bitLength, Integer.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedLong(String logicalName, int bitLength, long value) throws ParseException {
-        createAndAppend(logicalName, "uint64", bitLength, Long.valueOf(value).toString());
+        createAndAppend(logicalName, "uint", bitLength, Long.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        createAndAppend(logicalName, "bigInt", bitLength, value.toString());
+        createAndAppend(logicalName, "uint", bitLength, value.toString());
         move(bitLength);
     }
 
     @Override
     public void writeByte(String logicalName, int bitLength, byte value) throws ParseException {
-        createAndAppend(logicalName, "int8", bitLength, Byte.valueOf(value).toString());
+        createAndAppend(logicalName, "int", bitLength, Byte.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeShort(String logicalName, int bitLength, short value) throws ParseException {
-        createAndAppend(logicalName, "int16", bitLength, Short.valueOf(value).toString());
+        createAndAppend(logicalName, "int", bitLength, Short.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeInt(String logicalName, int bitLength, int value) throws ParseException {
-        createAndAppend(logicalName, "int32", bitLength, Integer.valueOf(value).toString());
+        createAndAppend(logicalName, "int", bitLength, Integer.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeLong(String logicalName, int bitLength, long value) throws ParseException {
-        createAndAppend(logicalName, "int64", bitLength, Long.valueOf(value).toString());
+        createAndAppend(logicalName, "int", bitLength, Long.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        createAndAppend(logicalName, "bigInt", bitLength, value.toString());
+        createAndAppend(logicalName, "int", bitLength, value.toString());
         move(bitLength);
     }
 
     @Override
     public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-        createAndAppend(logicalName, "float32", bitLength, Float.valueOf(value).toString());
+        createAndAppend(logicalName, "float", bitLength, Float.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-        createAndAppend(logicalName, "float64", bitLength, Double.valueOf(value).toString());
+        createAndAppend(logicalName, "float", bitLength, Double.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value) throws ParseException {
-        createAndAppend(logicalName, "bigFloat", bitLength, value.toString());
+        createAndAppend(logicalName, "float", bitLength, value.toString());
         move(bitLength);
     }
 
