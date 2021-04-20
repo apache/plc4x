@@ -24,8 +24,11 @@ import (
 )
 
 type ReadBuffer interface {
+	// GetPos return the current byte position
 	GetPos() uint16
+	// HasMore returns true if there are bitLength bits available
 	HasMore(bitLength uint8) bool
+	// PullContext signals that we expect now a context with the supplied logical name
 	PullContext(logicalName string, readerArgs ...WithReaderArgs) error
 	ReadBit(logicalName string, readerArgs ...WithReaderArgs) (bool, error)
 	ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error)
@@ -41,6 +44,7 @@ type ReadBuffer interface {
 	ReadFloat64(logicalName string, singed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float64, error)
 	ReadBigFloat(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error)
 	ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error)
+	// CloseContext signals that we expect the end of the context with the supplied logical name
 	CloseContext(logicalName string, readerArgs ...WithReaderArgs) error
 }
 

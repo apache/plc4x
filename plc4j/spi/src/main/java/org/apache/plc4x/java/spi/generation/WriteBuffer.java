@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public interface WriteBuffer {
+    // TODO: check if this is really needed or if this is just an artifact
     int getPos();
 
     void pushContext(String logicalName);

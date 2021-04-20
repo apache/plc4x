@@ -56,6 +56,7 @@ func (x *xmlReadBuffer) GetPos() uint16 {
 }
 
 func (x *xmlReadBuffer) HasMore(bitLength uint8) bool {
+	// TODO: work with x.InputOffset() and check if we are at EOF
 	return true
 }
 
