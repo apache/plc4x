@@ -115,7 +115,7 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 	io.PullContext("S7PayloadWriteVarRequest")
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Count array
 	items := make([]*S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
@@ -126,7 +126,7 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	io.CloseContext("S7PayloadWriteVarRequest")
 
@@ -145,7 +145,7 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -156,7 +156,7 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("S7PayloadWriteVarRequest")

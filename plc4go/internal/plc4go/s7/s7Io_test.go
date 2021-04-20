@@ -258,31 +258,33 @@ func TestS7MessageBytes(t *testing.T) {
           },
           "S7Payload": {
             "S7PayloadReadVarResponse": {
-              "items": {
-                "S7VarPayloadDataItem": {
-                  "data": {
-                    "value": 1,
-                    "value__plc4x_bitLength": 8,
-                    "value__plc4x_dataType": "int"
-                  },
-                  "dataLength": 1,
-                  "dataLength__plc4x_bitLength": 16,
-                  "dataLength__plc4x_dataType": "uint",
-                  "padding": {},
-                  "returnCode": {
-                    "DataTransportErrorCode": 255,
-                    "DataTransportErrorCode__plc4x_bitLength": 8,
-                    "DataTransportErrorCode__plc4x_dataType": "uint",
-                    "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
-                  },
-                  "transportSize": {
-                    "DataTransportSize": 3,
-                    "DataTransportSize__plc4x_bitLength": 8,
-                    "DataTransportSize__plc4x_dataType": "uint",
-                    "DataTransportSize__plc4x_stringRepresentation": "BIT"
+              "items": [
+                {
+                  "S7VarPayloadDataItem": {
+                    "data": [
+                      {
+                        "value": 1
+                      }
+                    ],
+                    "dataLength": 1,
+                    "dataLength__plc4x_bitLength": 16,
+                    "dataLength__plc4x_dataType": "uint",
+                    "padding": {},
+                    "returnCode": {
+                      "DataTransportErrorCode": 255,
+                      "DataTransportErrorCode__plc4x_bitLength": 8,
+                      "DataTransportErrorCode__plc4x_dataType": "uint",
+                      "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
+                    },
+                    "transportSize": {
+                      "DataTransportSize": 3,
+                      "DataTransportSize__plc4x_bitLength": 8,
+                      "DataTransportSize__plc4x_dataType": "uint",
+                      "DataTransportSize__plc4x_stringRepresentation": "BIT"
+                    }
                   }
                 }
-              }
+              ]
             }
           },
           "messageType": 3,

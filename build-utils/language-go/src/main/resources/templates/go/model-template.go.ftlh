@@ -937,7 +937,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
-		io.PushContext("${arrayField.name}")
+		io.PushContext("${arrayField.name}", utils.WithRenderAsList(true))
 				<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
@@ -960,7 +960,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			curItem++
 				</#if>
 		}
-		io.PopContext("${arrayField.name}")
+		io.PopContext("${arrayField.name}", utils.WithRenderAsList(true))
 	}
 				<#break>
 			<#case "checksum">

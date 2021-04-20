@@ -146,7 +146,7 @@ func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
@@ -156,7 +156,7 @@ func AdsWriteControlRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("AdsWriteControlRequest")
 
@@ -198,14 +198,14 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			io.PushContext("data", utils.WithRenderAsList(true))
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			io.PopContext("data", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("AdsWriteControlRequest")

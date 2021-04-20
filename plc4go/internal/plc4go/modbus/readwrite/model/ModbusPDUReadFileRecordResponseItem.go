@@ -108,7 +108,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDURe
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := uint16(dataLength) - uint16(uint16(1))
@@ -120,7 +120,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io utils.ReadBuffer) (*ModbusPDURe
 		}
 		data = append(data, _item)
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("ModbusPDUReadFileRecordResponseItem")
 
@@ -147,14 +147,14 @@ func (m *ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) er
 
 	// Array Field (data)
 	if m.Data != nil {
-		io.PushContext("data")
+		io.PushContext("data", utils.WithRenderAsList(true))
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
-		io.PopContext("data")
+		io.PopContext("data", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("ModbusPDUReadFileRecordResponseItem")

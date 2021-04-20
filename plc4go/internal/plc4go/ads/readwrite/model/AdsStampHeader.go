@@ -109,7 +109,7 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 
 	// Array field (adsNotificationSamples)
-	io.PullContext("adsNotificationSamples")
+	io.PullContext("adsNotificationSamples", utils.WithRenderAsList(true))
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
@@ -119,7 +119,7 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
-	io.CloseContext("adsNotificationSamples")
+	io.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true))
 
 	io.CloseContext("AdsStampHeader")
 
@@ -146,14 +146,14 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (adsNotificationSamples)
 	if m.AdsNotificationSamples != nil {
-		io.PushContext("adsNotificationSamples")
+		io.PushContext("adsNotificationSamples", utils.WithRenderAsList(true))
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 			}
 		}
-		io.PopContext("adsNotificationSamples")
+		io.PopContext("adsNotificationSamples", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("AdsStampHeader")

@@ -167,7 +167,7 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Count array
 	items := make([]*AdsMultiRequestItem, utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool(bool(bool(bool((indexGroup) == (61568)))) || bool(bool(bool((indexGroup) == (61569))))) || bool(bool(bool((indexGroup) == (61570))))), func() uint16 { return uint16(indexOffset) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -177,10 +177,10 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]int8, uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
 	for curItem := uint16(0); curItem < uint16(uint16(writeLength)-uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12))))); curItem++ {
@@ -190,7 +190,7 @@ func AdsReadWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("AdsReadWriteRequest")
 
@@ -241,26 +241,26 @@ func (m *AdsReadWriteRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			io.PushContext("data", utils.WithRenderAsList(true))
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			io.PopContext("data", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("AdsReadWriteRequest")

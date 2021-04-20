@@ -174,7 +174,7 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	io.CloseContext("sourceAddress")
 
 	// Array field (destinationAddress)
-	io.PullContext("destinationAddress")
+	io.PullContext("destinationAddress", utils.WithRenderAsList(true))
 	// Count array
 	destinationAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
@@ -184,7 +184,7 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
-	io.CloseContext("destinationAddress")
+	io.CloseContext("destinationAddress", utils.WithRenderAsList(true))
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
@@ -253,14 +253,14 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
-			io.PushContext("destinationAddress")
+			io.PushContext("destinationAddress", utils.WithRenderAsList(true))
 			for _, _element := range m.DestinationAddress {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 				}
 			}
-			io.PopContext("destinationAddress")
+			io.PopContext("destinationAddress", utils.WithRenderAsList(true))
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

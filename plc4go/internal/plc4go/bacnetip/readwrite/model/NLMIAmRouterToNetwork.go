@@ -109,7 +109,7 @@ func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageT
 	io.PullContext("NLMIAmRouterToNetwork")
 
 	// Array field (destinationNetworkAddress)
-	io.PullContext("destinationNetworkAddress")
+	io.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true))
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
 	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() uint16 { return uint16(uint16(3)) }, func() uint16 { return uint16(uint16(1)) })))
@@ -121,7 +121,7 @@ func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageT
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
-	io.CloseContext("destinationNetworkAddress")
+	io.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true))
 
 	io.CloseContext("NLMIAmRouterToNetwork")
 
@@ -140,14 +140,14 @@ func (m *NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
-			io.PushContext("destinationNetworkAddress")
+			io.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true))
 			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 				}
 			}
-			io.PopContext("destinationNetworkAddress")
+			io.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("NLMIAmRouterToNetwork")

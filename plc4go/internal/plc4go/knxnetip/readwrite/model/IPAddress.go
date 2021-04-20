@@ -88,7 +88,7 @@ func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 	io.PullContext("IPAddress")
 
 	// Array field (addr)
-	io.PullContext("addr")
+	io.PullContext("addr", utils.WithRenderAsList(true))
 	// Count array
 	addr := make([]int8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
@@ -98,7 +98,7 @@ func IPAddressParse(io utils.ReadBuffer) (*IPAddress, error) {
 		}
 		addr[curItem] = _item
 	}
-	io.CloseContext("addr")
+	io.CloseContext("addr", utils.WithRenderAsList(true))
 
 	io.CloseContext("IPAddress")
 
@@ -111,14 +111,14 @@ func (m *IPAddress) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (addr)
 	if m.Addr != nil {
-		io.PushContext("addr")
+		io.PushContext("addr", utils.WithRenderAsList(true))
 		for _, _element := range m.Addr {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
-		io.PopContext("addr")
+		io.PopContext("addr", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("IPAddress")

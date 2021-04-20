@@ -126,7 +126,7 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 
 	// Array field (additionalInformation)
-	io.PullContext("additionalInformation")
+	io.PullContext("additionalInformation", utils.WithRenderAsList(true))
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -138,7 +138,7 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	io.CloseContext("additionalInformation")
+	io.CloseContext("additionalInformation", utils.WithRenderAsList(true))
 
 	io.PullContext("dataFrame")
 
@@ -175,14 +175,14 @@ func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
-			io.PushContext("additionalInformation")
+			io.PushContext("additionalInformation", utils.WithRenderAsList(true))
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
-			io.PopContext("additionalInformation")
+			io.PopContext("additionalInformation", utils.WithRenderAsList(true))
 		}
 
 		// Simple Field (dataFrame)

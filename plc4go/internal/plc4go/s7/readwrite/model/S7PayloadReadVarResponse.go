@@ -115,7 +115,7 @@ func S7PayloadReadVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) 
 	io.PullContext("S7PayloadReadVarResponse")
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Count array
 	items := make([]*S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).NumItems); curItem++ {
@@ -126,7 +126,7 @@ func S7PayloadReadVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) 
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	io.CloseContext("S7PayloadReadVarResponse")
 
@@ -145,7 +145,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -156,7 +156,7 @@ func (m *S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("S7PayloadReadVarResponse")

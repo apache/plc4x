@@ -185,7 +185,7 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier")
+	io.PullContext("propertyIdentifier", utils.WithRenderAsList(true))
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
@@ -195,7 +195,7 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	io.CloseContext("propertyIdentifier")
+	io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true))
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8("openingTag", 8)
@@ -278,14 +278,14 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
-			io.PushContext("propertyIdentifier")
+			io.PushContext("propertyIdentifier", utils.WithRenderAsList(true))
 			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 				}
 			}
-			io.PopContext("propertyIdentifier")
+			io.PopContext("propertyIdentifier", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (openingTag)

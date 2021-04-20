@@ -161,7 +161,7 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (device)
-	io.PullContext("device")
+	io.PullContext("device", utils.WithRenderAsList(true))
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
@@ -171,7 +171,7 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		device[curItem] = _item
 	}
-	io.CloseContext("device")
+	io.CloseContext("device", utils.WithRenderAsList(true))
 
 	io.CloseContext("AdsReadDeviceInfoResponse")
 
@@ -223,14 +223,14 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (device)
 		if m.Device != nil {
-			io.PushContext("device")
+			io.PushContext("device", utils.WithRenderAsList(true))
 			for _, _element := range m.Device {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}
 			}
-			io.PopContext("device")
+			io.PopContext("device", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("AdsReadDeviceInfoResponse")

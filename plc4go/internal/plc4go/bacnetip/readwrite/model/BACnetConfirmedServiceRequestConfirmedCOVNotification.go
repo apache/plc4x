@@ -248,7 +248,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	}
 
 	// Array field (lifetimeSeconds)
-	io.PullContext("lifetimeSeconds")
+	io.PullContext("lifetimeSeconds", utils.WithRenderAsList(true))
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
@@ -258,7 +258,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		lifetimeSeconds[curItem] = _item
 	}
-	io.CloseContext("lifetimeSeconds")
+	io.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true))
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8("listOfValuesOpeningTag", 8)
@@ -270,7 +270,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	}
 
 	// Array field (notifications)
-	io.PullContext("notifications")
+	io.PullContext("notifications", utils.WithRenderAsList(true))
 	// Length array
 	notifications := make([]*BACnetTagWithContent, 0)
 	_notificationsLength := uint16(len) - uint16(uint16(18))
@@ -282,7 +282,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		notifications = append(notifications, _item)
 	}
-	io.CloseContext("notifications")
+	io.CloseContext("notifications", utils.WithRenderAsList(true))
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)
@@ -383,14 +383,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
-			io.PushContext("lifetimeSeconds")
+			io.PushContext("lifetimeSeconds", utils.WithRenderAsList(true))
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
-			io.PopContext("lifetimeSeconds")
+			io.PopContext("lifetimeSeconds", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (listOfValuesOpeningTag)
@@ -401,14 +401,14 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (notifications)
 		if m.Notifications != nil {
-			io.PushContext("notifications")
+			io.PushContext("notifications", utils.WithRenderAsList(true))
 			for _, _element := range m.Notifications {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'notifications' field")
 				}
 			}
-			io.PopContext("notifications")
+			io.PopContext("notifications", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (listOfValuesClosingTag)

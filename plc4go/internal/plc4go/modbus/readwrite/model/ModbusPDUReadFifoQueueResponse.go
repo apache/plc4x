@@ -136,7 +136,7 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 	}
 
 	// Array field (fifoValue)
-	io.PullContext("fifoValue")
+	io.PullContext("fifoValue", utils.WithRenderAsList(true))
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
@@ -146,7 +146,7 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 		}
 		fifoValue[curItem] = _item
 	}
-	io.CloseContext("fifoValue")
+	io.CloseContext("fifoValue", utils.WithRenderAsList(true))
 
 	io.CloseContext("ModbusPDUReadFifoQueueResponse")
 
@@ -179,14 +179,14 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
-			io.PushContext("fifoValue")
+			io.PushContext("fifoValue", utils.WithRenderAsList(true))
 			for _, _element := range m.FifoValue {
 				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
-			io.PopContext("fifoValue")
+			io.PopContext("fifoValue", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ModbusPDUReadFifoQueueResponse")

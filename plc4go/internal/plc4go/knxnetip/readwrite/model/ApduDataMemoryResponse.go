@@ -129,7 +129,7 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]uint8, numBytes)
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
@@ -139,7 +139,7 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("ApduDataMemoryResponse")
 
@@ -173,14 +173,14 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			io.PushContext("data", utils.WithRenderAsList(true))
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			io.PopContext("data", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ApduDataMemoryResponse")

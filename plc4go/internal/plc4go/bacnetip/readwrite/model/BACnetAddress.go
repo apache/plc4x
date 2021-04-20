@@ -90,7 +90,7 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 	io.PullContext("BACnetAddress")
 
 	// Array field (address)
-	io.PullContext("address")
+	io.PullContext("address", utils.WithRenderAsList(true))
 	// Count array
 	address := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
@@ -100,7 +100,7 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 		}
 		address[curItem] = _item
 	}
-	io.CloseContext("address")
+	io.CloseContext("address", utils.WithRenderAsList(true))
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16("port", 16)
@@ -119,14 +119,14 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (address)
 	if m.Address != nil {
-		io.PushContext("address")
+		io.PushContext("address", utils.WithRenderAsList(true))
 		for _, _element := range m.Address {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'address' field")
 			}
 		}
-		io.PopContext("address")
+		io.PopContext("address", utils.WithRenderAsList(true))
 	}
 
 	// Simple Field (port)

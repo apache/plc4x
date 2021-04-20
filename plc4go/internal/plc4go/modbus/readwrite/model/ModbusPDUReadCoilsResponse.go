@@ -128,7 +128,7 @@ func ModbusPDUReadCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 	}
 
 	// Array field (value)
-	io.PullContext("value")
+	io.PullContext("value", utils.WithRenderAsList(true))
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
@@ -138,7 +138,7 @@ func ModbusPDUReadCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 		}
 		value[curItem] = _item
 	}
-	io.CloseContext("value")
+	io.CloseContext("value", utils.WithRenderAsList(true))
 
 	io.CloseContext("ModbusPDUReadCoilsResponse")
 
@@ -164,14 +164,14 @@ func (m *ModbusPDUReadCoilsResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (value)
 		if m.Value != nil {
-			io.PushContext("value")
+			io.PushContext("value", utils.WithRenderAsList(true))
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
-			io.PopContext("value")
+			io.PopContext("value", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ModbusPDUReadCoilsResponse")

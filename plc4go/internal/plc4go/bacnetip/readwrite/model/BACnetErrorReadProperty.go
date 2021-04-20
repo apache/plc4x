@@ -153,7 +153,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Array field (errorClass)
-	io.PullContext("errorClass")
+	io.PullContext("errorClass", utils.WithRenderAsList(true))
 	// Count array
 	errorClass := make([]int8, errorClassLength)
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
@@ -163,7 +163,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorClass[curItem] = _item
 	}
-	io.CloseContext("errorClass")
+	io.CloseContext("errorClass", utils.WithRenderAsList(true))
 
 	// Const Field (errorCodeHeader)
 	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8("errorCodeHeader", 5)
@@ -181,7 +181,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Array field (errorCode)
-	io.PullContext("errorCode")
+	io.PullContext("errorCode", utils.WithRenderAsList(true))
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
@@ -191,7 +191,7 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorCode[curItem] = _item
 	}
-	io.CloseContext("errorCode")
+	io.CloseContext("errorCode", utils.WithRenderAsList(true))
 
 	io.CloseContext("BACnetErrorReadProperty")
 
@@ -226,14 +226,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
-			io.PushContext("errorClass")
+			io.PushContext("errorClass", utils.WithRenderAsList(true))
 			for _, _element := range m.ErrorClass {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
 			}
-			io.PopContext("errorClass")
+			io.PopContext("errorClass", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (errorCodeHeader)
@@ -251,14 +251,14 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
-			io.PushContext("errorCode")
+			io.PushContext("errorCode", utils.WithRenderAsList(true))
 			for _, _element := range m.ErrorCode {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}
 			}
-			io.PopContext("errorCode")
+			io.PopContext("errorCode", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("BACnetErrorReadProperty")

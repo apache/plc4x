@@ -190,7 +190,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Array field (maximumApduLengthAccepted)
-	io.PullContext("maximumApduLengthAccepted")
+	io.PullContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
 	// Count array
 	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
@@ -200,7 +200,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 		}
 		maximumApduLengthAccepted[curItem] = _item
 	}
-	io.CloseContext("maximumApduLengthAccepted")
+	io.CloseContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
 
 	// Const Field (segmentationSupportedHeader)
 	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8("segmentationSupportedHeader", 8)
@@ -287,14 +287,14 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
-			io.PushContext("maximumApduLengthAccepted")
+			io.PushContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
 			for _, _element := range m.MaximumApduLengthAccepted {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
 			}
-			io.PopContext("maximumApduLengthAccepted")
+			io.PopContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (segmentationSupportedHeader)

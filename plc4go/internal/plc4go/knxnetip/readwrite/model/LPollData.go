@@ -142,7 +142,7 @@ func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	io.CloseContext("sourceAddress")
 
 	// Array field (targetAddress)
-	io.PullContext("targetAddress")
+	io.PullContext("targetAddress", utils.WithRenderAsList(true))
 	// Count array
 	targetAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
@@ -152,7 +152,7 @@ func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		targetAddress[curItem] = _item
 	}
-	io.CloseContext("targetAddress")
+	io.CloseContext("targetAddress", utils.WithRenderAsList(true))
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -201,14 +201,14 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
-			io.PushContext("targetAddress")
+			io.PushContext("targetAddress", utils.WithRenderAsList(true))
 			for _, _element := range m.TargetAddress {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
 			}
-			io.PopContext("targetAddress")
+			io.PopContext("targetAddress", utils.WithRenderAsList(true))
 		}
 
 		// Reserved Field (reserved)

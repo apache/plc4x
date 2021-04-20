@@ -133,7 +133,7 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 	}
 
 	// Array field (comObjectDescriptors)
-	io.PullContext("comObjectDescriptors")
+	io.PullContext("comObjectDescriptors", utils.WithRenderAsList(true))
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType1, numEntries)
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
@@ -143,7 +143,7 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 		}
 		comObjectDescriptors[curItem] = _item
 	}
-	io.CloseContext("comObjectDescriptors")
+	io.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true))
 
 	io.CloseContext("ComObjectTableRealisationType1")
 
@@ -178,14 +178,14 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (comObjectDescriptors)
 		if m.ComObjectDescriptors != nil {
-			io.PushContext("comObjectDescriptors")
+			io.PushContext("comObjectDescriptors", utils.WithRenderAsList(true))
 			for _, _element := range m.ComObjectDescriptors {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 				}
 			}
-			io.PopContext("comObjectDescriptors")
+			io.PopContext("comObjectDescriptors", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ComObjectTableRealisationType1")

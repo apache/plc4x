@@ -250,7 +250,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Array field (destinationAddress)
-	io.PullContext("destinationAddress")
+	io.PullContext("destinationAddress", utils.WithRenderAsList(true))
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -260,7 +260,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
-	io.CloseContext("destinationAddress")
+	io.CloseContext("destinationAddress", utils.WithRenderAsList(true))
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
@@ -283,7 +283,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Array field (sourceAddress)
-	io.PullContext("sourceAddress")
+	io.PullContext("sourceAddress", utils.WithRenderAsList(true))
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -293,7 +293,7 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		sourceAddress[curItem] = _item
 	}
-	io.CloseContext("sourceAddress")
+	io.CloseContext("sourceAddress", utils.WithRenderAsList(true))
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
@@ -414,14 +414,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
-		io.PushContext("destinationAddress")
+		io.PushContext("destinationAddress", utils.WithRenderAsList(true))
 		for _, _element := range m.DestinationAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 			}
 		}
-		io.PopContext("destinationAddress")
+		io.PopContext("destinationAddress", utils.WithRenderAsList(true))
 	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
@@ -446,14 +446,14 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
-		io.PushContext("sourceAddress")
+		io.PushContext("sourceAddress", utils.WithRenderAsList(true))
 		for _, _element := range m.SourceAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 			}
 		}
-		io.PopContext("sourceAddress")
+		io.PopContext("sourceAddress", utils.WithRenderAsList(true))
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if the value is null)

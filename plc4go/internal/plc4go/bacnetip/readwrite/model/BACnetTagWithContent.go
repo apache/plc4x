@@ -164,7 +164,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier")
+	io.PullContext("propertyIdentifier", utils.WithRenderAsList(true))
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
 	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
@@ -176,7 +176,7 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		}
 		propertyIdentifier = append(propertyIdentifier, _item)
 	}
-	io.CloseContext("propertyIdentifier")
+	io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true))
 
 	// Const Field (openTag)
 	openTag, _openTagErr := io.ReadUint8("openTag", 8)
@@ -257,14 +257,14 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
-		io.PushContext("propertyIdentifier")
+		io.PushContext("propertyIdentifier", utils.WithRenderAsList(true))
 		for _, _element := range m.PropertyIdentifier {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 			}
 		}
-		io.PopContext("propertyIdentifier")
+		io.PopContext("propertyIdentifier", utils.WithRenderAsList(true))
 	}
 
 	// Const Field (openTag)

@@ -108,7 +108,7 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
@@ -118,7 +118,7 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("AdsNotificationSample")
 
@@ -145,14 +145,14 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (data)
 	if m.Data != nil {
-		io.PushContext("data")
+		io.PushContext("data", utils.WithRenderAsList(true))
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
-		io.PopContext("data")
+		io.PopContext("data", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("AdsNotificationSample")

@@ -152,7 +152,7 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]uint8, uint16(length)-uint16(uint16(5)))
 	for curItem := uint16(0); curItem < uint16(uint16(length)-uint16(uint16(5))); curItem++ {
@@ -162,7 +162,7 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	io.CloseContext("ApduDataExtPropertyValueWrite")
 
@@ -213,14 +213,14 @@ func (m *ApduDataExtPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			io.PushContext("data", utils.WithRenderAsList(true))
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			io.PopContext("data", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ApduDataExtPropertyValueWrite")

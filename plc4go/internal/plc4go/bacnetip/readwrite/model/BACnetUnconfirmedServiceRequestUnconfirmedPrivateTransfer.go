@@ -178,7 +178,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	}
 
 	// Array field (values)
-	io.PullContext("values")
+	io.PullContext("values", utils.WithRenderAsList(true))
 	// Length array
 	values := make([]int8, 0)
 	_valuesLength := uint16(len) - uint16(uint16(8))
@@ -190,7 +190,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 		}
 		values = append(values, _item)
 	}
-	io.CloseContext("values")
+	io.CloseContext("values", utils.WithRenderAsList(true))
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)
@@ -252,14 +252,14 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 
 		// Array Field (values)
 		if m.Values != nil {
-			io.PushContext("values")
+			io.PushContext("values", utils.WithRenderAsList(true))
 			for _, _element := range m.Values {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'values' field")
 				}
 			}
-			io.PopContext("values")
+			io.PopContext("values", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (listOfValuesClosingTag)

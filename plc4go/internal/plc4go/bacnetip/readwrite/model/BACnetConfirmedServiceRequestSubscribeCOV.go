@@ -233,7 +233,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 	}
 
 	// Array field (lifetimeSeconds)
-	io.PullContext("lifetimeSeconds")
+	io.PullContext("lifetimeSeconds", utils.WithRenderAsList(true))
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
@@ -243,7 +243,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 		}
 		lifetimeSeconds[curItem] = _item
 	}
-	io.CloseContext("lifetimeSeconds")
+	io.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true))
 
 	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOV")
 
@@ -332,14 +332,14 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
-			io.PushContext("lifetimeSeconds")
+			io.PushContext("lifetimeSeconds", utils.WithRenderAsList(true))
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
-			io.PopContext("lifetimeSeconds")
+			io.PopContext("lifetimeSeconds", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOV")

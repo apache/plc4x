@@ -118,7 +118,7 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 	io.PullContext("BVLCForwardedNPDU")
 
 	// Array field (ip)
-	io.PullContext("ip")
+	io.PullContext("ip", utils.WithRenderAsList(true))
 	// Count array
 	ip := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
@@ -128,7 +128,7 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 		}
 		ip[curItem] = _item
 	}
-	io.CloseContext("ip")
+	io.CloseContext("ip", utils.WithRenderAsList(true))
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16("port", 16)
@@ -164,14 +164,14 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (ip)
 		if m.Ip != nil {
-			io.PushContext("ip")
+			io.PushContext("ip", utils.WithRenderAsList(true))
 			for _, _element := range m.Ip {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
 			}
-			io.PopContext("ip")
+			io.PopContext("ip", utils.WithRenderAsList(true))
 		}
 
 		// Simple Field (port)

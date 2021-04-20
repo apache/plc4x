@@ -128,7 +128,7 @@ func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Length array
 	items := make([]*ModbusPDUWriteFileRecordRequestItem, 0)
 	_itemsLength := byteCount
@@ -140,7 +140,7 @@ func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		items = append(items, _item)
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	io.CloseContext("ModbusPDUWriteFileRecordRequest")
 
@@ -173,14 +173,14 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ModbusPDUWriteFileRecordRequest")

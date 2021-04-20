@@ -110,7 +110,7 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 	io.PullContext("UnknownMessage")
 
 	// Array field (unknownData)
-	io.PullContext("unknownData")
+	io.PullContext("unknownData", utils.WithRenderAsList(true))
 	// Count array
 	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
@@ -120,7 +120,7 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 		}
 		unknownData[curItem] = _item
 	}
-	io.CloseContext("unknownData")
+	io.CloseContext("unknownData", utils.WithRenderAsList(true))
 
 	io.CloseContext("UnknownMessage")
 
@@ -139,14 +139,14 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
-			io.PushContext("unknownData")
+			io.PushContext("unknownData", utils.WithRenderAsList(true))
 			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
-			io.PopContext("unknownData")
+			io.PopContext("unknownData", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("UnknownMessage")

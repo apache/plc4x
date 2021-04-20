@@ -161,7 +161,7 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	}
 
 	// Array field (events)
-	io.PullContext("events")
+	io.PullContext("events", utils.WithRenderAsList(true))
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
@@ -171,7 +171,7 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		events[curItem] = _item
 	}
-	io.CloseContext("events")
+	io.CloseContext("events", utils.WithRenderAsList(true))
 
 	io.CloseContext("ModbusPDUGetComEventLogResponse")
 
@@ -221,14 +221,14 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (events)
 		if m.Events != nil {
-			io.PushContext("events")
+			io.PushContext("events", utils.WithRenderAsList(true))
 			for _, _element := range m.Events {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'events' field")
 				}
 			}
-			io.PopContext("events")
+			io.PopContext("events", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("ModbusPDUGetComEventLogResponse")

@@ -129,7 +129,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	io.PullContext("data", utils.WithRenderAsList(true))
 	// Count array
 	data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) })); curItem++ {
@@ -139,7 +139,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	io.CloseContext("data", utils.WithRenderAsList(true))
 
 	// Padding Field (padding)
 	{
@@ -193,14 +193,14 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 
 	// Array Field (data)
 	if m.Data != nil {
-		io.PushContext("data")
+		io.PushContext("data", utils.WithRenderAsList(true))
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
-		io.PopContext("data")
+		io.PopContext("data", utils.WithRenderAsList(true))
 	}
 
 	// Padding Field (padding)

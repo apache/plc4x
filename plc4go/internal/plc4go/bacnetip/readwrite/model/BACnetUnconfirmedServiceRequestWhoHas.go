@@ -195,7 +195,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Array field (objectName)
-	io.PullContext("objectName")
+	io.PullContext("objectName", utils.WithRenderAsList(true))
 	// Length array
 	objectName := make([]int8, 0)
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
@@ -207,7 +207,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 		}
 		objectName = append(objectName, _item)
 	}
-	io.CloseContext("objectName")
+	io.CloseContext("objectName", utils.WithRenderAsList(true))
 
 	io.CloseContext("BACnetUnconfirmedServiceRequestWhoHas")
 
@@ -275,14 +275,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 
 		// Array Field (objectName)
 		if m.ObjectName != nil {
-			io.PushContext("objectName")
+			io.PushContext("objectName", utils.WithRenderAsList(true))
 			for _, _element := range m.ObjectName {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'objectName' field")
 				}
 			}
-			io.PopContext("objectName")
+			io.PopContext("objectName", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("BACnetUnconfirmedServiceRequestWhoHas")

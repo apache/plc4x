@@ -141,7 +141,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Count array
 	items := make([]*SzlDataTreeItem, szlItemCount)
 	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
@@ -151,7 +151,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 
@@ -183,14 +183,14 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")

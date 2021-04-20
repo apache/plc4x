@@ -110,7 +110,7 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	}
 
 	// Array field (mlfb)
-	io.PullContext("mlfb")
+	io.PullContext("mlfb", utils.WithRenderAsList(true))
 	// Count array
 	mlfb := make([]int8, uint16(20))
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
@@ -120,7 +120,7 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 		}
 		mlfb[curItem] = _item
 	}
-	io.CloseContext("mlfb")
+	io.CloseContext("mlfb", utils.WithRenderAsList(true))
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId, _moduleTypeIdErr := io.ReadUint16("moduleTypeId", 16)
@@ -158,14 +158,14 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
-		io.PushContext("mlfb")
+		io.PushContext("mlfb", utils.WithRenderAsList(true))
 		for _, _element := range m.Mlfb {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
 			}
 		}
-		io.PopContext("mlfb")
+		io.PopContext("mlfb", utils.WithRenderAsList(true))
 	}
 
 	// Simple Field (moduleTypeId)

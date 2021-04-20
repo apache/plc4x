@@ -108,7 +108,7 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 	}
 
 	// Array field (serviceIds)
-	io.PullContext("serviceIds")
+	io.PullContext("serviceIds", utils.WithRenderAsList(true))
 	// Length array
 	serviceIds := make([]*ServiceId, 0)
 	_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
@@ -120,7 +120,7 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 		}
 		serviceIds = append(serviceIds, _item)
 	}
-	io.CloseContext("serviceIds")
+	io.CloseContext("serviceIds", utils.WithRenderAsList(true))
 
 	io.CloseContext("DIBSuppSvcFamilies")
 
@@ -147,14 +147,14 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (serviceIds)
 	if m.ServiceIds != nil {
-		io.PushContext("serviceIds")
+		io.PushContext("serviceIds", utils.WithRenderAsList(true))
 		for _, _element := range m.ServiceIds {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 			}
 		}
-		io.PopContext("serviceIds")
+		io.PopContext("serviceIds", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("DIBSuppSvcFamilies")

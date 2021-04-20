@@ -153,7 +153,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Array field (deviceInstanceRangeLowLimit)
-	io.PullContext("deviceInstanceRangeLowLimit")
+	io.PullContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true))
 	// Count array
 	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
@@ -163,7 +163,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeLowLimit[curItem] = _item
 	}
-	io.CloseContext("deviceInstanceRangeLowLimit")
+	io.CloseContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true))
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
 	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8("deviceInstanceRangeHighLimitHeader", 5)
@@ -181,7 +181,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Array field (deviceInstanceRangeHighLimit)
-	io.PullContext("deviceInstanceRangeHighLimit")
+	io.PullContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true))
 	// Count array
 	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
@@ -191,7 +191,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
 	}
-	io.CloseContext("deviceInstanceRangeHighLimit")
+	io.CloseContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true))
 
 	io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs")
 
@@ -226,14 +226,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeLowLimit)
 		if m.DeviceInstanceRangeLowLimit != nil {
-			io.PushContext("deviceInstanceRangeLowLimit")
+			io.PushContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true))
 			for _, _element := range m.DeviceInstanceRangeLowLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
 				}
 			}
-			io.PopContext("deviceInstanceRangeLowLimit")
+			io.PopContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true))
 		}
 
 		// Const Field (deviceInstanceRangeHighLimitHeader)
@@ -251,14 +251,14 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeHighLimit)
 		if m.DeviceInstanceRangeHighLimit != nil {
-			io.PushContext("deviceInstanceRangeHighLimit")
+			io.PushContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true))
 			for _, _element := range m.DeviceInstanceRangeHighLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
 				}
 			}
-			io.PopContext("deviceInstanceRangeHighLimit")
+			io.PopContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("BACnetUnconfirmedServiceRequestWhoIs")

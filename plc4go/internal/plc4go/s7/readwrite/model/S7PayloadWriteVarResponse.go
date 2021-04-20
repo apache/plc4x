@@ -115,7 +115,7 @@ func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter)
 	io.PullContext("S7PayloadWriteVarResponse")
 
 	// Array field (items)
-	io.PullContext("items")
+	io.PullContext("items", utils.WithRenderAsList(true))
 	// Count array
 	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
@@ -125,7 +125,7 @@ func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter)
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	io.CloseContext("items", utils.WithRenderAsList(true))
 
 	io.CloseContext("S7PayloadWriteVarResponse")
 
@@ -144,14 +144,14 @@ func (m *S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			io.PushContext("items", utils.WithRenderAsList(true))
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			io.PopContext("items", utils.WithRenderAsList(true))
 		}
 
 		io.PopContext("S7PayloadWriteVarResponse")
