@@ -608,7 +608,8 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 	{
 		checksum = ${helper.getNullValueForTypeReference(checksumField.type)}
 		// Create an array of all the bytes read in this message element so far.
-		checksumRawData := io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
+		<#--TODO: we need a buffered reader so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
+		checksumRawData := io.(ReadBufferByteBased).getBytes(startPos, io.GetPos())<@emitImport import="io" />
 		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference)}
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
@@ -961,7 +962,8 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	{
 		_checksum := ${helper.getLanguageTypeNameForField(field)}(${helper.getNullValueForTypeReference(checksumField.type)})
 		// Create an array of all the bytes written in this message element so far.
-		checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
+		<#--TODO: we need a buffered writer so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
+		checksumRawData []uint8 = io.(utils.WriteBufferByteBased).getBytes(startPos, io.GetPos())<@emitImport import="io" />
 		_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
 		_checksumErr := ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)}
 		if _elementErr != nil {

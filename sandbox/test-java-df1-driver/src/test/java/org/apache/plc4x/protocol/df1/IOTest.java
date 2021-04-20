@@ -25,6 +25,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.junit.jupiter.api.Test;
 
 public class IOTest {
@@ -33,7 +34,7 @@ public class IOTest {
     public void testXml() throws Exception {
         byte[] rData = Hex.decodeHex("10020900010001001100021003546F");
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData, false);
+        ReadBuffer rBuf = new ReadBufferByteBased(rData, false);
         DF1Symbol symbol = new DF1SymbolIO().parse(rBuf);
         String xml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(symbol);
         System.out.println(xml);
@@ -45,7 +46,7 @@ public class IOTest {
     public void testJson() throws Exception {
         byte[] rData = Hex.decodeHex("10020A0941000100FFFF1003DFB9");
         ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData, false);
+        ReadBuffer rBuf = new ReadBufferByteBased(rData, false);
         DF1Symbol symbol = new DF1SymbolIO().parse(rBuf);
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(symbol);
         System.out.println(json);
