@@ -115,11 +115,14 @@ func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestPa
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
+	io.PullContext("address")
+
 	// Simple Field (address)
 	address, _addressErr := S7AddressParse(io)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	io.CloseContext("address")
 
 	io.CloseContext("S7VarRequestParameterItemAddress")
 
@@ -144,7 +147,9 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 		}
 
 		// Simple Field (address)
+		io.PushContext("address")
 		_addressErr := m.Address.Serialize(io)
+		io.PopContext("address")
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

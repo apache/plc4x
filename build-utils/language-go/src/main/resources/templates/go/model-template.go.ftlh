@@ -654,6 +654,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 			<#case "enum">
 				<#assign enumField = field>
 
+	io.PullContext("${enumField.name}")
 				<#if enumField.fieldName?has_content>
 						<#assign enumFieldName=enumField.name+enumField.fieldName?cap_first>
 	// Enum field (${enumField.name})
@@ -675,6 +676,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					</#if>
+	io.CloseContext("${enumField.name}")
 				<#break>
 			<#case "implicit">
 				<#assign implicitField = field>
@@ -825,6 +827,10 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 			<#case "simple">
 				<#assign simpleField = field>
 
+				<#if !helper.isSimpleTypeReference(simpleField.type)>
+	io.PullContext("${simpleField.name}")
+				</#if>
+
 	// Simple Field (${simpleField.name})
 	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type, null, field)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 	if _${simpleField.name}Err != nil {
@@ -834,6 +840,9 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			</#if>
 	}
+				<#if !helper.isSimpleTypeReference(simpleField.type)>
+	io.CloseContext("${simpleField.name}")
+				</#if>
 				<#break>
 
 			<#case "switch">
@@ -1000,6 +1009,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			<#case "enum">
 				<#assign enumField = field>
 
+	io.PushContext("${enumField.name}")
 					<#if enumField.fieldName?has_content>
 						<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
@@ -1015,6 +1025,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 			</#if>
+	io.PopContext("${enumField.name}")
 				<#break>
 			<#case "implicit">
 				<#assign implicitField = field>
@@ -1105,7 +1116,9 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
 				<#else>
 					<#assign complexTypeReference = simpleField.type>
+	io.PushContext("${simpleField.name}")
 	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(io)
+	io.PopContext("${simpleField.name}")
 				</#if>
 	if _${simpleField.name}Err != nil {
 		return errors.Wrap(_${simpleField.name}Err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />

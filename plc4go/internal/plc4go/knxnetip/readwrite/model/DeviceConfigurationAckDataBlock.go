@@ -113,11 +113,14 @@ func DeviceConfigurationAckDataBlockParse(io utils.ReadBuffer) (*DeviceConfigura
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
+	io.PullContext("status")
+
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	io.CloseContext("status")
 
 	io.CloseContext("DeviceConfigurationAckDataBlock")
 
@@ -150,7 +153,9 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
 	}
 
 	// Simple Field (status)
+	io.PushContext("status")
 	_statusErr := m.Status.Serialize(io)
+	io.PopContext("status")
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}

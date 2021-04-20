@@ -107,11 +107,14 @@ func (m *ApduDataContainer) LengthInBytes() uint16 {
 func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	io.PullContext("ApduDataContainer")
 
+	io.PullContext("dataApdu")
+
 	// Simple Field (dataApdu)
 	dataApdu, _dataApduErr := ApduDataParse(io, dataLength)
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field")
 	}
+	io.CloseContext("dataApdu")
 
 	io.CloseContext("ApduDataContainer")
 
@@ -129,7 +132,9 @@ func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("ApduDataContainer")
 
 		// Simple Field (dataApdu)
+		io.PushContext("dataApdu")
 		_dataApduErr := m.DataApdu.Serialize(io)
+		io.PopContext("dataApdu")
 		if _dataApduErr != nil {
 			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
 		}

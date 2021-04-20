@@ -115,23 +115,32 @@ func (m *ConnectionRequest) LengthInBytes() uint16 {
 func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	io.PullContext("ConnectionRequest")
 
+	io.PullContext("hpaiDiscoveryEndpoint")
+
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
 	}
+	io.CloseContext("hpaiDiscoveryEndpoint")
+
+	io.PullContext("hpaiDataEndpoint")
 
 	// Simple Field (hpaiDataEndpoint)
 	hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParse(io)
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
 	}
+	io.CloseContext("hpaiDataEndpoint")
+
+	io.PullContext("connectionRequestInformation")
 
 	// Simple Field (connectionRequestInformation)
 	connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(io)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
+	io.CloseContext("connectionRequestInformation")
 
 	io.CloseContext("ConnectionRequest")
 
@@ -151,19 +160,25 @@ func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("ConnectionRequest")
 
 		// Simple Field (hpaiDiscoveryEndpoint)
+		io.PushContext("hpaiDiscoveryEndpoint")
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
+		io.PopContext("hpaiDiscoveryEndpoint")
 		if _hpaiDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
 		// Simple Field (hpaiDataEndpoint)
+		io.PushContext("hpaiDataEndpoint")
 		_hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(io)
+		io.PopContext("hpaiDataEndpoint")
 		if _hpaiDataEndpointErr != nil {
 			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
 		// Simple Field (connectionRequestInformation)
+		io.PushContext("connectionRequestInformation")
 		_connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(io)
+		io.PopContext("connectionRequestInformation")
 		if _connectionRequestInformationErr != nil {
 			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}

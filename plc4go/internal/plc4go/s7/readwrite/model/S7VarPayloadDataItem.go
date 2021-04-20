@@ -105,17 +105,21 @@ func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
 func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
 	io.PullContext("S7VarPayloadDataItem")
 
+	io.PullContext("returnCode")
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	io.CloseContext("returnCode")
 
+	io.PullContext("transportSize")
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := DataTransportSizeParse(io)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	io.CloseContext("transportSize")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint16("dataLength", 16)
@@ -160,19 +164,23 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
 	io.PushContext("S7VarPayloadDataItem")
 
+	io.PushContext("returnCode")
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
+	io.PopContext("returnCode")
 
+	io.PushContext("transportSize")
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.TransportSize)
 	_transportSizeErr := transportSize.Serialize(io)
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
+	io.PopContext("transportSize")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {

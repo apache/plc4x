@@ -101,17 +101,23 @@ func HPAIDiscoveryEndpointParse(io utils.ReadBuffer) (*HPAIDiscoveryEndpoint, er
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
+	io.PullContext("hostProtocolCode")
+
 	// Simple Field (hostProtocolCode)
 	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field")
 	}
+	io.CloseContext("hostProtocolCode")
+
+	io.PullContext("ipAddress")
 
 	// Simple Field (ipAddress)
 	ipAddress, _ipAddressErr := IPAddressParse(io)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")
 	}
+	io.CloseContext("ipAddress")
 
 	// Simple Field (ipPort)
 	ipPort, _ipPortErr := io.ReadUint16("ipPort", 16)
@@ -136,13 +142,17 @@ func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (hostProtocolCode)
+	io.PushContext("hostProtocolCode")
 	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
+	io.PopContext("hostProtocolCode")
 	if _hostProtocolCodeErr != nil {
 		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
 	}
 
 	// Simple Field (ipAddress)
+	io.PushContext("ipAddress")
 	_ipAddressErr := m.IpAddress.Serialize(io)
+	io.PopContext("ipAddress")
 	if _ipAddressErr != nil {
 		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
 	}

@@ -105,11 +105,14 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	io.PullContext("ApduDataOther")
 
+	io.PullContext("extendedApdu")
+
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
+	io.CloseContext("extendedApdu")
 
 	io.CloseContext("ApduDataOther")
 
@@ -127,7 +130,9 @@ func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("ApduDataOther")
 
 		// Simple Field (extendedApdu)
+		io.PushContext("extendedApdu")
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
+		io.PopContext("extendedApdu")
 		if _extendedApduErr != nil {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}

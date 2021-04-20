@@ -113,11 +113,13 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 	io.PullContext("ModbusPDUError")
 
+	io.PullContext("exceptionCode")
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
+	io.CloseContext("exceptionCode")
 
 	io.CloseContext("ModbusPDUError")
 
@@ -134,12 +136,14 @@ func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 		io.PushContext("ModbusPDUError")
 
+		io.PushContext("exceptionCode")
 		// Enum field (exceptionCode)
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
 		_exceptionCodeErr := exceptionCode.Serialize(io)
 		if _exceptionCodeErr != nil {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
+		io.PopContext("exceptionCode")
 
 		io.PopContext("ModbusPDUError")
 		return nil

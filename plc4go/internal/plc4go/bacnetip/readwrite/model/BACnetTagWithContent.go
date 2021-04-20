@@ -187,11 +187,14 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_OPENTAG) + " but got " + fmt.Sprintf("%d", openTag))
 	}
 
+	io.PullContext("value")
+
 	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(io)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
+	io.CloseContext("value")
 
 	// Const Field (closingTag)
 	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
@@ -271,7 +274,9 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (value)
+	io.PushContext("value")
 	_valueErr := m.Value.Serialize(io)
+	io.PopContext("value")
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

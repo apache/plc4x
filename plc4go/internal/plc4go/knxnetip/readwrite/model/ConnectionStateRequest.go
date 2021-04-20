@@ -134,11 +134,14 @@ func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 		}
 	}
 
+	io.PullContext("hpaiControlEndpoint")
+
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	io.CloseContext("hpaiControlEndpoint")
 
 	io.CloseContext("ConnectionStateRequest")
 
@@ -172,7 +175,9 @@ func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (hpaiControlEndpoint)
+		io.PushContext("hpaiControlEndpoint")
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		io.PopContext("hpaiControlEndpoint")
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}

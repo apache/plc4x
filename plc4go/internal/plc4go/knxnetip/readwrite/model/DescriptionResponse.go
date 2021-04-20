@@ -110,17 +110,23 @@ func (m *DescriptionResponse) LengthInBytes() uint16 {
 func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	io.PullContext("DescriptionResponse")
 
+	io.PullContext("dibDeviceInfo")
+
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
+	io.CloseContext("dibDeviceInfo")
+
+	io.PullContext("dibSuppSvcFamilies")
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	io.CloseContext("dibSuppSvcFamilies")
 
 	io.CloseContext("DescriptionResponse")
 
@@ -139,13 +145,17 @@ func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("DescriptionResponse")
 
 		// Simple Field (dibDeviceInfo)
+		io.PushContext("dibDeviceInfo")
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
+		io.PopContext("dibDeviceInfo")
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
+		io.PushContext("dibSuppSvcFamilies")
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
+		io.PopContext("dibSuppSvcFamilies")
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}

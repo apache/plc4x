@@ -107,11 +107,14 @@ func (m *ApduControlContainer) LengthInBytes() uint16 {
 func ApduControlContainerParse(io utils.ReadBuffer) (*Apdu, error) {
 	io.PullContext("ApduControlContainer")
 
+	io.PullContext("controlApdu")
+
 	// Simple Field (controlApdu)
 	controlApdu, _controlApduErr := ApduControlParse(io)
 	if _controlApduErr != nil {
 		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field")
 	}
+	io.CloseContext("controlApdu")
 
 	io.CloseContext("ApduControlContainer")
 
@@ -129,7 +132,9 @@ func (m *ApduControlContainer) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("ApduControlContainer")
 
 		// Simple Field (controlApdu)
+		io.PushContext("controlApdu")
 		_controlApduErr := m.ControlApdu.Serialize(io)
+		io.PopContext("controlApdu")
 		if _controlApduErr != nil {
 			return errors.Wrap(_controlApduErr, "Error serializing 'controlApdu' field")
 		}

@@ -105,11 +105,14 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
 	io.PullContext("ComObjectTableRealisationType6")
 
+	io.PullContext("comObjectDescriptors")
+
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
+	io.CloseContext("comObjectDescriptors")
 
 	io.CloseContext("ComObjectTableRealisationType6")
 
@@ -127,7 +130,9 @@ func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("ComObjectTableRealisationType6")
 
 		// Simple Field (comObjectDescriptors)
+		io.PushContext("comObjectDescriptors")
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
+		io.PopContext("comObjectDescriptors")
 		if _comObjectDescriptorsErr != nil {
 			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}

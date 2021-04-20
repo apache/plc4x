@@ -127,11 +127,14 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 
+	io.PullContext("payload")
+
 	// Simple Field (payload)
 	payload, _payloadErr := COTPPacketParse(io, uint16(len)-uint16(uint16(4)))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
+	io.CloseContext("payload")
 
 	io.CloseContext("TPKTPacket")
 
@@ -164,7 +167,9 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (payload)
+	io.PushContext("payload")
 	_payloadErr := m.Payload.Serialize(io)
+	io.PopContext("payload")
 	if _payloadErr != nil {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}

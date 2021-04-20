@@ -155,29 +155,41 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
 	}
 
+	io.PullContext("channelInfo1")
+
 	// Simple Field (channelInfo1)
 	channelInfo1, _channelInfo1Err := ChannelInformationParse(io)
 	if _channelInfo1Err != nil {
 		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field")
 	}
+	io.CloseContext("channelInfo1")
+
+	io.PullContext("channelInfo2")
 
 	// Simple Field (channelInfo2)
 	channelInfo2, _channelInfo2Err := ChannelInformationParse(io)
 	if _channelInfo2Err != nil {
 		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field")
 	}
+	io.CloseContext("channelInfo2")
+
+	io.PullContext("channelInfo3")
 
 	// Simple Field (channelInfo3)
 	channelInfo3, _channelInfo3Err := ChannelInformationParse(io)
 	if _channelInfo3Err != nil {
 		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field")
 	}
+	io.CloseContext("channelInfo3")
+
+	io.PullContext("channelInfo4")
 
 	// Simple Field (channelInfo4)
 	channelInfo4, _channelInfo4Err := ChannelInformationParse(io)
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")
 	}
+	io.CloseContext("channelInfo4")
 
 	io.CloseContext("DeviceDescriptorType2")
 
@@ -231,25 +243,33 @@ func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (channelInfo1)
+	io.PushContext("channelInfo1")
 	_channelInfo1Err := m.ChannelInfo1.Serialize(io)
+	io.PopContext("channelInfo1")
 	if _channelInfo1Err != nil {
 		return errors.Wrap(_channelInfo1Err, "Error serializing 'channelInfo1' field")
 	}
 
 	// Simple Field (channelInfo2)
+	io.PushContext("channelInfo2")
 	_channelInfo2Err := m.ChannelInfo2.Serialize(io)
+	io.PopContext("channelInfo2")
 	if _channelInfo2Err != nil {
 		return errors.Wrap(_channelInfo2Err, "Error serializing 'channelInfo2' field")
 	}
 
 	// Simple Field (channelInfo3)
+	io.PushContext("channelInfo3")
 	_channelInfo3Err := m.ChannelInfo3.Serialize(io)
+	io.PopContext("channelInfo3")
 	if _channelInfo3Err != nil {
 		return errors.Wrap(_channelInfo3Err, "Error serializing 'channelInfo3' field")
 	}
 
 	// Simple Field (channelInfo4)
+	io.PushContext("channelInfo4")
 	_channelInfo4Err := m.ChannelInfo4.Serialize(io)
+	io.PopContext("channelInfo4")
 	if _channelInfo4Err != nil {
 		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
 	}

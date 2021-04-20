@@ -134,6 +134,7 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 	io.PullContext("S7AddressAny")
 
+	io.PullContext("transportSize")
 	// Enum field (transportSize)
 	transportSizeCode, _transportSizeErr := io.ReadUint8("transportSize", 8)
 	var transportSize TransportSize
@@ -146,6 +147,7 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	io.CloseContext("transportSize")
 
 	// Simple Field (numberOfElements)
 	numberOfElements, _numberOfElementsErr := io.ReadUint16("numberOfElements", 16)
@@ -159,11 +161,13 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
 
+	io.PullContext("area")
 	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(io)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
 	}
+	io.CloseContext("area")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -211,11 +215,13 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 		io.PushContext("S7AddressAny")
 
+		io.PushContext("transportSize")
 		// Enum field (transportSize)
 		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
+		io.PopContext("transportSize")
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.NumberOfElements)
@@ -231,12 +237,14 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
+		io.PushContext("area")
 		// Enum field (area)
 		area := CastMemoryArea(m.Area)
 		_areaErr := area.Serialize(io)
 		if _areaErr != nil {
 			return errors.Wrap(_areaErr, "Error serializing 'area' field")
 		}
+		io.PopContext("area")
 
 		// Reserved Field (reserved)
 		{

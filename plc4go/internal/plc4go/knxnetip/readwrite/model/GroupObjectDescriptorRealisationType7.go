@@ -157,17 +157,23 @@ func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObje
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
+	io.PullContext("priority")
+
 	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	io.CloseContext("priority")
+
+	io.PullContext("valueType")
 
 	// Simple Field (valueType)
 	valueType, _valueTypeErr := ComObjectValueTypeParse(io)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
+	io.CloseContext("valueType")
 
 	io.CloseContext("GroupObjectDescriptorRealisationType7")
 
@@ -228,13 +234,17 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 	}
 
 	// Simple Field (priority)
+	io.PushContext("priority")
 	_priorityErr := m.Priority.Serialize(io)
+	io.PopContext("priority")
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (valueType)
+	io.PushContext("valueType")
 	_valueTypeErr := m.ValueType.Serialize(io)
+	io.PopContext("valueType")
 	if _valueTypeErr != nil {
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}

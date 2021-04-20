@@ -123,11 +123,14 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 		}
 	}
 
+	io.PullContext("serviceRequest")
+
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+	io.CloseContext("serviceRequest")
 
 	io.CloseContext("APDUUnconfirmedRequest")
 
@@ -153,7 +156,9 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
+		io.PushContext("serviceRequest")
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
+		io.PopContext("serviceRequest")
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}

@@ -83,7 +83,7 @@ func (x *xmlReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArgs
 
 func (x *xmlReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {
 	var value uint8
-	err := x.decode(logicalName, "uint8", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "uint", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -93,7 +93,7 @@ func (x *xmlReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint16, error) {
 	var value uint16
-	err := x.decode(logicalName, "uint16", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "uint", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -103,7 +103,7 @@ func (x *xmlReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint32, error) {
 	var value uint32
-	err := x.decode(logicalName, "uint32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "uint", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -113,7 +113,7 @@ func (x *xmlReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint64, error) {
 	var value uint64
-	err := x.decode(logicalName, "uint64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "uint", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -123,7 +123,7 @@ func (x *xmlReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int8, error) {
 	var value int8
-	err := x.decode(logicalName, "int8", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "int", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -133,7 +133,7 @@ func (x *xmlReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArgs
 
 func (x *xmlReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int16, error) {
 	var value int16
-	err := x.decode(logicalName, "int16", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "int", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -143,7 +143,7 @@ func (x *xmlReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int32, error) {
 	var value int32
-	err := x.decode(logicalName, "int32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "int", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -153,7 +153,7 @@ func (x *xmlReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error) {
 	var value int64
-	err := x.decode(logicalName, "int64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "int", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -164,7 +164,7 @@ func (x *xmlReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerArg
 func (x *xmlReadBuffer) ReadBigInt(logicalName string, bitLength uint64, readerArgs ...WithReaderArgs) (*big.Int, error) {
 	var value big.Int
 	// TODO: bitLength is too short for a big int
-	err := x.decode(logicalName, "bigInt", uint8(bitLength), readerArgs, &value)
+	err := x.decode(logicalName, "int", uint8(bitLength), readerArgs, &value)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (x *xmlReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBit
 		bitLength += 1
 	}
 	var value float32
-	err := x.decode(logicalName, "float32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "float", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -192,7 +192,7 @@ func (x *xmlReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBit
 		bitLength += 1
 	}
 	var value float64
-	err := x.decode(logicalName, "float64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "float", bitLength, readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -206,7 +206,7 @@ func (x *xmlReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBi
 		bitLength += 1
 	}
 	var value big.Float
-	err := x.decode(logicalName, "bigFloat", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, "float", bitLength, readerArgs, &value)
 	if err != nil {
 		return nil, err
 	}

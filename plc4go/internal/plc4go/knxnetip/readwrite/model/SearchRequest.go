@@ -105,11 +105,14 @@ func (m *SearchRequest) LengthInBytes() uint16 {
 func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	io.PullContext("SearchRequest")
 
+	io.PullContext("hpaiIDiscoveryEndpoint")
+
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
+	io.CloseContext("hpaiIDiscoveryEndpoint")
 
 	io.CloseContext("SearchRequest")
 
@@ -127,7 +130,9 @@ func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("SearchRequest")
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
+		io.PushContext("hpaiIDiscoveryEndpoint")
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
+		io.PopContext("hpaiIDiscoveryEndpoint")
 		if _hpaiIDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}

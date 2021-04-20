@@ -136,11 +136,14 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
+	io.PullContext("npdu")
+
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+	io.CloseContext("npdu")
 
 	io.CloseContext("BVLCForwardedNPDU")
 
@@ -179,7 +182,9 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (npdu)
+		io.PushContext("npdu")
 		_npduErr := m.Npdu.Serialize(io)
+		io.PopContext("npdu")
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}

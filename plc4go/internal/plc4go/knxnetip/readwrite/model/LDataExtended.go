@@ -164,11 +164,14 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
 	}
 
+	io.PullContext("sourceAddress")
+
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	io.CloseContext("sourceAddress")
 
 	// Array field (destinationAddress)
 	io.PullContext("destinationAddress")
@@ -190,11 +193,14 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
+	io.PullContext("apdu")
+
 	// Simple Field (apdu)
 	apdu, _apduErr := ApduParse(io, dataLength)
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}
+	io.CloseContext("apdu")
 
 	io.CloseContext("LDataExtended")
 
@@ -238,7 +244,9 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (sourceAddress)
+		io.PushContext("sourceAddress")
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
+		io.PopContext("sourceAddress")
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
@@ -263,7 +271,9 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (apdu)
+		io.PushContext("apdu")
 		_apduErr := m.Apdu.Serialize(io)
+		io.PopContext("apdu")
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}

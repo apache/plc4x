@@ -137,11 +137,14 @@ func AmsSerialFrameParse(io utils.ReadBuffer) (*AmsSerialFrame, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
+	io.PullContext("userdata")
+
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+	io.CloseContext("userdata")
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint16("crc", 16)
@@ -194,7 +197,9 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (userdata)
+	io.PushContext("userdata")
 	_userdataErr := m.Userdata.Serialize(io)
+	io.PopContext("userdata")
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}

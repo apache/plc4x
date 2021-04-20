@@ -140,11 +140,14 @@ func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 	io.CloseContext("additionalInformation")
 
+	io.PullContext("dataFrame")
+
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+	io.CloseContext("dataFrame")
 
 	io.CloseContext("LDataInd")
 
@@ -183,7 +186,9 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (dataFrame)
+		io.PushContext("dataFrame")
 		_dataFrameErr := m.DataFrame.Serialize(io)
+		io.PopContext("dataFrame")
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}

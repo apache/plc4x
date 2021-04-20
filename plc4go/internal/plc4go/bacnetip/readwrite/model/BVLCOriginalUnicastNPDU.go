@@ -105,11 +105,14 @@ func (m *BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
 func BVLCOriginalUnicastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
 	io.PullContext("BVLCOriginalUnicastNPDU")
 
+	io.PullContext("npdu")
+
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+	io.CloseContext("npdu")
 
 	io.CloseContext("BVLCOriginalUnicastNPDU")
 
@@ -127,7 +130,9 @@ func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("BVLCOriginalUnicastNPDU")
 
 		// Simple Field (npdu)
+		io.PushContext("npdu")
 		_npduErr := m.Npdu.Serialize(io)
+		io.PopContext("npdu")
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}

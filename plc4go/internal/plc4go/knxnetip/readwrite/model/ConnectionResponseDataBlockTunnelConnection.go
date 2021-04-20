@@ -105,11 +105,14 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
 	io.PullContext("ConnectionResponseDataBlockTunnelConnection")
 
+	io.PullContext("knxAddress")
+
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	io.CloseContext("knxAddress")
 
 	io.CloseContext("ConnectionResponseDataBlockTunnelConnection")
 
@@ -127,7 +130,9 @@ func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBu
 		io.PushContext("ConnectionResponseDataBlockTunnelConnection")
 
 		// Simple Field (knxAddress)
+		io.PushContext("knxAddress")
 		_knxAddressErr := m.KnxAddress.Serialize(io)
+		io.PopContext("knxAddress")
 		if _knxAddressErr != nil {
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}

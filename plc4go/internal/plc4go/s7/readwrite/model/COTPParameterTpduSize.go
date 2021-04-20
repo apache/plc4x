@@ -105,11 +105,13 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
 	io.PullContext("COTPParameterTpduSize")
 
+	io.PullContext("tpduSize")
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
+	io.CloseContext("tpduSize")
 
 	io.CloseContext("COTPParameterTpduSize")
 
@@ -126,12 +128,14 @@ func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
 		io.PushContext("COTPParameterTpduSize")
 
+		io.PushContext("tpduSize")
 		// Enum field (tpduSize)
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
 		_tpduSizeErr := tpduSize.Serialize(io)
 		if _tpduSizeErr != nil {
 			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
+		io.PopContext("tpduSize")
 
 		io.PopContext("COTPParameterTpduSize")
 		return nil

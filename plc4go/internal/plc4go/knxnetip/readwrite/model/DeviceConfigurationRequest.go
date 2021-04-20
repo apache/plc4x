@@ -110,17 +110,23 @@ func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
 func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
 	io.PullContext("DeviceConfigurationRequest")
 
+	io.PullContext("deviceConfigurationRequestDataBlock")
+
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
 	}
+	io.CloseContext("deviceConfigurationRequestDataBlock")
+
+	io.PullContext("cemi")
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
+	io.CloseContext("cemi")
 
 	io.CloseContext("DeviceConfigurationRequest")
 
@@ -139,13 +145,17 @@ func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("DeviceConfigurationRequest")
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
+		io.PushContext("deviceConfigurationRequestDataBlock")
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
+		io.PopContext("deviceConfigurationRequestDataBlock")
 		if _deviceConfigurationRequestDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
+		io.PushContext("cemi")
 		_cemiErr := m.Cemi.Serialize(io)
+		io.PopContext("cemi")
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}

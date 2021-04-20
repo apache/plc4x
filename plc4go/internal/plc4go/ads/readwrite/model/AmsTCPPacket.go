@@ -111,11 +111,14 @@ func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
+	io.PullContext("userdata")
+
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+	io.CloseContext("userdata")
 
 	io.CloseContext("AmsTCPPacket")
 
@@ -142,7 +145,9 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (userdata)
+	io.PushContext("userdata")
 	_userdataErr := m.Userdata.Serialize(io)
+	io.PopContext("userdata")
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}

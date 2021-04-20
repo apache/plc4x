@@ -191,11 +191,14 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 		proposedWindowSize = &_val
 	}
 
+	io.PullContext("serviceAck")
+
 	// Simple Field (serviceAck)
 	serviceAck, _serviceAckErr := BACnetServiceAckParse(io)
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")
 	}
+	io.CloseContext("serviceAck")
 
 	io.CloseContext("APDUComplexAck")
 
@@ -267,7 +270,9 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceAck)
+		io.PushContext("serviceAck")
 		_serviceAckErr := m.ServiceAck.Serialize(io)
+		io.PopContext("serviceAck")
 		if _serviceAckErr != nil {
 			return errors.Wrap(_serviceAckErr, "Error serializing 'serviceAck' field")
 		}

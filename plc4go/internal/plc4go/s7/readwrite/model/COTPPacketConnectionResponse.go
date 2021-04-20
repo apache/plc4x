@@ -129,11 +129,13 @@ func COTPPacketConnectionResponseParse(io utils.ReadBuffer) (*COTPPacket, error)
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
+	io.PullContext("protocolClass")
 	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
+	io.CloseContext("protocolClass")
 
 	io.CloseContext("COTPPacketConnectionResponse")
 
@@ -166,12 +168,14 @@ func (m *COTPPacketConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
+		io.PushContext("protocolClass")
 		// Enum field (protocolClass)
 		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
 		_protocolClassErr := protocolClass.Serialize(io)
 		if _protocolClassErr != nil {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
+		io.PopContext("protocolClass")
 
 		io.PopContext("COTPPacketConnectionResponse")
 		return nil

@@ -134,11 +134,14 @@ func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
+	io.PullContext("error")
+
 	// Simple Field (error)
 	error, _errorErr := BACnetErrorParse(io)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
 	}
+	io.CloseContext("error")
 
 	io.CloseContext("APDUError")
 
@@ -172,7 +175,9 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (error)
+		io.PushContext("error")
 		_errorErr := m.Error.Serialize(io)
+		io.PopContext("error")
 		if _errorErr != nil {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}

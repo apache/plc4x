@@ -137,29 +137,41 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
 
+	io.PullContext("knxMedium")
+
 	// Simple Field (knxMedium)
 	knxMedium, _knxMediumErr := KnxMediumParse(io)
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field")
 	}
+	io.CloseContext("knxMedium")
+
+	io.PullContext("deviceStatus")
 
 	// Simple Field (deviceStatus)
 	deviceStatus, _deviceStatusErr := DeviceStatusParse(io)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field")
 	}
+	io.CloseContext("deviceStatus")
+
+	io.PullContext("knxAddress")
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	io.CloseContext("knxAddress")
+
+	io.PullContext("projectInstallationIdentifier")
 
 	// Simple Field (projectInstallationIdentifier)
 	projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(io)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
+	io.CloseContext("projectInstallationIdentifier")
 
 	// Array field (knxNetIpDeviceSerialNumber)
 	io.PullContext("knxNetIpDeviceSerialNumber")
@@ -174,17 +186,23 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	}
 	io.CloseContext("knxNetIpDeviceSerialNumber")
 
+	io.PullContext("knxNetIpDeviceMulticastAddress")
+
 	// Simple Field (knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(io)
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field")
 	}
+	io.CloseContext("knxNetIpDeviceMulticastAddress")
+
+	io.PullContext("knxNetIpDeviceMacAddress")
 
 	// Simple Field (knxNetIpDeviceMacAddress)
 	knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(io)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
+	io.CloseContext("knxNetIpDeviceMacAddress")
 
 	// Array field (deviceFriendlyName)
 	io.PullContext("deviceFriendlyName")
@@ -223,25 +241,33 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (knxMedium)
+	io.PushContext("knxMedium")
 	_knxMediumErr := m.KnxMedium.Serialize(io)
+	io.PopContext("knxMedium")
 	if _knxMediumErr != nil {
 		return errors.Wrap(_knxMediumErr, "Error serializing 'knxMedium' field")
 	}
 
 	// Simple Field (deviceStatus)
+	io.PushContext("deviceStatus")
 	_deviceStatusErr := m.DeviceStatus.Serialize(io)
+	io.PopContext("deviceStatus")
 	if _deviceStatusErr != nil {
 		return errors.Wrap(_deviceStatusErr, "Error serializing 'deviceStatus' field")
 	}
 
 	// Simple Field (knxAddress)
+	io.PushContext("knxAddress")
 	_knxAddressErr := m.KnxAddress.Serialize(io)
+	io.PopContext("knxAddress")
 	if _knxAddressErr != nil {
 		return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 	}
 
 	// Simple Field (projectInstallationIdentifier)
+	io.PushContext("projectInstallationIdentifier")
 	_projectInstallationIdentifierErr := m.ProjectInstallationIdentifier.Serialize(io)
+	io.PopContext("projectInstallationIdentifier")
 	if _projectInstallationIdentifierErr != nil {
 		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
 	}
@@ -259,13 +285,17 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
+	io.PushContext("knxNetIpDeviceMulticastAddress")
 	_knxNetIpDeviceMulticastAddressErr := m.KnxNetIpDeviceMulticastAddress.Serialize(io)
+	io.PopContext("knxNetIpDeviceMulticastAddress")
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
+	io.PushContext("knxNetIpDeviceMacAddress")
 	_knxNetIpDeviceMacAddressErr := m.KnxNetIpDeviceMacAddress.Serialize(io)
+	io.PopContext("knxNetIpDeviceMacAddress")
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}

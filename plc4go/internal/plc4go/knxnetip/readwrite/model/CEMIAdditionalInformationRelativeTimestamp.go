@@ -121,11 +121,14 @@ func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMI
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationRelativeTimestamp_LEN) + " but got " + fmt.Sprintf("%d", len))
 	}
 
+	io.PullContext("relativeTimestamp")
+
 	// Simple Field (relativeTimestamp)
 	relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(io)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
+	io.CloseContext("relativeTimestamp")
 
 	io.CloseContext("CEMIAdditionalInformationRelativeTimestamp")
 
@@ -149,7 +152,9 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuf
 		}
 
 		// Simple Field (relativeTimestamp)
+		io.PushContext("relativeTimestamp")
 		_relativeTimestampErr := m.RelativeTimestamp.Serialize(io)
+		io.PopContext("relativeTimestamp")
 		if _relativeTimestampErr != nil {
 			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}

@@ -133,11 +133,14 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	io.PullContext("AdsReadDeviceInfoResponse")
 
+	io.PullContext("result")
+
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	io.CloseContext("result")
 
 	// Simple Field (majorVersion)
 	majorVersion, _majorVersionErr := io.ReadUint8("majorVersion", 8)
@@ -190,7 +193,9 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("AdsReadDeviceInfoResponse")
 
 		// Simple Field (result)
+		io.PushContext("result")
 		_resultErr := m.Result.Serialize(io)
+		io.PopContext("result")
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}

@@ -115,23 +115,32 @@ func (m *SearchResponse) LengthInBytes() uint16 {
 func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	io.PullContext("SearchResponse")
 
+	io.PullContext("hpaiControlEndpoint")
+
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	io.CloseContext("hpaiControlEndpoint")
+
+	io.PullContext("dibDeviceInfo")
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
+	io.CloseContext("dibDeviceInfo")
+
+	io.PullContext("dibSuppSvcFamilies")
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	io.CloseContext("dibSuppSvcFamilies")
 
 	io.CloseContext("SearchResponse")
 
@@ -151,19 +160,25 @@ func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("SearchResponse")
 
 		// Simple Field (hpaiControlEndpoint)
+		io.PushContext("hpaiControlEndpoint")
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		io.PopContext("hpaiControlEndpoint")
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		// Simple Field (dibDeviceInfo)
+		io.PushContext("dibDeviceInfo")
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
+		io.PopContext("dibDeviceInfo")
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
+		io.PushContext("dibSuppSvcFamilies")
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
+		io.PopContext("dibSuppSvcFamilies")
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}

@@ -105,11 +105,14 @@ func (m *DeviceConfigurationAck) LengthInBytes() uint16 {
 func DeviceConfigurationAckParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	io.PullContext("DeviceConfigurationAck")
 
+	io.PullContext("deviceConfigurationAckDataBlock")
+
 	// Simple Field (deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParse(io)
 	if _deviceConfigurationAckDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field")
 	}
+	io.CloseContext("deviceConfigurationAckDataBlock")
 
 	io.CloseContext("DeviceConfigurationAck")
 
@@ -127,7 +130,9 @@ func (m *DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("DeviceConfigurationAck")
 
 		// Simple Field (deviceConfigurationAckDataBlock)
+		io.PushContext("deviceConfigurationAckDataBlock")
 		_deviceConfigurationAckDataBlockErr := m.DeviceConfigurationAckDataBlock.Serialize(io)
+		io.PopContext("deviceConfigurationAckDataBlock")
 		if _deviceConfigurationAckDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error serializing 'deviceConfigurationAckDataBlock' field")
 		}

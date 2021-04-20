@@ -129,11 +129,14 @@ func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
 
+	io.PullContext("pdu")
+
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	io.CloseContext("pdu")
 
 	io.CloseContext("ModbusTcpADU")
 
@@ -172,7 +175,9 @@ func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (pdu)
+	io.PushContext("pdu")
 	_pduErr := m.Pdu.Serialize(io)
+	io.PopContext("pdu")
 	if _pduErr != nil {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}

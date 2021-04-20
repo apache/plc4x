@@ -109,11 +109,14 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
 	io.PullContext("ConnectionRequestInformationTunnelConnection")
 
+	io.PullContext("knxLayer")
+
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
 	}
+	io.CloseContext("knxLayer")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -145,7 +148,9 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 		io.PushContext("ConnectionRequestInformationTunnelConnection")
 
 		// Simple Field (knxLayer)
+		io.PushContext("knxLayer")
 		_knxLayerErr := m.KnxLayer.Serialize(io)
+		io.PopContext("knxLayer")
 		if _knxLayerErr != nil {
 			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
 		}

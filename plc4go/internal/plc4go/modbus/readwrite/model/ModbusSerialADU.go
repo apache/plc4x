@@ -131,11 +131,14 @@ func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU,
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
+	io.PullContext("pdu")
+
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	io.CloseContext("pdu")
 
 	io.CloseContext("ModbusSerialADU")
 
@@ -176,7 +179,9 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (pdu)
+	io.PushContext("pdu")
 	_pduErr := m.Pdu.Serialize(io)
+	io.PopContext("pdu")
 	if _pduErr != nil {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}

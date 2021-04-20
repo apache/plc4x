@@ -224,11 +224,14 @@ func APDUConfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, e
 		proposedWindowSize = &_val
 	}
 
+	io.PullContext("serviceRequest")
+
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() uint16 { return uint16(uint16(2)) }, func() uint16 { return uint16(uint16(0)) }))))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+	io.CloseContext("serviceRequest")
 
 	io.CloseContext("APDUConfirmedRequest")
 
@@ -324,7 +327,9 @@ func (m *APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
+		io.PushContext("serviceRequest")
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
+		io.PopContext("serviceRequest")
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}

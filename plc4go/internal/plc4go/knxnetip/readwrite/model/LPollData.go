@@ -132,11 +132,14 @@ func (m *LPollData) LengthInBytes() uint16 {
 func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
 	io.PullContext("LPollData")
 
+	io.PullContext("sourceAddress")
+
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	io.CloseContext("sourceAddress")
 
 	// Array field (targetAddress)
 	io.PullContext("targetAddress")
@@ -189,7 +192,9 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("LPollData")
 
 		// Simple Field (sourceAddress)
+		io.PushContext("sourceAddress")
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
+		io.PopContext("sourceAddress")
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}

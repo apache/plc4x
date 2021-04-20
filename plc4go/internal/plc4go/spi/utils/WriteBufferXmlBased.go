@@ -77,84 +77,84 @@ func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint8", bitLength, writerArgs...),
+		Attr: generateAttr("uint", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint16", bitLength, writerArgs...),
+		Attr: generateAttr("uint", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint32", bitLength, writerArgs...),
+		Attr: generateAttr("uint", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint64", bitLength, writerArgs...),
+		Attr: generateAttr("uint", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int8", bitLength, writerArgs...),
+		Attr: generateAttr("int", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int16", bitLength, writerArgs...),
+		Attr: generateAttr("int", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int32", bitLength, writerArgs...),
+		Attr: generateAttr("int", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int64", bitLength, writerArgs...),
+		Attr: generateAttr("int", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("bigInt", bitLength, writerArgs...),
+		Attr: generateAttr("int", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("float32", bitLength, writerArgs...),
+		Attr: generateAttr("float", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("float64", bitLength, writerArgs...),
+		Attr: generateAttr("float", bitLength, writerArgs...),
 	})
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("bigFloat", bitLength, writerArgs...),
+		Attr: generateAttr("float", bitLength, writerArgs...),
 	})
 }
 

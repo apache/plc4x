@@ -185,11 +185,14 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 		}
 	}
 
+	io.PullContext("propertyDataType")
+
 	// Simple Field (propertyDataType)
 	propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(io)
 	if _propertyDataTypeErr != nil {
 		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
 	}
+	io.CloseContext("propertyDataType")
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -211,17 +214,23 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
 
+	io.PullContext("readLevel")
+
 	// Simple Field (readLevel)
 	readLevel, _readLevelErr := AccessLevelParse(io)
 	if _readLevelErr != nil {
 		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
 	}
+	io.CloseContext("readLevel")
+
+	io.PullContext("writeLevel")
 
 	// Simple Field (writeLevel)
 	writeLevel, _writeLevelErr := AccessLevelParse(io)
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
+	io.CloseContext("writeLevel")
 
 	io.CloseContext("ApduDataExtPropertyDescriptionResponse")
 
@@ -282,7 +291,9 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		}
 
 		// Simple Field (propertyDataType)
+		io.PushContext("propertyDataType")
 		_propertyDataTypeErr := m.PropertyDataType.Serialize(io)
+		io.PopContext("propertyDataType")
 		if _propertyDataTypeErr != nil {
 			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
 		}
@@ -303,13 +314,17 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		}
 
 		// Simple Field (readLevel)
+		io.PushContext("readLevel")
 		_readLevelErr := m.ReadLevel.Serialize(io)
+		io.PopContext("readLevel")
 		if _readLevelErr != nil {
 			return errors.Wrap(_readLevelErr, "Error serializing 'readLevel' field")
 		}
 
 		// Simple Field (writeLevel)
+		io.PushContext("writeLevel")
 		_writeLevelErr := m.WriteLevel.Serialize(io)
+		io.PopContext("writeLevel")
 		if _writeLevelErr != nil {
 			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}

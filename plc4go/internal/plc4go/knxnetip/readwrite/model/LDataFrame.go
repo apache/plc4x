@@ -149,11 +149,13 @@ func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
 
+	io.PullContext("priority")
 	// Enum field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	io.CloseContext("priority")
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit("acknowledgeRequested")
@@ -229,12 +231,14 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
 	}
 
+	io.PushContext("priority")
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.Priority)
 	_priorityErr := priority.Serialize(io)
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
+	io.PopContext("priority")
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.AcknowledgeRequested)

@@ -119,17 +119,21 @@ func (m *S7PayloadUserDataItem) LengthInBytes() uint16 {
 func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7PayloadUserDataItem, error) {
 	io.PullContext("S7PayloadUserDataItem")
 
+	io.PullContext("returnCode")
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	io.CloseContext("returnCode")
 
+	io.PullContext("transportSize")
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := DataTransportSizeParse(io)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
+	io.CloseContext("transportSize")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint16("dataLength", 16)
@@ -138,11 +142,14 @@ func S7PayloadUserDataItemParse(io utils.ReadBuffer, cpuFunctionType uint8) (*S7
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
+	io.PullContext("szlId")
+
 	// Simple Field (szlId)
 	szlId, _szlIdErr := SzlIdParse(io)
 	if _szlIdErr != nil {
 		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field")
 	}
+	io.CloseContext("szlId")
 
 	// Simple Field (szlIndex)
 	szlIndex, _szlIndexErr := io.ReadUint16("szlIndex", 16)
@@ -180,19 +187,23 @@ func (m *S7PayloadUserDataItem) Serialize(io utils.WriteBuffer) error {
 func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7PayloadUserDataItem, serializeChildFunction func() error) error {
 	io.PushContext("S7PayloadUserDataItem")
 
+	io.PushContext("returnCode")
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
+	io.PopContext("returnCode")
 
+	io.PushContext("transportSize")
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.TransportSize)
 	_transportSizeErr := transportSize.Serialize(io)
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
+	io.PopContext("transportSize")
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
@@ -202,7 +213,9 @@ func (m *S7PayloadUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7P
 	}
 
 	// Simple Field (szlId)
+	io.PushContext("szlId")
 	_szlIdErr := m.SzlId.Serialize(io)
+	io.PopContext("szlId")
 	if _szlIdErr != nil {
 		return errors.Wrap(_szlIdErr, "Error serializing 'szlId' field")
 	}

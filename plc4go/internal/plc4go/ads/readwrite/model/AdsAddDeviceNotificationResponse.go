@@ -114,11 +114,14 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
 func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	io.PullContext("AdsAddDeviceNotificationResponse")
 
+	io.PullContext("result")
+
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	io.CloseContext("result")
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
@@ -143,7 +146,9 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 		io.PushContext("AdsAddDeviceNotificationResponse")
 
 		// Simple Field (result)
+		io.PushContext("result")
 		_resultErr := m.Result.Serialize(io)
+		io.PopContext("result")
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}

@@ -109,11 +109,14 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 func AdsWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	io.PullContext("AdsWriteResponse")
 
+	io.PullContext("result")
+
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	io.CloseContext("result")
 
 	io.CloseContext("AdsWriteResponse")
 
@@ -131,7 +134,9 @@ func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 		io.PushContext("AdsWriteResponse")
 
 		// Simple Field (result)
+		io.PushContext("result")
 		_resultErr := m.Result.Serialize(io)
+		io.PopContext("result")
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
