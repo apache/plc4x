@@ -241,8 +241,6 @@ func (x *xmlReadBuffer) move(bits uint8) {
 }
 
 func (x *xmlReadBuffer) travelToNextStartElement() (xml.StartElement, error) {
-	var startElement xml.StartElement
-findTheStartToken:
 	for {
 		token, err := x.Token()
 		if err != nil {
@@ -250,13 +248,11 @@ findTheStartToken:
 		}
 		switch token.(type) {
 		case xml.StartElement:
-			startElement = token.(xml.StartElement)
-			break findTheStartToken
+			return token.(xml.StartElement), nil
 		case xml.EndElement:
 			return xml.StartElement{}, errors.Errorf("unexpected end element %s", token.(xml.EndElement).Name)
 		}
 	}
-	return startElement, nil
 }
 
 func (x *xmlReadBuffer) travelToNextEndElement() (xml.EndElement, error) {
