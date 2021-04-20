@@ -218,8 +218,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}[0]);
             </#if>
         </#if>
-        <#break>
         io.closeContext("${arrayField.name}");
+        <#break>
     <#case "checksum">
         <#assign checksumField = field>
         <#assign simpleTypeReference = checksumField.type>
@@ -424,6 +424,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 </#switch>
 </#list>
 
+        io.closeContext("${type.name}");
         // Create the instance
         <#if helper.isDiscriminatedChildTypeDefinition()>
         return new ${type.name}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);

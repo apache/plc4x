@@ -42,6 +42,8 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     Document document;
 
+    int pos = 1;
+
     public WriteBufferXmlBased() {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -54,7 +56,7 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     @Override
     public int getPos() {
-        return 0;
+        return pos/8;
     }
 
     @Override
@@ -64,137 +66,97 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     @Override
     public void writeBit(String logicalName, boolean value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "bit");
-        element.setAttribute("bitLength", "1");
-        element.appendChild(document.createTextNode(Boolean.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        String dataType = "bit";
+        int bitLength = 1;
+        String data = Boolean.valueOf(value).toString();
+        createAndAppend(logicalName, dataType, bitLength, data);
+        move(1);
     }
 
     @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "uint8");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Byte.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "uint8", bitLength, Byte.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeUnsignedShort(String logicalName, int bitLength, short value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "uint16");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Short.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "uint16", bitLength, Short.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeUnsignedInt(String logicalName, int bitLength, int value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "uint32");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Integer.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "uint32", bitLength, Integer.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeUnsignedLong(String logicalName, int bitLength, long value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "uint64");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Long.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "uint64", bitLength, Long.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "bigInt");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(value.toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "bigInt", bitLength, value.toString());
+        move(bitLength);
     }
 
     @Override
     public void writeByte(String logicalName, int bitLength, byte value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "int8");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Byte.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "int8", bitLength, Byte.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeShort(String logicalName, int bitLength, short value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "int16");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Short.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "int16", bitLength, Short.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeInt(String logicalName, int bitLength, int value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "int32");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Integer.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "int32", bitLength, Integer.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeLong(String logicalName, int bitLength, long value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "int64");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(Long.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "int64", bitLength, Long.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "bigInt");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(value.toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "bigInt", bitLength, value.toString());
+        move(bitLength);
     }
 
     @Override
     public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "float32");
-        element.setAttribute("bitLength", String.valueOf((value < 0 ? 1 : 0) + bitsExponent + bitsMantissa));
-        element.appendChild(document.createTextNode(Float.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
+        createAndAppend(logicalName, "float32", bitLength, Float.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "float64");
-        element.setAttribute("bitLength", String.valueOf((value < 0 ? 1 : 0) + bitsExponent + bitsMantissa));
-        element.appendChild(document.createTextNode(Double.valueOf(value).toString()));
-        stack.peek().appendChild(element);
+        int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
+        createAndAppend(logicalName, "float64", bitLength, Double.valueOf(value).toString());
+        move(bitLength);
     }
 
     @Override
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "bigFloat");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(value.toString()));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "bigFloat", bitLength, value.toString());
+        move(bitLength);
     }
 
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value) throws ParseException {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", "string");
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(value));
-        stack.peek().appendChild(element);
+        createAndAppend(logicalName, "string", bitLength, value);
+        move(bitLength);
     }
 
     @Override
@@ -230,6 +192,17 @@ public class WriteBufferXmlBased implements WriteBuffer {
         }
     }
 
+    private void move(int bits) {
+        pos += bits;
+    }
+
+    private void createAndAppend(String logicalName, String dataType, int bitLength, String data) {
+        Element element = document.createElement(sanitizeLogicalName(logicalName));
+        element.setAttribute("dataType", dataType);
+        element.setAttribute("bitLength", String.valueOf(bitLength));
+        element.appendChild(document.createTextNode(data));
+        stack.peek().appendChild(element);
+    }
 
     private String sanitizeLogicalName(String logicalName) {
         if (logicalName.equals("")) {
