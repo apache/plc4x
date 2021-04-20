@@ -544,7 +544,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 				<#assign arrayField = field>
 
 	// Array field (${arrayField.name})
-	io.PullContext("${arrayField.name}")
+	io.PullContext("${arrayField.name}", utils.WithRenderAsList(true))
 			<#-- Only update curPos if the length expression uses it -->
 				<#if arrayField.loopExpression.contains("curPos")>
 	curPos = io.GetPos() - startPos<@emitImport import="io" />
@@ -598,7 +598,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 					</#if>
 	}
 				</#if>
-	io.CloseContext("${arrayField.name}")
+	io.CloseContext("${arrayField.name}", utils.WithRenderAsList(true))
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>
@@ -691,7 +691,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 				<#break>
 			<#case "manualArray">
 				<#assign manualArrayField = field>
-	io.PullContext("${manualArrayField.name}")
+	io.PullContext("${manualArrayField.name}", utils.WithRenderAsList(true))
 	// Manual Array Field (${manualArrayField.name})
 			<#-- Only update curPos if the length expression uses it -->
 				<#if manualArrayField.loopExpression.contains("curPos")>
@@ -747,7 +747,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = _${manualArrayField.name}List.toArray(new ${helper.getLanguageTypeNameForField(manualArrayField)}[0])
 					</#if>
 				</#if>
-	io.CloseContext("${manualArrayField.name}")
+	io.CloseContext("${manualArrayField.name}", utils.WithRenderAsList(true))
 				<#break>
 			<#case "manual">
 				<#assign manualField = field>
@@ -1043,11 +1043,11 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Manual Array Field (${manualArrayField.name})
 	if m.${manualArrayField.name?cap_first} != nil {
-		io.PushContext("${manualArrayField.name}")
+		io.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true))
 		for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
 			${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
 		}
-		io.PushContext("${manualArrayField.name}")
+		io.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true))
 	}
 				<#break>
 			<#case "manual">

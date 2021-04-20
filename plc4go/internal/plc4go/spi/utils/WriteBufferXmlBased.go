@@ -20,7 +20,6 @@
 package utils
 
 import (
-	"bufio"
 	"encoding/xml"
 	"fmt"
 	"math/big"
@@ -34,7 +33,7 @@ type WriteBufferXmlBased interface {
 
 func NewXmlWriteBuffer() WriteBufferXmlBased {
 	var xmlString strings.Builder
-	encoder := xml.NewEncoder(bufio.NewWriterSize(&xmlString, 1024*16))
+	encoder := xml.NewEncoder(&xmlString)
 	encoder.Indent("", "  ")
 	return &xmlWriteBuffer{
 		xmlString: &xmlString,
@@ -49,6 +48,7 @@ func NewXmlWriteBuffer() WriteBufferXmlBased {
 //
 
 type xmlWriteBuffer struct {
+	bufferCommons
 	xmlString *strings.Builder
 	*xml.Encoder
 }
@@ -61,114 +61,72 @@ type xmlWriteBuffer struct {
 
 func (x *xmlWriteBuffer) PushContext(logicalName string, _ ...WithWriterArgs) error {
 	// Pre-emptive flush to avoid overflow when for a long time no context gets popped
-	if err := x.Encoder.Flush(); err != nil {
+	if err := x.Flush(); err != nil {
 		return err
 	}
-	return x.Encoder.EncodeToken(xml.StartElement{Name: xml.Name{Local: sanitizeLogicalName(logicalName)}})
+	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}})
 }
 
 func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("bit", 1, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwBitKey, 1, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("uint", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("int", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("float", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("float", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: generateAttr("float", bitLength, writerArgs...),
-	})
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
-	attr := generateAttr("string", bitLength, writerArgs...)
-	attr = append(attr, xml.Attr{Name: xml.Name{Local: "encoding"}, Value: encoding})
-	return x.EncodeElement(value, xml.StartElement{
-		Name: xml.Name{Local: sanitizeLogicalName(logicalName)},
-		Attr: attr,
-	})
+	attr := x.generateAttr(rwStringKey, bitLength, writerArgs...)
+	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
+	return x.encodeElement(logicalName, value, attr, writerArgs...)
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
-	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: sanitizeLogicalName(logicalName)}}); err != nil {
+	if err := x.Encoder.EncodeToken(xml.EndElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}}); err != nil {
 		return err
 	}
 	return x.Encoder.Flush()
@@ -178,14 +136,21 @@ func (x *xmlWriteBuffer) GetXmlString() string {
 	return x.xmlString.String()
 }
 
-func generateAttr(dataType string, bitLength uint8, writerArgs ...WithWriterArgs) []xml.Attr {
+func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, attr []xml.Attr, _ ...WithWriterArgs) error {
+	return x.EncodeElement(value, xml.StartElement{
+		Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)},
+		Attr: attr,
+	})
+}
+
+func (x *xmlWriteBuffer) generateAttr(dataType string, bitLength uint8, writerArgs ...WithWriterArgs) []xml.Attr {
 	attrs := make([]xml.Attr, 2)
 	attrs[0] = xml.Attr{
-		Name:  xml.Name{Local: "dataType"},
+		Name:  xml.Name{Local: rwDataTypeKey},
 		Value: dataType,
 	}
 	attrs[1] = xml.Attr{
-		Name:  xml.Name{Local: "bitLength"},
+		Name:  xml.Name{Local: rwBitLengthKey},
 		Value: fmt.Sprintf("%d", bitLength),
 	}
 	for _, arg := range writerArgs {
@@ -195,17 +160,10 @@ func generateAttr(dataType string, bitLength uint8, writerArgs ...WithWriterArgs
 		switch arg.(type) {
 		case withAdditionalStringRepresentation:
 			attrs = append(attrs, xml.Attr{
-				Name:  xml.Name{Local: "stringRepresentation"},
+				Name:  xml.Name{Local: rwStringRepresentationKey},
 				Value: arg.(withAdditionalStringRepresentation).stringRepresentation,
 			})
 		}
 	}
 	return attrs
-}
-
-func sanitizeLogicalName(logicalName string) string {
-	if logicalName == "" {
-		return "value"
-	}
-	return logicalName
 }

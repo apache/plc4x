@@ -43,6 +43,7 @@ func TestS7MessageBytes(t *testing.T) {
 		wantString           string
 		wantStringSerialized string
 		wantStringXml        string
+		wantStringJson       string
 		wantDump             string
 	}{
 		{
@@ -220,6 +221,126 @@ func TestS7MessageBytes(t *testing.T) {
   </payload>
 </TPKTPacket>
 `,
+			wantStringJson: `
+{
+  "TPKTPacket": {
+    "len": 29,
+    "len__plc4x_bitLength": 16,
+    "len__plc4x_dataType": "uint",
+    "payload": {
+      "COTPPacket": {
+        "COTPPacketData": {
+          "eot": false,
+          "eot__plc4x_bitLength": 1,
+          "eot__plc4x_dataType": "bit",
+          "tpduRef": 13,
+          "tpduRef__plc4x_bitLength": 7,
+          "tpduRef__plc4x_dataType": "uint"
+        },
+        "S7Message": {
+          "S7MessageResponseData": {
+            "errorClass": 0,
+            "errorClass__plc4x_bitLength": 8,
+            "errorClass__plc4x_dataType": "uint",
+            "errorCode": 0,
+            "errorCode__plc4x_bitLength": 8,
+            "errorCode__plc4x_dataType": "uint"
+          },
+          "S7Parameter": {
+            "S7ParameterReadVarResponse": {
+              "numItems": 1,
+              "numItems__plc4x_bitLength": 8,
+              "numItems__plc4x_dataType": "uint"
+            },
+            "parameterType": 4,
+            "parameterType__plc4x_bitLength": 8,
+            "parameterType__plc4x_dataType": "uint"
+          },
+          "S7Payload": {
+            "S7PayloadReadVarResponse": {
+              "items": {
+                "S7VarPayloadDataItem": {
+                  "data": {
+                    "value": 1,
+                    "value__plc4x_bitLength": 8,
+                    "value__plc4x_dataType": "int"
+                  },
+                  "dataLength": 1,
+                  "dataLength__plc4x_bitLength": 16,
+                  "dataLength__plc4x_dataType": "uint",
+                  "padding": {},
+                  "returnCode": {
+                    "DataTransportErrorCode": 255,
+                    "DataTransportErrorCode__plc4x_bitLength": 8,
+                    "DataTransportErrorCode__plc4x_dataType": "uint",
+                    "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
+                  },
+                  "transportSize": {
+                    "DataTransportSize": 3,
+                    "DataTransportSize__plc4x_bitLength": 8,
+                    "DataTransportSize__plc4x_dataType": "uint",
+                    "DataTransportSize__plc4x_stringRepresentation": "BIT"
+                  }
+                }
+              }
+            }
+          },
+          "messageType": 3,
+          "messageType__plc4x_bitLength": 8,
+          "messageType__plc4x_dataType": "uint",
+          "parameterLength": 2,
+          "parameterLength__plc4x_bitLength": 16,
+          "parameterLength__plc4x_dataType": "uint",
+          "payloadLength": 5,
+          "payloadLength__plc4x_bitLength": 16,
+          "payloadLength__plc4x_dataType": "uint",
+          "protocolId": 50,
+          "protocolId__plc4x_bitLength": 8,
+          "protocolId__plc4x_dataType": "uint",
+          "reserved": 0,
+          "reserved__plc4x_bitLength": 16,
+          "reserved__plc4x_dataType": "uint",
+          "tpduReference": 11,
+          "tpduReference__plc4x_bitLength": 16,
+          "tpduReference__plc4x_dataType": "uint"
+        },
+        "headerLength": 5,
+        "headerLength__plc4x_bitLength": 8,
+        "headerLength__plc4x_dataType": "uint",
+        "parameters": [
+          {
+            "COTPParameter": {
+              "COTPParameterTpduSize": {
+                "tpduSize": {
+                  "COTPTpduSize": 12,
+                  "COTPTpduSize__plc4x_bitLength": 8,
+                  "COTPTpduSize__plc4x_dataType": "int",
+                  "COTPTpduSize__plc4x_stringRepresentation": "SIZE_4096"
+                }
+              },
+              "parameterLength": 1,
+              "parameterLength__plc4x_bitLength": 8,
+              "parameterLength__plc4x_dataType": "uint",
+              "parameterType": 192,
+              "parameterType__plc4x_bitLength": 8,
+              "parameterType__plc4x_dataType": "uint"
+            }
+          }
+        ],
+        "tpduCode": 240,
+        "tpduCode__plc4x_bitLength": 8,
+        "tpduCode__plc4x_dataType": "uint"
+      }
+    },
+    "protocolId": 3,
+    "protocolId__plc4x_bitLength": 8,
+    "protocolId__plc4x_dataType": "uint",
+    "reserved": 0,
+    "reserved__plc4x_bitLength": 8,
+    "reserved__plc4x_dataType": "uint"
+  }
+}
+`,
 			wantDump: `
 00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
 10|32 03 00 00 00 0b 00 02 00 05 '2.........'
@@ -229,47 +350,71 @@ func TestS7MessageBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Simple 2 String
-			tt.wantString = strings.Trim(tt.wantString, "\n")
-			if got := tt.args.debuggable.String(); got != tt.wantString {
-				t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
+			{
+				// Simple 2 String
+				tt.wantString = strings.Trim(tt.wantString, "\n")
+				if got := tt.args.debuggable.String(); got != tt.wantString {
+					t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
+				}
 			}
-			// Simple 2 Box
-			boxWriter := utils.NewBoxedWriteBuffer()
-			if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
-				t.Error(err)
-			}
-			tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
-			if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
-				t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
-			}
-			// Simple 2 Xml
-			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			if err := tt.args.debuggable.Serialize(xmlWriteBuffer); err != nil {
-				t.Error(err)
-			}
-			tt.wantStringXml = strings.Trim(tt.wantStringXml, "\n")
-			if got := xmlWriteBuffer.GetXmlString(); got != tt.wantStringXml {
-				t.Errorf("Serialize Xml() = '\n%v\n', want '\n%v\n'", got, tt.wantStringXml)
-			}
-
-			// Simple Binary Serialize
-			buffer := utils.NewWriteBuffer()
-			if err := tt.args.debuggable.Serialize(buffer); err != nil {
-				t.Error(err)
-			}
-			tt.wantDump = strings.Trim(tt.wantDump, "\n")
-			if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
-				t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
-			}
-			// and at least a roundtip
-			reader := strings.NewReader(tt.wantStringXml)
-			readBuffer := utils.NewXmlReadBuffer(reader)
-			if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
-				if err != nil {
+			{
+				// Simple 2 Box
+				boxWriter := utils.NewBoxedWriteBuffer()
+				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
-				} else {
-					t.Errorf("Roundtrip = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+				}
+				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
+				if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
+					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
+				}
+			}
+			{
+				// Simple 2 Xml
+				xmlWriteBuffer := utils.NewXmlWriteBuffer()
+				if err := tt.args.debuggable.Serialize(xmlWriteBuffer); err != nil {
+					t.Error(err)
+				}
+				tt.wantStringXml = strings.Trim(tt.wantStringXml, "\n")
+				if got := xmlWriteBuffer.GetXmlString(); got != tt.wantStringXml {
+					t.Errorf("Serialize Xml() = '\n%v\n', want '\n%v\n'", got, tt.wantStringXml)
+				}
+			}
+			{
+				// Simple 2 Json
+				jsonWriteBuffer := utils.NewJsonWriteBuffer()
+				if err := tt.args.debuggable.Serialize(jsonWriteBuffer); err != nil {
+					t.Error(err)
+				}
+				tt.wantStringJson = strings.Trim(tt.wantStringJson, "\n")
+				if got, err := jsonWriteBuffer.GetJsonString(); err != nil || strings.Trim(got, "\n") != tt.wantStringJson {
+					if err != nil {
+						t.Error(err)
+					} else {
+						t.Errorf("Serialize Json() = '\n%v\n', want '\n%v\n'", got, tt.wantStringJson)
+					}
+				}
+			}
+			{
+				// Simple Binary Serialize
+				buffer := utils.NewWriteBuffer()
+				if err := tt.args.debuggable.Serialize(buffer); err != nil {
+					t.Error(err)
+				}
+				tt.wantDump = strings.Trim(tt.wantDump, "\n")
+				if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
+					t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+				}
+			}
+			{
+				// and at least a roundtip
+				reader := strings.NewReader(tt.wantStringXml)
+				readBuffer := utils.NewXmlReadBuffer(reader)
+				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+					if err != nil {
+						t.Error(err)
+					} else {
+						t.Errorf("Roundtrip = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+					}
 				}
 			}
 		})

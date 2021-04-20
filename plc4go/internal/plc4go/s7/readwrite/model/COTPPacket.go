@@ -159,7 +159,7 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	}
 
 	// Array field (parameters)
-	io.PullContext("parameters")
+	io.PullContext("parameters", utils.WithRenderAsList(true))
 	curPos = io.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)
@@ -173,7 +173,7 @@ func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 		parameters = append(parameters, _item)
 		curPos = io.GetPos() - startPos
 	}
-	io.CloseContext("parameters")
+	io.CloseContext("parameters", utils.WithRenderAsList(true))
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	curPos = io.GetPos() - startPos
@@ -223,14 +223,14 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 
 	// Array Field (parameters)
 	if m.Parameters != nil {
-		io.PushContext("parameters")
+		io.PushContext("parameters", utils.WithRenderAsList(true))
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
 		}
-		io.PopContext("parameters")
+		io.PopContext("parameters", utils.WithRenderAsList(true))
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
