@@ -19,36 +19,42 @@
 
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.stream.XMLEventFactory;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.*;
+
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Stack;
 
 public class WriteBufferXmlBased implements WriteBuffer {
 
-    Stack<Element> stack;
+    Stack<String> stack;
 
-    Document document;
+    ByteArrayOutputStream byteArrayOutputStream;
+
+    XMLEventFactory xmlEventFactory;
+
+    XMLEventWriter xmlEventWriter;
 
     int pos = 1;
 
+    int depth = 0;
+
     public WriteBufferXmlBased() {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+        xmlEventFactory = XMLEventFactory.newInstance();
         try {
-            this.document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
+            xmlEventWriter = xmlOutputFactory.createXMLEventWriter(byteArrayOutputStream);
+        } catch (XMLStreamException e) {
             throw new PlcRuntimeException(e);
         }
         this.stack = new Stack<>();
@@ -56,12 +62,21 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     @Override
     public int getPos() {
-        return pos/8;
+        return pos / 8;
     }
 
     @Override
     public void pushContext(String logicalName) {
-        stack.push(document.createElement(logicalName));
+        try {
+            indent();
+            depth++;
+            StartElement startElement = xmlEventFactory.createStartElement("", "", logicalName);
+            xmlEventWriter.add(startElement);
+            newLine();
+        } catch (XMLStreamException e) {
+            throw new PlcRuntimeException(e);
+        }
+        stack.push(logicalName);
     }
 
     @Override
@@ -161,33 +176,33 @@ public class WriteBufferXmlBased implements WriteBuffer {
 
     @Override
     public void popContext(String logicalName) {
-        Element currentContext = stack.pop();
-        if (!currentContext.getTagName().equals(logicalName)) {
-            throw new PlcRuntimeException("Unexpected pop context '" + currentContext.getTagName() + '\'');
+        try {
+            depth--;
+            indent();
+            EndElement endElement = xmlEventFactory.createEndElement("", "", logicalName);
+            xmlEventWriter.add(endElement);
+            newLine();
+        } catch (XMLStreamException e) {
+            throw new PlcRuntimeException(e);
+        }
+
+        String context = stack.pop();
+        if (!context.equals(logicalName)) {
+            throw new PlcRuntimeException("Unexpected pop context '" + context + '\'');
         }
         if (stack.isEmpty()) {
-            document.appendChild(currentContext);
-            return;
+            try {
+                xmlEventWriter.close();
+            } catch (XMLStreamException e) {
+                throw new PlcRuntimeException(e);
+            }
         }
-        stack.peek().appendChild(currentContext);
     }
 
     public String getXmlString() {
         try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            //transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            transformer.transform(new DOMSource(document),
-                new StreamResult(byteArrayOutputStream));
-
-            return byteArrayOutputStream.toString();
-        } catch (TransformerException e) {
+            return byteArrayOutputStream.toString("UTF-8");
+        } catch (UnsupportedEncodingException e) {
             throw new PlcRuntimeException(e);
         }
     }
@@ -196,12 +211,33 @@ public class WriteBufferXmlBased implements WriteBuffer {
         pos += bits;
     }
 
+    private void newLine() throws XMLStreamException {
+        Characters newLine = xmlEventFactory.createCharacters("\n");
+        xmlEventWriter.add(newLine);
+    }
+
+    private void indent() throws XMLStreamException {
+        Characters indent = xmlEventFactory.createCharacters(StringUtils.repeat("  ", depth));
+        xmlEventWriter.add(indent);
+    }
+
     private void createAndAppend(String logicalName, String dataType, int bitLength, String data) {
-        Element element = document.createElement(sanitizeLogicalName(logicalName));
-        element.setAttribute("dataType", dataType);
-        element.setAttribute("bitLength", String.valueOf(bitLength));
-        element.appendChild(document.createTextNode(data));
-        stack.peek().appendChild(element);
+        try {
+            indent();
+            StartElement startElement = xmlEventFactory.createStartElement("", "", sanitizeLogicalName(logicalName));
+            xmlEventWriter.add(startElement);
+            Attribute dataTypeAttribute = xmlEventFactory.createAttribute("dataType", dataType);
+            xmlEventWriter.add(dataTypeAttribute);
+            Attribute bitLengthAttribute = xmlEventFactory.createAttribute("bitLength", String.valueOf(bitLength));
+            xmlEventWriter.add(bitLengthAttribute);
+            Characters dataCharacters = xmlEventFactory.createCharacters(data);
+            xmlEventWriter.add(dataCharacters);
+            EndElement endElement = xmlEventFactory.createEndElement("", "", sanitizeLogicalName(logicalName));
+            xmlEventWriter.add(endElement);
+            newLine();
+        } catch (XMLStreamException e) {
+            throw new PlcRuntimeException(e);
+        }
     }
 
     private String sanitizeLogicalName(String logicalName) {

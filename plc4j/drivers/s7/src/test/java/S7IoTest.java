@@ -42,59 +42,59 @@ public class S7IoTest {
     void TestS7MessageBytes() throws Exception {
         String wantXml =
             "<TPKTPacket>\n" +
-                "    <protocolId bitLength=\"8\" dataType=\"uint8\">3</protocolId>\n" +
-                "    <reserved bitLength=\"8\" dataType=\"uint8\">0</reserved>\n" +
-                "    <len bitLength=\"16\" dataType=\"uint16\">29</len>\n" +
-                "    <COTPPacket>\n" +
-                "        <headerLength bitLength=\"8\" dataType=\"uint18\">5</headerLength>\n" +
-                "        <tpduCode bitLength=\"8\" dataType=\"uint8\">240</tpduCode>\n" +
-                "        <COTPPacketData>\n" +
-                "            <eot bitLength=\"1\" dataType=\"bit\">false</eot>\n" +
-                "            <tpduRef bitLength=\"7\" dataType=\"uint8\">13</tpduRef>\n" +
-                "        </COTPPacketData>\n" +
-                "        <parameters>\n" +
-                "            <COTPParameter>\n" +
-                "                <parameterType bitLength=\"8\" dataType=\"uint8\">192</parameterType>\n" +
-                "                <parameterLength bitLength=\"8\" dataType=\"uint8\">1</parameterLength>\n" +
-                "                <COTPParameterTpduSize>\n" +
-                "                    <COTPTpduSize bitLength=\"8\" dataType=\"uint8\" stringRepresentation=\"SIZE_4096\">12</COTPTpduSize>\n" +
-                "                </COTPParameterTpduSize>\n" +
-                "            </COTPParameter>\n" +
-                "        </parameters>\n" +
-                "        <S7Message>\n" +
-                "            <protocolId bitLength=\"8\" dataType=\"uint8\">50</protocolId>\n" +
-                "            <messageType bitLength=\"8\" dataType=\"uint8\">3</messageType>\n" +
-                "            <reserved bitLength=\"16\" dataType=\"uint16\">0</reserved>\n" +
-                "            <tpduReference bitLength=\"16\" dataType=\"uint16\">11</tpduReference>\n" +
-                "            <parameterLength bitLength=\"16\" dataType=\"uint16\">2</parameterLength>\n" +
-                "            <payloadLength bitLength=\"16\" dataType=\"uint16\">5</payloadLength>\n" +
-                "            <S7MessageResponseData>\n" +
-                "                <errorClass bitLength=\"8\" dataType=\"uint8\">0</errorClass>\n" +
-                "                <errorCode bitLength=\"8\" dataType=\"uint8\">0</errorCode>\n" +
-                "            </S7MessageResponseData>\n" +
-                "            <S7Parameter>\n" +
-                "                <parameterType bitLength=\"8\" dataType=\"uint8\">4</parameterType>\n" +
-                "                <S7ParameterReadVarResponse>\n" +
-                "                    <numItems bitLength=\"8\" dataType=\"uint8\">1</numItems>\n" +
-                "                </S7ParameterReadVarResponse>\n" +
-                "            </S7Parameter>\n" +
-                "            <S7Payload>\n" +
-                "                <S7PayloadReadVarResponse>\n" +
-                "                    <items>\n" +
-                "                        <S7VarPayloadDataItem>\n" +
-                "                            <DataTransportErrorCode bitLength=\"8\" dataType=\"uint8\" stringRepresentation=\"OK\">255</DataTransportErrorCode>\n" +
-                "                            <DataTransportSize bitLength=\"8\" dataType=\"uint8\" stringRepresentation=\"BIT\">3</DataTransportSize>\n" +
-                "                            <dataLength bitLength=\"16\" dataType=\"uint16\">1</dataLength>\n" +
-                "                            <data>\n" +
-                "                                <value bitLength=\"8\" dataType=\"int8\">1</value>\n" +
-                "                            </data>\n" +
-                "                            <padding></padding>\n" +
-                "                        </S7VarPayloadDataItem>\n" +
-                "                    </items>\n" +
-                "                </S7PayloadReadVarResponse>\n" +
-                "            </S7Payload>\n" +
-                "        </S7Message>\n" +
-                "    </COTPPacket>\n" +
+                "  <protocolId dataType=\"uint8\" bitLength=\"8\">3</protocolId>\n" +
+                "  <reserved dataType=\"uint8\" bitLength=\"8\">0</reserved>\n" +
+                "  <len dataType=\"uint16\" bitLength=\"16\">29</len>\n" +
+                "  <COTPPacket>\n" +
+                "    <headerLength dataType=\"uint8\" bitLength=\"8\">5</headerLength>\n" +
+                "    <tpduCode dataType=\"uint8\" bitLength=\"8\">240</tpduCode>\n" +
+                "    <COTPPacketData>\n" +
+                "      <eot dataType=\"bit\" bitLength=\"1\">false</eot>\n" +
+                "      <tpduRef dataType=\"uint8\" bitLength=\"7\">13</tpduRef>\n" +
+                "    </COTPPacketData>\n" +
+                "    <parameters>\n" +
+                "      <COTPParameter>\n" +
+                "        <parameterType dataType=\"uint8\" bitLength=\"8\">192</parameterType>\n" +
+                "        <parameterLength dataType=\"uint8\" bitLength=\"8\">1</parameterLength>\n" +
+                "        <COTPParameterTpduSize>\n" +
+                "          <COTPTpduSize dataType=\"int8\" bitLength=\"8\" stringRepresentation=\"SIZE_4096\">12</COTPTpduSize>\n" +
+                "        </COTPParameterTpduSize>\n" +
+                "      </COTPParameter>\n" +
+                "    </parameters>\n" +
+                "    <S7Message>\n" +
+                "      <protocolId dataType=\"uint8\" bitLength=\"8\">50</protocolId>\n" +
+                "      <messageType dataType=\"uint8\" bitLength=\"8\">3</messageType>\n" +
+                "      <reserved dataType=\"uint16\" bitLength=\"16\">0</reserved>\n" +
+                "      <tpduReference dataType=\"uint16\" bitLength=\"16\">11</tpduReference>\n" +
+                "      <parameterLength dataType=\"uint16\" bitLength=\"16\">2</parameterLength>\n" +
+                "      <payloadLength dataType=\"uint16\" bitLength=\"16\">5</payloadLength>\n" +
+                "      <S7MessageResponseData>\n" +
+                "        <errorClass dataType=\"uint8\" bitLength=\"8\">0</errorClass>\n" +
+                "        <errorCode dataType=\"uint8\" bitLength=\"8\">0</errorCode>\n" +
+                "      </S7MessageResponseData>\n" +
+                "      <S7Parameter>\n" +
+                "        <parameterType dataType=\"uint8\" bitLength=\"8\">4</parameterType>\n" +
+                "        <S7ParameterReadVarResponse>\n" +
+                "          <numItems dataType=\"uint8\" bitLength=\"8\">1</numItems>\n" +
+                "        </S7ParameterReadVarResponse>\n" +
+                "      </S7Parameter>\n" +
+                "      <S7Payload>\n" +
+                "        <S7PayloadReadVarResponse>\n" +
+                "          <items>\n" +
+                "            <S7VarPayloadDataItem>\n" +
+                "              <DataTransportErrorCode dataType=\"uint8\" bitLength=\"8\" stringRepresentation=\"OK\">255</DataTransportErrorCode>\n" +
+                "              <DataTransportSize dataType=\"uint8\" bitLength=\"8\" stringRepresentation=\"BIT\">3</DataTransportSize>\n" +
+                "              <dataLength dataType=\"uint16\" bitLength=\"16\">1</dataLength>\n" +
+                "              <data>\n" +
+                "                <value dataType=\"int8\" bitLength=\"8\">1</value>\n" +
+                "              </data>\n" +
+                "              <padding></padding>\n" +
+                "            </S7VarPayloadDataItem>\n" +
+                "          </items>\n" +
+                "        </S7PayloadReadVarResponse>\n" +
+                "      </S7Payload>\n" +
+                "    </S7Message>\n" +
+                "  </COTPPacket>\n" +
                 "</TPKTPacket>\n";
 
 
