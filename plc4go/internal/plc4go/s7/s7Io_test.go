@@ -408,14 +408,26 @@ func TestS7MessageBytes(t *testing.T) {
 				}
 			}
 			{
-				// and at least a roundtip
+				// and at least a for xml roundtip
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
 				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
 					if err != nil {
 						t.Error(err)
 					} else {
-						t.Errorf("Roundtrip = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+						t.Errorf("Roundtrip(xml) = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
+					}
+				}
+			}
+			{
+				// and at least a for json roundtip
+				reader := strings.NewReader(tt.wantStringJson)
+				readBuffer := utils.NewJsonReadBuffer(reader)
+				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
+					if err != nil {
+						t.Error(err)
+					} else {
+						t.Errorf("Roundtrip(json) = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 					}
 				}
 			}
