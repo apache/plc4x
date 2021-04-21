@@ -15,6 +15,10 @@
 //  limitations under the License.
 //
 :imagesdir: ../images/
+++++
+    <meta name="go-import" content="plc4x.apache.org/plc4go git https://github.com/apache/plc4x/plc4go">
+    <meta name="go-source" content="plc4x.apache.org/plc4go https://github.com/apache/plc4x/plc4go https://github.com/apache/plc4x/tree/release/plc4go{/dir} https://github.com/apache/plc4x/tree/release/plc4go{/dir}/{file}#L{line}">
+++++
 
 == About PLC4Go
 
