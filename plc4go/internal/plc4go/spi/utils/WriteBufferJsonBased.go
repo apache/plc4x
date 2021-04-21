@@ -150,7 +150,7 @@ func (j *jsonWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, val
 
 func (j *jsonWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := j.generateAttr(logicalName, rwStringKey, bitLength, writerArgs...)
-	attr[fmt.Sprintf("__plc4x_%s", rwEncodingKey)] = encoding
+	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwEncodingKey)] = encoding
 	return j.encodeNode(logicalName, value, attr)
 }
 
