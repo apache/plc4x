@@ -64,7 +64,7 @@ func (b bufferCommons) extractAdditionalStringRepresentation(readerWriterArgs ..
 		}
 		switch arg.(type) {
 		case withAdditionalStringRepresentation:
-			return " " + arg.(withAdditionalStringRepresentation).stringRepresentation
+			return arg.(withAdditionalStringRepresentation).stringRepresentation
 		}
 	}
 	return ""

@@ -178,3 +178,11 @@ findTheBox:
 	b.PushBack(asciiBox)
 	return nil
 }
+
+func (b *boxedWriteBuffer) extractAdditionalStringRepresentation(readerWriterArgs ...WithReaderWriterArgs) string {
+	representation := b.bufferCommons.extractAdditionalStringRepresentation(readerWriterArgs...)
+	if representation != "" {
+		return " " + representation
+	}
+	return ""
+}

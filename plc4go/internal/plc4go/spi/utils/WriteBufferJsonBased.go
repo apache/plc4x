@@ -239,14 +239,9 @@ func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitL
 	logicalName = j.sanitizeLogicalName(logicalName)
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwDataTypeKey)] = dataType
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwBitLengthKey)] = bitLength
-	for _, arg := range writerArgs {
-		if !arg.isWriterArgs() {
-			panic("not a writer arg")
-		}
-		switch arg.(type) {
-		case withAdditionalStringRepresentation:
-			attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwStringRepresentationKey)] = arg.(withAdditionalStringRepresentation).stringRepresentation
-		}
+	additionalStringRepresentation := j.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	if additionalStringRepresentation != "" {
+		attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwStringRepresentationKey)] = additionalStringRepresentation
 	}
 	return attr
 }
