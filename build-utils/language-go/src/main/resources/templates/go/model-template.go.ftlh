@@ -794,7 +794,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 
 	// Padding Field (padding)
 	{
-		io.PullContext("padding")
+		io.PullContext("padding", utils.WithRenderAsList(true))
 		_timesPadding := (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 		for ;(io.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {<@emitImport import="io" />
 			// Just read the padding data and ignore it
@@ -803,7 +803,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
 		}
-		io.CloseContext("padding")
+		io.CloseContext("padding", utils.WithRenderAsList(true))
 	}
 				<#break>
 			<#case "reserved">
@@ -1082,7 +1082,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Padding Field (padding)
 	{
-		io.PushContext("padding")
+		io.PushContext("padding", utils.WithRenderAsList(true))
 		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 		for ;_timesPadding > 0; _timesPadding-- {
 			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
@@ -1091,7 +1091,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
 		}
-		io.PopContext("padding")
+		io.PopContext("padding", utils.WithRenderAsList(true))
 	}
 				<#break>
 			<#case "reserved">

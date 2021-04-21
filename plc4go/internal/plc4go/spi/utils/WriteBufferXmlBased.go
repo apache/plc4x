@@ -31,13 +31,29 @@ type WriteBufferXmlBased interface {
 	GetXmlString() string
 }
 
+//NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
 func NewXmlWriteBuffer() WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
 	encoder.Indent("", "  ")
 	return &xmlWriteBuffer{
-		xmlString: &xmlString,
-		Encoder:   encoder,
+		xmlString:     &xmlString,
+		Encoder:       encoder,
+		doRenderLists: true,
+		doRenderAttr:  true,
+	}
+}
+
+//NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
+func NewConfiguredXmlWriteBuffer(renderLists bool, renderAttr bool) WriteBufferXmlBased {
+	var xmlString strings.Builder
+	encoder := xml.NewEncoder(&xmlString)
+	encoder.Indent("", "  ")
+	return &xmlWriteBuffer{
+		xmlString:     &xmlString,
+		Encoder:       encoder,
+		doRenderLists: renderLists,
+		doRenderAttr:  renderAttr,
 	}
 }
 
@@ -51,6 +67,8 @@ type xmlWriteBuffer struct {
 	bufferCommons
 	xmlString *strings.Builder
 	*xml.Encoder
+	doRenderLists bool
+	doRenderAttr  bool
 }
 
 //
@@ -59,12 +77,14 @@ type xmlWriteBuffer struct {
 ///////////////////////////////////////
 ///////////////////////////////////////
 
-func (x *xmlWriteBuffer) PushContext(logicalName string, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) PushContext(logicalName string, writerArgs ...WithWriterArgs) error {
 	// Pre-emptive flush to avoid overflow when for a long time no context gets popped
 	if err := x.Flush(); err != nil {
 		return err
 	}
-	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}})
+	attrs := make([]xml.Attr, 0)
+	attrs = x.markAsListIfRequired(writerArgs, attrs)
+	return x.EncodeToken(xml.StartElement{Name: xml.Name{Local: x.sanitizeLogicalName(logicalName)}, Attr: attrs})
 }
 
 func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error {
@@ -145,6 +165,9 @@ func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, at
 
 func (x *xmlWriteBuffer) generateAttr(dataType string, bitLength uint8, writerArgs ...WithWriterArgs) []xml.Attr {
 	attrs := make([]xml.Attr, 2)
+	if !x.doRenderAttr {
+		return attrs
+	}
 	attrs[0] = xml.Attr{
 		Name:  xml.Name{Local: rwDataTypeKey},
 		Value: dataType,
@@ -164,6 +187,19 @@ func (x *xmlWriteBuffer) generateAttr(dataType string, bitLength uint8, writerAr
 				Value: arg.(withAdditionalStringRepresentation).stringRepresentation,
 			})
 		}
+	}
+	return attrs
+}
+
+func (x *xmlWriteBuffer) markAsListIfRequired(writerArgs []WithWriterArgs, attrs []xml.Attr) []xml.Attr {
+	if !x.doRenderLists {
+		return attrs
+	}
+	if x.isToBeRenderedAsList(upcastWriterArgs(writerArgs...)...) {
+		attrs = append(attrs, xml.Attr{
+			Name:  xml.Name{Local: rwIsListKey},
+			Value: "true",
+		})
 	}
 	return attrs
 }

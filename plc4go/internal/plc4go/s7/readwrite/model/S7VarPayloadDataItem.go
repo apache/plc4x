@@ -143,7 +143,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 
 	// Padding Field (padding)
 	{
-		io.PullContext("padding")
+		io.PullContext("padding", utils.WithRenderAsList(true))
 		_timesPadding := (utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(data))) % uint8(uint8(2))) }))
 		for ; (io.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
@@ -152,7 +152,7 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
 			}
 		}
-		io.CloseContext("padding")
+		io.CloseContext("padding", utils.WithRenderAsList(true))
 	}
 
 	io.CloseContext("S7VarPayloadDataItem")
@@ -205,7 +205,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 
 	// Padding Field (padding)
 	{
-		io.PushContext("padding")
+		io.PushContext("padding", utils.WithRenderAsList(true))
 		_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
@@ -214,7 +214,7 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}
 		}
-		io.PopContext("padding")
+		io.PopContext("padding", utils.WithRenderAsList(true))
 	}
 
 	io.PopContext("S7VarPayloadDataItem")

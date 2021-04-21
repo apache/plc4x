@@ -31,6 +31,7 @@ const (
 	rwFloatKey                = "float"
 	rwStringKey               = "string"
 	rwEncodingKey             = "encoding"
+	rwIsListKey               = "isList"
 )
 
 type bufferCommons struct {

@@ -37,8 +37,20 @@ func NewJsonWriteBuffer() WriteBufferJsonBased {
 	encoder := json.NewEncoder(&jsonString)
 	encoder.SetIndent("", "  ")
 	return &jsonWriteBuffer{
-		jsonString: &jsonString,
-		Encoder:    encoder,
+		jsonString:   &jsonString,
+		Encoder:      encoder,
+		doRenderAttr: true,
+	}
+}
+
+func NewConfiguredJsonWriteBuffer(renderAttr bool) WriteBufferJsonBased {
+	var jsonString strings.Builder
+	encoder := json.NewEncoder(&jsonString)
+	encoder.SetIndent("", "  ")
+	return &jsonWriteBuffer{
+		jsonString:   &jsonString,
+		Encoder:      encoder,
+		doRenderAttr: renderAttr,
 	}
 }
 
@@ -52,8 +64,10 @@ type jsonWriteBuffer struct {
 	bufferCommons
 	stack
 	*json.Encoder
-	jsonString *strings.Builder
-	rootNode   interface{}
+	jsonString    *strings.Builder
+	rootNode      interface{}
+	doRenderLists bool
+	doRenderAttr  bool
 }
 
 type elementContext struct {
@@ -215,8 +229,11 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 }
 
 func (j *jsonWriteBuffer) generateAttr(logicalName string, dataType string, bitLength uint8, writerArgs ...WithWriterArgs) map[string]interface{} {
-	logicalName = j.sanitizeLogicalName(logicalName)
 	attr := make(map[string]interface{})
+	if !j.doRenderAttr {
+		return attr
+	}
+	logicalName = j.sanitizeLogicalName(logicalName)
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwDataTypeKey)] = dataType
 	attr[fmt.Sprintf("%s__plc4x_%s", logicalName, rwBitLengthKey)] = bitLength
 	for _, arg := range writerArgs {

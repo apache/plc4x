@@ -27,10 +27,23 @@ import (
 	"math/big"
 )
 
+// NewXmlReadBuffer return as ReadBuffer which doesn't validate attributes and lists
 func NewXmlReadBuffer(reader io.Reader) ReadBuffer {
 	return &xmlReadBuffer{
-		Decoder: xml.NewDecoder(reader),
-		pos:     1,
+		Decoder:        xml.NewDecoder(reader),
+		pos:            1,
+		doValidateList: false,
+		doValidateAttr: false,
+	}
+}
+
+// NewStrictXmlReadBuffer return as ReadBuffer which does validate attributes and lists depending on the setting
+func NewStrictXmlReadBuffer(reader io.Reader, validateAttr bool, validateList bool) ReadBuffer {
+	return &xmlReadBuffer{
+		Decoder:        xml.NewDecoder(reader),
+		pos:            1,
+		doValidateAttr: validateAttr,
+		doValidateList: validateList,
 	}
 }
 
@@ -43,7 +56,9 @@ func NewXmlReadBuffer(reader io.Reader) ReadBuffer {
 type xmlReadBuffer struct {
 	bufferCommons
 	*xml.Decoder
-	pos uint
+	pos            uint
+	doValidateAttr bool
+	doValidateList bool
 }
 
 //
@@ -68,6 +83,9 @@ func (x *xmlReadBuffer) PullContext(logicalName string, readerArgs ...WithReader
 	}
 	if startElement.Name.Local != logicalName {
 		return errors.Errorf("Unexpected Start element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
+	}
+	if err := x.validateIfList(readerArgs, startElement); err != nil {
+		return err
 	}
 	return nil
 }
@@ -291,6 +309,23 @@ func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength ui
 	return nil
 }
 
+func (x *xmlReadBuffer) validateIfList(readerArgs []WithReaderArgs, startElement xml.StartElement) error {
+	if !x.doValidateList {
+		return nil
+	}
+	if x.isToBeRenderedAsList(upcastReaderArgs(readerArgs...)...) {
+		for _, attr := range startElement.Attr {
+			switch attr.Name.Local {
+			case rwIsListKey:
+				if attr.Value != "true" {
+					return errors.Errorf("Startelement should be marked as %s=true", rwIsListKey)
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func (x *xmlReadBuffer) validateStartElement(startElement xml.StartElement, logicalName string, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
 	logicalName = x.sanitizeLogicalName(logicalName)
 	if startElement.Name.Local != logicalName {
@@ -302,6 +337,9 @@ func (x *xmlReadBuffer) validateStartElement(startElement xml.StartElement, logi
 }
 
 func (x *xmlReadBuffer) validateAttr(attr []xml.Attr, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
+	if !x.doValidateAttr {
+		return nil
+	}
 	dataTypeValidated := false
 	bitLengthValidate := false
 	for _, attribute := range attr {

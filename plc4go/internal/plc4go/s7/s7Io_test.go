@@ -169,7 +169,7 @@ func TestS7MessageBytes(t *testing.T) {
         <eot dataType="bit" bitLength="1">false</eot>
         <tpduRef dataType="uint" bitLength="7">13</tpduRef>
       </COTPPacketData>
-      <parameters>
+      <parameters isList="true">
         <COTPParameter>
           <parameterType dataType="uint" bitLength="8">192</parameterType>
           <parameterLength dataType="uint" bitLength="8">1</parameterLength>
@@ -199,7 +199,7 @@ func TestS7MessageBytes(t *testing.T) {
         </S7Parameter>
         <S7Payload>
           <S7PayloadReadVarResponse>
-            <items>
+            <items isList="true">
               <S7VarPayloadDataItem>
                 <returnCode>
                   <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
@@ -208,10 +208,10 @@ func TestS7MessageBytes(t *testing.T) {
                   <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                 </transportSize>
                 <dataLength dataType="uint" bitLength="16">1</dataLength>
-                <data>
+                <data isList="true">
                   <value dataType="int" bitLength="8">1</value>
                 </data>
-                <padding></padding>
+                <padding isList="true"></padding>
               </S7VarPayloadDataItem>
             </items>
           </S7PayloadReadVarResponse>
@@ -269,7 +269,7 @@ func TestS7MessageBytes(t *testing.T) {
                     "dataLength": 1,
                     "dataLength__plc4x_bitLength": 16,
                     "dataLength__plc4x_dataType": "uint",
-                    "padding": {},
+                    "padding": [],
                     "returnCode": {
                       "DataTransportErrorCode": 255,
                       "DataTransportErrorCode__plc4x_bitLength": 8,
