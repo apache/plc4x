@@ -431,8 +431,7 @@ func (j *jsonReadBuffer) move(bits uint8) {
 }
 
 func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]interface{}, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
-	// TODO: why is the type and length missing for values. Fix this
-	if !j.doValidateAttr || logicalName == "value" {
+	if !j.doValidateAttr {
 		return nil
 	}
 	renderedKeyDataLengthKey := fmt.Sprintf("%s__plc4x_%s", logicalName, rwDataTypeKey)

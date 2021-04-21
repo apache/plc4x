@@ -221,6 +221,9 @@ func (j *jsonWriteBuffer) encodeNode(logicalName string, value interface{}, attr
 		context := peek.(*listContext)
 		m := make(map[string]interface{})
 		m[logicalName] = value
+		for attrKey, attrValue := range attr {
+			m[attrKey] = attrValue
+		}
 		context.list = append(context.list, m)
 		return nil
 	default:

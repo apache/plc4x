@@ -263,7 +263,9 @@ func TestS7MessageBytes(t *testing.T) {
                   "S7VarPayloadDataItem": {
                     "data": [
                       {
-                        "value": 1
+                        "value": 1,
+                        "value__plc4x_bitLength": 8,
+                        "value__plc4x_dataType": "int"
                       }
                     ],
                     "dataLength": 1,
