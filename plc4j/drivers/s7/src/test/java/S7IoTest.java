@@ -22,7 +22,9 @@ import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
+import org.apache.plc4x.java.spi.generation.ReadBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.ReadBufferXmlBased;
+import org.apache.plc4x.java.spi.generation.WriteBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class S7IoTest {
+
+    // TODO: delete when done
+    boolean isJsonRenderingDone = false;
 
     @Test
     void TestS7MessageBytes() throws Exception {
@@ -100,6 +105,126 @@ public class S7IoTest {
                 "    </COTPPacket>\n" +
                 "  </payload>\n" +
                 "</TPKTPacket>\n";
+        String wantJson ="{\n" +
+            "  \"TPKTPacket\": {\n" +
+            "    \"len\": 29,\n" +
+            "    \"len__plc4x_bitLength\": 16,\n" +
+            "    \"len__plc4x_dataType\": \"uint\",\n" +
+            "    \"payload\": {\n" +
+            "      \"COTPPacket\": {\n" +
+            "        \"COTPPacketData\": {\n" +
+            "          \"eot\": false,\n" +
+            "          \"eot__plc4x_bitLength\": 1,\n" +
+            "          \"eot__plc4x_dataType\": \"bit\",\n" +
+            "          \"tpduRef\": 13,\n" +
+            "          \"tpduRef__plc4x_bitLength\": 7,\n" +
+            "          \"tpduRef__plc4x_dataType\": \"uint\"\n" +
+            "        },\n" +
+            "        \"S7Message\": {\n" +
+            "          \"S7MessageResponseData\": {\n" +
+            "            \"errorClass\": 0,\n" +
+            "            \"errorClass__plc4x_bitLength\": 8,\n" +
+            "            \"errorClass__plc4x_dataType\": \"uint\",\n" +
+            "            \"errorCode\": 0,\n" +
+            "            \"errorCode__plc4x_bitLength\": 8,\n" +
+            "            \"errorCode__plc4x_dataType\": \"uint\"\n" +
+            "          },\n" +
+            "          \"S7Parameter\": {\n" +
+            "            \"S7ParameterReadVarResponse\": {\n" +
+            "              \"numItems\": 1,\n" +
+            "              \"numItems__plc4x_bitLength\": 8,\n" +
+            "              \"numItems__plc4x_dataType\": \"uint\"\n" +
+            "            },\n" +
+            "            \"parameterType\": 4,\n" +
+            "            \"parameterType__plc4x_bitLength\": 8,\n" +
+            "            \"parameterType__plc4x_dataType\": \"uint\"\n" +
+            "          },\n" +
+            "          \"S7Payload\": {\n" +
+            "            \"S7PayloadReadVarResponse\": {\n" +
+            "              \"items\": [\n" +
+            "                {\n" +
+            "                  \"S7VarPayloadDataItem\": {\n" +
+            "                    \"data\": [\n" +
+            "                      {\n" +
+            "                        \"value\": 1\n" +
+            "                      }\n" +
+            "                    ],\n" +
+            "                    \"dataLength\": 1,\n" +
+            "                    \"dataLength__plc4x_bitLength\": 16,\n" +
+            "                    \"dataLength__plc4x_dataType\": \"uint\",\n" +
+            "                    \"padding\": [],\n" +
+            "                    \"returnCode\": {\n" +
+            "                      \"DataTransportErrorCode\": 255,\n" +
+            "                      \"DataTransportErrorCode__plc4x_bitLength\": 8,\n" +
+            "                      \"DataTransportErrorCode__plc4x_dataType\": \"uint\",\n" +
+            "                      \"DataTransportErrorCode__plc4x_stringRepresentation\": \"OK\"\n" +
+            "                    },\n" +
+            "                    \"transportSize\": {\n" +
+            "                      \"DataTransportSize\": 3,\n" +
+            "                      \"DataTransportSize__plc4x_bitLength\": 8,\n" +
+            "                      \"DataTransportSize__plc4x_dataType\": \"uint\",\n" +
+            "                      \"DataTransportSize__plc4x_stringRepresentation\": \"BIT\"\n" +
+            "                    }\n" +
+            "                  }\n" +
+            "                }\n" +
+            "              ]\n" +
+            "            }\n" +
+            "          },\n" +
+            "          \"messageType\": 3,\n" +
+            "          \"messageType__plc4x_bitLength\": 8,\n" +
+            "          \"messageType__plc4x_dataType\": \"uint\",\n" +
+            "          \"parameterLength\": 2,\n" +
+            "          \"parameterLength__plc4x_bitLength\": 16,\n" +
+            "          \"parameterLength__plc4x_dataType\": \"uint\",\n" +
+            "          \"payloadLength\": 5,\n" +
+            "          \"payloadLength__plc4x_bitLength\": 16,\n" +
+            "          \"payloadLength__plc4x_dataType\": \"uint\",\n" +
+            "          \"protocolId\": 50,\n" +
+            "          \"protocolId__plc4x_bitLength\": 8,\n" +
+            "          \"protocolId__plc4x_dataType\": \"uint\",\n" +
+            "          \"reserved\": 0,\n" +
+            "          \"reserved__plc4x_bitLength\": 16,\n" +
+            "          \"reserved__plc4x_dataType\": \"uint\",\n" +
+            "          \"tpduReference\": 11,\n" +
+            "          \"tpduReference__plc4x_bitLength\": 16,\n" +
+            "          \"tpduReference__plc4x_dataType\": \"uint\"\n" +
+            "        },\n" +
+            "        \"headerLength\": 5,\n" +
+            "        \"headerLength__plc4x_bitLength\": 8,\n" +
+            "        \"headerLength__plc4x_dataType\": \"uint\",\n" +
+            "        \"parameters\": [\n" +
+            "          {\n" +
+            "            \"COTPParameter\": {\n" +
+            "              \"COTPParameterTpduSize\": {\n" +
+            "                \"tpduSize\": {\n" +
+            "                  \"COTPTpduSize\": 12,\n" +
+            "                  \"COTPTpduSize__plc4x_bitLength\": 8,\n" +
+            "                  \"COTPTpduSize__plc4x_dataType\": \"int\",\n" +
+            "                  \"COTPTpduSize__plc4x_stringRepresentation\": \"SIZE_4096\"\n" +
+            "                }\n" +
+            "              },\n" +
+            "              \"parameterLength\": 1,\n" +
+            "              \"parameterLength__plc4x_bitLength\": 8,\n" +
+            "              \"parameterLength__plc4x_dataType\": \"uint\",\n" +
+            "              \"parameterType\": 192,\n" +
+            "              \"parameterType__plc4x_bitLength\": 8,\n" +
+            "              \"parameterType__plc4x_dataType\": \"uint\"\n" +
+            "            }\n" +
+            "          }\n" +
+            "        ],\n" +
+            "        \"tpduCode\": 240,\n" +
+            "        \"tpduCode__plc4x_bitLength\": 8,\n" +
+            "        \"tpduCode__plc4x_dataType\": \"uint\"\n" +
+            "      }\n" +
+            "    },\n" +
+            "    \"protocolId\": 3,\n" +
+            "    \"protocolId__plc4x_bitLength\": 8,\n" +
+            "    \"protocolId__plc4x_dataType\": \"uint\",\n" +
+            "    \"reserved\": 0,\n" +
+            "    \"reserved__plc4x_bitLength\": 8,\n" +
+            "    \"reserved__plc4x_dataType\": \"uint\"\n" +
+            "  }\n" +
+            "}\n";
 
 
         TPKTPacket tpktPacket = new TPKTPacket(
@@ -124,13 +249,27 @@ public class S7IoTest {
                 (short) 13
             )
         );
-        WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
-        TPKTPacketIO.staticSerialize(writeBufferXmlBased, tpktPacket);
-        String gotXml = writeBufferXmlBased.getXmlString();
-        assertEquals(wantXml, gotXml);
-        System.out.println(gotXml);
-        ReadBufferXmlBased readBufferXmlBased = new ReadBufferXmlBased(new ByteArrayInputStream(gotXml.getBytes()));
-        TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
-        assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
+        // Xml
+        {
+            WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
+            TPKTPacketIO.staticSerialize(writeBufferXmlBased, tpktPacket);
+            String gotXml = writeBufferXmlBased.getXmlString();
+            assertEquals(wantXml, gotXml);
+            ReadBufferXmlBased readBufferXmlBased = new ReadBufferXmlBased(new ByteArrayInputStream(gotXml.getBytes()));
+            TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
+            assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
+        }
+        // json
+        {
+            WriteBufferJsonBased writeBufferJsonBased = new WriteBufferJsonBased();
+            TPKTPacketIO.staticSerialize(writeBufferJsonBased, tpktPacket);
+            String gotJson = writeBufferJsonBased.getJsonString();
+            if (isJsonRenderingDone) {
+                assertEquals(wantJson, gotJson);
+            }
+            ReadBufferJsonBased readBufferXmlBased = new ReadBufferJsonBased(new ByteArrayInputStream(gotJson.getBytes()));
+            TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
+            assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
+        }
     }
 }

@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-public class ReadBufferXmlBased implements ReadBuffer {
+public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
 
     XMLEventReader reader;
 
@@ -66,7 +66,7 @@ public class ReadBufferXmlBased implements ReadBuffer {
 
     @Override
     public boolean readBit(String logicalName) throws ParseException {
-        String bit = decode(logicalName, "bit", 1);
+        String bit = decode(logicalName, rwBitKey, 1);
         move(1);
         return bit.equals("1");
     }
@@ -74,25 +74,25 @@ public class ReadBufferXmlBased implements ReadBuffer {
     @Override
     public byte readUnsignedByte(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Byte.parseByte(decode(logicalName, "uint", bitLength));
+        return Byte.parseByte(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
     public short readUnsignedShort(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Short.parseShort(decode(logicalName, "uint", bitLength));
+        return Short.parseShort(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
     public int readUnsignedInt(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Integer.parseInt(decode(logicalName, "uint", bitLength));
+        return Integer.parseInt(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
     public long readUnsignedLong(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Long.parseLong(decode(logicalName, "uint", bitLength));
+        return Long.parseLong(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
@@ -104,55 +104,55 @@ public class ReadBufferXmlBased implements ReadBuffer {
     @Override
     public byte readByte(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Byte.parseByte(decode(logicalName, "int", bitLength));
+        return Byte.parseByte(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
     public short readShort(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Short.parseShort(decode(logicalName, "int", bitLength));
+        return Short.parseShort(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
     public int readInt(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Integer.parseInt(decode(logicalName, "int", bitLength));
+        return Integer.parseInt(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
     public long readLong(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Long.parseLong(decode(logicalName, "int", bitLength));
+        return Long.parseLong(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
     public BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return new BigInteger(decode(logicalName,"int",bitLength));
+        return new BigInteger(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
     public float readFloat(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Float.parseFloat(decode(logicalName, "float", bitLength));
+        return Float.parseFloat(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
     public double readDouble(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return Double.parseDouble(decode(logicalName, "float", bitLength));
+        return Double.parseDouble(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
     public BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException {
         move(bitLength);
-        return new BigDecimal(decode(logicalName, "float", bitLength));
+        return new BigDecimal(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
     public String readString(String logicalName, int bitLength, String encoding) {
         move(bitLength);
-        return decode(logicalName, "string", bitLength);
+        return decode(logicalName, rwStringKey, bitLength);
     }
 
     @Override
@@ -234,12 +234,12 @@ public class ReadBufferXmlBased implements ReadBuffer {
         boolean bitLengthValidate = false;
         while (attr.hasNext()) {
             Attribute attribute = attr.next();
-            if (attribute.getName().getLocalPart().equals("dataType")) {
+            if (attribute.getName().getLocalPart().equals(rwDataTypeKey)) {
                 if (!attribute.getValue().equals(dataType)) {
                     throw new PlcRuntimeException(String.format("Unexpected dataType :%s. Want %s", attribute.getValue(), dataType));
                 }
                 dataTypeValidated = true;
-            } else if (attribute.getName().getLocalPart().equals("bitLength")) {
+            } else if (attribute.getName().getLocalPart().equals(rwBitLengthKey)) {
                 if (!attribute.getValue().equals(Integer.valueOf(bitLength).toString())) {
                     throw new PlcRuntimeException(String.format("Unexpected bitLength '%s'. Want '%d'", attribute.getValue(), bitLength));
                 }
@@ -247,18 +247,12 @@ public class ReadBufferXmlBased implements ReadBuffer {
             }
         }
         if (!dataTypeValidated) {
-            throw new PlcRuntimeException("required attribute dataType missing");
+            throw new PlcRuntimeException(String.format("required attribute %s missing",rwDataTypeKey));
         }
         if (!bitLengthValidate) {
-            throw new PlcRuntimeException("required attribute bitLength missing");
+            throw new PlcRuntimeException(String.format("required attribute %s missing",rwBitLengthKey));
         }
         return true;
     }
 
-    private String sanitizeLogicalName(String logicalName) {
-        if (logicalName.equals("")) {
-            return "value";
-        }
-        return logicalName;
-    }
 }
