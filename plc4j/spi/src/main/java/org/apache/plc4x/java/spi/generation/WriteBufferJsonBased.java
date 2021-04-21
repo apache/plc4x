@@ -80,7 +80,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwBitKey, 1);
+            writeAttr(sanitizedLogicalName, rwBitKey, 1, writerArgs);
             generator.writeBooleanField(sanitizedLogicalName, value);
         } );
     }
@@ -89,7 +89,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         } );
     }
@@ -98,7 +98,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(logicalName, rwUintKey, bitLength);
+            writeAttr(logicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(logicalName, value);
         });
     }
@@ -107,7 +107,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -116,7 +116,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         } );
     }
@@ -125,7 +125,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -134,7 +134,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -143,7 +143,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         } );
     }
@@ -152,7 +152,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -161,7 +161,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -170,7 +170,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -180,7 +180,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(logicalName, value);
         });
     }
@@ -190,7 +190,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -199,7 +199,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
@@ -208,7 +208,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(sanitizedLogicalName, rwStringKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwStringKey, bitLength, writerArgs);
             generator.writeStringField(String.format("%s__plc4x_%s", sanitizedLogicalName, rwEncodingKey), encoding);
             generator.writeStringField(sanitizedLogicalName, value);
         });
@@ -272,11 +272,15 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         }
     }
 
-    private void writeAttr(String logicalName, String dataType, int bitLength) throws IOException {
+    private void writeAttr(String logicalName, String dataType, int bitLength, WithWriterArgs... writerArgs) throws IOException {
         if (!doRenderAttr) {
             return;
         }
         generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwDataTypeKey), dataType);
         generator.writeNumberField(String.format("%s__plc4x_%s", logicalName, rwBitLengthKey), bitLength);
+        String stringRepresentation = extractAdditionalStringRepresentation(writerArgs);
+        if (stringRepresentation != null) {
+            generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwStringRepresentationKey), stringRepresentation);
+        }
     }
 }

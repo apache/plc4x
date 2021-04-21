@@ -37,9 +37,14 @@ public class ReadBufferJsonBased implements ReadBuffer {
 
     int pos;
 
-    boolean doValidateAttr = true;
+    boolean doValidateAttr;
 
     public ReadBufferJsonBased(InputStream is) {
+        this(is, true);
+    }
+
+    public ReadBufferJsonBased(InputStream is, boolean doValidateAttr) {
+        this.doValidateAttr = doValidateAttr;
         pos = 1;
         stack = new Stack<>();
         // JsonParser here would be overkill as json is by definition not deterministic (key/value)

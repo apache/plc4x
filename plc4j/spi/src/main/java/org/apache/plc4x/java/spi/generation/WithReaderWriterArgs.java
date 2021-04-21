@@ -23,8 +23,16 @@ public interface WithReaderWriterArgs extends WithReaderArgs, WithWriterArgs {
     static WithReaderWriterArgs WithRenderAsList(boolean renderAsList) {
         return (withRenderAsList) () -> renderAsList;
     }
+
+    static WithReaderWriterArgs WithAdditionalStringRepresentation(String stringRepresentation) {
+        return (withAdditionalStringRepresentation) () -> stringRepresentation;
+    }
 }
 
 interface withRenderAsList extends WithReaderWriterArgs {
     boolean renderAsList();
+}
+
+interface withAdditionalStringRepresentation extends WithReaderWriterArgs {
+    String stringRepresentation();
 }

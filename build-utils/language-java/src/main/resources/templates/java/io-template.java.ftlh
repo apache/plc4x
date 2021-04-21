@@ -521,9 +521,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
         <#if enumField.fieldName?has_content>
-        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", field)};
+        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", field, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
         <#else>
-        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())", field)};
+        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())", field, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
         </#if>
         io.popContext("${enumField.name}");
         <#break>

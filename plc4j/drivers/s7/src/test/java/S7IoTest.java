@@ -156,12 +156,14 @@ public class S7IoTest {
             "                    \"returnCode\": {\n" +
             "                      \"DataTransportErrorCode\": 255,\n" +
             "                      \"DataTransportErrorCode__plc4x_bitLength\": 8,\n" +
-            "                      \"DataTransportErrorCode__plc4x_dataType\": \"uint\"\n" +
+            "                      \"DataTransportErrorCode__plc4x_dataType\": \"uint\",\n" +
+            "                      \"DataTransportErrorCode__plc4x_stringRepresentation\": \"OK\"\n" +
             "                    },\n" +
             "                    \"transportSize\": {\n" +
             "                      \"DataTransportSize\": 3,\n" +
             "                      \"DataTransportSize__plc4x_bitLength\": 8,\n" +
-            "                      \"DataTransportSize__plc4x_dataType\": \"uint\"\n" +
+            "                      \"DataTransportSize__plc4x_dataType\": \"uint\",\n" +
+            "                      \"DataTransportSize__plc4x_stringRepresentation\": \"BIT\"\n" +
             "                    }\n" +
             "                  }\n" +
             "                }\n" +
@@ -197,7 +199,8 @@ public class S7IoTest {
             "                \"tpduSize\": {\n" +
             "                  \"COTPTpduSize\": 12,\n" +
             "                  \"COTPTpduSize__plc4x_bitLength\": 8,\n" +
-            "                  \"COTPTpduSize__plc4x_dataType\": \"int\"\n" +
+            "                  \"COTPTpduSize__plc4x_dataType\": \"int\",\n" +
+            "                  \"COTPTpduSize__plc4x_stringRepresentation\": \"SIZE_4096\"\n" +
             "                }\n" +
             "              },\n" +
             "              \"parameterLength\": 1,\n" +
@@ -221,7 +224,7 @@ public class S7IoTest {
             "    \"reserved__plc4x_bitLength\": 8,\n" +
             "    \"reserved__plc4x_dataType\": \"uint\"\n" +
             "  }\n" +
-            "}\n";
+            "}";
 
 
         TPKTPacket tpktPacket = new TPKTPacket(
