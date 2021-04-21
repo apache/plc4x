@@ -68,7 +68,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void pushContext(String logicalName) {
+    public void pushContext(String logicalName, WithWriterArgs... writerArgs) {
         try {
             indent();
             depth++;
@@ -82,7 +82,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeBit(String logicalName, boolean value) throws ParseException {
+    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException {
         String dataType = "bit";
         int bitLength = 1;
         String data = Boolean.valueOf(value).toString();
@@ -91,93 +91,93 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeUnsignedByte(String logicalName, int bitLength, byte value) throws ParseException {
+    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Byte.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeUnsignedShort(String logicalName, int bitLength, short value) throws ParseException {
+    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Short.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeUnsignedInt(String logicalName, int bitLength, int value) throws ParseException {
+    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Integer.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeUnsignedLong(String logicalName, int bitLength, long value) throws ParseException {
+    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Long.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
+    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, value.toString());
         move(bitLength);
     }
 
     @Override
-    public void writeByte(String logicalName, int bitLength, byte value) throws ParseException {
+    public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, Byte.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeShort(String logicalName, int bitLength, short value) throws ParseException {
+    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, Short.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeInt(String logicalName, int bitLength, int value) throws ParseException {
+    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, Integer.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeLong(String logicalName, int bitLength, long value) throws ParseException {
+    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, Long.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
+    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, value.toString());
         move(bitLength);
     }
 
     @Override
-    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa) throws ParseException {
+    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
         createAndAppend(logicalName, rwFloatKey, bitLength, Float.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa) throws ParseException {
+    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
         createAndAppend(logicalName, rwFloatKey, bitLength, Double.valueOf(value).toString());
         move(bitLength);
     }
 
     @Override
-    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value) throws ParseException {
+    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwFloatKey, bitLength, value.toString());
         move(bitLength);
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value) throws ParseException {
+    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwStringKey, bitLength, value);
         move(bitLength);
     }
 
     @Override
-    public void popContext(String logicalName) {
+    public void popContext(String logicalName, WithWriterArgs... writerArgs) {
         try {
             depth--;
             indent();

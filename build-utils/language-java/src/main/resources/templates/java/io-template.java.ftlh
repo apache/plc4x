@@ -155,7 +155,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign arrayField = field>
 
         // Array field (${arrayField.name})
-        io.pullContext("${arrayField.name}");
+        io.pullContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         <#-- Only update curPos if the length expression uses it -->
         <#if arrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
@@ -218,7 +218,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}[0]);
             </#if>
         </#if>
-        io.closeContext("${arrayField.name}");
+        io.closeContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         <#break>
     <#case "checksum">
         <#assign checksumField = field>
@@ -281,7 +281,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#case "manualArray">
         <#assign manualArrayField = field>
 
-        io.pullContext("${manualArrayField.name}");
+        io.pullContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         // Manual Array Field (${manualArrayField.name})
         <#-- Only update curPos if the length expression uses it -->
         <#if manualArrayField.loopExpression.contains("curPos")>
@@ -337,7 +337,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = _${manualArrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}[0]);
             </#if>
         </#if>
-        io.closeContext("${manualArrayField.name}");
+        io.closeContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         <#break>
     <#case "manual">
         <#assign manualField = field>
@@ -367,13 +367,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            io.pullContext("padding");
+            io.pullContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
             int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
             while ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
                 ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
             }
-            io.closeContext("padding");
+            io.closeContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "reserved">
@@ -456,7 +456,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Array Field (${arrayField.name})
         if(_value.get${arrayField.name?cap_first}() != null) {
-            io.pushContext("${arrayField.name}");
+            io.pushContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
             int itemCount = (int) _value.get${arrayField.name?cap_first}().length;
             int curItem = 0;
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
@@ -470,7 +470,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                 </#if>
                 curItem++;
             }
-            io.popContext("${arrayField.name}");
+            io.popContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "checksum">
@@ -540,11 +540,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Manual Array Field (${manualArrayField.name})
         if(_value.get${manualArrayField.name?cap_first}() != null) {
-            io.pushContext("${manualArrayField.name}");
+            io.pushContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${manualArrayField.name?cap_first}()) {
                 ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)};
             }
-            io.pushContext("${manualArrayField.name}");
+            io.pushContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "manual">
@@ -579,13 +579,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            io.pushContext("padding");
+            io.pushContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
             int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
             while (_timesPadding-- > 0) {
                 ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
                 ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", field)};
             }
-            io.popContext("padding");
+            io.popContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "reserved">

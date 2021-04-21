@@ -17,6 +17,7 @@
  under the License.
  */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
@@ -34,9 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class S7IoTest {
-
-    // TODO: delete when done
-    boolean isJsonRenderingDone = false;
 
     @Test
     void TestS7MessageBytes() throws Exception {
@@ -105,7 +103,7 @@ public class S7IoTest {
                 "    </COTPPacket>\n" +
                 "  </payload>\n" +
                 "</TPKTPacket>\n";
-        String wantJson ="{\n" +
+        String wantJson = "{\n" +
             "  \"TPKTPacket\": {\n" +
             "    \"len\": 29,\n" +
             "    \"len__plc4x_bitLength\": 16,\n" +
@@ -146,7 +144,9 @@ public class S7IoTest {
             "                  \"S7VarPayloadDataItem\": {\n" +
             "                    \"data\": [\n" +
             "                      {\n" +
-            "                        \"value\": 1\n" +
+            "                        \"value\": 1,\n" +
+            "                        \"value__plc4x_bitLength\": 8,\n" +
+            "                        \"value__plc4x_dataType\": \"int\"\n" +
             "                      }\n" +
             "                    ],\n" +
             "                    \"dataLength\": 1,\n" +
@@ -156,14 +156,12 @@ public class S7IoTest {
             "                    \"returnCode\": {\n" +
             "                      \"DataTransportErrorCode\": 255,\n" +
             "                      \"DataTransportErrorCode__plc4x_bitLength\": 8,\n" +
-            "                      \"DataTransportErrorCode__plc4x_dataType\": \"uint\",\n" +
-            "                      \"DataTransportErrorCode__plc4x_stringRepresentation\": \"OK\"\n" +
+            "                      \"DataTransportErrorCode__plc4x_dataType\": \"uint\"\n" +
             "                    },\n" +
             "                    \"transportSize\": {\n" +
             "                      \"DataTransportSize\": 3,\n" +
             "                      \"DataTransportSize__plc4x_bitLength\": 8,\n" +
-            "                      \"DataTransportSize__plc4x_dataType\": \"uint\",\n" +
-            "                      \"DataTransportSize__plc4x_stringRepresentation\": \"BIT\"\n" +
+            "                      \"DataTransportSize__plc4x_dataType\": \"uint\"\n" +
             "                    }\n" +
             "                  }\n" +
             "                }\n" +
@@ -199,8 +197,7 @@ public class S7IoTest {
             "                \"tpduSize\": {\n" +
             "                  \"COTPTpduSize\": 12,\n" +
             "                  \"COTPTpduSize__plc4x_bitLength\": 8,\n" +
-            "                  \"COTPTpduSize__plc4x_dataType\": \"int\",\n" +
-            "                  \"COTPTpduSize__plc4x_stringRepresentation\": \"SIZE_4096\"\n" +
+            "                  \"COTPTpduSize__plc4x_dataType\": \"int\"\n" +
             "                }\n" +
             "              },\n" +
             "              \"parameterLength\": 1,\n" +
@@ -264,9 +261,8 @@ public class S7IoTest {
             WriteBufferJsonBased writeBufferJsonBased = new WriteBufferJsonBased();
             TPKTPacketIO.staticSerialize(writeBufferJsonBased, tpktPacket);
             String gotJson = writeBufferJsonBased.getJsonString();
-            if (isJsonRenderingDone) {
-                assertEquals(wantJson, gotJson);
-            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            assertEquals(objectMapper.readTree(wantJson),objectMapper.readTree(gotJson));
             ReadBufferJsonBased readBufferXmlBased = new ReadBufferJsonBased(new ByteArrayInputStream(gotJson.getBytes()));
             TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
             assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);

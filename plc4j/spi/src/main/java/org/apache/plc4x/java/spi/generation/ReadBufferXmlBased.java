@@ -56,7 +56,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public void pullContext(String logicalName) {
+    public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
         StartElement startElement = travelToNextStartElement();
         String elementName = startElement.getName().getLocalPart();
         if (!elementName.equals(logicalName)) {
@@ -65,98 +65,98 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public boolean readBit(String logicalName) throws ParseException {
+    public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         String bit = decode(logicalName, rwBitKey, 1);
         move(1);
         return bit.equals("1");
     }
 
     @Override
-    public byte readUnsignedByte(String logicalName, int bitLength) throws ParseException {
+    public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Byte.parseByte(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
-    public short readUnsignedShort(String logicalName, int bitLength) throws ParseException {
+    public short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Short.parseShort(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
-    public int readUnsignedInt(String logicalName, int bitLength) throws ParseException {
+    public int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Integer.parseInt(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
-    public long readUnsignedLong(String logicalName, int bitLength) throws ParseException {
+    public long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Long.parseLong(decode(logicalName, rwUintKey, bitLength));
     }
 
     @Override
-    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         throw new PlcRuntimeException("not implemented yet");
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength) throws ParseException {
+    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Byte.parseByte(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
-    public short readShort(String logicalName, int bitLength) throws ParseException {
+    public short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Short.parseShort(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
-    public int readInt(String logicalName, int bitLength) throws ParseException {
+    public int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Integer.parseInt(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
-    public long readLong(String logicalName, int bitLength) throws ParseException {
+    public long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Long.parseLong(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
-    public BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return new BigInteger(decode(logicalName, rwIntKey, bitLength));
     }
 
     @Override
-    public float readFloat(String logicalName, int bitLength) throws ParseException {
+    public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Float.parseFloat(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
-    public double readDouble(String logicalName, int bitLength) throws ParseException {
+    public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Double.parseDouble(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
-    public BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException {
+    public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return new BigDecimal(decode(logicalName, rwFloatKey, bitLength));
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding) {
+    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
         move(bitLength);
         return decode(logicalName, rwStringKey, bitLength);
     }
 
     @Override
-    public void closeContext(String logicalName) {
+    public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         EndElement endElement = travelToNextEndElement();
         if (!endElement.getName().getLocalPart().equals(logicalName)) {
             throw new PlcRuntimeException(String.format("Unexpected End element '%s'. Expected '%s'", endElement.getName().getLocalPart(), logicalName));
@@ -247,10 +247,10 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
             }
         }
         if (!dataTypeValidated) {
-            throw new PlcRuntimeException(String.format("required attribute %s missing",rwDataTypeKey));
+            throw new PlcRuntimeException(String.format("required attribute %s missing", rwDataTypeKey));
         }
         if (!bitLengthValidate) {
-            throw new PlcRuntimeException(String.format("required attribute %s missing",rwBitLengthKey));
+            throw new PlcRuntimeException(String.format("required attribute %s missing", rwBitLengthKey));
         }
         return true;
     }

@@ -26,97 +26,97 @@ public interface WriteBuffer {
     // TODO: check if this is really needed or if this is just an artifact
     int getPos();
 
-    void pushContext(String logicalName);
+    void pushContext(String logicalName, WithWriterArgs... writerArgs);
 
-    void writeBit(String logicalName, boolean value) throws ParseException;
+    void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeBit(boolean value) throws ParseException {
         writeBit("", value);
     }
 
-    void writeUnsignedByte(String logicalName, int bitLength, byte value) throws ParseException;
+    void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedByte(int bitLength, byte value) throws ParseException {
-        writeUnsignedByte("", bitLength,value);
+        writeUnsignedByte("", bitLength, value);
     }
 
-    void writeUnsignedShort(String logicalName, int bitLength, short value) throws ParseException;
+    void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedShort(int bitLength, short value) throws ParseException {
         writeUnsignedShort("", bitLength, value);
     }
 
-    void writeUnsignedInt(String logicalName, int bitLength, int value) throws ParseException;
+    void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedInt(int bitLength, int value) throws ParseException {
         writeUnsignedInt("", bitLength, value);
     }
 
-    void writeUnsignedLong(String logicalName, int bitLength, long value) throws ParseException;
+    void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedLong(int bitLength, long value) throws ParseException {
         writeUnsignedLong("", bitLength, value);
     }
 
-    void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException;
+    void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedBigInteger(int bitLength, BigInteger value) throws ParseException {
         writeUnsignedBigInteger("", bitLength, value);
     }
 
-    void writeByte(String logicalName, int bitLength, byte value) throws ParseException;
+    void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeByte(int bitLength, byte value) throws ParseException {
         writeByte("", bitLength, value);
     }
 
-    void writeShort(String logicalName, int bitLength, short value) throws ParseException;
+    void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeShort(int bitLength, short value) throws ParseException {
         writeShort("", bitLength, value);
     }
 
-    void writeInt(String logicalName, int bitLength, int value) throws ParseException;
+    void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeInt(int bitLength, int value) throws ParseException {
         writeInt("", bitLength, value);
     }
 
-    void writeLong(String logicalName, int bitLength, long value) throws ParseException;
+    void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeLong(int bitLength, long value) throws ParseException {
         writeLong("", bitLength, value);
     }
 
-    void writeBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException;
+    void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeBigInteger(int bitLength, BigInteger value) throws ParseException {
         writeBigInteger("", bitLength, value);
     }
 
-    void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa) throws ParseException;
+    void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeFloat(float value, int bitsExponent, int bitsMantissa) throws ParseException {
-        writeFloat("", value, bitsExponent,bitsMantissa);
+        writeFloat("", value, bitsExponent, bitsMantissa);
     }
 
-    void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa) throws ParseException;
+    void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeDouble(double value, int bitsExponent, int bitsMantissa) throws ParseException {
-        writeDouble("", value,bitsExponent,bitsMantissa);
+        writeDouble("", value, bitsExponent, bitsMantissa);
     }
 
-    void writeBigDecimal(String logicalName, int bitLength, BigDecimal value) throws ParseException;
+    void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeBigDecimal(int bitLength, BigDecimal value) throws ParseException {
         writeBigDecimal("", bitLength, value);
     }
 
-    void writeString(String logicalName, int bitLength, String encoding, String value) throws ParseException;
+    void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeString(int bitLength, String encoding, String value) throws ParseException {
-        writeString("", bitLength,encoding, value);
+        writeString("", bitLength, encoding, value);
     }
 
-    void popContext(String logicalName);
+    void popContext(String logicalName, WithWriterArgs... writerArgs);
 }

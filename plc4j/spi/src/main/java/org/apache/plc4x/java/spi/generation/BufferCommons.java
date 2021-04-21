@@ -19,22 +19,41 @@
 
 package org.apache.plc4x.java.spi.generation;
 
+import java.util.stream.Stream;
+
 public interface BufferCommons {
-    String rwDataTypeKey             = "dataType";
-    String rwBitLengthKey            = "bitLength";
+    String rwDataTypeKey = "dataType";
+    String rwBitLengthKey = "bitLength";
     String rwStringRepresentationKey = "stringRepresentation";
-    String rwBitKey                  = "bit";
-    String rwUintKey                 = "uint";
-    String rwIntKey                  = "int";
-    String rwFloatKey                = "float";
-    String rwStringKey               = "string";
-    String rwEncodingKey             = "encoding";
-    String rwIsListKey               = "isList";
+    String rwBitKey = "bit";
+    String rwUintKey = "uint";
+    String rwIntKey = "int";
+    String rwFloatKey = "float";
+    String rwStringKey = "string";
+    String rwEncodingKey = "encoding";
+    String rwIsListKey = "isList";
 
     default String sanitizeLogicalName(String logicalName) {
         if (logicalName.equals("")) {
             return "value";
         }
         return logicalName;
+    }
+
+    default boolean isToBeRenderedAsList(WithReaderArgs... readerArgs) {
+        return isToBeRenderedAsList(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default boolean isToBeRenderedAsList(WithWriterArgs... writerArgs) {
+        return isToBeRenderedAsList(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default boolean isToBeRenderedAsList(WithReaderWriterArgs... readerWriterArgs) {
+        for (WithReaderWriterArgs arg : readerWriterArgs) {
+            if (arg instanceof withRenderAsList) {
+                return ((withRenderAsList) arg).renderAsList();
+            }
+        }
+        return false;
     }
 }

@@ -56,194 +56,176 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void pushContext(String logicalName) {
-        logicalName = sanitizeLogicalName(logicalName);
+    public void pushContext(String logicalName, WithWriterArgs... writerArgs) {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         try {
             if (depth == 0) {
                 generator.writeStartObject();
             }
             depth++;
-            // TODO: check if we need to write a array
-            generator.writeObjectFieldStart(logicalName);
+            if (isToBeRenderedAsList(writerArgs)) {
+                generator.writeArrayFieldStart(sanitizedLogicalName);
+            } else {
+                if (generator.getOutputContext().inArray()) {
+                    generator.writeStartObject();
+                }
+                generator.writeObjectFieldStart(sanitizedLogicalName);
+            }
         } catch (IOException e) {
             throw new PlcRuntimeException(e);
         }
     }
 
     @Override
-    public void writeBit(String logicalName, boolean value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwBitKey, 1);
-            generator.writeBooleanField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwBitKey, 1);
+            generator.writeBooleanField(sanitizedLogicalName, value);
+        } );
     }
 
     @Override
-    public void writeUnsignedByte(String logicalName, int bitLength, byte value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
+    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        } );
+    }
+
+    @Override
+    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
             writeAttr(logicalName, rwUintKey, bitLength);
             generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+        });
     }
 
     @Override
-    public void writeUnsignedShort(String logicalName, int bitLength, short value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwUintKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeUnsignedInt(String logicalName, int bitLength, int value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwUintKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        } );
     }
 
     @Override
-    public void writeUnsignedLong(String logicalName, int bitLength, long value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwUintKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwUintKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeByte(String logicalName, int bitLength, byte value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwIntKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        } );
     }
 
     @Override
-    public void writeShort(String logicalName, int bitLength, short value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwIntKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeInt(String logicalName, int bitLength, int value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwIntKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeLong(String logicalName, int bitLength, long value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwIntKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwIntKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeBigInteger(String logicalName, int bitLength, BigInteger value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwIntKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
-    }
-
-    @Override
-    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
+    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
             int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-            writeAttr(logicalName, rwFloatKey, bitLength);
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
             generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+        });
     }
 
     @Override
-    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
+    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
             int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-            writeAttr(logicalName, rwFloatKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwFloatKey, bitLength);
-            generator.writeNumberField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwFloatKey, bitLength);
+            generator.writeNumberField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value) throws ParseException {
-        logicalName = sanitizeLogicalName(logicalName);
-        try {
-            writeAttr(logicalName, rwStringKey, bitLength);
-            generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwEncodingKey), encoding);
-            generator.writeStringField(logicalName, value);
-        } catch (IOException e) {
-            throw new ParseException("error writing",e);
-        }
+    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwStringKey, bitLength);
+            generator.writeStringField(String.format("%s__plc4x_%s", sanitizedLogicalName, rwEncodingKey), encoding);
+            generator.writeStringField(sanitizedLogicalName, value);
+        });
     }
 
     @Override
-    public void popContext(String logicalName) {
-        logicalName = sanitizeLogicalName(logicalName);
+    public void popContext(String logicalName, WithWriterArgs... writerArgs) {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         try {
-            // TODO: check if we need to write a array
-            generator.writeEndObject();
+            if (isToBeRenderedAsList(writerArgs)) {
+                generator.writeEndArray();
+            } else {
+                generator.writeEndObject();
+                if (generator.getOutputContext().getParent().inArray()) {
+                    generator.writeEndObject();
+                }
+            }
             depth--;
             if (depth == 0) {
                 generator.writeEndObject();
@@ -251,6 +233,34 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         } catch (IOException e) {
             throw new PlcRuntimeException(e);
         }
+    }
+
+    public void wrapIfNecessary(RunWrapped runnable) throws ParseException {
+        boolean inArray = generator.getOutputContext().inArray();
+        if (inArray) {
+            try {
+                generator.writeStartObject();
+            } catch (IOException e) {
+                throw new ParseException("Error opening wrap", e);
+            }
+        }
+        try {
+            runnable.run();
+        } catch (IOException e) {
+            throw new ParseException("Error running wrap", e);
+        }
+        if (inArray) {
+            try {
+                generator.writeEndObject();
+            } catch (IOException e) {
+                throw new ParseException("Error closing wrap", e);
+            }
+        }
+    }
+
+    @FunctionalInterface
+    private interface RunWrapped {
+        void run() throws IOException, ParseException;
     }
 
     public String getJsonString() {
@@ -262,8 +272,8 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         }
     }
 
-    private void writeAttr(String logicalName , String dataType , int bitLength ) throws IOException {
-        if( !doRenderAttr) {
+    private void writeAttr(String logicalName, String dataType, int bitLength) throws IOException {
+        if (!doRenderAttr) {
             return;
         }
         generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwDataTypeKey), dataType);

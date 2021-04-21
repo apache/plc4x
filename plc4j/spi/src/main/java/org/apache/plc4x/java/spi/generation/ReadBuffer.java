@@ -27,98 +27,98 @@ public interface ReadBuffer {
 
     boolean hasMore(int numBits);
 
-    void pullContext(String logicalName);
+    void pullContext(String logicalName, WithReaderArgs... readerArgs);
 
-    boolean readBit(String logicalName) throws ParseException;
+    boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 
     default boolean readBit() throws ParseException {
         return readBit("");
     }
 
-    byte readUnsignedByte(String logicalName, int bitLength) throws ParseException;
+    byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default byte readUnsignedByte(int bitLength) throws ParseException {
         return readUnsignedByte("", bitLength);
     }
 
-    short readUnsignedShort(String logicalName, int bitLength) throws ParseException;
+    short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default short readUnsignedShort(int bitLength) throws ParseException {
         return readUnsignedShort("", bitLength);
     }
 
-    int readUnsignedInt(String logicalName, int bitLength) throws ParseException;
+    int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default int readUnsignedInt(int bitLength) throws ParseException {
         return readUnsignedInt("", bitLength);
     }
 
-    long readUnsignedLong(String logicalName, int bitLength) throws ParseException;
+    long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default long readUnsignedLong(int bitLength) throws ParseException {
         return readUnsignedLong("", bitLength);
     }
 
-    BigInteger readUnsignedBigInteger(String logicalName, int bitLength) throws ParseException;
+    BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default BigInteger readUnsignedBigInteger(int bitLength) throws ParseException {
         return readUnsignedBigInteger("", bitLength);
     }
 
-    byte readByte(String logicalName, int bitLength) throws ParseException;
+    byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default byte readByte(int bitLength) throws ParseException {
         return readByte("", bitLength);
     }
 
-    short readShort(String logicalName, int bitLength) throws ParseException;
+    short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default short readShort(int bitLength) throws ParseException {
         return readShort("", bitLength);
     }
 
-    int readInt(String logicalName, int bitLength) throws ParseException;
+    int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default int readInt(int bitLength) throws ParseException {
         return readInt("", bitLength);
     }
 
-    long readLong(String logicalName, int bitLength) throws ParseException;
+    long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default long readLong(int bitLength) throws ParseException {
         return readLong("", bitLength);
     }
 
-    BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException;
+    BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default BigInteger readBigInteger(int bitLength) throws ParseException {
         return readBigInteger("", bitLength);
     }
 
-    float readFloat(String logicalName, int bitLength) throws ParseException;
+    float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default float readFloat(int bitLength) throws ParseException {
         return readFloat("", bitLength);
     }
 
-    double readDouble(String logicalName, int bitLength) throws ParseException;
+    double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default double readDouble(int bitLength) throws ParseException {
         return readDouble("", bitLength);
     }
 
-    BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException;
+    BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default BigDecimal readBigDecimal(int bitLength) throws ParseException {
         return readBigDecimal("", bitLength);
     }
 
-    String readString(String logicalName, int bitLength, String encoding);
+    String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs);
 
     default String readString(int bitLength, String encoding) {
         return readString("", bitLength,encoding);
     }
 
 
-    void closeContext(String logicalName);
+    void closeContext(String logicalName, WithReaderArgs... readerArgs);
 }

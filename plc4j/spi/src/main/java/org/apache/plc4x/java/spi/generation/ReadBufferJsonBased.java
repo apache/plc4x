@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ReadBufferJsonBased implements ReadBuffer {
@@ -64,7 +62,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public void pullContext(String logicalName) {
+    public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
         if (stack.empty()) {
             if (!(rootElement instanceof Map)) {
@@ -78,22 +76,24 @@ public class ReadBufferJsonBased implements ReadBuffer {
             return;
         }
         Object peek = stack.peek();
-        if (peek.getClass().isArray()) {
-            Object[] contextList = (Object[]) stack.pop();
-            Object context = contextList[0];
-            if (contextList.length < 2) {
-                stack.push(new Object[]{});
+        if (peek instanceof List) {
+            List contextList = (List) stack.pop();
+            Object context = contextList.get(0);
+            if (contextList.size() < 2) {
+                stack.push(Collections.emptyList());
             } else {
-                stack.push(Arrays.copyOfRange(contextList, 1, contextList.length - 1));
+                contextList.remove(0);
+                stack.push(contextList);
             }
             Object subContext = ((Map) context).get(logicalName);
             if (subContext == null) {
                 throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
             }
             stack.push(subContext);
+            return;
         }
         if (!(peek instanceof Map)) {
-            throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
+            throw new PlcRuntimeException("Invalid parser state");
         }
         Map map = (Map) peek;
         Object context = map.get(logicalName);
@@ -104,7 +104,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public boolean readBit(String logicalName) throws ParseException {
+    public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(1);
         Map element = getElement(logicalName);
@@ -117,7 +117,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public byte readUnsignedByte(String logicalName, int bitLength) throws ParseException {
+    public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -130,7 +130,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public short readUnsignedShort(String logicalName, int bitLength) throws ParseException {
+    public short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -143,7 +143,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public int readUnsignedInt(String logicalName, int bitLength) throws ParseException {
+    public int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -156,7 +156,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public long readUnsignedLong(String logicalName, int bitLength) throws ParseException {
+    public long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -169,7 +169,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -182,7 +182,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength) throws ParseException {
+    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -195,7 +195,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public short readShort(String logicalName, int bitLength) throws ParseException {
+    public short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -208,7 +208,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public int readInt(String logicalName, int bitLength) throws ParseException {
+    public int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -221,7 +221,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public long readLong(String logicalName, int bitLength) throws ParseException {
+    public long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -234,7 +234,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -247,7 +247,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public float readFloat(String logicalName, int bitLength) throws ParseException {
+    public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -260,7 +260,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public double readDouble(String logicalName, int bitLength) throws ParseException {
+    public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -273,7 +273,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException {
+    public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -286,7 +286,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding) {
+    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
@@ -299,7 +299,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public void closeContext(String logicalName) {
+    public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
         if (stack.empty()) {
             throw new PlcRuntimeException(String.format("Required context close %s not found in %s", logicalName, rootElement));
@@ -310,8 +310,11 @@ public class ReadBufferJsonBased implements ReadBuffer {
             return;
         }
         Object peek =stack.peek();
-        if (peek.getClass().isArray()) {
+        if (peek instanceof List) {
             return;
+        }
+        if (!(peek instanceof Map)) {
+            throw new PlcRuntimeException("Invalid parser state");
         }
         Map map = (Map) peek;
         if (map.get(logicalName)==null) {
@@ -325,14 +328,14 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         Object peek = stack.peek();
         Map element;
-        if (peek.getClass().isArray()) {
-            Object pop = stack.pop();
-            Object[] elementList = (Object[]) pop;
-            element = (Map) elementList[0];
-            if (elementList.length < 2) {
-                stack.push(new Object[]{});
+        if (peek instanceof List) {
+            List elementList = (List)stack.pop();
+            element = (Map) elementList.get(0);
+            if (elementList.size() < 2) {
+                stack.push(Collections.emptyList());
             } else {
-                stack.push(Arrays.copyOfRange(elementList, 1, elementList.length - 1));
+                elementList.remove(0);
+                stack.push(elementList);
             }
             return element;
         } else if (peek instanceof Map) {
