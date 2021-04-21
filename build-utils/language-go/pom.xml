@@ -64,44 +64,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>com.igormaznitsa</groupId>
-        <artifactId>mvn-golang-wrapper</artifactId>
-        <version>2.3.6</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>default-fix</id>
-            <!-- Move the execution of this after the code generation -->
-            <phase>process-sources</phase>
-            <goals>
-              <goal>fix</goal>
-            </goals>
-          </execution>
-          <!-- Move the execution of this after the code generation -->
-          <execution>
-            <id>default-get</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>get</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>run-go-vet</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>vet</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <packages>
-            <package>github.com/apache/plc4x/plc4go/cmd/main</package>
-          </packages>
-          <sources>${project.basedir}</sources>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
