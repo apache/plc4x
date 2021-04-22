@@ -544,7 +544,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${manualArrayField.name?cap_first}()) {
                 ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)};
             }
-            io.pushContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+            io.popContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "manual">
