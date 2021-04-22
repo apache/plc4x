@@ -93,7 +93,7 @@
                     <SysexCommandReportFirmwareResponse>
                       <majorVersion dataType="uint" bitLength="8">2</majorVersion>
                       <minorVersion dataType="uint" bitLength="8">5</minorVersion>
-                      <fileName>
+                      <fileName isList="true">
                         <value dataType="int" bitLength="8">83</value>
                         <value dataType="int" bitLength="8">0</value>
                         <value dataType="int" bitLength="8">116</value>
@@ -197,7 +197,7 @@
                     <SysexCommandReportFirmwareResponse>
                       <majorVersion dataType="uint" bitLength="8">2</majorVersion>
                       <minorVersion dataType="uint" bitLength="8">5</minorVersion>
-                      <fileName>
+                      <fileName isList="true">
                         <value dataType="int" bitLength="8">83</value>
                         <value dataType="int" bitLength="8">0</value>
                         <value dataType="int" bitLength="8">116</value>
@@ -389,7 +389,7 @@
         <messageType dataType="uint" bitLength="4">14</messageType>
         <FirmataMessageAnalogIO>
           <pin dataType="uint" bitLength="4">0</pin>
-          <data>
+          <data isList="true">
             <value dataType="int" bitLength="8">84</value>
             <value dataType="int" bitLength="8">3</value>
           </data>
@@ -410,7 +410,7 @@
         <messageType dataType="uint" bitLength="4">9</messageType>
         <FirmataMessageDigitalIO>
           <pinBlock dataType="uint" bitLength="4">0</pinBlock>
-          <data>
+          <data isList="true">
             <value dataType="int" bitLength="8">0</value>
             <value dataType="int" bitLength="8">0</value>
           </data>
@@ -481,7 +481,8 @@
             </FirmataCommand>
           </command>
         </FirmataMessageCommand>
-      </FirmataMessage>    </xml>
+      </FirmataMessage>
+    </xml>
   </testcase>
 
   <!--testcase>

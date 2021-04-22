@@ -72,7 +72,7 @@
             <functionFlag dataType="uint" bitLength="7">4</functionFlag>
             <ModbusPDUReadInputRegistersResponse>
               <byteCount dataType="uint" bitLength="8">198</byteCount>
-              <value>
+              <value isList="true">
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">0</value>
@@ -298,7 +298,7 @@
             <functionFlag dataType="uint" bitLength="7">20</functionFlag>
             <ModbusPDUReadFileRecordRequest>
               <byteCount dataType="uint" bitLength="8">14</byteCount>
-              <items>
+              <items isList="true">
                 <ModbusPDUReadFileRecordRequestItem>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
                   <fileNumber dataType="uint" bitLength="16">3</fileNumber>
@@ -338,11 +338,11 @@
             <functionFlag dataType="uint" bitLength="7">20</functionFlag>
             <ModbusPDUReadFileRecordResponse>
               <byteCount dataType="uint" bitLength="8">24</byteCount>
-              <items>
+              <items isList="true">
                 <ModbusPDUReadFileRecordResponseItem>
                   <dataLength dataType="uint" bitLength="8">5</dataLength>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
@@ -352,7 +352,7 @@
                 <ModbusPDUReadFileRecordResponseItem>
                   <dataLength dataType="uint" bitLength="8">17</dataLength>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
@@ -399,13 +399,13 @@
             <functionFlag dataType="uint" bitLength="7">21</functionFlag>
             <ModbusPDUWriteFileRecordRequest>
               <byteCount dataType="uint" bitLength="8">9</byteCount>
-              <items>
+              <items isList="true">
                 <ModbusPDUWriteFileRecordRequestItem>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
                   <fileNumber dataType="uint" bitLength="16">2</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">0</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData>
+                  <recordData isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">8</value>
                   </recordData>
@@ -437,13 +437,13 @@
             <functionFlag dataType="uint" bitLength="7">21</functionFlag>
             <ModbusPDUWriteFileRecordRequest>
               <byteCount dataType="uint" bitLength="8">18</byteCount>
-              <items>
+              <items isList="true">
                 <ModbusPDUWriteFileRecordRequestItem>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
                   <fileNumber dataType="uint" bitLength="16">1</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData>
+                  <recordData isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                   </recordData>
@@ -453,7 +453,7 @@
                   <fileNumber dataType="uint" bitLength="16">2</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">0</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData>
+                  <recordData isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                   </recordData>

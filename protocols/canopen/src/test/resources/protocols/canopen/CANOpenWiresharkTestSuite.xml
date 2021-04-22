@@ -179,7 +179,7 @@
                 <toggle dataType="bit" bitLength="1">false</toggle>
                 <size dataType="uint" bitLength="3">0</size>
                 <last dataType="bit" bitLength="1">false</last>
-                <data>
+                <data isList="true">
                   <value dataType="int" bitLength="8">85</value>
                   <value dataType="int" bitLength="8">108</value>
                   <value dataType="int" bitLength="8">116</value>
@@ -188,7 +188,7 @@
                   <value dataType="int" bitLength="8">72</value>
                   <value dataType="int" bitLength="8">105</value>
                 </data>
-                <padding>
+                <padding isList="true">
                 </padding>
               </SDOSegmentUploadResponse>
             </SDOResponse>
@@ -346,13 +346,13 @@
                 <payload>
                   <SDOInitiateUploadResponsePayload>
                     <SDOInitiateExpeditedUploadResponse>
-                      <data>
+                      <data isList="true">
                         <value dataType="int" bitLength="8">97</value>
                         <value dataType="int" bitLength="8">115</value>
                         <value dataType="int" bitLength="8">100</value>
                         <value dataType="int" bitLength="8">102</value>
                       </data>
-                      <padding>
+                      <padding isList="true">
                       </padding>
                     </SDOInitiateExpeditedUploadResponse>
                   </SDOInitiateUploadResponsePayload>
@@ -420,7 +420,7 @@
                 <block>
                   <SDOBlockData>
                     <flags dataType="uint" bitLength="5">2</flags>
-                    <data>
+                    <data isList="true">
                       <value dataType="int" bitLength="8">8</value>
                       <value dataType="int" bitLength="8">16</value>
                       <value dataType="int" bitLength="8">0</value>

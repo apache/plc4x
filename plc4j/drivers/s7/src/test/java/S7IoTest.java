@@ -51,7 +51,7 @@ public class S7IoTest {
                 "        <eot dataType=\"bit\" bitLength=\"1\">false</eot>\n" +
                 "        <tpduRef dataType=\"uint\" bitLength=\"7\">13</tpduRef>\n" +
                 "      </COTPPacketData>\n" +
-                "      <parameters>\n" +
+                "      <parameters isList=\"true\">\n" +
                 "        <COTPParameter>\n" +
                 "          <parameterType dataType=\"uint\" bitLength=\"8\">192</parameterType>\n" +
                 "          <parameterLength dataType=\"uint\" bitLength=\"8\">1</parameterLength>\n" +
@@ -81,7 +81,7 @@ public class S7IoTest {
                 "        </S7Parameter>\n" +
                 "        <S7Payload>\n" +
                 "          <S7PayloadReadVarResponse>\n" +
-                "            <items>\n" +
+                "            <items isList=\"true\">\n" +
                 "              <S7VarPayloadDataItem>\n" +
                 "                <returnCode>\n" +
                 "                  <DataTransportErrorCode dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"OK\">255</DataTransportErrorCode>\n" +
@@ -90,10 +90,10 @@ public class S7IoTest {
                 "                  <DataTransportSize dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"BIT\">3</DataTransportSize>\n" +
                 "                </transportSize>\n" +
                 "                <dataLength dataType=\"uint\" bitLength=\"16\">1</dataLength>\n" +
-                "                <data>\n" +
+                "                <data isList=\"true\">\n" +
                 "                  <value dataType=\"int\" bitLength=\"8\">1</value>\n" +
                 "                </data>\n" +
-                "                <padding>\n" +
+                "                <padding isList=\"true\">\n" +
                 "                </padding>\n" +
                 "              </S7VarPayloadDataItem>\n" +
                 "            </items>\n" +

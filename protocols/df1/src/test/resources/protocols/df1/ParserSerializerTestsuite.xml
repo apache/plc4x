@@ -72,7 +72,7 @@
               <status dataType="uint" bitLength="8">0</status>
               <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
               <DF1UnprotectedReadResponse>
-                <data>
+                <data isList="true">
                   <value dataType="uint" bitLength="8">255</value>
                   <value dataType="uint" bitLength="8">255</value>
                 </data>
@@ -104,7 +104,7 @@
               <status dataType="uint" bitLength="8">0</status>
               <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
               <DF1UnprotectedReadResponse>
-                <data>
+                <data isList="true">
                   <value dataType="uint" bitLength="8">16</value>
                   <value dataType="uint" bitLength="8">16</value>
                   <value dataType="uint" bitLength="8">255</value>

@@ -151,7 +151,7 @@
                     <result dataType="uint" bitLength="32">0</result>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">1</value>
                   </data>
                 </AdsReadResponse>
@@ -222,9 +222,9 @@
                   <indexOffset dataType="uint" bitLength="32">0</indexOffset>
                   <readLength dataType="uint" bitLength="32">4</readLength>
                   <writeLength dataType="uint" bitLength="32">26</writeLength>
-                  <items>
+                  <items isList="true">
                   </items>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">109</value>
                     <value dataType="int" bitLength="8">97</value>
                     <value dataType="int" bitLength="8">105</value>
@@ -320,7 +320,7 @@
                     <result dataType="uint" bitLength="32">0</result>
                   </result>
                   <length dataType="uint" bitLength="32">4</length>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">1</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">-128</value>
@@ -461,7 +461,7 @@
                     <result dataType="uint" bitLength="32">0</result>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">1</value>
                   </data>
                 </AdsReadResponse>
@@ -531,7 +531,7 @@
                   <indexGroup dataType="uint" bitLength="32">61446</indexGroup>
                   <indexOffset dataType="uint" bitLength="32">0</indexOffset>
                   <length dataType="uint" bitLength="32">4</length>
-                  <data>
+                  <data isList="true">
                     <value dataType="int" bitLength="8">1</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">-128</value>

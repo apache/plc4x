@@ -52,7 +52,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -92,7 +92,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -136,7 +136,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -173,7 +173,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -210,7 +210,7 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber isList="true">
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">8</value>
                 <value dataType="int" bitLength="8">45</value>
@@ -220,7 +220,7 @@
               </knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-32</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">23</value>
@@ -230,7 +230,7 @@
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">10</value>
                     <value dataType="int" bitLength="8">-77</value>
@@ -240,7 +240,7 @@
                   </addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName>
+              <deviceFriendlyName isList="true">
                 <value dataType="int" bitLength="8">71</value>
                 <value dataType="int" bitLength="8">105</value>
                 <value dataType="int" bitLength="8">114</value>
@@ -278,7 +278,7 @@
             <DIBSuppSvcFamilies>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <descriptionType dataType="uint" bitLength="8">2</descriptionType>
-              <serviceIds>
+              <serviceIds isList="true">
                 <ServiceId>
                   <serviceType dataType="uint" bitLength="8">2</serviceType>
                   <KnxNetIpCore>
@@ -324,7 +324,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
@@ -379,7 +379,7 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber isList="true">
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">8</value>
                 <value dataType="int" bitLength="8">45</value>
@@ -389,7 +389,7 @@
               </knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-32</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">23</value>
@@ -399,7 +399,7 @@
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">10</value>
                     <value dataType="int" bitLength="8">-77</value>
@@ -409,7 +409,7 @@
                   </addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName>
+              <deviceFriendlyName isList="true">
                 <value dataType="int" bitLength="8">71</value>
                 <value dataType="int" bitLength="8">105</value>
                 <value dataType="int" bitLength="8">114</value>
@@ -447,7 +447,7 @@
             <DIBSuppSvcFamilies>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <descriptionType dataType="uint" bitLength="8">2</descriptionType>
-              <serviceIds>
+              <serviceIds isList="true">
                 <ServiceId>
                   <serviceType dataType="uint" bitLength="8">2</serviceType>
                   <KnxNetIpCore>
@@ -494,7 +494,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -513,7 +513,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -563,7 +563,7 @@
             </hostProtocolCode>
             <ipAddress>
               <IPAddress>
-                <addr>
+                <addr isList="true">
                   <value dataType="int" bitLength="8">-64</value>
                   <value dataType="int" bitLength="8">-88</value>
                   <value dataType="int" bitLength="8">42</value>
@@ -612,7 +612,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -731,7 +731,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -791,7 +791,7 @@
               <messageCode dataType="uint" bitLength="8">41</messageCode>
               <LDataInd>
                 <additionalInformationLength dataType="uint" bitLength="8">0</additionalInformationLength>
-                <additionalInformation>
+                <additionalInformation isList="true">
                 </additionalInformation>
                 <dataFrame>
                   <LDataFrame>
@@ -815,7 +815,7 @@
                           <subGroup dataType="uint" bitLength="8">10</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress>
+                      <destinationAddress isList="true">
                         <value dataType="int" bitLength="8">18</value>
                         <value dataType="int" bitLength="8">12</value>
                       </destinationAddress>
@@ -831,7 +831,7 @@
                                 <apciType dataType="uint" bitLength="4">2</apciType>
                                 <ApduDataGroupValueWrite>
                                   <dataFirstByte dataType="int" bitLength="6">1</dataFirstByte>
-                                  <data>
+                                  <data isList="true">
                                   </data>
                                 </ApduDataGroupValueWrite>
                               </ApduData>
@@ -878,7 +878,7 @@
               <messageCode dataType="uint" bitLength="8">43</messageCode>
               <LBusmonInd>
                 <additionalInformationLength dataType="uint" bitLength="8">7</additionalInformationLength>
-                <additionalInformation>
+                <additionalInformation isList="true">
                   <CEMIAdditionalInformation>
                     <additionalInformationType dataType="uint" bitLength="8">3</additionalInformationType>
                     <CEMIAdditionalInformationBusmonitorInfo>
@@ -925,7 +925,7 @@
                           <subGroup dataType="uint" bitLength="8">30</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress>
+                      <destinationAddress isList="true">
                         <value dataType="int" bitLength="8">12</value>
                         <value dataType="int" bitLength="8">-31</value>
                       </destinationAddress>
@@ -1003,7 +1003,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -1022,7 +1022,7 @@
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>

@@ -157,13 +157,13 @@
                 <payload>
                   <SDOInitiateUploadResponsePayload>
                     <SDOInitiateExpeditedUploadResponse>
-                      <data>
+                      <data isList="true">
                         <value dataType="int" bitLength="8">0</value>
                         <value dataType="int" bitLength="8">0</value>
                         <value dataType="int" bitLength="8">0</value>
                         <value dataType="int" bitLength="8">0</value>
                       </data>
-                      <padding>
+                      <padding isList="true">
                       </padding>
                     </SDOInitiateExpeditedUploadResponse>
                   </SDOInitiateUploadResponsePayload>
@@ -195,7 +195,7 @@
                 <toggle dataType="bit" bitLength="1">false</toggle>
                 <size dataType="uint" bitLength="3">0</size>
                 <last dataType="bit" bitLength="1">false</last>
-                <data>
+                <data isList="true">
                   <value dataType="int" bitLength="8">23</value>
                   <value dataType="int" bitLength="8">16</value>
                   <value dataType="int" bitLength="8">0</value>
@@ -204,7 +204,7 @@
                   <value dataType="int" bitLength="8">0</value>
                   <value dataType="int" bitLength="8">0</value>
                 </data>
-                <padding>
+                <padding isList="true">
                 </padding>
               </SDOSegmentDownloadRequest>
             </SDORequest>
@@ -243,11 +243,11 @@
                 <payload>
                   <SDOInitiateUploadResponsePayload>
                     <SDOInitiateExpeditedUploadResponse>
-                      <data>
+                      <data isList="true">
                         <value dataType="int" bitLength="8">-48</value>
                         <value dataType="int" bitLength="8">15</value>
                       </data>
-                      <padding>
+                      <padding isList="true">
                         <value dataType="uint" bitLength="8">0</value>
                         <value dataType="uint" bitLength="8">0</value>
                       </padding>
@@ -281,7 +281,7 @@
                 <toggle dataType="bit" bitLength="1">false</toggle>
                 <size dataType="uint" bitLength="3">0</size>
                 <last dataType="bit" bitLength="1">false</last>
-                <data>
+                <data isList="true">
                   <value dataType="int" bitLength="8">23</value>
                   <value dataType="int" bitLength="8">16</value>
                   <value dataType="int" bitLength="8">0</value>
@@ -290,7 +290,7 @@
                   <value dataType="int" bitLength="8">0</value>
                   <value dataType="int" bitLength="8">0</value>
                 </data>
-                <padding>
+                <padding isList="true">
                 </padding>
               </SDOSegmentUploadResponse>
             </SDOResponse>
@@ -345,7 +345,7 @@
         <CANOpenPDOPayload>
           <pdo>
             <CANOpenPDO>
-              <data>
+              <data isList="true">
                 <value dataType="int" bitLength="8">120</value>
                 <value dataType="int" bitLength="8">86</value>
                 <value dataType="int" bitLength="8">52</value>
@@ -375,7 +375,7 @@
         <CANOpenPDOPayload>
           <pdo>
             <CANOpenPDO>
-              <data>
+              <data isList="true">
                 <value dataType="int" bitLength="8">-7</value>
                 <value dataType="int" bitLength="8">1</value>
                 <value dataType="int" bitLength="8">62</value>

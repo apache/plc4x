@@ -95,7 +95,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">68</value>
                 <value dataType="int" bitLength="8">69</value>
                 <value dataType="int" bitLength="8">83</value>
@@ -153,7 +153,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">12</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">49</value>
                 <value dataType="int" bitLength="8">48</value>
                 <value dataType="int" bitLength="8">46</value>
@@ -187,7 +187,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">9</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">117</value>
                 <value dataType="int" bitLength="8">115</value>
                 <value dataType="int" bitLength="8">101</value>
@@ -205,7 +205,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">9</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">112</value>
                 <value dataType="int" bitLength="8">97</value>
                 <value dataType="int" bitLength="8">115</value>
@@ -223,7 +223,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">12</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">49</value>
                 <value dataType="int" bitLength="8">48</value>
                 <value dataType="int" bitLength="8">46</value>
@@ -405,7 +405,7 @@
           <octet6>1</octet6>
         </amsNetId>
         <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>UExDX0hPTUU=</text>
+          <text isList="true">UExDX0hPTUU=</text>
         </name>
       </DiscoveryResponse>
     </xml>
@@ -445,7 +445,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">68</value>
                 <value dataType="int" bitLength="8">69</value>
                 <value dataType="int" bitLength="8">83</value>
@@ -483,7 +483,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">14</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">65</value>
                 <value dataType="int" bitLength="8">100</value>
                 <value dataType="int" bitLength="8">109</value>
@@ -506,7 +506,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">1</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
               </text>
               <reserved dataType="uint" bitLength="8">0</reserved>
             </AmsMagicString>
@@ -516,7 +516,7 @@
             <AmsMagicString>
               <len dataType="uint" bitLength="16">16</len>
               <reserved dataType="uint" bitLength="8">0</reserved>
-              <text>
+              <text isList="true">
                 <value dataType="int" bitLength="8">68</value>
                 <value dataType="int" bitLength="8">69</value>
                 <value dataType="int" bitLength="8">83</value>

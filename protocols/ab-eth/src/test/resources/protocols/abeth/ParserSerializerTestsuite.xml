@@ -35,7 +35,7 @@
         <len dataType="uint" bitLength="16">0</len>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">4</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -63,7 +63,7 @@
         <len dataType="uint" bitLength="16">0</len>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">4</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -91,7 +91,7 @@
         <len dataType="uint" bitLength="16">14</len>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">64</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -143,7 +143,7 @@
         <len dataType="uint" bitLength="16">32</len>
         <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">64</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -166,7 +166,7 @@
               <status dataType="uint" bitLength="8">0</status>
               <transactionCounter dataType="uint" bitLength="16">1025</transactionCounter>
               <DF1CommandResponseMessageProtectedTypedLogicalRead>
-                <data>
+                <data isList="true">
                   <value dataType="uint" bitLength="8">145</value>
                   <value dataType="uint" bitLength="8">1</value>
                   <value dataType="uint" bitLength="8">1</value>
