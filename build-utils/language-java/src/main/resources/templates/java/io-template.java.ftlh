@@ -227,9 +227,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Checksum Field (checksum)
         {
             ${helper.getLanguageTypeNameForField(field)} checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
-            // Create an array of all the bytes read in this message element so far.
-            <#--TODO: we need a buffered reader so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
-            byte[] checksumRawData = ((ReadBufferByteBased)io).getBytes(startPos, io.getPos());
             ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference, "", checksumField)};
             checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
             if(checksum != checksumRef) {
@@ -480,9 +477,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Checksum Field (checksum) (Calculated)
         {
             ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
-            // Create an array of all the bytes written in this message element so far.
-            <#--TODO: we need a buffered writer so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
-            byte[] checksumRawData = ((WriteBufferByteBased)io).getBytes(startPos, io.getPos());
             _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
             ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)};
         }
