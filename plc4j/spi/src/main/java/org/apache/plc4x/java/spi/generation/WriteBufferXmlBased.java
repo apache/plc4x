@@ -74,6 +74,10 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
             depth++;
             StartElement startElement = xmlEventFactory.createStartElement("", "", logicalName);
             xmlEventWriter.add(startElement);
+            if (isToBeRenderedAsList(writerArgs)) {
+                Attribute isListAttribute = xmlEventFactory.createAttribute(rwIsListKey, "true");
+                xmlEventWriter.add(isListAttribute);
+            }
             newLine();
         } catch (XMLStreamException e) {
             throw new PlcRuntimeException(e);
