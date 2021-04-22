@@ -22,21 +22,36 @@
 
   <name>Allen-Bradley DF1</name>
 
+  <protocolName>df1</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>Unprotected Read Address Request</name>
     <raw>10020900010001001100021003546F</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
-      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame">
-        <destinationAddress>9</destinationAddress>
-        <sourceAddress>0</sourceAddress>
-        <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest">
-          <status>0</status>
-          <transactionCounter>256</transactionCounter>
-          <address>4352</address>
-          <size>2</size>
-        </command>
-      </DF1SymbolMessageFrame>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">9</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">0</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">1</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadRequest>
+                <address dataType="uint" bitLength="16">4352</address>
+                <size dataType="uint" bitLength="8">2</size>
+              </DF1UnprotectedReadRequest>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">21615</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
     </xml>
   </testcase>
 
@@ -45,18 +60,30 @@
     <raw>10020A0941000100FFFF1003DFB9</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
-      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame">
-        <destinationAddress>10</destinationAddress>
-        <sourceAddress>9</sourceAddress>
-        <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse">
-          <status>0</status>
-          <transactionCounter>256</transactionCounter>
-          <data>
-            <data>255</data>
-            <data>255</data>
-          </data>
-        </command>
-      </DF1SymbolMessageFrame>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">10</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">9</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">65</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadResponse>
+                <data>
+                  <value dataType="uint" bitLength="8">255</value>
+                  <value dataType="uint" bitLength="8">255</value>
+                </data>
+              </DF1UnprotectedReadResponse>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">57273</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
     </xml>
   </testcase>
 
@@ -65,18 +92,31 @@
     <raw>10020A09410001001010FF1003BAAD</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
-      <DF1SymbolMessageFrame className="org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame">
-        <destinationAddress>10</destinationAddress>
-        <sourceAddress>9</sourceAddress>
-        <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse">
-          <status>0</status>
-          <transactionCounter>256</transactionCounter>
-          <data>
-            <data>16</data>
-            <data>255</data>
-          </data>
-        </command>
-      </DF1SymbolMessageFrame>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">10</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">9</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">65</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadResponse>
+                <data>
+                  <value dataType="uint" bitLength="8">16</value>
+                  <value dataType="uint" bitLength="8">16</value>
+                  <value dataType="uint" bitLength="8">255</value>
+                </data>
+              </DF1UnprotectedReadResponse>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">47789</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
     </xml>
   </testcase>
 
@@ -85,7 +125,12 @@
     <raw>1006</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
-      <DF1SymbolMessageFrameACK className="org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrameACK"/>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">6</symbolType>
+        <DF1SymbolMessageFrameACK>
+        </DF1SymbolMessageFrameACK>
+      </DF1Symbol>
     </xml>
   </testcase>
 
@@ -94,7 +139,12 @@
     <raw>1015</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
-      <DF1SymbolMessageFrameNAK className="org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrameNAK"/>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">21</symbolType>
+        <DF1SymbolMessageFrameNAK>
+        </DF1SymbolMessageFrameNAK>
+      </DF1Symbol>
     </xml>
   </testcase>
 
