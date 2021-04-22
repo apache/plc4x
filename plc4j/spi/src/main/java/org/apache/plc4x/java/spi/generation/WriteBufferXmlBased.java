@@ -86,93 +86,93 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
         String dataType = "bit";
         int bitLength = 1;
         String data = Boolean.valueOf(value).toString();
-        createAndAppend(logicalName, dataType, bitLength, data);
+        createAndAppend(logicalName, dataType, bitLength, data, writerArgs);
         move(1);
     }
 
     @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwUintKey, bitLength, Byte.valueOf(value).toString());
+        createAndAppend(logicalName, rwUintKey, bitLength, Byte.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwUintKey, bitLength, Short.valueOf(value).toString());
+        createAndAppend(logicalName, rwUintKey, bitLength, Short.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwUintKey, bitLength, Integer.valueOf(value).toString());
+        createAndAppend(logicalName, rwUintKey, bitLength, Integer.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwUintKey, bitLength, Long.valueOf(value).toString());
+        createAndAppend(logicalName, rwUintKey, bitLength, Long.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwUintKey, bitLength, value.toString());
+        createAndAppend(logicalName, rwUintKey, bitLength, value.toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwIntKey, bitLength, Byte.valueOf(value).toString());
+        createAndAppend(logicalName, rwIntKey, bitLength, Byte.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwIntKey, bitLength, Short.valueOf(value).toString());
+        createAndAppend(logicalName, rwIntKey, bitLength, Short.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwIntKey, bitLength, Integer.valueOf(value).toString());
+        createAndAppend(logicalName, rwIntKey, bitLength, Integer.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwIntKey, bitLength, Long.valueOf(value).toString());
+        createAndAppend(logicalName, rwIntKey, bitLength, Long.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwIntKey, bitLength, value.toString());
+        createAndAppend(logicalName, rwIntKey, bitLength, value.toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-        createAndAppend(logicalName, rwFloatKey, bitLength, Float.valueOf(value).toString());
+        createAndAppend(logicalName, rwFloatKey, bitLength, Float.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
-        createAndAppend(logicalName, rwFloatKey, bitLength, Double.valueOf(value).toString());
+        createAndAppend(logicalName, rwFloatKey, bitLength, Double.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwFloatKey, bitLength, value.toString());
+        createAndAppend(logicalName, rwFloatKey, bitLength, value.toString(), writerArgs);
         move(bitLength);
     }
 
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwStringKey, bitLength, value);
+        createAndAppend(logicalName, rwStringKey, bitLength, value, writerArgs);
         move(bitLength);
     }
 
@@ -223,7 +223,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
         xmlEventWriter.add(indent);
     }
 
-    private void createAndAppend(String logicalName, String dataType, int bitLength, String data) {
+    private void createAndAppend(String logicalName, String dataType, int bitLength, String data, WithWriterArgs... writerArgs) {
         try {
             indent();
             StartElement startElement = xmlEventFactory.createStartElement("", "", sanitizeLogicalName(logicalName));
@@ -232,6 +232,11 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
             xmlEventWriter.add(dataTypeAttribute);
             Attribute bitLengthAttribute = xmlEventFactory.createAttribute(rwBitLengthKey, String.valueOf(bitLength));
             xmlEventWriter.add(bitLengthAttribute);
+            String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs);
+            if (additionalStringRepresentation != null) {
+                Attribute additionalStringRepresentationAttribute = xmlEventFactory.createAttribute(rwStringRepresentationKey, additionalStringRepresentation);
+                xmlEventWriter.add(additionalStringRepresentationAttribute);
+            }
             Characters dataCharacters = xmlEventFactory.createCharacters(data);
             xmlEventWriter.add(dataCharacters);
             EndElement endElement = xmlEventFactory.createEndElement("", "", sanitizeLogicalName(logicalName));

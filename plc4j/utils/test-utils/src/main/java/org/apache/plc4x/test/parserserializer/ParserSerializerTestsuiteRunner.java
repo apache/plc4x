@@ -47,10 +47,16 @@ import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -58,10 +64,30 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
 
+    /**
+     * set to true during testcase migration
+     */
+    private final boolean failOnUnMigrated;
+
+    /**
+     * if set to true if will automigrate and on the next run test should be green
+     */
+    private final boolean autoMigrate;
+
     private final Set<String> ignoredTestCases = new HashSet<>();
 
     public ParserSerializerTestsuiteRunner(String testsuiteDocument, String... ignoredTestCases) {
+        this(testsuiteDocument, false, ignoredTestCases);
+    }
+
+    public ParserSerializerTestsuiteRunner(String testsuiteDocument, boolean failOnUnMigrated, String... ignoredTestCases) {
+        this(testsuiteDocument, false, false, ignoredTestCases);
+    }
+
+    public ParserSerializerTestsuiteRunner(String testsuiteDocument, boolean failOnUnMigrated, boolean autoMigrate, String... ignoredTestCases) {
         super(testsuiteDocument);
+        this.failOnUnMigrated = failOnUnMigrated;
+        this.autoMigrate = autoMigrate;
         Collections.addAll(this.ignoredTestCases, ignoredTestCases);
     }
 
@@ -90,6 +116,8 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
             Element testsuiteXml = document.getRootElement();
             boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
             Element testsuiteName = testsuiteXml.element(new QName("name"));
+            Element protocolName = testsuiteXml.element(new QName("protocolName"));
+            Element outputFlavor = testsuiteXml.element(new QName("outputFlavor"));
             List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
             List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
             for (Element testcaseXml : testcasesXml) {
@@ -112,8 +140,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
                         parserArguments.add(element.getTextTrim());
                     }
                 }
-
-                Testcase testcase = new Testcase(name, description, raw, rootType, parserArguments, xmlElement);
+                Testcase testcase = new Testcase(testsuiteName.getStringValue(), protocolName.getStringValue(), outputFlavor.getStringValue(), name, description, raw, rootType, parserArguments, xmlElement);
                 if (testcaseXml instanceof LocationAwareElement) {
                     // pass source location to test
                     testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
@@ -174,10 +201,11 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
                             xmlString,
                             diff,
                             centeredTestCaseName);
-                        throw new RuntimeException("fallback to old");
+
+                        throw new MigrationException(xmlString);
                     }
                 } catch (RuntimeException e) {
-                    if (!"fallback to old".equals(e.getMessage())) {
+                    if (!(e instanceof MigrationException)) {
                         System.err.println("Error in serializer");
                         System.err.println(e.getMessage());
                         e.printStackTrace();
@@ -190,6 +218,36 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
                         throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff2);
                     } else {
                         System.out.println("No diff detected with old");
+                    }
+                    if (autoMigrate && e instanceof MigrationException) {
+                        Path path = Paths.get(suiteUri);
+                        System.out.printf("Migrating %s now", path);
+                        Charset charset = StandardCharsets.UTF_8;
+
+                        String content;
+                        try {
+                            content = new String(Files.readAllBytes(path), charset);
+                        } catch (IOException ioException) {
+                            throw new RuntimeException(ioException);
+                        }
+                        // We need to indent the search string properly
+                        String indent = StringUtils.repeat(' ', 6);
+                        String searchString = StringUtils.replace(xmlStringFallback, "\n", "\n" + indent);
+                        searchString = StringUtils.trim(searchString);
+                        String newXml = ((MigrationException) e).newXml;
+                        newXml = StringUtils.replace(newXml, "\n", "\n" + indent);
+                        // Remove last wrong indent
+                        newXml = newXml.substring(0, newXml.length() - 7);
+                        content = StringUtils.replaceOnce(content, searchString, newXml);
+                        try {
+                            Files.write(path, content.getBytes(charset));
+                        } catch (IOException ioException) {
+                            throw new RuntimeException(ioException);
+                        }
+                        System.out.printf("Done migrating %s", path);
+                    }
+                    if (failOnUnMigrated) {
+                        throw new RuntimeException("fail on un-migrated set to true. Please migrate testcase", e);
                     }
                 }
             }
@@ -220,10 +278,67 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
     }
 
     private MessageIO getMessageIOForTestcase(Testcase testcase) throws ParserSerializerTestsuiteException {
-        String className = testcase.getXml().elements().get(0).attributeValue(new QName("className"));
-        String ioRootClassName = className.substring(0, className.lastIndexOf('.') + 1) + testcase.getRootType();
-        String ioClassName = className.substring(0, className.lastIndexOf('.') + 1) + "io." +
-            testcase.getRootType() + "IO";
+        String ioClassName, ioRootClassName;
+        try {
+            String classPackage = String.format("org.apache.plc4x.java.%s.%s", testcase.getProtocolName(), StringUtils.replace(testcase.getOutputFlavor(), "-", ""));
+            try {
+                Package.getPackage(classPackage);
+            } catch (RuntimeException e) {
+                System.err.println("Error resolving package for " + classPackage);
+                switch (testcase.getTestSuiteName()) {
+                    case "Firmata":
+                        classPackage = "org.apache.plc4x.java.firmata.readwrite";
+                        break;
+                    case "Allen-Bradley ETH":
+                        classPackage = "org.apache.plc4x.java.abeth.readwrite";
+                        break;
+                    case "Beckhoff ADS/AMS Discovery":
+                        classPackage = "org.apache.plc4x.java.ads.discovery.readwrite";
+                        break;
+                    case "Beckhoff ADS/AMS":
+                        classPackage = "org.apache.plc4x.java.ads.readwrite";
+                        break;
+                    case "Tests of CANopen frames payload":
+                        classPackage = "org.apache.plc4x.java.canopen.readwrite";
+                        break;
+                    case "Tests of CANopen frames from Wireshark sample PCAP files":
+                        classPackage = "org.apache.plc4x.java.canopen.readwrite";
+                        break;
+                    case "EIP":
+                        classPackage = "org.apache.plc4x.java.eip.readwrite";
+                        break;
+                    case "Modbus":
+                        classPackage = "org.apache.plc4x.java.modbus.readwrite";
+                        break;
+                    case "S7":
+                        classPackage = "org.apache.plc4x.java.s7.readwrite";
+                        break;
+                    case "KNXNet/IP":
+                        classPackage = "org.apache.plc4x.java.knxnetip.readwrite";
+                        break;
+                    default:
+                        throw new RuntimeException(String.format("fallback to old. No packageName for '%s' configured.\nAdd the required package to the switch clause above", testcase.getTestSuiteName()));
+                }
+            }
+            String fullQualifiedClassName = classPackage + "." + testcase.getXml().elements().get(0).getName();
+            ioRootClassName = fullQualifiedClassName.substring(0, fullQualifiedClassName.lastIndexOf('.') + 1) + testcase.getRootType();
+            ioClassName = fullQualifiedClassName.substring(0, fullQualifiedClassName.lastIndexOf('.') + 1) + "io." +
+                testcase.getRootType() + "IO";
+            try {
+                Class.forName(ioRootClassName);
+                Class.forName(ioClassName);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("fallback to old", e);
+            }
+        } catch (RuntimeException e) {
+            System.err.println("Error in serializer");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            String fullQualifiedClassName = testcase.getXml().elements().get(0).attributeValue(new QName("className"));
+            ioRootClassName = fullQualifiedClassName.substring(0, fullQualifiedClassName.lastIndexOf('.') + 1) + testcase.getRootType();
+            ioClassName = fullQualifiedClassName.substring(0, fullQualifiedClassName.lastIndexOf('.') + 1) + "io." +
+                testcase.getRootType() + "IO";
+        }
         try {
             Class<?> ioRootClass = Class.forName(ioRootClassName);
             Class<?> ioClass = Class.forName(ioClassName);
@@ -301,6 +416,14 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
             };
         } catch (ClassNotFoundException e) {
             throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e);
+        }
+    }
+
+    private static class MigrationException extends RuntimeException {
+        final String newXml;
+
+        public MigrationException(String newXml) {
+            this.newXml = newXml;
         }
     }
 

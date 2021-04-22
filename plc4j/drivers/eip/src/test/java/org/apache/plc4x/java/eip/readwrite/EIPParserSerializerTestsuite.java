@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class EIPParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
 
     public EIPParserSerializerTestsuite() {
-        super("/protocols/eip/ParserSerializerTestsuite.xml");
+        super("/protocols/eip/ParserSerializerTestsuite.xml", true, true);
     }
 
 }

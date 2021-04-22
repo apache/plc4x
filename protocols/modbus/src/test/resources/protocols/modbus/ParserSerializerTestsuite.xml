@@ -21,6 +21,9 @@
 
   <name>Modbus</name>
 
+  <protocolName>modbus</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>Read Input Registers Request</name>
     <raw>000000000006ff0408d20002</raw>
@@ -29,12 +32,20 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>0</transactionIdentifier>
-        <unitIdentifier>255</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersRequest">
-          <startingAddress>2258</startingAddress>
-          <quantity>2</quantity>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">0</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">6</length>
+        <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">4</functionFlag>
+            <ModbusPDUReadInputRegistersRequest>
+              <startingAddress dataType="uint" bitLength="16">2258</startingAddress>
+              <quantity dataType="uint" bitLength="16">2</quantity>
+            </ModbusPDUReadInputRegistersRequest>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -50,11 +61,219 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>31998</transactionIdentifier>
-        <unitIdentifier>255</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersResponse">
-          <value>00000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001DB000001D600004A380000000000000000000000000000000000000000000000000000000000006461696D006E0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000</value>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">31998</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">201</length>
+        <unitIdentifier dataType="uint" bitLength="8">255</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">4</functionFlag>
+            <ModbusPDUReadInputRegistersResponse>
+              <byteCount dataType="uint" bitLength="8">198</byteCount>
+              <value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">1</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">1</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">4</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">1</value>
+                <value dataType="int" bitLength="8">-37</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">1</value>
+                <value dataType="int" bitLength="8">-42</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">74</value>
+                <value dataType="int" bitLength="8">56</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">100</value>
+                <value dataType="int" bitLength="8">97</value>
+                <value dataType="int" bitLength="8">105</value>
+                <value dataType="int" bitLength="8">109</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">110</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+                <value dataType="int" bitLength="8">0</value>
+              </value>
+            </ModbusPDUReadInputRegistersResponse>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -68,24 +287,33 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>10</transactionIdentifier>
-        <unitIdentifier>1</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequest">
-          <items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem">
-              <referenceType>6</referenceType>
-              <fileNumber>3</fileNumber>
-              <recordNumber>9998</recordNumber>
-              <recordLength>2</recordLength>
-            </items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem">
-              <referenceType>6</referenceType>
-              <fileNumber>4</fileNumber>
-              <recordNumber>0</recordNumber>
-              <recordLength>8</recordLength>
-            </items>
-          </items>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">17</length>
+        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">20</functionFlag>
+            <ModbusPDUReadFileRecordRequest>
+              <byteCount dataType="uint" bitLength="8">14</byteCount>
+              <items>
+                <ModbusPDUReadFileRecordRequestItem>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <fileNumber dataType="uint" bitLength="16">3</fileNumber>
+                  <recordNumber dataType="uint" bitLength="16">9998</recordNumber>
+                  <recordLength dataType="uint" bitLength="16">2</recordLength>
+                </ModbusPDUReadFileRecordRequestItem>
+                <ModbusPDUReadFileRecordRequestItem>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <fileNumber dataType="uint" bitLength="16">4</fileNumber>
+                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                  <recordLength dataType="uint" bitLength="16">8</recordLength>
+                </ModbusPDUReadFileRecordRequestItem>
+              </items>
+            </ModbusPDUReadFileRecordRequest>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -99,20 +327,53 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>10</transactionIdentifier>
-        <unitIdentifier>1</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponse">
-          <items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
-              <referenceType>6</referenceType>
-              <data>00000000</data>
-            </items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
-              <referenceType>6</referenceType>
-              <data>00000000000000000000000000000000</data>
-            </items>
-          </items>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">27</length>
+        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">20</functionFlag>
+            <ModbusPDUReadFileRecordResponse>
+              <byteCount dataType="uint" bitLength="8">24</byteCount>
+              <items>
+                <ModbusPDUReadFileRecordResponseItem>
+                  <dataLength dataType="uint" bitLength="8">5</dataLength>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <data>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                  </data>
+                </ModbusPDUReadFileRecordResponseItem>
+                <ModbusPDUReadFileRecordResponseItem>
+                  <dataLength dataType="uint" bitLength="8">17</dataLength>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <data>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                  </data>
+                </ModbusPDUReadFileRecordResponseItem>
+              </items>
+            </ModbusPDUReadFileRecordResponse>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -127,18 +388,31 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>10</transactionIdentifier>
-        <unitIdentifier>1</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequest">
-          <items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem">
-              <referenceType>6</referenceType>
-              <fileNumber>2</fileNumber>
-              <recordNumber>0</recordNumber>
-              <recordData>0008</recordData>
-            </items>
-          </items>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">12</length>
+        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">21</functionFlag>
+            <ModbusPDUWriteFileRecordRequest>
+              <byteCount dataType="uint" bitLength="8">9</byteCount>
+              <items>
+                <ModbusPDUWriteFileRecordRequestItem>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <fileNumber dataType="uint" bitLength="16">2</fileNumber>
+                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                  <recordLength dataType="uint" bitLength="16">1</recordLength>
+                  <recordData>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">8</value>
+                  </recordData>
+                </ModbusPDUWriteFileRecordRequestItem>
+              </items>
+            </ModbusPDUWriteFileRecordRequest>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>
@@ -152,24 +426,41 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-        <transactionIdentifier>10</transactionIdentifier>
-        <unitIdentifier>1</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequest">
-          <items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem">
-              <referenceType>6</referenceType>
-              <fileNumber>1</fileNumber>
-              <recordNumber>9999</recordNumber>
-              <recordData>0000</recordData>
-            </items>
-            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem">
-              <referenceType>6</referenceType>
-              <fileNumber>2</fileNumber>
-              <recordNumber>0</recordNumber>
-              <recordData>0000</recordData>
-            </items>
-          </items>
+      <ModbusTcpADU>
+        <transactionIdentifier dataType="uint" bitLength="16">10</transactionIdentifier>
+        <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+        <length dataType="uint" bitLength="16">21</length>
+        <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+        <pdu>
+          <ModbusPDU>
+            <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+            <functionFlag dataType="uint" bitLength="7">21</functionFlag>
+            <ModbusPDUWriteFileRecordRequest>
+              <byteCount dataType="uint" bitLength="8">18</byteCount>
+              <items>
+                <ModbusPDUWriteFileRecordRequestItem>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <fileNumber dataType="uint" bitLength="16">1</fileNumber>
+                  <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
+                  <recordLength dataType="uint" bitLength="16">1</recordLength>
+                  <recordData>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                  </recordData>
+                </ModbusPDUWriteFileRecordRequestItem>
+                <ModbusPDUWriteFileRecordRequestItem>
+                  <referenceType dataType="uint" bitLength="8">6</referenceType>
+                  <fileNumber dataType="uint" bitLength="16">2</fileNumber>
+                  <recordNumber dataType="uint" bitLength="16">0</recordNumber>
+                  <recordLength dataType="uint" bitLength="16">1</recordLength>
+                  <recordData>
+                    <value dataType="int" bitLength="8">0</value>
+                    <value dataType="int" bitLength="8">0</value>
+                  </recordData>
+                </ModbusPDUWriteFileRecordRequestItem>
+              </items>
+            </ModbusPDUWriteFileRecordRequest>
+          </ModbusPDU>
         </pdu>
       </ModbusTcpADU>
     </xml>

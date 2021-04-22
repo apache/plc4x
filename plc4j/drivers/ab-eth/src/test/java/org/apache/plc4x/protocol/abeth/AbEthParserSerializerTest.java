@@ -21,10 +21,10 @@ package org.apache.plc4x.protocol.abeth;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class AbEthTest extends ParserSerializerTestsuiteRunner {
+public class AbEthParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
-    public AbEthTest() {
-        super("/protocols/abeth/ParserSerializerTestsuite.xml");
+    public AbEthParserSerializerTest() {
+        super("/protocols/abeth/ParserSerializerTestsuite.xml", true, true);
     }
 
 }

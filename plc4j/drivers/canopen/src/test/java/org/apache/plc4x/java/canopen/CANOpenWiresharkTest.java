@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class CANOpenWiresharkTest extends ParserSerializerTestsuiteRunner {
 
     public CANOpenWiresharkTest() {
-        super("/protocols/canopen/CANOpenWiresharkTestSuite.xml");
+        super("/protocols/canopen/CANOpenWiresharkTestSuite.xml", true, true);
     }
 
 }

@@ -20,63 +20,112 @@
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
 
   <name>EIP</name>
+
+  <protocolName>eip</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>Register Session</name>
     <raw>00650004000000000000000000000000000000000000000000010000</raw>
     <root-type>EipPacket</root-type>
     <xml>
-      <EipConnectionRequest className="org.apache.plc4x.java.eip.readwrite.EipConnectionRequest">
-          <sessionHandle>0</sessionHandle>
-          <status>0</status>
-          <senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-            <senderContext>0</senderContext>
-          </senderContext>
-          <options>0</options>
-      </EipConnectionRequest>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <len dataType="uint" bitLength="16">4</len>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+        </senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionRequest>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionRequest>
+      </EipPacket>
     </xml>
   </testcase>
 
   <testcase>
     <name>CIP Read Request</name>
-    <raw>006F0028000012340000000001000000000000010000000000000000000000020000000000B200185202200624019D05000A4C03910472617465000100010104</raw>
+    <raw>
+      006F0028000012340000000001000000000000010000000000000000000000020000000000B200185202200624019D05000A4C03910472617465000100010104
+    </raw>
     <root-type>EipPacket</root-type>
     <xml>
-      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
-        <sessionHandle>4660</sessionHandle>
-        <status>0</status>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <len dataType="uint" bitLength="16">40</len>
+        <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
         <senderContext>
-          <senderContext>1</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>1</senderContext>
+          <value dataType="uint" bitLength="8">1</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">1</value>
         </senderContext>
-        <options>0</options>
-        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
-          <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
-            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
-              <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
-                  but there seems to be some mismatch with the XML generation from Objects
-                  (arguments are also in the wrong order) -->
-              <tag>910472617465</tag>
-              <elementNb>1</elementNb>
-              <requestPathSize>3</requestPathSize>
-            </unconnectedService>
-            <backPlane>1</backPlane>
-            <slot>4</slot>
-          </service>
-        </exchange>
-      </CipRRData>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <exchange>
+            <CipExchange>
+              <itemCount dataType="uint" bitLength="16">2</itemCount>
+              <nullPtr dataType="uint" bitLength="32">0</nullPtr>
+              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <size dataType="uint" bitLength="16">24</size>
+              <service>
+                <CipService>
+                  <service dataType="uint" bitLength="8">82</service>
+                  <CipUnconnectedRequest>
+                    <reserved dataType="uint" bitLength="8">2</reserved>
+                    <reserved dataType="uint" bitLength="8">32</reserved>
+                    <reserved dataType="uint" bitLength="8">6</reserved>
+                    <reserved dataType="uint" bitLength="8">36</reserved>
+                    <reserved dataType="uint" bitLength="8">1</reserved>
+                    <reserved dataType="uint" bitLength="16">40197</reserved>
+                    <messageSize dataType="uint" bitLength="16">10</messageSize>
+                    <unconnectedService>
+                      <CipService>
+                        <service dataType="uint" bitLength="8">76</service>
+                        <CipReadRequest>
+                          <RequestPathSize dataType="int" bitLength="8">3</RequestPathSize>
+                          <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
+                              but there seems to be some mismatch with the XML generation from Objects
+                              (arguments are also in the wrong order) -->
+                          <tag>
+                            <value dataType="int" bitLength="8">-111</value>
+                            <value dataType="int" bitLength="8">4</value>
+                            <value dataType="int" bitLength="8">114</value>
+                            <value dataType="int" bitLength="8">97</value>
+                            <value dataType="int" bitLength="8">116</value>
+                            <value dataType="int" bitLength="8">101</value>
+                          </tag>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                        </CipReadRequest>
+                      </CipService>
+                    </unconnectedService>
+                    <route dataType="uint" bitLength="16">1</route>
+                    <backPlane dataType="int" bitLength="8">1</backPlane>
+                    <slot dataType="int" bitLength="8">4</slot>
+                  </CipUnconnectedRequest>
+                </CipService>
+              </service>
+            </CipExchange>
+          </exchange>
+        </CipRRData>
+      </EipPacket>
     </xml>
   </testcase>
 
@@ -85,68 +134,146 @@
     <raw>006F001A000012340000000001000000000000010000000000000000000000020000000000B2000ACC00000000C400000216</raw>
     <root-type>EipPacket</root-type>
     <xml>
-      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
-        <sessionHandle>4660</sessionHandle>
-        <status>0</status>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <len dataType="uint" bitLength="16">26</len>
+        <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
         <senderContext>
-          <senderContext>1</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>1</senderContext>
+          <value dataType="uint" bitLength="8">1</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">1</value>
         </senderContext>
-        <options>0</options>
-        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
-          <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
-            <status>0</status>
-            <extStatus>0</extStatus>
-            <dataType>DINT</dataType> <!--0xC4-->
-            <data>00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
-          </service>
-        </exchange>
-      </CipRRData>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <exchange>
+            <CipExchange>
+              <itemCount dataType="uint" bitLength="16">2</itemCount>
+              <nullPtr dataType="uint" bitLength="32">0</nullPtr>
+              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <size dataType="uint" bitLength="16">10</size>
+              <service>
+                <CipService>
+                  <service dataType="uint" bitLength="8">204</service>
+                  <CipReadResponse>
+                    <reserved dataType="uint" bitLength="8">0</reserved>
+                    <status dataType="uint" bitLength="8">0</status>
+                    <extStatus dataType="uint" bitLength="8">0</extStatus>
+                    <dataType> <!--0xC4-->
+                      <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
+                    </dataType>
+                    <data>  <!--0x216 but again issue when parsing Object to XML-->
+                      <value dataType="int" bitLength="8">0</value>
+                      <value dataType="int" bitLength="8">0</value>
+                      <value dataType="int" bitLength="8">2</value>
+                      <value dataType="int" bitLength="8">22</value>
+                    </data>
+                  </CipReadResponse>
+                </CipService>
+              </service>
+            </CipExchange>
+          </exchange>
+        </CipRRData>
+      </EipPacket>
     </xml>
   </testcase>
 
   <testcase>
     <name>CIP Write Request</name>
-    <raw>006F0034000012340000000001000000000000010000000000000000000000020000000000B200245202200624019D0500164D069116436172746F6E53697A6500C400010000000E00010104</raw>
+    <raw>
+      006F0034000012340000000001000000000000010000000000000000000000020000000000B200245202200624019D0500164D069116436172746F6E53697A6500C400010000000E00010104
+    </raw>
     <root-type>EipPacket</root-type>
     <xml>
-      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
-        <sessionHandle>4660</sessionHandle>
-        <status>0</status>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <len dataType="uint" bitLength="16">52</len>
+        <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
         <senderContext>
-          <senderContext>1</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>1</senderContext>
+          <value dataType="uint" bitLength="8">1</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">1</value>
         </senderContext>
-        <options>0</options>
-        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
-          <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
-            <unconnectedService className="org.apache.plc4x.java.eip.readwrite.CipWriteRequest">
-              <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
-                  but there seems to be some mismatch with the XML generation from Objects
-                  (arguments are also in the wrong order) -->
-              <tag>9116436172746F6E53697A65</tag>
-              <dataType>DINT</dataType>
-              <elementNb>1</elementNb>
-              <data>0000000E</data> <!--0x14 but again issue when parsing Object to XML-->
-              <requestPathSize>6</requestPathSize>
-            </unconnectedService>
-            <backPlane>1</backPlane>
-            <slot>4</slot>
-          </service>
-        </exchange>
-      </CipRRData>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <exchange>
+            <CipExchange>
+              <itemCount dataType="uint" bitLength="16">2</itemCount>
+              <nullPtr dataType="uint" bitLength="32">0</nullPtr>
+              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <size dataType="uint" bitLength="16">36</size>
+              <service>
+                <CipService>
+                  <service dataType="uint" bitLength="8">82</service>
+                  <CipUnconnectedRequest>
+                    <reserved dataType="uint" bitLength="8">2</reserved>
+                    <reserved dataType="uint" bitLength="8">32</reserved>
+                    <reserved dataType="uint" bitLength="8">6</reserved>
+                    <reserved dataType="uint" bitLength="8">36</reserved>
+                    <reserved dataType="uint" bitLength="8">1</reserved>
+                    <reserved dataType="uint" bitLength="16">40197</reserved>
+                    <messageSize dataType="uint" bitLength="16">22</messageSize>
+                    <unconnectedService>
+                      <CipService>
+                        <service dataType="uint" bitLength="8">77</service>
+                        <CipWriteRequest>
+                          <RequestPathSize dataType="int" bitLength="8">6</RequestPathSize>
+                          <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
+                              but there seems to be some mismatch with the XML generation from Objects
+                              (arguments are also in the wrong order) -->
+                          <tag>
+                            <value dataType="int" bitLength="8">-111</value>
+                            <value dataType="int" bitLength="8">22</value>
+                            <value dataType="int" bitLength="8">67</value>
+                            <value dataType="int" bitLength="8">97</value>
+                            <value dataType="int" bitLength="8">114</value>
+                            <value dataType="int" bitLength="8">116</value>
+                            <value dataType="int" bitLength="8">111</value>
+                            <value dataType="int" bitLength="8">110</value>
+                            <value dataType="int" bitLength="8">83</value>
+                            <value dataType="int" bitLength="8">105</value>
+                            <value dataType="int" bitLength="8">122</value>
+                            <value dataType="int" bitLength="8">101</value>
+                          </tag>
+                          <dataType>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
+                            </CIPDataTypeCode>
+                          </dataType>
+                          <elementNb dataType="uint" bitLength="16">1</elementNb>
+                          <data> <!--0x14 but again issue when parsing Object to XML-->
+                            <value dataType="int" bitLength="8">0</value>
+                            <value dataType="int" bitLength="8">0</value>
+                            <value dataType="int" bitLength="8">0</value>
+                            <value dataType="int" bitLength="8">14</value>
+                          </data>
+                        </CipWriteRequest>
+                      </CipService>
+                    </unconnectedService>
+                    <route dataType="uint" bitLength="16">1</route>
+                    <backPlane dataType="int" bitLength="8">1</backPlane>
+                    <slot dataType="int" bitLength="8">4</slot>
+                  </CipUnconnectedRequest>
+                </CipService>
+              </service>
+            </CipExchange>
+          </exchange>
+        </CipRRData>
+      </EipPacket>
     </xml>
   </testcase>
 
@@ -155,27 +282,45 @@
     <raw>006F0014000012340000000001000000000000010000000000000000000000020000000000B20004CD000000</raw>
     <root-type>EipPacket</root-type>
     <xml>
-      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
-        <sessionHandle>4660</sessionHandle>
-        <status>0</status>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <len dataType="uint" bitLength="16">20</len>
+        <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
         <senderContext>
-          <senderContext>1</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>1</senderContext>
+          <value dataType="uint" bitLength="8">1</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">1</value>
         </senderContext>
-        <options>0</options>
-        <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
-          <service className="org.apache.plc4x.java.eip.readwrite.CipWriteResponse">
-            <status>0</status>
-            <extStatus>0</extStatus>
-          </service>
-        </exchange>
-      </CipRRData>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+          <reserved dataType="uint" bitLength="16">0</reserved>
+          <exchange>
+            <CipExchange>
+              <itemCount dataType="uint" bitLength="16">2</itemCount>
+              <nullPtr dataType="uint" bitLength="32">0</nullPtr>
+              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <size dataType="uint" bitLength="16">4</size>
+              <service>
+                <CipService>
+                  <service dataType="uint" bitLength="8">205</service>
+                  <CipWriteResponse>
+                    <reserved dataType="uint" bitLength="8">0</reserved>
+                    <status dataType="uint" bitLength="8">0</status>
+                    <extStatus dataType="uint" bitLength="8">0</extStatus>
+                  </CipWriteResponse>
+                </CipService>
+              </service>
+            </CipExchange>
+          </exchange>
+        </CipRRData>
+      </EipPacket>
     </xml>
   </testcase>
 

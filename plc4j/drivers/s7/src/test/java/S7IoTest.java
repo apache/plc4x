@@ -57,7 +57,7 @@ public class S7IoTest {
                 "          <parameterLength dataType=\"uint\" bitLength=\"8\">1</parameterLength>\n" +
                 "          <COTPParameterTpduSize>\n" +
                 "            <tpduSize>\n" +
-                "              <COTPTpduSize dataType=\"int\" bitLength=\"8\">12</COTPTpduSize>\n" +
+                "              <COTPTpduSize dataType=\"int\" bitLength=\"8\" stringRepresentation=\"SIZE_4096\">12</COTPTpduSize>\n" +
                 "            </tpduSize>\n" +
                 "          </COTPParameterTpduSize>\n" +
                 "        </COTPParameter>\n" +
@@ -84,10 +84,10 @@ public class S7IoTest {
                 "            <items>\n" +
                 "              <S7VarPayloadDataItem>\n" +
                 "                <returnCode>\n" +
-                "                  <DataTransportErrorCode dataType=\"uint\" bitLength=\"8\">255</DataTransportErrorCode>\n" +
+                "                  <DataTransportErrorCode dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"OK\">255</DataTransportErrorCode>\n" +
                 "                </returnCode>\n" +
                 "                <transportSize>\n" +
-                "                  <DataTransportSize dataType=\"uint\" bitLength=\"8\">3</DataTransportSize>\n" +
+                "                  <DataTransportSize dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"BIT\">3</DataTransportSize>\n" +
                 "                </transportSize>\n" +
                 "                <dataLength dataType=\"uint\" bitLength=\"16\">1</dataLength>\n" +
                 "                <data>\n" +
@@ -265,7 +265,7 @@ public class S7IoTest {
             TPKTPacketIO.staticSerialize(writeBufferJsonBased, tpktPacket);
             String gotJson = writeBufferJsonBased.getJsonString();
             ObjectMapper objectMapper = new ObjectMapper();
-            assertEquals(objectMapper.readTree(wantJson),objectMapper.readTree(gotJson));
+            assertEquals(objectMapper.readTree(wantJson), objectMapper.readTree(gotJson));
             ReadBufferJsonBased readBufferXmlBased = new ReadBufferJsonBased(new ByteArrayInputStream(gotJson.getBytes()));
             TPKTPacket reReadTpktPacket = TPKTPacketIO.staticParse(readBufferXmlBased);
             assertThat(reReadTpktPacket).usingRecursiveComparison().isEqualTo(tpktPacket);
