@@ -135,18 +135,61 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					return
 				}
 
-				// Serialize the parsed object to XML
-				actualSerialized, err := xml.Marshal(msg)
-				if err != nil {
-					t.Error("Error serializing the actual message: " + err.Error())
-					return
-				}
+				{
+					// First try to use the native xml writer
+					var err error
+					serializable := msg.(utils.Serializable)
+					buffer := utils.NewXmlWriteBuffer()
+					useOldXmlCompare := false
+					if err = serializable.Serialize(buffer); err == nil {
+						actualXml := buffer.GetXmlString()
+						err = CompareResults([]byte(actualXml), []byte(referenceSerialized))
+						if err != nil {
+							border := strings.Repeat("=", 100)
+							fmt.Printf(
+								"\n"+
+									// Border
+									"%[1]s\n"+
+									// Testcase name
+									"%[4]s\n"+
+									// diff detected message
+									"Diff detected\n"+
+									// Border
+									"%[1]s\n"+
+									// xml
+									"%[2]s\n"+
+									// Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
+									// Diff
+									"%[3]s\n"+
+									// Double Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Falling back to old jackson based xml mapper\n",
+								border,
+								actualXml,
+								err,
+								testCaseName)
+							useOldXmlCompare = true
+						}
+					}
+					if useOldXmlCompare {
+						// Serialize the parsed object to XML
+						actualXml, err := xml.Marshal(msg)
+						if err != nil {
+							t.Error("Error serializing the actual message: " + err.Error())
+							return
+						}
 
-				// Compare the actual and the expected xml
-				err = CompareResults(actualSerialized, []byte(referenceSerialized))
-				if err != nil {
-					t.Error("Error comparing the results: " + err.Error())
-					return
+						// Compare the actual and the expected xml
+						err = CompareResults(actualXml, []byte(referenceSerialized))
+						if err != nil {
+							t.Error("Error comparing the results: " + err.Error())
+							return
+						}
+					}
 				}
 
 				// If all was ok, serialize the object again

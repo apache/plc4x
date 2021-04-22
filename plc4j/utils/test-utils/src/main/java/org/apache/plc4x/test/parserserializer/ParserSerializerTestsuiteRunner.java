@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.XmlTestsuiteRunner;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
@@ -52,6 +53,7 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.util.*;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
@@ -128,19 +130,70 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteRunner {
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-        ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
 
         MessageIO messageIO = getMessageIOForTestcase(testcase);
         try {
             Object msg = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());
-            String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
-            Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
-            if (diff.hasDifferences()) {
-                System.out.println(xmlString);
-                throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff.toString());
+            {
+                try {
+                    // First try to use the native xml writer
+                    WriteBufferXmlBased writerBufferXmlBased = new WriteBufferXmlBased();
+                    messageIO.serialize(writerBufferXmlBased, msg);
+                    String xmlString = writerBufferXmlBased.getXmlString();
+                    Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
+                    if (diff.hasDifferences()) {
+                        String border = StringUtils.repeat("=", 100);
+                        String centeredDiffDetectedMessage = StringUtils.center(" Diff detected ", 100, "=");
+                        String centeredTestCaseName = StringUtils.center(testcase.getName(), 100, "=");
+                        System.err.printf(
+                            "\n" +
+                                // Border
+                                "%1$s\n" +
+                                // Testcase name
+                                "%5$s\n" +
+                                // diff detected message
+                                "%2$s\n" +
+                                // Border
+                                "%1$s\n" +
+                                // xml
+                                "%3$s\n" +
+                                // Border
+                                "%1$s\n%1$s\n" +
+                                // Text
+                                "Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n" +
+                                // Diff
+                                "%4$s\n" +
+                                // Double Border
+                                "%1$s\n%1$s\n" +
+                                // Text
+                                "Falling back to old jackson based xml mapper\n",
+                            border,
+                            centeredDiffDetectedMessage,
+                            xmlString,
+                            diff,
+                            centeredTestCaseName);
+                        throw new RuntimeException("fallback to old");
+                    }
+                } catch (RuntimeException e) {
+                    if (!"fallback to old".equals(e.getMessage())) {
+                        System.err.println("Error in serializer");
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    ObjectMapper mapper = new XmlMapper().enableDefaultTyping().registerModule(new TestSuiteMappingModule());
+                    String xmlStringFallback = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
+                    Diff diff2 = DiffBuilder.compare(referenceXml).withTest(xmlStringFallback).ignoreComments().ignoreWhitespace().build();
+                    if (diff2.hasDifferences()) {
+                        System.out.println(xmlStringFallback);
+                        throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff2);
+                    } else {
+                        System.out.println("No diff detected with old");
+                    }
+                }
             }
+
             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
             byte[] data = writeBuffer.getData();
