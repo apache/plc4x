@@ -193,7 +193,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
                 throw new PlcRuntimeException(e);
             }
             if (xmlEvent.isStartElement()) {
-                throw new PlcRuntimeException("Unexpected Start element" + xmlEvent.asEndElement().getName().getLocalPart());
+                throw new PlcRuntimeException(String.format("Unexpected Start element %s", xmlEvent.asStartElement().getName().getLocalPart()));
             } else if (xmlEvent.isEndElement()) {
                 return xmlEvent.asEndElement();
             }
@@ -216,7 +216,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         } catch (XMLStreamException e) {
             throw new PlcRuntimeException(e);
         }
-        return data;
+        return data.trim();
     }
 
     private boolean validateStartElement(StartElement startElement, String logicalName, String dataType, int bitLength) {
