@@ -68,7 +68,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         String bit = decode(logicalName, rwBitKey, 1);
         move(1);
-        return bit.equals("1");
+        return bit.equals("true");
     }
 
     @Override
