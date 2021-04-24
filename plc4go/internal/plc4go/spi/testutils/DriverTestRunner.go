@@ -50,6 +50,8 @@ import (
 
 type DriverTestsuite struct {
 	name             string
+	protocolName     string
+	outputFlavor     string
 	driverName       string
 	driverParameters map[string]string
 	setupSteps       []TestStep
@@ -235,32 +237,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
-		var expectedMessage interface{}
-		var err error
-		switch m.driverName {
-		case "modbus":
-			expectedMessage, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "ads":
-			expectedMessage, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "s7":
-			expectedMessage, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "knx":
-			expectedMessage, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		default:
-			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
-		}
+		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Write to bytes")
@@ -351,31 +328,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
-		var expectedMessage interface{}
-		var err error
-		switch m.driverName {
-		case "modbus":
-			expectedMessage, err = modbusIO.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "ads":
-			expectedMessage, err = adsIO.AdsXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "knx":
-			expectedMessage, err = knxIO.KnxnetipXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "s7":
-			expectedMessage, err = s7IO.S7XmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		default:
-			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
+		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
+		if err != nil {
+			return errors.Wrap(err, "error parsing message")
 		}
 
 		// Serialize the model into bytes
@@ -436,6 +391,32 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	}
 	log.Info().Msgf("\n\n-------------------------------------------------------\n - Finished step: %s after %vms \n-------------------------------------------------------", step.name, time.Now().Sub(start).Milliseconds())
 	return nil
+}
+
+func parseMessage(protocolName string, typeName string, payloadString string, step TestStep) (interface{}, error) {
+	type Parser interface {
+		Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+		ParseOld(typeName string, xmlString string) (interface{}, error)
+	}
+	parserMap := map[string]Parser{
+		"modbus":   modbusIO.ModbusXmlParserHelper{},
+		"ads":      adsIO.AdsXmlParserHelper{},
+		"knxnetip": knxIO.KnxnetipXmlParserHelper{},
+		"s7":       s7IO.S7XmlParserHelper{},
+	}
+	if parser, ok := parserMap[protocolName]; ok {
+		expected, err := parser.Parse(typeName, payloadString, step.parserArguments...)
+		if err != nil {
+			log.Warn().Err(err).Msg("Unmigrated message detected falling back to old parsing")
+			expected, err = parser.ParseOld(typeName, payloadString)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing xml")
+			}
+		}
+		return expected, nil
+	} else {
+		return nil, errors.Errorf("Protocol name %s has no mapped parser", protocolName)
+	}
 }
 
 func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
@@ -570,6 +551,8 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		return nil, errors.New("invalid document structure")
 	}
 	var testsuiteName string
+	var protocolName string
+	var outputFlavor string
 	var driverName string
 	driverParameters := make(map[string]string)
 	var setupSteps []TestStep
@@ -579,6 +562,10 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		child := *childPtr
 		if child.Name == "name" {
 			testsuiteName = child.Text
+		} else if child.Name == "protocolName" {
+			protocolName = child.Text
+		} else if child.Name == "outputFlavor" {
+			outputFlavor = child.Text
 		} else if child.Name == "driver-name" {
 			driverName = child.Text
 		} else if child.Name == "driver-parameters" {
@@ -631,6 +618,8 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 
 	return &DriverTestsuite{
 		name:             testsuiteName,
+		protocolName:     protocolName,
+		outputFlavor:     outputFlavor,
 		driverName:       driverName,
 		driverParameters: driverParameters,
 		setupSteps:       setupSteps,

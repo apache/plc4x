@@ -329,7 +329,7 @@ func (x *xmlReadBuffer) validateIfList(readerArgs []WithReaderArgs, startElement
 func (x *xmlReadBuffer) validateStartElement(startElement xml.StartElement, logicalName string, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
 	logicalName = x.sanitizeLogicalName(logicalName)
 	if startElement.Name.Local != logicalName {
-		return errors.Errorf("unexpected element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
+		return errors.Errorf("unexpected start element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
 	} else if err := x.validateAttr(startElement.Attr, dataType, bitLength, readerArgs...); err != nil {
 		return errors.Wrap(err, "Error validating Attributes")
 	}

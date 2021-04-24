@@ -136,14 +136,7 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 	io.PullContext("transportSize")
 	// Enum field (transportSize)
-	transportSizeCode, _transportSizeErr := io.ReadUint8("transportSize", 8)
-	var transportSize TransportSize
-	for _, value := range TransportSizeValues {
-		if value.Code() == transportSizeCode {
-			transportSize = value
-			break
-		}
-	}
+	transportSize, _transportSizeErr := TransportSizeParse(io)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}

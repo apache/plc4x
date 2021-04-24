@@ -655,27 +655,11 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 				<#assign enumField = field>
 
 	io.PullContext("${enumField.name}")
-				<#if enumField.fieldName?has_content>
-						<#assign enumFieldName=enumField.name+enumField.fieldName?cap_first>
-	// Enum field (${enumField.name})
-	${enumFieldName}, _${enumField.name}Err := ${helper.getReadBufferReadMethodCall(enumField.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))}
-	var ${enumField.name} ${enumField.name?cap_first}
-	for _, value := range ${enumField.name?cap_first}Values {
-		if value.Code() == ${enumFieldName} {
-			${enumField.name} = value
-			break
-		}
-	}
-	if _${enumField.name}Err != nil {
-		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-					<#else>
 	// Enum field (${enumField.name})
 	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
 	if _${enumField.name}Err != nil {
 		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-					</#if>
 	io.CloseContext("${enumField.name}")
 				<#break>
 			<#case "implicit">
