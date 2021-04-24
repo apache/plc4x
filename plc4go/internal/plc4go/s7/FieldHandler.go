@@ -21,7 +21,6 @@ package s7
 
 import (
 	"encoding/hex"
-	"fmt"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -35,12 +34,12 @@ type FieldType uint8
 
 //go:generate stringer -type FieldType
 const (
-	FIELD        FieldType = 0x00
-	STRING_FIELD FieldType = 0x01
+	S7Field       FieldType = 0x00
+	S7StringField FieldType = 0x01
 )
 
 func (i FieldType) GetName() string {
-	return fmt.Sprintf("S7Field%s", i.String())
+	return i.String()
 }
 
 type FieldHandler struct {

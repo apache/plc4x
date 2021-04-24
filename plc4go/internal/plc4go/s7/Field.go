@@ -49,7 +49,7 @@ type PlcField struct {
 
 func NewField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWrite.TransportSize) PlcField {
 	return PlcField{
-		FieldType:   FIELD,
+		FieldType:   S7Field,
 		MemoryArea:  memoryArea,
 		BlockNumber: blockNumber,
 		ByteOffset:  byteOffset,
@@ -67,7 +67,7 @@ type PlcStringField struct {
 func NewStringField(memoryArea readWrite.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWrite.TransportSize) PlcStringField {
 	return PlcStringField{
 		PlcField: PlcField{
-			FieldType:   STRING_FIELD,
+			FieldType:   S7StringField,
 			MemoryArea:  memoryArea,
 			BlockNumber: blockNumber,
 			ByteOffset:  byteOffset,
@@ -139,6 +139,9 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	if err := e.EncodeElement(m.BitOffset, xml.StartElement{Name: xml.Name{Local: "bitOffset"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.NumElements, xml.StartElement{Name: xml.Name{Local: "numElements"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {

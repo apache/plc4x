@@ -226,7 +226,7 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return pushErr
 		}
 		// Enum field (transportSize)
-		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
+		_transportSizeErr := io.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.TransportSize.name()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
