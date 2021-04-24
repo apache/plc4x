@@ -103,17 +103,25 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 }
 
 func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
-	io.PullContext("COTPParameterTpduSize")
+	if pullErr := io.PullContext("COTPParameterTpduSize"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("tpduSize")
+	if pullErr := io.PullContext("tpduSize"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
 	}
-	io.CloseContext("tpduSize")
+	if closeErr := io.CloseContext("tpduSize"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("COTPParameterTpduSize")
+	if closeErr := io.CloseContext("COTPParameterTpduSize"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterTpduSize{
@@ -126,18 +134,26 @@ func COTPParameterTpduSizeParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterTpduSize")
+		if pushErr := io.PushContext("COTPParameterTpduSize"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PushContext("tpduSize")
+		if pushErr := io.PushContext("tpduSize"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (tpduSize)
 		tpduSize := CastCOTPTpduSize(m.TpduSize)
 		_tpduSizeErr := tpduSize.Serialize(io)
 		if _tpduSizeErr != nil {
 			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
-		io.PopContext("tpduSize")
+		if popErr := io.PopContext("tpduSize"); popErr != nil {
+			return popErr
+		}
 
-		io.PopContext("COTPParameterTpduSize")
+		if popErr := io.PopContext("COTPParameterTpduSize"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

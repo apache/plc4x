@@ -112,10 +112,14 @@ func (m *S7PayloadWriteVarRequest) LengthInBytes() uint16 {
 }
 
 func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
-	io.PullContext("S7PayloadWriteVarRequest")
+	if pullErr := io.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (items)
-	io.PullContext("items", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
@@ -126,9 +130,13 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7PayloadWriteVarRequest")
+	if closeErr := io.CloseContext("S7PayloadWriteVarRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadWriteVarRequest{
@@ -141,11 +149,15 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 
 func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7PayloadWriteVarRequest")
+		if pushErr := io.PushContext("S7PayloadWriteVarRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -156,10 +168,14 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
-			io.PopContext("items", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7PayloadWriteVarRequest")
+		if popErr := io.PopContext("S7PayloadWriteVarRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

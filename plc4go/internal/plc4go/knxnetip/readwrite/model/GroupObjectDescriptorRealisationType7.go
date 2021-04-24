@@ -113,7 +113,9 @@ func (m *GroupObjectDescriptorRealisationType7) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType7, error) {
-	io.PullContext("GroupObjectDescriptorRealisationType7")
+	if pullErr := io.PullContext("GroupObjectDescriptorRealisationType7"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataAddress)
 	dataAddress, _dataAddressErr := io.ReadUint16("dataAddress", 16)
@@ -157,32 +159,44 @@ func GroupObjectDescriptorRealisationType7Parse(io utils.ReadBuffer) (*GroupObje
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
-	io.PullContext("priority")
+	if pullErr := io.PullContext("priority"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
-	io.CloseContext("priority")
+	if closeErr := io.CloseContext("priority"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("valueType")
+	if pullErr := io.PullContext("valueType"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (valueType)
 	valueType, _valueTypeErr := ComObjectValueTypeParse(io)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
-	io.CloseContext("valueType")
+	if closeErr := io.CloseContext("valueType"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("GroupObjectDescriptorRealisationType7")
+	if closeErr := io.CloseContext("GroupObjectDescriptorRealisationType7"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType7(dataAddress, updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
 }
 
 func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("GroupObjectDescriptorRealisationType7")
+	if pushErr := io.PushContext("GroupObjectDescriptorRealisationType7"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (dataAddress)
 	dataAddress := uint16(m.DataAddress)
@@ -234,22 +248,32 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(io utils.WriteBuffer) 
 	}
 
 	// Simple Field (priority)
-	io.PushContext("priority")
+	if pushErr := io.PushContext("priority"); pushErr != nil {
+		return pushErr
+	}
 	_priorityErr := m.Priority.Serialize(io)
-	io.PopContext("priority")
+	if popErr := io.PopContext("priority"); popErr != nil {
+		return popErr
+	}
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (valueType)
-	io.PushContext("valueType")
+	if pushErr := io.PushContext("valueType"); pushErr != nil {
+		return pushErr
+	}
 	_valueTypeErr := m.ValueType.Serialize(io)
-	io.PopContext("valueType")
+	if popErr := io.PopContext("valueType"); popErr != nil {
+		return popErr
+	}
 	if _valueTypeErr != nil {
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
-	io.PopContext("GroupObjectDescriptorRealisationType7")
+	if popErr := io.PopContext("GroupObjectDescriptorRealisationType7"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

@@ -112,7 +112,9 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 }
 
 func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUSimpleAck")
+	if pullErr := io.PullContext("APDUSimpleAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -140,7 +142,9 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
-	io.CloseContext("APDUSimpleAck")
+	if closeErr := io.CloseContext("APDUSimpleAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUSimpleAck{
@@ -154,7 +158,9 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUSimpleAck")
+		if pushErr := io.PushContext("APDUSimpleAck"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -178,7 +184,9 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}
 
-		io.PopContext("APDUSimpleAck")
+		if popErr := io.PopContext("APDUSimpleAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

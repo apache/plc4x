@@ -103,7 +103,9 @@ func (m *KnxNetIpRouting) LengthInBytes() uint16 {
 }
 
 func KnxNetIpRoutingParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetIpRouting")
+	if pullErr := io.PullContext("KnxNetIpRouting"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetIpRoutingParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetIpRouting")
+	if closeErr := io.CloseContext("KnxNetIpRouting"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpRouting{
@@ -124,7 +128,9 @@ func KnxNetIpRoutingParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpRouting) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetIpRouting")
+		if pushErr := io.PushContext("KnxNetIpRouting"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,7 +139,9 @@ func (m *KnxNetIpRouting) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetIpRouting")
+		if popErr := io.PopContext("KnxNetIpRouting"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

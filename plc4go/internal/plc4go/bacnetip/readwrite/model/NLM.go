@@ -107,7 +107,9 @@ func (m *NLM) LengthInBytes() uint16 {
 }
 
 func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
-	io.PullContext("NLM")
+	if pullErr := io.PullContext("NLM"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := io.ReadUint8("messageType", 8)
@@ -141,7 +143,9 @@ func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("NLM")
+	if closeErr := io.CloseContext("NLM"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, vendorId)
@@ -153,7 +157,9 @@ func (m *NLM) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error {
-	io.PushContext("NLM")
+	if pushErr := io.PushContext("NLM"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
@@ -179,7 +185,9 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("NLM")
+	if popErr := io.PopContext("NLM"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

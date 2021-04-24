@@ -97,9 +97,13 @@ func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
-	io.PullContext("ConnectionResponseDataBlockDeviceManagement")
+	if pullErr := io.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ConnectionResponseDataBlockDeviceManagement")
+	if closeErr := io.CloseContext("ConnectionResponseDataBlockDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockDeviceManagement{
@@ -111,9 +115,13 @@ func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*Con
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionResponseDataBlockDeviceManagement")
+		if pushErr := io.PushContext("ConnectionResponseDataBlockDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ConnectionResponseDataBlockDeviceManagement")
+		if popErr := io.PopContext("ConnectionResponseDataBlockDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

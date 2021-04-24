@@ -100,9 +100,13 @@ func (m *S7MessageRequest) LengthInBytes() uint16 {
 }
 
 func S7MessageRequestParse(io utils.ReadBuffer) (*S7Message, error) {
-	io.PullContext("S7MessageRequest")
+	if pullErr := io.PullContext("S7MessageRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("S7MessageRequest")
+	if closeErr := io.CloseContext("S7MessageRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7MessageRequest{
@@ -114,9 +118,13 @@ func S7MessageRequestParse(io utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7MessageRequest")
+		if pushErr := io.PushContext("S7MessageRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("S7MessageRequest")
+		if popErr := io.PopContext("S7MessageRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

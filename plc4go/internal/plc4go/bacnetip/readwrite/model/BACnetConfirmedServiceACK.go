@@ -100,7 +100,9 @@ func (m *BACnetConfirmedServiceACK) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACK")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACK"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
@@ -148,7 +150,9 @@ func BACnetConfirmedServiceACKParse(io utils.ReadBuffer) (*BACnetConfirmedServic
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("BACnetConfirmedServiceACK")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACK"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -160,7 +164,9 @@ func (m *BACnetConfirmedServiceACK) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetConfirmedServiceACK) SerializeParent(io utils.WriteBuffer, child IBACnetConfirmedServiceACK, serializeChildFunction func() error) error {
-	io.PushContext("BACnetConfirmedServiceACK")
+	if pushErr := io.PushContext("BACnetConfirmedServiceACK"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
@@ -176,7 +182,9 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("BACnetConfirmedServiceACK")
+	if popErr := io.PopContext("BACnetConfirmedServiceACK"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

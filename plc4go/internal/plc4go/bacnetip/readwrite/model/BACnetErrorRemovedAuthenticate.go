@@ -97,9 +97,13 @@ func (m *BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
 }
 
 func BACnetErrorRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorRemovedAuthenticate")
+	if pullErr := io.PullContext("BACnetErrorRemovedAuthenticate"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorRemovedAuthenticate")
+	if closeErr := io.CloseContext("BACnetErrorRemovedAuthenticate"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedAuthenticate{
@@ -111,9 +115,13 @@ func BACnetErrorRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetError, err
 
 func (m *BACnetErrorRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorRemovedAuthenticate")
+		if pushErr := io.PushContext("BACnetErrorRemovedAuthenticate"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorRemovedAuthenticate")
+		if popErr := io.PopContext("BACnetErrorRemovedAuthenticate"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

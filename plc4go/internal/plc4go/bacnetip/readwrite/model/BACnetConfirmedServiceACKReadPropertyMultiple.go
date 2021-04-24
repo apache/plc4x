@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKReadPropertyMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadPropertyMultiple{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceACKReadPropertyMultipleParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKReadPropertyMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduDataExtIndividualAddressSerialNumberWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtIndividualAddressSerialNumberWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtIndividualAddressSerialNumberWrite")
+	if pullErr := io.PullContext("ApduDataExtIndividualAddressSerialNumberWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtIndividualAddressSerialNumberWrite")
+	if closeErr := io.CloseContext("ApduDataExtIndividualAddressSerialNumberWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberWrite{
@@ -111,9 +115,13 @@ func ApduDataExtIndividualAddressSerialNumberWriteParse(io utils.ReadBuffer) (*A
 
 func (m *ApduDataExtIndividualAddressSerialNumberWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtIndividualAddressSerialNumberWrite")
+		if pushErr := io.PushContext("ApduDataExtIndividualAddressSerialNumberWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtIndividualAddressSerialNumberWrite")
+		if popErr := io.PopContext("ApduDataExtIndividualAddressSerialNumberWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

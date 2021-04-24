@@ -111,17 +111,25 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 }
 
 func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUError")
+	if pullErr := io.PullContext("ModbusPDUError"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("exceptionCode")
+	if pullErr := io.PullContext("exceptionCode"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
 	}
-	io.CloseContext("exceptionCode")
+	if closeErr := io.CloseContext("exceptionCode"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUError")
+	if closeErr := io.CloseContext("ModbusPDUError"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUError{
@@ -134,18 +142,26 @@ func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUError")
+		if pushErr := io.PushContext("ModbusPDUError"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PushContext("exceptionCode")
+		if pushErr := io.PushContext("exceptionCode"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (exceptionCode)
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
 		_exceptionCodeErr := exceptionCode.Serialize(io)
 		if _exceptionCodeErr != nil {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
-		io.PopContext("exceptionCode")
+		if popErr := io.PopContext("exceptionCode"); popErr != nil {
+			return popErr
+		}
 
-		io.PopContext("ModbusPDUError")
+		if popErr := io.PopContext("ModbusPDUError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

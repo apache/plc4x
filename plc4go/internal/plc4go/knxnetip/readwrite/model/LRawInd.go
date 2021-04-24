@@ -97,9 +97,13 @@ func (m *LRawInd) LengthInBytes() uint16 {
 }
 
 func LRawIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LRawInd")
+	if pullErr := io.PullContext("LRawInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LRawInd")
+	if closeErr := io.CloseContext("LRawInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LRawInd{
@@ -111,9 +115,13 @@ func LRawIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LRawInd")
+		if pushErr := io.PushContext("LRawInd"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LRawInd")
+		if popErr := io.PopContext("LRawInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

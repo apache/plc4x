@@ -97,9 +97,13 @@ func (m *ApduDataExtReadRoutingTableResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtReadRoutingTableResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtReadRoutingTableResponse")
+	if pullErr := io.PullContext("ApduDataExtReadRoutingTableResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtReadRoutingTableResponse")
+	if closeErr := io.CloseContext("ApduDataExtReadRoutingTableResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRoutingTableResponse{
@@ -111,9 +115,13 @@ func ApduDataExtReadRoutingTableResponseParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtReadRoutingTableResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtReadRoutingTableResponse")
+		if pushErr := io.PushContext("ApduDataExtReadRoutingTableResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtReadRoutingTableResponse")
+		if popErr := io.PopContext("ApduDataExtReadRoutingTableResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

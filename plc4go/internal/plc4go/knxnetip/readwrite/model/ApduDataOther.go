@@ -103,18 +103,26 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 }
 
 func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
-	io.PullContext("ApduDataOther")
+	if pullErr := io.PullContext("ApduDataOther"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("extendedApdu")
+	if pullErr := io.PullContext("extendedApdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
-	io.CloseContext("extendedApdu")
+	if closeErr := io.CloseContext("extendedApdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataOther")
+	if closeErr := io.CloseContext("ApduDataOther"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataOther{
@@ -127,17 +135,25 @@ func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error
 
 func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataOther")
+		if pushErr := io.PushContext("ApduDataOther"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (extendedApdu)
-		io.PushContext("extendedApdu")
+		if pushErr := io.PushContext("extendedApdu"); pushErr != nil {
+			return pushErr
+		}
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
-		io.PopContext("extendedApdu")
+		if popErr := io.PopContext("extendedApdu"); popErr != nil {
+			return popErr
+		}
 		if _extendedApduErr != nil {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
-		io.PopContext("ApduDataOther")
+		if popErr := io.PopContext("ApduDataOther"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduControlConnect) LengthInBytes() uint16 {
 }
 
 func ApduControlConnectParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlConnect")
+	if pullErr := io.PullContext("ApduControlConnect"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlConnect")
+	if closeErr := io.CloseContext("ApduControlConnect"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlConnect{
@@ -111,9 +115,13 @@ func ApduControlConnectParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlConnect) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlConnect")
+		if pushErr := io.PushContext("ApduControlConnect"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlConnect")
+		if popErr := io.PopContext("ApduControlConnect"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

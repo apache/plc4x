@@ -112,7 +112,9 @@ func (m *APDUError) LengthInBytes() uint16 {
 }
 
 func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUError")
+	if pullErr := io.PullContext("APDUError"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -134,16 +136,22 @@ func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
-	io.PullContext("error")
+	if pullErr := io.PullContext("error"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (error)
 	error, _errorErr := BACnetErrorParse(io)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
 	}
-	io.CloseContext("error")
+	if closeErr := io.CloseContext("error"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("APDUError")
+	if closeErr := io.CloseContext("APDUError"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUError{
@@ -157,7 +165,9 @@ func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUError")
+		if pushErr := io.PushContext("APDUError"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -175,14 +185,20 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (error)
-		io.PushContext("error")
+		if pushErr := io.PushContext("error"); pushErr != nil {
+			return pushErr
+		}
 		_errorErr := m.Error.Serialize(io)
-		io.PopContext("error")
+		if popErr := io.PopContext("error"); popErr != nil {
+			return popErr
+		}
 		if _errorErr != nil {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}
 
-		io.PopContext("APDUError")
+		if popErr := io.PopContext("APDUError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

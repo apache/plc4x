@@ -117,16 +117,22 @@ func (m *AdsReadStateResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadStateResponse")
+	if pullErr := io.PullContext("AdsReadStateResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("result")
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
-	io.CloseContext("result")
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (adsState)
 	adsState, _adsStateErr := io.ReadUint16("adsState", 16)
@@ -140,7 +146,9 @@ func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
 	}
 
-	io.CloseContext("AdsReadStateResponse")
+	if closeErr := io.CloseContext("AdsReadStateResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadStateResponse{
@@ -155,12 +163,18 @@ func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadStateResponse")
+		if pushErr := io.PushContext("AdsReadStateResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
-		io.PushContext("result")
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
-		io.PopContext("result")
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
@@ -179,7 +193,9 @@ func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
-		io.PopContext("AdsReadStateResponse")
+		if popErr := io.PopContext("AdsReadStateResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

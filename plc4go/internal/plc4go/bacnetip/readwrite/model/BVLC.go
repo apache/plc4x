@@ -110,7 +110,9 @@ func (m *BVLC) LengthInBytes() uint16 {
 }
 
 func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLC")
+	if pullErr := io.PullContext("BVLC"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (bacnetType)
 	bacnetType, _bacnetTypeErr := io.ReadUint8("bacnetType", 8)
@@ -172,7 +174,9 @@ func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("BVLC")
+	if closeErr := io.CloseContext("BVLC"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -184,7 +188,9 @@ func (m *BVLC) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
-	io.PushContext("BVLC")
+	if pushErr := io.PushContext("BVLC"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (bacnetType)
 	_bacnetTypeErr := io.WriteUint8("bacnetType", 8, 0x81)
@@ -213,7 +219,9 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("BVLC")
+	if popErr := io.PopContext("BVLC"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

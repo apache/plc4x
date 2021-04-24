@@ -100,7 +100,9 @@ func (m *CEMI) LengthInBytes() uint16 {
 }
 
 func CEMIParse(io utils.ReadBuffer, size uint8) (*CEMI, error) {
-	io.PullContext("CEMI")
+	if pullErr := io.PullContext("CEMI"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode, _messageCodeErr := io.ReadUint8("messageCode", 8)
@@ -166,7 +168,9 @@ func CEMIParse(io utils.ReadBuffer, size uint8) (*CEMI, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("CEMI")
+	if closeErr := io.CloseContext("CEMI"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -178,7 +182,9 @@ func (m *CEMI) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChildFunction func() error) error {
-	io.PushContext("CEMI")
+	if pushErr := io.PushContext("CEMI"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(child.MessageCode())
@@ -194,7 +200,9 @@ func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("CEMI")
+	if popErr := io.PopContext("CEMI"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

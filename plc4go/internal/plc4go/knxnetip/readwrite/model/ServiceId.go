@@ -100,7 +100,9 @@ func (m *ServiceId) LengthInBytes() uint16 {
 }
 
 func ServiceIdParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("ServiceId")
+	if pullErr := io.PullContext("ServiceId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := io.ReadUint8("serviceType", 8)
@@ -134,7 +136,9 @@ func ServiceIdParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ServiceId")
+	if closeErr := io.CloseContext("ServiceId"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -146,7 +150,9 @@ func (m *ServiceId) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, serializeChildFunction func() error) error {
-	io.PushContext("ServiceId")
+	if pushErr := io.PushContext("ServiceId"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.ServiceType())
@@ -162,7 +168,9 @@ func (m *ServiceId) SerializeParent(io utils.WriteBuffer, child IServiceId, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ServiceId")
+	if popErr := io.PopContext("ServiceId"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

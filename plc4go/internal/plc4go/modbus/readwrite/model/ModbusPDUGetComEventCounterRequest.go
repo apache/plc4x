@@ -105,9 +105,13 @@ func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventCounterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUGetComEventCounterRequest")
+	if pullErr := io.PullContext("ModbusPDUGetComEventCounterRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUGetComEventCounterRequest")
+	if closeErr := io.CloseContext("ModbusPDUGetComEventCounterRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventCounterRequest{
@@ -119,9 +123,13 @@ func ModbusPDUGetComEventCounterRequestParse(io utils.ReadBuffer) (*ModbusPDU, e
 
 func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUGetComEventCounterRequest")
+		if pushErr := io.PushContext("ModbusPDUGetComEventCounterRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUGetComEventCounterRequest")
+		if popErr := io.PopContext("ModbusPDUGetComEventCounterRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

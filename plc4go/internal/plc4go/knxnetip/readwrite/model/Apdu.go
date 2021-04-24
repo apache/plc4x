@@ -108,7 +108,9 @@ func (m *Apdu) LengthInBytes() uint16 {
 }
 
 func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
-	io.PullContext("Apdu")
+	if pullErr := io.PullContext("Apdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control, _controlErr := io.ReadUint8("control", 1)
@@ -144,7 +146,9 @@ func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("Apdu")
+	if closeErr := io.CloseContext("Apdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, numbered, counter)
@@ -156,7 +160,9 @@ func (m *Apdu) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChildFunction func() error) error {
-	io.PushContext("Apdu")
+	if pushErr := io.PushContext("Apdu"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.Control())
@@ -186,7 +192,9 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("Apdu")
+	if popErr := io.PopContext("Apdu"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

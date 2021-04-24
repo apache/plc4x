@@ -98,7 +98,9 @@ func (m *AdsMultiRequestItem) LengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemParse(io utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
-	io.PullContext("AdsMultiRequestItem")
+	if pullErr := io.PullContext("AdsMultiRequestItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsMultiRequestItem
@@ -118,7 +120,9 @@ func AdsMultiRequestItemParse(io utils.ReadBuffer, indexGroup uint32) (*AdsMulti
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("AdsMultiRequestItem")
+	if closeErr := io.CloseContext("AdsMultiRequestItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -130,7 +134,9 @@ func (m *AdsMultiRequestItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsMultiRequestItem) SerializeParent(io utils.WriteBuffer, child IAdsMultiRequestItem, serializeChildFunction func() error) error {
-	io.PushContext("AdsMultiRequestItem")
+	if pushErr := io.PushContext("AdsMultiRequestItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -138,7 +144,9 @@ func (m *AdsMultiRequestItem) SerializeParent(io utils.WriteBuffer, child IAdsMu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("AdsMultiRequestItem")
+	if popErr := io.PopContext("AdsMultiRequestItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

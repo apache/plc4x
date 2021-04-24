@@ -115,10 +115,14 @@ func (m *BVLCForwardedNPDU) LengthInBytes() uint16 {
 }
 
 func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
-	io.PullContext("BVLCForwardedNPDU")
+	if pullErr := io.PullContext("BVLCForwardedNPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (ip)
-	io.PullContext("ip", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("ip", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	ip := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
@@ -128,7 +132,9 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 		}
 		ip[curItem] = _item
 	}
-	io.CloseContext("ip", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16("port", 16)
@@ -136,16 +142,22 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
-	io.PullContext("npdu")
+	if pullErr := io.PullContext("npdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
-	io.CloseContext("npdu")
+	if closeErr := io.CloseContext("npdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BVLCForwardedNPDU")
+	if closeErr := io.CloseContext("BVLCForwardedNPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCForwardedNPDU{
@@ -160,18 +172,24 @@ func BVLCForwardedNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, erro
 
 func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCForwardedNPDU")
+		if pushErr := io.PushContext("BVLCForwardedNPDU"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (ip)
 		if m.Ip != nil {
-			io.PushContext("ip", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Ip {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 				}
 			}
-			io.PopContext("ip", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Simple Field (port)
@@ -182,14 +200,20 @@ func (m *BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (npdu)
-		io.PushContext("npdu")
+		if pushErr := io.PushContext("npdu"); pushErr != nil {
+			return pushErr
+		}
 		_npduErr := m.Npdu.Serialize(io)
-		io.PopContext("npdu")
+		if popErr := io.PopContext("npdu"); popErr != nil {
+			return popErr
+		}
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
-		io.PopContext("BVLCForwardedNPDU")
+		if popErr := io.PopContext("BVLCForwardedNPDU"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

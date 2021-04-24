@@ -97,9 +97,13 @@ func (m *MResetInd) LengthInBytes() uint16 {
 }
 
 func MResetIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MResetInd")
+	if pullErr := io.PullContext("MResetInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MResetInd")
+	if closeErr := io.CloseContext("MResetInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MResetInd{
@@ -111,9 +115,13 @@ func MResetIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MResetInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MResetInd")
+		if pushErr := io.PushContext("MResetInd"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MResetInd")
+		if popErr := io.PopContext("MResetInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

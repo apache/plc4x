@@ -97,9 +97,13 @@ func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
 }
 
 func BACnetErrorAtomicReadFileParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorAtomicReadFile")
+	if pullErr := io.PullContext("BACnetErrorAtomicReadFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorAtomicReadFile")
+	if closeErr := io.CloseContext("BACnetErrorAtomicReadFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorAtomicReadFile{
@@ -111,9 +115,13 @@ func BACnetErrorAtomicReadFileParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorAtomicReadFile")
+		if pushErr := io.PushContext("BACnetErrorAtomicReadFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorAtomicReadFile")
+		if popErr := io.PopContext("BACnetErrorAtomicReadFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthIn
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduDataExtLinkRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtLinkReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtLinkRead")
+	if pullErr := io.PullContext("ApduDataExtLinkRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtLinkRead")
+	if closeErr := io.CloseContext("ApduDataExtLinkRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtLinkRead{
@@ -111,9 +115,13 @@ func ApduDataExtLinkReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtLinkRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtLinkRead")
+		if pushErr := io.PushContext("ApduDataExtLinkRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtLinkRead")
+		if popErr := io.PopContext("ApduDataExtLinkRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

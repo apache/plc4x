@@ -97,9 +97,13 @@ func (m *BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
 }
 
 func BACnetErrorReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorReadPropertyMultiple")
+	if pullErr := io.PullContext("BACnetErrorReadPropertyMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorReadPropertyMultiple")
+	if closeErr := io.CloseContext("BACnetErrorReadPropertyMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadPropertyMultiple{
@@ -111,9 +115,13 @@ func BACnetErrorReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetError, er
 
 func (m *BACnetErrorReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorReadPropertyMultiple")
+		if pushErr := io.PushContext("BACnetErrorReadPropertyMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorReadPropertyMultiple")
+		if popErr := io.PopContext("BACnetErrorReadPropertyMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

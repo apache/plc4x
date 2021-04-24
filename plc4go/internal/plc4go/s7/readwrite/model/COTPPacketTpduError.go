@@ -110,7 +110,9 @@ func (m *COTPPacketTpduError) LengthInBytes() uint16 {
 }
 
 func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
-	io.PullContext("COTPPacketTpduError")
+	if pullErr := io.PullContext("COTPPacketTpduError"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
@@ -124,7 +126,9 @@ func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
 		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field")
 	}
 
-	io.CloseContext("COTPPacketTpduError")
+	if closeErr := io.CloseContext("COTPPacketTpduError"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPPacketTpduError{
@@ -138,7 +142,9 @@ func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPPacketTpduError")
+		if pushErr := io.PushContext("COTPPacketTpduError"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -154,7 +160,9 @@ func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_rejectCauseErr, "Error serializing 'rejectCause' field")
 		}
 
-		io.PopContext("COTPPacketTpduError")
+		if popErr := io.PopContext("COTPPacketTpduError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

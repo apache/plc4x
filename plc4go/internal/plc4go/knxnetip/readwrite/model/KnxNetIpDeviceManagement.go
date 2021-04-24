@@ -103,7 +103,9 @@ func (m *KnxNetIpDeviceManagement) LengthInBytes() uint16 {
 }
 
 func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetIpDeviceManagement")
+	if pullErr := io.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetIpDeviceManagement")
+	if closeErr := io.CloseContext("KnxNetIpDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpDeviceManagement{
@@ -124,7 +128,9 @@ func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetIpDeviceManagement")
+		if pushErr := io.PushContext("KnxNetIpDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,7 +139,9 @@ func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetIpDeviceManagement")
+		if popErr := io.PopContext("KnxNetIpDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

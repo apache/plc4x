@@ -117,7 +117,9 @@ func (m *AdsReadRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadRequest")
+	if pullErr := io.PullContext("AdsReadRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
@@ -137,7 +139,9 @@ func AdsReadRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
-	io.CloseContext("AdsReadRequest")
+	if closeErr := io.CloseContext("AdsReadRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadRequest{
@@ -152,7 +156,9 @@ func AdsReadRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadRequest")
+		if pushErr := io.PushContext("AdsReadRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -175,7 +181,9 @@ func (m *AdsReadRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
-		io.PopContext("AdsReadRequest")
+		if popErr := io.PopContext("AdsReadRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -113,7 +113,9 @@ func (m *KnxNetIpMessage) LengthInBytes() uint16 {
 }
 
 func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("KnxNetIpMessage")
+	if pullErr := io.PullContext("KnxNetIpMessage"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength, _headerLengthErr := io.ReadUint8("headerLength", 8)
@@ -188,7 +190,9 @@ func KnxNetIpMessageParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("KnxNetIpMessage")
+	if closeErr := io.CloseContext("KnxNetIpMessage"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -200,7 +204,9 @@ func (m *KnxNetIpMessage) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpMessage, serializeChildFunction func() error) error {
-	io.PushContext("KnxNetIpMessage")
+	if pushErr := io.PushContext("KnxNetIpMessage"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
@@ -236,7 +242,9 @@ func (m *KnxNetIpMessage) SerializeParent(io utils.WriteBuffer, child IKnxNetIpM
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("KnxNetIpMessage")
+	if popErr := io.PopContext("KnxNetIpMessage"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

@@ -97,9 +97,13 @@ func (m *LPollDataCon) LengthInBytes() uint16 {
 }
 
 func LPollDataConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LPollDataCon")
+	if pullErr := io.PullContext("LPollDataCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LPollDataCon")
+	if closeErr := io.CloseContext("LPollDataCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LPollDataCon{
@@ -111,9 +115,13 @@ func LPollDataConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LPollDataCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LPollDataCon")
+		if pushErr := io.PushContext("LPollDataCon"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LPollDataCon")
+		if popErr := io.PopContext("LPollDataCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

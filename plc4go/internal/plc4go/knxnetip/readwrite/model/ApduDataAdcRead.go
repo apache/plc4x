@@ -97,9 +97,13 @@ func (m *ApduDataAdcRead) LengthInBytes() uint16 {
 }
 
 func ApduDataAdcReadParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataAdcRead")
+	if pullErr := io.PullContext("ApduDataAdcRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataAdcRead")
+	if closeErr := io.CloseContext("ApduDataAdcRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataAdcRead{
@@ -111,9 +115,13 @@ func ApduDataAdcReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataAdcRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataAdcRead")
+		if pushErr := io.PushContext("ApduDataAdcRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataAdcRead")
+		if popErr := io.PopContext("ApduDataAdcRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

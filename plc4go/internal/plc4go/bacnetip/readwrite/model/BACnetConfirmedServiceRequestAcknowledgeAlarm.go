@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -105,9 +105,13 @@ func (m *ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadExceptionStatusRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadExceptionStatusRequest")
+	if pullErr := io.PullContext("ModbusPDUReadExceptionStatusRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUReadExceptionStatusRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadExceptionStatusRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusRequest{
@@ -119,9 +123,13 @@ func ModbusPDUReadExceptionStatusRequestParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUReadExceptionStatusRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadExceptionStatusRequest")
+		if pushErr := io.PushContext("ModbusPDUReadExceptionStatusRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUReadExceptionStatusRequest")
+		if popErr := io.PopContext("ModbusPDUReadExceptionStatusRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

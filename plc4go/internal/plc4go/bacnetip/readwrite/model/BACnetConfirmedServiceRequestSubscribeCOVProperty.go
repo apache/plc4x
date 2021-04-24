@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

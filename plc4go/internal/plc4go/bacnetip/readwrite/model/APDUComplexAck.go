@@ -137,7 +137,9 @@ func (m *APDUComplexAck) LengthInBytes() uint16 {
 }
 
 func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUComplexAck")
+	if pullErr := io.PullContext("APDUComplexAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (segmentedMessage)
 	segmentedMessage, _segmentedMessageErr := io.ReadBit("segmentedMessage")
@@ -191,16 +193,22 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 		proposedWindowSize = &_val
 	}
 
-	io.PullContext("serviceAck")
+	if pullErr := io.PullContext("serviceAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (serviceAck)
 	serviceAck, _serviceAckErr := BACnetServiceAckParse(io)
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")
 	}
-	io.CloseContext("serviceAck")
+	if closeErr := io.CloseContext("serviceAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("APDUComplexAck")
+	if closeErr := io.CloseContext("APDUComplexAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUComplexAck{
@@ -218,7 +226,9 @@ func APDUComplexAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUComplexAck")
+		if pushErr := io.PushContext("APDUComplexAck"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.SegmentedMessage)
@@ -270,14 +280,20 @@ func (m *APDUComplexAck) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceAck)
-		io.PushContext("serviceAck")
+		if pushErr := io.PushContext("serviceAck"); pushErr != nil {
+			return pushErr
+		}
 		_serviceAckErr := m.ServiceAck.Serialize(io)
-		io.PopContext("serviceAck")
+		if popErr := io.PopContext("serviceAck"); popErr != nil {
+			return popErr
+		}
 		if _serviceAckErr != nil {
 			return errors.Wrap(_serviceAckErr, "Error serializing 'serviceAck' field")
 		}
 
-		io.PopContext("APDUComplexAck")
+		if popErr := io.PopContext("APDUComplexAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

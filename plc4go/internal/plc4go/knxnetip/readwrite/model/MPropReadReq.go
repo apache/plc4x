@@ -123,7 +123,9 @@ func (m *MPropReadReq) LengthInBytes() uint16 {
 }
 
 func MPropReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropReadReq")
+	if pullErr := io.PullContext("MPropReadReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16("interfaceObjectType", 16)
@@ -155,7 +157,9 @@ func MPropReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
 
-	io.CloseContext("MPropReadReq")
+	if closeErr := io.CloseContext("MPropReadReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropReadReq{
@@ -172,7 +176,9 @@ func MPropReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropReadReq")
+		if pushErr := io.PushContext("MPropReadReq"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
@@ -209,7 +215,9 @@ func (m *MPropReadReq) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
-		io.PopContext("MPropReadReq")
+		if popErr := io.PopContext("MPropReadReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduDataExtDomainAddressSerialNumberRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSerialNumberReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtDomainAddressSerialNumberRead")
+	if pullErr := io.PullContext("ApduDataExtDomainAddressSerialNumberRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtDomainAddressSerialNumberRead")
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressSerialNumberRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSerialNumberRead{
@@ -111,9 +115,13 @@ func ApduDataExtDomainAddressSerialNumberReadParse(io utils.ReadBuffer) (*ApduDa
 
 func (m *ApduDataExtDomainAddressSerialNumberRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtDomainAddressSerialNumberRead")
+		if pushErr := io.PushContext("ApduDataExtDomainAddressSerialNumberRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtDomainAddressSerialNumberRead")
+		if popErr := io.PopContext("ApduDataExtDomainAddressSerialNumberRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

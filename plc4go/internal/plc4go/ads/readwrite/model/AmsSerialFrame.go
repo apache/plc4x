@@ -105,7 +105,9 @@ func (m *AmsSerialFrame) LengthInBytes() uint16 {
 }
 
 func AmsSerialFrameParse(io utils.ReadBuffer) (*AmsSerialFrame, error) {
-	io.PullContext("AmsSerialFrame")
+	if pullErr := io.PullContext("AmsSerialFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie, _magicCookieErr := io.ReadUint16("magicCookie", 16)
@@ -137,14 +139,18 @@ func AmsSerialFrameParse(io utils.ReadBuffer) (*AmsSerialFrame, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
-	io.PullContext("userdata")
+	if pullErr := io.PullContext("userdata"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
-	io.CloseContext("userdata")
+	if closeErr := io.CloseContext("userdata"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint16("crc", 16)
@@ -152,14 +158,18 @@ func AmsSerialFrameParse(io utils.ReadBuffer) (*AmsSerialFrame, error) {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
-	io.CloseContext("AmsSerialFrame")
+	if closeErr := io.CloseContext("AmsSerialFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsSerialFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, userdata, crc), nil
 }
 
 func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsSerialFrame")
+	if pushErr := io.PushContext("AmsSerialFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
@@ -197,9 +207,13 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (userdata)
-	io.PushContext("userdata")
+	if pushErr := io.PushContext("userdata"); pushErr != nil {
+		return pushErr
+	}
 	_userdataErr := m.Userdata.Serialize(io)
-	io.PopContext("userdata")
+	if popErr := io.PopContext("userdata"); popErr != nil {
+		return popErr
+	}
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
@@ -211,7 +225,9 @@ func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
-	io.PopContext("AmsSerialFrame")
+	if popErr := io.PopContext("AmsSerialFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

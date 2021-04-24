@@ -97,9 +97,13 @@ func (m *MFuncPropCon) LengthInBytes() uint16 {
 }
 
 func MFuncPropConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MFuncPropCon")
+	if pullErr := io.PullContext("MFuncPropCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MFuncPropCon")
+	if closeErr := io.CloseContext("MFuncPropCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MFuncPropCon{
@@ -111,9 +115,13 @@ func MFuncPropConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MFuncPropCon")
+		if pushErr := io.PushContext("MFuncPropCon"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MFuncPropCon")
+		if popErr := io.PopContext("MFuncPropCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

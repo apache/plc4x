@@ -97,9 +97,13 @@ func (m *BACnetServiceAckGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckGetAlarmSummary")
+	if pullErr := io.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckGetAlarmSummary")
+	if closeErr := io.CloseContext("BACnetServiceAckGetAlarmSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetAlarmSummary{
@@ -111,9 +115,13 @@ func BACnetServiceAckGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetServiceAc
 
 func (m *BACnetServiceAckGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckGetAlarmSummary")
+		if pushErr := io.PushContext("BACnetServiceAckGetAlarmSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckGetAlarmSummary")
+		if popErr := io.PopContext("BACnetServiceAckGetAlarmSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -89,15 +89,21 @@ func (m *SzlId) LengthInBytes() uint16 {
 }
 
 func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
-	io.PullContext("SzlId")
+	if pullErr := io.PullContext("SzlId"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("typeClass")
+	if pullErr := io.PullContext("typeClass"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
 	if _typeClassErr != nil {
 		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field")
 	}
-	io.CloseContext("typeClass")
+	if closeErr := io.CloseContext("typeClass"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract, _sublistExtractErr := io.ReadUint8("sublistExtract", 4)
@@ -105,31 +111,43 @@ func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
 		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field")
 	}
 
-	io.PullContext("sublistList")
+	if pullErr := io.PullContext("sublistList"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (sublistList)
 	sublistList, _sublistListErr := SzlSublistParse(io)
 	if _sublistListErr != nil {
 		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field")
 	}
-	io.CloseContext("sublistList")
+	if closeErr := io.CloseContext("sublistList"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("SzlId")
+	if closeErr := io.CloseContext("SzlId"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewSzlId(typeClass, sublistExtract, sublistList), nil
 }
 
 func (m *SzlId) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("SzlId")
+	if pushErr := io.PushContext("SzlId"); pushErr != nil {
+		return pushErr
+	}
 
-	io.PushContext("typeClass")
+	if pushErr := io.PushContext("typeClass"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (typeClass)
 	typeClass := CastSzlModuleTypeClass(m.TypeClass)
 	_typeClassErr := typeClass.Serialize(io)
 	if _typeClassErr != nil {
 		return errors.Wrap(_typeClassErr, "Error serializing 'typeClass' field")
 	}
-	io.PopContext("typeClass")
+	if popErr := io.PopContext("typeClass"); popErr != nil {
+		return popErr
+	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.SublistExtract)
@@ -138,16 +156,22 @@ func (m *SzlId) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
 	}
 
-	io.PushContext("sublistList")
+	if pushErr := io.PushContext("sublistList"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (sublistList)
 	sublistList := CastSzlSublist(m.SublistList)
 	_sublistListErr := sublistList.Serialize(io)
 	if _sublistListErr != nil {
 		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
 	}
-	io.PopContext("sublistList")
+	if popErr := io.PopContext("sublistList"); popErr != nil {
+		return popErr
+	}
 
-	io.PopContext("SzlId")
+	if popErr := io.PopContext("SzlId"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

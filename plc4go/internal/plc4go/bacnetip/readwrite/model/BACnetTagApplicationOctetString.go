@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationOctetString) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationOctetStringParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationOctetString")
+	if pullErr := io.PullContext("BACnetTagApplicationOctetString"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationOctetString")
+	if closeErr := io.CloseContext("BACnetTagApplicationOctetString"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationOctetString{
@@ -115,9 +119,13 @@ func BACnetTagApplicationOctetStringParse(io utils.ReadBuffer) (*BACnetTag, erro
 
 func (m *BACnetTagApplicationOctetString) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationOctetString")
+		if pushErr := io.PushContext("BACnetTagApplicationOctetString"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationOctetString")
+		if popErr := io.PopContext("BACnetTagApplicationOctetString"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

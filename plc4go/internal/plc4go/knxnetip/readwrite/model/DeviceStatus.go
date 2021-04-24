@@ -85,7 +85,9 @@ func (m *DeviceStatus) LengthInBytes() uint16 {
 }
 
 func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
-	io.PullContext("DeviceStatus")
+	if pullErr := io.PullContext("DeviceStatus"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -107,14 +109,18 @@ func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
 		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
 	}
 
-	io.CloseContext("DeviceStatus")
+	if closeErr := io.CloseContext("DeviceStatus"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDeviceStatus(programMode), nil
 }
 
 func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DeviceStatus")
+	if pushErr := io.PushContext("DeviceStatus"); pushErr != nil {
+		return pushErr
+	}
 
 	// Reserved Field (reserved)
 	{
@@ -131,7 +137,9 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}
 
-	io.PopContext("DeviceStatus")
+	if popErr := io.PopContext("DeviceStatus"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

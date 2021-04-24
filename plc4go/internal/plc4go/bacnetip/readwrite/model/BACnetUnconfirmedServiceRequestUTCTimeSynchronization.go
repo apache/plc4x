@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() 
 }
 
 func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{
@@ -111,9 +115,13 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io utils.ReadBuf
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

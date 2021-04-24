@@ -137,7 +137,9 @@ func (m *AdsAddDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsAddDeviceNotificationRequest")
+	if pullErr := io.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
@@ -189,7 +191,9 @@ func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error)
 		}
 	}
 
-	io.CloseContext("AdsAddDeviceNotificationRequest")
+	if closeErr := io.CloseContext("AdsAddDeviceNotificationRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsAddDeviceNotificationRequest{
@@ -207,7 +211,9 @@ func AdsAddDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error)
 
 func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsAddDeviceNotificationRequest")
+		if pushErr := io.PushContext("AdsAddDeviceNotificationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -259,7 +265,9 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error 
 			}
 		}
 
-		io.PopContext("AdsAddDeviceNotificationRequest")
+		if popErr := io.PopContext("AdsAddDeviceNotificationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

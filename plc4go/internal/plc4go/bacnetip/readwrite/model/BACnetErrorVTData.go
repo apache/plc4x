@@ -97,9 +97,13 @@ func (m *BACnetErrorVTData) LengthInBytes() uint16 {
 }
 
 func BACnetErrorVTDataParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorVTData")
+	if pullErr := io.PullContext("BACnetErrorVTData"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorVTData")
+	if closeErr := io.CloseContext("BACnetErrorVTData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorVTData{
@@ -111,9 +115,13 @@ func BACnetErrorVTDataParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorVTData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorVTData")
+		if pushErr := io.PushContext("BACnetErrorVTData"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorVTData")
+		if popErr := io.PopContext("BACnetErrorVTData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

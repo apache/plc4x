@@ -151,7 +151,9 @@ func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestIAm")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
@@ -190,7 +192,9 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 	}
 
 	// Array field (maximumApduLengthAccepted)
-	io.PullContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
@@ -200,7 +204,9 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 		}
 		maximumApduLengthAccepted[curItem] = _item
 	}
-	io.CloseContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (segmentationSupportedHeader)
 	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8("segmentationSupportedHeader", 8)
@@ -232,7 +238,9 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
 	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestIAm")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestIAm"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIAm{
@@ -250,7 +258,9 @@ func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconf
 
 func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestIAm")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestIAm"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0xC4)
@@ -287,14 +297,18 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
-			io.PushContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.MaximumApduLengthAccepted {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
 			}
-			io.PopContext("maximumApduLengthAccepted", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (segmentationSupportedHeader)
@@ -323,7 +337,9 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) err
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestIAm")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestIAm"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

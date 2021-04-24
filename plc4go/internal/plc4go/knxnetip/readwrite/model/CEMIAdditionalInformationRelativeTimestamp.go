@@ -110,7 +110,9 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
-	io.PullContext("CEMIAdditionalInformationRelativeTimestamp")
+	if pullErr := io.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8("len", 8)
@@ -121,16 +123,22 @@ func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMI
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationRelativeTimestamp_LEN) + " but got " + fmt.Sprintf("%d", len))
 	}
 
-	io.PullContext("relativeTimestamp")
+	if pullErr := io.PullContext("relativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (relativeTimestamp)
 	relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(io)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
 	}
-	io.CloseContext("relativeTimestamp")
+	if closeErr := io.CloseContext("relativeTimestamp"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("CEMIAdditionalInformationRelativeTimestamp")
+	if closeErr := io.CloseContext("CEMIAdditionalInformationRelativeTimestamp"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &CEMIAdditionalInformationRelativeTimestamp{
@@ -143,7 +151,9 @@ func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMI
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("CEMIAdditionalInformationRelativeTimestamp")
+		if pushErr := io.PushContext("CEMIAdditionalInformationRelativeTimestamp"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (len)
 		_lenErr := io.WriteUint8("len", 8, 2)
@@ -152,14 +162,20 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuf
 		}
 
 		// Simple Field (relativeTimestamp)
-		io.PushContext("relativeTimestamp")
+		if pushErr := io.PushContext("relativeTimestamp"); pushErr != nil {
+			return pushErr
+		}
 		_relativeTimestampErr := m.RelativeTimestamp.Serialize(io)
-		io.PopContext("relativeTimestamp")
+		if popErr := io.PopContext("relativeTimestamp"); popErr != nil {
+			return popErr
+		}
 		if _relativeTimestampErr != nil {
 			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}
 
-		io.PopContext("CEMIAdditionalInformationRelativeTimestamp")
+		if popErr := io.PopContext("CEMIAdditionalInformationRelativeTimestamp"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

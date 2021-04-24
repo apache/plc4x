@@ -113,7 +113,9 @@ func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataMemoryResponse")
+	if pullErr := io.PullContext("ApduDataMemoryResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
@@ -129,7 +131,9 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 	}
 
 	// Array field (data)
-	io.PullContext("data", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]uint8, numBytes)
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
@@ -139,9 +143,13 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataMemoryResponse")
+	if closeErr := io.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryResponse{
@@ -155,7 +163,9 @@ func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataMemoryResponse")
+		if pushErr := io.PushContext("ApduDataMemoryResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.Data)))
@@ -173,17 +183,23 @@ func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ApduDataMemoryResponse")
+		if popErr := io.PopContext("ApduDataMemoryResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

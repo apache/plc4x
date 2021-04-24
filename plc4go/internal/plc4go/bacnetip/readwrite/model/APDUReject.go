@@ -112,7 +112,9 @@ func (m *APDUReject) LengthInBytes() uint16 {
 }
 
 func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUReject")
+	if pullErr := io.PullContext("APDUReject"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -140,7 +142,9 @@ func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field")
 	}
 
-	io.CloseContext("APDUReject")
+	if closeErr := io.CloseContext("APDUReject"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUReject{
@@ -154,7 +158,9 @@ func APDURejectParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUReject")
+		if pushErr := io.PushContext("APDUReject"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -178,7 +184,9 @@ func (m *APDUReject) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_rejectReasonErr, "Error serializing 'rejectReason' field")
 		}
 
-		io.PopContext("APDUReject")
+		if popErr := io.PopContext("APDUReject"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -100,7 +100,9 @@ func (m *CEMIAdditionalInformation) LengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
-	io.PullContext("CEMIAdditionalInformation")
+	if pullErr := io.PullContext("CEMIAdditionalInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8("additionalInformationType", 8)
@@ -124,7 +126,9 @@ func CEMIAdditionalInformationParse(io utils.ReadBuffer) (*CEMIAdditionalInforma
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("CEMIAdditionalInformation")
+	if closeErr := io.CloseContext("CEMIAdditionalInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -136,7 +140,9 @@ func (m *CEMIAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child ICEMIAdditionalInformation, serializeChildFunction func() error) error {
-	io.PushContext("CEMIAdditionalInformation")
+	if pushErr := io.PushContext("CEMIAdditionalInformation"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.AdditionalInformationType())
@@ -152,7 +158,9 @@ func (m *CEMIAdditionalInformation) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("CEMIAdditionalInformation")
+	if popErr := io.PopContext("CEMIAdditionalInformation"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

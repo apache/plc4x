@@ -97,7 +97,9 @@ func (m *ModbusSerialADU) LengthInBytes() uint16 {
 }
 
 func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU, error) {
-	io.PullContext("ModbusSerialADU")
+	if pullErr := io.PullContext("ModbusSerialADU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (transactionId)
 	transactionId, _transactionIdErr := io.ReadUint16("transactionId", 16)
@@ -131,23 +133,31 @@ func ModbusSerialADUParse(io utils.ReadBuffer, response bool) (*ModbusSerialADU,
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
-	io.PullContext("pdu")
+	if pullErr := io.PullContext("pdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
-	io.CloseContext("pdu")
+	if closeErr := io.CloseContext("pdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusSerialADU")
+	if closeErr := io.CloseContext("ModbusSerialADU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewModbusSerialADU(transactionId, length, address, pdu), nil
 }
 
 func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ModbusSerialADU")
+	if pushErr := io.PushContext("ModbusSerialADU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (transactionId)
 	transactionId := uint16(m.TransactionId)
@@ -179,14 +189,20 @@ func (m *ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (pdu)
-	io.PushContext("pdu")
+	if pushErr := io.PushContext("pdu"); pushErr != nil {
+		return pushErr
+	}
 	_pduErr := m.Pdu.Serialize(io)
-	io.PopContext("pdu")
+	if popErr := io.PopContext("pdu"); popErr != nil {
+		return popErr
+	}
 	if _pduErr != nil {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
-	io.PopContext("ModbusSerialADU")
+	if popErr := io.PopContext("ModbusSerialADU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

@@ -97,9 +97,13 @@ func (m *ApduControlNack) LengthInBytes() uint16 {
 }
 
 func ApduControlNackParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlNack")
+	if pullErr := io.PullContext("ApduControlNack"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlNack")
+	if closeErr := io.CloseContext("ApduControlNack"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlNack{
@@ -111,9 +115,13 @@ func ApduControlNackParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlNack) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlNack")
+		if pushErr := io.PushContext("ApduControlNack"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlNack")
+		if popErr := io.PopContext("ApduControlNack"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

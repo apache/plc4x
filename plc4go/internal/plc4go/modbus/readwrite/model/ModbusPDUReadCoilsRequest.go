@@ -116,7 +116,9 @@ func (m *ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadCoilsRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadCoilsRequest")
+	if pullErr := io.PullContext("ModbusPDUReadCoilsRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16("startingAddress", 16)
@@ -130,7 +132,9 @@ func ModbusPDUReadCoilsRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
-	io.CloseContext("ModbusPDUReadCoilsRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadCoilsRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadCoilsRequest{
@@ -144,7 +148,9 @@ func ModbusPDUReadCoilsRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadCoilsRequest")
+		if pushErr := io.PushContext("ModbusPDUReadCoilsRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -160,7 +166,9 @@ func (m *ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
-		io.PopContext("ModbusPDUReadCoilsRequest")
+		if popErr := io.PopContext("ModbusPDUReadCoilsRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

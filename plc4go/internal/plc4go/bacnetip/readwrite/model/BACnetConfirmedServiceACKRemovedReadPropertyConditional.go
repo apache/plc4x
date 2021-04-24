@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBytes(
 }
 
 func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKRemovedReadPropertyConditional{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io utils.ReadB
 
 func (m *BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKRemovedReadPropertyConditional"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

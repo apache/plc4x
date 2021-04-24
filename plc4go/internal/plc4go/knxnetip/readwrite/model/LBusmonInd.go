@@ -125,7 +125,9 @@ func (m *LBusmonInd) LengthInBytes() uint16 {
 }
 
 func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LBusmonInd")
+	if pullErr := io.PullContext("LBusmonInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
@@ -134,7 +136,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 
 	// Array field (additionalInformation)
-	io.PullContext("additionalInformation", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -146,16 +150,22 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	io.CloseContext("additionalInformation", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("dataFrame")
+	if pullErr := io.PullContext("dataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
-	io.CloseContext("dataFrame")
+	if closeErr := io.CloseContext("dataFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
 	var crc *uint8 = nil
@@ -167,7 +177,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 		crc = &_val
 	}
 
-	io.CloseContext("LBusmonInd")
+	if closeErr := io.CloseContext("LBusmonInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LBusmonInd{
@@ -183,7 +195,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LBusmonInd")
+		if pushErr := io.PushContext("LBusmonInd"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -194,20 +208,28 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
-			io.PushContext("additionalInformation", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
-			io.PopContext("additionalInformation", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Simple Field (dataFrame)
-		io.PushContext("dataFrame")
+		if pushErr := io.PushContext("dataFrame"); pushErr != nil {
+			return pushErr
+		}
 		_dataFrameErr := m.DataFrame.Serialize(io)
-		io.PopContext("dataFrame")
+		if popErr := io.PopContext("dataFrame"); popErr != nil {
+			return popErr
+		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
@@ -222,7 +244,9 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
-		io.PopContext("LBusmonInd")
+		if popErr := io.PopContext("LBusmonInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

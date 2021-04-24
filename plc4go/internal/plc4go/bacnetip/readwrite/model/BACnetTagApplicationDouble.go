@@ -107,7 +107,9 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationDouble")
+	if pullErr := io.PullContext("BACnetTagApplicationDouble"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadFloat64("value", true, 11, 52)
@@ -115,7 +117,9 @@ func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8,
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("BACnetTagApplicationDouble")
+	if closeErr := io.CloseContext("BACnetTagApplicationDouble"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationDouble{
@@ -128,7 +132,9 @@ func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8,
 
 func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationDouble")
+		if pushErr := io.PushContext("BACnetTagApplicationDouble"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := float64(m.Value)
@@ -137,7 +143,9 @@ func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("BACnetTagApplicationDouble")
+		if popErr := io.PopContext("BACnetTagApplicationDouble"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

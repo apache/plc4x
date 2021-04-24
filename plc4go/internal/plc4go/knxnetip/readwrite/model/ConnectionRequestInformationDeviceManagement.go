@@ -97,9 +97,13 @@ func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
-	io.PullContext("ConnectionRequestInformationDeviceManagement")
+	if pullErr := io.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ConnectionRequestInformationDeviceManagement")
+	if closeErr := io.CloseContext("ConnectionRequestInformationDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationDeviceManagement{
@@ -111,9 +115,13 @@ func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionRequestInformationDeviceManagement")
+		if pushErr := io.PushContext("ConnectionRequestInformationDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ConnectionRequestInformationDeviceManagement")
+		if popErr := io.PopContext("ConnectionRequestInformationDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

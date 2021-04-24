@@ -89,7 +89,9 @@ func (m *KnxAddress) LengthInBytes() uint16 {
 }
 
 func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
-	io.PullContext("KnxAddress")
+	if pullErr := io.PullContext("KnxAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 4)
@@ -109,14 +111,18 @@ func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
-	io.CloseContext("KnxAddress")
+	if closeErr := io.CloseContext("KnxAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewKnxAddress(mainGroup, middleGroup, subGroup), nil
 }
 
 func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("KnxAddress")
+	if pushErr := io.PushContext("KnxAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.MainGroup)
@@ -139,7 +145,9 @@ func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}
 
-	io.PopContext("KnxAddress")
+	if popErr := io.PopContext("KnxAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

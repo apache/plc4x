@@ -97,9 +97,13 @@ func (m *ApduDataUserMessage) LengthInBytes() uint16 {
 }
 
 func ApduDataUserMessageParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataUserMessage")
+	if pullErr := io.PullContext("ApduDataUserMessage"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataUserMessage")
+	if closeErr := io.CloseContext("ApduDataUserMessage"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataUserMessage{
@@ -111,9 +115,13 @@ func ApduDataUserMessageParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataUserMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataUserMessage")
+		if pushErr := io.PushContext("ApduDataUserMessage"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataUserMessage")
+		if popErr := io.PopContext("ApduDataUserMessage"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

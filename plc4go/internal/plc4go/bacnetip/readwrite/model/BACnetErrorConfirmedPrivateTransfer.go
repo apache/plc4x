@@ -97,9 +97,13 @@ func (m *BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
 }
 
 func BACnetErrorConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorConfirmedPrivateTransfer")
+	if pullErr := io.PullContext("BACnetErrorConfirmedPrivateTransfer"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorConfirmedPrivateTransfer")
+	if closeErr := io.CloseContext("BACnetErrorConfirmedPrivateTransfer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorConfirmedPrivateTransfer{
@@ -111,9 +115,13 @@ func BACnetErrorConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetError
 
 func (m *BACnetErrorConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorConfirmedPrivateTransfer")
+		if pushErr := io.PushContext("BACnetErrorConfirmedPrivateTransfer"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorConfirmedPrivateTransfer")
+		if popErr := io.PopContext("BACnetErrorConfirmedPrivateTransfer"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

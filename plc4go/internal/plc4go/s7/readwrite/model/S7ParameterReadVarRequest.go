@@ -115,7 +115,9 @@ func (m *S7ParameterReadVarRequest) LengthInBytes() uint16 {
 }
 
 func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
-	io.PullContext("S7ParameterReadVarRequest")
+	if pullErr := io.PullContext("S7ParameterReadVarRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
@@ -125,7 +127,9 @@ func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
 	}
 
 	// Array field (items)
-	io.PullContext("items", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*S7VarRequestParameterItem, numItems)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
@@ -135,9 +139,13 @@ func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7ParameterReadVarRequest")
+	if closeErr := io.CloseContext("S7ParameterReadVarRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterReadVarRequest{
@@ -150,7 +158,9 @@ func S7ParameterReadVarRequestParse(io utils.ReadBuffer) (*S7Parameter, error) {
 
 func (m *S7ParameterReadVarRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7ParameterReadVarRequest")
+		if pushErr := io.PushContext("S7ParameterReadVarRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
@@ -161,17 +171,23 @@ func (m *S7ParameterReadVarRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7ParameterReadVarRequest")
+		if popErr := io.PopContext("S7ParameterReadVarRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

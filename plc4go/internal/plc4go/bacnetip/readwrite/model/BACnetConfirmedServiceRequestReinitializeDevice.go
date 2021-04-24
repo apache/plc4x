@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestReinitializeDevice")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(io utils.ReadBuffer) (
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestReinitializeDevice")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestReinitializeDevice"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestReinitializeDevice")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestReinitializeDevice"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

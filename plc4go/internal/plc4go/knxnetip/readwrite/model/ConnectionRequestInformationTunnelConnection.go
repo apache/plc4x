@@ -107,16 +107,22 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
-	io.PullContext("ConnectionRequestInformationTunnelConnection")
+	if pullErr := io.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("knxLayer")
+	if pullErr := io.PullContext("knxLayer"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
 	}
-	io.CloseContext("knxLayer")
+	if closeErr := io.CloseContext("knxLayer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -132,7 +138,9 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 		}
 	}
 
-	io.CloseContext("ConnectionRequestInformationTunnelConnection")
+	if closeErr := io.CloseContext("ConnectionRequestInformationTunnelConnection"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationTunnelConnection{
@@ -145,12 +153,18 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionRequestInformationTunnelConnection")
+		if pushErr := io.PushContext("ConnectionRequestInformationTunnelConnection"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (knxLayer)
-		io.PushContext("knxLayer")
+		if pushErr := io.PushContext("knxLayer"); pushErr != nil {
+			return pushErr
+		}
 		_knxLayerErr := m.KnxLayer.Serialize(io)
-		io.PopContext("knxLayer")
+		if popErr := io.PopContext("knxLayer"); popErr != nil {
+			return popErr
+		}
 		if _knxLayerErr != nil {
 			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
 		}
@@ -163,7 +177,9 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 			}
 		}
 
-		io.PopContext("ConnectionRequestInformationTunnelConnection")
+		if popErr := io.PopContext("ConnectionRequestInformationTunnelConnection"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

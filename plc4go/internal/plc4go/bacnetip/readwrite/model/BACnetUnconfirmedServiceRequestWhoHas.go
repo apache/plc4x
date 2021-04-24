@@ -140,7 +140,9 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestWhoHas")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestWhoHas"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (deviceInstanceLowLimitHeader)
 	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8("deviceInstanceLowLimitHeader", 8)
@@ -195,7 +197,9 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Array field (objectName)
-	io.PullContext("objectName", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("objectName", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	objectName := make([]int8, 0)
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
@@ -207,9 +211,13 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 		}
 		objectName = append(objectName, _item)
 	}
-	io.CloseContext("objectName", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("objectName", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestWhoHas")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestWhoHas"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoHas{
@@ -225,7 +233,9 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io utils.ReadBuffer) (*BACnetUnc
 
 func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestWhoHas")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestWhoHas"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (deviceInstanceLowLimitHeader)
 		_deviceInstanceLowLimitHeaderErr := io.WriteUint8("deviceInstanceLowLimitHeader", 8, 0x0B)
@@ -275,17 +285,23 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 
 		// Array Field (objectName)
 		if m.ObjectName != nil {
-			io.PushContext("objectName", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("objectName", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ObjectName {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'objectName' field")
 				}
 			}
-			io.PopContext("objectName", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("objectName", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestWhoHas")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestWhoHas"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

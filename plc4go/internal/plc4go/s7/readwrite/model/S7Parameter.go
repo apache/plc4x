@@ -101,7 +101,9 @@ func (m *S7Parameter) LengthInBytes() uint16 {
 }
 
 func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
-	io.PullContext("S7Parameter")
+	if pullErr := io.PullContext("S7Parameter"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
@@ -133,7 +135,9 @@ func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, err
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7Parameter")
+	if closeErr := io.CloseContext("S7Parameter"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -145,7 +149,9 @@ func (m *S7Parameter) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, serializeChildFunction func() error) error {
-	io.PushContext("S7Parameter")
+	if pushErr := io.PushContext("S7Parameter"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
@@ -161,7 +167,9 @@ func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7Parameter")
+	if popErr := io.PopContext("S7Parameter"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

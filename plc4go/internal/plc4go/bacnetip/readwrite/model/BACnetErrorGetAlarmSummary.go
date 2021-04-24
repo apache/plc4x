@@ -97,9 +97,13 @@ func (m *BACnetErrorGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorGetAlarmSummary")
+	if pullErr := io.PullContext("BACnetErrorGetAlarmSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorGetAlarmSummary")
+	if closeErr := io.CloseContext("BACnetErrorGetAlarmSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetAlarmSummary{
@@ -111,9 +115,13 @@ func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) 
 
 func (m *BACnetErrorGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorGetAlarmSummary")
+		if pushErr := io.PushContext("BACnetErrorGetAlarmSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorGetAlarmSummary")
+		if popErr := io.PopContext("BACnetErrorGetAlarmSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

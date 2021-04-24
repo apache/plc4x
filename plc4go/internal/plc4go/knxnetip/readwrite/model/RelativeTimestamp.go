@@ -81,7 +81,9 @@ func (m *RelativeTimestamp) LengthInBytes() uint16 {
 }
 
 func RelativeTimestampParse(io utils.ReadBuffer) (*RelativeTimestamp, error) {
-	io.PullContext("RelativeTimestamp")
+	if pullErr := io.PullContext("RelativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint16("timestamp", 16)
@@ -89,14 +91,18 @@ func RelativeTimestampParse(io utils.ReadBuffer) (*RelativeTimestamp, error) {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
 	}
 
-	io.CloseContext("RelativeTimestamp")
+	if closeErr := io.CloseContext("RelativeTimestamp"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewRelativeTimestamp(timestamp), nil
 }
 
 func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("RelativeTimestamp")
+	if pushErr := io.PushContext("RelativeTimestamp"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.Timestamp)
@@ -105,7 +111,9 @@ func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
-	io.PopContext("RelativeTimestamp")
+	if popErr := io.PopContext("RelativeTimestamp"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

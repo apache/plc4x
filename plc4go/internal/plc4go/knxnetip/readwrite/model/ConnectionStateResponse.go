@@ -108,7 +108,9 @@ func (m *ConnectionStateResponse) LengthInBytes() uint16 {
 }
 
 func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("ConnectionStateResponse")
+	if pullErr := io.PullContext("ConnectionStateResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
@@ -116,16 +118,22 @@ func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error)
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
-	io.PullContext("status")
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
-	io.CloseContext("status")
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ConnectionStateResponse")
+	if closeErr := io.CloseContext("ConnectionStateResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionStateResponse{
@@ -139,7 +147,9 @@ func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error)
 
 func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionStateResponse")
+		if pushErr := io.PushContext("ConnectionStateResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -149,14 +159,20 @@ func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (status)
-		io.PushContext("status")
+		if pushErr := io.PushContext("status"); pushErr != nil {
+			return pushErr
+		}
 		_statusErr := m.Status.Serialize(io)
-		io.PopContext("status")
+		if popErr := io.PopContext("status"); popErr != nil {
+			return popErr
+		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
-		io.PopContext("ConnectionStateResponse")
+		if popErr := io.PopContext("ConnectionStateResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -103,18 +103,26 @@ func (m *SearchRequest) LengthInBytes() uint16 {
 }
 
 func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("SearchRequest")
+	if pullErr := io.PullContext("SearchRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("hpaiIDiscoveryEndpoint")
+	if pullErr := io.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiIDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field")
 	}
-	io.CloseContext("hpaiIDiscoveryEndpoint")
+	if closeErr := io.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("SearchRequest")
+	if closeErr := io.CloseContext("SearchRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &SearchRequest{
@@ -127,17 +135,25 @@ func SearchRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("SearchRequest")
+		if pushErr := io.PushContext("SearchRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
-		io.PushContext("hpaiIDiscoveryEndpoint")
+		if pushErr := io.PushContext("hpaiIDiscoveryEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiIDiscoveryEndpointErr := m.HpaiIDiscoveryEndpoint.Serialize(io)
-		io.PopContext("hpaiIDiscoveryEndpoint")
+		if popErr := io.PopContext("hpaiIDiscoveryEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiIDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error serializing 'hpaiIDiscoveryEndpoint' field")
 		}
 
-		io.PopContext("SearchRequest")
+		if popErr := io.PopContext("SearchRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

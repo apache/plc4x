@@ -121,7 +121,9 @@ func (m *BACnetTag) LengthInBytes() uint16 {
 }
 
 func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTag")
+	if pullErr := io.PullContext("BACnetTag"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
@@ -201,7 +203,9 @@ func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("BACnetTag")
+	if closeErr := io.CloseContext("BACnetTag"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, typeOrTagNumber, lengthValueType, extTagNumber, extLength)
@@ -213,7 +217,9 @@ func (m *BACnetTag) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error {
-	io.PushContext("BACnetTag")
+	if pushErr := io.PushContext("BACnetTag"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
@@ -263,7 +269,9 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("BACnetTag")
+	if popErr := io.PopContext("BACnetTag"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

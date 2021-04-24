@@ -107,7 +107,9 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsDeleteDeviceNotificationRequest")
+	if pullErr := io.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
@@ -115,7 +117,9 @@ func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, err
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
-	io.CloseContext("AdsDeleteDeviceNotificationRequest")
+	if closeErr := io.CloseContext("AdsDeleteDeviceNotificationRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationRequest{
@@ -128,7 +132,9 @@ func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, err
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsDeleteDeviceNotificationRequest")
+		if pushErr := io.PushContext("AdsDeleteDeviceNotificationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
@@ -137,7 +143,9 @@ func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) err
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
-		io.PopContext("AdsDeleteDeviceNotificationRequest")
+		if popErr := io.PopContext("AdsDeleteDeviceNotificationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

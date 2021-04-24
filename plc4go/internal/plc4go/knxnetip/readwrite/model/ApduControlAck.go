@@ -97,9 +97,13 @@ func (m *ApduControlAck) LengthInBytes() uint16 {
 }
 
 func ApduControlAckParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlAck")
+	if pullErr := io.PullContext("ApduControlAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlAck")
+	if closeErr := io.CloseContext("ApduControlAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlAck{
@@ -111,9 +115,13 @@ func ApduControlAckParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlAck")
+		if pushErr := io.PushContext("ApduControlAck"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlAck")
+		if popErr := io.PopContext("ApduControlAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -115,7 +115,9 @@ func (m *COTPPacketConnectionRequest) LengthInBytes() uint16 {
 }
 
 func COTPPacketConnectionRequestParse(io utils.ReadBuffer) (*COTPPacket, error) {
-	io.PullContext("COTPPacketConnectionRequest")
+	if pullErr := io.PullContext("COTPPacketConnectionRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
@@ -129,15 +131,21 @@ func COTPPacketConnectionRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
-	io.PullContext("protocolClass")
+	if pullErr := io.PullContext("protocolClass"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
-	io.CloseContext("protocolClass")
+	if closeErr := io.CloseContext("protocolClass"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("COTPPacketConnectionRequest")
+	if closeErr := io.CloseContext("COTPPacketConnectionRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPPacketConnectionRequest{
@@ -152,7 +160,9 @@ func COTPPacketConnectionRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 
 func (m *COTPPacketConnectionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPPacketConnectionRequest")
+		if pushErr := io.PushContext("COTPPacketConnectionRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -168,16 +178,22 @@ func (m *COTPPacketConnectionRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
-		io.PushContext("protocolClass")
+		if pushErr := io.PushContext("protocolClass"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (protocolClass)
 		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
 		_protocolClassErr := protocolClass.Serialize(io)
 		if _protocolClassErr != nil {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
-		io.PopContext("protocolClass")
+		if popErr := io.PopContext("protocolClass"); popErr != nil {
+			return popErr
+		}
 
-		io.PopContext("COTPPacketConnectionRequest")
+		if popErr := io.PopContext("COTPPacketConnectionRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

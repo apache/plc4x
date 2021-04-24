@@ -107,18 +107,26 @@ func (m *AdsDeleteDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsDeleteDeviceNotificationResponse")
+	if pullErr := io.PullContext("AdsDeleteDeviceNotificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("result")
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
-	io.CloseContext("result")
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsDeleteDeviceNotificationResponse")
+	if closeErr := io.CloseContext("AdsDeleteDeviceNotificationResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationResponse{
@@ -131,17 +139,25 @@ func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, er
 
 func (m *AdsDeleteDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsDeleteDeviceNotificationResponse")
+		if pushErr := io.PushContext("AdsDeleteDeviceNotificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
-		io.PushContext("result")
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
-		io.PopContext("result")
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
-		io.PopContext("AdsDeleteDeviceNotificationResponse")
+		if popErr := io.PopContext("AdsDeleteDeviceNotificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

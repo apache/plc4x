@@ -76,18 +76,26 @@ func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType6Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
-	io.PullContext("GroupObjectDescriptorRealisationType6")
+	if pullErr := io.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("GroupObjectDescriptorRealisationType6")
+	if closeErr := io.CloseContext("GroupObjectDescriptorRealisationType6"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType6(), nil
 }
 
 func (m *GroupObjectDescriptorRealisationType6) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("GroupObjectDescriptorRealisationType6")
+	if pushErr := io.PushContext("GroupObjectDescriptorRealisationType6"); pushErr != nil {
+		return pushErr
+	}
 
-	io.PopContext("GroupObjectDescriptorRealisationType6")
+	if popErr := io.PopContext("GroupObjectDescriptorRealisationType6"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

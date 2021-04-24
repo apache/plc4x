@@ -116,7 +116,9 @@ func (m *ModbusPDUWriteSingleCoilResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteSingleCoilResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUWriteSingleCoilResponse")
+	if pullErr := io.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16("address", 16)
@@ -130,7 +132,9 @@ func ModbusPDUWriteSingleCoilResponseParse(io utils.ReadBuffer) (*ModbusPDU, err
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("ModbusPDUWriteSingleCoilResponse")
+	if closeErr := io.CloseContext("ModbusPDUWriteSingleCoilResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleCoilResponse{
@@ -144,7 +148,9 @@ func ModbusPDUWriteSingleCoilResponseParse(io utils.ReadBuffer) (*ModbusPDU, err
 
 func (m *ModbusPDUWriteSingleCoilResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUWriteSingleCoilResponse")
+		if pushErr := io.PushContext("ModbusPDUWriteSingleCoilResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
@@ -160,7 +166,9 @@ func (m *ModbusPDUWriteSingleCoilResponse) Serialize(io utils.WriteBuffer) error
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("ModbusPDUWriteSingleCoilResponse")
+		if popErr := io.PopContext("ModbusPDUWriteSingleCoilResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

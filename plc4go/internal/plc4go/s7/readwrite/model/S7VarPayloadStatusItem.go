@@ -81,35 +81,51 @@ func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
 }
 
 func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
-	io.PullContext("S7VarPayloadStatusItem")
+	if pullErr := io.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("returnCode")
+	if pullErr := io.PullContext("returnCode"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
-	io.CloseContext("returnCode")
+	if closeErr := io.CloseContext("returnCode"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7VarPayloadStatusItem")
+	if closeErr := io.CloseContext("S7VarPayloadStatusItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
 func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("S7VarPayloadStatusItem")
+	if pushErr := io.PushContext("S7VarPayloadStatusItem"); pushErr != nil {
+		return pushErr
+	}
 
-	io.PushContext("returnCode")
+	if pushErr := io.PushContext("returnCode"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
-	io.PopContext("returnCode")
+	if popErr := io.PopContext("returnCode"); popErr != nil {
+		return popErr
+	}
 
-	io.PopContext("S7VarPayloadStatusItem")
+	if popErr := io.PopContext("S7VarPayloadStatusItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

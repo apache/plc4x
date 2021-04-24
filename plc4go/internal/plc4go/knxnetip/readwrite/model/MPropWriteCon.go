@@ -97,9 +97,13 @@ func (m *MPropWriteCon) LengthInBytes() uint16 {
 }
 
 func MPropWriteConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropWriteCon")
+	if pullErr := io.PullContext("MPropWriteCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MPropWriteCon")
+	if closeErr := io.CloseContext("MPropWriteCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropWriteCon{
@@ -111,9 +115,13 @@ func MPropWriteConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropWriteCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropWriteCon")
+		if pushErr := io.PushContext("MPropWriteCon"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MPropWriteCon")
+		if popErr := io.PopContext("MPropWriteCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

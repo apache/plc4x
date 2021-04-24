@@ -111,7 +111,9 @@ func (m *S7MessageResponseData) LengthInBytes() uint16 {
 }
 
 func S7MessageResponseDataParse(io utils.ReadBuffer) (*S7Message, error) {
-	io.PullContext("S7MessageResponseData")
+	if pullErr := io.PullContext("S7MessageResponseData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (errorClass)
 	errorClass, _errorClassErr := io.ReadUint8("errorClass", 8)
@@ -125,7 +127,9 @@ func S7MessageResponseDataParse(io utils.ReadBuffer) (*S7Message, error) {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
 	}
 
-	io.CloseContext("S7MessageResponseData")
+	if closeErr := io.CloseContext("S7MessageResponseData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7MessageResponseData{
@@ -139,7 +143,9 @@ func S7MessageResponseDataParse(io utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7MessageResponseData")
+		if pushErr := io.PushContext("S7MessageResponseData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
@@ -155,7 +161,9 @@ func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
-		io.PopContext("S7MessageResponseData")
+		if popErr := io.PopContext("S7MessageResponseData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

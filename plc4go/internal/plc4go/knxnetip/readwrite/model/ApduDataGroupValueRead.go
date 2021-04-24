@@ -102,7 +102,9 @@ func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
 }
 
 func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataGroupValueRead")
+	if pullErr := io.PullContext("ApduDataGroupValueRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -118,7 +120,9 @@ func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
 		}
 	}
 
-	io.CloseContext("ApduDataGroupValueRead")
+	if closeErr := io.CloseContext("ApduDataGroupValueRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueRead{
@@ -130,7 +134,9 @@ func ApduDataGroupValueReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataGroupValueRead")
+		if pushErr := io.PushContext("ApduDataGroupValueRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -140,7 +146,9 @@ func (m *ApduDataGroupValueRead) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
-		io.PopContext("ApduDataGroupValueRead")
+		if popErr := io.PopContext("ApduDataGroupValueRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

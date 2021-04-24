@@ -97,9 +97,13 @@ func (m *BACnetServiceAckVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckVTOpen")
+	if pullErr := io.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckVTOpen")
+	if closeErr := io.CloseContext("BACnetServiceAckVTOpen"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTOpen{
@@ -111,9 +115,13 @@ func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error)
 
 func (m *BACnetServiceAckVTOpen) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckVTOpen")
+		if pushErr := io.PushContext("BACnetServiceAckVTOpen"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckVTOpen")
+		if popErr := io.PopContext("BACnetServiceAckVTOpen"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

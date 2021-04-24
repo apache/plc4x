@@ -107,7 +107,9 @@ func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
 }
 
 func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
-	io.PullContext("APDUUnconfirmedRequest")
+	if pullErr := io.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -123,16 +125,22 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 		}
 	}
 
-	io.PullContext("serviceRequest")
+	if pullErr := io.PullContext("serviceRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
-	io.CloseContext("serviceRequest")
+	if closeErr := io.CloseContext("serviceRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("APDUUnconfirmedRequest")
+	if closeErr := io.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUUnconfirmedRequest{
@@ -145,7 +153,9 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 
 func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUUnconfirmedRequest")
+		if pushErr := io.PushContext("APDUUnconfirmedRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -156,14 +166,20 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
-		io.PushContext("serviceRequest")
+		if pushErr := io.PushContext("serviceRequest"); pushErr != nil {
+			return pushErr
+		}
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
-		io.PopContext("serviceRequest")
+		if popErr := io.PopContext("serviceRequest"); popErr != nil {
+			return popErr
+		}
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
-		io.PopContext("APDUUnconfirmedRequest")
+		if popErr := io.PopContext("APDUUnconfirmedRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduDataExtKeyResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtKeyResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtKeyResponse")
+	if pullErr := io.PullContext("ApduDataExtKeyResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtKeyResponse")
+	if closeErr := io.CloseContext("ApduDataExtKeyResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtKeyResponse{
@@ -111,9 +115,13 @@ func ApduDataExtKeyResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtKeyResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtKeyResponse")
+		if pushErr := io.PushContext("ApduDataExtKeyResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtKeyResponse")
+		if popErr := io.PopContext("ApduDataExtKeyResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

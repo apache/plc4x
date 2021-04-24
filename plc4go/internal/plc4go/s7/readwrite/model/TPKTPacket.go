@@ -95,7 +95,9 @@ func (m *TPKTPacket) LengthInBytes() uint16 {
 }
 
 func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
-	io.PullContext("TPKTPacket")
+	if pullErr := io.PullContext("TPKTPacket"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8("protocolId", 8)
@@ -127,23 +129,31 @@ func TPKTPacketParse(io utils.ReadBuffer) (*TPKTPacket, error) {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 
-	io.PullContext("payload")
+	if pullErr := io.PullContext("payload"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (payload)
 	payload, _payloadErr := COTPPacketParse(io, uint16(len)-uint16(uint16(4)))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")
 	}
-	io.CloseContext("payload")
+	if closeErr := io.CloseContext("payload"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("TPKTPacket")
+	if closeErr := io.CloseContext("TPKTPacket"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewTPKTPacket(payload), nil
 }
 
 func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("TPKTPacket")
+	if pushErr := io.PushContext("TPKTPacket"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x03)
@@ -167,14 +177,20 @@ func (m *TPKTPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (payload)
-	io.PushContext("payload")
+	if pushErr := io.PushContext("payload"); pushErr != nil {
+		return pushErr
+	}
 	_payloadErr := m.Payload.Serialize(io)
-	io.PopContext("payload")
+	if popErr := io.PopContext("payload"); popErr != nil {
+		return popErr
+	}
 	if _payloadErr != nil {
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 
-	io.PopContext("TPKTPacket")
+	if popErr := io.PopContext("TPKTPacket"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

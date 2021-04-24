@@ -101,7 +101,9 @@ func (m *AmsNetId) LengthInBytes() uint16 {
 }
 
 func AmsNetIdParse(io utils.ReadBuffer) (*AmsNetId, error) {
-	io.PullContext("AmsNetId")
+	if pullErr := io.PullContext("AmsNetId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (octet1)
 	octet1, _octet1Err := io.ReadUint8("octet1", 8)
@@ -139,14 +141,18 @@ func AmsNetIdParse(io utils.ReadBuffer) (*AmsNetId, error) {
 		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field")
 	}
 
-	io.CloseContext("AmsNetId")
+	if closeErr := io.CloseContext("AmsNetId"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsNetId(octet1, octet2, octet3, octet4, octet5, octet6), nil
 }
 
 func (m *AmsNetId) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsNetId")
+	if pushErr := io.PushContext("AmsNetId"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (octet1)
 	octet1 := uint8(m.Octet1)
@@ -190,7 +196,9 @@ func (m *AmsNetId) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_octet6Err, "Error serializing 'octet6' field")
 	}
 
-	io.PopContext("AmsNetId")
+	if popErr := io.PopContext("AmsNetId"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

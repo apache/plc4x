@@ -131,16 +131,22 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadDeviceInfoResponse")
+	if pullErr := io.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("result")
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
-	io.CloseContext("result")
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (majorVersion)
 	majorVersion, _majorVersionErr := io.ReadUint8("majorVersion", 8)
@@ -161,7 +167,9 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (device)
-	io.PullContext("device", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("device", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
@@ -171,9 +179,13 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		device[curItem] = _item
 	}
-	io.CloseContext("device", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("device", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsReadDeviceInfoResponse")
+	if closeErr := io.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoResponse{
@@ -190,12 +202,18 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadDeviceInfoResponse")
+		if pushErr := io.PushContext("AdsReadDeviceInfoResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
-		io.PushContext("result")
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
-		io.PopContext("result")
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
@@ -223,17 +241,23 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (device)
 		if m.Device != nil {
-			io.PushContext("device", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("device", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Device {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}
 			}
-			io.PopContext("device", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("device", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("AdsReadDeviceInfoResponse")
+		if popErr := io.PopContext("AdsReadDeviceInfoResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -153,7 +153,9 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestWriteProperty")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestWriteProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 	var startPos = io.GetPos()
 	var curPos uint16
 
@@ -194,7 +196,9 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
@@ -204,7 +208,9 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8("openingTag", 8)
@@ -215,14 +221,18 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestWriteProperty_OPENINGTAG) + " but got " + fmt.Sprintf("%d", openingTag))
 	}
 
-	io.PullContext("value")
+	if pullErr := io.PullContext("value"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(io)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
-	io.CloseContext("value")
+	if closeErr := io.CloseContext("value"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (closingTag)
 	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
@@ -244,7 +254,9 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 		priority = _val
 	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestWriteProperty")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestWriteProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWriteProperty{
@@ -262,7 +274,9 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io utils.ReadBuffer, len ui
 
 func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestWriteProperty")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestWriteProperty"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -299,14 +313,18 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
-			io.PushContext("propertyIdentifier", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("propertyIdentifier", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 				}
 			}
-			io.PopContext("propertyIdentifier", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("propertyIdentifier", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (openingTag)
@@ -316,9 +334,13 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 		}
 
 		// Simple Field (value)
-		io.PushContext("value")
+		if pushErr := io.PushContext("value"); pushErr != nil {
+			return pushErr
+		}
 		_valueErr := m.Value.Serialize(io)
-		io.PopContext("value")
+		if popErr := io.PopContext("value"); popErr != nil {
+			return popErr
+		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
@@ -339,7 +361,9 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuf
 			}
 		}
 
-		io.PopContext("BACnetConfirmedServiceRequestWriteProperty")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestWriteProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

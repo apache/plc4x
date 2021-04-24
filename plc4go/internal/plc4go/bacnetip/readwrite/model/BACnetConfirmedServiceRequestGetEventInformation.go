@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBytes() uint1
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestGetEventInformation")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestGetEventInformation")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestGetEventInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestGetEventInformation{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestGetEventInformation")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestGetEventInformation"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestGetEventInformation")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestGetEventInformation"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

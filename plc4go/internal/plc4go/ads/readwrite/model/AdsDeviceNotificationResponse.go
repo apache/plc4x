@@ -101,9 +101,13 @@ func (m *AdsDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsDeviceNotificationResponse")
+	if pullErr := io.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("AdsDeviceNotificationResponse")
+	if closeErr := io.CloseContext("AdsDeviceNotificationResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationResponse{
@@ -115,9 +119,13 @@ func AdsDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsDeviceNotificationResponse")
+		if pushErr := io.PushContext("AdsDeviceNotificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("AdsDeviceNotificationResponse")
+		if popErr := io.PopContext("AdsDeviceNotificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

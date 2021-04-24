@@ -113,7 +113,9 @@ func (m *AdsMultiRequestItemRead) LengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, error) {
-	io.PullContext("AdsMultiRequestItemRead")
+	if pullErr := io.PullContext("AdsMultiRequestItemRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (itemIndexGroup)
 	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32("itemIndexGroup", 32)
@@ -133,7 +135,9 @@ func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, er
 		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field")
 	}
 
-	io.CloseContext("AdsMultiRequestItemRead")
+	if closeErr := io.CloseContext("AdsMultiRequestItemRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsMultiRequestItemRead{
@@ -148,7 +152,9 @@ func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, er
 
 func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsMultiRequestItemRead")
+		if pushErr := io.PushContext("AdsMultiRequestItemRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.ItemIndexGroup)
@@ -171,7 +177,9 @@ func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
 		}
 
-		io.PopContext("AdsMultiRequestItemRead")
+		if popErr := io.PopContext("AdsMultiRequestItemRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

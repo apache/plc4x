@@ -97,9 +97,13 @@ func (m *ApduDataExtGroupPropertyValueRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtGroupPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtGroupPropertyValueRead")
+	if pullErr := io.PullContext("ApduDataExtGroupPropertyValueRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtGroupPropertyValueRead")
+	if closeErr := io.CloseContext("ApduDataExtGroupPropertyValueRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtGroupPropertyValueRead{
@@ -111,9 +115,13 @@ func ApduDataExtGroupPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, 
 
 func (m *ApduDataExtGroupPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtGroupPropertyValueRead")
+		if pushErr := io.PushContext("ApduDataExtGroupPropertyValueRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtGroupPropertyValueRead")
+		if popErr := io.PopContext("ApduDataExtGroupPropertyValueRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

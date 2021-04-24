@@ -97,9 +97,13 @@ func (m *BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCDeleteForeignDeviceTableEntry")
+	if pullErr := io.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCDeleteForeignDeviceTableEntry")
+	if closeErr := io.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCDeleteForeignDeviceTableEntry{
@@ -111,9 +115,13 @@ func BVLCDeleteForeignDeviceTableEntryParse(io utils.ReadBuffer) (*BVLC, error) 
 
 func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCDeleteForeignDeviceTableEntry")
+		if pushErr := io.PushContext("BVLCDeleteForeignDeviceTableEntry"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCDeleteForeignDeviceTableEntry")
+		if popErr := io.PopContext("BVLCDeleteForeignDeviceTableEntry"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

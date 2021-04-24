@@ -105,10 +105,14 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
 }
 
 func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
-	io.PullContext("COTPParameterDisconnectAdditionalInformation")
+	if pullErr := io.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (data)
-	io.PullContext("data", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]uint8, rest)
 	for curItem := uint16(0); curItem < uint16(rest); curItem++ {
@@ -118,9 +122,13 @@ func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("COTPParameterDisconnectAdditionalInformation")
+	if closeErr := io.CloseContext("COTPParameterDisconnectAdditionalInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterDisconnectAdditionalInformation{
@@ -133,21 +141,29 @@ func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest
 
 func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterDisconnectAdditionalInformation")
+		if pushErr := io.PushContext("COTPParameterDisconnectAdditionalInformation"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("COTPParameterDisconnectAdditionalInformation")
+		if popErr := io.PopContext("COTPParameterDisconnectAdditionalInformation"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -108,27 +108,39 @@ func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
-	io.PullContext("DeviceConfigurationRequest")
+	if pullErr := io.PullContext("DeviceConfigurationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("deviceConfigurationRequestDataBlock")
+	if pullErr := io.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
 	}
-	io.CloseContext("deviceConfigurationRequestDataBlock")
+	if closeErr := io.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("cemi")
+	if pullErr := io.PullContext("cemi"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
-	io.CloseContext("cemi")
+	if closeErr := io.CloseContext("cemi"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DeviceConfigurationRequest")
+	if closeErr := io.CloseContext("DeviceConfigurationRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationRequest{
@@ -142,25 +154,37 @@ func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*
 
 func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("DeviceConfigurationRequest")
+		if pushErr := io.PushContext("DeviceConfigurationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
-		io.PushContext("deviceConfigurationRequestDataBlock")
+		if pushErr := io.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
-		io.PopContext("deviceConfigurationRequestDataBlock")
+		if popErr := io.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _deviceConfigurationRequestDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
-		io.PushContext("cemi")
+		if pushErr := io.PushContext("cemi"); pushErr != nil {
+			return pushErr
+		}
 		_cemiErr := m.Cemi.Serialize(io)
-		io.PopContext("cemi")
+		if popErr := io.PopContext("cemi"); popErr != nil {
+			return popErr
+		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
-		io.PopContext("DeviceConfigurationRequest")
+		if popErr := io.PopContext("DeviceConfigurationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

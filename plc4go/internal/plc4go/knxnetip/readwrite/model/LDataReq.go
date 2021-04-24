@@ -117,7 +117,9 @@ func (m *LDataReq) LengthInBytes() uint16 {
 }
 
 func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LDataReq")
+	if pullErr := io.PullContext("LDataReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
@@ -126,7 +128,9 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 
 	// Array field (additionalInformation)
-	io.PullContext("additionalInformation", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -138,18 +142,26 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	io.CloseContext("additionalInformation", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("dataFrame")
+	if pullErr := io.PullContext("dataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
-	io.CloseContext("dataFrame")
+	if closeErr := io.CloseContext("dataFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("LDataReq")
+	if closeErr := io.CloseContext("LDataReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LDataReq{
@@ -164,7 +176,9 @@ func LDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LDataReq")
+		if pushErr := io.PushContext("LDataReq"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -175,25 +189,35 @@ func (m *LDataReq) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
-			io.PushContext("additionalInformation", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
-			io.PopContext("additionalInformation", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Simple Field (dataFrame)
-		io.PushContext("dataFrame")
+		if pushErr := io.PushContext("dataFrame"); pushErr != nil {
+			return pushErr
+		}
 		_dataFrameErr := m.DataFrame.Serialize(io)
-		io.PopContext("dataFrame")
+		if popErr := io.PopContext("dataFrame"); popErr != nil {
+			return popErr
+		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
-		io.PopContext("LDataReq")
+		if popErr := io.PopContext("LDataReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

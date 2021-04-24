@@ -155,7 +155,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestSubscribeCOV")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestSubscribeCOV"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8("subscriberProcessIdentifierHeader", 8)
@@ -233,7 +235,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 	}
 
 	// Array field (lifetimeSeconds)
-	io.PullContext("lifetimeSeconds", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("lifetimeSeconds", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
@@ -243,9 +247,13 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 		}
 		lifetimeSeconds[curItem] = _item
 	}
-	io.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOV")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOV"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOV{
@@ -263,7 +271,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestSubscribeCOV")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestSubscribeCOV"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (subscriberProcessIdentifierHeader)
 		_subscriberProcessIdentifierHeaderErr := io.WriteUint8("subscriberProcessIdentifierHeader", 8, 0x09)
@@ -332,17 +342,23 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuff
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
-			io.PushContext("lifetimeSeconds", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("lifetimeSeconds", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
-			io.PopContext("lifetimeSeconds", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("lifetimeSeconds", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOV")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestSubscribeCOV"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

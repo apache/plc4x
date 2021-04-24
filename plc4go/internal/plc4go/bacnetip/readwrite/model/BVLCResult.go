@@ -97,9 +97,13 @@ func (m *BVLCResult) LengthInBytes() uint16 {
 }
 
 func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCResult")
+	if pullErr := io.PullContext("BVLCResult"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCResult")
+	if closeErr := io.CloseContext("BVLCResult"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCResult{
@@ -111,9 +115,13 @@ func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCResult) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCResult")
+		if pushErr := io.PushContext("BVLCResult"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCResult")
+		if popErr := io.PopContext("BVLCResult"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

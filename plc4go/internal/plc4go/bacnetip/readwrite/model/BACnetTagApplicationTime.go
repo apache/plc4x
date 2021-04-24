@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationTime) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationTimeParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationTime")
+	if pullErr := io.PullContext("BACnetTagApplicationTime"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationTime")
+	if closeErr := io.CloseContext("BACnetTagApplicationTime"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationTime{
@@ -115,9 +119,13 @@ func BACnetTagApplicationTimeParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationTime) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationTime")
+		if pushErr := io.PushContext("BACnetTagApplicationTime"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationTime")
+		if popErr := io.PopContext("BACnetTagApplicationTime"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

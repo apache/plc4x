@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummary")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestGetEnrollmentSummary{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummary")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -92,7 +92,9 @@ func (m *DeviceConfigurationRequestDataBlock) LengthInBytes() uint16 {
 }
 
 func DeviceConfigurationRequestDataBlockParse(io utils.ReadBuffer) (*DeviceConfigurationRequestDataBlock, error) {
-	io.PullContext("DeviceConfigurationRequestDataBlock")
+	if pullErr := io.PullContext("DeviceConfigurationRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -127,14 +129,18 @@ func DeviceConfigurationRequestDataBlockParse(io utils.ReadBuffer) (*DeviceConfi
 		}
 	}
 
-	io.CloseContext("DeviceConfigurationRequestDataBlock")
+	if closeErr := io.CloseContext("DeviceConfigurationRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter), nil
 }
 
 func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DeviceConfigurationRequestDataBlock")
+	if pushErr := io.PushContext("DeviceConfigurationRequestDataBlock"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -165,7 +171,9 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) er
 		}
 	}
 
-	io.PopContext("DeviceConfigurationRequestDataBlock")
+	if popErr := io.PopContext("DeviceConfigurationRequestDataBlock"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

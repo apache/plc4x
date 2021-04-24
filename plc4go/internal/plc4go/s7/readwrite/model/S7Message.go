@@ -133,7 +133,9 @@ func (m *S7Message) LengthInBytes() uint16 {
 }
 
 func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
-	io.PullContext("S7Message")
+	if pullErr := io.PullContext("S7Message"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8("protocolId", 8)
@@ -224,7 +226,9 @@ func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 		payload = _val
 	}
 
-	io.CloseContext("S7Message")
+	if closeErr := io.CloseContext("S7Message"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, tpduReference, parameter, payload)
@@ -236,7 +240,9 @@ func (m *S7Message) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
-	io.PushContext("S7Message")
+	if pushErr := io.PushContext("S7Message"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x32)
@@ -307,7 +313,9 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 		}
 	}
 
-	io.PopContext("S7Message")
+	if popErr := io.PopContext("S7Message"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

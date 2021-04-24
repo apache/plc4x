@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationBoolean) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationBooleanParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationBoolean")
+	if pullErr := io.PullContext("BACnetTagApplicationBoolean"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationBoolean")
+	if closeErr := io.CloseContext("BACnetTagApplicationBoolean"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationBoolean{
@@ -115,9 +119,13 @@ func BACnetTagApplicationBooleanParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationBoolean) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationBoolean")
+		if pushErr := io.PushContext("BACnetTagApplicationBoolean"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationBoolean")
+		if popErr := io.PopContext("BACnetTagApplicationBoolean"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

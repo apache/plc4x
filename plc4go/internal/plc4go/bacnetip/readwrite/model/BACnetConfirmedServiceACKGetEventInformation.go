@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKGetEventInformationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKGetEventInformation")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKGetEventInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKGetEventInformation")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKGetEventInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetEventInformation{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceACKGetEventInformationParse(io utils.ReadBuffer) (*BA
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKGetEventInformation")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKGetEventInformation"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKGetEventInformation")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKGetEventInformation"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

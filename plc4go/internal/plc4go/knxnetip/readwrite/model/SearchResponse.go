@@ -113,36 +113,52 @@ func (m *SearchResponse) LengthInBytes() uint16 {
 }
 
 func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("SearchResponse")
+	if pullErr := io.PullContext("SearchResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("hpaiControlEndpoint")
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
-	io.CloseContext("hpaiControlEndpoint")
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("dibDeviceInfo")
+	if pullErr := io.PullContext("dibDeviceInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
-	io.CloseContext("dibDeviceInfo")
+	if closeErr := io.CloseContext("dibDeviceInfo"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("dibSuppSvcFamilies")
+	if pullErr := io.PullContext("dibSuppSvcFamilies"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
-	io.CloseContext("dibSuppSvcFamilies")
+	if closeErr := io.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("SearchResponse")
+	if closeErr := io.CloseContext("SearchResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &SearchResponse{
@@ -157,33 +173,49 @@ func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("SearchResponse")
+		if pushErr := io.PushContext("SearchResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiControlEndpoint)
-		io.PushContext("hpaiControlEndpoint")
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
-		io.PopContext("hpaiControlEndpoint")
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		// Simple Field (dibDeviceInfo)
-		io.PushContext("dibDeviceInfo")
+		if pushErr := io.PushContext("dibDeviceInfo"); pushErr != nil {
+			return pushErr
+		}
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
-		io.PopContext("dibDeviceInfo")
+		if popErr := io.PopContext("dibDeviceInfo"); popErr != nil {
+			return popErr
+		}
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
-		io.PushContext("dibSuppSvcFamilies")
+		if pushErr := io.PushContext("dibSuppSvcFamilies"); pushErr != nil {
+			return pushErr
+		}
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
-		io.PopContext("dibSuppSvcFamilies")
+		if popErr := io.PopContext("dibSuppSvcFamilies"); popErr != nil {
+			return popErr
+		}
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
-		io.PopContext("SearchResponse")
+		if popErr := io.PopContext("SearchResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

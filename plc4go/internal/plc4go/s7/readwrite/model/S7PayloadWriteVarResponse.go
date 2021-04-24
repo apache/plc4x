@@ -112,10 +112,14 @@ func (m *S7PayloadWriteVarResponse) LengthInBytes() uint16 {
 }
 
 func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
-	io.PullContext("S7PayloadWriteVarResponse")
+	if pullErr := io.PullContext("S7PayloadWriteVarResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (items)
-	io.PullContext("items", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
 	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
@@ -125,9 +129,13 @@ func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter)
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7PayloadWriteVarResponse")
+	if closeErr := io.CloseContext("S7PayloadWriteVarResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadWriteVarResponse{
@@ -140,21 +148,29 @@ func S7PayloadWriteVarResponseParse(io utils.ReadBuffer, parameter *S7Parameter)
 
 func (m *S7PayloadWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7PayloadWriteVarResponse")
+		if pushErr := io.PushContext("S7PayloadWriteVarResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7PayloadWriteVarResponse")
+		if popErr := io.PopContext("S7PayloadWriteVarResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

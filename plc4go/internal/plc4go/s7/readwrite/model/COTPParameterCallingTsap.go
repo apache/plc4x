@@ -103,7 +103,9 @@ func (m *COTPParameterCallingTsap) LengthInBytes() uint16 {
 }
 
 func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
-	io.PullContext("COTPParameterCallingTsap")
+	if pullErr := io.PullContext("COTPParameterCallingTsap"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tsapId)
 	tsapId, _tsapIdErr := io.ReadUint16("tsapId", 16)
@@ -111,7 +113,9 @@ func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) 
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
 
-	io.CloseContext("COTPParameterCallingTsap")
+	if closeErr := io.CloseContext("COTPParameterCallingTsap"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterCallingTsap{
@@ -124,7 +128,9 @@ func COTPParameterCallingTsapParse(io utils.ReadBuffer) (*COTPParameter, error) 
 
 func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterCallingTsap")
+		if pushErr := io.PushContext("COTPParameterCallingTsap"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
@@ -133,7 +139,9 @@ func (m *COTPParameterCallingTsap) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
-		io.PopContext("COTPParameterCallingTsap")
+		if popErr := io.PopContext("COTPParameterCallingTsap"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

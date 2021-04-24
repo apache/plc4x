@@ -101,9 +101,13 @@ func (m *AdsReadStateRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadStateRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadStateRequest")
+	if pullErr := io.PullContext("AdsReadStateRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("AdsReadStateRequest")
+	if closeErr := io.CloseContext("AdsReadStateRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadStateRequest{
@@ -115,9 +119,13 @@ func AdsReadStateRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadStateRequest")
+		if pushErr := io.PushContext("AdsReadStateRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("AdsReadStateRequest")
+		if popErr := io.PopContext("AdsReadStateRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

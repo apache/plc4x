@@ -111,7 +111,9 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadExceptionStatusResponse")
+	if pullErr := io.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint8("value", 8)
@@ -119,7 +121,9 @@ func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("ModbusPDUReadExceptionStatusResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadExceptionStatusResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusResponse{
@@ -132,7 +136,9 @@ func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadExceptionStatusResponse")
+		if pushErr := io.PushContext("ModbusPDUReadExceptionStatusResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := uint8(m.Value)
@@ -141,7 +147,9 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("ModbusPDUReadExceptionStatusResponse")
+		if popErr := io.PopContext("ModbusPDUReadExceptionStatusResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

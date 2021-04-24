@@ -97,9 +97,13 @@ func (m *ApduDataMemoryWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryWriteParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataMemoryWrite")
+	if pullErr := io.PullContext("ApduDataMemoryWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataMemoryWrite")
+	if closeErr := io.CloseContext("ApduDataMemoryWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryWrite{
@@ -111,9 +115,13 @@ func ApduDataMemoryWriteParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataMemoryWrite")
+		if pushErr := io.PushContext("ApduDataMemoryWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataMemoryWrite")
+		if popErr := io.PopContext("ApduDataMemoryWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

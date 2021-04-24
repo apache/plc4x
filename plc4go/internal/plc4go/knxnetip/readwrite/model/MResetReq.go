@@ -97,9 +97,13 @@ func (m *MResetReq) LengthInBytes() uint16 {
 }
 
 func MResetReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MResetReq")
+	if pullErr := io.PullContext("MResetReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MResetReq")
+	if closeErr := io.CloseContext("MResetReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MResetReq{
@@ -111,9 +115,13 @@ func MResetReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MResetReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MResetReq")
+		if pushErr := io.PushContext("MResetReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MResetReq")
+		if popErr := io.PopContext("MResetReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

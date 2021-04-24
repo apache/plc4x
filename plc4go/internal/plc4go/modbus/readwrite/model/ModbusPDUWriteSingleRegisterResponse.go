@@ -116,7 +116,9 @@ func (m *ModbusPDUWriteSingleRegisterResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteSingleRegisterResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUWriteSingleRegisterResponse")
+	if pullErr := io.PullContext("ModbusPDUWriteSingleRegisterResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16("address", 16)
@@ -130,7 +132,9 @@ func ModbusPDUWriteSingleRegisterResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("ModbusPDUWriteSingleRegisterResponse")
+	if closeErr := io.CloseContext("ModbusPDUWriteSingleRegisterResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleRegisterResponse{
@@ -144,7 +148,9 @@ func ModbusPDUWriteSingleRegisterResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUWriteSingleRegisterResponse")
+		if pushErr := io.PushContext("ModbusPDUWriteSingleRegisterResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
@@ -160,7 +166,9 @@ func (m *ModbusPDUWriteSingleRegisterResponse) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("ModbusPDUWriteSingleRegisterResponse")
+		if popErr := io.PopContext("ModbusPDUWriteSingleRegisterResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

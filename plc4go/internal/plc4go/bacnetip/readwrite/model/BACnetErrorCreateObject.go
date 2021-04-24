@@ -97,9 +97,13 @@ func (m *BACnetErrorCreateObject) LengthInBytes() uint16 {
 }
 
 func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorCreateObject")
+	if pullErr := io.PullContext("BACnetErrorCreateObject"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorCreateObject")
+	if closeErr := io.CloseContext("BACnetErrorCreateObject"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorCreateObject{
@@ -111,9 +115,13 @@ func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorCreateObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorCreateObject")
+		if pushErr := io.PushContext("BACnetErrorCreateObject"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorCreateObject")
+		if popErr := io.PopContext("BACnetErrorCreateObject"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

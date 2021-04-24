@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestWriteGroup")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWriteGroup{
@@ -111,9 +115,13 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestWriteGroup")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestWriteGroup"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestWriteGroup")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestWriteGroup"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

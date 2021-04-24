@@ -103,18 +103,26 @@ func (m *BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
 }
 
 func BVLCOriginalBroadcastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
-	io.PullContext("BVLCOriginalBroadcastNPDU")
+	if pullErr := io.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("npdu")
+	if pullErr := io.PullContext("npdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
-	io.CloseContext("npdu")
+	if closeErr := io.CloseContext("npdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BVLCOriginalBroadcastNPDU")
+	if closeErr := io.CloseContext("BVLCOriginalBroadcastNPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalBroadcastNPDU{
@@ -127,17 +135,25 @@ func BVLCOriginalBroadcastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BV
 
 func (m *BVLCOriginalBroadcastNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCOriginalBroadcastNPDU")
+		if pushErr := io.PushContext("BVLCOriginalBroadcastNPDU"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (npdu)
-		io.PushContext("npdu")
+		if pushErr := io.PushContext("npdu"); pushErr != nil {
+			return pushErr
+		}
 		_npduErr := m.Npdu.Serialize(io)
-		io.PopContext("npdu")
+		if popErr := io.PopContext("npdu"); popErr != nil {
+			return popErr
+		}
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
-		io.PopContext("BVLCOriginalBroadcastNPDU")
+		if popErr := io.PopContext("BVLCOriginalBroadcastNPDU"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -97,9 +97,13 @@ func (m *ApduDataExtNetworkParameterResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtNetworkParameterResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtNetworkParameterResponse")
+	if pullErr := io.PullContext("ApduDataExtNetworkParameterResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtNetworkParameterResponse")
+	if closeErr := io.CloseContext("ApduDataExtNetworkParameterResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterResponse{
@@ -111,9 +115,13 @@ func ApduDataExtNetworkParameterResponseParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtNetworkParameterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtNetworkParameterResponse")
+		if pushErr := io.PushContext("ApduDataExtNetworkParameterResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtNetworkParameterResponse")
+		if popErr := io.PopContext("ApduDataExtNetworkParameterResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

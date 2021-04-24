@@ -100,7 +100,9 @@ func (m *S7VarRequestParameterItem) LengthInBytes() uint16 {
 }
 
 func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
-	io.PullContext("S7VarRequestParameterItem")
+	if pullErr := io.PullContext("S7VarRequestParameterItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8("itemType", 8)
@@ -122,7 +124,9 @@ func S7VarRequestParameterItemParse(io utils.ReadBuffer) (*S7VarRequestParameter
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7VarRequestParameterItem")
+	if closeErr := io.CloseContext("S7VarRequestParameterItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -134,7 +138,9 @@ func (m *S7VarRequestParameterItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child IS7VarRequestParameterItem, serializeChildFunction func() error) error {
-	io.PushContext("S7VarRequestParameterItem")
+	if pushErr := io.PushContext("S7VarRequestParameterItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
@@ -150,7 +156,9 @@ func (m *S7VarRequestParameterItem) SerializeParent(io utils.WriteBuffer, child 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7VarRequestParameterItem")
+	if popErr := io.PopContext("S7VarRequestParameterItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

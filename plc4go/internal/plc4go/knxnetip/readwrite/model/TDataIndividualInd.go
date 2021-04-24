@@ -97,9 +97,13 @@ func (m *TDataIndividualInd) LengthInBytes() uint16 {
 }
 
 func TDataIndividualIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("TDataIndividualInd")
+	if pullErr := io.PullContext("TDataIndividualInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("TDataIndividualInd")
+	if closeErr := io.CloseContext("TDataIndividualInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualInd{
@@ -111,9 +115,13 @@ func TDataIndividualIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataIndividualInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("TDataIndividualInd")
+		if pushErr := io.PushContext("TDataIndividualInd"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("TDataIndividualInd")
+		if popErr := io.PopContext("TDataIndividualInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

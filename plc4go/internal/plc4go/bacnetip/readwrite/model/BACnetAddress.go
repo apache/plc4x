@@ -87,10 +87,14 @@ func (m *BACnetAddress) LengthInBytes() uint16 {
 }
 
 func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
-	io.PullContext("BACnetAddress")
+	if pullErr := io.PullContext("BACnetAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (address)
-	io.PullContext("address", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("address", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	address := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
@@ -100,7 +104,9 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 		}
 		address[curItem] = _item
 	}
-	io.CloseContext("address", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("address", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (port)
 	port, _portErr := io.ReadUint16("port", 16)
@@ -108,25 +114,33 @@ func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
 	}
 
-	io.CloseContext("BACnetAddress")
+	if closeErr := io.CloseContext("BACnetAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewBACnetAddress(address, port), nil
 }
 
 func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("BACnetAddress")
+	if pushErr := io.PushContext("BACnetAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Array Field (address)
 	if m.Address != nil {
-		io.PushContext("address", utils.WithRenderAsList(true))
+		if pushErr := io.PushContext("address", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Address {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'address' field")
 			}
 		}
-		io.PopContext("address", utils.WithRenderAsList(true))
+		if popErr := io.PopContext("address", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Simple Field (port)
@@ -136,7 +150,9 @@ func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
-	io.PopContext("BACnetAddress")
+	if popErr := io.PopContext("BACnetAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

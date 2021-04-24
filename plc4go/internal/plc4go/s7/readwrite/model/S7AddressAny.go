@@ -132,15 +132,21 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 }
 
 func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
-	io.PullContext("S7AddressAny")
+	if pullErr := io.PullContext("S7AddressAny"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("transportSize")
+	if pullErr := io.PullContext("transportSize"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := TransportSizeParse(io)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
-	io.CloseContext("transportSize")
+	if closeErr := io.CloseContext("transportSize"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (numberOfElements)
 	numberOfElements, _numberOfElementsErr := io.ReadUint16("numberOfElements", 16)
@@ -154,13 +160,17 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
 
-	io.PullContext("area")
+	if pullErr := io.PullContext("area"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(io)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
 	}
-	io.CloseContext("area")
+	if closeErr := io.CloseContext("area"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -188,7 +198,9 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
 
-	io.CloseContext("S7AddressAny")
+	if closeErr := io.CloseContext("S7AddressAny"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7AddressAny{
@@ -206,15 +218,21 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7AddressAny")
+		if pushErr := io.PushContext("S7AddressAny"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PushContext("transportSize")
+		if pushErr := io.PushContext("transportSize"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (transportSize)
 		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
-		io.PopContext("transportSize")
+		if popErr := io.PopContext("transportSize"); popErr != nil {
+			return popErr
+		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.NumberOfElements)
@@ -230,14 +248,18 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
-		io.PushContext("area")
+		if pushErr := io.PushContext("area"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (area)
 		area := CastMemoryArea(m.Area)
 		_areaErr := area.Serialize(io)
 		if _areaErr != nil {
 			return errors.Wrap(_areaErr, "Error serializing 'area' field")
 		}
-		io.PopContext("area")
+		if popErr := io.PopContext("area"); popErr != nil {
+			return popErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -261,7 +283,9 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}
 
-		io.PopContext("S7AddressAny")
+		if popErr := io.PopContext("S7AddressAny"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

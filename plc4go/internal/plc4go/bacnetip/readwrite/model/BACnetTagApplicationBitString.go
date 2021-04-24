@@ -116,7 +116,9 @@ func (m *BACnetTagApplicationBitString) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationBitString")
+	if pullErr := io.PullContext("BACnetTagApplicationBitString"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := io.ReadUint8("unusedBits", 8)
@@ -125,7 +127,9 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 	}
 
 	// Array field (data)
-	io.PullContext("data", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })
@@ -137,9 +141,13 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 		}
 		data = append(data, _item)
 	}
-	io.CloseContext("data", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetTagApplicationBitString")
+	if closeErr := io.CloseContext("BACnetTagApplicationBitString"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationBitString{
@@ -153,7 +161,9 @@ func BACnetTagApplicationBitStringParse(io utils.ReadBuffer, lengthValueType uin
 
 func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationBitString")
+		if pushErr := io.PushContext("BACnetTagApplicationBitString"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (unusedBits)
 		unusedBits := uint8(m.UnusedBits)
@@ -164,17 +174,23 @@ func (m *BACnetTagApplicationBitString) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetTagApplicationBitString")
+		if popErr := io.PopContext("BACnetTagApplicationBitString"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

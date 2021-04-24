@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBytes(
 }
 
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeviceCommunicationControl{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io utils.ReadB
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestDeviceCommunicationControl")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

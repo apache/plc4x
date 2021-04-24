@@ -97,9 +97,13 @@ func (m *RoutingIndication) LengthInBytes() uint16 {
 }
 
 func RoutingIndicationParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("RoutingIndication")
+	if pullErr := io.PullContext("RoutingIndication"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("RoutingIndication")
+	if closeErr := io.CloseContext("RoutingIndication"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &RoutingIndication{
@@ -111,9 +115,13 @@ func RoutingIndicationParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *RoutingIndication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("RoutingIndication")
+		if pushErr := io.PushContext("RoutingIndication"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("RoutingIndication")
+		if popErr := io.PopContext("RoutingIndication"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

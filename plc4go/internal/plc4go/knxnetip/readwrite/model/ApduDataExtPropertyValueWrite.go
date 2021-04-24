@@ -125,7 +125,9 @@ func (m *ApduDataExtPropertyValueWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtPropertyValueWrite")
+	if pullErr := io.PullContext("ApduDataExtPropertyValueWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
@@ -152,7 +154,9 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 	}
 
 	// Array field (data)
-	io.PullContext("data", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]uint8, uint16(length)-uint16(uint16(5)))
 	for curItem := uint16(0); curItem < uint16(uint16(length)-uint16(uint16(5))); curItem++ {
@@ -162,9 +166,13 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataExtPropertyValueWrite")
+	if closeErr := io.CloseContext("ApduDataExtPropertyValueWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyValueWrite{
@@ -181,7 +189,9 @@ func ApduDataExtPropertyValueWriteParse(io utils.ReadBuffer, length uint8) (*Apd
 
 func (m *ApduDataExtPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtPropertyValueWrite")
+		if pushErr := io.PushContext("ApduDataExtPropertyValueWrite"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -213,17 +223,23 @@ func (m *ApduDataExtPropertyValueWrite) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ApduDataExtPropertyValueWrite")
+		if popErr := io.PopContext("ApduDataExtPropertyValueWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

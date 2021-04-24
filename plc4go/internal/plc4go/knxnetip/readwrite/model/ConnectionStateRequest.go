@@ -112,7 +112,9 @@ func (m *ConnectionStateRequest) LengthInBytes() uint16 {
 }
 
 func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("ConnectionStateRequest")
+	if pullErr := io.PullContext("ConnectionStateRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
@@ -134,16 +136,22 @@ func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 		}
 	}
 
-	io.PullContext("hpaiControlEndpoint")
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
-	io.CloseContext("hpaiControlEndpoint")
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ConnectionStateRequest")
+	if closeErr := io.CloseContext("ConnectionStateRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionStateRequest{
@@ -157,7 +165,9 @@ func ConnectionStateRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) 
 
 func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionStateRequest")
+		if pushErr := io.PushContext("ConnectionStateRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -175,14 +185,20 @@ func (m *ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (hpaiControlEndpoint)
-		io.PushContext("hpaiControlEndpoint")
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
-		io.PopContext("hpaiControlEndpoint")
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
-		io.PopContext("ConnectionStateRequest")
+		if popErr := io.PopContext("ConnectionStateRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

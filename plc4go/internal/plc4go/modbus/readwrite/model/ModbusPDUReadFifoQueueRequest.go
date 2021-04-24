@@ -111,7 +111,9 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadFifoQueueRequest")
+	if pullErr := io.PullContext("ModbusPDUReadFifoQueueRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (fifoPointerAddress)
 	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16("fifoPointerAddress", 16)
@@ -119,7 +121,9 @@ func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error)
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
 
-	io.CloseContext("ModbusPDUReadFifoQueueRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadFifoQueueRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueRequest{
@@ -132,7 +136,9 @@ func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error)
 
 func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadFifoQueueRequest")
+		if pushErr := io.PushContext("ModbusPDUReadFifoQueueRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
@@ -141,7 +147,9 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}
 
-		io.PopContext("ModbusPDUReadFifoQueueRequest")
+		if popErr := io.PopContext("ModbusPDUReadFifoQueueRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -110,7 +110,9 @@ func (m *COTPPacketData) LengthInBytes() uint16 {
 }
 
 func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
-	io.PullContext("COTPPacketData")
+	if pullErr := io.PullContext("COTPPacketData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (eot)
 	eot, _eotErr := io.ReadBit("eot")
@@ -124,7 +126,9 @@ func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
 		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field")
 	}
 
-	io.CloseContext("COTPPacketData")
+	if closeErr := io.CloseContext("COTPPacketData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPPacketData{
@@ -138,7 +142,9 @@ func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPPacketData")
+		if pushErr := io.PushContext("COTPPacketData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (eot)
 		eot := bool(m.Eot)
@@ -154,7 +160,9 @@ func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}
 
-		io.PopContext("COTPPacketData")
+		if popErr := io.PopContext("COTPPacketData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

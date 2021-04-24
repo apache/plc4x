@@ -97,9 +97,13 @@ func (m *BVLCReadForeignDeviceTable) LengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCReadForeignDeviceTable")
+	if pullErr := io.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCReadForeignDeviceTable")
+	if closeErr := io.CloseContext("BVLCReadForeignDeviceTable"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTable{
@@ -111,9 +115,13 @@ func BVLCReadForeignDeviceTableParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCReadForeignDeviceTable) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCReadForeignDeviceTable")
+		if pushErr := io.PushContext("BVLCReadForeignDeviceTable"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCReadForeignDeviceTable")
+		if popErr := io.PopContext("BVLCReadForeignDeviceTable"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

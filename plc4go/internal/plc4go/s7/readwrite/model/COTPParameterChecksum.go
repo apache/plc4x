@@ -103,7 +103,9 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 }
 
 func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
-	io.PullContext("COTPParameterChecksum")
+	if pullErr := io.PullContext("COTPParameterChecksum"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint8("crc", 8)
@@ -111,7 +113,9 @@ func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
-	io.CloseContext("COTPParameterChecksum")
+	if closeErr := io.CloseContext("COTPParameterChecksum"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterChecksum{
@@ -124,7 +128,9 @@ func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterChecksum")
+		if pushErr := io.PushContext("COTPParameterChecksum"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
@@ -133,7 +139,9 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
-		io.PopContext("COTPParameterChecksum")
+		if popErr := io.PopContext("COTPParameterChecksum"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -94,7 +94,9 @@ func (m *AdsStampHeader) LengthInBytes() uint16 {
 }
 
 func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
-	io.PullContext("AdsStampHeader")
+	if pullErr := io.PullContext("AdsStampHeader"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint64("timestamp", 64)
@@ -109,7 +111,9 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 	}
 
 	// Array field (adsNotificationSamples)
-	io.PullContext("adsNotificationSamples", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("adsNotificationSamples", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	adsNotificationSamples := make([]*AdsNotificationSample, samples)
 	for curItem := uint16(0); curItem < uint16(samples); curItem++ {
@@ -119,16 +123,22 @@ func AdsStampHeaderParse(io utils.ReadBuffer) (*AdsStampHeader, error) {
 		}
 		adsNotificationSamples[curItem] = _item
 	}
-	io.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsStampHeader")
+	if closeErr := io.CloseContext("AdsStampHeader"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAdsStampHeader(timestamp, samples, adsNotificationSamples), nil
 }
 
 func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AdsStampHeader")
+	if pushErr := io.PushContext("AdsStampHeader"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.Timestamp)
@@ -146,17 +156,23 @@ func (m *AdsStampHeader) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (adsNotificationSamples)
 	if m.AdsNotificationSamples != nil {
-		io.PushContext("adsNotificationSamples", utils.WithRenderAsList(true))
+		if pushErr := io.PushContext("adsNotificationSamples", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.AdsNotificationSamples {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'adsNotificationSamples' field")
 			}
 		}
-		io.PopContext("adsNotificationSamples", utils.WithRenderAsList(true))
+		if popErr := io.PopContext("adsNotificationSamples", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
-	io.PopContext("AdsStampHeader")
+	if popErr := io.PopContext("AdsStampHeader"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

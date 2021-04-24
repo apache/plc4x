@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBytes() uint16 
 }
 
 func BACnetConfirmedServiceRequestRemoveListElementParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestRemoveListElement")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestRemoveListElement")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestRemoveListElement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemoveListElement{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(io utils.ReadBuffer) (*
 
 func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestRemoveListElement")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestRemoveListElement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestRemoveListElement")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestRemoveListElement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

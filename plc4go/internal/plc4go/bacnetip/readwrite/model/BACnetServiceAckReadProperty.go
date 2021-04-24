@@ -146,7 +146,9 @@ func (m *BACnetServiceAckReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckReadProperty")
+	if pullErr := io.PullContext("BACnetServiceAckReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
@@ -185,7 +187,9 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
@@ -195,7 +199,9 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (openingTag)
 	openingTag, _openingTagErr := io.ReadUint8("openingTag", 8)
@@ -206,14 +212,18 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_OPENINGTAG) + " but got " + fmt.Sprintf("%d", openingTag))
 	}
 
-	io.PullContext("value")
+	if pullErr := io.PullContext("value"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(io)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
-	io.CloseContext("value")
+	if closeErr := io.CloseContext("value"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (closingTag)
 	closingTag, _closingTagErr := io.ReadUint8("closingTag", 8)
@@ -224,7 +234,9 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
 
-	io.CloseContext("BACnetServiceAckReadProperty")
+	if closeErr := io.CloseContext("BACnetServiceAckReadProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadProperty{
@@ -241,7 +253,9 @@ func BACnetServiceAckReadPropertyParse(io utils.ReadBuffer) (*BACnetServiceAck, 
 
 func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckReadProperty")
+		if pushErr := io.PushContext("BACnetServiceAckReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -278,14 +292,18 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
-			io.PushContext("propertyIdentifier", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("propertyIdentifier", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 				}
 			}
-			io.PopContext("propertyIdentifier", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("propertyIdentifier", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (openingTag)
@@ -295,9 +313,13 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (value)
-		io.PushContext("value")
+		if pushErr := io.PushContext("value"); pushErr != nil {
+			return pushErr
+		}
 		_valueErr := m.Value.Serialize(io)
-		io.PopContext("value")
+		if popErr := io.PopContext("value"); popErr != nil {
+			return popErr
+		}
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
@@ -308,7 +330,9 @@ func (m *BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 		}
 
-		io.PopContext("BACnetServiceAckReadProperty")
+		if popErr := io.PopContext("BACnetServiceAckReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

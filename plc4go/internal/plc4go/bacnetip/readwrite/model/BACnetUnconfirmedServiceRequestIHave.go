@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestIHave")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestIHave")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestIHave"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIHave{
@@ -111,9 +115,13 @@ func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnco
 
 func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestIHave")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestIHave"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestIHave")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestIHave"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

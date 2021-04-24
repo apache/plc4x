@@ -105,9 +105,13 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUGetComEventLogRequest")
+	if pullErr := io.PullContext("ModbusPDUGetComEventLogRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUGetComEventLogRequest")
+	if closeErr := io.CloseContext("ModbusPDUGetComEventLogRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{
@@ -119,9 +123,13 @@ func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUGetComEventLogRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUGetComEventLogRequest")
+		if pushErr := io.PushContext("ModbusPDUGetComEventLogRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUGetComEventLogRequest")
+		if popErr := io.PopContext("ModbusPDUGetComEventLogRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

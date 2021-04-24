@@ -97,9 +97,13 @@ func (m *MFuncPropStateReadReq) LengthInBytes() uint16 {
 }
 
 func MFuncPropStateReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MFuncPropStateReadReq")
+	if pullErr := io.PullContext("MFuncPropStateReadReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MFuncPropStateReadReq")
+	if closeErr := io.CloseContext("MFuncPropStateReadReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MFuncPropStateReadReq{
@@ -111,9 +115,13 @@ func MFuncPropStateReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropStateReadReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MFuncPropStateReadReq")
+		if pushErr := io.PushContext("MFuncPropStateReadReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MFuncPropStateReadReq")
+		if popErr := io.PopContext("MFuncPropStateReadReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

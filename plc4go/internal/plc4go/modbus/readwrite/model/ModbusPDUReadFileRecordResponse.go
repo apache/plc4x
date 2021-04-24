@@ -118,7 +118,9 @@ func (m *ModbusPDUReadFileRecordResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadFileRecordResponse")
+	if pullErr := io.PullContext("ModbusPDUReadFileRecordResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
@@ -128,7 +130,9 @@ func ModbusPDUReadFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	}
 
 	// Array field (items)
-	io.PullContext("items", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	items := make([]*ModbusPDUReadFileRecordResponseItem, 0)
 	_itemsLength := byteCount
@@ -140,9 +144,13 @@ func ModbusPDUReadFileRecordResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		items = append(items, _item)
 	}
-	io.CloseContext("items", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUReadFileRecordResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadFileRecordResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFileRecordResponse{
@@ -162,7 +170,9 @@ func (m *ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error 
 		return sizeInBytes
 	}
 	ser := func() error {
-		io.PushContext("ModbusPDUReadFileRecordResponse")
+		if pushErr := io.PushContext("ModbusPDUReadFileRecordResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
@@ -173,17 +183,23 @@ func (m *ModbusPDUReadFileRecordResponse) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUReadFileRecordResponse")
+		if popErr := io.PopContext("ModbusPDUReadFileRecordResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

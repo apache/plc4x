@@ -97,9 +97,13 @@ func (m *ApduDataExtWriteRouterStatusRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtWriteRouterStatusRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtWriteRouterStatusRequest")
+	if pullErr := io.PullContext("ApduDataExtWriteRouterStatusRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtWriteRouterStatusRequest")
+	if closeErr := io.CloseContext("ApduDataExtWriteRouterStatusRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtWriteRouterStatusRequest{
@@ -111,9 +115,13 @@ func ApduDataExtWriteRouterStatusRequestParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtWriteRouterStatusRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtWriteRouterStatusRequest")
+		if pushErr := io.PushContext("ApduDataExtWriteRouterStatusRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtWriteRouterStatusRequest")
+		if popErr := io.PopContext("ApduDataExtWriteRouterStatusRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

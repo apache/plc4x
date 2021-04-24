@@ -97,9 +97,13 @@ func (m *TDataConnectedReq) LengthInBytes() uint16 {
 }
 
 func TDataConnectedReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("TDataConnectedReq")
+	if pullErr := io.PullContext("TDataConnectedReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("TDataConnectedReq")
+	if closeErr := io.CloseContext("TDataConnectedReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &TDataConnectedReq{
@@ -111,9 +115,13 @@ func TDataConnectedReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataConnectedReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("TDataConnectedReq")
+		if pushErr := io.PushContext("TDataConnectedReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("TDataConnectedReq")
+		if popErr := io.PopContext("TDataConnectedReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

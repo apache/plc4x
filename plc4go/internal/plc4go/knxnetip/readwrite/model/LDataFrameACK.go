@@ -106,9 +106,13 @@ func (m *LDataFrameACK) LengthInBytes() uint16 {
 }
 
 func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
-	io.PullContext("LDataFrameACK")
+	if pullErr := io.PullContext("LDataFrameACK"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LDataFrameACK")
+	if closeErr := io.CloseContext("LDataFrameACK"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LDataFrameACK{
@@ -120,9 +124,13 @@ func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataFrameACK) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LDataFrameACK")
+		if pushErr := io.PushContext("LDataFrameACK"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LDataFrameACK")
+		if popErr := io.PopContext("LDataFrameACK"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

@@ -103,18 +103,26 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
-	io.PullContext("ConnectionResponseDataBlockTunnelConnection")
+	if pullErr := io.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("knxAddress")
+	if pullErr := io.PullContext("knxAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
-	io.CloseContext("knxAddress")
+	if closeErr := io.CloseContext("knxAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ConnectionResponseDataBlockTunnelConnection")
+	if closeErr := io.CloseContext("ConnectionResponseDataBlockTunnelConnection"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockTunnelConnection{
@@ -127,17 +135,25 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*Con
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionResponseDataBlockTunnelConnection")
+		if pushErr := io.PushContext("ConnectionResponseDataBlockTunnelConnection"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (knxAddress)
-		io.PushContext("knxAddress")
+		if pushErr := io.PushContext("knxAddress"); pushErr != nil {
+			return pushErr
+		}
 		_knxAddressErr := m.KnxAddress.Serialize(io)
-		io.PopContext("knxAddress")
+		if popErr := io.PopContext("knxAddress"); popErr != nil {
+			return popErr
+		}
 		if _knxAddressErr != nil {
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
-		io.PopContext("ConnectionResponseDataBlockTunnelConnection")
+		if popErr := io.PopContext("ConnectionResponseDataBlockTunnelConnection"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

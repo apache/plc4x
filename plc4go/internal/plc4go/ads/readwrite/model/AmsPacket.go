@@ -116,16 +116,22 @@ func (m *AmsPacket) LengthInBytes() uint16 {
 }
 
 func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
-	io.PullContext("AmsPacket")
+	if pullErr := io.PullContext("AmsPacket"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("targetAmsNetId")
+	if pullErr := io.PullContext("targetAmsNetId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)
 	if _targetAmsNetIdErr != nil {
 		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
 	}
-	io.CloseContext("targetAmsNetId")
+	if closeErr := io.CloseContext("targetAmsNetId"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort, _targetAmsPortErr := io.ReadUint16("targetAmsPort", 16)
@@ -133,14 +139,18 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
 
-	io.PullContext("sourceAmsNetId")
+	if pullErr := io.PullContext("sourceAmsNetId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (sourceAmsNetId)
 	sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(io)
 	if _sourceAmsNetIdErr != nil {
 		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
 	}
-	io.CloseContext("sourceAmsNetId")
+	if closeErr := io.CloseContext("sourceAmsNetId"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort, _sourceAmsPortErr := io.ReadUint16("sourceAmsPort", 16)
@@ -148,23 +158,31 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
 
-	io.PullContext("commandId")
+	if pullErr := io.PullContext("commandId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (commandId)
 	commandId, _commandIdErr := CommandIdParse(io)
 	if _commandIdErr != nil {
 		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
 	}
-	io.CloseContext("commandId")
+	if closeErr := io.CloseContext("commandId"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("state")
+	if pullErr := io.PullContext("state"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (state)
 	state, _stateErr := StateParse(io)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
 	}
-	io.CloseContext("state")
+	if closeErr := io.CloseContext("state"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length, _lengthErr := io.ReadUint32("length", 32)
@@ -185,28 +203,40 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
 
-	io.PullContext("data")
+	if pullErr := io.PullContext("data"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (data)
 	data, _dataErr := AdsDataParse(io, &commandId, state.Response)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AmsPacket")
+	if closeErr := io.CloseContext("AmsPacket"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, state, errorCode, invokeId, data), nil
 }
 
 func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsPacket")
+	if pushErr := io.PushContext("AmsPacket"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (targetAmsNetId)
-	io.PushContext("targetAmsNetId")
+	if pushErr := io.PushContext("targetAmsNetId"); pushErr != nil {
+		return pushErr
+	}
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(io)
-	io.PopContext("targetAmsNetId")
+	if popErr := io.PopContext("targetAmsNetId"); popErr != nil {
+		return popErr
+	}
 	if _targetAmsNetIdErr != nil {
 		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
 	}
@@ -219,9 +249,13 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (sourceAmsNetId)
-	io.PushContext("sourceAmsNetId")
+	if pushErr := io.PushContext("sourceAmsNetId"); pushErr != nil {
+		return pushErr
+	}
 	_sourceAmsNetIdErr := m.SourceAmsNetId.Serialize(io)
-	io.PopContext("sourceAmsNetId")
+	if popErr := io.PopContext("sourceAmsNetId"); popErr != nil {
+		return popErr
+	}
 	if _sourceAmsNetIdErr != nil {
 		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
 	}
@@ -234,17 +268,25 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (commandId)
-	io.PushContext("commandId")
+	if pushErr := io.PushContext("commandId"); pushErr != nil {
+		return pushErr
+	}
 	_commandIdErr := m.CommandId.Serialize(io)
-	io.PopContext("commandId")
+	if popErr := io.PopContext("commandId"); popErr != nil {
+		return popErr
+	}
 	if _commandIdErr != nil {
 		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
 	}
 
 	// Simple Field (state)
-	io.PushContext("state")
+	if pushErr := io.PushContext("state"); pushErr != nil {
+		return pushErr
+	}
 	_stateErr := m.State.Serialize(io)
-	io.PopContext("state")
+	if popErr := io.PopContext("state"); popErr != nil {
+		return popErr
+	}
 	if _stateErr != nil {
 		return errors.Wrap(_stateErr, "Error serializing 'state' field")
 	}
@@ -271,14 +313,20 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (data)
-	io.PushContext("data")
+	if pushErr := io.PushContext("data"); pushErr != nil {
+		return pushErr
+	}
 	_dataErr := m.Data.Serialize(io)
-	io.PopContext("data")
+	if popErr := io.PopContext("data"); popErr != nil {
+		return popErr
+	}
 	if _dataErr != nil {
 		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
-	io.PopContext("AmsPacket")
+	if popErr := io.PopContext("AmsPacket"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

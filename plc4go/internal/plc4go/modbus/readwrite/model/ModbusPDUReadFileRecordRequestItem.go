@@ -93,7 +93,9 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
-	io.PullContext("ModbusPDUReadFileRecordRequestItem")
+	if pullErr := io.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
@@ -119,14 +121,18 @@ func ModbusPDUReadFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDURea
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
 
-	io.CloseContext("ModbusPDUReadFileRecordRequestItem")
+	if closeErr := io.CloseContext("ModbusPDUReadFileRecordRequestItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength), nil
 }
 
 func (m *ModbusPDUReadFileRecordRequestItem) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ModbusPDUReadFileRecordRequestItem")
+	if pushErr := io.PushContext("ModbusPDUReadFileRecordRequestItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
@@ -156,7 +162,9 @@ func (m *ModbusPDUReadFileRecordRequestItem) Serialize(io utils.WriteBuffer) err
 		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}
 
-	io.PopContext("ModbusPDUReadFileRecordRequestItem")
+	if popErr := io.PopContext("ModbusPDUReadFileRecordRequestItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

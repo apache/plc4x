@@ -104,7 +104,9 @@ func (m *ModbusPDU) LengthInBytes() uint16 {
 }
 
 func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDU")
+	if pullErr := io.PullContext("ModbusPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
@@ -208,7 +210,9 @@ func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ModbusPDU")
+	if closeErr := io.CloseContext("ModbusPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -220,7 +224,9 @@ func (m *ModbusPDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error {
-	io.PushContext("ModbusPDU")
+	if pushErr := io.PushContext("ModbusPDU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
@@ -244,7 +250,9 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ModbusPDU")
+	if popErr := io.PopContext("ModbusPDU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

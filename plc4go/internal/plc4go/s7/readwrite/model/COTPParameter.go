@@ -103,7 +103,9 @@ func (m *COTPParameter) LengthInBytes() uint16 {
 }
 
 func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
-	io.PullContext("COTPParameter")
+	if pullErr := io.PullContext("COTPParameter"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
@@ -140,7 +142,9 @@ func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error)
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("COTPParameter")
+	if closeErr := io.CloseContext("COTPParameter"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -152,7 +156,9 @@ func (m *COTPParameter) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error {
-	io.PushContext("COTPParameter")
+	if pushErr := io.PushContext("COTPParameter"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
@@ -175,7 +181,9 @@ func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParamet
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("COTPParameter")
+	if popErr := io.PopContext("COTPParameter"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

@@ -103,7 +103,9 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBytes() uint16 {
 }
 
 func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataDeviceDescriptorRead")
+	if pullErr := io.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (descriptorType)
 	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
@@ -111,7 +113,9 @@ func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
 	}
 
-	io.CloseContext("ApduDataDeviceDescriptorRead")
+	if closeErr := io.CloseContext("ApduDataDeviceDescriptorRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorRead{
@@ -124,7 +128,9 @@ func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataDeviceDescriptorRead")
+		if pushErr := io.PushContext("ApduDataDeviceDescriptorRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
@@ -133,7 +139,9 @@ func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
-		io.PopContext("ApduDataDeviceDescriptorRead")
+		if popErr := io.PopContext("ApduDataDeviceDescriptorRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

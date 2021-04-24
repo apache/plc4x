@@ -144,7 +144,9 @@ func (m *LDataExtended) LengthInBytes() uint16 {
 }
 
 func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
-	io.PullContext("LDataExtended")
+	if pullErr := io.PullContext("LDataExtended"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (groupAddress)
 	groupAddress, _groupAddressErr := io.ReadBit("groupAddress")
@@ -164,17 +166,23 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
 	}
 
-	io.PullContext("sourceAddress")
+	if pullErr := io.PullContext("sourceAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
-	io.CloseContext("sourceAddress")
+	if closeErr := io.CloseContext("sourceAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (destinationAddress)
-	io.PullContext("destinationAddress", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	destinationAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
@@ -184,7 +192,9 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
-	io.CloseContext("destinationAddress", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
@@ -193,16 +203,22 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 
-	io.PullContext("apdu")
+	if pullErr := io.PullContext("apdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (apdu)
 	apdu, _apduErr := ApduParse(io, dataLength)
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
 	}
-	io.CloseContext("apdu")
+	if closeErr := io.CloseContext("apdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("LDataExtended")
+	if closeErr := io.CloseContext("LDataExtended"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LDataExtended{
@@ -220,7 +236,9 @@ func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LDataExtended")
+		if pushErr := io.PushContext("LDataExtended"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.GroupAddress)
@@ -244,23 +262,31 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (sourceAddress)
-		io.PushContext("sourceAddress")
+		if pushErr := io.PushContext("sourceAddress"); pushErr != nil {
+			return pushErr
+		}
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
-		io.PopContext("sourceAddress")
+		if popErr := io.PopContext("sourceAddress"); popErr != nil {
+			return popErr
+		}
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
-			io.PushContext("destinationAddress", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DestinationAddress {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 				}
 			}
-			io.PopContext("destinationAddress", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -271,14 +297,20 @@ func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (apdu)
-		io.PushContext("apdu")
+		if pushErr := io.PushContext("apdu"); pushErr != nil {
+			return pushErr
+		}
 		_apduErr := m.Apdu.Serialize(io)
-		io.PopContext("apdu")
+		if popErr := io.PopContext("apdu"); popErr != nil {
+			return popErr
+		}
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}
 
-		io.PopContext("LDataExtended")
+		if popErr := io.PopContext("LDataExtended"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

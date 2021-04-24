@@ -92,7 +92,9 @@ func (m *DeviceConfigurationAckDataBlock) LengthInBytes() uint16 {
 }
 
 func DeviceConfigurationAckDataBlockParse(io utils.ReadBuffer) (*DeviceConfigurationAckDataBlock, error) {
-	io.PullContext("DeviceConfigurationAckDataBlock")
+	if pullErr := io.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -113,23 +115,31 @@ func DeviceConfigurationAckDataBlockParse(io utils.ReadBuffer) (*DeviceConfigura
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
-	io.PullContext("status")
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
-	io.CloseContext("status")
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DeviceConfigurationAckDataBlock")
+	if closeErr := io.CloseContext("DeviceConfigurationAckDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDeviceConfigurationAckDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
 func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DeviceConfigurationAckDataBlock")
+	if pushErr := io.PushContext("DeviceConfigurationAckDataBlock"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -153,14 +163,20 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(io utils.WriteBuffer) error 
 	}
 
 	// Simple Field (status)
-	io.PushContext("status")
+	if pushErr := io.PushContext("status"); pushErr != nil {
+		return pushErr
+	}
 	_statusErr := m.Status.Serialize(io)
-	io.PopContext("status")
+	if popErr := io.PopContext("status"); popErr != nil {
+		return popErr
+	}
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
-	io.PopContext("DeviceConfigurationAckDataBlock")
+	if popErr := io.PopContext("DeviceConfigurationAckDataBlock"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

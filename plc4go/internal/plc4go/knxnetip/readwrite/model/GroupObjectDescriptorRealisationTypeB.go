@@ -109,7 +109,9 @@ func (m *GroupObjectDescriptorRealisationTypeB) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationTypeB, error) {
-	io.PullContext("GroupObjectDescriptorRealisationTypeB")
+	if pullErr := io.PullContext("GroupObjectDescriptorRealisationTypeB"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (updateEnable)
 	updateEnable, _updateEnableErr := io.ReadBit("updateEnable")
@@ -147,32 +149,44 @@ func GroupObjectDescriptorRealisationTypeBParse(io utils.ReadBuffer) (*GroupObje
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
-	io.PullContext("priority")
+	if pullErr := io.PullContext("priority"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
-	io.CloseContext("priority")
+	if closeErr := io.CloseContext("priority"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("valueType")
+	if pullErr := io.PullContext("valueType"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (valueType)
 	valueType, _valueTypeErr := ComObjectValueTypeParse(io)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
-	io.CloseContext("valueType")
+	if closeErr := io.CloseContext("valueType"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("GroupObjectDescriptorRealisationTypeB")
+	if closeErr := io.CloseContext("GroupObjectDescriptorRealisationTypeB"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationTypeB(updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
 }
 
 func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("GroupObjectDescriptorRealisationTypeB")
+	if pushErr := io.PushContext("GroupObjectDescriptorRealisationTypeB"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (updateEnable)
 	updateEnable := bool(m.UpdateEnable)
@@ -217,22 +231,32 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(io utils.WriteBuffer) 
 	}
 
 	// Simple Field (priority)
-	io.PushContext("priority")
+	if pushErr := io.PushContext("priority"); pushErr != nil {
+		return pushErr
+	}
 	_priorityErr := m.Priority.Serialize(io)
-	io.PopContext("priority")
+	if popErr := io.PopContext("priority"); popErr != nil {
+		return popErr
+	}
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (valueType)
-	io.PushContext("valueType")
+	if pushErr := io.PushContext("valueType"); pushErr != nil {
+		return pushErr
+	}
 	_valueTypeErr := m.ValueType.Serialize(io)
-	io.PopContext("valueType")
+	if popErr := io.PopContext("valueType"); popErr != nil {
+		return popErr
+	}
 	if _valueTypeErr != nil {
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
-	io.PopContext("GroupObjectDescriptorRealisationTypeB")
+	if popErr := io.PopContext("GroupObjectDescriptorRealisationTypeB"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

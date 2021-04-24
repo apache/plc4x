@@ -119,7 +119,9 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadFifoQueueResponse")
+	if pullErr := io.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint16("byteCount", 16)
@@ -136,7 +138,9 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 	}
 
 	// Array field (fifoValue)
-	io.PullContext("fifoValue", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("fifoValue", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
@@ -146,9 +150,13 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 		}
 		fifoValue[curItem] = _item
 	}
-	io.CloseContext("fifoValue", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUReadFifoQueueResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadFifoQueueResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueResponse{
@@ -161,7 +169,9 @@ func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadFifoQueueResponse")
+		if pushErr := io.PushContext("ModbusPDUReadFifoQueueResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
@@ -179,17 +189,23 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
-			io.PushContext("fifoValue", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.FifoValue {
 				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
-			io.PopContext("fifoValue", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUReadFifoQueueResponse")
+		if popErr := io.PopContext("ModbusPDUReadFifoQueueResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

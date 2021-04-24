@@ -97,9 +97,13 @@ func (m *BACnetServiceAckReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadRangeParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckReadRange")
+	if pullErr := io.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckReadRange")
+	if closeErr := io.CloseContext("BACnetServiceAckReadRange"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadRange{
@@ -111,9 +115,13 @@ func BACnetServiceAckReadRangeParse(io utils.ReadBuffer) (*BACnetServiceAck, err
 
 func (m *BACnetServiceAckReadRange) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckReadRange")
+		if pushErr := io.PushContext("BACnetServiceAckReadRange"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckReadRange")
+		if popErr := io.PopContext("BACnetServiceAckReadRange"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

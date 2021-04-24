@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedTextMessage{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

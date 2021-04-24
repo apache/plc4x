@@ -122,7 +122,9 @@ func (m *AdsDeviceNotificationRequest) LengthInBytes() uint16 {
 }
 
 func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsDeviceNotificationRequest")
+	if pullErr := io.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (length)
 	length, _lengthErr := io.ReadUint32("length", 32)
@@ -137,7 +139,9 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (adsStampHeaders)
-	io.PullContext("adsStampHeaders", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("adsStampHeaders", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	adsStampHeaders := make([]*AdsStampHeader, stamps)
 	for curItem := uint16(0); curItem < uint16(stamps); curItem++ {
@@ -147,9 +151,13 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		adsStampHeaders[curItem] = _item
 	}
-	io.CloseContext("adsStampHeaders", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("adsStampHeaders", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsDeviceNotificationRequest")
+	if closeErr := io.CloseContext("AdsDeviceNotificationRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeviceNotificationRequest{
@@ -164,7 +172,9 @@ func AdsDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsDeviceNotificationRequest")
+		if pushErr := io.PushContext("AdsDeviceNotificationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (length)
 		length := uint32(m.Length)
@@ -182,17 +192,23 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (adsStampHeaders)
 		if m.AdsStampHeaders != nil {
-			io.PushContext("adsStampHeaders", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.AdsStampHeaders {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
 				}
 			}
-			io.PopContext("adsStampHeaders", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("adsStampHeaders", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("AdsDeviceNotificationRequest")
+		if popErr := io.PopContext("AdsDeviceNotificationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

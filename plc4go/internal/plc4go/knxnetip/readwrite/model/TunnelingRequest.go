@@ -108,27 +108,39 @@ func (m *TunnelingRequest) LengthInBytes() uint16 {
 }
 
 func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
-	io.PullContext("TunnelingRequest")
+	if pullErr := io.PullContext("TunnelingRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("tunnelingRequestDataBlock")
+	if pullErr := io.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
 	if _tunnelingRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field")
 	}
-	io.CloseContext("tunnelingRequestDataBlock")
+	if closeErr := io.CloseContext("tunnelingRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("cemi")
+	if pullErr := io.PullContext("cemi"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
 	}
-	io.CloseContext("cemi")
+	if closeErr := io.CloseContext("cemi"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("TunnelingRequest")
+	if closeErr := io.CloseContext("TunnelingRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &TunnelingRequest{
@@ -142,25 +154,37 @@ func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMe
 
 func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("TunnelingRequest")
+		if pushErr := io.PushContext("TunnelingRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tunnelingRequestDataBlock)
-		io.PushContext("tunnelingRequestDataBlock")
+		if pushErr := io.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
-		io.PopContext("tunnelingRequestDataBlock")
+		if popErr := io.PopContext("tunnelingRequestDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _tunnelingRequestDataBlockErr != nil {
 			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
-		io.PushContext("cemi")
+		if pushErr := io.PushContext("cemi"); pushErr != nil {
+			return pushErr
+		}
 		_cemiErr := m.Cemi.Serialize(io)
-		io.PopContext("cemi")
+		if popErr := io.PopContext("cemi"); popErr != nil {
+			return popErr
+		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
-		io.PopContext("TunnelingRequest")
+		if popErr := io.PopContext("TunnelingRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

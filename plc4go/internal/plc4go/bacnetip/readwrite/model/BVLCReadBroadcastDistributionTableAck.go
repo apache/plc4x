@@ -97,9 +97,13 @@ func (m *BVLCReadBroadcastDistributionTableAck) LengthInBytes() uint16 {
 }
 
 func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCReadBroadcastDistributionTableAck")
+	if pullErr := io.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCReadBroadcastDistributionTableAck")
+	if closeErr := io.CloseContext("BVLCReadBroadcastDistributionTableAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTableAck{
@@ -111,9 +115,13 @@ func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, err
 
 func (m *BVLCReadBroadcastDistributionTableAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCReadBroadcastDistributionTableAck")
+		if pushErr := io.PushContext("BVLCReadBroadcastDistributionTableAck"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCReadBroadcastDistributionTableAck")
+		if popErr := io.PopContext("BVLCReadBroadcastDistributionTableAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

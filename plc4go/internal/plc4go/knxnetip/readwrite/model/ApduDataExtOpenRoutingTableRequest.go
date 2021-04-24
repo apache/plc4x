@@ -97,9 +97,13 @@ func (m *ApduDataExtOpenRoutingTableRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtOpenRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtOpenRoutingTableRequest")
+	if pullErr := io.PullContext("ApduDataExtOpenRoutingTableRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtOpenRoutingTableRequest")
+	if closeErr := io.CloseContext("ApduDataExtOpenRoutingTableRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtOpenRoutingTableRequest{
@@ -111,9 +115,13 @@ func ApduDataExtOpenRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt,
 
 func (m *ApduDataExtOpenRoutingTableRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtOpenRoutingTableRequest")
+		if pushErr := io.PushContext("ApduDataExtOpenRoutingTableRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtOpenRoutingTableRequest")
+		if popErr := io.PopContext("ApduDataExtOpenRoutingTableRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

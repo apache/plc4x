@@ -97,9 +97,13 @@ func (m *ApduControlDisconnect) LengthInBytes() uint16 {
 }
 
 func ApduControlDisconnectParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlDisconnect")
+	if pullErr := io.PullContext("ApduControlDisconnect"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlDisconnect")
+	if closeErr := io.CloseContext("ApduControlDisconnect"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlDisconnect{
@@ -111,9 +115,13 @@ func ApduControlDisconnectParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlDisconnect) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlDisconnect")
+		if pushErr := io.PushContext("ApduControlDisconnect"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlDisconnect")
+		if popErr := io.PopContext("ApduControlDisconnect"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

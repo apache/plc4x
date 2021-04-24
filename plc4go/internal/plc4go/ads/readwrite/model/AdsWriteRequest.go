@@ -124,7 +124,9 @@ func (m *AdsWriteRequest) LengthInBytes() uint16 {
 }
 
 func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsWriteRequest")
+	if pullErr := io.PullContext("AdsWriteRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (indexGroup)
 	indexGroup, _indexGroupErr := io.ReadUint32("indexGroup", 32)
@@ -146,7 +148,9 @@ func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (data)
-	io.PullContext("data", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
@@ -156,9 +160,13 @@ func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsWriteRequest")
+	if closeErr := io.CloseContext("AdsWriteRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsWriteRequest{
@@ -173,7 +181,9 @@ func AdsWriteRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsWriteRequest")
+		if pushErr := io.PushContext("AdsWriteRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.IndexGroup)
@@ -198,17 +208,23 @@ func (m *AdsWriteRequest) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data", utils.WithRenderAsList(true))
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data", utils.WithRenderAsList(true))
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("AdsWriteRequest")
+		if popErr := io.PopContext("AdsWriteRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

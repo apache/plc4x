@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInByte
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
@@ -111,9 +115,13 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io utils.Rea
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

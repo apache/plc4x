@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAtomicWriteFileParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestAtomicWriteFile")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAtomicWriteFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAtomicWriteFile{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(io utils.ReadBuffer) (*BA
 
 func (m *BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestAtomicWriteFile")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAtomicWriteFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestAtomicWriteFile")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAtomicWriteFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

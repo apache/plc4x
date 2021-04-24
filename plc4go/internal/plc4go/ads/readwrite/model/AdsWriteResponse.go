@@ -107,18 +107,26 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 }
 
 func AdsWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsWriteResponse")
+	if pullErr := io.PullContext("AdsWriteResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.PullContext("result")
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
-	io.CloseContext("result")
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsWriteResponse")
+	if closeErr := io.CloseContext("AdsWriteResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsWriteResponse{
@@ -131,17 +139,25 @@ func AdsWriteResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsWriteResponse")
+		if pushErr := io.PushContext("AdsWriteResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
-		io.PushContext("result")
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
-		io.PopContext("result")
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
-		io.PopContext("AdsWriteResponse")
+		if popErr := io.PopContext("AdsWriteResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

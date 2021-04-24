@@ -97,9 +97,13 @@ func (m *ApduDataExtMemoryBitWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtMemoryBitWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtMemoryBitWrite")
+	if pullErr := io.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtMemoryBitWrite")
+	if closeErr := io.CloseContext("ApduDataExtMemoryBitWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtMemoryBitWrite{
@@ -111,9 +115,13 @@ func ApduDataExtMemoryBitWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtMemoryBitWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtMemoryBitWrite")
+		if pushErr := io.PushContext("ApduDataExtMemoryBitWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtMemoryBitWrite")
+		if popErr := io.PopContext("ApduDataExtMemoryBitWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

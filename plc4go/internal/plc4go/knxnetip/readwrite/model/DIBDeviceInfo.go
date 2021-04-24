@@ -122,7 +122,9 @@ func (m *DIBDeviceInfo) LengthInBytes() uint16 {
 }
 
 func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
-	io.PullContext("DIBDeviceInfo")
+	if pullErr := io.PullContext("DIBDeviceInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -137,44 +139,62 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
 	}
 
-	io.PullContext("knxMedium")
+	if pullErr := io.PullContext("knxMedium"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxMedium)
 	knxMedium, _knxMediumErr := KnxMediumParse(io)
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field")
 	}
-	io.CloseContext("knxMedium")
+	if closeErr := io.CloseContext("knxMedium"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("deviceStatus")
+	if pullErr := io.PullContext("deviceStatus"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (deviceStatus)
 	deviceStatus, _deviceStatusErr := DeviceStatusParse(io)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field")
 	}
-	io.CloseContext("deviceStatus")
+	if closeErr := io.CloseContext("deviceStatus"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("knxAddress")
+	if pullErr := io.PullContext("knxAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
-	io.CloseContext("knxAddress")
+	if closeErr := io.CloseContext("knxAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("projectInstallationIdentifier")
+	if pullErr := io.PullContext("projectInstallationIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (projectInstallationIdentifier)
 	projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(io)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
-	io.CloseContext("projectInstallationIdentifier")
+	if closeErr := io.CloseContext("projectInstallationIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (knxNetIpDeviceSerialNumber)
-	io.PullContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
@@ -184,28 +204,40 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		}
 		knxNetIpDeviceSerialNumber[curItem] = _item
 	}
-	io.CloseContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("knxNetIpDeviceMulticastAddress")
+	if pullErr := io.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress, _knxNetIpDeviceMulticastAddressErr := IPAddressParse(io)
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field")
 	}
-	io.CloseContext("knxNetIpDeviceMulticastAddress")
+	if closeErr := io.CloseContext("knxNetIpDeviceMulticastAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.PullContext("knxNetIpDeviceMacAddress")
+	if pullErr := io.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
 	knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(io)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
-	io.CloseContext("knxNetIpDeviceMacAddress")
+	if closeErr := io.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (deviceFriendlyName)
-	io.PullContext("deviceFriendlyName", utils.WithRenderAsList(true))
+	if pullErr := io.PullContext("deviceFriendlyName", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceFriendlyName := make([]int8, uint16(30))
 	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
@@ -215,16 +247,22 @@ func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
 		}
 		deviceFriendlyName[curItem] = _item
 	}
-	io.CloseContext("deviceFriendlyName", utils.WithRenderAsList(true))
+	if closeErr := io.CloseContext("deviceFriendlyName", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DIBDeviceInfo")
+	if closeErr := io.CloseContext("DIBDeviceInfo"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDIBDeviceInfo(descriptionType, knxMedium, deviceStatus, knxAddress, projectInstallationIdentifier, knxNetIpDeviceSerialNumber, knxNetIpDeviceMulticastAddress, knxNetIpDeviceMacAddress, deviceFriendlyName), nil
 }
 
 func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DIBDeviceInfo")
+	if pushErr := io.PushContext("DIBDeviceInfo"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -241,78 +279,112 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (knxMedium)
-	io.PushContext("knxMedium")
+	if pushErr := io.PushContext("knxMedium"); pushErr != nil {
+		return pushErr
+	}
 	_knxMediumErr := m.KnxMedium.Serialize(io)
-	io.PopContext("knxMedium")
+	if popErr := io.PopContext("knxMedium"); popErr != nil {
+		return popErr
+	}
 	if _knxMediumErr != nil {
 		return errors.Wrap(_knxMediumErr, "Error serializing 'knxMedium' field")
 	}
 
 	// Simple Field (deviceStatus)
-	io.PushContext("deviceStatus")
+	if pushErr := io.PushContext("deviceStatus"); pushErr != nil {
+		return pushErr
+	}
 	_deviceStatusErr := m.DeviceStatus.Serialize(io)
-	io.PopContext("deviceStatus")
+	if popErr := io.PopContext("deviceStatus"); popErr != nil {
+		return popErr
+	}
 	if _deviceStatusErr != nil {
 		return errors.Wrap(_deviceStatusErr, "Error serializing 'deviceStatus' field")
 	}
 
 	// Simple Field (knxAddress)
-	io.PushContext("knxAddress")
+	if pushErr := io.PushContext("knxAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxAddressErr := m.KnxAddress.Serialize(io)
-	io.PopContext("knxAddress")
+	if popErr := io.PopContext("knxAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxAddressErr != nil {
 		return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 	}
 
 	// Simple Field (projectInstallationIdentifier)
-	io.PushContext("projectInstallationIdentifier")
+	if pushErr := io.PushContext("projectInstallationIdentifier"); pushErr != nil {
+		return pushErr
+	}
 	_projectInstallationIdentifierErr := m.ProjectInstallationIdentifier.Serialize(io)
-	io.PopContext("projectInstallationIdentifier")
+	if popErr := io.PopContext("projectInstallationIdentifier"); popErr != nil {
+		return popErr
+	}
 	if _projectInstallationIdentifierErr != nil {
 		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
 	}
 
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
-		io.PushContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true))
+		if pushErr := io.PushContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.KnxNetIpDeviceSerialNumber {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 			}
 		}
-		io.PopContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true))
+		if popErr := io.PopContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
-	io.PushContext("knxNetIpDeviceMulticastAddress")
+	if pushErr := io.PushContext("knxNetIpDeviceMulticastAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxNetIpDeviceMulticastAddressErr := m.KnxNetIpDeviceMulticastAddress.Serialize(io)
-	io.PopContext("knxNetIpDeviceMulticastAddress")
+	if popErr := io.PopContext("knxNetIpDeviceMulticastAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
-	io.PushContext("knxNetIpDeviceMacAddress")
+	if pushErr := io.PushContext("knxNetIpDeviceMacAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxNetIpDeviceMacAddressErr := m.KnxNetIpDeviceMacAddress.Serialize(io)
-	io.PopContext("knxNetIpDeviceMacAddress")
+	if popErr := io.PopContext("knxNetIpDeviceMacAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}
 
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
-		io.PushContext("deviceFriendlyName", utils.WithRenderAsList(true))
+		if pushErr := io.PushContext("deviceFriendlyName", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.DeviceFriendlyName {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'deviceFriendlyName' field")
 			}
 		}
-		io.PopContext("deviceFriendlyName", utils.WithRenderAsList(true))
+		if popErr := io.PopContext("deviceFriendlyName", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
-	io.PopContext("DIBDeviceInfo")
+	if popErr := io.PopContext("DIBDeviceInfo"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

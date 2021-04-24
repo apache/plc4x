@@ -116,7 +116,9 @@ func (m *ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUDiagnosticRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUDiagnosticRequest")
+	if pullErr := io.PullContext("ModbusPDUDiagnosticRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (subFunction)
 	subFunction, _subFunctionErr := io.ReadUint16("subFunction", 16)
@@ -130,7 +132,9 @@ func ModbusPDUDiagnosticRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
 
-	io.CloseContext("ModbusPDUDiagnosticRequest")
+	if closeErr := io.CloseContext("ModbusPDUDiagnosticRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUDiagnosticRequest{
@@ -144,7 +148,9 @@ func ModbusPDUDiagnosticRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUDiagnosticRequest")
+		if pushErr := io.PushContext("ModbusPDUDiagnosticRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.SubFunction)
@@ -160,7 +166,9 @@ func (m *ModbusPDUDiagnosticRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
-		io.PopContext("ModbusPDUDiagnosticRequest")
+		if popErr := io.PopContext("ModbusPDUDiagnosticRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

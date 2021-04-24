@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) LengthInBytes() uint1
 }
 
 func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestLifeSafetyOperation{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestLifeSafetyOperation")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

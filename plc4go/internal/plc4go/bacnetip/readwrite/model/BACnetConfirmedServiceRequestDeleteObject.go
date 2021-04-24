@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestDeleteObjectParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestDeleteObject")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestDeleteObject"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestDeleteObject")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestDeleteObject"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestDeleteObject{
@@ -111,9 +115,13 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestDeleteObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestDeleteObject")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestDeleteObject"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestDeleteObject")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestDeleteObject"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

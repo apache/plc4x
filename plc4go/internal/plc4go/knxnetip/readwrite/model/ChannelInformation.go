@@ -85,7 +85,9 @@ func (m *ChannelInformation) LengthInBytes() uint16 {
 }
 
 func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
-	io.PullContext("ChannelInformation")
+	if pullErr := io.PullContext("ChannelInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numChannels)
 	numChannels, _numChannelsErr := io.ReadUint8("numChannels", 3)
@@ -99,14 +101,18 @@ func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
 		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field")
 	}
 
-	io.CloseContext("ChannelInformation")
+	if closeErr := io.CloseContext("ChannelInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewChannelInformation(numChannels, channelCode), nil
 }
 
 func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ChannelInformation")
+	if pushErr := io.PushContext("ChannelInformation"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (numChannels)
 	numChannels := uint8(m.NumChannels)
@@ -122,7 +128,9 @@ func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}
 
-	io.PopContext("ChannelInformation")
+	if popErr := io.PopContext("ChannelInformation"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

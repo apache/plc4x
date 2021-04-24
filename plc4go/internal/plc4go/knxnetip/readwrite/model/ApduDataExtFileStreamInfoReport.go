@@ -97,9 +97,13 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 }
 
 func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtFileStreamInfoReport")
+	if pullErr := io.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtFileStreamInfoReport")
+	if closeErr := io.CloseContext("ApduDataExtFileStreamInfoReport"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtFileStreamInfoReport{
@@ -111,9 +115,13 @@ func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, er
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtFileStreamInfoReport")
+		if pushErr := io.PushContext("ApduDataExtFileStreamInfoReport"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtFileStreamInfoReport")
+		if popErr := io.PopContext("ApduDataExtFileStreamInfoReport"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

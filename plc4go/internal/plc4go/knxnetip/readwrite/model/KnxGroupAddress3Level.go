@@ -113,7 +113,9 @@ func (m *KnxGroupAddress3Level) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddress3LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
-	io.PullContext("KnxGroupAddress3Level")
+	if pullErr := io.PullContext("KnxGroupAddress3Level"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 5)
@@ -133,7 +135,9 @@ func KnxGroupAddress3LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
-	io.CloseContext("KnxGroupAddress3Level")
+	if closeErr := io.CloseContext("KnxGroupAddress3Level"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress3Level{
@@ -148,7 +152,9 @@ func KnxGroupAddress3LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 
 func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxGroupAddress3Level")
+		if pushErr := io.PushContext("KnxGroupAddress3Level"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
@@ -171,7 +177,9 @@ func (m *KnxGroupAddress3Level) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
-		io.PopContext("KnxGroupAddress3Level")
+		if popErr := io.PopContext("KnxGroupAddress3Level"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

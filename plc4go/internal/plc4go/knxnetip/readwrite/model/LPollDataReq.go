@@ -97,9 +97,13 @@ func (m *LPollDataReq) LengthInBytes() uint16 {
 }
 
 func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LPollDataReq")
+	if pullErr := io.PullContext("LPollDataReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LPollDataReq")
+	if closeErr := io.CloseContext("LPollDataReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LPollDataReq{
@@ -111,9 +115,13 @@ func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LPollDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LPollDataReq")
+		if pushErr := io.PushContext("LPollDataReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LPollDataReq")
+		if popErr := io.PopContext("LPollDataReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

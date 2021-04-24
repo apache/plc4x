@@ -110,7 +110,9 @@ func (m *COTPPacketDisconnectResponse) LengthInBytes() uint16 {
 }
 
 func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error) {
-	io.PullContext("COTPPacketDisconnectResponse")
+	if pullErr := io.PullContext("COTPPacketDisconnectResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
@@ -124,7 +126,9 @@ func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error)
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
-	io.CloseContext("COTPPacketDisconnectResponse")
+	if closeErr := io.CloseContext("COTPPacketDisconnectResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPPacketDisconnectResponse{
@@ -138,7 +142,9 @@ func COTPPacketDisconnectResponseParse(io utils.ReadBuffer) (*COTPPacket, error)
 
 func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPPacketDisconnectResponse")
+		if pushErr := io.PushContext("COTPPacketDisconnectResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -154,7 +160,9 @@ func (m *COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
-		io.PopContext("COTPPacketDisconnectResponse")
+		if popErr := io.PopContext("COTPPacketDisconnectResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

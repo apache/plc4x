@@ -97,9 +97,13 @@ func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
 }
 
 func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MFuncPropCommandReq")
+	if pullErr := io.PullContext("MFuncPropCommandReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MFuncPropCommandReq")
+	if closeErr := io.CloseContext("MFuncPropCommandReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MFuncPropCommandReq{
@@ -111,9 +115,13 @@ func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropCommandReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MFuncPropCommandReq")
+		if pushErr := io.PushContext("MFuncPropCommandReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MFuncPropCommandReq")
+		if popErr := io.PopContext("MFuncPropCommandReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)

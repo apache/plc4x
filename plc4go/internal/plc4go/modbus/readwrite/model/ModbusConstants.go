@@ -84,7 +84,9 @@ func (m *ModbusConstants) LengthInBytes() uint16 {
 }
 
 func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
-	io.PullContext("ModbusConstants")
+	if pullErr := io.PullContext("ModbusConstants"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16("modbusTcpDefaultPort", 16)
@@ -95,14 +97,18 @@ func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))
 	}
 
-	io.CloseContext("ModbusConstants")
+	if closeErr := io.CloseContext("ModbusConstants"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewModbusConstants(), nil
 }
 
 func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ModbusConstants")
+	if pushErr := io.PushContext("ModbusConstants"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (modbusTcpDefaultPort)
 	_modbusTcpDefaultPortErr := io.WriteUint16("modbusTcpDefaultPort", 16, 502)
@@ -110,7 +116,9 @@ func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}
 
-	io.PopContext("ModbusConstants")
+	if popErr := io.PopContext("ModbusConstants"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 

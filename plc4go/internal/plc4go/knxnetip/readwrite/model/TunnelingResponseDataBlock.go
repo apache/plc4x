@@ -92,7 +92,9 @@ func (m *TunnelingResponseDataBlock) LengthInBytes() uint16 {
 }
 
 func TunnelingResponseDataBlockParse(io utils.ReadBuffer) (*TunnelingResponseDataBlock, error) {
-	io.PullContext("TunnelingResponseDataBlock")
+	if pullErr := io.PullContext("TunnelingResponseDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -113,23 +115,31 @@ func TunnelingResponseDataBlockParse(io utils.ReadBuffer) (*TunnelingResponseDat
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
-	io.PullContext("status")
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
-	io.CloseContext("status")
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("TunnelingResponseDataBlock")
+	if closeErr := io.CloseContext("TunnelingResponseDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewTunnelingResponseDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
 func (m *TunnelingResponseDataBlock) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("TunnelingResponseDataBlock")
+	if pushErr := io.PushContext("TunnelingResponseDataBlock"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -153,14 +163,20 @@ func (m *TunnelingResponseDataBlock) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (status)
-	io.PushContext("status")
+	if pushErr := io.PushContext("status"); pushErr != nil {
+		return pushErr
+	}
 	_statusErr := m.Status.Serialize(io)
-	io.PopContext("status")
+	if popErr := io.PopContext("status"); popErr != nil {
+		return popErr
+	}
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
-	io.PopContext("TunnelingResponseDataBlock")
+	if popErr := io.PopContext("TunnelingResponseDataBlock"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
