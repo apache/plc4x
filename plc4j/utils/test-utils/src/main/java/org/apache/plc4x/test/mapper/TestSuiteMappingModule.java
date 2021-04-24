@@ -33,7 +33,9 @@ import java.io.IOException;
 
 /**
  * Custom module for Jackson to handle types in the way we wish - turning byte and byte[] into hex strings.
+ * @deprecated replaced by custom serializer
  */
+@Deprecated
 public class TestSuiteMappingModule extends SimpleModule {
 
     public TestSuiteMappingModule() {

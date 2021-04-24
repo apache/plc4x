@@ -16,14 +16,18 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.eip.readwrite;
+package org.apache.plc4x.test.driver.internal.api;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class EIPParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
+public class TestWriteRequest extends TestFieldRequest {
 
-    public EIPParserSerializerTestsuite() {
-        super("/protocols/eip/ParserSerializerTestsuite.xml", true);
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TestWriteRequest(@JsonProperty("fields") TestField[] fields) {
+        super(fields);
     }
 
 }

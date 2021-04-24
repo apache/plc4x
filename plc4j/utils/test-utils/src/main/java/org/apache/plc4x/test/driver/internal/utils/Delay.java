@@ -16,19 +16,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model.api;
+package org.apache.plc4x.test.driver.internal.utils;
 
-public class TestValueField extends TestField {
+import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 
-    private final String[] values;
+import java.util.concurrent.TimeUnit;
 
-    public TestValueField(String name, String address, String[] values) {
-        super(name, address);
-        this.values = values;
+public class Delay {
+
+    // TODO: replace with signals
+    public static void shortDelay() throws DriverTestsuiteException {
+        delay(23);
     }
 
-    public String[] getValues() {
-        return values;
+    // TODO: replace with signals
+    public static void delay(int milliseconds) throws DriverTestsuiteException {
+        try {
+            TimeUnit.MILLISECONDS.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DriverTestsuiteException("Interrupted during delay.");
+        }
     }
-
 }

@@ -16,14 +16,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.eip.readwrite;
+package org.apache.plc4x.test.driver.internal.handlers;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import org.apache.commons.lang3.NotImplementedException;
 
-public class EIPParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
+public class IncomingPlcBytesHandler {
 
-    public EIPParserSerializerTestsuite() {
-        super("/protocols/eip/ParserSerializerTestsuite.xml", true);
+    public void executeIncomingPlcBytes() {
+        // TODO: Implement
+        throw new NotImplementedException("incoming-plc-bytes not implemented yet");
     }
-
 }

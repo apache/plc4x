@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class CANOpenPayloadTest extends ParserSerializerTestsuiteRunner {
 
     public CANOpenPayloadTest() {
-        super("/protocols/canopen/CANOpenPayloadTestSuite.xml", true, true);
+        super("/protocols/canopen/CANOpenPayloadTestSuite.xml", true);
     }
 
 }

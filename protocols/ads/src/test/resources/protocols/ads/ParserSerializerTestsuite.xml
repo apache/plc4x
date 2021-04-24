@@ -58,7 +58,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">2</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
             </commandId>
             <state>
               <State>
@@ -125,7 +125,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">2</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
             </commandId>
             <state>
               <State>
@@ -148,7 +148,7 @@
               <AdsData>
                 <AdsReadResponse>
                   <result>
-                    <result dataType="uint" bitLength="32">0</result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
                   <data isList="true">
@@ -196,7 +196,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">9</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
             </commandId>
             <state>
               <State>
@@ -294,7 +294,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">9</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ_WRITE">9</CommandId>
             </commandId>
             <state>
               <State>
@@ -317,7 +317,7 @@
               <AdsData>
                 <AdsReadWriteResponse>
                   <result>
-                    <result dataType="uint" bitLength="32">0</result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">4</length>
                   <data isList="true">
@@ -368,7 +368,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">2</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
             </commandId>
             <state>
               <State>
@@ -435,7 +435,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">2</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_READ">2</CommandId>
             </commandId>
             <state>
               <State>
@@ -458,7 +458,7 @@
               <AdsData>
                 <AdsReadResponse>
                   <result>
-                    <result dataType="uint" bitLength="32">0</result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
                   <data isList="true">
@@ -506,7 +506,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">65534</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">3</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_WRITE">3</CommandId>
             </commandId>
             <state>
               <State>
@@ -579,7 +579,7 @@
             </sourceAmsNetId>
             <sourceAmsPort dataType="uint" bitLength="16">851</sourceAmsPort>
             <commandId>
-              <commandId dataType="uint" bitLength="16">3</commandId>
+              <CommandId dataType="uint" bitLength="16" stringRepresentation="ADS_WRITE">3</CommandId>
             </commandId>
             <state>
               <State>
@@ -602,7 +602,7 @@
               <AdsData>
                 <AdsWriteResponse>
                   <result>
-                    <result dataType="uint" bitLength="32">0</result>
+                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                 </AdsWriteResponse>
               </AdsData>

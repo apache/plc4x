@@ -16,14 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.eip.readwrite;
+package org.apache.plc4x.test.driver.internal;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
-
-public class EIPParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
-
-    public EIPParserSerializerTestsuite() {
-        super("/protocols/eip/ParserSerializerTestsuite.xml", true);
-    }
-
+/**
+ * ________________________PLC ----------  PLC4X --------- Application
+ * SEND_PLC_MESSAGE:        |   <--------    |                  |
+ * SEND_PLC_BYTES:          |   <--------    |                  |
+ * RECEIVE_PLC_MESSAGE:     |   -------->    |                  |
+ * RECEIVE_PLC_BYTES:       |   -------->    |                  |
+ * API_REQUEST:             |                |  <--------       |
+ * API_RESPONSE:            |                |  -------->       |
+ */
+public enum StepType {
+    OUTGOING_PLC_MESSAGE,
+    OUTGOING_PLC_BYTES,
+    INCOMING_PLC_MESSAGE,
+    INCOMING_PLC_BYTES,
+    API_REQUEST,
+    API_RESPONSE,
+    DELAY,
+    TERMINATE
 }

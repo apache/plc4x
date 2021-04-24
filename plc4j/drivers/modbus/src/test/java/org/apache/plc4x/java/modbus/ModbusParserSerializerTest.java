@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class ModbusParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public ModbusParserSerializerTest() {
-        super("/protocols/modbus/ParserSerializerTestsuite.xml", true,true);
+        super("/protocols/modbus/ParserSerializerTestsuite.xml", true);
     }
 
 }

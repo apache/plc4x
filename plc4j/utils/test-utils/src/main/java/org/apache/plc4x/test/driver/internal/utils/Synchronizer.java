@@ -16,10 +16,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model.api;
+package org.apache.plc4x.test.driver.internal.utils;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public interface TestRequest {
+import java.util.concurrent.CompletableFuture;
+
+public class Synchronizer {
+
+    // TODO: replace with signal
+    public CompletableFuture<? extends PlcResponse> responseFuture;
 }

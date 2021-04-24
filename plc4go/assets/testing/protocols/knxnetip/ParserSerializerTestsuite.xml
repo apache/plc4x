@@ -52,7 +52,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -92,7 +92,7 @@
         </tunnelingRequestDataBlock>
         <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
-          <additionalInformation>
+          <additionalInformation isList="true">
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
               <frameErrorFlag>false</frameErrorFlag>
               <bitErrorFlag>false</bitErrorFlag>
@@ -132,11 +132,11 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -169,11 +169,11 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -189,7 +189,7 @@
               <structureLength dataType="uint" bitLength="8">54</structureLength>
               <descriptionType dataType="uint" bitLength="8">1</descriptionType>
               <knxMedium>
-                <knxMedium dataType="uint" bitLength="8">2</knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
               </knxMedium>
               <deviceStatus>
                 <DeviceStatus>
@@ -210,7 +210,7 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber isList="true">
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">8</value>
                 <value dataType="int" bitLength="8">45</value>
@@ -220,7 +220,7 @@
               </knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-32</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">23</value>
@@ -230,7 +230,7 @@
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">10</value>
                     <value dataType="int" bitLength="8">-77</value>
@@ -240,7 +240,7 @@
                   </addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName>
+              <deviceFriendlyName isList="true">
                 <value dataType="int" bitLength="8">71</value>
                 <value dataType="int" bitLength="8">105</value>
                 <value dataType="int" bitLength="8">114</value>
@@ -278,7 +278,7 @@
             <DIBSuppSvcFamilies>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <descriptionType dataType="uint" bitLength="8">2</descriptionType>
-              <serviceIds>
+              <serviceIds isList="true">
                 <ServiceId>
                   <serviceType dataType="uint" bitLength="8">2</serviceType>
                   <KnxNetIpCore>
@@ -320,11 +320,11 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">0</value>
@@ -358,7 +358,7 @@
               <structureLength dataType="uint" bitLength="8">54</structureLength>
               <descriptionType dataType="uint" bitLength="8">1</descriptionType>
               <knxMedium>
-                <knxMedium dataType="uint" bitLength="8">2</knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
               </knxMedium>
               <deviceStatus>
                 <DeviceStatus>
@@ -379,7 +379,7 @@
                   <installationNumber dataType="uint" bitLength="8">0</installationNumber>
                 </ProjectInstallationIdentifier>
               </projectInstallationIdentifier>
-              <knxNetIpDeviceSerialNumber>
+              <knxNetIpDeviceSerialNumber isList="true">
                 <value dataType="int" bitLength="8">0</value>
                 <value dataType="int" bitLength="8">8</value>
                 <value dataType="int" bitLength="8">45</value>
@@ -389,7 +389,7 @@
               </knxNetIpDeviceSerialNumber>
               <knxNetIpDeviceMulticastAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-32</value>
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">23</value>
@@ -399,7 +399,7 @@
               </knxNetIpDeviceMulticastAddress>
               <knxNetIpDeviceMacAddress>
                 <MACAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">0</value>
                     <value dataType="int" bitLength="8">10</value>
                     <value dataType="int" bitLength="8">-77</value>
@@ -409,7 +409,7 @@
                   </addr>
                 </MACAddress>
               </knxNetIpDeviceMacAddress>
-              <deviceFriendlyName>
+              <deviceFriendlyName isList="true">
                 <value dataType="int" bitLength="8">71</value>
                 <value dataType="int" bitLength="8">105</value>
                 <value dataType="int" bitLength="8">114</value>
@@ -447,7 +447,7 @@
             <DIBSuppSvcFamilies>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <descriptionType dataType="uint" bitLength="8">2</descriptionType>
-              <serviceIds>
+              <serviceIds isList="true">
                 <ServiceId>
                   <serviceType dataType="uint" bitLength="8">2</serviceType>
                   <KnxNetIpCore>
@@ -490,11 +490,11 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -509,11 +509,11 @@
             <HPAIDataEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -530,7 +530,7 @@
               <connectionType dataType="uint" bitLength="8">4</connectionType>
               <ConnectionRequestInformationTunnelConnection>
                 <knxLayer>
-                  <knxLayer dataType="uint" bitLength="8">2</knxLayer>
+                  <KnxLayer dataType="uint" bitLength="8" stringRepresentation="TUNNEL_LINK_LAYER">2</KnxLayer>
                 </knxLayer>
                 <reserved dataType="uint" bitLength="8">0</reserved>
               </ConnectionRequestInformationTunnelConnection>
@@ -554,16 +554,16 @@
         <ConnectionResponse>
           <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
           <HPAIDataEndpoint>
             <structureLength dataType="uint" bitLength="8">8</structureLength>
             <hostProtocolCode>
-              <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+              <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
             </hostProtocolCode>
             <ipAddress>
               <IPAddress>
-                <addr>
+                <addr isList="true">
                   <value dataType="int" bitLength="8">-64</value>
                   <value dataType="int" bitLength="8">-88</value>
                   <value dataType="int" bitLength="8">42</value>
@@ -608,11 +608,11 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -641,7 +641,7 @@
         <ConnectionStateResponse>
           <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
         </ConnectionStateResponse>
       </KnxNetIpMessage>
@@ -701,7 +701,7 @@
               <communicationChannelId dataType="uint" bitLength="8">103</communicationChannelId>
               <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
               <status>
-                <status dataType="uint" bitLength="8">0</status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
               </status>
             </DeviceConfigurationAckDataBlock>
           </deviceConfigurationAckDataBlock>
@@ -727,11 +727,11 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -760,7 +760,7 @@
         <DisconnectResponse>
           <communicationChannelId dataType="uint" bitLength="8">102</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
         </DisconnectResponse>
       </KnxNetIpMessage>
@@ -791,7 +791,7 @@
               <messageCode dataType="uint" bitLength="8">41</messageCode>
               <LDataInd>
                 <additionalInformationLength dataType="uint" bitLength="8">0</additionalInformationLength>
-                <additionalInformation>
+                <additionalInformation isList="true">
                 </additionalInformation>
                 <dataFrame>
                   <LDataFrame>
@@ -815,7 +815,7 @@
                           <subGroup dataType="uint" bitLength="8">10</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress>
+                      <destinationAddress isList="true">
                         <value dataType="int" bitLength="8">18</value>
                         <value dataType="int" bitLength="8">12</value>
                       </destinationAddress>
@@ -831,7 +831,7 @@
                                 <apciType dataType="uint" bitLength="4">2</apciType>
                                 <ApduDataGroupValueWrite>
                                   <dataFirstByte dataType="int" bitLength="6">1</dataFirstByte>
-                                  <data>
+                                  <data isList="true">
                                   </data>
                                 </ApduDataGroupValueWrite>
                               </ApduData>
@@ -878,7 +878,7 @@
               <messageCode dataType="uint" bitLength="8">43</messageCode>
               <LBusmonInd>
                 <additionalInformationLength dataType="uint" bitLength="8">7</additionalInformationLength>
-                <additionalInformation>
+                <additionalInformation isList="true">
                   <CEMIAdditionalInformation>
                     <additionalInformationType dataType="uint" bitLength="8">3</additionalInformationType>
                     <CEMIAdditionalInformationBusmonitorInfo>
@@ -925,7 +925,7 @@
                           <subGroup dataType="uint" bitLength="8">30</subGroup>
                         </KnxAddress>
                       </sourceAddress>
-                      <destinationAddress>
+                      <destinationAddress isList="true">
                         <value dataType="int" bitLength="8">12</value>
                         <value dataType="int" bitLength="8">-31</value>
                       </destinationAddress>
@@ -975,7 +975,7 @@
               <communicationChannelId dataType="uint" bitLength="8">107</communicationChannelId>
               <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
               <status>
-                <status dataType="uint" bitLength="8">0</status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
               </status>
             </TunnelingResponseDataBlock>
           </tunnelingResponseDataBlock>
@@ -999,11 +999,11 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>
@@ -1018,11 +1018,11 @@
             <HPAIDataEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
-                  <addr>
+                  <addr isList="true">
                     <value dataType="int" bitLength="8">-64</value>
                     <value dataType="int" bitLength="8">-88</value>
                     <value dataType="int" bitLength="8">42</value>

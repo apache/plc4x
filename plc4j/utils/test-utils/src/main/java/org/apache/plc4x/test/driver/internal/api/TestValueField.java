@@ -16,18 +16,19 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model.api;
+package org.apache.plc4x.test.driver.internal.api;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+public class TestValueField extends TestField {
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class TestReadRequest extends TestFieldRequest {
+    private final String[] values;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public TestReadRequest(@JsonProperty("fields") TestField[] fields) {
-        super(fields);
+    public TestValueField(String name, String address, String[] values) {
+        super(name, address);
+        this.values = values;
+    }
+
+    public String[] getValues() {
+        return values;
     }
 
 }

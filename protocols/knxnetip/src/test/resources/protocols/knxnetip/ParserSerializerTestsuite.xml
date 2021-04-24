@@ -132,7 +132,7 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -169,7 +169,7 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -189,7 +189,7 @@
               <structureLength dataType="uint" bitLength="8">54</structureLength>
               <descriptionType dataType="uint" bitLength="8">1</descriptionType>
               <knxMedium>
-                <knxMedium dataType="uint" bitLength="8">2</knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
               </knxMedium>
               <deviceStatus>
                 <DeviceStatus>
@@ -320,7 +320,7 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -358,7 +358,7 @@
               <structureLength dataType="uint" bitLength="8">54</structureLength>
               <descriptionType dataType="uint" bitLength="8">1</descriptionType>
               <knxMedium>
-                <knxMedium dataType="uint" bitLength="8">2</knxMedium>
+                <KnxMedium dataType="uint" bitLength="8" stringRepresentation="MEDIUM_TP1">2</KnxMedium>
               </knxMedium>
               <deviceStatus>
                 <DeviceStatus>
@@ -490,7 +490,7 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -509,7 +509,7 @@
             <HPAIDataEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -530,7 +530,7 @@
               <connectionType dataType="uint" bitLength="8">4</connectionType>
               <ConnectionRequestInformationTunnelConnection>
                 <knxLayer>
-                  <knxLayer dataType="uint" bitLength="8">2</knxLayer>
+                  <KnxLayer dataType="uint" bitLength="8" stringRepresentation="TUNNEL_LINK_LAYER">2</KnxLayer>
                 </knxLayer>
                 <reserved dataType="uint" bitLength="8">0</reserved>
               </ConnectionRequestInformationTunnelConnection>
@@ -554,12 +554,12 @@
         <ConnectionResponse>
           <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
           <HPAIDataEndpoint>
             <structureLength dataType="uint" bitLength="8">8</structureLength>
             <hostProtocolCode>
-              <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+              <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
             </hostProtocolCode>
             <ipAddress>
               <IPAddress>
@@ -608,7 +608,7 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -641,7 +641,7 @@
         <ConnectionStateResponse>
           <communicationChannelId dataType="uint" bitLength="8">2</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
         </ConnectionStateResponse>
       </KnxNetIpMessage>
@@ -701,7 +701,7 @@
               <communicationChannelId dataType="uint" bitLength="8">103</communicationChannelId>
               <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
               <status>
-                <status dataType="uint" bitLength="8">0</status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
               </status>
             </DeviceConfigurationAckDataBlock>
           </deviceConfigurationAckDataBlock>
@@ -727,7 +727,7 @@
             <HPAIControlEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -760,7 +760,7 @@
         <DisconnectResponse>
           <communicationChannelId dataType="uint" bitLength="8">102</communicationChannelId>
           <status>
-            <status dataType="uint" bitLength="8">0</status>
+            <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
         </DisconnectResponse>
       </KnxNetIpMessage>
@@ -975,7 +975,7 @@
               <communicationChannelId dataType="uint" bitLength="8">107</communicationChannelId>
               <sequenceCounter dataType="uint" bitLength="8">0</sequenceCounter>
               <status>
-                <status dataType="uint" bitLength="8">0</status>
+                <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
               </status>
             </TunnelingResponseDataBlock>
           </tunnelingResponseDataBlock>
@@ -999,7 +999,7 @@
             <HPAIDiscoveryEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>
@@ -1018,7 +1018,7 @@
             <HPAIDataEndpoint>
               <structureLength dataType="uint" bitLength="8">8</structureLength>
               <hostProtocolCode>
-                <hostProtocolCode dataType="uint" bitLength="8">1</hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
               </hostProtocolCode>
               <ipAddress>
                 <IPAddress>

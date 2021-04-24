@@ -31,13 +31,13 @@ import java.net.URL;
  *
  * It adds handling of resource loading and helps in navigating test framework to suite source files.
  */
-public abstract class XmlTestsuiteRunner {
+public abstract class XmlTestsuiteLoader {
 
     protected final String testsuiteDocument;
     protected final InputStream testsuiteDocumentXml;
     protected final URI suiteUri;
 
-    protected XmlTestsuiteRunner(String testsuiteDocument) {
+    protected XmlTestsuiteLoader(String testsuiteDocument) {
         this.testsuiteDocument = testsuiteDocument;
         this.testsuiteDocumentXml = getClass().getResourceAsStream(testsuiteDocument);
 
