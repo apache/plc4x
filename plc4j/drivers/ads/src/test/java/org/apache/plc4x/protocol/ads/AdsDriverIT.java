@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class AdsDriverIT extends DriverTestsuiteRunner {
 
     public AdsDriverIT() {
-        super("/protocols/ads/DriverTestsuite.xml");
+        super("/protocols/ads/DriverTestsuite.xml", true);
     }
 
 }
