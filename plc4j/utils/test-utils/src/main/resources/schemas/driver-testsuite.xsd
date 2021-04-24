@@ -25,6 +25,10 @@
             <xs:sequence>
                 <!-- Name of the tessuite -->
                 <xs:element name="name" type="xs:string"/>
+                <!-- The protocolName(id) of the protocol -->
+                <xs:element name="protocolName" type="xs:string"/>
+                <!-- The outputFlavor of the protocol-->
+                <xs:element name="outputFlavor" type="xs:string"/>
 
                 <!-- The name of the driver we want to test (as it's used in the connection-string) -->
                 <xs:element name="driver-name" type="xs:string"/>

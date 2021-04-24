@@ -24,6 +24,9 @@
 
   <name>Modbus</name>
 
+  <protocolName>modbus</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>modbus</driver-name>
 
   <testcase>

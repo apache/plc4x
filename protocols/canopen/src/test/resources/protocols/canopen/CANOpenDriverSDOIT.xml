@@ -22,7 +22,11 @@
 
   <name>CANOpen SDO Segmentation</name>
 
+  <protocolName>canopen</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>canopen</driver-name>
+
   <driver-parameters>
     <parameter>
       <name>nodeId</name>

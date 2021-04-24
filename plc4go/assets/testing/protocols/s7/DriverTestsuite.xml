@@ -22,6 +22,9 @@
 
   <name>S7</name>
 
+  <protocolName>s7</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>s7</driver-name>
 
   <setup>

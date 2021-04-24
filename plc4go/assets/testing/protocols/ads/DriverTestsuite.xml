@@ -22,6 +22,9 @@
 
   <name>Beckhoff ADS/AMS</name>
 
+  <protocolName>ads</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>ads</driver-name>
   <driver-parameters>
     <parameter>
