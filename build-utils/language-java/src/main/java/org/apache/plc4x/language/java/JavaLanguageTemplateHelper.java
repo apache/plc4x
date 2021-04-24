@@ -359,7 +359,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
                 String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
                 String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
-                // TODO: insert logical name
                 return "((Supplier<" + type + ">) (() -> {" +
                     "\n            return (" + typeCast + ") toFloat(io, \"" + logicalName + "\", " +
                     ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false") +

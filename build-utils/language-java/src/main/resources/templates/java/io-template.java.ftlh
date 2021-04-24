@@ -394,9 +394,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Simple Field (${simpleField.name})
         <#if helper.isEnumField(field)>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(simpleField.name, helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
+        // enum based simple field with type ${simpleField.type.name}
+        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(simpleField.type.name, helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
         <#else>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleField.name, simpleTypeReference, "", simpleField)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
+        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleTypeReference, "", simpleField)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         </#if>
         <#if !helper.isSimpleTypeReference(simpleField.type)>
         io.closeContext("${simpleField.name}");
@@ -596,12 +598,18 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
         <#if helper.isSimpleTypeReference(simpleField.type)>
             <#assign simpleTypeReference = simpleField.type>
+            <#if helper.isEnumField(field)>
+        // enum based simple field with type ${simpleField.type.name}
+        ${helper.getWriteBufferWriteMethodCall(simpleField.type.name, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${simpleField.name}.name())")};
+            <#else>
         ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleTypeReference, "(" + simpleField.name + ")", simpleField)};
+            </#if>
         <#else>
         io.pushContext("${simpleField.name}");
             <#assign complexTypeReference = simpleField.type>
             <#if helper.isEnumField(field)>
-        ${helper.getWriteBufferWriteMethodCall(simpleField.name, helper.getEnumBaseTypeReference(simpleField.type), "(" + simpleField.name + ".getValue())", simpleField)};
+        // enum field with type ${simpleField.type.name}
+        ${helper.getWriteBufferWriteMethodCall(simpleField.type.name, helper.getEnumBaseTypeReference(simpleField.type), "(" + simpleField.name + ".getValue())", simpleField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${simpleField.name}.name())")};
             <#else>
         ${complexTypeReference.name}IO.staticSerialize(io, ${simpleField.name});
             </#if>
