@@ -102,7 +102,7 @@ public class S7IoTest {
                 "      </S7Message>\n" +
                 "    </COTPPacket>\n" +
                 "  </payload>\n" +
-                "</TPKTPacket>\n";
+                "</TPKTPacket>";
         String wantJson = "{\n" +
             "  \"TPKTPacket\": {\n" +
             "    \"len\": 29,\n" +
