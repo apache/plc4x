@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class TestCasePatcher {
 
     public static String indent(String xmlDocument, String indent) {
-        return Arrays.stream(xmlDocument.split("\n")).map(s -> indent + s + "\n").collect(Collectors.joining());
+        return Arrays.stream(xmlDocument.split("\n")).map(s -> indent + s).collect(Collectors.joining("\n"));
     }
 
     public static String determineIndent(String xmlDocument, String xmlFragment) {

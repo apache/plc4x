@@ -187,7 +187,10 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
             indent();
             EndElement endElement = xmlEventFactory.createEndElement("", "", logicalName);
             xmlEventWriter.add(endElement);
-            newLine();
+            if (depth != 0) {
+                // We don't want an extra newline at the end so we write only if we are not at the end
+                newLine();
+            }
         } catch (XMLStreamException e) {
             throw new PlcRuntimeException(e);
         }
