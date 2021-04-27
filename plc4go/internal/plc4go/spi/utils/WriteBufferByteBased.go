@@ -183,10 +183,14 @@ func (rb *byteWriteBuffer) WriteFloat64(_ string, bitLength uint8, value float64
 	return rb.writer.WriteBits(res, bitLength)
 }
 
-func (rb *byteWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
+func (rb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.Float, _ ...WithWriterArgs) error {
 	return errors.New("not implemented yet")
 }
 
 func (rb *byteWriteBuffer) WriteString(_ string, bitLength uint8, encoding string, value string, _ ...WithWriterArgs) error {
-	return errors.New("WriteString is currently not implemented")
+	// TODO: the implementation completely ignores encoding for now. Fix this
+	for _, theByte := range []byte(value) {
+		rb.writer.TryWriteByte(theByte)
+	}
+	return rb.writer.TryError
 }
