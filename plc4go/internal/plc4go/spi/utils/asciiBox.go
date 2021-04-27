@@ -31,10 +31,16 @@ type AsciiBox string
 // DebugAsciiBox set to true to get debug messages
 var DebugAsciiBox bool
 
+// AsciiBoxer is used to render something in a box
+type AsciiBoxer interface {
+	// Box where int param is the proposed width
+	Box(string, int) AsciiBox
+}
+
 // Width returns the width of the box without the newlines
 func (m AsciiBox) Width() int {
 	maxWidth := 0
-	for _, line := range strings.Split(string(m), "\n") {
+	for _, line := range m.Lines() {
 		currentLength := countChars(line)
 		if maxWidth < currentLength {
 			maxWidth = currentLength
@@ -43,10 +49,19 @@ func (m AsciiBox) Width() int {
 	return maxWidth
 }
 
-// AsciiBoxer is used to render something in a box
-type AsciiBoxer interface {
-	// Box where int param is the proposed width
-	Box(string, int) AsciiBox
+// Height returns the height of the box without
+func (m AsciiBox) Height() int {
+	return len(m.Lines())
+}
+
+// Lines returns the lines of the box
+func (m AsciiBox) Lines() []string {
+	return strings.Split(string(m), "\n")
+}
+
+// String returns the string of the box
+func (m AsciiBox) String() string {
+	return string(m)
 }
 
 // BoxBox boxes a box
@@ -56,32 +71,39 @@ func BoxBox(name string, box AsciiBox, charWidth int) AsciiBox {
 
 // BoxString boxes a newline separated string into a beautiful box
 func BoxString(name string, data string, charWidth int) AsciiBox {
-	longestLine := AsciiBox(data).Width()
+	// the name gets prefixed with a extra symbol for indent
+	const extraNameCharWidth = 1
+	const borderWidth = 1
+	const newLineCharWidth = 1
+	rawBox := AsciiBox(data)
+	longestLine := rawBox.Width()
 	if charWidth < longestLine {
 		if DebugAsciiBox {
 			log.Debug().Msgf("Overflow by %d chars", longestLine-charWidth)
 		}
-		charWidth = longestLine + 2
+		charWidth = longestLine + borderWidth + borderWidth
 	}
-	boxedString := ""
-	namePadding := int(math.Max(float64(charWidth-countChars(name)-2-1), 0))
-	bottomPadding := namePadding + countChars(name) + 1
-	boxedString += "╔═" + name + strings.Repeat("═", namePadding) + "╗\n"
+	var boxedString strings.Builder
+	boxedString.Grow((borderWidth + longestLine + borderWidth + newLineCharWidth) * rawBox.Height())
+	namePadding := int(math.Max(float64(charWidth-countChars(name)-borderWidth-extraNameCharWidth-borderWidth), 0))
+	boxedString.WriteString("╔═" + name + strings.Repeat("═", namePadding) + "╗\n")
 	// Name of the header stretches the box so we align to that
-	charWidth = 2 + countChars(name) + namePadding + 1
-	for _, line := range strings.Split(data, "\n") {
+	charWidth = borderWidth + extraNameCharWidth + countChars(name) + namePadding + borderWidth
+	for _, line := range rawBox.Lines() {
 		linePadding := float64(charWidth - boxLineOverheat - countChars(line))
 		if linePadding < 0 {
 			linePadding = 0
 		}
 		frontPadding := math.Floor(linePadding / 2.0)
 		backPadding := math.Ceil(linePadding / 2.0)
-		boxedString += "║" + strings.Repeat(" ", int(frontPadding)) + line + strings.Repeat(" ", int(backPadding)) + "║\n"
+		boxedString.WriteString("║" + strings.Repeat(" ", int(frontPadding)) + line + strings.Repeat(" ", int(backPadding)) + "║\n")
 	}
-	boxedString += "╚" + strings.Repeat("═", bottomPadding) + "╝"
-	return AsciiBox(boxedString)
+	bottomPadding := namePadding + countChars(name) + extraNameCharWidth
+	boxedString.WriteString("╚" + strings.Repeat("═", bottomPadding) + "╝")
+	return AsciiBox(boxedString.String())
 }
 
+// AlignBoxes aligns all boxes to a desiredWidth and orders them from left to right and top to bottom (size will be at min the size of the biggest box)
 func AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
 	if len(boxes) == 0 {
 		return ""
@@ -130,6 +152,8 @@ func AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox {
 
 func mergeHorizontal(boxes []AsciiBox) AsciiBox {
 	switch len(boxes) {
+	case 0:
+		return ""
 	case 1:
 		return boxes[0]
 	case 2:
@@ -139,38 +163,45 @@ func mergeHorizontal(boxes []AsciiBox) AsciiBox {
 	}
 }
 
+// BoxSideBySide renders two boxes side by side
 func BoxSideBySide(box1, box2 AsciiBox) AsciiBox {
-	aggregateBox := ""
+	const newLineCharWidth = 1
+	var aggregateBox strings.Builder
 	box1Width := box1.Width()
-	box1Lines := strings.Split(string(box1), "\n")
+	box1Lines := box1.Lines()
 	box2Width := box2.Width()
-	box2Lines := strings.Split(string(box2), "\n")
+	box2Lines := box2.Lines()
 	maxRows := int(math.Max(float64(len(box1Lines)), float64(len(box2Lines))))
+	aggregateBox.Grow((box1Width + box2Width + newLineCharWidth) * maxRows)
 	for row := 0; row < maxRows; row++ {
 		ranOutOfLines := false
 		if row >= len(box1Lines) {
 			ranOutOfLines = true
-			aggregateBox += strings.Repeat(" ", box1Width)
+			aggregateBox.WriteString(strings.Repeat(" ", box1Width))
 		} else {
 			split1Row := box1Lines[row]
 			padding := box1Width - countChars(split1Row)
-			aggregateBox += split1Row + strings.Repeat(" ", padding)
+			aggregateBox.WriteString(split1Row + strings.Repeat(" ", padding))
 		}
 		if row >= len(box2Lines) {
 			if ranOutOfLines {
 				break
 			}
-			aggregateBox += strings.Repeat(" ", box2Width)
+			aggregateBox.WriteString(strings.Repeat(" ", box2Width))
 		} else {
 			split2Row := box2Lines[row]
 			padding := box2Width - countChars(split2Row)
-			aggregateBox += split2Row + strings.Repeat(" ", padding)
+			aggregateBox.WriteString(split2Row + strings.Repeat(" ", padding))
 		}
-		aggregateBox += "\n"
+		if row < maxRows-1 {
+			// Only write newline if we are not the last line
+			aggregateBox.WriteRune('\n')
+		}
 	}
-	return AsciiBox(aggregateBox[:len(aggregateBox)-1])
+	return AsciiBox(aggregateBox.String())
 }
 
+// BoxBelowBox renders two boxes below
 func BoxBelowBox(box1, box2 AsciiBox) AsciiBox {
 	box1Width := box1.Width()
 	box2Width := box2.Width()
@@ -179,21 +210,29 @@ func BoxBelowBox(box1, box2 AsciiBox) AsciiBox {
 	} else if box2Width < box1Width {
 		box2 = expandBox(box2, box1Width)
 	}
-	return AsciiBox(string(box1) + "\n" + string(box2))
+	return AsciiBox(box1.String() + "\n" + box2.String())
 }
 
 func expandBox(box AsciiBox, desiredWidth int) AsciiBox {
+	const newLineCharWidth = 1
 	if box.Width() >= desiredWidth {
 		return box
 	}
 	// TODO: should we expand the borders?
-	boxLines := strings.Split(string(box), "\n")
-	newBox := ""
-	for _, line := range boxLines {
-		padding := desiredWidth - countChars(line)
-		newBox += line + strings.Repeat(" ", padding) + "\n"
+	boxLines := box.Lines()
+	numberOfLine := len(boxLines)
+	boxWidth := box.Width()
+	padding := strings.Repeat(" ", desiredWidth-boxWidth)
+	var newBox strings.Builder
+	newBox.Grow((boxWidth + newLineCharWidth) * numberOfLine)
+	for i, line := range boxLines {
+		newBox.WriteString(line)
+		newBox.WriteString(padding)
+		if i < numberOfLine-1 {
+			newBox.WriteRune('\n')
+		}
 	}
-	return AsciiBox(newBox[:len(newBox)-1])
+	return AsciiBox(newBox.String())
 }
 
 func countChars(s string) int {

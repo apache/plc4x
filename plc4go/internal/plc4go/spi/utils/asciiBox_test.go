@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -145,6 +146,18 @@ func TestBoxSideBySide(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkBoxSideBySide(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	box := BoxString("RandomBox", bigString, 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		BoxSideBySide(box, box)
+	}
+	DebugAsciiBox = oldSetting
 }
 
 func TestBoxBelowBox(t *testing.T) {
@@ -289,6 +302,17 @@ func TestBoxString(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkBoxString(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		BoxString("randomName", bigString, 50)
+	}
+	DebugAsciiBox = oldSetting
 }
 
 func TestAlignBoxes(t *testing.T) {
@@ -626,6 +650,72 @@ zxyzxyzxy
 	}
 }
 
+func TestExpandBox(t *testing.T) {
+	type args struct {
+		box   AsciiBox
+		width int
+	}
+	tests := []struct {
+		name string
+		args
+		want AsciiBox
+	}{
+		{
+			name: "Small expand",
+			args: args{
+				box: `
+123123123
+123123123
+123123123
+`,
+				width: 100,
+			},
+			want: `
+123123123                                                                                           
+123123123                                                                                           
+123123123                                                                                           
+`,
+		},
+		{
+			name: "Big expand",
+			args: args{
+				box: `
+123123123
+123123123
+123123123
+`,
+				width: 10000,
+			},
+			want: AsciiBox(fmt.Sprintf(`
+123123123%[1]s
+123123123%[1]s
+123123123%[1]s
+`, strings.Repeat(" ", 10000-9))),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.box = trimBox(tt.args.box)
+			tt.want = trimBox(tt.want)
+			if got := expandBox(tt.args.box, tt.args.width); got != tt.want {
+				t.Errorf("mergeHorizontal() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkExpandBox(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	box := BoxString("RandomBox", bigString, 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		expandBox(box, 10000)
+	}
+	DebugAsciiBox = oldSetting
+}
+
 func trimBox(box AsciiBox) AsciiBox {
-	return AsciiBox(strings.Trim(string(box), "\n"))
+	return AsciiBox(strings.Trim(box.String(), "\n"))
 }
