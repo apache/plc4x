@@ -221,7 +221,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 						resultSetFlowFiles.clear();
 					}
 				} catch (Exception e) {
-					//si hay algun error recreamos el pool porque puede que no se recree bien is ha fallado en el execute.get()
+					//if there is any error, recreate the pool because it may not recreate correctly if the error ocurred on the execute.get() 
 					pool = new PooledPlcDriverManager();
 					if (e instanceof InterruptedException)
 						Thread.currentThread().interrupt();
@@ -236,7 +236,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 				throw new ProcessException("Connection is null");
 			}
 		} catch (Exception e) {
-			//si hay algun error recreamos el pool porque puede que no se recree bien is ha fallado en el execute.get()
+			//if there is any error, recreate the pool because it may not recreate correctly if the error ocurred on the execute.get() 
 			pool = new PooledPlcDriverManager();
 			if (fileToProcess == null) {
 				// This can happen if any exceptions occur while setting up the connection,
