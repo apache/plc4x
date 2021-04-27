@@ -6,7 +6,7 @@
 
 ## Plc4xSourceRecordProcessor
 
-This processor is <ins>record oriented</ins>, formatting output flowfile content using a Record Writer. An example of operation is included on the following path:
+This processor is <ins>record oriented</ins>, formatting output flowfile content using a Record Writer (for further information see [NiFi Documentation](https://nifi.apache.org/docs/nifi-docs/html/record-path-guide.html#overview)). An example of operation is included on the following path:
 *./test-nifi-template/NIFI-PLC4XIntegration-record-example-1.12.xml*. This file is a Nifi Template that could be directly imported from the NiFi UI to test the operation.
 
 The Plc4xSourceRecord Processor can be configured using the following **properties**:
