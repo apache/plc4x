@@ -242,6 +242,7 @@ func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -301,6 +302,7 @@ func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.InterfaceObjectType, xml.StartElement{Name: xml.Name{Local: "interfaceObjectType"}}); err != nil {
 		return err
@@ -327,6 +329,7 @@ func (m MPropReadCon) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
 	boxName := "MPropReadCon"
 	if name != "" {

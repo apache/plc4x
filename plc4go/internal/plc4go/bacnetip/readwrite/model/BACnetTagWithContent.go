@@ -315,6 +315,7 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -398,6 +399,7 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagWithContent"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -436,6 +438,7 @@ func (m BACnetTagWithContent) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagWithContent"
 	if name != "" {

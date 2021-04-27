@@ -127,6 +127,7 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) Serialize(io utils.WriteBuffer
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +151,7 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +160,7 @@ func (m BACnetConfirmedServiceACKAtomicReadFile) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKAtomicReadFile) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKAtomicReadFile"
 	if name != "" {

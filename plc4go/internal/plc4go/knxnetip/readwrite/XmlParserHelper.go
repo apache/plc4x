@@ -110,6 +110,7 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m KnxnetipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 	case "HPAIControlEndpoint":

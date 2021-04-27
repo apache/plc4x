@@ -174,6 +174,7 @@ func (e ${type.name}) Serialize(io utils.WriteBuffer) error {
 	</#if>
 </#if>
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -193,6 +194,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -214,6 +216,7 @@ func (e ${type.name}) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ${type.name}) Box(s string, i int) utils.AsciiBox {
 	boxName := "${type.name}"
 	if s != "" {

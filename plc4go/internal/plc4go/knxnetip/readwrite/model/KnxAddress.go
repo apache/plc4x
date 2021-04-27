@@ -151,6 +151,7 @@ func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -191,6 +192,7 @@ func (m *KnxAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.KnxAddress"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -217,6 +219,7 @@ func (m KnxAddress) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxAddress"
 	if name != "" {

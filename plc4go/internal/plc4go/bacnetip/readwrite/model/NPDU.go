@@ -514,6 +514,7 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -672,6 +673,7 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.bacnetip.readwrite.NPDU"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -734,6 +736,7 @@ func (m NPDU) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m NPDU) Box(name string, width int) utils.AsciiBox {
 	boxName := "NPDU"
 	if name != "" {

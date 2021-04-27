@@ -177,6 +177,7 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(io utils.WriteBuffer) er
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceConfigurationRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -211,6 +212,7 @@ func (m *DeviceConfigurationRequestDataBlock) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceConfigurationRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -234,6 +236,7 @@ func (m DeviceConfigurationRequestDataBlock) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceConfigurationRequestDataBlock) Box(name string, width int) utils.AsciiBox {
 	boxName := "DeviceConfigurationRequestDataBlock"
 	if name != "" {

@@ -264,6 +264,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -323,6 +324,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FrameErrorFlag, xml.StartElement{Name: xml.Name{Local: "frameErrorFlag"}}); err != nil {
 		return err
@@ -349,6 +351,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) utils.AsciiBox {
 	boxName := "CEMIAdditionalInformationBusmonitorInfo"
 	if name != "" {

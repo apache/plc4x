@@ -147,6 +147,7 @@ func (m *KnxNetIpCore) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetIpCore) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -176,6 +177,7 @@ func (m *KnxNetIpCore) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetIpCore) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -187,6 +189,7 @@ func (m KnxNetIpCore) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetIpCore) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxNetIpCore"
 	if name != "" {

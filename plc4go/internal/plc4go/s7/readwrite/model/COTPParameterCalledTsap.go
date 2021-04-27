@@ -147,6 +147,7 @@ func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -176,6 +177,7 @@ func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TsapId, xml.StartElement{Name: xml.Name{Local: "tsapId"}}); err != nil {
 		return err
@@ -187,6 +189,7 @@ func (m COTPParameterCalledTsap) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
 	boxName := "COTPParameterCalledTsap"
 	if name != "" {

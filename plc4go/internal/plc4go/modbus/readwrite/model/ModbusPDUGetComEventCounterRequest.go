@@ -135,6 +135,7 @@ func (m *ModbusPDUGetComEventCounterRequest) Serialize(io utils.WriteBuffer) err
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -158,6 +159,7 @@ func (m *ModbusPDUGetComEventCounterRequest) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUGetComEventCounterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -166,6 +168,7 @@ func (m ModbusPDUGetComEventCounterRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUGetComEventCounterRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUGetComEventCounterRequest"
 	if name != "" {

@@ -180,6 +180,7 @@ func (m *TunnelingResponseDataBlock) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TunnelingResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -220,6 +221,7 @@ func (m *TunnelingResponseDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TunnelingResponseDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponseDataBlock"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -246,6 +248,7 @@ func (m TunnelingResponseDataBlock) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TunnelingResponseDataBlock) Box(name string, width int) utils.AsciiBox {
 	boxName := "TunnelingResponseDataBlock"
 	if name != "" {

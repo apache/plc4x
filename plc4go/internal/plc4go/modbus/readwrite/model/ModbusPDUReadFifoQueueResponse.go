@@ -211,6 +211,7 @@ func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -240,6 +241,7 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FifoValue, xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
 		return err
@@ -251,6 +253,7 @@ func (m ModbusPDUReadFifoQueueResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadFifoQueueResponse"
 	if name != "" {

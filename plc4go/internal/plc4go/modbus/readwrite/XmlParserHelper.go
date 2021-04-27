@@ -60,6 +60,7 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m ModbusXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":

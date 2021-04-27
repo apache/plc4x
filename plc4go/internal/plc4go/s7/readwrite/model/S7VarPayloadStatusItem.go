@@ -129,6 +129,7 @@ func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -157,6 +158,7 @@ func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -177,6 +179,7 @@ func (m S7VarPayloadStatusItem) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7VarPayloadStatusItem"
 	if name != "" {

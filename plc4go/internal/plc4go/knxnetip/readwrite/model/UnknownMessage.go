@@ -171,6 +171,7 @@ func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -205,6 +206,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedUnknownData := hex.EncodeToString(utils.Int8ArrayToByteArray(m.UnknownData))
 	_encodedUnknownData = strings.ToUpper(_encodedUnknownData)
@@ -218,6 +220,7 @@ func (m UnknownMessage) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
 	boxName := "UnknownMessage"
 	if name != "" {

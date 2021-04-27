@@ -127,6 +127,7 @@ func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteB
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +151,7 @@ func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +160,7 @@ func (m ConnectionRequestInformationDeviceManagement) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationDeviceManagement) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionRequestInformationDeviceManagement"
 	if name != "" {

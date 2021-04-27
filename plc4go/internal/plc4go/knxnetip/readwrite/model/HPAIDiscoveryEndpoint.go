@@ -192,6 +192,7 @@ func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -232,6 +233,7 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -258,6 +260,7 @@ func (m HPAIDiscoveryEndpoint) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m HPAIDiscoveryEndpoint) Box(name string, width int) utils.AsciiBox {
 	boxName := "HPAIDiscoveryEndpoint"
 	if name != "" {

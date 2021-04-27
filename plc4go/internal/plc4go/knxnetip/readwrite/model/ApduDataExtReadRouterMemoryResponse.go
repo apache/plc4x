@@ -127,6 +127,7 @@ func (m *ApduDataExtReadRouterMemoryResponse) Serialize(io utils.WriteBuffer) er
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtReadRouterMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +151,7 @@ func (m *ApduDataExtReadRouterMemoryResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtReadRouterMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +160,7 @@ func (m ApduDataExtReadRouterMemoryResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtReadRouterMemoryResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtReadRouterMemoryResponse"
 	if name != "" {

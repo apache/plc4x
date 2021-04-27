@@ -196,6 +196,7 @@ func (m *ModbusPDUReadCoilsResponse) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -230,6 +231,7 @@ func (m *ModbusPDUReadCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedValue := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Value))
 	_encodedValue = strings.ToUpper(_encodedValue)
@@ -243,6 +245,7 @@ func (m ModbusPDUReadCoilsResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadCoilsResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadCoilsResponse"
 	if name != "" {

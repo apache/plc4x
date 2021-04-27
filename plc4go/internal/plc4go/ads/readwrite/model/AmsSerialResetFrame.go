@@ -202,6 +202,7 @@ func (m *AmsSerialResetFrame) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsSerialResetFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -260,6 +261,7 @@ func (m *AmsSerialResetFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsSerialResetFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsSerialResetFrame"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -295,6 +297,7 @@ func (m AmsSerialResetFrame) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsSerialResetFrame) Box(name string, width int) utils.AsciiBox {
 	boxName := "AmsSerialResetFrame"
 	if name != "" {

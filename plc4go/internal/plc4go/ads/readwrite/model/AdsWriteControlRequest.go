@@ -230,6 +230,7 @@ func (m *AdsWriteControlRequest) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsWriteControlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -276,6 +277,7 @@ func (m *AdsWriteControlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsWriteControlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdsState, xml.StartElement{Name: xml.Name{Local: "adsState"}}); err != nil {
 		return err
@@ -295,6 +297,7 @@ func (m AdsWriteControlRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsWriteControlRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsWriteControlRequest"
 	if name != "" {

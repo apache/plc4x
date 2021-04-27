@@ -127,6 +127,7 @@ func (m ${protocolName?cap_first}XmlParserHelper) Parse(typeName string, xmlStri
     return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m ${protocolName?cap_first}XmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>

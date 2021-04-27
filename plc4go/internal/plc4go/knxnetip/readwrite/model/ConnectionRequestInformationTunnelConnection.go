@@ -185,6 +185,7 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -214,6 +215,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.KnxLayer, xml.StartElement{Name: xml.Name{Local: "knxLayer"}}); err != nil {
 		return err
@@ -225,6 +227,7 @@ func (m ConnectionRequestInformationTunnelConnection) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionRequestInformationTunnelConnection"
 	if name != "" {

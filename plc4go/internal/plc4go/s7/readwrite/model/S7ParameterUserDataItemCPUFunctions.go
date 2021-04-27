@@ -325,6 +325,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -420,6 +421,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Method, xml.StartElement{Name: xml.Name{Local: "method"}}); err != nil {
 		return err
@@ -452,6 +454,7 @@ func (m S7ParameterUserDataItemCPUFunctions) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7ParameterUserDataItemCPUFunctions"
 	if name != "" {

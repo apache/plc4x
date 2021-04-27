@@ -70,6 +70,7 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m BacnetipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 	case "APDU":

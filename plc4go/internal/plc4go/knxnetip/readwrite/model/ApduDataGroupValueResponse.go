@@ -190,6 +190,7 @@ func (m *ApduDataGroupValueResponse) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataGroupValueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -230,6 +231,7 @@ func (m *ApduDataGroupValueResponse) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataGroupValueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
 		return err
@@ -246,6 +248,7 @@ func (m ApduDataGroupValueResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataGroupValueResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataGroupValueResponse"
 	if name != "" {

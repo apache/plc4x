@@ -177,6 +177,7 @@ func (m *BACnetTagApplicationEnumerated) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationEnumerated) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -211,6 +212,7 @@ func (m *BACnetTagApplicationEnumerated) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationEnumerated) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedData := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Data))
 	_encodedData = strings.ToUpper(_encodedData)
@@ -224,6 +226,7 @@ func (m BACnetTagApplicationEnumerated) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationEnumerated) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationEnumerated"
 	if name != "" {

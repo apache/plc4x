@@ -147,6 +147,7 @@ func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -176,6 +177,7 @@ func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SubGroup, xml.StartElement{Name: xml.Name{Local: "subGroup"}}); err != nil {
 		return err
@@ -187,6 +189,7 @@ func (m KnxGroupAddressFreeLevel) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxGroupAddressFreeLevel"
 	if name != "" {

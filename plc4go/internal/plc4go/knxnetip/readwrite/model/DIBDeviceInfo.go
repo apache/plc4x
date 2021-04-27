@@ -388,6 +388,7 @@ func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -474,6 +475,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -522,6 +524,7 @@ func (m DIBDeviceInfo) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
 	boxName := "DIBDeviceInfo"
 	if name != "" {

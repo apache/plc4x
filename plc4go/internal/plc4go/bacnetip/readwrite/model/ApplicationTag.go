@@ -167,6 +167,7 @@ func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -186,6 +187,7 @@ func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ApplicationTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -229,6 +231,7 @@ func (e ApplicationTag) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApplicationTag) Box(s string, i int) utils.AsciiBox {
 	boxName := "ApplicationTag"
 	if s != "" {

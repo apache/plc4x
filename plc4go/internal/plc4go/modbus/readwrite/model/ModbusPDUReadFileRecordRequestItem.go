@@ -168,6 +168,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) Serialize(io utils.WriteBuffer) err
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -214,6 +215,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -243,6 +245,7 @@ func (m ModbusPDUReadFileRecordRequestItem) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadFileRecordRequestItem"
 	if name != "" {

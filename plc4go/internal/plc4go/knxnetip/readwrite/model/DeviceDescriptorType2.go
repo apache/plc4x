@@ -318,6 +318,7 @@ func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceDescriptorType2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -400,6 +401,7 @@ func (m *DeviceDescriptorType2) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceDescriptorType2) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceDescriptorType2"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -447,6 +449,7 @@ func (m DeviceDescriptorType2) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
 	boxName := "DeviceDescriptorType2"
 	if name != "" {

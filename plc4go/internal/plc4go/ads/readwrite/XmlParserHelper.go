@@ -62,6 +62,7 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m AdsXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":

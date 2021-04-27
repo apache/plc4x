@@ -131,6 +131,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.Writ
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -154,6 +155,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Dec
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -162,6 +164,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
 	if name != "" {

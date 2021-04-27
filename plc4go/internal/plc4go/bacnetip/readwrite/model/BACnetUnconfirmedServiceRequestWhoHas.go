@@ -307,6 +307,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) 
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -359,6 +360,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DeviceInstanceLowLimit, xml.StartElement{Name: xml.Name{Local: "deviceInstanceLowLimit"}}); err != nil {
 		return err
@@ -381,6 +383,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestWhoHas) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestWhoHas"
 	if name != "" {

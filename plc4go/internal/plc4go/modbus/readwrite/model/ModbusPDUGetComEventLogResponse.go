@@ -253,6 +253,7 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -305,6 +306,7 @@ func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Status, xml.StartElement{Name: xml.Name{Local: "status"}}); err != nil {
 		return err
@@ -327,6 +329,7 @@ func (m ModbusPDUGetComEventLogResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUGetComEventLogResponse"
 	if name != "" {

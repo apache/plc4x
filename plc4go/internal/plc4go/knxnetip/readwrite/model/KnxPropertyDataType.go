@@ -1018,6 +1018,7 @@ func (e KnxPropertyDataType) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxPropertyDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1037,6 +1038,7 @@ func (m *KnxPropertyDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxPropertyDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -1154,6 +1156,7 @@ func (e KnxPropertyDataType) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxPropertyDataType) Box(s string, i int) utils.AsciiBox {
 	boxName := "KnxPropertyDataType"
 	if s != "" {

@@ -210,6 +210,7 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTableRealisationType1) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -251,6 +252,7 @@ func (m *ComObjectTableRealisationType1) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ComObjectTableRealisationType1) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumEntries, xml.StartElement{Name: xml.Name{Local: "numEntries"}}); err != nil {
 		return err
@@ -276,6 +278,7 @@ func (m ComObjectTableRealisationType1) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiBox {
 	boxName := "ComObjectTableRealisationType1"
 	if name != "" {

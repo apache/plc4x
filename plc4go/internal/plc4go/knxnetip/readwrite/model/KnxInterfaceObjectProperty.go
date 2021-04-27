@@ -4880,6 +4880,7 @@ func (e KnxInterfaceObjectProperty) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxInterfaceObjectProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -4899,6 +4900,7 @@ func (m *KnxInterfaceObjectProperty) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxInterfaceObjectProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -5348,6 +5350,7 @@ func (e KnxInterfaceObjectProperty) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxInterfaceObjectProperty) Box(s string, i int) utils.AsciiBox {
 	boxName := "KnxInterfaceObjectProperty"
 	if s != "" {

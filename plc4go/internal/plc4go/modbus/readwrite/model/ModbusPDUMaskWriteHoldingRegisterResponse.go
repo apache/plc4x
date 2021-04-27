@@ -193,6 +193,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuff
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -234,6 +235,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ReferenceAddress, xml.StartElement{Name: xml.Name{Local: "referenceAddress"}}); err != nil {
 		return err
@@ -251,6 +253,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUMaskWriteHoldingRegisterResponse"
 	if name != "" {

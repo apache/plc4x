@@ -269,6 +269,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuff
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -321,6 +322,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectType, xml.StartElement{Name: xml.Name{Local: "objectType"}}); err != nil {
 		return err
@@ -343,6 +345,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestReadProperty"
 	if name != "" {

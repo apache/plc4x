@@ -134,6 +134,7 @@ func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +169,7 @@ func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -191,6 +193,7 @@ func (m ProjectInstallationIdentifier) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
 	boxName := "ProjectInstallationIdentifier"
 	if name != "" {

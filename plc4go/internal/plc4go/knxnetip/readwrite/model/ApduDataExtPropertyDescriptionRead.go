@@ -185,6 +185,7 @@ func (m *ApduDataExtPropertyDescriptionRead) Serialize(io utils.WriteBuffer) err
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -226,6 +227,7 @@ func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtPropertyDescriptionRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectIndex, xml.StartElement{Name: xml.Name{Local: "objectIndex"}}); err != nil {
 		return err
@@ -243,6 +245,7 @@ func (m ApduDataExtPropertyDescriptionRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtPropertyDescriptionRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtPropertyDescriptionRead"
 	if name != "" {

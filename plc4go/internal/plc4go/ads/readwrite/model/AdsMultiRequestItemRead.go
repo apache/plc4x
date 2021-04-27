@@ -185,6 +185,7 @@ func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsMultiRequestItemRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -226,6 +227,7 @@ func (m *AdsMultiRequestItemRead) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsMultiRequestItemRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ItemIndexGroup, xml.StartElement{Name: xml.Name{Local: "itemIndexGroup"}}); err != nil {
 		return err
@@ -243,6 +245,7 @@ func (m AdsMultiRequestItemRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsMultiRequestItemRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsMultiRequestItemRead"
 	if name != "" {

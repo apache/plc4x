@@ -169,6 +169,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteB
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -198,6 +199,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterDisconnectAdditionalInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
 		return err
@@ -209,6 +211,7 @@ func (m COTPParameterDisconnectAdditionalInformation) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int) utils.AsciiBox {
 	boxName := "COTPParameterDisconnectAdditionalInformation"
 	if name != "" {

@@ -166,6 +166,7 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -201,6 +202,7 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumBytes, xml.StartElement{Name: xml.Name{Local: "numBytes"}}); err != nil {
 		return err
@@ -215,6 +217,7 @@ func (m ApduDataMemoryRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataMemoryRead"
 	if name != "" {

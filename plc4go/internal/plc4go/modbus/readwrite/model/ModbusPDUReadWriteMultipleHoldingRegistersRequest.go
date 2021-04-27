@@ -272,6 +272,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -330,6 +331,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) UnmarshalXML(d *xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ReadStartingAddress, xml.StartElement{Name: xml.Name{Local: "readStartingAddress"}}); err != nil {
 		return err
@@ -355,6 +357,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 	if name != "" {

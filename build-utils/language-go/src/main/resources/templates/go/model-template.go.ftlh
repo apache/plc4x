@@ -1191,6 +1191,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#if>
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {<@emitImport import="encoding/xml" />
 	var token xml.Token<@emitImport import="encoding/xml" />
 	var err error
@@ -1357,6 +1358,7 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {<@emitImport import="encoding/xml" />
 	<#if helper.isDiscriminatedParentTypeDefinition()>
 	className := reflect.TypeOf(m.Child).String()<@emitImport import="reflect" />
@@ -1427,12 +1429,15 @@ func (m ${type.name}) String() string {
 }
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *${type.name}) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *${type.name}) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox ) utils.AsciiBox {
 <#else>
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 </#if>
 	boxName := "${type.name}"

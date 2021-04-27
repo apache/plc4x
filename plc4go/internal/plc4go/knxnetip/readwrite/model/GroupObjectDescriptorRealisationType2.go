@@ -277,6 +277,7 @@ func (m *GroupObjectDescriptorRealisationType2) Serialize(io utils.WriteBuffer) 
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *GroupObjectDescriptorRealisationType2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -353,6 +354,7 @@ func (m *GroupObjectDescriptorRealisationType2) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *GroupObjectDescriptorRealisationType2) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.GroupObjectDescriptorRealisationType2"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -397,6 +399,7 @@ func (m GroupObjectDescriptorRealisationType2) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m GroupObjectDescriptorRealisationType2) Box(name string, width int) utils.AsciiBox {
 	boxName := "GroupObjectDescriptorRealisationType2"
 	if name != "" {

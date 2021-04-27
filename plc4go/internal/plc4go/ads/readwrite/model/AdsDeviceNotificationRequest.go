@@ -214,6 +214,7 @@ func (m *AdsDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -255,6 +256,7 @@ func (m *AdsDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Length, xml.StartElement{Name: xml.Name{Local: "length"}}); err != nil {
 		return err
@@ -280,6 +282,7 @@ func (m AdsDeviceNotificationRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsDeviceNotificationRequest"
 	if name != "" {

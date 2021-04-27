@@ -70,6 +70,7 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 
+// Deprecated: will be removed in favor of Parse soon
 func (m S7XmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
 	switch typeName {
 	case "SzlId":
