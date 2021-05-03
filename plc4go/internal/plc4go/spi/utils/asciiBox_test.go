@@ -29,6 +29,98 @@ func init() {
 	DebugAsciiBox = true
 }
 
+func TestAsciiBox_GetBoxName(t *testing.T) {
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "simple name",
+			args: args{
+				box: BoxString("someName", "some content", 0),
+			},
+			want: "someName",
+		},
+		{
+			name: "no name",
+			args: args{
+				box: BoxString("", "some content", 0),
+			},
+			want: "",
+		},
+		{
+			name: "long name",
+			args: args{
+				box: BoxString("veryLongName12_13", "some content", 0),
+			},
+			want: "veryLongName12_13",
+		},
+		{
+			name: "name with spaces and slashes",
+			args: args{
+				box: BoxString("payload / Message / Concrete Message", "some content", 0),
+			},
+			want: "payload / Message / Concrete Message",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.args.box.GetBoxName(); got != tt.want {
+				t.Errorf("AsciiBox_GetBoxName() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAsciiBox_ChangeBoxName(t *testing.T) {
+	type args struct {
+		box     AsciiBox
+		newName string
+	}
+	tests := []struct {
+		name string
+		args args
+		want AsciiBox
+	}{
+		{
+			name: "box with simple name",
+			args: args{
+				box:     BoxString("simpleName", "some content", 0),
+				newName: "newSimpleName",
+			},
+			want: BoxString("newSimpleName", "some content", 0),
+		},
+		{
+			name: "box with shorter name",
+			args: args{
+				box:     BoxString("veryLongName", "some content", 0),
+				newName: "name",
+			},
+			want: BoxString("name", "some content", 0),
+		},
+		{
+			name: "box getting dressed",
+			args: args{
+				box:     `some content`,
+				newName: "name",
+			},
+			want: BoxString("name", "some content", 0),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.want = trimBox(tt.want)
+			if got := tt.args.box.ChangeBoxName(tt.args.newName); got != tt.want {
+				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestBoxSideBySide(t *testing.T) {
 	type args struct {
 		box1 AsciiBox
@@ -291,6 +383,20 @@ func TestBoxString(t *testing.T) {
 ║      123123123123      ║
 ║123123123123123123123123║
 ╚════════════════════════╝
+`,
+		},
+		{
+			name: "simplebox with too long name",
+			args: args{
+				name:      "sampleFieldsampleFieldsampleFieldsampleField",
+				data:      "123123123123\n123123123123123123123123",
+				charWidth: 1,
+			},
+			want: `
+╔═sampleFieldsampleFieldsampleFieldsampleField╗
+║                123123123123                 ║
+║          123123123123123123123123           ║
+╚═════════════════════════════════════════════╝
 `,
 		},
 	}
