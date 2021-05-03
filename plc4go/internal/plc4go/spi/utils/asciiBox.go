@@ -308,7 +308,12 @@ func unwrap(box AsciiBox) AsciiBox {
 		}
 		runes := []rune(line)
 		// Strip the vertical Lines and trim the padding
-		newLines[i-1] = strings.Trim(string(runes[1:len(runes)-1]), emptyPadding)
+		unwrappedLine := string(runes[1 : len(runes)-1])
+		if !strings.ContainsAny(unwrappedLine, verticalLine+horizontalLine) {
+			// only trim boxes witch don't contain other boxes
+			unwrappedLine = strings.Trim(unwrappedLine, emptyPadding)
+		}
+		newLines[i-1] = unwrappedLine
 	}
 	return AsciiBox(strings.Join(newLines, string(newLine)))
 }
