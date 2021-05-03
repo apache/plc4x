@@ -587,8 +587,9 @@ const (
 	KnxManufacturer_M_WIREEO                                             KnxManufacturer = 545
 	KnxManufacturer_M_NVCLIGHTING                                        KnxManufacturer = 546
 	KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_     KnxManufacturer = 547
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 548
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 549
+	KnxManufacturer_M_ARMITI_TRADING                                     KnxManufacturer = 548
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 549
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 550
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1143,6 +1144,7 @@ func init() {
 		KnxManufacturer_M_WIREEO,
 		KnxManufacturer_M_NVCLIGHTING,
 		KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_,
+		KnxManufacturer_M_ARMITI_TRADING,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3148,15 +3150,19 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 548:
 		{ /* '548' */
-			return 43954
+			return 605
 		}
 	case 549:
 		{ /* '549' */
-			return 43959
+			return 43954
 		}
 	case 55:
 		{ /* '55' */
 			return 93
+		}
+	case 550:
+		{ /* '550' */
+			return 43959
 		}
 	case 56:
 		{ /* '56' */
@@ -5357,15 +5363,19 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 548:
 		{ /* '548' */
-			return "ABB - reserved"
+			return "Armiti trading"
 		}
 	case 549:
 		{ /* '549' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "ABB - reserved"
 		}
 	case 55:
 		{ /* '55' */
 			return "WindowMaster A/S"
+		}
+	case 550:
+		{ /* '550' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 56:
 		{ /* '56' */
@@ -6566,11 +6576,13 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 547:
 		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
 	case 548:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_ARMITI_TRADING
 	case 549:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		return KnxManufacturer_M_ABB___RESERVED
 	case 55:
 		return KnxManufacturer_M_WINDOWMASTER_AS
+	case 550:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 56:
 		return KnxManufacturer_M_WALTHER_WERKE
 	case 57:
@@ -7671,12 +7683,14 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_NVCLIGHTING
 	case "M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_":
 		return KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_
+	case "M_ARMITI_TRADING":
+		return KnxManufacturer_M_ARMITI_TRADING
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
-	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case "M_WINDOWMASTER_AS":
 		return KnxManufacturer_M_WINDOWMASTER_AS
+	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case "M_WALTHER_WERKE":
 		return KnxManufacturer_M_WALTHER_WERKE
 	case "M_ORAS":
@@ -8836,12 +8850,14 @@ func (e KnxManufacturer) name() string {
 		return "M_NVCLIGHTING"
 	case KnxManufacturer_M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_:
 		return "M_JINAN_TIAN_DA_SHENG_INFORMATION_TECHNOLOGY_CO_"
+	case KnxManufacturer_M_ARMITI_TRADING:
+		return "M_ARMITI_TRADING"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
-	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
-		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_WINDOWMASTER_AS:
 		return "M_WINDOWMASTER_AS"
+	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
+		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_WALTHER_WERKE:
 		return "M_WALTHER_WERKE"
 	case KnxManufacturer_M_ORAS:
