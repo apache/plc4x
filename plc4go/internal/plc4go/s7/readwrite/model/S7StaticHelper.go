@@ -130,11 +130,7 @@ func StaticHelperParseS7String(io utils.ReadBuffer, stringLength int32, encoding
 	case "UTF-16":
 		multiplier = 16
 	}
-	readString, err := io.ReadString("", uint32(stringLength*multiplier))
-	if err != nil {
-		return "", err
-	}
-	return readString, nil
+	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
 func StaticHelperSerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
