@@ -186,9 +186,9 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗╔═dataLength╗║║║║
 ║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║ 0x0001 1  ║║║║║
 ║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝╚═══════════╝║║║║
-║║║║╔═data/╗╔═padding╗                                                                                     ║║║║
-║║║║║0x01 1║║        ║                                                                                     ║║║║
-║║║║╚══════╝╚════════╝                                                                                     ║║║║
+║║║║╔═data/╗                                                                                               ║║║║
+║║║║║0x01 1║                                                                                               ║║║║
+║║║║╚══════╝                                                                                               ║║║║
 ║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
 ║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
@@ -412,7 +412,7 @@ func TestS7MessageBytes(t *testing.T) {
 			}
 			{
 				// Simple 2 Compact Box
-				boxWriter := utils.NewBoxedWriteBufferWithOptions(true)
+				boxWriter := utils.NewBoxedWriteBufferWithOptions(true, true)
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
 				}

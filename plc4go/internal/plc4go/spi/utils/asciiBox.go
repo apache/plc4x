@@ -68,6 +68,13 @@ func (m AsciiBox) ChangeBoxName(newName string) AsciiBox {
 	return changeBoxName(m, newName)
 }
 
+func (m AsciiBox) IsEmpty() bool {
+	if hasBorders(m) {
+		return unwrap(m).String() == ""
+	}
+	return m.String() == ""
+}
+
 // String returns the string of the box
 func (m AsciiBox) String() string {
 	return string(m)

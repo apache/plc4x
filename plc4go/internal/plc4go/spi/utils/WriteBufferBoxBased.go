@@ -38,12 +38,13 @@ func NewBoxedWriteBuffer() WriteBufferBoxBased {
 	}
 }
 
-func NewBoxedWriteBufferWithOptions(mergeSingleBoxes bool) WriteBufferBoxBased {
+func NewBoxedWriteBufferWithOptions(mergeSingleBoxes bool, omitEmptyBoxes bool) WriteBufferBoxBased {
 	return &boxedWriteBuffer{
 		List:             list.New(),
 		desiredWidth:     120,
 		currentWidth:     118,
 		mergeSingleBoxes: mergeSingleBoxes,
+		omitEmptyBoxes:   omitEmptyBoxes,
 	}
 }
 
@@ -59,6 +60,7 @@ type boxedWriteBuffer struct {
 	desiredWidth     int
 	currentWidth     int
 	mergeSingleBoxes bool
+	omitEmptyBoxes   bool
 }
 
 //
@@ -174,6 +176,9 @@ findTheBox:
 		switch back.Value.(type) {
 		case AsciiBox:
 			asciiBox := b.Remove(back).(AsciiBox)
+			if b.omitEmptyBoxes && asciiBox.IsEmpty() {
+				continue
+			}
 			finalBoxes = append([]AsciiBox{asciiBox}, finalBoxes...)
 		case []AsciiBox:
 			b.Remove(back)
@@ -188,10 +193,16 @@ findTheBox:
 		onlyChild := finalBoxes[0]
 		childName := onlyChild.GetBoxName()
 		onlyChild = onlyChild.ChangeBoxName(logicalName + "/" + childName)
+		if b.omitEmptyBoxes && onlyChild.IsEmpty() {
+			return nil
+		}
 		b.PushBack(onlyChild)
 		return nil
 	}
 	asciiBox := BoxBox(logicalName, AlignBoxes(finalBoxes, b.currentWidth), 0)
+	if b.omitEmptyBoxes && asciiBox.IsEmpty() {
+		return nil
+	}
 	b.PushBack(asciiBox)
 	return nil
 }

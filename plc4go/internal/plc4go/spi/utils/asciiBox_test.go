@@ -121,6 +121,53 @@ func TestAsciiBox_ChangeBoxName(t *testing.T) {
 	}
 }
 
+func TestAsciiBox_IsEmpty(t *testing.T) {
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "empty box",
+			args: args{
+				box: "",
+			},
+			want: true,
+		},
+		{
+			name: "non empty box",
+			args: args{
+				box: "a",
+			},
+			want: false,
+		},
+		{
+			name: "name empty box",
+			args: args{
+				box: BoxString("name", "", 0),
+			},
+			want: true,
+		},
+		{
+			name: "non empty box",
+			args: args{
+				box: BoxString("name", "a", 0),
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.args.box.IsEmpty(); got != tt.want {
+				t.Errorf("AsciiBox_IsEmpty() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestBoxSideBySide(t *testing.T) {
 	type args struct {
 		box1 AsciiBox
