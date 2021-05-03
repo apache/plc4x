@@ -38,13 +38,14 @@ func TestS7MessageBytes(t *testing.T) {
 		debuggable debuggable
 	}
 	tests := []struct {
-		name                 string
-		args                 args
-		wantString           string
-		wantStringSerialized string
-		wantStringXml        string
-		wantStringJson       string
-		wantDump             string
+		name                        string
+		args                        args
+		wantString                  string
+		wantStringSerialized        string
+		wantStringSerializedCompact string
+		wantStringXml               string
+		wantStringJson              string
+		wantDump                    string
 	}{
 		{
 			name: "TPKT Packet with Read var response data",
@@ -155,6 +156,43 @@ func TestS7MessageBytes(t *testing.T) {
 ║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+`,
+			wantStringSerializedCompact: `
+╔═TPKTPacket══════════════════════════════════════════════════════════════════════════════════════════════════╗
+║╔═protocolId╗╔═reserved╗╔═len═════╗                                                                          ║
+║║  0x03 3   ║║ 0x00 0  ║║0x001d 29║                                                                          ║
+║╚═══════════╝╚═════════╝╚═════════╝                                                                          ║
+║╔═payload/COTPPacket════════════════════════════════════════════════════════════════════════════════════════╗║
+║║╔═headerLength╗╔═tpduCode╗╔═COTPPacketData═════╗                                                           ║║
+║║║   0x05 5    ║║0xf0 240 ║║╔═eot════╗╔═tpduRef╗║                                                           ║║
+║║╚═════════════╝╚═════════╝║║b0 false║║ 0xd 13 ║║                                                           ║║
+║║                          ║╚════════╝╚════════╝║                                                           ║║
+║║                          ╚════════════════════╝                                                           ║║
+║║╔═parameters/COTPParameter════════════════════════════════════════════════════════════╗                    ║║
+║║║╔═parameterType╗╔═parameterLength╗╔═COTPParameterTpduSize/tpduSize/COTPTpduSize═════╗║                    ║║
+║║║║   0xc0 192   ║║     0x01 1     ║║                0x0c 12 SIZE_4096                ║║                    ║║
+║║║╚══════════════╝╚════════════════╝╚═════════════════════════════════════════════════╝║                    ║║
+║║╚═════════════════════════════════════════════════════════════════════════════════════╝                    ║║
+║║╔═S7Message═══════════════════════════════════════════════════════════════════════════════════════════════╗║║
+║║║╔═protocolId╗╔═messageType╗╔═reserved╗╔═tpduReference╗╔═parameterLength╗╔═payloadLength╗                 ║║║
+║║║║  0x32 50  ║║   0x03 3   ║║0x0000 0 ║║  0x000b 11   ║║    0x0002 2    ║║   0x0005 5   ║                 ║║║
+║║║╚═══════════╝╚════════════╝╚═════════╝╚══════════════╝╚════════════════╝╚══════════════╝                 ║║║
+║║║╔═S7MessageResponseData═══╗╔═S7Parameter═════════════════════════════════════════════╗                   ║║║
+║║║║╔═errorClass╗╔═errorCode╗║║╔═parameterType╗╔═S7ParameterReadVarResponse/numItems═══╗║                   ║║║
+║║║║║  0x00 0   ║║  0x00 0  ║║║║    0x04 4    ║║                0x01 1                 ║║                   ║║║
+║║║║╚═══════════╝╚══════════╝║║╚══════════════╝╚═══════════════════════════════════════╝║                   ║║║
+║║║╚═════════════════════════╝╚═════════════════════════════════════════════════════════╝                   ║║║
+║║║╔═S7Payload/S7PayloadReadVarResponse/items/S7VarPayloadDataItem═════════════════════════════════════════╗║║║
+║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗╔═dataLength╗║║║║
+║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║ 0x0001 1  ║║║║║
+║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝╚═══════════╝║║║║
+║║║║╔═data/╗╔═padding╗                                                                                     ║║║║
+║║║║║0x01 1║║        ║                                                                                     ║║║║
+║║║║╚══════╝╚════════╝                                                                                     ║║║║
+║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
+║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
+║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
+╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 `,
 			wantStringXml: `
 <TPKTPacket>
@@ -370,6 +408,17 @@ func TestS7MessageBytes(t *testing.T) {
 				tt.wantStringSerialized = strings.Trim(tt.wantStringSerialized, "\n")
 				if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
 					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
+				}
+			}
+			{
+				// Simple 2 Compact Box
+				boxWriter := utils.NewBoxedWriteBufferWithOptions(true)
+				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
+					t.Error(err)
+				}
+				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
+				if got := string(boxWriter.GetBox()); got != tt.wantStringSerializedCompact {
+					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
 				}
 			}
 			{

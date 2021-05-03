@@ -38,6 +38,15 @@ func NewBoxedWriteBuffer() WriteBufferBoxBased {
 	}
 }
 
+func NewBoxedWriteBufferWithOptions(mergeSingleBoxes bool) WriteBufferBoxBased {
+	return &boxedWriteBuffer{
+		List:             list.New(),
+		desiredWidth:     120,
+		currentWidth:     118,
+		mergeSingleBoxes: mergeSingleBoxes,
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -47,8 +56,9 @@ func NewBoxedWriteBuffer() WriteBufferBoxBased {
 type boxedWriteBuffer struct {
 	bufferCommons
 	*list.List
-	desiredWidth int
-	currentWidth int
+	desiredWidth     int
+	currentWidth     int
+	mergeSingleBoxes bool
 }
 
 //
@@ -173,6 +183,13 @@ findTheBox:
 		default:
 			panic("We should never reach this point")
 		}
+	}
+	if b.mergeSingleBoxes && len(finalBoxes) == 1 {
+		onlyChild := finalBoxes[0]
+		childName := onlyChild.GetBoxName()
+		onlyChild = onlyChild.ChangeBoxName(logicalName + "/" + childName)
+		b.PushBack(onlyChild)
+		return nil
 	}
 	asciiBox := BoxBox(logicalName, AlignBoxes(finalBoxes, b.currentWidth), 0)
 	b.PushBack(asciiBox)
