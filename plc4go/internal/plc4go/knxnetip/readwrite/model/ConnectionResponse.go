@@ -122,7 +122,9 @@ func (m *ConnectionResponse) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("ConnectionResponse")
+	if pullErr := io.PullContext("ConnectionResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
@@ -130,10 +132,17 @@ func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+	}
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
@@ -156,7 +165,9 @@ func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		connectionResponseDataBlock = _val
 	}
 
-	io.CloseContext("ConnectionResponse")
+	if closeErr := io.CloseContext("ConnectionResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponse{
@@ -172,7 +183,9 @@ func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionResponse")
+		if pushErr := io.PushContext("ConnectionResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -182,7 +195,13 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (status)
+		if pushErr := io.PushContext("status"); pushErr != nil {
+			return pushErr
+		}
 		_statusErr := m.Status.Serialize(io)
+		if popErr := io.PopContext("status"); popErr != nil {
+			return popErr
+		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
@@ -207,12 +226,15 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
-		io.PopContext("ConnectionResponse")
+		if popErr := io.PopContext("ConnectionResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -263,6 +285,7 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
 		return err
@@ -283,6 +306,7 @@ func (m ConnectionResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionResponse"
 	if name != "" {

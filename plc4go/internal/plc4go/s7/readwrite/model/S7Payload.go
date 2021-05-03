@@ -99,7 +99,9 @@ func (m *S7Payload) LengthInBytes() uint16 {
 }
 
 func S7PayloadParse(io utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
-	io.PullContext("S7Payload")
+	if pullErr := io.PullContext("S7Payload"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *S7Payload
@@ -121,7 +123,9 @@ func S7PayloadParse(io utils.ReadBuffer, messageType uint8, parameter *S7Paramet
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7Payload")
+	if closeErr := io.CloseContext("S7Payload"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -133,7 +137,9 @@ func (m *S7Payload) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, serializeChildFunction func() error) error {
-	io.PushContext("S7Payload")
+	if pushErr := io.PushContext("S7Payload"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -141,10 +147,13 @@ func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7Payload")
+	if popErr := io.PopContext("S7Payload"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -230,6 +239,7 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -255,10 +265,12 @@ func (m S7Payload) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Payload) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Payload) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "S7Payload"
 	if name != "" {

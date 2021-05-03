@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestWriteGroup")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestWriteGroup"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWriteGroup{
@@ -111,14 +115,19 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestWriteGroup")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestWriteGroup"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestWriteGroup")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestWriteGroup"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetUnconfirmedServiceRequestWriteGroup) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWriteGroup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestWriteGroup) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestWriteGroup"
 	if name != "" {

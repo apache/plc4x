@@ -103,7 +103,9 @@ func (m *KnxNetObjectServer) LengthInBytes() uint16 {
 }
 
 func KnxNetObjectServerParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetObjectServer")
+	if pullErr := io.PullContext("KnxNetObjectServer"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetObjectServerParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetObjectServer")
+	if closeErr := io.CloseContext("KnxNetObjectServer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetObjectServer{
@@ -124,7 +128,9 @@ func KnxNetObjectServerParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetObjectServer")
+		if pushErr := io.PushContext("KnxNetObjectServer"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,12 +139,15 @@ func (m *KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetObjectServer")
+		if popErr := io.PopContext("KnxNetObjectServer"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *KnxNetObjectServer) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetObjectServer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m KnxNetObjectServer) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetObjectServer) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxNetObjectServer"
 	if name != "" {

@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKReadRangeParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKReadRange")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKReadRange"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKReadRange")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKReadRange"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadRange{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKReadRangeParse(io utils.ReadBuffer) (*BACnetConfir
 
 func (m *BACnetConfirmedServiceACKReadRange) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKReadRange")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKReadRange"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKReadRange")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKReadRange"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKReadRange) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKReadRange) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKReadRange) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKReadRange"
 	if name != "" {

@@ -115,7 +115,9 @@ func (m *COTPPacketDisconnectRequest) LengthInBytes() uint16 {
 }
 
 func COTPPacketDisconnectRequestParse(io utils.ReadBuffer) (*COTPPacket, error) {
-	io.PullContext("COTPPacketDisconnectRequest")
+	if pullErr := io.PullContext("COTPPacketDisconnectRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
@@ -129,13 +131,21 @@ func COTPPacketDisconnectRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
+	if pullErr := io.PullContext("protocolClass"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
 	}
+	if closeErr := io.CloseContext("protocolClass"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("COTPPacketDisconnectRequest")
+	if closeErr := io.CloseContext("COTPPacketDisconnectRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPPacketDisconnectRequest{
@@ -150,7 +160,9 @@ func COTPPacketDisconnectRequestParse(io utils.ReadBuffer) (*COTPPacket, error) 
 
 func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPPacketDisconnectRequest")
+		if pushErr := io.PushContext("COTPPacketDisconnectRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
@@ -166,19 +178,28 @@ func (m *COTPPacketDisconnectRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
+		if pushErr := io.PushContext("protocolClass"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (protocolClass)
 		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
 		_protocolClassErr := protocolClass.Serialize(io)
 		if _protocolClassErr != nil {
 			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
+		if popErr := io.PopContext("protocolClass"); popErr != nil {
+			return popErr
+		}
 
-		io.PopContext("COTPPacketDisconnectRequest")
+		if popErr := io.PopContext("COTPPacketDisconnectRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPPacketDisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -220,6 +241,7 @@ func (m *COTPPacketDisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.Sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPPacketDisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DestinationReference, xml.StartElement{Name: xml.Name{Local: "destinationReference"}}); err != nil {
 		return err
@@ -237,6 +259,7 @@ func (m COTPPacketDisconnectRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPPacketDisconnectRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "COTPPacketDisconnectRequest"
 	if name != "" {

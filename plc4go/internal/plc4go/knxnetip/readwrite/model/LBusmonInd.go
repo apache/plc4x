@@ -125,7 +125,9 @@ func (m *LBusmonInd) LengthInBytes() uint16 {
 }
 
 func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LBusmonInd")
+	if pullErr := io.PullContext("LBusmonInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
@@ -134,7 +136,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 
 	// Array field (additionalInformation)
-	io.PullContext("additionalInformation")
+	if pullErr := io.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -146,12 +150,21 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	io.CloseContext("additionalInformation")
+	if closeErr := io.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("dataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
+	}
+	if closeErr := io.CloseContext("dataFrame"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Optional Field (crc) (Can be skipped, if a given expression evaluates to false)
@@ -164,7 +177,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 		crc = &_val
 	}
 
-	io.CloseContext("LBusmonInd")
+	if closeErr := io.CloseContext("LBusmonInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LBusmonInd{
@@ -180,7 +195,9 @@ func LBusmonIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LBusmonInd")
+		if pushErr := io.PushContext("LBusmonInd"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -191,18 +208,28 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
-			io.PushContext("additionalInformation")
+			if pushErr := io.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
-			io.PopContext("additionalInformation")
+			if popErr := io.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Simple Field (dataFrame)
+		if pushErr := io.PushContext("dataFrame"); pushErr != nil {
+			return pushErr
+		}
 		_dataFrameErr := m.DataFrame.Serialize(io)
+		if popErr := io.PopContext("dataFrame"); popErr != nil {
+			return popErr
+		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
@@ -217,12 +244,15 @@ func (m *LBusmonInd) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
-		io.PopContext("LBusmonInd")
+		if popErr := io.PopContext("LBusmonInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -291,6 +321,7 @@ func (m *LBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
 		return err
@@ -319,6 +350,7 @@ func (m LBusmonInd) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LBusmonInd) Box(name string, width int) utils.AsciiBox {
 	boxName := "LBusmonInd"
 	if name != "" {

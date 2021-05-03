@@ -93,7 +93,9 @@ func (m *AdsNotificationSample) LengthInBytes() uint16 {
 }
 
 func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, error) {
-	io.PullContext("AdsNotificationSample")
+	if pullErr := io.PullContext("AdsNotificationSample"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (notificationHandle)
 	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
@@ -108,7 +110,9 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, sampleSize)
 	for curItem := uint16(0); curItem < uint16(sampleSize); curItem++ {
@@ -118,16 +122,22 @@ func AdsNotificationSampleParse(io utils.ReadBuffer) (*AdsNotificationSample, er
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsNotificationSample")
+	if closeErr := io.CloseContext("AdsNotificationSample"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAdsNotificationSample(notificationHandle, sampleSize, data), nil
 }
 
 func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AdsNotificationSample")
+	if pushErr := io.PushContext("AdsNotificationSample"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.NotificationHandle)
@@ -145,20 +155,27 @@ func (m *AdsNotificationSample) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (data)
 	if m.Data != nil {
-		io.PushContext("data")
+		if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}
 		}
-		io.PopContext("data")
+		if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
-	io.PopContext("AdsNotificationSample")
+	if popErr := io.PopContext("AdsNotificationSample"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsNotificationSample) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -204,6 +221,7 @@ func (m *AdsNotificationSample) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsNotificationSample) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AdsNotificationSample"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -232,6 +250,7 @@ func (m AdsNotificationSample) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsNotificationSample) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsNotificationSample"
 	if name != "" {

@@ -122,7 +122,9 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
-	io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
+	if pullErr := io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (szlItemLength)
 	szlItemLength, _szlItemLengthErr := io.ReadUint16("szlItemLength", 16)
@@ -141,7 +143,9 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*SzlDataTreeItem, szlItemCount)
 	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
@@ -151,9 +155,13 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
+	if closeErr := io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
@@ -166,7 +174,9 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io utils.ReadBuffer) (
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
+		if pushErr := io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (szlItemLength)
 		_szlItemLengthErr := io.WriteUint16("szlItemLength", 16, 28)
@@ -183,22 +193,29 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.Wri
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse")
+		if popErr := io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -228,6 +245,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) UnmarshalXML(d *xml.De
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
@@ -247,6 +265,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7PayloadUserDataItemCpuFunctionReadSzlResponse"
 	if name != "" {

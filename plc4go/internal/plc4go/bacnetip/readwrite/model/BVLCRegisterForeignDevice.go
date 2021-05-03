@@ -97,9 +97,13 @@ func (m *BVLCRegisterForeignDevice) LengthInBytes() uint16 {
 }
 
 func BVLCRegisterForeignDeviceParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCRegisterForeignDevice")
+	if pullErr := io.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCRegisterForeignDevice")
+	if closeErr := io.CloseContext("BVLCRegisterForeignDevice"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCRegisterForeignDevice{
@@ -111,14 +115,19 @@ func BVLCRegisterForeignDeviceParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCRegisterForeignDevice) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCRegisterForeignDevice")
+		if pushErr := io.PushContext("BVLCRegisterForeignDevice"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCRegisterForeignDevice")
+		if popErr := io.PopContext("BVLCRegisterForeignDevice"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCRegisterForeignDevice) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCRegisterForeignDevice) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCRegisterForeignDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCRegisterForeignDevice) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCRegisterForeignDevice) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCRegisterForeignDevice"
 	if name != "" {

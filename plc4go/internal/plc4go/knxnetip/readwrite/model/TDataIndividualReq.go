@@ -97,9 +97,13 @@ func (m *TDataIndividualReq) LengthInBytes() uint16 {
 }
 
 func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("TDataIndividualReq")
+	if pullErr := io.PullContext("TDataIndividualReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("TDataIndividualReq")
+	if closeErr := io.CloseContext("TDataIndividualReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &TDataIndividualReq{
@@ -111,14 +115,19 @@ func TDataIndividualReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *TDataIndividualReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("TDataIndividualReq")
+		if pushErr := io.PushContext("TDataIndividualReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("TDataIndividualReq")
+		if popErr := io.PopContext("TDataIndividualReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TDataIndividualReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *TDataIndividualReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TDataIndividualReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m TDataIndividualReq) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TDataIndividualReq) Box(name string, width int) utils.AsciiBox {
 	boxName := "TDataIndividualReq"
 	if name != "" {

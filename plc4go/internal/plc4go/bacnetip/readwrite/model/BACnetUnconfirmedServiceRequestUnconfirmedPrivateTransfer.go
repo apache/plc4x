@@ -136,7 +136,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInByte
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (vendorIdHeader)
 	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8("vendorIdHeader", 8)
@@ -178,7 +180,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 	}
 
 	// Array field (values)
-	io.PullContext("values")
+	if pullErr := io.PullContext("values", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	values := make([]int8, 0)
 	_valuesLength := uint16(len) - uint16(uint16(8))
@@ -190,7 +194,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 		}
 		values = append(values, _item)
 	}
-	io.CloseContext("values")
+	if closeErr := io.CloseContext("values", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)
@@ -201,7 +207,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
 	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
@@ -216,7 +224,9 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io utils.Rea
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (vendorIdHeader)
 		_vendorIdHeaderErr := io.WriteUint8("vendorIdHeader", 8, 0x09)
@@ -252,14 +262,18 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 
 		// Array Field (values)
 		if m.Values != nil {
-			io.PushContext("values")
+			if pushErr := io.PushContext("values", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Values {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'values' field")
 				}
 			}
-			io.PopContext("values")
+			if popErr := io.PopContext("values", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (listOfValuesClosingTag)
@@ -268,12 +282,15 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io
 			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -320,6 +337,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.VendorId, xml.StartElement{Name: xml.Name{Local: "vendorId"}}); err != nil {
 		return err
@@ -339,6 +357,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() stri
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"
 	if name != "" {

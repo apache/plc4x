@@ -100,7 +100,9 @@ func (m *S7Address) LengthInBytes() uint16 {
 }
 
 func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
-	io.PullContext("S7Address")
+	if pullErr := io.PullContext("S7Address"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType, _addressTypeErr := io.ReadUint8("addressType", 8)
@@ -122,7 +124,9 @@ func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7Address")
+	if closeErr := io.CloseContext("S7Address"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -134,7 +138,9 @@ func (m *S7Address) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, serializeChildFunction func() error) error {
-	io.PushContext("S7Address")
+	if pushErr := io.PushContext("S7Address"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.AddressType())
@@ -150,10 +156,13 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7Address")
+	if popErr := io.PopContext("S7Address"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -203,6 +212,7 @@ func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Address) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -228,10 +238,12 @@ func (m S7Address) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Address) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Address) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "S7Address"
 	if name != "" {

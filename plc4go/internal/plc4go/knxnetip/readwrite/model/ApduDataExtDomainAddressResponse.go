@@ -97,9 +97,13 @@ func (m *ApduDataExtDomainAddressResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtDomainAddressResponse")
+	if pullErr := io.PullContext("ApduDataExtDomainAddressResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtDomainAddressResponse")
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressResponse{
@@ -111,14 +115,19 @@ func ApduDataExtDomainAddressResponseParse(io utils.ReadBuffer) (*ApduDataExt, e
 
 func (m *ApduDataExtDomainAddressResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtDomainAddressResponse")
+		if pushErr := io.PushContext("ApduDataExtDomainAddressResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtDomainAddressResponse")
+		if popErr := io.PopContext("ApduDataExtDomainAddressResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtDomainAddressResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtDomainAddressResponse) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtDomainAddressResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtDomainAddressResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtDomainAddressResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtDomainAddressResponse"
 	if name != "" {

@@ -121,7 +121,9 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 }
 
 func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, error) {
-	io.PullContext("S7ParameterSetupCommunication")
+	if pullErr := io.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -155,7 +157,9 @@ func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, erro
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field")
 	}
 
-	io.CloseContext("S7ParameterSetupCommunication")
+	if closeErr := io.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterSetupCommunication{
@@ -170,7 +174,9 @@ func S7ParameterSetupCommunicationParse(io utils.ReadBuffer) (*S7Parameter, erro
 
 func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7ParameterSetupCommunication")
+		if pushErr := io.PushContext("S7ParameterSetupCommunication"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -201,12 +207,15 @@ func (m *S7ParameterSetupCommunication) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}
 
-		io.PopContext("S7ParameterSetupCommunication")
+		if popErr := io.PopContext("S7ParameterSetupCommunication"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -248,6 +257,7 @@ func (m *S7ParameterSetupCommunication) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterSetupCommunication) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.MaxAmqCaller, xml.StartElement{Name: xml.Name{Local: "maxAmqCaller"}}); err != nil {
 		return err
@@ -265,6 +275,7 @@ func (m S7ParameterSetupCommunication) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterSetupCommunication) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7ParameterSetupCommunication"
 	if name != "" {

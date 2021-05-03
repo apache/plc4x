@@ -103,7 +103,9 @@ func (m *KnxNetRemoteLogging) LengthInBytes() uint16 {
 }
 
 func KnxNetRemoteLoggingParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetRemoteLogging")
+	if pullErr := io.PullContext("KnxNetRemoteLogging"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetRemoteLoggingParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetRemoteLogging")
+	if closeErr := io.CloseContext("KnxNetRemoteLogging"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetRemoteLogging{
@@ -124,7 +128,9 @@ func KnxNetRemoteLoggingParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetRemoteLogging")
+		if pushErr := io.PushContext("KnxNetRemoteLogging"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,12 +139,15 @@ func (m *KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetRemoteLogging")
+		if popErr := io.PopContext("KnxNetRemoteLogging"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetRemoteLogging) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *KnxNetRemoteLogging) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetRemoteLogging) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m KnxNetRemoteLogging) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetRemoteLogging) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxNetRemoteLogging"
 	if name != "" {

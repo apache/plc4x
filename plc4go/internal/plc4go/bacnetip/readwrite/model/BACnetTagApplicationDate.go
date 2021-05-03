@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationDate) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationDateParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationDate")
+	if pullErr := io.PullContext("BACnetTagApplicationDate"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationDate")
+	if closeErr := io.CloseContext("BACnetTagApplicationDate"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationDate{
@@ -115,14 +119,19 @@ func BACnetTagApplicationDateParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationDate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationDate")
+		if pushErr := io.PushContext("BACnetTagApplicationDate"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationDate")
+		if popErr := io.PopContext("BACnetTagApplicationDate"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationDate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *BACnetTagApplicationDate) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m BACnetTagApplicationDate) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationDate) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationDate"
 	if name != "" {

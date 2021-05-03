@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKGetAlarmSummary")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKGetAlarmSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKGetAlarmSummary")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKGetAlarmSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetAlarmSummary{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnet
 
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKGetAlarmSummary")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKGetAlarmSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKGetAlarmSummary")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKGetAlarmSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) UnmarshalXML(d *xml.Decoder, 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKGetAlarmSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKGetAlarmSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKGetAlarmSummary"
 	if name != "" {

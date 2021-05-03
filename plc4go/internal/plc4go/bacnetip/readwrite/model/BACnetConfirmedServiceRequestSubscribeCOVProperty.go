@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestSubscribeCOVProperty{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) UnmarshalXML(d *xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestSubscribeCOVProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestSubscribeCOVProperty"
 	if name != "" {

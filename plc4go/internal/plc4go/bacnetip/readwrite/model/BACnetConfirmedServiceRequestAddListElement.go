@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAddListElementParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestAddListElement")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestAddListElement")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAddListElement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAddListElement{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestAddListElementParse(io utils.ReadBuffer) (*BAC
 
 func (m *BACnetConfirmedServiceRequestAddListElement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestAddListElement")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAddListElement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestAddListElement")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAddListElement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestAddListElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestAddListElement) UnmarshalXML(d *xml.Decode
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestAddListElement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestAddListElement) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestAddListElement) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestAddListElement"
 	if name != "" {

@@ -119,12 +119,21 @@ func (m *AdsReadResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadResponse")
+	if pullErr := io.PullContext("AdsReadResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -135,7 +144,9 @@ func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
@@ -145,9 +156,13 @@ func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsReadResponse")
+	if closeErr := io.CloseContext("AdsReadResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadResponse{
@@ -161,10 +176,18 @@ func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadResponse")
+		if pushErr := io.PushContext("AdsReadResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
@@ -178,22 +201,29 @@ func (m *AdsReadResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("AdsReadResponse")
+		if popErr := io.PopContext("AdsReadResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -234,6 +264,7 @@ func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -250,6 +281,7 @@ func (m AdsReadResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsReadResponse"
 	if name != "" {

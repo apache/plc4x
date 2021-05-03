@@ -108,7 +108,9 @@ func (m *KnxGroupAddress2Level) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddress2LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
-	io.PullContext("KnxGroupAddress2Level")
+	if pullErr := io.PullContext("KnxGroupAddress2Level"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 5)
@@ -122,7 +124,9 @@ func KnxGroupAddress2LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
-	io.CloseContext("KnxGroupAddress2Level")
+	if closeErr := io.CloseContext("KnxGroupAddress2Level"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddress2Level{
@@ -136,7 +140,9 @@ func KnxGroupAddress2LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
 
 func (m *KnxGroupAddress2Level) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxGroupAddress2Level")
+		if pushErr := io.PushContext("KnxGroupAddress2Level"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
@@ -152,12 +158,15 @@ func (m *KnxGroupAddress2Level) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
-		io.PopContext("KnxGroupAddress2Level")
+		if popErr := io.PopContext("KnxGroupAddress2Level"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddress2Level) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -193,6 +202,7 @@ func (m *KnxGroupAddress2Level) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddress2Level) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.MainGroup, xml.StartElement{Name: xml.Name{Local: "mainGroup"}}); err != nil {
 		return err
@@ -207,6 +217,7 @@ func (m KnxGroupAddress2Level) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxGroupAddress2Level) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxGroupAddress2Level"
 	if name != "" {

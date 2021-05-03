@@ -149,6 +149,7 @@ func (e CommandId) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CommandId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +169,7 @@ func (m *CommandId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m CommandId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -205,6 +207,7 @@ func (e CommandId) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m CommandId) Box(s string, i int) utils.AsciiBox {
 	boxName := "CommandId"
 	if s != "" {

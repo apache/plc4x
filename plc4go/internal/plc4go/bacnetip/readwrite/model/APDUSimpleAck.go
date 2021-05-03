@@ -112,7 +112,9 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 }
 
 func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUSimpleAck")
+	if pullErr := io.PullContext("APDUSimpleAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -140,7 +142,9 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
 
-	io.CloseContext("APDUSimpleAck")
+	if closeErr := io.CloseContext("APDUSimpleAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUSimpleAck{
@@ -154,7 +158,9 @@ func APDUSimpleAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUSimpleAck")
+		if pushErr := io.PushContext("APDUSimpleAck"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -178,12 +184,15 @@ func (m *APDUSimpleAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
 		}
 
-		io.PopContext("APDUSimpleAck")
+		if popErr := io.PopContext("APDUSimpleAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -219,6 +228,7 @@ func (m *APDUSimpleAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUSimpleAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.OriginalInvokeId, xml.StartElement{Name: xml.Name{Local: "originalInvokeId"}}); err != nil {
 		return err
@@ -233,6 +243,7 @@ func (m APDUSimpleAck) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUSimpleAck) Box(name string, width int) utils.AsciiBox {
 	boxName := "APDUSimpleAck"
 	if name != "" {

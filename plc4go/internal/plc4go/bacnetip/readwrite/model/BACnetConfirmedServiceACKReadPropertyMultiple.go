@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKReadPropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKReadPropertyMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadPropertyMultiple{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKReadPropertyMultipleParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKReadPropertyMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKReadPropertyMultiple")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKReadPropertyMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKReadPropertyMultiple) UnmarshalXML(d *xml.Deco
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKReadPropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKReadPropertyMultiple) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKReadPropertyMultiple"
 	if name != "" {

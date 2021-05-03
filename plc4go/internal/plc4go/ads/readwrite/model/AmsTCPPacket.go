@@ -88,7 +88,9 @@ func (m *AmsTCPPacket) LengthInBytes() uint16 {
 }
 
 func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
-	io.PullContext("AmsTCPPacket")
+	if pullErr := io.PullContext("AmsTCPPacket"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -111,20 +113,31 @@ func AmsTCPPacketParse(io utils.ReadBuffer) (*AmsTCPPacket, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
+	if pullErr := io.PullContext("userdata"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (userdata)
 	userdata, _userdataErr := AmsPacketParse(io)
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+	if closeErr := io.CloseContext("userdata"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AmsTCPPacket")
+	if closeErr := io.CloseContext("AmsTCPPacket"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsTCPPacket(userdata), nil
 }
 
 func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsTCPPacket")
+	if pushErr := io.PushContext("AmsTCPPacket"); pushErr != nil {
+		return pushErr
+	}
 
 	// Reserved Field (reserved)
 	{
@@ -142,15 +155,24 @@ func (m *AmsTCPPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (userdata)
+	if pushErr := io.PushContext("userdata"); pushErr != nil {
+		return pushErr
+	}
 	_userdataErr := m.Userdata.Serialize(io)
+	if popErr := io.PopContext("userdata"); popErr != nil {
+		return popErr
+	}
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
-	io.PopContext("AmsTCPPacket")
+	if popErr := io.PopContext("AmsTCPPacket"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsTCPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -179,6 +201,7 @@ func (m *AmsTCPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsTCPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsTCPPacket"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -199,6 +222,7 @@ func (m AmsTCPPacket) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsTCPPacket) Box(name string, width int) utils.AsciiBox {
 	boxName := "AmsTCPPacket"
 	if name != "" {

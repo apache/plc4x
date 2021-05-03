@@ -103,7 +103,9 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 }
 
 func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
-	io.PullContext("COTPParameterChecksum")
+	if pullErr := io.PullContext("COTPParameterChecksum"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint8("crc", 8)
@@ -111,7 +113,9 @@ func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
-	io.CloseContext("COTPParameterChecksum")
+	if closeErr := io.CloseContext("COTPParameterChecksum"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterChecksum{
@@ -124,7 +128,9 @@ func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterChecksum")
+		if pushErr := io.PushContext("COTPParameterChecksum"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
@@ -133,12 +139,15 @@ func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
-		io.PopContext("COTPParameterChecksum")
+		if popErr := io.PopContext("COTPParameterChecksum"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Crc, xml.StartElement{Name: xml.Name{Local: "crc"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m COTPParameterChecksum) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterChecksum) Box(name string, width int) utils.AsciiBox {
 	boxName := "COTPParameterChecksum"
 	if name != "" {

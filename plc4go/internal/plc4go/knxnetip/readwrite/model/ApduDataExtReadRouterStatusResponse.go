@@ -97,9 +97,13 @@ func (m *ApduDataExtReadRouterStatusResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtReadRouterStatusResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtReadRouterStatusResponse")
+	if pullErr := io.PullContext("ApduDataExtReadRouterStatusResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtReadRouterStatusResponse")
+	if closeErr := io.CloseContext("ApduDataExtReadRouterStatusResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRouterStatusResponse{
@@ -111,14 +115,19 @@ func ApduDataExtReadRouterStatusResponseParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtReadRouterStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtReadRouterStatusResponse")
+		if pushErr := io.PushContext("ApduDataExtReadRouterStatusResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtReadRouterStatusResponse")
+		if popErr := io.PopContext("ApduDataExtReadRouterStatusResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtReadRouterStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtReadRouterStatusResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtReadRouterStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtReadRouterStatusResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtReadRouterStatusResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtReadRouterStatusResponse"
 	if name != "" {

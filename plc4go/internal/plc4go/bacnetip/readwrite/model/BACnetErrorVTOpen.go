@@ -97,9 +97,13 @@ func (m *BACnetErrorVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetErrorVTOpenParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorVTOpen")
+	if pullErr := io.PullContext("BACnetErrorVTOpen"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorVTOpen")
+	if closeErr := io.CloseContext("BACnetErrorVTOpen"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorVTOpen{
@@ -111,14 +115,19 @@ func BACnetErrorVTOpenParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorVTOpen) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorVTOpen")
+		if pushErr := io.PushContext("BACnetErrorVTOpen"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorVTOpen")
+		if popErr := io.PopContext("BACnetErrorVTOpen"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorVTOpen) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorVTOpen) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorVTOpen"
 	if name != "" {

@@ -97,9 +97,13 @@ func (m *ApduControlNack) LengthInBytes() uint16 {
 }
 
 func ApduControlNackParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlNack")
+	if pullErr := io.PullContext("ApduControlNack"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlNack")
+	if closeErr := io.CloseContext("ApduControlNack"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlNack{
@@ -111,14 +115,19 @@ func ApduControlNackParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlNack) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlNack")
+		if pushErr := io.PushContext("ApduControlNack"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlNack")
+		if popErr := io.PopContext("ApduControlNack"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduControlNack) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduControlNack) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduControlNack) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduControlNack) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduControlNack) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduControlNack"
 	if name != "" {

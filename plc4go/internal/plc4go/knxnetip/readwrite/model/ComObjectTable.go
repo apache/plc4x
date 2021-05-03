@@ -98,7 +98,9 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 }
 
 func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
-	io.PullContext("ComObjectTable")
+	if pullErr := io.PullContext("ComObjectTable"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *ComObjectTable
@@ -118,7 +120,9 @@ func ComObjectTableParse(io utils.ReadBuffer, firmwareType *FirmwareType) (*ComO
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ComObjectTable")
+	if closeErr := io.CloseContext("ComObjectTable"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -130,7 +134,9 @@ func (m *ComObjectTable) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectTable, serializeChildFunction func() error) error {
-	io.PushContext("ComObjectTable")
+	if pushErr := io.PushContext("ComObjectTable"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -138,10 +144,13 @@ func (m *ComObjectTable) SerializeParent(io utils.WriteBuffer, child IComObjectT
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ComObjectTable")
+	if popErr := io.PopContext("ComObjectTable"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -215,6 +224,7 @@ func (m *ComObjectTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ComObjectTable) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -240,10 +250,12 @@ func (m ComObjectTable) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ComObjectTable) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ComObjectTable) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "ComObjectTable"
 	if name != "" {

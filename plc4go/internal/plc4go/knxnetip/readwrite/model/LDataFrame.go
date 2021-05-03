@@ -123,7 +123,9 @@ func (m *LDataFrame) LengthInBytes() uint16 {
 }
 
 func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
-	io.PullContext("LDataFrame")
+	if pullErr := io.PullContext("LDataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (frameType)
 	frameType, _frameTypeErr := io.ReadBit("frameType")
@@ -149,10 +151,16 @@ func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
 
+	if pullErr := io.PullContext("priority"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
+	}
+	if closeErr := io.CloseContext("priority"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (acknowledgeRequested)
@@ -185,7 +193,9 @@ func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("LDataFrame")
+	if closeErr := io.CloseContext("LDataFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, frameType, notRepeated, priority, acknowledgeRequested, errorFlag)
@@ -197,7 +207,9 @@ func (m *LDataFrame) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error {
-	io.PushContext("LDataFrame")
+	if pushErr := io.PushContext("LDataFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (frameType)
 	frameType := bool(m.FrameType)
@@ -229,11 +241,17 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
 	}
 
+	if pushErr := io.PushContext("priority"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.Priority)
 	_priorityErr := priority.Serialize(io)
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
+	}
+	if popErr := io.PopContext("priority"); popErr != nil {
+		return popErr
 	}
 
 	// Simple Field (acknowledgeRequested)
@@ -256,10 +274,13 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("LDataFrame")
+	if popErr := io.PopContext("LDataFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -370,6 +391,7 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -410,10 +432,12 @@ func (m LDataFrame) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *LDataFrame) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *LDataFrame) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "LDataFrame"
 	if name != "" {

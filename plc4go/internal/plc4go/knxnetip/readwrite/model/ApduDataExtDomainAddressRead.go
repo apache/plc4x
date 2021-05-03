@@ -97,9 +97,13 @@ func (m *ApduDataExtDomainAddressRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtDomainAddressRead")
+	if pullErr := io.PullContext("ApduDataExtDomainAddressRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtDomainAddressRead")
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressRead{
@@ -111,14 +115,19 @@ func ApduDataExtDomainAddressReadParse(io utils.ReadBuffer) (*ApduDataExt, error
 
 func (m *ApduDataExtDomainAddressRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtDomainAddressRead")
+		if pushErr := io.PushContext("ApduDataExtDomainAddressRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtDomainAddressRead")
+		if popErr := io.PopContext("ApduDataExtDomainAddressRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtDomainAddressRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtDomainAddressRead) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtDomainAddressRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtDomainAddressRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtDomainAddressRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtDomainAddressRead"
 	if name != "" {

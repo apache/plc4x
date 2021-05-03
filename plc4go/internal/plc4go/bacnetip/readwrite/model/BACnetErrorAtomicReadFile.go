@@ -97,9 +97,13 @@ func (m *BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
 }
 
 func BACnetErrorAtomicReadFileParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorAtomicReadFile")
+	if pullErr := io.PullContext("BACnetErrorAtomicReadFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorAtomicReadFile")
+	if closeErr := io.CloseContext("BACnetErrorAtomicReadFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorAtomicReadFile{
@@ -111,14 +115,19 @@ func BACnetErrorAtomicReadFileParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorAtomicReadFile")
+		if pushErr := io.PushContext("BACnetErrorAtomicReadFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorAtomicReadFile")
+		if popErr := io.PopContext("BACnetErrorAtomicReadFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorAtomicReadFile) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorAtomicReadFile) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorAtomicReadFile"
 	if name != "" {

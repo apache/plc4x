@@ -100,9 +100,13 @@ func (m *S7MessageUserData) LengthInBytes() uint16 {
 }
 
 func S7MessageUserDataParse(io utils.ReadBuffer) (*S7Message, error) {
-	io.PullContext("S7MessageUserData")
+	if pullErr := io.PullContext("S7MessageUserData"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("S7MessageUserData")
+	if closeErr := io.CloseContext("S7MessageUserData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7MessageUserData{
@@ -114,14 +118,19 @@ func S7MessageUserDataParse(io utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageUserData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7MessageUserData")
+		if pushErr := io.PushContext("S7MessageUserData"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("S7MessageUserData")
+		if popErr := io.PopContext("S7MessageUserData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7MessageUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -145,6 +154,7 @@ func (m *S7MessageUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7MessageUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -153,6 +163,7 @@ func (m S7MessageUserData) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7MessageUserData) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7MessageUserData"
 	if name != "" {

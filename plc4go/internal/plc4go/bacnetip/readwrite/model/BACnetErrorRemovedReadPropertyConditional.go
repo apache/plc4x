@@ -97,9 +97,13 @@ func (m *BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
 }
 
 func BACnetErrorRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorRemovedReadPropertyConditional")
+	if pullErr := io.PullContext("BACnetErrorRemovedReadPropertyConditional"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorRemovedReadPropertyConditional")
+	if closeErr := io.CloseContext("BACnetErrorRemovedReadPropertyConditional"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedReadPropertyConditional{
@@ -111,14 +115,19 @@ func BACnetErrorRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorRemovedReadPropertyConditional")
+		if pushErr := io.PushContext("BACnetErrorRemovedReadPropertyConditional"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorRemovedReadPropertyConditional")
+		if popErr := io.PopContext("BACnetErrorRemovedReadPropertyConditional"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorRemovedReadPropertyConditional) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorRemovedReadPropertyConditional) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorRemovedReadPropertyConditional"
 	if name != "" {

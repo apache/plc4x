@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKGetEnrollmentSummary")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKGetEnrollmentSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKGetEnrollmentSummary")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKGetEnrollmentSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKGetEnrollmentSummary{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKGetEnrollmentSummary")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKGetEnrollmentSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKGetEnrollmentSummary")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKGetEnrollmentSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) UnmarshalXML(d *xml.Deco
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKGetEnrollmentSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKGetEnrollmentSummary"
 	if name != "" {

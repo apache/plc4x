@@ -97,9 +97,13 @@ func (m *ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
-	io.PullContext("ConnectionResponseDataBlockDeviceManagement")
+	if pullErr := io.PullContext("ConnectionResponseDataBlockDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ConnectionResponseDataBlockDeviceManagement")
+	if closeErr := io.CloseContext("ConnectionResponseDataBlockDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockDeviceManagement{
@@ -111,14 +115,19 @@ func ConnectionResponseDataBlockDeviceManagementParse(io utils.ReadBuffer) (*Con
 
 func (m *ConnectionResponseDataBlockDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionResponseDataBlockDeviceManagement")
+		if pushErr := io.PushContext("ConnectionResponseDataBlockDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ConnectionResponseDataBlockDeviceManagement")
+		if popErr := io.PopContext("ConnectionResponseDataBlockDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionResponseDataBlockDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ConnectionResponseDataBlockDeviceManagement) UnmarshalXML(d *xml.Decode
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionResponseDataBlockDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ConnectionResponseDataBlockDeviceManagement) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionResponseDataBlockDeviceManagement) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionResponseDataBlockDeviceManagement"
 	if name != "" {

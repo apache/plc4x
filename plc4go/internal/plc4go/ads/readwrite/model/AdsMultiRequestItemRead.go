@@ -113,7 +113,9 @@ func (m *AdsMultiRequestItemRead) LengthInBytes() uint16 {
 }
 
 func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, error) {
-	io.PullContext("AdsMultiRequestItemRead")
+	if pullErr := io.PullContext("AdsMultiRequestItemRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (itemIndexGroup)
 	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32("itemIndexGroup", 32)
@@ -133,7 +135,9 @@ func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, er
 		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field")
 	}
 
-	io.CloseContext("AdsMultiRequestItemRead")
+	if closeErr := io.CloseContext("AdsMultiRequestItemRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsMultiRequestItemRead{
@@ -148,7 +152,9 @@ func AdsMultiRequestItemReadParse(io utils.ReadBuffer) (*AdsMultiRequestItem, er
 
 func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsMultiRequestItemRead")
+		if pushErr := io.PushContext("AdsMultiRequestItemRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.ItemIndexGroup)
@@ -171,12 +177,15 @@ func (m *AdsMultiRequestItemRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
 		}
 
-		io.PopContext("AdsMultiRequestItemRead")
+		if popErr := io.PopContext("AdsMultiRequestItemRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsMultiRequestItemRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -218,6 +227,7 @@ func (m *AdsMultiRequestItemRead) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsMultiRequestItemRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ItemIndexGroup, xml.StartElement{Name: xml.Name{Local: "itemIndexGroup"}}); err != nil {
 		return err
@@ -235,6 +245,7 @@ func (m AdsMultiRequestItemRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsMultiRequestItemRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsMultiRequestItemRead"
 	if name != "" {

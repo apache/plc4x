@@ -123,7 +123,9 @@ func (m *BACnetTagWithContent) LengthInBytes() uint16 {
 }
 
 func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, error) {
-	io.PullContext("BACnetTagWithContent")
+	if pullErr := io.PullContext("BACnetTagWithContent"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
@@ -164,7 +166,9 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier")
+	if pullErr := io.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
 	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
@@ -176,7 +180,9 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		}
 		propertyIdentifier = append(propertyIdentifier, _item)
 	}
-	io.CloseContext("propertyIdentifier")
+	if closeErr := io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (openTag)
 	openTag, _openTagErr := io.ReadUint8("openTag", 8)
@@ -187,10 +193,17 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_OPENTAG) + " but got " + fmt.Sprintf("%d", openTag))
 	}
 
+	if pullErr := io.PullContext("value"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(io)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+	if closeErr := io.CloseContext("value"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Const Field (closingTag)
@@ -202,14 +215,18 @@ func BACnetTagWithContentParse(io utils.ReadBuffer) (*BACnetTagWithContent, erro
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_CLOSINGTAG) + " but got " + fmt.Sprintf("%d", closingTag))
 	}
 
-	io.CloseContext("BACnetTagWithContent")
+	if closeErr := io.CloseContext("BACnetTagWithContent"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
 }
 
 func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("BACnetTagWithContent")
+	if pushErr := io.PushContext("BACnetTagWithContent"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
@@ -254,14 +271,18 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (propertyIdentifier)
 	if m.PropertyIdentifier != nil {
-		io.PushContext("propertyIdentifier")
+		if pushErr := io.PushContext("propertyIdentifier", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.PropertyIdentifier {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 			}
 		}
-		io.PopContext("propertyIdentifier")
+		if popErr := io.PopContext("propertyIdentifier", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Const Field (openTag)
@@ -271,7 +292,13 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (value)
+	if pushErr := io.PushContext("value"); pushErr != nil {
+		return pushErr
+	}
 	_valueErr := m.Value.Serialize(io)
+	if popErr := io.PopContext("value"); popErr != nil {
+		return popErr
+	}
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
@@ -282,10 +309,13 @@ func (m *BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_closingTagErr, "Error serializing 'closingTag' field")
 	}
 
-	io.PopContext("BACnetTagWithContent")
+	if popErr := io.PopContext("BACnetTagWithContent"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -369,6 +399,7 @@ func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagWithContent"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -407,6 +438,7 @@ func (m BACnetTagWithContent) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagWithContent) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagWithContent"
 	if name != "" {

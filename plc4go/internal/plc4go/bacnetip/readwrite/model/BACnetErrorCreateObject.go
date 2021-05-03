@@ -97,9 +97,13 @@ func (m *BACnetErrorCreateObject) LengthInBytes() uint16 {
 }
 
 func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorCreateObject")
+	if pullErr := io.PullContext("BACnetErrorCreateObject"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorCreateObject")
+	if closeErr := io.CloseContext("BACnetErrorCreateObject"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorCreateObject{
@@ -111,14 +115,19 @@ func BACnetErrorCreateObjectParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorCreateObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorCreateObject")
+		if pushErr := io.PushContext("BACnetErrorCreateObject"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorCreateObject")
+		if popErr := io.PopContext("BACnetErrorCreateObject"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorCreateObject) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorCreateObject) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorCreateObject"
 	if name != "" {

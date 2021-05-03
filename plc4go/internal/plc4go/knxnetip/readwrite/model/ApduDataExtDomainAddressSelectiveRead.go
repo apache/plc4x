@@ -97,9 +97,13 @@ func (m *ApduDataExtDomainAddressSelectiveRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSelectiveReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtDomainAddressSelectiveRead")
+	if pullErr := io.PullContext("ApduDataExtDomainAddressSelectiveRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtDomainAddressSelectiveRead")
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressSelectiveRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSelectiveRead{
@@ -111,14 +115,19 @@ func ApduDataExtDomainAddressSelectiveReadParse(io utils.ReadBuffer) (*ApduDataE
 
 func (m *ApduDataExtDomainAddressSelectiveRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtDomainAddressSelectiveRead")
+		if pushErr := io.PushContext("ApduDataExtDomainAddressSelectiveRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtDomainAddressSelectiveRead")
+		if popErr := io.PopContext("ApduDataExtDomainAddressSelectiveRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtDomainAddressSelectiveRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtDomainAddressSelectiveRead) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtDomainAddressSelectiveRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtDomainAddressSelectiveRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtDomainAddressSelectiveRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtDomainAddressSelectiveRead"
 	if name != "" {

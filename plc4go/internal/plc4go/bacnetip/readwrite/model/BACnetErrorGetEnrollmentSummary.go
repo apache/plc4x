@@ -97,9 +97,13 @@ func (m *BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
 }
 
 func BACnetErrorGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorGetEnrollmentSummary")
+	if pullErr := io.PullContext("BACnetErrorGetEnrollmentSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorGetEnrollmentSummary")
+	if closeErr := io.CloseContext("BACnetErrorGetEnrollmentSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetEnrollmentSummary{
@@ -111,14 +115,19 @@ func BACnetErrorGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetError, er
 
 func (m *BACnetErrorGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorGetEnrollmentSummary")
+		if pushErr := io.PushContext("BACnetErrorGetEnrollmentSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorGetEnrollmentSummary")
+		if popErr := io.PopContext("BACnetErrorGetEnrollmentSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorGetEnrollmentSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorGetEnrollmentSummary"
 	if name != "" {

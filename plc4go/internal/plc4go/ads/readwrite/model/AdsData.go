@@ -99,7 +99,9 @@ func (m *AdsData) LengthInBytes() uint16 {
 }
 
 func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
-	io.PullContext("AdsData")
+	if pullErr := io.PullContext("AdsData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData
@@ -153,7 +155,9 @@ func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*Ad
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("AdsData")
+	if closeErr := io.CloseContext("AdsData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -165,7 +169,9 @@ func (m *AdsData) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializeChildFunction func() error) error {
-	io.PushContext("AdsData")
+	if pushErr := io.PushContext("AdsData"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -173,10 +179,13 @@ func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("AdsData")
+	if popErr := io.PopContext("AdsData"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -489,6 +498,7 @@ func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.ads.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -514,10 +524,12 @@ func (m AdsData) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *AdsData) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *AdsData) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "AdsData"
 	if name != "" {

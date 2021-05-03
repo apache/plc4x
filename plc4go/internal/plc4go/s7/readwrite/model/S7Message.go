@@ -133,7 +133,9 @@ func (m *S7Message) LengthInBytes() uint16 {
 }
 
 func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
-	io.PullContext("S7Message")
+	if pullErr := io.PullContext("S7Message"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8("protocolId", 8)
@@ -224,7 +226,9 @@ func S7MessageParse(io utils.ReadBuffer) (*S7Message, error) {
 		payload = _val
 	}
 
-	io.CloseContext("S7Message")
+	if closeErr := io.CloseContext("S7Message"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, tpduReference, parameter, payload)
@@ -236,7 +240,9 @@ func (m *S7Message) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, serializeChildFunction func() error) error {
-	io.PushContext("S7Message")
+	if pushErr := io.PushContext("S7Message"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (protocolId)
 	_protocolIdErr := io.WriteUint8("protocolId", 8, 0x32)
@@ -307,10 +313,13 @@ func (m *S7Message) SerializeParent(io utils.WriteBuffer, child IS7Message, seri
 		}
 	}
 
-	io.PopContext("S7Message")
+	if popErr := io.PopContext("S7Message"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -434,6 +443,7 @@ func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -468,10 +478,12 @@ func (m S7Message) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Message) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Message) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "S7Message"
 	if name != "" {

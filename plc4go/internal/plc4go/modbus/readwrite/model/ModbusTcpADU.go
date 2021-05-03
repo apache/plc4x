@@ -99,7 +99,9 @@ func (m *ModbusTcpADU) LengthInBytes() uint16 {
 }
 
 func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
-	io.PullContext("ModbusTcpADU")
+	if pullErr := io.PullContext("ModbusTcpADU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16("transactionIdentifier", 16)
@@ -129,20 +131,31 @@ func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
 
+	if pullErr := io.PullContext("pdu"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(io, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	if closeErr := io.CloseContext("pdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusTcpADU")
+	if closeErr := io.CloseContext("ModbusTcpADU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
 }
 
 func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ModbusTcpADU")
+	if pushErr := io.PushContext("ModbusTcpADU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.TransactionIdentifier)
@@ -172,15 +185,24 @@ func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (pdu)
+	if pushErr := io.PushContext("pdu"); pushErr != nil {
+		return pushErr
+	}
 	_pduErr := m.Pdu.Serialize(io)
+	if popErr := io.PopContext("pdu"); popErr != nil {
+		return popErr
+	}
 	if _pduErr != nil {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
-	io.PopContext("ModbusTcpADU")
+	if popErr := io.PopContext("ModbusTcpADU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusTcpADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -224,6 +246,7 @@ func (m *ModbusTcpADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusTcpADU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -250,6 +273,7 @@ func (m ModbusTcpADU) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusTcpADU"
 	if name != "" {

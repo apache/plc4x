@@ -118,7 +118,9 @@ func (m *ComObjectTableRealisationType1) LengthInBytes() uint16 {
 }
 
 func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
-	io.PullContext("ComObjectTableRealisationType1")
+	if pullErr := io.PullContext("ComObjectTableRealisationType1"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numEntries)
 	numEntries, _numEntriesErr := io.ReadUint8("numEntries", 8)
@@ -133,7 +135,9 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 	}
 
 	// Array field (comObjectDescriptors)
-	io.PullContext("comObjectDescriptors")
+	if pullErr := io.PullContext("comObjectDescriptors", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType1, numEntries)
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
@@ -143,9 +147,13 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 		}
 		comObjectDescriptors[curItem] = _item
 	}
-	io.CloseContext("comObjectDescriptors")
+	if closeErr := io.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ComObjectTableRealisationType1")
+	if closeErr := io.CloseContext("ComObjectTableRealisationType1"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType1{
@@ -160,7 +168,9 @@ func ComObjectTableRealisationType1Parse(io utils.ReadBuffer) (*ComObjectTable, 
 
 func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ComObjectTableRealisationType1")
+		if pushErr := io.PushContext("ComObjectTableRealisationType1"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.NumEntries)
@@ -178,22 +188,29 @@ func (m *ComObjectTableRealisationType1) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (comObjectDescriptors)
 		if m.ComObjectDescriptors != nil {
-			io.PushContext("comObjectDescriptors")
+			if pushErr := io.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ComObjectDescriptors {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 				}
 			}
-			io.PopContext("comObjectDescriptors")
+			if popErr := io.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ComObjectTableRealisationType1")
+		if popErr := io.PopContext("ComObjectTableRealisationType1"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTableRealisationType1) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -235,6 +252,7 @@ func (m *ComObjectTableRealisationType1) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ComObjectTableRealisationType1) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumEntries, xml.StartElement{Name: xml.Name{Local: "numEntries"}}); err != nil {
 		return err
@@ -260,6 +278,7 @@ func (m ComObjectTableRealisationType1) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ComObjectTableRealisationType1) Box(name string, width int) utils.AsciiBox {
 	boxName := "ComObjectTableRealisationType1"
 	if name != "" {

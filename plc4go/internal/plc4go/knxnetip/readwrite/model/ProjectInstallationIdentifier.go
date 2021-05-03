@@ -85,7 +85,9 @@ func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
 }
 
 func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
-	io.PullContext("ProjectInstallationIdentifier")
+	if pullErr := io.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (projectNumber)
 	projectNumber, _projectNumberErr := io.ReadUint8("projectNumber", 8)
@@ -99,14 +101,18 @@ func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallati
 		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
 	}
 
-	io.CloseContext("ProjectInstallationIdentifier")
+	if closeErr := io.CloseContext("ProjectInstallationIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewProjectInstallationIdentifier(projectNumber, installationNumber), nil
 }
 
 func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("ProjectInstallationIdentifier")
+	if pushErr := io.PushContext("ProjectInstallationIdentifier"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.ProjectNumber)
@@ -122,10 +128,13 @@ func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}
 
-	io.PopContext("ProjectInstallationIdentifier")
+	if popErr := io.PopContext("ProjectInstallationIdentifier"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -160,6 +169,7 @@ func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -183,6 +193,7 @@ func (m ProjectInstallationIdentifier) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
 	boxName := "ProjectInstallationIdentifier"
 	if name != "" {

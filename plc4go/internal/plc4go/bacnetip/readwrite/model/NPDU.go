@@ -163,7 +163,9 @@ func (m *NPDU) LengthInBytes() uint16 {
 }
 
 func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
-	io.PullContext("NPDU")
+	if pullErr := io.PullContext("NPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8("protocolVersionNumber", 8)
@@ -250,7 +252,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Array field (destinationAddress)
-	io.PullContext("destinationAddress")
+	if pullErr := io.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -260,7 +264,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		destinationAddress[curItem] = _item
 	}
-	io.CloseContext("destinationAddress")
+	if closeErr := io.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
@@ -283,7 +289,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	}
 
 	// Array field (sourceAddress)
-	io.PullContext("sourceAddress")
+	if pullErr := io.PullContext("sourceAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
@@ -293,7 +301,9 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		}
 		sourceAddress[curItem] = _item
 	}
-	io.CloseContext("sourceAddress")
+	if closeErr := io.CloseContext("sourceAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
@@ -325,14 +335,18 @@ func NPDUParse(io utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		apdu = _val
 	}
 
-	io.CloseContext("NPDU")
+	if closeErr := io.CloseContext("NPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewNPDU(protocolVersionNumber, messageTypeFieldPresent, destinationSpecified, sourceSpecified, expectingReply, networkPriority, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu), nil
 }
 
 func (m *NPDU) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("NPDU")
+	if pushErr := io.PushContext("NPDU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber := uint8(m.ProtocolVersionNumber)
@@ -414,14 +428,18 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (destinationAddress)
 	if m.DestinationAddress != nil {
-		io.PushContext("destinationAddress")
+		if pushErr := io.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.DestinationAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 			}
 		}
-		io.PopContext("destinationAddress")
+		if popErr := io.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
@@ -446,14 +464,18 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (sourceAddress)
 	if m.SourceAddress != nil {
-		io.PushContext("sourceAddress")
+		if pushErr := io.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.SourceAddress {
 			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 			}
 		}
-		io.PopContext("sourceAddress")
+		if popErr := io.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if the value is null)
@@ -486,10 +508,13 @@ func (m *NPDU) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
-	io.PopContext("NPDU")
+	if popErr := io.PopContext("NPDU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -648,6 +673,7 @@ func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.bacnetip.readwrite.NPDU"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -710,6 +736,7 @@ func (m NPDU) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m NPDU) Box(name string, width int) utils.AsciiBox {
 	boxName := "NPDU"
 	if name != "" {

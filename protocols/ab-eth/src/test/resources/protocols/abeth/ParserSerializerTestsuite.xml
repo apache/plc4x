@@ -22,26 +22,34 @@
 
   <name>Allen-Bradley ETH</name>
 
+  <protocolName>abeth</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>Connection Request</name>
     <raw>01010000000000000000000000040005000000000000000000000000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationConnectionRequest className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationConnectionRequest">
-        <sessionHandle>0</sessionHandle>
-        <status>0</status>
-        <senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>4</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>5</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
+      <CIPEncapsulationPacket>
+        <commandType dataType="uint" bitLength="16">257</commandType>
+        <len dataType="uint" bitLength="16">0</len>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext isList="true">
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">4</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">5</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
         </senderContext>
-        <options>0</options>
-      </CIPEncapsulationConnectionRequest>
+        <options dataType="uint" bitLength="32">0</options>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <CIPEncapsulationConnectionRequest>
+        </CIPEncapsulationConnectionRequest>
+      </CIPEncapsulationPacket>
     </xml>
   </testcase>
 
@@ -50,21 +58,26 @@
     <raw>02010000000003320000000000040005000000000000000000000000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationConnectionResponse className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationConnectionResponse">
-        <sessionHandle>818</sessionHandle>
-        <status>0</status>
-        <senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>4</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>5</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
+      <CIPEncapsulationPacket>
+        <commandType dataType="uint" bitLength="16">513</commandType>
+        <len dataType="uint" bitLength="16">0</len>
+        <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext isList="true">
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">4</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">5</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
         </senderContext>
-        <options>0</options>
-      </CIPEncapsulationConnectionResponse>
+        <options dataType="uint" bitLength="32">0</options>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <CIPEncapsulationConnectionResponse>
+        </CIPEncapsulationConnectionResponse>
+      </CIPEncapsulationPacket>
     </xml>
   </testcase>
 
@@ -73,34 +86,50 @@
     <raw>0107000e000003320000000040000000000000000000000000000000080500000f000401a21800640000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationReadRequest className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationReadRequest">
-        <sessionHandle>818</sessionHandle>
-        <status>0</status>
-        <senderContext>
-          <senderContext>64</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
+      <CIPEncapsulationPacket>
+        <commandType dataType="uint" bitLength="16">263</commandType>
+        <len dataType="uint" bitLength="16">14</len>
+        <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext isList="true">
+          <value dataType="uint" bitLength="8">64</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
         </senderContext>
-        <options>0</options>
-        <request className="org.apache.plc4x.java.abeth.readwrite.DF1CommandRequestMessage">
-          <destinationAddress>8</destinationAddress>
-          <sourceAddress>5</sourceAddress>
-          <status>0</status>
-          <transactionCounter>1025</transactionCounter>
-          <command className="org.apache.plc4x.java.abeth.readwrite.DF1RequestProtectedTypedLogicalRead">
-            <byteSize>24</byteSize>
-            <fileNumber>0</fileNumber>
-            <fileType>100</fileType>
-            <elementNumber>0</elementNumber>
-            <subElementNumber>0</subElementNumber>
-          </command>
-        </request>
-      </CIPEncapsulationReadRequest>
+        <options dataType="uint" bitLength="32">0</options>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <CIPEncapsulationReadRequest>
+          <request>
+            <DF1RequestMessage>
+              <destinationAddress dataType="uint" bitLength="8">8</destinationAddress>
+              <sourceAddress dataType="uint" bitLength="8">5</sourceAddress>
+              <reserved dataType="uint" bitLength="16">0</reserved>
+              <commandCode dataType="uint" bitLength="8">15</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">1025</transactionCounter>
+              <DF1CommandRequestMessage>
+                <command>
+                  <DF1RequestCommand>
+                    <functionCode dataType="uint" bitLength="8">162</functionCode>
+                    <DF1RequestProtectedTypedLogicalRead>
+                      <byteSize dataType="uint" bitLength="8">24</byteSize>
+                      <fileNumber dataType="uint" bitLength="8">0</fileNumber>
+                      <fileType dataType="uint" bitLength="8">100</fileType>
+                      <elementNumber dataType="uint" bitLength="8">0</elementNumber>
+                      <subElementNumber dataType="uint" bitLength="8">0</subElementNumber>
+                    </DF1RequestProtectedTypedLogicalRead>
+                  </DF1RequestCommand>
+                </command>
+              </DF1CommandRequestMessage>
+            </DF1RequestMessage>
+          </request>
+        </CIPEncapsulationReadRequest>
+      </CIPEncapsulationPacket>
     </xml>
   </testcase>
 
@@ -109,53 +138,65 @@
     <raw>02070020000003320000000040000000000000000000000000000000000508004f000401910101000900040405001f02010003000404050000024000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationReadResponse className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationReadResponse">
-        <sessionHandle>818</sessionHandle>
-        <status>0</status>
-        <senderContext>
-          <senderContext>64</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
-          <senderContext>0</senderContext>
+      <CIPEncapsulationPacket>
+        <commandType dataType="uint" bitLength="16">519</commandType>
+        <len dataType="uint" bitLength="16">32</len>
+        <sessionHandle dataType="uint" bitLength="32">818</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext isList="true">
+          <value dataType="uint" bitLength="8">64</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
+          <value dataType="uint" bitLength="8">0</value>
         </senderContext>
-        <options>0</options>
-        <response className="org.apache.plc4x.java.abeth.readwrite.DF1CommandResponseMessageProtectedTypedLogicalRead">
-          <destinationAddress>5</destinationAddress>
-          <sourceAddress>8</sourceAddress>
-          <status>0</status>
-          <transactionCounter>1025</transactionCounter>
-          <data>
-            <data>145</data>
-            <data>1</data>
-            <data>1</data>
-            <data>0</data>
-            <data>9</data>
-            <data>0</data>
-            <data>4</data>
-            <data>4</data>
-            <data>5</data>
-            <data>0</data>
-            <data>31</data>
-            <data>2</data>
-            <data>1</data>
-            <data>0</data>
-            <data>3</data>
-            <data>0</data>
-            <data>4</data>
-            <data>4</data>
-            <data>5</data>
-            <data>0</data>
-            <data>0</data>
-            <data>2</data>
-            <data>64</data>
-            <data>0</data>
-          </data>
-        </response>
-      </CIPEncapsulationReadResponse>
+        <options dataType="uint" bitLength="32">0</options>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <CIPEncapsulationReadResponse>
+          <response>
+            <DF1ResponseMessage>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <destinationAddress dataType="uint" bitLength="8">5</destinationAddress>
+              <sourceAddress dataType="uint" bitLength="8">8</sourceAddress>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <commandCode dataType="uint" bitLength="8">79</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">1025</transactionCounter>
+              <DF1CommandResponseMessageProtectedTypedLogicalRead>
+                <data isList="true">
+                  <value dataType="uint" bitLength="8">145</value>
+                  <value dataType="uint" bitLength="8">1</value>
+                  <value dataType="uint" bitLength="8">1</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">9</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">4</value>
+                  <value dataType="uint" bitLength="8">4</value>
+                  <value dataType="uint" bitLength="8">5</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">31</value>
+                  <value dataType="uint" bitLength="8">2</value>
+                  <value dataType="uint" bitLength="8">1</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">3</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">4</value>
+                  <value dataType="uint" bitLength="8">4</value>
+                  <value dataType="uint" bitLength="8">5</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                  <value dataType="uint" bitLength="8">2</value>
+                  <value dataType="uint" bitLength="8">64</value>
+                  <value dataType="uint" bitLength="8">0</value>
+                </data>
+              </DF1CommandResponseMessageProtectedTypedLogicalRead>
+            </DF1ResponseMessage>
+          </response>
+        </CIPEncapsulationReadResponse>
+      </CIPEncapsulationPacket>
     </xml>
   </testcase>
 

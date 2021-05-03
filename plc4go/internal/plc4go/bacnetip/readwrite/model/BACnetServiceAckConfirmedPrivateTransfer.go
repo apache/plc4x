@@ -97,9 +97,13 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckConfirmedPrivateTransfer")
+	if pullErr := io.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckConfirmedPrivateTransfer")
+	if closeErr := io.CloseContext("BACnetServiceAckConfirmedPrivateTransfer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckConfirmedPrivateTransfer{
@@ -111,14 +115,19 @@ func BACnetServiceAckConfirmedPrivateTransferParse(io utils.ReadBuffer) (*BACnet
 
 func (m *BACnetServiceAckConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckConfirmedPrivateTransfer")
+		if pushErr := io.PushContext("BACnetServiceAckConfirmedPrivateTransfer"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckConfirmedPrivateTransfer")
+		if popErr := io.PopContext("BACnetServiceAckConfirmedPrivateTransfer"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckConfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckConfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckConfirmedPrivateTransfer) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckConfirmedPrivateTransfer) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckConfirmedPrivateTransfer"
 	if name != "" {

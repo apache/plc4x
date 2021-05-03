@@ -85,7 +85,9 @@ func (m *DeviceStatus) LengthInBytes() uint16 {
 }
 
 func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
-	io.PullContext("DeviceStatus")
+	if pullErr := io.PullContext("DeviceStatus"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -107,14 +109,18 @@ func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
 		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
 	}
 
-	io.CloseContext("DeviceStatus")
+	if closeErr := io.CloseContext("DeviceStatus"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDeviceStatus(programMode), nil
 }
 
 func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DeviceStatus")
+	if pushErr := io.PushContext("DeviceStatus"); pushErr != nil {
+		return pushErr
+	}
 
 	// Reserved Field (reserved)
 	{
@@ -131,10 +137,13 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}
 
-	io.PopContext("DeviceStatus")
+	if popErr := io.PopContext("DeviceStatus"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -163,6 +172,7 @@ func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -183,6 +193,7 @@ func (m DeviceStatus) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceStatus) Box(name string, width int) utils.AsciiBox {
 	boxName := "DeviceStatus"
 	if name != "" {

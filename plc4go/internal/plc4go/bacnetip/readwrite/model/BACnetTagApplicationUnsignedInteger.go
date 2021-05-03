@@ -111,10 +111,14 @@ func (m *BACnetTagApplicationUnsignedInteger) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationUnsignedIntegerParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationUnsignedInteger")
+	if pullErr := io.PullContext("BACnetTagApplicationUnsignedInteger"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (data)
-	io.PullContext("data")
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	data := make([]int8, 0)
 	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(extLength) }, func() uint16 { return uint16(lengthValueType) })
@@ -126,9 +130,13 @@ func BACnetTagApplicationUnsignedIntegerParse(io utils.ReadBuffer, lengthValueTy
 		}
 		data = append(data, _item)
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetTagApplicationUnsignedInteger")
+	if closeErr := io.CloseContext("BACnetTagApplicationUnsignedInteger"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationUnsignedInteger{
@@ -141,26 +149,35 @@ func BACnetTagApplicationUnsignedIntegerParse(io utils.ReadBuffer, lengthValueTy
 
 func (m *BACnetTagApplicationUnsignedInteger) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationUnsignedInteger")
+		if pushErr := io.PushContext("BACnetTagApplicationUnsignedInteger"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetTagApplicationUnsignedInteger")
+		if popErr := io.PopContext("BACnetTagApplicationUnsignedInteger"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationUnsignedInteger) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -195,6 +212,7 @@ func (m *BACnetTagApplicationUnsignedInteger) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationUnsignedInteger) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedData := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Data))
 	_encodedData = strings.ToUpper(_encodedData)
@@ -208,6 +226,7 @@ func (m BACnetTagApplicationUnsignedInteger) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationUnsignedInteger) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationUnsignedInteger"
 	if name != "" {

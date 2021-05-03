@@ -97,9 +97,13 @@ func (m *ApduDataExtNetworkParameterRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtNetworkParameterReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtNetworkParameterRead")
+	if pullErr := io.PullContext("ApduDataExtNetworkParameterRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtNetworkParameterRead")
+	if closeErr := io.CloseContext("ApduDataExtNetworkParameterRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterRead{
@@ -111,14 +115,19 @@ func ApduDataExtNetworkParameterReadParse(io utils.ReadBuffer) (*ApduDataExt, er
 
 func (m *ApduDataExtNetworkParameterRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtNetworkParameterRead")
+		if pushErr := io.PushContext("ApduDataExtNetworkParameterRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtNetworkParameterRead")
+		if popErr := io.PopContext("ApduDataExtNetworkParameterRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtNetworkParameterRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtNetworkParameterRead) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtNetworkParameterRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtNetworkParameterRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtNetworkParameterRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtNetworkParameterRead"
 	if name != "" {

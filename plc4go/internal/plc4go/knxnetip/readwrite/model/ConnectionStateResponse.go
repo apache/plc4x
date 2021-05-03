@@ -108,7 +108,9 @@ func (m *ConnectionStateResponse) LengthInBytes() uint16 {
 }
 
 func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("ConnectionStateResponse")
+	if pullErr := io.PullContext("ConnectionStateResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
@@ -116,13 +118,22 @@ func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error)
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
 	}
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ConnectionStateResponse")
+	if closeErr := io.CloseContext("ConnectionStateResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionStateResponse{
@@ -136,7 +147,9 @@ func ConnectionStateResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error)
 
 func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionStateResponse")
+		if pushErr := io.PushContext("ConnectionStateResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -146,17 +159,26 @@ func (m *ConnectionStateResponse) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (status)
+		if pushErr := io.PushContext("status"); pushErr != nil {
+			return pushErr
+		}
 		_statusErr := m.Status.Serialize(io)
+		if popErr := io.PopContext("status"); popErr != nil {
+			return popErr
+		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
-		io.PopContext("ConnectionStateResponse")
+		if popErr := io.PopContext("ConnectionStateResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -192,6 +214,7 @@ func (m *ConnectionStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
 		return err
@@ -206,6 +229,7 @@ func (m ConnectionStateResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionStateResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionStateResponse"
 	if name != "" {

@@ -97,9 +97,13 @@ func (m *BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
 }
 
 func BVLCReadForeignDeviceTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCReadForeignDeviceTableAck")
+	if pullErr := io.PullContext("BVLCReadForeignDeviceTableAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCReadForeignDeviceTableAck")
+	if closeErr := io.CloseContext("BVLCReadForeignDeviceTableAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCReadForeignDeviceTableAck{
@@ -111,14 +115,19 @@ func BVLCReadForeignDeviceTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCReadForeignDeviceTableAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCReadForeignDeviceTableAck")
+		if pushErr := io.PushContext("BVLCReadForeignDeviceTableAck"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCReadForeignDeviceTableAck")
+		if popErr := io.PopContext("BVLCReadForeignDeviceTableAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCReadForeignDeviceTableAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCReadForeignDeviceTableAck) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCReadForeignDeviceTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCReadForeignDeviceTableAck) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCReadForeignDeviceTableAck) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCReadForeignDeviceTableAck"
 	if name != "" {

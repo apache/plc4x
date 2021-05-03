@@ -97,9 +97,13 @@ func (m *BVLCSecureBVLL) LengthInBytes() uint16 {
 }
 
 func BVLCSecureBVLLParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCSecureBVLL")
+	if pullErr := io.PullContext("BVLCSecureBVLL"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCSecureBVLL")
+	if closeErr := io.CloseContext("BVLCSecureBVLL"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCSecureBVLL{
@@ -111,14 +115,19 @@ func BVLCSecureBVLLParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCSecureBVLL) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCSecureBVLL")
+		if pushErr := io.PushContext("BVLCSecureBVLL"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCSecureBVLL")
+		if popErr := io.PopContext("BVLCSecureBVLL"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCSecureBVLL) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCSecureBVLL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCSecureBVLL) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCSecureBVLL) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCSecureBVLL"
 	if name != "" {

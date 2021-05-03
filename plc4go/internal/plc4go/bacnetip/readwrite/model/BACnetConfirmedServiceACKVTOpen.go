@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKVTOpenParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKVTOpen")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKVTOpen"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKVTOpen")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKVTOpen"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKVTOpen{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKVTOpenParse(io utils.ReadBuffer) (*BACnetConfirmed
 
 func (m *BACnetConfirmedServiceACKVTOpen) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKVTOpen")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKVTOpen"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKVTOpen")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKVTOpen"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKVTOpen) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKVTOpen) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKVTOpen) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKVTOpen"
 	if name != "" {

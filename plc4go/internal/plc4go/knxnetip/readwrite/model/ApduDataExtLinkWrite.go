@@ -97,9 +97,13 @@ func (m *ApduDataExtLinkWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtLinkWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtLinkWrite")
+	if pullErr := io.PullContext("ApduDataExtLinkWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtLinkWrite")
+	if closeErr := io.CloseContext("ApduDataExtLinkWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtLinkWrite{
@@ -111,14 +115,19 @@ func ApduDataExtLinkWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtLinkWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtLinkWrite")
+		if pushErr := io.PushContext("ApduDataExtLinkWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtLinkWrite")
+		if popErr := io.PopContext("ApduDataExtLinkWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtLinkWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtLinkWrite) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtLinkWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtLinkWrite) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtLinkWrite) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtLinkWrite"
 	if name != "" {

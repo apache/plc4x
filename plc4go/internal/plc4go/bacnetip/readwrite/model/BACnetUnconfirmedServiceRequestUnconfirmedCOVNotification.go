@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInByte
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
@@ -111,14 +115,19 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io utils.Rea
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) UnmarshalXML
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() stri
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification"
 	if name != "" {

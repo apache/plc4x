@@ -100,7 +100,9 @@ func (m *S7ParameterUserDataItem) LengthInBytes() uint16 {
 }
 
 func S7ParameterUserDataItemParse(io utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
-	io.PullContext("S7ParameterUserDataItem")
+	if pullErr := io.PullContext("S7ParameterUserDataItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType, _itemTypeErr := io.ReadUint8("itemType", 8)
@@ -122,7 +124,9 @@ func S7ParameterUserDataItemParse(io utils.ReadBuffer) (*S7ParameterUserDataItem
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7ParameterUserDataItem")
+	if closeErr := io.CloseContext("S7ParameterUserDataItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -134,7 +138,9 @@ func (m *S7ParameterUserDataItem) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7ParameterUserDataItem) SerializeParent(io utils.WriteBuffer, child IS7ParameterUserDataItem, serializeChildFunction func() error) error {
-	io.PushContext("S7ParameterUserDataItem")
+	if pushErr := io.PushContext("S7ParameterUserDataItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.ItemType())
@@ -150,10 +156,13 @@ func (m *S7ParameterUserDataItem) SerializeParent(io utils.WriteBuffer, child IS
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7ParameterUserDataItem")
+	if popErr := io.PopContext("S7ParameterUserDataItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -203,6 +212,7 @@ func (m *S7ParameterUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -228,10 +238,12 @@ func (m S7ParameterUserDataItem) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7ParameterUserDataItem) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7ParameterUserDataItem) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "S7ParameterUserDataItem"
 	if name != "" {

@@ -153,6 +153,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumTypeReference(TypeReference typeReference) {
+        if (!isComplexTypeReference(typeReference)) {
+            return false;
+        }
         return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
     }
 
@@ -519,7 +522,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        if (!(typeReference instanceof ComplexTypeReference)) {
+        if (!isComplexTypeReference(typeReference)) {
             throw new RuntimeException("Type reference must be a complex type reference");
         }
         return getTypeDefinitions().get(((ComplexTypeReference) typeReference).getName());

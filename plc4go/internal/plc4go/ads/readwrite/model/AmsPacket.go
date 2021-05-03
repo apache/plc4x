@@ -116,12 +116,21 @@ func (m *AmsPacket) LengthInBytes() uint16 {
 }
 
 func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
-	io.PullContext("AmsPacket")
+	if pullErr := io.PullContext("AmsPacket"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("targetAmsNetId"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(io)
 	if _targetAmsNetIdErr != nil {
 		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
+	}
+	if closeErr := io.CloseContext("targetAmsNetId"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (targetAmsPort)
@@ -130,10 +139,17 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
 
+	if pullErr := io.PullContext("sourceAmsNetId"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (sourceAmsNetId)
 	sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(io)
 	if _sourceAmsNetIdErr != nil {
 		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
+	}
+	if closeErr := io.CloseContext("sourceAmsNetId"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (sourceAmsPort)
@@ -142,16 +158,30 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
 
+	if pullErr := io.PullContext("commandId"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (commandId)
 	commandId, _commandIdErr := CommandIdParse(io)
 	if _commandIdErr != nil {
 		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
+	}
+	if closeErr := io.CloseContext("commandId"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("state"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (state)
 	state, _stateErr := StateParse(io)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
+	}
+	if closeErr := io.CloseContext("state"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -173,23 +203,40 @@ func AmsPacketParse(io utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
 
+	if pullErr := io.PullContext("data"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (data)
 	data, _dataErr := AdsDataParse(io, &commandId, state.Response)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
+	if closeErr := io.CloseContext("data"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AmsPacket")
+	if closeErr := io.CloseContext("AmsPacket"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, state, errorCode, invokeId, data), nil
 }
 
 func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsPacket")
+	if pushErr := io.PushContext("AmsPacket"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (targetAmsNetId)
+	if pushErr := io.PushContext("targetAmsNetId"); pushErr != nil {
+		return pushErr
+	}
 	_targetAmsNetIdErr := m.TargetAmsNetId.Serialize(io)
+	if popErr := io.PopContext("targetAmsNetId"); popErr != nil {
+		return popErr
+	}
 	if _targetAmsNetIdErr != nil {
 		return errors.Wrap(_targetAmsNetIdErr, "Error serializing 'targetAmsNetId' field")
 	}
@@ -202,7 +249,13 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (sourceAmsNetId)
+	if pushErr := io.PushContext("sourceAmsNetId"); pushErr != nil {
+		return pushErr
+	}
 	_sourceAmsNetIdErr := m.SourceAmsNetId.Serialize(io)
+	if popErr := io.PopContext("sourceAmsNetId"); popErr != nil {
+		return popErr
+	}
 	if _sourceAmsNetIdErr != nil {
 		return errors.Wrap(_sourceAmsNetIdErr, "Error serializing 'sourceAmsNetId' field")
 	}
@@ -215,13 +268,25 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (commandId)
+	if pushErr := io.PushContext("commandId"); pushErr != nil {
+		return pushErr
+	}
 	_commandIdErr := m.CommandId.Serialize(io)
+	if popErr := io.PopContext("commandId"); popErr != nil {
+		return popErr
+	}
 	if _commandIdErr != nil {
 		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
 	}
 
 	// Simple Field (state)
+	if pushErr := io.PushContext("state"); pushErr != nil {
+		return pushErr
+	}
 	_stateErr := m.State.Serialize(io)
+	if popErr := io.PopContext("state"); popErr != nil {
+		return popErr
+	}
 	if _stateErr != nil {
 		return errors.Wrap(_stateErr, "Error serializing 'state' field")
 	}
@@ -248,15 +313,24 @@ func (m *AmsPacket) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (data)
+	if pushErr := io.PushContext("data"); pushErr != nil {
+		return pushErr
+	}
 	_dataErr := m.Data.Serialize(io)
+	if popErr := io.PopContext("data"); popErr != nil {
+		return popErr
+	}
 	if _dataErr != nil {
 		return errors.Wrap(_dataErr, "Error serializing 'data' field")
 	}
 
-	io.PopContext("AmsPacket")
+	if popErr := io.PopContext("AmsPacket"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -336,6 +410,7 @@ func (m *AmsPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsPacket"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -380,6 +455,7 @@ func (m AmsPacket) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsPacket) Box(name string, width int) utils.AsciiBox {
 	boxName := "AmsPacket"
 	if name != "" {

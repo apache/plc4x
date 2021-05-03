@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKAtomicReadFileParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKAtomicReadFile")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKAtomicReadFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKAtomicReadFile")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKAtomicReadFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKAtomicReadFile{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKAtomicReadFileParse(io utils.ReadBuffer) (*BACnetC
 
 func (m *BACnetConfirmedServiceACKAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKAtomicReadFile")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKAtomicReadFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKAtomicReadFile")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKAtomicReadFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKAtomicReadFile) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKAtomicReadFile) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKAtomicReadFile"
 	if name != "" {

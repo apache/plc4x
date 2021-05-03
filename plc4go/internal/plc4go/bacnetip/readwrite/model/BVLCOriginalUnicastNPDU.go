@@ -103,15 +103,26 @@ func (m *BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
 }
 
 func BVLCOriginalUnicastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
-	io.PullContext("BVLCOriginalUnicastNPDU")
+	if pullErr := io.PullContext("BVLCOriginalUnicastNPDU"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("npdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
 	}
+	if closeErr := io.CloseContext("npdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BVLCOriginalUnicastNPDU")
+	if closeErr := io.CloseContext("BVLCOriginalUnicastNPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalUnicastNPDU{
@@ -124,20 +135,31 @@ func BVLCOriginalUnicastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC
 
 func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCOriginalUnicastNPDU")
+		if pushErr := io.PushContext("BVLCOriginalUnicastNPDU"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (npdu)
+		if pushErr := io.PushContext("npdu"); pushErr != nil {
+			return pushErr
+		}
 		_npduErr := m.Npdu.Serialize(io)
+		if popErr := io.PopContext("npdu"); popErr != nil {
+			return popErr
+		}
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
-		io.PopContext("BVLCOriginalUnicastNPDU")
+		if popErr := io.PopContext("BVLCOriginalUnicastNPDU"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -167,6 +189,7 @@ func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Npdu, xml.StartElement{Name: xml.Name{Local: "npdu"}}); err != nil {
 		return err
@@ -178,6 +201,7 @@ func (m BVLCOriginalUnicastNPDU) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCOriginalUnicastNPDU) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCOriginalUnicastNPDU"
 	if name != "" {

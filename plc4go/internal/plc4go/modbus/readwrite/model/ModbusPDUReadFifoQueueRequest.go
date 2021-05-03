@@ -111,7 +111,9 @@ func (m *ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadFifoQueueRequest")
+	if pullErr := io.PullContext("ModbusPDUReadFifoQueueRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (fifoPointerAddress)
 	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16("fifoPointerAddress", 16)
@@ -119,7 +121,9 @@ func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error)
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field")
 	}
 
-	io.CloseContext("ModbusPDUReadFifoQueueRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadFifoQueueRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadFifoQueueRequest{
@@ -132,7 +136,9 @@ func ModbusPDUReadFifoQueueRequestParse(io utils.ReadBuffer) (*ModbusPDU, error)
 
 func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadFifoQueueRequest")
+		if pushErr := io.PushContext("ModbusPDUReadFifoQueueRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
@@ -141,12 +147,15 @@ func (m *ModbusPDUReadFifoQueueRequest) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}
 
-		io.PopContext("ModbusPDUReadFifoQueueRequest")
+		if popErr := io.PopContext("ModbusPDUReadFifoQueueRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFifoQueueRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -176,6 +185,7 @@ func (m *ModbusPDUReadFifoQueueRequest) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFifoQueueRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FifoPointerAddress, xml.StartElement{Name: xml.Name{Local: "fifoPointerAddress"}}); err != nil {
 		return err
@@ -187,6 +197,7 @@ func (m ModbusPDUReadFifoQueueRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFifoQueueRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadFifoQueueRequest"
 	if name != "" {

@@ -103,7 +103,9 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
 }
 
 func KnxNetRemoteConfigurationAndDiagnosisParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetRemoteConfigurationAndDiagnosis")
+	if pullErr := io.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io utils.ReadBuffer) (*ServiceId
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetRemoteConfigurationAndDiagnosis")
+	if closeErr := io.CloseContext("KnxNetRemoteConfigurationAndDiagnosis"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetRemoteConfigurationAndDiagnosis{
@@ -124,7 +128,9 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io utils.ReadBuffer) (*ServiceId
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetRemoteConfigurationAndDiagnosis")
+		if pushErr := io.PushContext("KnxNetRemoteConfigurationAndDiagnosis"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,12 +139,15 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) 
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetRemoteConfigurationAndDiagnosis")
+		if popErr := io.PopContext("KnxNetRemoteConfigurationAndDiagnosis"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetRemoteConfigurationAndDiagnosis) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxNetRemoteConfigurationAndDiagnosis"
 	if name != "" {

@@ -32,21 +32,33 @@ type ReaderExposer interface {
 	GetReader() spi.PlcReader
 }
 
+type WriterExposer interface {
+	GetWriter() spi.PlcWriter
+}
+
 type ReadRequestInterceptorExposer interface {
 	GetReadRequestInterceptor() ReadRequestInterceptor
 }
 
-type requestFactory func(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
-
-type responseFactory func(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse
-
-type SingleItemRequestInterceptor struct {
-	requestFactory  requestFactory
-	responseFactory responseFactory
+type WriteRequestInterceptorExposer interface {
+	GetWriteRequestInterceptor() WriteRequestInterceptor
 }
 
-func NewSingleItemRequestInterceptor(requestFactory requestFactory, responseFactory responseFactory) SingleItemRequestInterceptor {
-	return SingleItemRequestInterceptor{requestFactory, responseFactory}
+type readRequestFactory func(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) model.PlcReadRequest
+type writeRequestFactory func(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor WriteRequestInterceptor) model.PlcWriteRequest
+
+type readResponseFactory func(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse
+type writeResponseFactory func(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse
+
+type SingleItemRequestInterceptor struct {
+	readRequestFactory   readRequestFactory
+	writeRequestFactory  writeRequestFactory
+	readResponseFactory  readResponseFactory
+	writeResponseFactory writeResponseFactory
+}
+
+func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writeRequestFactory writeRequestFactory, readResponseFactory readResponseFactory, writeResponseFactory writeResponseFactory) SingleItemRequestInterceptor {
+	return SingleItemRequestInterceptor{readRequestFactory, writeRequestFactory, readResponseFactory, writeResponseFactory}
 }
 
 func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest {
@@ -61,7 +73,7 @@ func (m SingleItemRequestInterceptor) InterceptReadRequest(readRequest model.Plc
 	for _, fieldName := range readRequest.GetFieldNames() {
 		log.Debug().Str("fieldName", fieldName).Msg("Splitting into own request")
 		field := readRequest.GetField(fieldName)
-		subReadRequest := m.requestFactory(
+		subReadRequest := m.readRequestFactory(
 			map[string]model.PlcField{fieldName: field},
 			[]string{fieldName},
 			readRequest.(ReaderExposer).GetReader(),
@@ -103,16 +115,65 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(readRequest model.Plc
 	}
 	return model.PlcReadRequestResult{
 		Request:  readRequest,
-		Response: m.responseFactory(readRequest, responseCodes, val),
+		Response: m.readResponseFactory(readRequest, responseCodes, val),
 		Err:      err,
 	}
 }
 
 func (m SingleItemRequestInterceptor) InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest {
-	return []model.PlcWriteRequest{writeRequest}
+	// If this request just has one field, go the shortcut
+	if len(writeRequest.GetFieldNames()) == 1 {
+		log.Debug().Msg("We got only one request, no splitting required")
+		return []model.PlcWriteRequest{writeRequest}
+	}
+	log.Trace().Msg("Splitting requests")
+	// In all other cases, create a new write request containing only one item
+	var writeRequests []model.PlcWriteRequest
+	for _, fieldName := range writeRequest.GetFieldNames() {
+		log.Debug().Str("fieldName", fieldName).Msg("Splitting into own request")
+		field := writeRequest.GetField(fieldName)
+		subWriteRequest := m.writeRequestFactory(
+			map[string]model.PlcField{fieldName: field},
+			[]string{fieldName},
+			map[string]values.PlcValue{fieldName: writeRequest.GetValue(fieldName)},
+			writeRequest.(WriterExposer).GetWriter(),
+			writeRequest.(WriteRequestInterceptorExposer).GetWriteRequestInterceptor(),
+		)
+		writeRequests = append(writeRequests, subWriteRequest)
+	}
+	return writeRequests
 }
 
-func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResponses []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
-	// TODO: unfinished implementation
-	return model.PlcWriteRequestResult{}
+func (m SingleItemRequestInterceptor) ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult {
+	if len(writeResults) == 1 {
+		log.Debug().Msg("We got only one response, no merging required")
+		return writeResults[0]
+	}
+	log.Trace().Msg("Merging requests")
+	responseCodes := map[string]model.PlcResponseCode{}
+	var err error = nil
+	for _, writeResult := range writeResults {
+		if writeResult.Err != nil {
+			log.Debug().Err(writeResult.Err).Msgf("Error during write")
+			if err == nil {
+				// Lazy initialization of multi error
+				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{writeResult.Err}}
+			} else {
+				multiError := err.(utils.MultiError)
+				multiError.Errors = append(multiError.Errors, writeResult.Err)
+			}
+		} else if writeResult.Response != nil {
+			if len(writeResult.Response.GetRequest().GetFieldNames()) > 1 {
+				log.Error().Int("numberOfFields", len(writeResult.Response.GetRequest().GetFieldNames())).Msg("We should only get 1")
+			}
+			for _, fieldName := range writeResult.Response.GetRequest().GetFieldNames() {
+				responseCodes[fieldName] = writeResult.Response.GetResponseCode(fieldName)
+			}
+		}
+	}
+	return model.PlcWriteRequestResult{
+		Request:  writeRequest,
+		Response: m.writeResponseFactory(writeRequest, responseCodes),
+		Err:      err,
+	}
 }

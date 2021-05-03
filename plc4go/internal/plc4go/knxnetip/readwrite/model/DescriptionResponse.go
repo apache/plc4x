@@ -108,12 +108,25 @@ func (m *DescriptionResponse) LengthInBytes() uint16 {
 }
 
 func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("DescriptionResponse")
+	if pullErr := io.PullContext("DescriptionResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("dibDeviceInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dibDeviceInfo)
 	dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParse(io)
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
+	}
+	if closeErr := io.CloseContext("dibDeviceInfo"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("dibSuppSvcFamilies"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
@@ -121,8 +134,13 @@ func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	if closeErr := io.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DescriptionResponse")
+	if closeErr := io.CloseContext("DescriptionResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &DescriptionResponse{
@@ -136,26 +154,43 @@ func DescriptionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("DescriptionResponse")
+		if pushErr := io.PushContext("DescriptionResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (dibDeviceInfo)
+		if pushErr := io.PushContext("dibDeviceInfo"); pushErr != nil {
+			return pushErr
+		}
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
+		if popErr := io.PopContext("dibDeviceInfo"); popErr != nil {
+			return popErr
+		}
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
+		if pushErr := io.PushContext("dibSuppSvcFamilies"); pushErr != nil {
+			return pushErr
+		}
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
+		if popErr := io.PopContext("dibSuppSvcFamilies"); popErr != nil {
+			return popErr
+		}
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
-		io.PopContext("DescriptionResponse")
+		if popErr := io.PopContext("DescriptionResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -191,6 +226,7 @@ func (m *DescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DibDeviceInfo, xml.StartElement{Name: xml.Name{Local: "dibDeviceInfo"}}); err != nil {
 		return err
@@ -205,6 +241,7 @@ func (m DescriptionResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DescriptionResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "DescriptionResponse"
 	if name != "" {

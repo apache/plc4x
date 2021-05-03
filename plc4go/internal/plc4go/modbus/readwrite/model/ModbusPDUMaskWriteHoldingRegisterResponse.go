@@ -121,7 +121,9 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUMaskWriteHoldingRegisterResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse")
+	if pullErr := io.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (referenceAddress)
 	referenceAddress, _referenceAddressErr := io.ReadUint16("referenceAddress", 16)
@@ -141,7 +143,9 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(io utils.ReadBuffer) (*Modbu
 		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
 	}
 
-	io.CloseContext("ModbusPDUMaskWriteHoldingRegisterResponse")
+	if closeErr := io.CloseContext("ModbusPDUMaskWriteHoldingRegisterResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUMaskWriteHoldingRegisterResponse{
@@ -156,7 +160,9 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(io utils.ReadBuffer) (*Modbu
 
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUMaskWriteHoldingRegisterResponse")
+		if pushErr := io.PushContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.ReferenceAddress)
@@ -179,12 +185,15 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io utils.WriteBuff
 			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
 		}
 
-		io.PopContext("ModbusPDUMaskWriteHoldingRegisterResponse")
+		if popErr := io.PopContext("ModbusPDUMaskWriteHoldingRegisterResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -226,6 +235,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ReferenceAddress, xml.StartElement{Name: xml.Name{Local: "referenceAddress"}}); err != nil {
 		return err
@@ -243,6 +253,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUMaskWriteHoldingRegisterResponse"
 	if name != "" {

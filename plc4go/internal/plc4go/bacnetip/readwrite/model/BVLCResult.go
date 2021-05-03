@@ -97,9 +97,13 @@ func (m *BVLCResult) LengthInBytes() uint16 {
 }
 
 func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCResult")
+	if pullErr := io.PullContext("BVLCResult"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCResult")
+	if closeErr := io.CloseContext("BVLCResult"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCResult{
@@ -111,14 +115,19 @@ func BVLCResultParse(io utils.ReadBuffer) (*BVLC, error) {
 
 func (m *BVLCResult) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCResult")
+		if pushErr := io.PushContext("BVLCResult"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCResult")
+		if popErr := io.PopContext("BVLCResult"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCResult) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCResult) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCResult) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCResult) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCResult"
 	if name != "" {

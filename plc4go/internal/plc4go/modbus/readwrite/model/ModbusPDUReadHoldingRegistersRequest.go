@@ -116,7 +116,9 @@ func (m *ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadHoldingRegistersRequest")
+	if pullErr := io.PullContext("ModbusPDUReadHoldingRegistersRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16("startingAddress", 16)
@@ -130,7 +132,9 @@ func ModbusPDUReadHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU,
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
-	io.CloseContext("ModbusPDUReadHoldingRegistersRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadHoldingRegistersRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadHoldingRegistersRequest{
@@ -144,7 +148,9 @@ func ModbusPDUReadHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadHoldingRegistersRequest")
+		if pushErr := io.PushContext("ModbusPDUReadHoldingRegistersRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -160,12 +166,15 @@ func (m *ModbusPDUReadHoldingRegistersRequest) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
-		io.PopContext("ModbusPDUReadHoldingRegistersRequest")
+		if popErr := io.PopContext("ModbusPDUReadHoldingRegistersRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -201,6 +210,7 @@ func (m *ModbusPDUReadHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadHoldingRegistersRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.StartingAddress, xml.StartElement{Name: xml.Name{Local: "startingAddress"}}); err != nil {
 		return err
@@ -215,6 +225,7 @@ func (m ModbusPDUReadHoldingRegistersRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadHoldingRegistersRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadHoldingRegistersRequest"
 	if name != "" {

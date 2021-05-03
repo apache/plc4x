@@ -97,9 +97,13 @@ func (m *ApduDataExtLinkResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtLinkResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtLinkResponse")
+	if pullErr := io.PullContext("ApduDataExtLinkResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtLinkResponse")
+	if closeErr := io.CloseContext("ApduDataExtLinkResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtLinkResponse{
@@ -111,14 +115,19 @@ func ApduDataExtLinkResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtLinkResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtLinkResponse")
+		if pushErr := io.PushContext("ApduDataExtLinkResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtLinkResponse")
+		if popErr := io.PopContext("ApduDataExtLinkResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtLinkResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtLinkResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtLinkResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtLinkResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtLinkResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtLinkResponse"
 	if name != "" {

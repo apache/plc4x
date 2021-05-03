@@ -105,15 +105,26 @@ func (m *ApduDataContainer) LengthInBytes() uint16 {
 }
 
 func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
-	io.PullContext("ApduDataContainer")
+	if pullErr := io.PullContext("ApduDataContainer"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("dataApdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataApdu)
 	dataApdu, _dataApduErr := ApduDataParse(io, dataLength)
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field")
 	}
+	if closeErr := io.CloseContext("dataApdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataContainer")
+	if closeErr := io.CloseContext("ApduDataContainer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataContainer{
@@ -126,20 +137,31 @@ func ApduDataContainerParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error
 
 func (m *ApduDataContainer) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataContainer")
+		if pushErr := io.PushContext("ApduDataContainer"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (dataApdu)
+		if pushErr := io.PushContext("dataApdu"); pushErr != nil {
+			return pushErr
+		}
 		_dataApduErr := m.DataApdu.Serialize(io)
+		if popErr := io.PopContext("dataApdu"); popErr != nil {
+			return popErr
+		}
 		if _dataApduErr != nil {
 			return errors.Wrap(_dataApduErr, "Error serializing 'dataApdu' field")
 		}
 
-		io.PopContext("ApduDataContainer")
+		if popErr := io.PopContext("ApduDataContainer"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataContainer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -172,6 +194,7 @@ func (m *ApduDataContainer) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataContainer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DataApdu, xml.StartElement{Name: xml.Name{Local: "dataApdu"}}); err != nil {
 		return err
@@ -183,6 +206,7 @@ func (m ApduDataContainer) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataContainer) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataContainer"
 	if name != "" {

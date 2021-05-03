@@ -97,9 +97,13 @@ func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataIndividualAddressResponseParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataIndividualAddressResponse")
+	if pullErr := io.PullContext("ApduDataIndividualAddressResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataIndividualAddressResponse")
+	if closeErr := io.CloseContext("ApduDataIndividualAddressResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressResponse{
@@ -111,14 +115,19 @@ func ApduDataIndividualAddressResponseParse(io utils.ReadBuffer) (*ApduData, err
 
 func (m *ApduDataIndividualAddressResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataIndividualAddressResponse")
+		if pushErr := io.PushContext("ApduDataIndividualAddressResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataIndividualAddressResponse")
+		if popErr := io.PopContext("ApduDataIndividualAddressResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataIndividualAddressResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataIndividualAddressResponse) UnmarshalXML(d *xml.Decoder, start x
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataIndividualAddressResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataIndividualAddressResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataIndividualAddressResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataIndividualAddressResponse"
 	if name != "" {

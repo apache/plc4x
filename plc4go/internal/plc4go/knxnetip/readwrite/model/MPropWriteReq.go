@@ -97,9 +97,13 @@ func (m *MPropWriteReq) LengthInBytes() uint16 {
 }
 
 func MPropWriteReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropWriteReq")
+	if pullErr := io.PullContext("MPropWriteReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MPropWriteReq")
+	if closeErr := io.CloseContext("MPropWriteReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropWriteReq{
@@ -111,14 +115,19 @@ func MPropWriteReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropWriteReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropWriteReq")
+		if pushErr := io.PushContext("MPropWriteReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MPropWriteReq")
+		if popErr := io.PopContext("MPropWriteReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MPropWriteReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *MPropWriteReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MPropWriteReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m MPropWriteReq) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MPropWriteReq) Box(name string, width int) utils.AsciiBox {
 	boxName := "MPropWriteReq"
 	if name != "" {

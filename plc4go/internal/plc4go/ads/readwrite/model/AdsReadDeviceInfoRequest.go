@@ -101,9 +101,13 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadDeviceInfoRequest")
+	if pullErr := io.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("AdsReadDeviceInfoRequest")
+	if closeErr := io.CloseContext("AdsReadDeviceInfoRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoRequest{
@@ -115,14 +119,19 @@ func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadDeviceInfoRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadDeviceInfoRequest")
+		if pushErr := io.PushContext("AdsReadDeviceInfoRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("AdsReadDeviceInfoRequest")
+		if popErr := io.PopContext("AdsReadDeviceInfoRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadDeviceInfoRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *AdsReadDeviceInfoRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadDeviceInfoRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m AdsReadDeviceInfoRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadDeviceInfoRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsReadDeviceInfoRequest"
 	if name != "" {

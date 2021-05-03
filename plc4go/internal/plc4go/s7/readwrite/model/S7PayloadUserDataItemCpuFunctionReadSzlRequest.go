@@ -101,9 +101,13 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 
 }
 
 func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
-	io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+	if pullErr := io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+	if closeErr := io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
@@ -115,14 +119,19 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+		if pushErr := io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+		if popErr := io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Dec
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
 	if name != "" {

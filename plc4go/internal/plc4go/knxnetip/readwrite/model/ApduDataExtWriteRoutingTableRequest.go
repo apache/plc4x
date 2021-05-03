@@ -97,9 +97,13 @@ func (m *ApduDataExtWriteRoutingTableRequest) LengthInBytes() uint16 {
 }
 
 func ApduDataExtWriteRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtWriteRoutingTableRequest")
+	if pullErr := io.PullContext("ApduDataExtWriteRoutingTableRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtWriteRoutingTableRequest")
+	if closeErr := io.CloseContext("ApduDataExtWriteRoutingTableRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtWriteRoutingTableRequest{
@@ -111,14 +115,19 @@ func ApduDataExtWriteRoutingTableRequestParse(io utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtWriteRoutingTableRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtWriteRoutingTableRequest")
+		if pushErr := io.PushContext("ApduDataExtWriteRoutingTableRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtWriteRoutingTableRequest")
+		if popErr := io.PopContext("ApduDataExtWriteRoutingTableRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtWriteRoutingTableRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtWriteRoutingTableRequest) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtWriteRoutingTableRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtWriteRoutingTableRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtWriteRoutingTableRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtWriteRoutingTableRequest"
 	if name != "" {

@@ -97,9 +97,13 @@ func (m *BACnetServiceAckGetEnrollmentSummary) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckGetEnrollmentSummary")
+	if pullErr := io.PullContext("BACnetServiceAckGetEnrollmentSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckGetEnrollmentSummary")
+	if closeErr := io.CloseContext("BACnetServiceAckGetEnrollmentSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetEnrollmentSummary{
@@ -111,14 +115,19 @@ func BACnetServiceAckGetEnrollmentSummaryParse(io utils.ReadBuffer) (*BACnetServ
 
 func (m *BACnetServiceAckGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckGetEnrollmentSummary")
+		if pushErr := io.PushContext("BACnetServiceAckGetEnrollmentSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckGetEnrollmentSummary")
+		if popErr := io.PopContext("BACnetServiceAckGetEnrollmentSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckGetEnrollmentSummary) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckGetEnrollmentSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckGetEnrollmentSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckGetEnrollmentSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckGetEnrollmentSummary"
 	if name != "" {

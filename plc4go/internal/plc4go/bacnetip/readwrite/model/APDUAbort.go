@@ -117,7 +117,9 @@ func (m *APDUAbort) LengthInBytes() uint16 {
 }
 
 func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUAbort")
+	if pullErr := io.PullContext("APDUAbort"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -151,7 +153,9 @@ func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_abortReasonErr, "Error parsing 'abortReason' field")
 	}
 
-	io.CloseContext("APDUAbort")
+	if closeErr := io.CloseContext("APDUAbort"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUAbort{
@@ -166,7 +170,9 @@ func APDUAbortParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUAbort")
+		if pushErr := io.PushContext("APDUAbort"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -197,12 +203,15 @@ func (m *APDUAbort) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_abortReasonErr, "Error serializing 'abortReason' field")
 		}
 
-		io.PopContext("APDUAbort")
+		if popErr := io.PopContext("APDUAbort"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -244,6 +253,7 @@ func (m *APDUAbort) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUAbort) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Server, xml.StartElement{Name: xml.Name{Local: "server"}}); err != nil {
 		return err
@@ -261,6 +271,7 @@ func (m APDUAbort) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUAbort) Box(name string, width int) utils.AsciiBox {
 	boxName := "APDUAbort"
 	if name != "" {

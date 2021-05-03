@@ -97,9 +97,13 @@ func (m *BVLCReadBroadcastDistributionTableAck) LengthInBytes() uint16 {
 }
 
 func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCReadBroadcastDistributionTableAck")
+	if pullErr := io.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCReadBroadcastDistributionTableAck")
+	if closeErr := io.CloseContext("BVLCReadBroadcastDistributionTableAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCReadBroadcastDistributionTableAck{
@@ -111,14 +115,19 @@ func BVLCReadBroadcastDistributionTableAckParse(io utils.ReadBuffer) (*BVLC, err
 
 func (m *BVLCReadBroadcastDistributionTableAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCReadBroadcastDistributionTableAck")
+		if pushErr := io.PushContext("BVLCReadBroadcastDistributionTableAck"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCReadBroadcastDistributionTableAck")
+		if popErr := io.PopContext("BVLCReadBroadcastDistributionTableAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCReadBroadcastDistributionTableAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCReadBroadcastDistributionTableAck) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCReadBroadcastDistributionTableAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCReadBroadcastDistributionTableAck) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCReadBroadcastDistributionTableAck) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCReadBroadcastDistributionTableAck"
 	if name != "" {

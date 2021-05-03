@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) LengthInBytes() uint1
 }
 
 func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestGetEventInformation")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestGetEventInformation")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestGetEventInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestGetEventInformation{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(io utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestGetEventInformation) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestGetEventInformation")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestGetEventInformation"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestGetEventInformation")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestGetEventInformation"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestGetEventInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestGetEventInformation) UnmarshalXML(d *xml.D
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestGetEventInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestGetEventInformation) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestGetEventInformation) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestGetEventInformation"
 	if name != "" {

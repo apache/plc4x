@@ -48,7 +48,9 @@ func NewConnection(unitIdentifier uint8, messageCodec spi.MessageCodec, options 
 		options:        options,
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
 			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcWriteRequest,
 			internalModel.NewDefaultPlcReadResponse,
+			internalModel.NewDefaultPlcWriteResponse,
 		),
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
@@ -119,11 +121,11 @@ func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
 }
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
-	// TODO: don't we need a interceptor here?
-	return internalModel.NewDefaultPlcWriteRequestBuilder(
+	return internalModel.NewDefaultPlcWriteRequestBuilderWithInterceptor(
 		m.GetPlcFieldHandler(),
 		m.GetPlcValueHandler(),
 		NewWriter(m.unitIdentifier, m.messageCodec),
+		m.requestInterceptor,
 	)
 }
 

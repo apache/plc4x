@@ -97,9 +97,13 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 }
 
 func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtFileStreamInfoReport")
+	if pullErr := io.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtFileStreamInfoReport")
+	if closeErr := io.CloseContext("ApduDataExtFileStreamInfoReport"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtFileStreamInfoReport{
@@ -111,14 +115,19 @@ func ApduDataExtFileStreamInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, er
 
 func (m *ApduDataExtFileStreamInfoReport) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtFileStreamInfoReport")
+		if pushErr := io.PushContext("ApduDataExtFileStreamInfoReport"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtFileStreamInfoReport")
+		if popErr := io.PopContext("ApduDataExtFileStreamInfoReport"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtFileStreamInfoReport) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtFileStreamInfoReport) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtFileStreamInfoReport) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtFileStreamInfoReport) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtFileStreamInfoReport) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtFileStreamInfoReport"
 	if name != "" {

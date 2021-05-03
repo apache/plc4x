@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) LengthInBytes() uint
 }
 
 func BACnetConfirmedServiceRequestConfirmedTextMessageParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedTextMessage{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParse(io utils.ReadBuffer)
 
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessage")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestConfirmedTextMessage"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) UnmarshalXML(d *xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedTextMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestConfirmedTextMessage) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestConfirmedTextMessage) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestConfirmedTextMessage"
 	if name != "" {

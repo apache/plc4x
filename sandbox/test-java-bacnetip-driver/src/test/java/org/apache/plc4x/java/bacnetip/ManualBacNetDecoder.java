@@ -22,12 +22,13 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 
 public class ManualBacNetDecoder {
 
     public static void main(String[] args) throws Exception {
         final byte[] bytes = Hex.decodeHex("810a002b01040205790109011c020000142c000002f93a06b24e09552e44434a00002f096f2e8204002f4f");
-        ReadBuffer readBuffer = new ReadBuffer(bytes);
+        ReadBuffer readBuffer = new ReadBufferByteBased(bytes);
         final BVLC packet = BVLCIO.staticParse(readBuffer);
         System.out.println(packet);
     }

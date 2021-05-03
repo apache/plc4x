@@ -97,9 +97,13 @@ func (m *MPropInfoInd) LengthInBytes() uint16 {
 }
 
 func MPropInfoIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropInfoInd")
+	if pullErr := io.PullContext("MPropInfoInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MPropInfoInd")
+	if closeErr := io.CloseContext("MPropInfoInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropInfoInd{
@@ -111,14 +115,19 @@ func MPropInfoIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropInfoInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropInfoInd")
+		if pushErr := io.PushContext("MPropInfoInd"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MPropInfoInd")
+		if popErr := io.PopContext("MPropInfoInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MPropInfoInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *MPropInfoInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MPropInfoInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m MPropInfoInd) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MPropInfoInd) Box(name string, width int) utils.AsciiBox {
 	boxName := "MPropInfoInd"
 	if name != "" {

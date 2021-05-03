@@ -117,7 +117,9 @@ func (m *LDataInd) LengthInBytes() uint16 {
 }
 
 func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LDataInd")
+	if pullErr := io.PullContext("LDataInd"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8("additionalInformationLength", 8)
@@ -126,7 +128,9 @@ func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 	}
 
 	// Array field (additionalInformation)
-	io.PullContext("additionalInformation")
+	if pullErr := io.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	additionalInformation := make([]*CEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
@@ -138,15 +142,26 @@ func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 		}
 		additionalInformation = append(additionalInformation, _item)
 	}
-	io.CloseContext("additionalInformation")
+	if closeErr := io.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("dataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(io)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")
 	}
+	if closeErr := io.CloseContext("dataFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("LDataInd")
+	if closeErr := io.CloseContext("LDataInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LDataInd{
@@ -161,7 +176,9 @@ func LDataIndParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LDataInd")
+		if pushErr := io.PushContext("LDataInd"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
@@ -172,28 +189,41 @@ func (m *LDataInd) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (additionalInformation)
 		if m.AdditionalInformation != nil {
-			io.PushContext("additionalInformation")
+			if pushErr := io.PushContext("additionalInformation", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'additionalInformation' field")
 				}
 			}
-			io.PopContext("additionalInformation")
+			if popErr := io.PopContext("additionalInformation", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Simple Field (dataFrame)
+		if pushErr := io.PushContext("dataFrame"); pushErr != nil {
+			return pushErr
+		}
 		_dataFrameErr := m.DataFrame.Serialize(io)
+		if popErr := io.PopContext("dataFrame"); popErr != nil {
+			return popErr
+		}
 		if _dataFrameErr != nil {
 			return errors.Wrap(_dataFrameErr, "Error serializing 'dataFrame' field")
 		}
 
-		io.PopContext("LDataInd")
+		if popErr := io.PopContext("LDataInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -248,6 +278,7 @@ func (m *LDataInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LDataInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
 		return err
@@ -273,6 +304,7 @@ func (m LDataInd) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LDataInd) Box(name string, width int) utils.AsciiBox {
 	boxName := "LDataInd"
 	if name != "" {

@@ -97,9 +97,13 @@ func (m *ApduControlDisconnect) LengthInBytes() uint16 {
 }
 
 func ApduControlDisconnectParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControlDisconnect")
+	if pullErr := io.PullContext("ApduControlDisconnect"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduControlDisconnect")
+	if closeErr := io.CloseContext("ApduControlDisconnect"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduControlDisconnect{
@@ -111,14 +115,19 @@ func ApduControlDisconnectParse(io utils.ReadBuffer) (*ApduControl, error) {
 
 func (m *ApduControlDisconnect) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduControlDisconnect")
+		if pushErr := io.PushContext("ApduControlDisconnect"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduControlDisconnect")
+		if popErr := io.PopContext("ApduControlDisconnect"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduControlDisconnect) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduControlDisconnect) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduControlDisconnect) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduControlDisconnect) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduControlDisconnect) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduControlDisconnect"
 	if name != "" {

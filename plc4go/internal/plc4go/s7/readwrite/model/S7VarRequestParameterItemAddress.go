@@ -106,7 +106,9 @@ func (m *S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
 }
 
 func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestParameterItem, error) {
-	io.PullContext("S7VarRequestParameterItemAddress")
+	if pullErr := io.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := io.ReadUint8("itemLength", 8)
@@ -115,13 +117,22 @@ func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestPa
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field")
 	}
 
+	if pullErr := io.PullContext("address"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (address)
 	address, _addressErr := S7AddressParse(io)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
+	if closeErr := io.CloseContext("address"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7VarRequestParameterItemAddress")
+	if closeErr := io.CloseContext("S7VarRequestParameterItemAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7VarRequestParameterItemAddress{
@@ -134,7 +145,9 @@ func S7VarRequestParameterItemAddressParse(io utils.ReadBuffer) (*S7VarRequestPa
 
 func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7VarRequestParameterItemAddress")
+		if pushErr := io.PushContext("S7VarRequestParameterItemAddress"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.Address.LengthInBytes())
@@ -144,17 +157,26 @@ func (m *S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error
 		}
 
 		// Simple Field (address)
+		if pushErr := io.PushContext("address"); pushErr != nil {
+			return pushErr
+		}
 		_addressErr := m.Address.Serialize(io)
+		if popErr := io.PopContext("address"); popErr != nil {
+			return popErr
+		}
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
-		io.PopContext("S7VarRequestParameterItemAddress")
+		if popErr := io.PopContext("S7VarRequestParameterItemAddress"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -187,6 +209,7 @@ func (m *S7VarRequestParameterItemAddress) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7VarRequestParameterItemAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
@@ -198,6 +221,7 @@ func (m S7VarRequestParameterItemAddress) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7VarRequestParameterItemAddress) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7VarRequestParameterItemAddress"
 	if name != "" {

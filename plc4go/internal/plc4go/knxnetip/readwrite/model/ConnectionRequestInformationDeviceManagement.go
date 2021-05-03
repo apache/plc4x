@@ -97,9 +97,13 @@ func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
-	io.PullContext("ConnectionRequestInformationDeviceManagement")
+	if pullErr := io.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ConnectionRequestInformationDeviceManagement")
+	if closeErr := io.CloseContext("ConnectionRequestInformationDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationDeviceManagement{
@@ -111,14 +115,19 @@ func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionRequestInformationDeviceManagement")
+		if pushErr := io.PushContext("ConnectionRequestInformationDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ConnectionRequestInformationDeviceManagement")
+		if popErr := io.PopContext("ConnectionRequestInformationDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ConnectionRequestInformationDeviceManagement) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationDeviceManagement) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionRequestInformationDeviceManagement"
 	if name != "" {

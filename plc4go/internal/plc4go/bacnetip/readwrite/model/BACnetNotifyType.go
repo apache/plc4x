@@ -107,6 +107,7 @@ func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -126,6 +127,7 @@ func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m BACnetNotifyType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -149,6 +151,7 @@ func (e BACnetNotifyType) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetNotifyType) Box(s string, i int) utils.AsciiBox {
 	boxName := "BACnetNotifyType"
 	if s != "" {

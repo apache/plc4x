@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestCreateObject) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestCreateObjectParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestCreateObject")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestCreateObject")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestCreateObject"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestCreateObject{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestCreateObjectParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestCreateObject) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestCreateObject")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestCreateObject"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestCreateObject")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestCreateObject"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestCreateObject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestCreateObject) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestCreateObject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestCreateObject) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestCreateObject) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestCreateObject"
 	if name != "" {

@@ -24,7 +24,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class KnxNetIpParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public KnxNetIpParserSerializerTest() {
-        super("/protocols/knxnetip/ParserSerializerTestsuite.xml");
+        super("/protocols/knxnetip/ParserSerializerTestsuite.xml", true);
     }
 
 }

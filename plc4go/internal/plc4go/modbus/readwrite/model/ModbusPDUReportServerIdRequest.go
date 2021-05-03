@@ -105,9 +105,13 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReportServerIdRequest")
+	if pullErr := io.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUReportServerIdRequest")
+	if closeErr := io.CloseContext("ModbusPDUReportServerIdRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReportServerIdRequest{
@@ -119,14 +123,19 @@ func ModbusPDUReportServerIdRequestParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUReportServerIdRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReportServerIdRequest")
+		if pushErr := io.PushContext("ModbusPDUReportServerIdRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUReportServerIdRequest")
+		if popErr := io.PopContext("ModbusPDUReportServerIdRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +159,7 @@ func (m *ModbusPDUReportServerIdRequest) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReportServerIdRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +168,7 @@ func (m ModbusPDUReportServerIdRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReportServerIdRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReportServerIdRequest"
 	if name != "" {

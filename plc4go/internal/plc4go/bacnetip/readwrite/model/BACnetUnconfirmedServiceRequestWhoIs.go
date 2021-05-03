@@ -135,7 +135,9 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestWhoIs")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
 	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8("deviceInstanceRangeLowLimitHeader", 5)
@@ -153,7 +155,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Array field (deviceInstanceRangeLowLimit)
-	io.PullContext("deviceInstanceRangeLowLimit")
+	if pullErr := io.PullContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
@@ -163,7 +167,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeLowLimit[curItem] = _item
 	}
-	io.CloseContext("deviceInstanceRangeLowLimit")
+	if closeErr := io.CloseContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
 	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8("deviceInstanceRangeHighLimitHeader", 5)
@@ -181,7 +187,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 	}
 
 	// Array field (deviceInstanceRangeHighLimit)
-	io.PullContext("deviceInstanceRangeHighLimit")
+	if pullErr := io.PullContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
@@ -191,9 +199,13 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
 	}
-	io.CloseContext("deviceInstanceRangeHighLimit")
+	if closeErr := io.CloseContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestWhoIs{
@@ -209,7 +221,9 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnco
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestWhoIs")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestWhoIs"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (deviceInstanceRangeLowLimitHeader)
 		_deviceInstanceRangeLowLimitHeaderErr := io.WriteUint8("deviceInstanceRangeLowLimitHeader", 5, 0x01)
@@ -226,14 +240,18 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeLowLimit)
 		if m.DeviceInstanceRangeLowLimit != nil {
-			io.PushContext("deviceInstanceRangeLowLimit")
+			if pushErr := io.PushContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DeviceInstanceRangeLowLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
 				}
 			}
-			io.PopContext("deviceInstanceRangeLowLimit")
+			if popErr := io.PopContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (deviceInstanceRangeHighLimitHeader)
@@ -251,22 +269,29 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) e
 
 		// Array Field (deviceInstanceRangeHighLimit)
 		if m.DeviceInstanceRangeHighLimit != nil {
-			io.PushContext("deviceInstanceRangeHighLimit")
+			if pushErr := io.PushContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DeviceInstanceRangeHighLimit {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
 				}
 			}
-			io.PopContext("deviceInstanceRangeHighLimit")
+			if popErr := io.PopContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestWhoIs")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestWhoIs"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -324,6 +349,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DeviceInstanceRangeLowLimitLength, xml.StartElement{Name: xml.Name{Local: "deviceInstanceRangeLowLimitLength"}}); err != nil {
 		return err
@@ -348,6 +374,7 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestWhoIs) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestWhoIs"
 	if name != "" {

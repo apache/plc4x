@@ -97,9 +97,13 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) LengthInBytes() uint16 {
 }
 
 func ApduDataExtGroupPropertyValueInfoReportParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtGroupPropertyValueInfoReport")
+	if pullErr := io.PullContext("ApduDataExtGroupPropertyValueInfoReport"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtGroupPropertyValueInfoReport")
+	if closeErr := io.CloseContext("ApduDataExtGroupPropertyValueInfoReport"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtGroupPropertyValueInfoReport{
@@ -111,14 +115,19 @@ func ApduDataExtGroupPropertyValueInfoReportParse(io utils.ReadBuffer) (*ApduDat
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtGroupPropertyValueInfoReport")
+		if pushErr := io.PushContext("ApduDataExtGroupPropertyValueInfoReport"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtGroupPropertyValueInfoReport")
+		if popErr := io.PopContext("ApduDataExtGroupPropertyValueInfoReport"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtGroupPropertyValueInfoReport) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtGroupPropertyValueInfoReport) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtGroupPropertyValueInfoReport) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtGroupPropertyValueInfoReport) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtGroupPropertyValueInfoReport"
 	if name != "" {

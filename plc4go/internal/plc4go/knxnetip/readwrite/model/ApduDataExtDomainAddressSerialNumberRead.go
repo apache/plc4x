@@ -97,9 +97,13 @@ func (m *ApduDataExtDomainAddressSerialNumberRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtDomainAddressSerialNumberReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtDomainAddressSerialNumberRead")
+	if pullErr := io.PullContext("ApduDataExtDomainAddressSerialNumberRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtDomainAddressSerialNumberRead")
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressSerialNumberRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSerialNumberRead{
@@ -111,14 +115,19 @@ func ApduDataExtDomainAddressSerialNumberReadParse(io utils.ReadBuffer) (*ApduDa
 
 func (m *ApduDataExtDomainAddressSerialNumberRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtDomainAddressSerialNumberRead")
+		if pushErr := io.PushContext("ApduDataExtDomainAddressSerialNumberRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtDomainAddressSerialNumberRead")
+		if popErr := io.PopContext("ApduDataExtDomainAddressSerialNumberRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtDomainAddressSerialNumberRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtDomainAddressSerialNumberRead) UnmarshalXML(d *xml.Decoder, 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtDomainAddressSerialNumberRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtDomainAddressSerialNumberRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtDomainAddressSerialNumberRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtDomainAddressSerialNumberRead"
 	if name != "" {

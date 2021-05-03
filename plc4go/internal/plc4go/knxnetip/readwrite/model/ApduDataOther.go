@@ -103,15 +103,26 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 }
 
 func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
-	io.PullContext("ApduDataOther")
+	if pullErr := io.PullContext("ApduDataOther"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("extendedApdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
 	}
+	if closeErr := io.CloseContext("extendedApdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataOther")
+	if closeErr := io.CloseContext("ApduDataOther"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataOther{
@@ -124,20 +135,31 @@ func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error
 
 func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataOther")
+		if pushErr := io.PushContext("ApduDataOther"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (extendedApdu)
+		if pushErr := io.PushContext("extendedApdu"); pushErr != nil {
+			return pushErr
+		}
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
+		if popErr := io.PopContext("extendedApdu"); popErr != nil {
+			return popErr
+		}
 		if _extendedApduErr != nil {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
-		io.PopContext("ApduDataOther")
+		if popErr := io.PopContext("ApduDataOther"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataOther) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -170,6 +192,7 @@ func (m *ApduDataOther) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataOther) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ExtendedApdu, xml.StartElement{Name: xml.Name{Local: "extendedApdu"}}); err != nil {
 		return err
@@ -181,6 +204,7 @@ func (m ApduDataOther) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataOther) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataOther"
 	if name != "" {

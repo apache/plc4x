@@ -97,9 +97,13 @@ func (m *BACnetServiceAckReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckReadRangeParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckReadRange")
+	if pullErr := io.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckReadRange")
+	if closeErr := io.CloseContext("BACnetServiceAckReadRange"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckReadRange{
@@ -111,14 +115,19 @@ func BACnetServiceAckReadRangeParse(io utils.ReadBuffer) (*BACnetServiceAck, err
 
 func (m *BACnetServiceAckReadRange) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckReadRange")
+		if pushErr := io.PushContext("BACnetServiceAckReadRange"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckReadRange")
+		if popErr := io.PopContext("BACnetServiceAckReadRange"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckReadRange) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckReadRange) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckReadRange) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckReadRange"
 	if name != "" {

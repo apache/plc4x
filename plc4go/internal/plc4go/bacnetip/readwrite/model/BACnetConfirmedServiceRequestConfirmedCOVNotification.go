@@ -173,7 +173,9 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() 
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8("subscriberProcessIdentifierHeader", 8)
@@ -248,7 +250,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	}
 
 	// Array field (lifetimeSeconds)
-	io.PullContext("lifetimeSeconds")
+	if pullErr := io.PullContext("lifetimeSeconds", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	lifetimeSeconds := make([]int8, lifetimeLength)
 	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
@@ -258,7 +262,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		lifetimeSeconds[curItem] = _item
 	}
-	io.CloseContext("lifetimeSeconds")
+	if closeErr := io.CloseContext("lifetimeSeconds", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (listOfValuesOpeningTag)
 	listOfValuesOpeningTag, _listOfValuesOpeningTagErr := io.ReadUint8("listOfValuesOpeningTag", 8)
@@ -270,7 +276,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 	}
 
 	// Array field (notifications)
-	io.PullContext("notifications")
+	if pullErr := io.PullContext("notifications", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	notifications := make([]*BACnetTagWithContent, 0)
 	_notificationsLength := uint16(len) - uint16(uint16(18))
@@ -282,7 +290,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		}
 		notifications = append(notifications, _item)
 	}
-	io.CloseContext("notifications")
+	if closeErr := io.CloseContext("notifications", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (listOfValuesClosingTag)
 	listOfValuesClosingTag, _listOfValuesClosingTagErr := io.ReadUint8("listOfValuesClosingTag", 8)
@@ -293,7 +303,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetConfirmedServiceRequestConfirmedCOVNotification_LISTOFVALUESCLOSINGTAG) + " but got " + fmt.Sprintf("%d", listOfValuesClosingTag))
 	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedCOVNotification{
@@ -313,7 +325,9 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io utils.ReadBuf
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (subscriberProcessIdentifierHeader)
 		_subscriberProcessIdentifierHeaderErr := io.WriteUint8("subscriberProcessIdentifierHeader", 8, 0x09)
@@ -383,14 +397,18 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (lifetimeSeconds)
 		if m.LifetimeSeconds != nil {
-			io.PushContext("lifetimeSeconds")
+			if pushErr := io.PushContext("lifetimeSeconds", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'lifetimeSeconds' field")
 				}
 			}
-			io.PopContext("lifetimeSeconds")
+			if popErr := io.PopContext("lifetimeSeconds", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (listOfValuesOpeningTag)
@@ -401,14 +419,18 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 
 		// Array Field (notifications)
 		if m.Notifications != nil {
-			io.PushContext("notifications")
+			if pushErr := io.PushContext("notifications", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Notifications {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'notifications' field")
 				}
 			}
-			io.PopContext("notifications")
+			if popErr := io.PopContext("notifications", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (listOfValuesClosingTag)
@@ -417,12 +439,15 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io uti
 			return errors.Wrap(_listOfValuesClosingTagErr, "Error serializing 'listOfValuesClosingTag' field")
 		}
 
-		io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -499,6 +524,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SubscriberProcessIdentifier, xml.StartElement{Name: xml.Name{Local: "subscriberProcessIdentifier"}}); err != nil {
 		return err
@@ -541,6 +567,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestConfirmedCOVNotification"
 	if name != "" {

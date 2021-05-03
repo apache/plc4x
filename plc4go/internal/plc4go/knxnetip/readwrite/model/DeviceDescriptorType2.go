@@ -117,7 +117,9 @@ func (m *DeviceDescriptorType2) LengthInBytes() uint16 {
 }
 
 func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, error) {
-	io.PullContext("DeviceDescriptorType2")
+	if pullErr := io.PullContext("DeviceDescriptorType2"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (manufacturerId)
 	manufacturerId, _manufacturerIdErr := io.ReadUint16("manufacturerId", 16)
@@ -155,10 +157,21 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
 	}
 
+	if pullErr := io.PullContext("channelInfo1"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (channelInfo1)
 	channelInfo1, _channelInfo1Err := ChannelInformationParse(io)
 	if _channelInfo1Err != nil {
 		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field")
+	}
+	if closeErr := io.CloseContext("channelInfo1"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("channelInfo2"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (channelInfo2)
@@ -166,11 +179,25 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 	if _channelInfo2Err != nil {
 		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field")
 	}
+	if closeErr := io.CloseContext("channelInfo2"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("channelInfo3"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (channelInfo3)
 	channelInfo3, _channelInfo3Err := ChannelInformationParse(io)
 	if _channelInfo3Err != nil {
 		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field")
+	}
+	if closeErr := io.CloseContext("channelInfo3"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("channelInfo4"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (channelInfo4)
@@ -178,15 +205,22 @@ func DeviceDescriptorType2Parse(io utils.ReadBuffer) (*DeviceDescriptorType2, er
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")
 	}
+	if closeErr := io.CloseContext("channelInfo4"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DeviceDescriptorType2")
+	if closeErr := io.CloseContext("DeviceDescriptorType2"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDeviceDescriptorType2(manufacturerId, deviceType, version, readSupported, writeSupported, logicalTagBase, channelInfo1, channelInfo2, channelInfo3, channelInfo4), nil
 }
 
 func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DeviceDescriptorType2")
+	if pushErr := io.PushContext("DeviceDescriptorType2"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (manufacturerId)
 	manufacturerId := uint16(m.ManufacturerId)
@@ -231,33 +265,60 @@ func (m *DeviceDescriptorType2) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (channelInfo1)
+	if pushErr := io.PushContext("channelInfo1"); pushErr != nil {
+		return pushErr
+	}
 	_channelInfo1Err := m.ChannelInfo1.Serialize(io)
+	if popErr := io.PopContext("channelInfo1"); popErr != nil {
+		return popErr
+	}
 	if _channelInfo1Err != nil {
 		return errors.Wrap(_channelInfo1Err, "Error serializing 'channelInfo1' field")
 	}
 
 	// Simple Field (channelInfo2)
+	if pushErr := io.PushContext("channelInfo2"); pushErr != nil {
+		return pushErr
+	}
 	_channelInfo2Err := m.ChannelInfo2.Serialize(io)
+	if popErr := io.PopContext("channelInfo2"); popErr != nil {
+		return popErr
+	}
 	if _channelInfo2Err != nil {
 		return errors.Wrap(_channelInfo2Err, "Error serializing 'channelInfo2' field")
 	}
 
 	// Simple Field (channelInfo3)
+	if pushErr := io.PushContext("channelInfo3"); pushErr != nil {
+		return pushErr
+	}
 	_channelInfo3Err := m.ChannelInfo3.Serialize(io)
+	if popErr := io.PopContext("channelInfo3"); popErr != nil {
+		return popErr
+	}
 	if _channelInfo3Err != nil {
 		return errors.Wrap(_channelInfo3Err, "Error serializing 'channelInfo3' field")
 	}
 
 	// Simple Field (channelInfo4)
+	if pushErr := io.PushContext("channelInfo4"); pushErr != nil {
+		return pushErr
+	}
 	_channelInfo4Err := m.ChannelInfo4.Serialize(io)
+	if popErr := io.PopContext("channelInfo4"); popErr != nil {
+		return popErr
+	}
 	if _channelInfo4Err != nil {
 		return errors.Wrap(_channelInfo4Err, "Error serializing 'channelInfo4' field")
 	}
 
-	io.PopContext("DeviceDescriptorType2")
+	if popErr := io.PopContext("DeviceDescriptorType2"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceDescriptorType2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -340,6 +401,7 @@ func (m *DeviceDescriptorType2) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceDescriptorType2) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceDescriptorType2"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -387,6 +449,7 @@ func (m DeviceDescriptorType2) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceDescriptorType2) Box(name string, width int) utils.AsciiBox {
 	boxName := "DeviceDescriptorType2"
 	if name != "" {

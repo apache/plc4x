@@ -118,7 +118,9 @@ func (m *ModbusPDUWriteFileRecordRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUWriteFileRecordRequest")
+	if pullErr := io.PullContext("ModbusPDUWriteFileRecordRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
@@ -128,7 +130,9 @@ func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	items := make([]*ModbusPDUWriteFileRecordRequestItem, 0)
 	_itemsLength := byteCount
@@ -140,9 +144,13 @@ func ModbusPDUWriteFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		items = append(items, _item)
 	}
-	io.CloseContext("items")
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUWriteFileRecordRequest")
+	if closeErr := io.CloseContext("ModbusPDUWriteFileRecordRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteFileRecordRequest{
@@ -162,7 +170,9 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 		return sizeInBytes
 	}
 	ser := func() error {
-		io.PushContext("ModbusPDUWriteFileRecordRequest")
+		if pushErr := io.PushContext("ModbusPDUWriteFileRecordRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
@@ -173,22 +183,29 @@ func (m *ModbusPDUWriteFileRecordRequest) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUWriteFileRecordRequest")
+		if popErr := io.PopContext("ModbusPDUWriteFileRecordRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUWriteFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -218,6 +235,7 @@ func (m *ModbusPDUWriteFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUWriteFileRecordRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
@@ -237,6 +255,7 @@ func (m ModbusPDUWriteFileRecordRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUWriteFileRecordRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUWriteFileRecordRequest"
 	if name != "" {

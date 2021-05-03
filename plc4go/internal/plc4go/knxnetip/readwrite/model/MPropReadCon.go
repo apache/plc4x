@@ -128,7 +128,9 @@ func (m *MPropReadCon) LengthInBytes() uint16 {
 }
 
 func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropReadCon")
+	if pullErr := io.PullContext("MPropReadCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16("interfaceObjectType", 16)
@@ -166,7 +168,9 @@ func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
 		return nil, errors.Wrap(_unknownErr, "Error parsing 'unknown' field")
 	}
 
-	io.CloseContext("MPropReadCon")
+	if closeErr := io.CloseContext("MPropReadCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropReadCon{
@@ -184,7 +188,9 @@ func MPropReadConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropReadCon")
+		if pushErr := io.PushContext("MPropReadCon"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
@@ -228,12 +234,15 @@ func (m *MPropReadCon) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_unknownErr, "Error serializing 'unknown' field")
 		}
 
-		io.PopContext("MPropReadCon")
+		if popErr := io.PopContext("MPropReadCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -293,6 +302,7 @@ func (m *MPropReadCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MPropReadCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.InterfaceObjectType, xml.StartElement{Name: xml.Name{Local: "interfaceObjectType"}}); err != nil {
 		return err
@@ -319,6 +329,7 @@ func (m MPropReadCon) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MPropReadCon) Box(name string, width int) utils.AsciiBox {
 	boxName := "MPropReadCon"
 	if name != "" {

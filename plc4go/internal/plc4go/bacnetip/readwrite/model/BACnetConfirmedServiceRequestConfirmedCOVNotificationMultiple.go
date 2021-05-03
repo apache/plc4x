@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthIn
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io utils
 
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Unmarsha
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) String() 
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple"
 	if name != "" {

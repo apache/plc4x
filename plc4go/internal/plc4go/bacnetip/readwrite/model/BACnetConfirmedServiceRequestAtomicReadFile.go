@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAtomicReadFileParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestAtomicReadFile")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestAtomicReadFile")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAtomicReadFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAtomicReadFile{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(io utils.ReadBuffer) (*BAC
 
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestAtomicReadFile")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAtomicReadFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestAtomicReadFile")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAtomicReadFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestAtomicReadFile) UnmarshalXML(d *xml.Decode
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestAtomicReadFile) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestAtomicReadFile) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestAtomicReadFile"
 	if name != "" {

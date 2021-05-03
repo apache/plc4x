@@ -131,12 +131,21 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 }
 
 func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsReadDeviceInfoResponse")
+	if pullErr := io.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (majorVersion)
@@ -158,7 +167,9 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 	}
 
 	// Array field (device)
-	io.PullContext("device")
+	if pullErr := io.PullContext("device", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	device := make([]int8, uint16(16))
 	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
@@ -168,9 +179,13 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 		}
 		device[curItem] = _item
 	}
-	io.CloseContext("device")
+	if closeErr := io.CloseContext("device", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsReadDeviceInfoResponse")
+	if closeErr := io.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoResponse{
@@ -187,10 +202,18 @@ func AdsReadDeviceInfoResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsReadDeviceInfoResponse")
+		if pushErr := io.PushContext("AdsReadDeviceInfoResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
@@ -218,22 +241,29 @@ func (m *AdsReadDeviceInfoResponse) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (device)
 		if m.Device != nil {
-			io.PushContext("device")
+			if pushErr := io.PushContext("device", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Device {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'device' field")
 				}
 			}
-			io.PopContext("device")
+			if popErr := io.PopContext("device", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("AdsReadDeviceInfoResponse")
+		if popErr := io.PopContext("AdsReadDeviceInfoResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadDeviceInfoResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -292,6 +322,7 @@ func (m *AdsReadDeviceInfoResponse) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadDeviceInfoResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -317,6 +348,7 @@ func (m AdsReadDeviceInfoResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadDeviceInfoResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsReadDeviceInfoResponse"
 	if name != "" {

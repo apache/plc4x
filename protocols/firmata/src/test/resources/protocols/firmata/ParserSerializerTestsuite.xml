@@ -21,6 +21,9 @@
 
   <name>Firmata</name>
 
+  <protocolName>firmata</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>Firmata Reset</name>
     <raw>FF</raw>
@@ -29,9 +32,18 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSystemReset"/>
-      </FirmataMessageCommand>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">15</commandCode>
+              <FirmataCommandSystemReset>
+              </FirmataCommandSystemReset>
+            </FirmataCommand>
+          </command>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -43,12 +55,20 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandProtocolVersion">
-          <majorVersion>2</majorVersion>
-          <minorVersion>5</minorVersion>
-        </command>
-      </FirmataMessageCommand>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">9</commandCode>
+              <FirmataCommandProtocolVersion>
+                <majorVersion dataType="uint" bitLength="8">2</majorVersion>
+                <minorVersion dataType="uint" bitLength="8">5</minorVersion>
+              </FirmataCommandProtocolVersion>
+            </FirmataCommand>
+          </command>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -60,15 +80,68 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
-            <majorVersion>2</majorVersion>
-            <minorVersion>5</minorVersion>
-            <fileName>5374616E646172644669726D6174612E696E6F</fileName>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">121</commandType>
+                    <SysexCommandReportFirmwareResponse>
+                      <majorVersion dataType="uint" bitLength="8">2</majorVersion>
+                      <minorVersion dataType="uint" bitLength="8">5</minorVersion>
+                      <fileName isList="true">
+                        <value dataType="int" bitLength="8">83</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">116</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">110</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">114</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">70</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">105</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">114</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">109</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">116</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">46</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">105</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">110</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">111</value>
+                        <value dataType="int" bitLength="8">0</value>
+                      </fileName>
+                    </SysexCommandReportFirmwareResponse>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
           </command>
-        </command>
-      </FirmataMessageCommand>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -80,11 +153,26 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareRequest"/>
-        </command>
-      </FirmataMessageCommand>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">121</commandType>
+                    <SysexCommandReportFirmwareRequest>
+                    </SysexCommandReportFirmwareRequest>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
+          </command>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -96,15 +184,68 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
-            <majorVersion>2</majorVersion>
-            <minorVersion>5</minorVersion>
-            <fileName>5374616E646172644669726D6174612E696E6F</fileName>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">121</commandType>
+                    <SysexCommandReportFirmwareResponse>
+                      <majorVersion dataType="uint" bitLength="8">2</majorVersion>
+                      <minorVersion dataType="uint" bitLength="8">5</minorVersion>
+                      <fileName isList="true">
+                        <value dataType="int" bitLength="8">83</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">116</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">110</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">114</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">70</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">105</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">114</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">109</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">116</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">46</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">105</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">110</value>
+                        <value dataType="int" bitLength="8">0</value>
+                        <value dataType="int" bitLength="8">111</value>
+                        <value dataType="int" bitLength="8">0</value>
+                      </fileName>
+                    </SysexCommandReportFirmwareResponse>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
           </command>
-        </command>
-      </FirmataMessageCommand>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -116,11 +257,26 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandAnalogMappingQueryRequest"/>
-        </command>
-      </FirmataMessageCommand>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">105</commandType>
+                    <SysexCommandAnalogMappingQueryRequest>
+                    </SysexCommandAnalogMappingQueryRequest>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
+          </command>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -132,11 +288,26 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandCapabilityQuery"/>
-        </command>
-      </FirmataMessageCommand>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">107</commandType>
+                    <SysexCommandCapabilityQuery>
+                    </SysexCommandCapabilityQuery>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
+          </command>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -148,10 +319,14 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageSubscribeAnalogPinValue className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageSubscribeAnalogPinValue">
-        <pin>0</pin>
-        <enable>true</enable>
-      </FirmataMessageSubscribeAnalogPinValue>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">12</messageType>
+        <FirmataMessageSubscribeAnalogPinValue>
+          <pin dataType="uint" bitLength="4">0</pin>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <enable dataType="bit" bitLength="1">true</enable>
+        </FirmataMessageSubscribeAnalogPinValue>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -163,10 +338,14 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageSubscribeDigitalPinValue className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageSubscribeDigitalPinValue">
-        <pin>0</pin>
-        <enable>true</enable>
-      </FirmataMessageSubscribeDigitalPinValue>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">13</messageType>
+        <FirmataMessageSubscribeDigitalPinValue>
+          <pin dataType="uint" bitLength="4">0</pin>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <enable dataType="bit" bitLength="1">true</enable>
+        </FirmataMessageSubscribeDigitalPinValue>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -206,10 +385,16 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageAnalogIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageAnalogIO">
-        <pin>0</pin>
-        <data>5403</data>
-      </FirmataMessageAnalogIO>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">14</messageType>
+        <FirmataMessageAnalogIO>
+          <pin dataType="uint" bitLength="4">0</pin>
+          <data isList="true">
+            <value dataType="int" bitLength="8">84</value>
+            <value dataType="int" bitLength="8">3</value>
+          </data>
+        </FirmataMessageAnalogIO>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -221,10 +406,16 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageDigitalIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageDigitalIO">
-        <pinBlock>0</pinBlock>
-        <data>0000</data>
-      </FirmataMessageDigitalIO>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">9</messageType>
+        <FirmataMessageDigitalIO>
+          <pinBlock dataType="uint" bitLength="4">0</pinBlock>
+          <data isList="true">
+            <value dataType="int" bitLength="8">0</value>
+            <value dataType="int" bitLength="8">0</value>
+          </data>
+        </FirmataMessageDigitalIO>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -236,13 +427,27 @@
       <response>false</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandPinStateQuery">
-            <pin>2</pin>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">109</commandType>
+                    <SysexCommandPinStateQuery>
+                      <pin dataType="uint" bitLength="8">2</pin>
+                    </SysexCommandPinStateQuery>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
           </command>
-        </command>
-      </FirmataMessageCommand>
+        </FirmataMessageCommand>
+      </FirmataMessage>
     </xml>
   </testcase>
 
@@ -254,15 +459,30 @@
       <response>true</response>
     </parser-arguments>
     <xml>
-      <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
-        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandPinStateResponse">
-            <pin>2</pin>
-            <pinMode>1</pinMode>
-            <pinState>0</pinState>
+      <FirmataMessage>
+        <messageType dataType="uint" bitLength="4">15</messageType>
+        <FirmataMessageCommand>
+          <command>
+            <FirmataCommand>
+              <commandCode dataType="uint" bitLength="4">0</commandCode>
+              <FirmataCommandSysex>
+                <command>
+                  <SysexCommand>
+                    <commandType dataType="uint" bitLength="8">110</commandType>
+                    <SysexCommandPinStateResponse>
+                      <pin dataType="uint" bitLength="8">2</pin>
+                      <pinMode dataType="uint" bitLength="8">1</pinMode>
+                      <pinState dataType="uint" bitLength="8">0</pinState>
+                    </SysexCommandPinStateResponse>
+                  </SysexCommand>
+                </command>
+                <reserved dataType="uint" bitLength="8">247</reserved>
+              </FirmataCommandSysex>
+            </FirmataCommand>
           </command>
-        </command>
-      </FirmataMessageCommand>    </xml>
+        </FirmataMessageCommand>
+      </FirmataMessage>
+    </xml>
   </testcase>
 
   <!--testcase>

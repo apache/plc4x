@@ -97,9 +97,13 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 }
 
 func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataRestart")
+	if pullErr := io.PullContext("ApduDataRestart"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataRestart")
+	if closeErr := io.CloseContext("ApduDataRestart"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataRestart{
@@ -111,14 +115,19 @@ func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataRestart) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataRestart")
+		if pushErr := io.PushContext("ApduDataRestart"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataRestart")
+		if popErr := io.PopContext("ApduDataRestart"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataRestart) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataRestart) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataRestart) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataRestart"
 	if name != "" {

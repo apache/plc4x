@@ -97,9 +97,13 @@ func (m *MFuncPropStateReadReq) LengthInBytes() uint16 {
 }
 
 func MFuncPropStateReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MFuncPropStateReadReq")
+	if pullErr := io.PullContext("MFuncPropStateReadReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MFuncPropStateReadReq")
+	if closeErr := io.CloseContext("MFuncPropStateReadReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MFuncPropStateReadReq{
@@ -111,14 +115,19 @@ func MFuncPropStateReadReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropStateReadReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MFuncPropStateReadReq")
+		if pushErr := io.PushContext("MFuncPropStateReadReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MFuncPropStateReadReq")
+		if popErr := io.PopContext("MFuncPropStateReadReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MFuncPropStateReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *MFuncPropStateReadReq) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MFuncPropStateReadReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m MFuncPropStateReadReq) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MFuncPropStateReadReq) Box(name string, width int) utils.AsciiBox {
 	boxName := "MFuncPropStateReadReq"
 	if name != "" {

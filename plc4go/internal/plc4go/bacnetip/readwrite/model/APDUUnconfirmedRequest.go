@@ -107,7 +107,9 @@ func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
 }
 
 func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
-	io.PullContext("APDUUnconfirmedRequest")
+	if pullErr := io.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -123,13 +125,22 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 		}
 	}
 
+	if pullErr := io.PullContext("serviceRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
 	}
+	if closeErr := io.CloseContext("serviceRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("APDUUnconfirmedRequest")
+	if closeErr := io.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUUnconfirmedRequest{
@@ -142,7 +153,9 @@ func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU,
 
 func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUUnconfirmedRequest")
+		if pushErr := io.PushContext("APDUUnconfirmedRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -153,17 +166,26 @@ func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
+		if pushErr := io.PushContext("serviceRequest"); pushErr != nil {
+			return pushErr
+		}
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
+		if popErr := io.PopContext("serviceRequest"); popErr != nil {
+			return popErr
+		}
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
-		io.PopContext("APDUUnconfirmedRequest")
+		if popErr := io.PopContext("APDUUnconfirmedRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -196,6 +218,7 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ServiceRequest, xml.StartElement{Name: xml.Name{Local: "serviceRequest"}}); err != nil {
 		return err
@@ -207,6 +230,7 @@ func (m APDUUnconfirmedRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "APDUUnconfirmedRequest"
 	if name != "" {

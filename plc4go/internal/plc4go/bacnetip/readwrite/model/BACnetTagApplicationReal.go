@@ -107,7 +107,9 @@ func (m *BACnetTagApplicationReal) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationRealParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationReal")
+	if pullErr := io.PullContext("BACnetTagApplicationReal"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadFloat32("value", true, 8, 23)
@@ -115,7 +117,9 @@ func BACnetTagApplicationRealParse(io utils.ReadBuffer, lengthValueType uint8, e
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("BACnetTagApplicationReal")
+	if closeErr := io.CloseContext("BACnetTagApplicationReal"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationReal{
@@ -128,7 +132,9 @@ func BACnetTagApplicationRealParse(io utils.ReadBuffer, lengthValueType uint8, e
 
 func (m *BACnetTagApplicationReal) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationReal")
+		if pushErr := io.PushContext("BACnetTagApplicationReal"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := float32(m.Value)
@@ -137,12 +143,15 @@ func (m *BACnetTagApplicationReal) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("BACnetTagApplicationReal")
+		if popErr := io.PopContext("BACnetTagApplicationReal"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationReal) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -172,6 +181,7 @@ func (m *BACnetTagApplicationReal) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationReal) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
 		return err
@@ -183,6 +193,7 @@ func (m BACnetTagApplicationReal) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationReal) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationReal"
 	if name != "" {

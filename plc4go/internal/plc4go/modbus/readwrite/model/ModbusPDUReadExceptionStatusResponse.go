@@ -111,7 +111,9 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadExceptionStatusResponse")
+	if pullErr := io.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadUint8("value", 8)
@@ -119,7 +121,9 @@ func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("ModbusPDUReadExceptionStatusResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadExceptionStatusResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusResponse{
@@ -132,7 +136,9 @@ func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadExceptionStatusResponse")
+		if pushErr := io.PushContext("ModbusPDUReadExceptionStatusResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := uint8(m.Value)
@@ -141,12 +147,15 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) e
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("ModbusPDUReadExceptionStatusResponse")
+		if popErr := io.PopContext("ModbusPDUReadExceptionStatusResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -176,6 +185,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
 		return err
@@ -187,6 +197,7 @@ func (m ModbusPDUReadExceptionStatusResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadExceptionStatusResponse"
 	if name != "" {

@@ -92,7 +92,9 @@ func (m *HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
 }
 
 func HPAIDiscoveryEndpointParse(io utils.ReadBuffer) (*HPAIDiscoveryEndpoint, error) {
-	io.PullContext("HPAIDiscoveryEndpoint")
+	if pullErr := io.PullContext("HPAIDiscoveryEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -101,16 +103,30 @@ func HPAIDiscoveryEndpointParse(io utils.ReadBuffer) (*HPAIDiscoveryEndpoint, er
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
+	if pullErr := io.PullContext("hostProtocolCode"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (hostProtocolCode)
 	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field")
+	}
+	if closeErr := io.CloseContext("hostProtocolCode"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("ipAddress"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (ipAddress)
 	ipAddress, _ipAddressErr := IPAddressParse(io)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")
+	}
+	if closeErr := io.CloseContext("ipAddress"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (ipPort)
@@ -119,14 +135,18 @@ func HPAIDiscoveryEndpointParse(io utils.ReadBuffer) (*HPAIDiscoveryEndpoint, er
 		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field")
 	}
 
-	io.CloseContext("HPAIDiscoveryEndpoint")
+	if closeErr := io.CloseContext("HPAIDiscoveryEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
 }
 
 func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("HPAIDiscoveryEndpoint")
+	if pushErr := io.PushContext("HPAIDiscoveryEndpoint"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -136,13 +156,25 @@ func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 	}
 
 	// Simple Field (hostProtocolCode)
+	if pushErr := io.PushContext("hostProtocolCode"); pushErr != nil {
+		return pushErr
+	}
 	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
+	if popErr := io.PopContext("hostProtocolCode"); popErr != nil {
+		return popErr
+	}
 	if _hostProtocolCodeErr != nil {
 		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
 	}
 
 	// Simple Field (ipAddress)
+	if pushErr := io.PushContext("ipAddress"); pushErr != nil {
+		return pushErr
+	}
 	_ipAddressErr := m.IpAddress.Serialize(io)
+	if popErr := io.PopContext("ipAddress"); popErr != nil {
+		return popErr
+	}
 	if _ipAddressErr != nil {
 		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
 	}
@@ -154,10 +186,13 @@ func (m *HPAIDiscoveryEndpoint) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
 	}
 
-	io.PopContext("HPAIDiscoveryEndpoint")
+	if popErr := io.PopContext("HPAIDiscoveryEndpoint"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -198,6 +233,7 @@ func (m *HPAIDiscoveryEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *HPAIDiscoveryEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -224,6 +260,7 @@ func (m HPAIDiscoveryEndpoint) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m HPAIDiscoveryEndpoint) Box(name string, width int) utils.AsciiBox {
 	boxName := "HPAIDiscoveryEndpoint"
 	if name != "" {

@@ -107,12 +107,21 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
-	io.PullContext("ConnectionRequestInformationTunnelConnection")
+	if pullErr := io.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("knxLayer"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
+	}
+	if closeErr := io.CloseContext("knxLayer"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -129,7 +138,9 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 		}
 	}
 
-	io.CloseContext("ConnectionRequestInformationTunnelConnection")
+	if closeErr := io.CloseContext("ConnectionRequestInformationTunnelConnection"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationTunnelConnection{
@@ -142,10 +153,18 @@ func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*Co
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionRequestInformationTunnelConnection")
+		if pushErr := io.PushContext("ConnectionRequestInformationTunnelConnection"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (knxLayer)
+		if pushErr := io.PushContext("knxLayer"); pushErr != nil {
+			return pushErr
+		}
 		_knxLayerErr := m.KnxLayer.Serialize(io)
+		if popErr := io.PopContext("knxLayer"); popErr != nil {
+			return popErr
+		}
 		if _knxLayerErr != nil {
 			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
 		}
@@ -158,12 +177,15 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteB
 			}
 		}
 
-		io.PopContext("ConnectionRequestInformationTunnelConnection")
+		if popErr := io.PopContext("ConnectionRequestInformationTunnelConnection"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -193,6 +215,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.KnxLayer, xml.StartElement{Name: xml.Name{Local: "knxLayer"}}); err != nil {
 		return err
@@ -204,6 +227,7 @@ func (m ConnectionRequestInformationTunnelConnection) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionRequestInformationTunnelConnection"
 	if name != "" {

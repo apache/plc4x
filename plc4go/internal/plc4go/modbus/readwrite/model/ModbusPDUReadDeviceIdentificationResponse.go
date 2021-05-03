@@ -105,9 +105,13 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadDeviceIdentificationResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadDeviceIdentificationResponse")
+	if pullErr := io.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUReadDeviceIdentificationResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadDeviceIdentificationResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationResponse{
@@ -119,14 +123,19 @@ func ModbusPDUReadDeviceIdentificationResponseParse(io utils.ReadBuffer) (*Modbu
 
 func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadDeviceIdentificationResponse")
+		if pushErr := io.PushContext("ModbusPDUReadDeviceIdentificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUReadDeviceIdentificationResponse")
+		if popErr := io.PopContext("ModbusPDUReadDeviceIdentificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadDeviceIdentificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +159,7 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadDeviceIdentificationResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +168,7 @@ func (m ModbusPDUReadDeviceIdentificationResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadDeviceIdentificationResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadDeviceIdentificationResponse"
 	if name != "" {

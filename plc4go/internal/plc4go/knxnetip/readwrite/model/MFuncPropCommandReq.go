@@ -97,9 +97,13 @@ func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
 }
 
 func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MFuncPropCommandReq")
+	if pullErr := io.PullContext("MFuncPropCommandReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MFuncPropCommandReq")
+	if closeErr := io.CloseContext("MFuncPropCommandReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MFuncPropCommandReq{
@@ -111,14 +115,19 @@ func MFuncPropCommandReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MFuncPropCommandReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MFuncPropCommandReq")
+		if pushErr := io.PushContext("MFuncPropCommandReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MFuncPropCommandReq")
+		if popErr := io.PopContext("MFuncPropCommandReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MFuncPropCommandReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *MFuncPropCommandReq) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MFuncPropCommandReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m MFuncPropCommandReq) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MFuncPropCommandReq) Box(name string, width int) utils.AsciiBox {
 	boxName := "MFuncPropCommandReq"
 	if name != "" {

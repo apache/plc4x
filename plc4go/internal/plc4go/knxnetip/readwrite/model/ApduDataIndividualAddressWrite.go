@@ -97,9 +97,13 @@ func (m *ApduDataIndividualAddressWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataIndividualAddressWriteParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataIndividualAddressWrite")
+	if pullErr := io.PullContext("ApduDataIndividualAddressWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataIndividualAddressWrite")
+	if closeErr := io.CloseContext("ApduDataIndividualAddressWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataIndividualAddressWrite{
@@ -111,14 +115,19 @@ func ApduDataIndividualAddressWriteParse(io utils.ReadBuffer) (*ApduData, error)
 
 func (m *ApduDataIndividualAddressWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataIndividualAddressWrite")
+		if pushErr := io.PushContext("ApduDataIndividualAddressWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataIndividualAddressWrite")
+		if popErr := io.PopContext("ApduDataIndividualAddressWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataIndividualAddressWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataIndividualAddressWrite) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataIndividualAddressWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataIndividualAddressWrite) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataIndividualAddressWrite) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataIndividualAddressWrite"
 	if name != "" {

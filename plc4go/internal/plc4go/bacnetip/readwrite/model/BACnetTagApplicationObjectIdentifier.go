@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationObjectIdentifier) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationObjectIdentifierParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationObjectIdentifier")
+	if pullErr := io.PullContext("BACnetTagApplicationObjectIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationObjectIdentifier")
+	if closeErr := io.CloseContext("BACnetTagApplicationObjectIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationObjectIdentifier{
@@ -115,14 +119,19 @@ func BACnetTagApplicationObjectIdentifierParse(io utils.ReadBuffer) (*BACnetTag,
 
 func (m *BACnetTagApplicationObjectIdentifier) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationObjectIdentifier")
+		if pushErr := io.PushContext("BACnetTagApplicationObjectIdentifier"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationObjectIdentifier")
+		if popErr := io.PopContext("BACnetTagApplicationObjectIdentifier"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationObjectIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m BACnetTagApplicationObjectIdentifier) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationObjectIdentifier) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationObjectIdentifier"
 	if name != "" {

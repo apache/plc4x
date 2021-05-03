@@ -112,7 +112,9 @@ func (m *ApduDataGroupValueWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
-	io.PullContext("ApduDataGroupValueWrite")
+	if pullErr := io.PullContext("ApduDataGroupValueWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataFirstByte)
 	dataFirstByte, _dataFirstByteErr := io.ReadInt8("dataFirstByte", 6)
@@ -121,7 +123,9 @@ func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduD
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
@@ -131,9 +135,13 @@ func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduD
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataGroupValueWrite")
+	if closeErr := io.CloseContext("ApduDataGroupValueWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataGroupValueWrite{
@@ -147,7 +155,9 @@ func ApduDataGroupValueWriteParse(io utils.ReadBuffer, dataLength uint8) (*ApduD
 
 func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataGroupValueWrite")
+		if pushErr := io.PushContext("ApduDataGroupValueWrite"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.DataFirstByte)
@@ -158,22 +168,29 @@ func (m *ApduDataGroupValueWrite) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ApduDataGroupValueWrite")
+		if popErr := io.PopContext("ApduDataGroupValueWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataGroupValueWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -214,6 +231,7 @@ func (m *ApduDataGroupValueWrite) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataGroupValueWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
 		return err
@@ -230,6 +248,7 @@ func (m ApduDataGroupValueWrite) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataGroupValueWrite) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataGroupValueWrite"
 	if name != "" {

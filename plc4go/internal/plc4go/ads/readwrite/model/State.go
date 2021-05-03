@@ -117,7 +117,9 @@ func (m *State) LengthInBytes() uint16 {
 }
 
 func StateParse(io utils.ReadBuffer) (*State, error) {
-	io.PullContext("State")
+	if pullErr := io.PullContext("State"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (initCommand)
 	initCommand, _initCommandErr := io.ReadBit("initCommand")
@@ -187,14 +189,18 @@ func StateParse(io utils.ReadBuffer) (*State, error) {
 		}
 	}
 
-	io.CloseContext("State")
+	if closeErr := io.CloseContext("State"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewState(initCommand, updCommand, timestampAdded, highPriorityCommand, systemCommand, adsCommand, noReturn, response, broadcast), nil
 }
 
 func (m *State) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("State")
+	if pushErr := io.PushContext("State"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (initCommand)
 	initCommand := bool(m.InitCommand)
@@ -267,10 +273,13 @@ func (m *State) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
-	io.PopContext("State")
+	if popErr := io.PopContext("State"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *State) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -347,6 +356,7 @@ func (m *State) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *State) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.State"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -391,6 +401,7 @@ func (m State) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m State) Box(name string, width int) utils.AsciiBox {
 	boxName := "State"
 	if name != "" {

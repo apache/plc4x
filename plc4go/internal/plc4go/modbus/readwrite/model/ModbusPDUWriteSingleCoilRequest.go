@@ -116,7 +116,9 @@ func (m *ModbusPDUWriteSingleCoilRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteSingleCoilRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUWriteSingleCoilRequest")
+	if pullErr := io.PullContext("ModbusPDUWriteSingleCoilRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (address)
 	address, _addressErr := io.ReadUint16("address", 16)
@@ -130,7 +132,9 @@ func ModbusPDUWriteSingleCoilRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 	}
 
-	io.CloseContext("ModbusPDUWriteSingleCoilRequest")
+	if closeErr := io.CloseContext("ModbusPDUWriteSingleCoilRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteSingleCoilRequest{
@@ -144,7 +148,9 @@ func ModbusPDUWriteSingleCoilRequestParse(io utils.ReadBuffer) (*ModbusPDU, erro
 
 func (m *ModbusPDUWriteSingleCoilRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUWriteSingleCoilRequest")
+		if pushErr := io.PushContext("ModbusPDUWriteSingleCoilRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
@@ -160,12 +166,15 @@ func (m *ModbusPDUWriteSingleCoilRequest) Serialize(io utils.WriteBuffer) error 
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		io.PopContext("ModbusPDUWriteSingleCoilRequest")
+		if popErr := io.PopContext("ModbusPDUWriteSingleCoilRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUWriteSingleCoilRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -201,6 +210,7 @@ func (m *ModbusPDUWriteSingleCoilRequest) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUWriteSingleCoilRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
@@ -215,6 +225,7 @@ func (m ModbusPDUWriteSingleCoilRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUWriteSingleCoilRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUWriteSingleCoilRequest"
 	if name != "" {

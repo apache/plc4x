@@ -76,21 +76,30 @@ func (m *GroupObjectDescriptorRealisationType6) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType6Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType6, error) {
-	io.PullContext("GroupObjectDescriptorRealisationType6")
+	if pullErr := io.PullContext("GroupObjectDescriptorRealisationType6"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("GroupObjectDescriptorRealisationType6")
+	if closeErr := io.CloseContext("GroupObjectDescriptorRealisationType6"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType6(), nil
 }
 
 func (m *GroupObjectDescriptorRealisationType6) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("GroupObjectDescriptorRealisationType6")
+	if pushErr := io.PushContext("GroupObjectDescriptorRealisationType6"); pushErr != nil {
+		return pushErr
+	}
 
-	io.PopContext("GroupObjectDescriptorRealisationType6")
+	if popErr := io.PopContext("GroupObjectDescriptorRealisationType6"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *GroupObjectDescriptorRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -113,6 +122,7 @@ func (m *GroupObjectDescriptorRealisationType6) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *GroupObjectDescriptorRealisationType6) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.GroupObjectDescriptorRealisationType6"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -130,6 +140,7 @@ func (m GroupObjectDescriptorRealisationType6) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m GroupObjectDescriptorRealisationType6) Box(name string, width int) utils.AsciiBox {
 	boxName := "GroupObjectDescriptorRealisationType6"
 	if name != "" {

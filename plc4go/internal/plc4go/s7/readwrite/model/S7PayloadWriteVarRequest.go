@@ -112,10 +112,14 @@ func (m *S7PayloadWriteVarRequest) LengthInBytes() uint16 {
 }
 
 func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) (*S7Payload, error) {
-	io.PullContext("S7PayloadWriteVarRequest")
+	if pullErr := io.PullContext("S7PayloadWriteVarRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (items)
-	io.PullContext("items")
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
@@ -126,9 +130,13 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7PayloadWriteVarRequest")
+	if closeErr := io.CloseContext("S7PayloadWriteVarRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadWriteVarRequest{
@@ -141,11 +149,15 @@ func S7PayloadWriteVarRequestParse(io utils.ReadBuffer, parameter *S7Parameter) 
 
 func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7PayloadWriteVarRequest")
+		if pushErr := io.PushContext("S7PayloadWriteVarRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
@@ -156,15 +168,20 @@ func (m *S7PayloadWriteVarRequest) Serialize(io utils.WriteBuffer) error {
 				}
 				curItem++
 			}
-			io.PopContext("items")
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7PayloadWriteVarRequest")
+		if popErr := io.PopContext("S7PayloadWriteVarRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -194,6 +211,7 @@ func (m *S7PayloadWriteVarRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7PayloadWriteVarRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
@@ -213,6 +231,7 @@ func (m S7PayloadWriteVarRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7PayloadWriteVarRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7PayloadWriteVarRequest"
 	if name != "" {

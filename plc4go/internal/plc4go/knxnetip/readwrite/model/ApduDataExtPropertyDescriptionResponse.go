@@ -145,7 +145,9 @@ func (m *ApduDataExtPropertyDescriptionResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtPropertyDescriptionResponse")
+	if pullErr := io.PullContext("ApduDataExtPropertyDescriptionResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
@@ -185,10 +187,17 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 		}
 	}
 
+	if pullErr := io.PullContext("propertyDataType"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (propertyDataType)
 	propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(io)
 	if _propertyDataTypeErr != nil {
 		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
+	}
+	if closeErr := io.CloseContext("propertyDataType"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -211,10 +220,21 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
 
+	if pullErr := io.PullContext("readLevel"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (readLevel)
 	readLevel, _readLevelErr := AccessLevelParse(io)
 	if _readLevelErr != nil {
 		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
+	}
+	if closeErr := io.CloseContext("readLevel"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("writeLevel"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (writeLevel)
@@ -222,8 +242,13 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")
 	}
+	if closeErr := io.CloseContext("writeLevel"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataExtPropertyDescriptionResponse")
+	if closeErr := io.CloseContext("ApduDataExtPropertyDescriptionResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyDescriptionResponse{
@@ -243,7 +268,9 @@ func ApduDataExtPropertyDescriptionResponseParse(io utils.ReadBuffer) (*ApduData
 
 func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtPropertyDescriptionResponse")
+		if pushErr := io.PushContext("ApduDataExtPropertyDescriptionResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -282,7 +309,13 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		}
 
 		// Simple Field (propertyDataType)
+		if pushErr := io.PushContext("propertyDataType"); pushErr != nil {
+			return pushErr
+		}
 		_propertyDataTypeErr := m.PropertyDataType.Serialize(io)
+		if popErr := io.PopContext("propertyDataType"); popErr != nil {
+			return popErr
+		}
 		if _propertyDataTypeErr != nil {
 			return errors.Wrap(_propertyDataTypeErr, "Error serializing 'propertyDataType' field")
 		}
@@ -303,23 +336,38 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(io utils.WriteBuffer)
 		}
 
 		// Simple Field (readLevel)
+		if pushErr := io.PushContext("readLevel"); pushErr != nil {
+			return pushErr
+		}
 		_readLevelErr := m.ReadLevel.Serialize(io)
+		if popErr := io.PopContext("readLevel"); popErr != nil {
+			return popErr
+		}
 		if _readLevelErr != nil {
 			return errors.Wrap(_readLevelErr, "Error serializing 'readLevel' field")
 		}
 
 		// Simple Field (writeLevel)
+		if pushErr := io.PushContext("writeLevel"); pushErr != nil {
+			return pushErr
+		}
 		_writeLevelErr := m.WriteLevel.Serialize(io)
+		if popErr := io.PopContext("writeLevel"); popErr != nil {
+			return popErr
+		}
 		if _writeLevelErr != nil {
 			return errors.Wrap(_writeLevelErr, "Error serializing 'writeLevel' field")
 		}
 
-		io.PopContext("ApduDataExtPropertyDescriptionResponse")
+		if popErr := io.PopContext("ApduDataExtPropertyDescriptionResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtPropertyDescriptionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -391,6 +439,7 @@ func (m *ApduDataExtPropertyDescriptionResponse) UnmarshalXML(d *xml.Decoder, st
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtPropertyDescriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectIndex, xml.StartElement{Name: xml.Name{Local: "objectIndex"}}); err != nil {
 		return err
@@ -423,6 +472,7 @@ func (m ApduDataExtPropertyDescriptionResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtPropertyDescriptionResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtPropertyDescriptionResponse"
 	if name != "" {

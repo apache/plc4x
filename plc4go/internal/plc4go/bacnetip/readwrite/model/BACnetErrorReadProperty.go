@@ -135,7 +135,9 @@ func (m *BACnetErrorReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorReadProperty")
+	if pullErr := io.PullContext("BACnetErrorReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (errorClassHeader)
 	errorClassHeader, _errorClassHeaderErr := io.ReadUint8("errorClassHeader", 5)
@@ -153,7 +155,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Array field (errorClass)
-	io.PullContext("errorClass")
+	if pullErr := io.PullContext("errorClass", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	errorClass := make([]int8, errorClassLength)
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
@@ -163,7 +167,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorClass[curItem] = _item
 	}
-	io.CloseContext("errorClass")
+	if closeErr := io.CloseContext("errorClass", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (errorCodeHeader)
 	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8("errorCodeHeader", 5)
@@ -181,7 +187,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Array field (errorCode)
-	io.PullContext("errorCode")
+	if pullErr := io.PullContext("errorCode", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
@@ -191,9 +199,13 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 		}
 		errorCode[curItem] = _item
 	}
-	io.CloseContext("errorCode")
+	if closeErr := io.CloseContext("errorCode", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetErrorReadProperty")
+	if closeErr := io.CloseContext("BACnetErrorReadProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorReadProperty{
@@ -209,7 +221,9 @@ func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorReadProperty")
+		if pushErr := io.PushContext("BACnetErrorReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (errorClassHeader)
 		_errorClassHeaderErr := io.WriteUint8("errorClassHeader", 5, 0x12)
@@ -226,14 +240,18 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
-			io.PushContext("errorClass")
+			if pushErr := io.PushContext("errorClass", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ErrorClass {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
 			}
-			io.PopContext("errorClass")
+			if popErr := io.PopContext("errorClass", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (errorCodeHeader)
@@ -251,22 +269,29 @@ func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
-			io.PushContext("errorCode")
+			if pushErr := io.PushContext("errorCode", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ErrorCode {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}
 			}
-			io.PopContext("errorCode")
+			if popErr := io.PopContext("errorCode", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetErrorReadProperty")
+		if popErr := io.PopContext("BACnetErrorReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -324,6 +349,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ErrorClassLength, xml.StartElement{Name: xml.Name{Local: "errorClassLength"}}); err != nil {
 		return err
@@ -348,6 +374,7 @@ func (m BACnetErrorReadProperty) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorReadProperty"
 	if name != "" {

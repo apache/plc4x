@@ -105,9 +105,13 @@ func (m *ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUGetComEventLogRequest")
+	if pullErr := io.PullContext("ModbusPDUGetComEventLogRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUGetComEventLogRequest")
+	if closeErr := io.CloseContext("ModbusPDUGetComEventLogRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogRequest{
@@ -119,14 +123,19 @@ func ModbusPDUGetComEventLogRequestParse(io utils.ReadBuffer) (*ModbusPDU, error
 
 func (m *ModbusPDUGetComEventLogRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUGetComEventLogRequest")
+		if pushErr := io.PushContext("ModbusPDUGetComEventLogRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUGetComEventLogRequest")
+		if popErr := io.PopContext("ModbusPDUGetComEventLogRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUGetComEventLogRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +159,7 @@ func (m *ModbusPDUGetComEventLogRequest) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUGetComEventLogRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +168,7 @@ func (m ModbusPDUGetComEventLogRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUGetComEventLogRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUGetComEventLogRequest"
 	if name != "" {

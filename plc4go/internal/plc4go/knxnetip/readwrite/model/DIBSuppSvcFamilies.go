@@ -92,7 +92,9 @@ func (m *DIBSuppSvcFamilies) LengthInBytes() uint16 {
 }
 
 func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
-	io.PullContext("DIBSuppSvcFamilies")
+	if pullErr := io.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -108,7 +110,9 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 	}
 
 	// Array field (serviceIds)
-	io.PullContext("serviceIds")
+	if pullErr := io.PullContext("serviceIds", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	serviceIds := make([]*ServiceId, 0)
 	_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
@@ -120,16 +124,22 @@ func DIBSuppSvcFamiliesParse(io utils.ReadBuffer) (*DIBSuppSvcFamilies, error) {
 		}
 		serviceIds = append(serviceIds, _item)
 	}
-	io.CloseContext("serviceIds")
+	if closeErr := io.CloseContext("serviceIds", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DIBSuppSvcFamilies")
+	if closeErr := io.CloseContext("DIBSuppSvcFamilies"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil
 }
 
 func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("DIBSuppSvcFamilies")
+	if pushErr := io.PushContext("DIBSuppSvcFamilies"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -147,20 +157,27 @@ func (m *DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (serviceIds)
 	if m.ServiceIds != nil {
-		io.PushContext("serviceIds")
+		if pushErr := io.PushContext("serviceIds", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.ServiceIds {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
 			}
 		}
-		io.PopContext("serviceIds")
+		if popErr := io.PopContext("serviceIds", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
-	io.PopContext("DIBSuppSvcFamilies")
+	if popErr := io.PopContext("DIBSuppSvcFamilies"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -205,6 +222,7 @@ func (m *DIBSuppSvcFamilies) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DIBSuppSvcFamilies) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -236,6 +254,7 @@ func (m DIBSuppSvcFamilies) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DIBSuppSvcFamilies) Box(name string, width int) utils.AsciiBox {
 	boxName := "DIBSuppSvcFamilies"
 	if name != "" {

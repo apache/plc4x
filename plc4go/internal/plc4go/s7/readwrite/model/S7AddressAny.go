@@ -132,19 +132,20 @@ func (m *S7AddressAny) LengthInBytes() uint16 {
 }
 
 func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
-	io.PullContext("S7AddressAny")
-
-	// Enum field (transportSize)
-	transportSizeCode, _transportSizeErr := io.ReadUint8("transportSize", 8)
-	var transportSize TransportSize
-	for _, value := range TransportSizeValues {
-		if value.Code() == transportSizeCode {
-			transportSize = value
-			break
-		}
+	if pullErr := io.PullContext("S7AddressAny"); pullErr != nil {
+		return nil, pullErr
 	}
+
+	if pullErr := io.PullContext("transportSize"); pullErr != nil {
+		return nil, pullErr
+	}
+	// Enum field (transportSize)
+	transportSize, _transportSizeErr := TransportSizeParse(io)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+	}
+	if closeErr := io.CloseContext("transportSize"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (numberOfElements)
@@ -159,10 +160,16 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
 
+	if pullErr := io.PullContext("area"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(io)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
+	}
+	if closeErr := io.CloseContext("area"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -191,7 +198,9 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field")
 	}
 
-	io.CloseContext("S7AddressAny")
+	if closeErr := io.CloseContext("S7AddressAny"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7AddressAny{
@@ -209,12 +218,20 @@ func S7AddressAnyParse(io utils.ReadBuffer) (*S7Address, error) {
 
 func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7AddressAny")
+		if pushErr := io.PushContext("S7AddressAny"); pushErr != nil {
+			return pushErr
+		}
 
+		if pushErr := io.PushContext("transportSize"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (transportSize)
-		_transportSizeErr := io.WriteUint8("transportSize", 8, m.TransportSize.Code())
+		_transportSizeErr := io.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.TransportSize.name()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+		}
+		if popErr := io.PopContext("transportSize"); popErr != nil {
+			return popErr
 		}
 
 		// Simple Field (numberOfElements)
@@ -231,11 +248,17 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
+		if pushErr := io.PushContext("area"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (area)
 		area := CastMemoryArea(m.Area)
 		_areaErr := area.Serialize(io)
 		if _areaErr != nil {
 			return errors.Wrap(_areaErr, "Error serializing 'area' field")
+		}
+		if popErr := io.PopContext("area"); popErr != nil {
+			return popErr
 		}
 
 		// Reserved Field (reserved)
@@ -260,12 +283,15 @@ func (m *S7AddressAny) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}
 
-		io.PopContext("S7AddressAny")
+		if popErr := io.PopContext("S7AddressAny"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -325,6 +351,7 @@ func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TransportSize, xml.StartElement{Name: xml.Name{Local: "transportSize"}}); err != nil {
 		return err
@@ -351,6 +378,7 @@ func (m S7AddressAny) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7AddressAny) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7AddressAny"
 	if name != "" {

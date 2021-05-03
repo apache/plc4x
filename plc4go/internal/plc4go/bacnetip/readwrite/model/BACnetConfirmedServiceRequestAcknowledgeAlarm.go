@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAcknowledgeAlarm{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io utils.ReadBuffer) (*B
 
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) UnmarshalXML(d *xml.Deco
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestAcknowledgeAlarm"
 	if name != "" {

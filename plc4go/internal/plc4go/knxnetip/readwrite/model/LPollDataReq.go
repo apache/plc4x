@@ -97,9 +97,13 @@ func (m *LPollDataReq) LengthInBytes() uint16 {
 }
 
 func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LPollDataReq")
+	if pullErr := io.PullContext("LPollDataReq"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LPollDataReq")
+	if closeErr := io.CloseContext("LPollDataReq"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LPollDataReq{
@@ -111,14 +115,19 @@ func LPollDataReqParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LPollDataReq) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LPollDataReq")
+		if pushErr := io.PushContext("LPollDataReq"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LPollDataReq")
+		if popErr := io.PopContext("LPollDataReq"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LPollDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *LPollDataReq) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LPollDataReq) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m LPollDataReq) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LPollDataReq) Box(name string, width int) utils.AsciiBox {
 	boxName := "LPollDataReq"
 	if name != "" {

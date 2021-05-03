@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestVTClose) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestVTCloseParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestVTClose")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestVTClose")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestVTClose"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestVTClose{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestVTCloseParse(io utils.ReadBuffer) (*BACnetConf
 
 func (m *BACnetConfirmedServiceRequestVTClose) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestVTClose")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestVTClose"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestVTClose")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestVTClose"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestVTClose) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestVTClose) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestVTClose) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestVTClose) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestVTClose"
 	if name != "" {

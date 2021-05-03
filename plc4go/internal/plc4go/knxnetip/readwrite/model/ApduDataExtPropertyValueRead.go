@@ -118,7 +118,9 @@ func (m *ApduDataExtPropertyValueRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtPropertyValueRead")
+	if pullErr := io.PullContext("ApduDataExtPropertyValueRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (objectIndex)
 	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
@@ -144,7 +146,9 @@ func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 
-	io.CloseContext("ApduDataExtPropertyValueRead")
+	if closeErr := io.CloseContext("ApduDataExtPropertyValueRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtPropertyValueRead{
@@ -160,7 +164,9 @@ func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error
 
 func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtPropertyValueRead")
+		if pushErr := io.PushContext("ApduDataExtPropertyValueRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
@@ -190,12 +196,15 @@ func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
-		io.PopContext("ApduDataExtPropertyValueRead")
+		if popErr := io.PopContext("ApduDataExtPropertyValueRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtPropertyValueRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -243,6 +252,7 @@ func (m *ApduDataExtPropertyValueRead) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtPropertyValueRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectIndex, xml.StartElement{Name: xml.Name{Local: "objectIndex"}}); err != nil {
 		return err
@@ -263,6 +273,7 @@ func (m ApduDataExtPropertyValueRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtPropertyValueRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtPropertyValueRead"
 	if name != "" {

@@ -103,7 +103,9 @@ func (m *KnxNetIpDeviceManagement) LengthInBytes() uint16 {
 }
 
 func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
-	io.PullContext("KnxNetIpDeviceManagement")
+	if pullErr := io.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8("version", 8)
@@ -111,7 +113,9 @@ func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 
-	io.CloseContext("KnxNetIpDeviceManagement")
+	if closeErr := io.CloseContext("KnxNetIpDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxNetIpDeviceManagement{
@@ -124,7 +128,9 @@ func KnxNetIpDeviceManagementParse(io utils.ReadBuffer) (*ServiceId, error) {
 
 func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxNetIpDeviceManagement")
+		if pushErr := io.PushContext("KnxNetIpDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
@@ -133,12 +139,15 @@ func (m *KnxNetIpDeviceManagement) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		io.PopContext("KnxNetIpDeviceManagement")
+		if popErr := io.PopContext("KnxNetIpDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetIpDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *KnxNetIpDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetIpDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m KnxNetIpDeviceManagement) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetIpDeviceManagement) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxNetIpDeviceManagement"
 	if name != "" {

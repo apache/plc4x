@@ -97,9 +97,13 @@ func (m *LRawCon) LengthInBytes() uint16 {
 }
 
 func LRawConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("LRawCon")
+	if pullErr := io.PullContext("LRawCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LRawCon")
+	if closeErr := io.CloseContext("LRawCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LRawCon{
@@ -111,14 +115,19 @@ func LRawConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LRawCon")
+		if pushErr := io.PushContext("LRawCon"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LRawCon")
+		if popErr := io.PopContext("LRawCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *LRawCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LRawCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m LRawCon) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LRawCon) Box(name string, width int) utils.AsciiBox {
 	boxName := "LRawCon"
 	if name != "" {

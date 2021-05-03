@@ -85,10 +85,14 @@ func (m *MACAddress) LengthInBytes() uint16 {
 }
 
 func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
-	io.PullContext("MACAddress")
+	if pullErr := io.PullContext("MACAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (addr)
-	io.PullContext("addr")
+	if pullErr := io.PullContext("addr", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	addr := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
@@ -98,33 +102,46 @@ func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
 		}
 		addr[curItem] = _item
 	}
-	io.CloseContext("addr")
+	if closeErr := io.CloseContext("addr", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("MACAddress")
+	if closeErr := io.CloseContext("MACAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewMACAddress(addr), nil
 }
 
 func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("MACAddress")
+	if pushErr := io.PushContext("MACAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Array Field (addr)
 	if m.Addr != nil {
-		io.PushContext("addr")
+		if pushErr := io.PushContext("addr", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Addr {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
-		io.PopContext("addr")
+		if popErr := io.PopContext("addr", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
-	io.PopContext("MACAddress")
+	if popErr := io.PopContext("MACAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -158,6 +175,7 @@ func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -180,6 +198,7 @@ func (m MACAddress) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MACAddress) Box(name string, width int) utils.AsciiBox {
 	boxName := "MACAddress"
 	if name != "" {

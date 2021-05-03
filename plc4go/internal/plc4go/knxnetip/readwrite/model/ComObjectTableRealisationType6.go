@@ -103,15 +103,26 @@ func (m *ComObjectTableRealisationType6) LengthInBytes() uint16 {
 }
 
 func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
-	io.PullContext("ComObjectTableRealisationType6")
+	if pullErr := io.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("comObjectDescriptors"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(io)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")
 	}
+	if closeErr := io.CloseContext("comObjectDescriptors"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ComObjectTableRealisationType6")
+	if closeErr := io.CloseContext("ComObjectTableRealisationType6"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{
@@ -124,20 +135,31 @@ func ComObjectTableRealisationType6Parse(io utils.ReadBuffer) (*ComObjectTable, 
 
 func (m *ComObjectTableRealisationType6) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ComObjectTableRealisationType6")
+		if pushErr := io.PushContext("ComObjectTableRealisationType6"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (comObjectDescriptors)
+		if pushErr := io.PushContext("comObjectDescriptors"); pushErr != nil {
+			return pushErr
+		}
 		_comObjectDescriptorsErr := m.ComObjectDescriptors.Serialize(io)
+		if popErr := io.PopContext("comObjectDescriptors"); popErr != nil {
+			return popErr
+		}
 		if _comObjectDescriptorsErr != nil {
 			return errors.Wrap(_comObjectDescriptorsErr, "Error serializing 'comObjectDescriptors' field")
 		}
 
-		io.PopContext("ComObjectTableRealisationType6")
+		if popErr := io.PopContext("ComObjectTableRealisationType6"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTableRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -167,6 +189,7 @@ func (m *ComObjectTableRealisationType6) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ComObjectTableRealisationType6) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ComObjectDescriptors, xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
 		return err
@@ -178,6 +201,7 @@ func (m ComObjectTableRealisationType6) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ComObjectTableRealisationType6) Box(name string, width int) utils.AsciiBox {
 	boxName := "ComObjectTableRealisationType6"
 	if name != "" {

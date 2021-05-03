@@ -115,7 +115,9 @@ func (m *S7ParameterUserData) LengthInBytes() uint16 {
 }
 
 func S7ParameterUserDataParse(io utils.ReadBuffer) (*S7Parameter, error) {
-	io.PullContext("S7ParameterUserData")
+	if pullErr := io.PullContext("S7ParameterUserData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
@@ -125,7 +127,9 @@ func S7ParameterUserDataParse(io utils.ReadBuffer) (*S7Parameter, error) {
 	}
 
 	// Array field (items)
-	io.PullContext("items")
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	items := make([]*S7ParameterUserDataItem, numItems)
 	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
@@ -135,9 +139,13 @@ func S7ParameterUserDataParse(io utils.ReadBuffer) (*S7Parameter, error) {
 		}
 		items[curItem] = _item
 	}
-	io.CloseContext("items")
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7ParameterUserData")
+	if closeErr := io.CloseContext("S7ParameterUserData"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterUserData{
@@ -150,7 +158,9 @@ func S7ParameterUserDataParse(io utils.ReadBuffer) (*S7Parameter, error) {
 
 func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7ParameterUserData")
+		if pushErr := io.PushContext("S7ParameterUserData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
@@ -161,22 +171,29 @@ func (m *S7ParameterUserData) Serialize(io utils.WriteBuffer) error {
 
 		// Array Field (items)
 		if m.Items != nil {
-			io.PushContext("items")
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
-			io.PopContext("items")
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("S7ParameterUserData")
+		if popErr := io.PopContext("S7ParameterUserData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -216,6 +233,7 @@ func (m *S7ParameterUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 		return err
@@ -235,6 +253,7 @@ func (m S7ParameterUserData) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterUserData) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7ParameterUserData"
 	if name != "" {

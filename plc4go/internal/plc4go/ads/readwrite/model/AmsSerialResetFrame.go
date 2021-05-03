@@ -101,7 +101,9 @@ func (m *AmsSerialResetFrame) LengthInBytes() uint16 {
 }
 
 func AmsSerialResetFrameParse(io utils.ReadBuffer) (*AmsSerialResetFrame, error) {
-	io.PullContext("AmsSerialResetFrame")
+	if pullErr := io.PullContext("AmsSerialResetFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie, _magicCookieErr := io.ReadUint16("magicCookie", 16)
@@ -139,14 +141,18 @@ func AmsSerialResetFrameParse(io utils.ReadBuffer) (*AmsSerialResetFrame, error)
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
-	io.CloseContext("AmsSerialResetFrame")
+	if closeErr := io.CloseContext("AmsSerialResetFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsSerialResetFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, crc), nil
 }
 
 func (m *AmsSerialResetFrame) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsSerialResetFrame")
+	if pushErr := io.PushContext("AmsSerialResetFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
@@ -190,10 +196,13 @@ func (m *AmsSerialResetFrame) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
-	io.PopContext("AmsSerialResetFrame")
+	if popErr := io.PopContext("AmsSerialResetFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsSerialResetFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -252,6 +261,7 @@ func (m *AmsSerialResetFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsSerialResetFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsSerialResetFrame"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -287,6 +297,7 @@ func (m AmsSerialResetFrame) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsSerialResetFrame) Box(name string, width int) utils.AsciiBox {
 	boxName := "AmsSerialResetFrame"
 	if name != "" {

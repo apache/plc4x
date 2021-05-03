@@ -105,9 +105,13 @@ func (m *ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadExceptionStatusRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadExceptionStatusRequest")
+	if pullErr := io.PullContext("ModbusPDUReadExceptionStatusRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUReadExceptionStatusRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadExceptionStatusRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadExceptionStatusRequest{
@@ -119,14 +123,19 @@ func ModbusPDUReadExceptionStatusRequestParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUReadExceptionStatusRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadExceptionStatusRequest")
+		if pushErr := io.PushContext("ModbusPDUReadExceptionStatusRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUReadExceptionStatusRequest")
+		if popErr := io.PopContext("ModbusPDUReadExceptionStatusRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadExceptionStatusRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +159,7 @@ func (m *ModbusPDUReadExceptionStatusRequest) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadExceptionStatusRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +168,7 @@ func (m ModbusPDUReadExceptionStatusRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadExceptionStatusRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadExceptionStatusRequest"
 	if name != "" {

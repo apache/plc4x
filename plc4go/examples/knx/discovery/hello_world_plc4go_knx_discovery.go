@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/rs/zerolog/log"
+	"os"
 	"time"
 )
 
@@ -36,9 +37,25 @@ func main() {
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 
-	// Try to auto-find KNX gateways via broadcast-message discovery
-	_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
-		connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
+	var connectionStrings []string
+	if len(os.Args) < 2 {
+		// Try to auto-find KNX gateways via broadcast-message discovery
+		_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+			connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
+			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
+
+			connectionStrings = append(connectionStrings, connStr)
+		})
+		// Wait for 5 seconds for incoming responses
+		time.Sleep(time.Second * 5)
+	} else {
+		connStr := "knxnet-ip://" + os.Args[1] + ":3671"
+		log.Info().Str("connection string", connStr).Msg("Using manually provided KNX Gateway")
+		connectionStrings = append(connectionStrings, connStr)
+	}
+
+	for _, connStr := range connectionStrings {
+		log.Info().Str("connection string", connStr).Msg("Connecting")
 		crc := driverManager.GetConnection(connStr)
 
 		// Wait for the driver to connect (or not)
@@ -47,13 +64,14 @@ func main() {
 			log.Error().Msgf("error connecting to PLC: %s", connectionResult.Err.Error())
 			return
 		}
+		log.Info().Str("connection string", connStr).Msg("Connected")
 		connection := connectionResult.Connection
 		defer connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
 		browseRequest, err := connection.BrowseRequestBuilder().
-			//AddItem("allDevices", "[1-15].[1-15].[0-255]").
-			AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
+			AddItem("allDevices", "[1-15].[1-15].[0-255]").
+			//AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
 			//AddItem("onlyOneDevice", "1.1.20")
 			Build()
 		if err != nil {
@@ -164,7 +182,5 @@ func main() {
 			log.Info().Msgf("Browse Request Result:\n%v", browseRequestResult)
 		}
 		return
-	})
-
-	time.Sleep(time.Second * 1000000)
+	}
 }

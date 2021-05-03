@@ -108,7 +108,9 @@ func (m *ApduDataMemoryRead) LengthInBytes() uint16 {
 }
 
 func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
-	io.PullContext("ApduDataMemoryRead")
+	if pullErr := io.PullContext("ApduDataMemoryRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numBytes)
 	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
@@ -122,7 +124,9 @@ func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
-	io.CloseContext("ApduDataMemoryRead")
+	if closeErr := io.CloseContext("ApduDataMemoryRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataMemoryRead{
@@ -136,7 +140,9 @@ func ApduDataMemoryReadParse(io utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataMemoryRead")
+		if pushErr := io.PushContext("ApduDataMemoryRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (numBytes)
 		numBytes := uint8(m.NumBytes)
@@ -152,12 +158,15 @@ func (m *ApduDataMemoryRead) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
-		io.PopContext("ApduDataMemoryRead")
+		if popErr := io.PopContext("ApduDataMemoryRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -193,6 +202,7 @@ func (m *ApduDataMemoryRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataMemoryRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumBytes, xml.StartElement{Name: xml.Name{Local: "numBytes"}}); err != nil {
 		return err
@@ -207,6 +217,7 @@ func (m ApduDataMemoryRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataMemoryRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataMemoryRead"
 	if name != "" {

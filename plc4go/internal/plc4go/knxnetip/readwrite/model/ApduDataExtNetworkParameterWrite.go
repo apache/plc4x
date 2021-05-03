@@ -97,9 +97,13 @@ func (m *ApduDataExtNetworkParameterWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtNetworkParameterWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtNetworkParameterWrite")
+	if pullErr := io.PullContext("ApduDataExtNetworkParameterWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtNetworkParameterWrite")
+	if closeErr := io.CloseContext("ApduDataExtNetworkParameterWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtNetworkParameterWrite{
@@ -111,14 +115,19 @@ func ApduDataExtNetworkParameterWriteParse(io utils.ReadBuffer) (*ApduDataExt, e
 
 func (m *ApduDataExtNetworkParameterWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtNetworkParameterWrite")
+		if pushErr := io.PushContext("ApduDataExtNetworkParameterWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtNetworkParameterWrite")
+		if popErr := io.PopContext("ApduDataExtNetworkParameterWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtNetworkParameterWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtNetworkParameterWrite) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtNetworkParameterWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtNetworkParameterWrite) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtNetworkParameterWrite) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtNetworkParameterWrite"
 	if name != "" {

@@ -101,7 +101,9 @@ func (m *SzlDataTreeItem) LengthInBytes() uint16 {
 }
 
 func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
-	io.PullContext("SzlDataTreeItem")
+	if pullErr := io.PullContext("SzlDataTreeItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (itemIndex)
 	itemIndex, _itemIndexErr := io.ReadUint16("itemIndex", 16)
@@ -110,7 +112,9 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	}
 
 	// Array field (mlfb)
-	io.PullContext("mlfb")
+	if pullErr := io.PullContext("mlfb", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	mlfb := make([]int8, uint16(20))
 	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
@@ -120,7 +124,9 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 		}
 		mlfb[curItem] = _item
 	}
-	io.CloseContext("mlfb")
+	if closeErr := io.CloseContext("mlfb", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId, _moduleTypeIdErr := io.ReadUint16("moduleTypeId", 16)
@@ -140,14 +146,18 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field")
 	}
 
-	io.CloseContext("SzlDataTreeItem")
+	if closeErr := io.CloseContext("SzlDataTreeItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
 }
 
 func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("SzlDataTreeItem")
+	if pushErr := io.PushContext("SzlDataTreeItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.ItemIndex)
@@ -158,14 +168,18 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
-		io.PushContext("mlfb")
+		if pushErr := io.PushContext("mlfb", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Mlfb {
 			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
 			}
 		}
-		io.PopContext("mlfb")
+		if popErr := io.PopContext("mlfb", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Simple Field (moduleTypeId)
@@ -189,10 +203,13 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
 	}
 
-	io.PopContext("SzlDataTreeItem")
+	if popErr := io.PopContext("SzlDataTreeItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -250,6 +267,7 @@ func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -284,6 +302,7 @@ func (m SzlDataTreeItem) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m SzlDataTreeItem) Box(name string, width int) utils.AsciiBox {
 	boxName := "SzlDataTreeItem"
 	if name != "" {

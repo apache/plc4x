@@ -108,7 +108,9 @@ func (m *Apdu) LengthInBytes() uint16 {
 }
 
 func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
-	io.PullContext("Apdu")
+	if pullErr := io.PullContext("Apdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control, _controlErr := io.ReadUint8("control", 1)
@@ -144,7 +146,9 @@ func ApduParse(io utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("Apdu")
+	if closeErr := io.CloseContext("Apdu"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, numbered, counter)
@@ -156,7 +160,9 @@ func (m *Apdu) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChildFunction func() error) error {
-	io.PushContext("Apdu")
+	if pushErr := io.PushContext("Apdu"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.Control())
@@ -186,10 +192,13 @@ func (m *Apdu) SerializeParent(io utils.WriteBuffer, child IApdu, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("Apdu")
+	if popErr := io.PopContext("Apdu"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *Apdu) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -263,6 +272,7 @@ func (m *Apdu) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *Apdu) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -294,10 +304,12 @@ func (m Apdu) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *Apdu) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *Apdu) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "Apdu"
 	if name != "" {

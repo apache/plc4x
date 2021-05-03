@@ -97,9 +97,13 @@ func (m *BACnetErrorGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorGetAlarmSummary")
+	if pullErr := io.PullContext("BACnetErrorGetAlarmSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorGetAlarmSummary")
+	if closeErr := io.CloseContext("BACnetErrorGetAlarmSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorGetAlarmSummary{
@@ -111,14 +115,19 @@ func BACnetErrorGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetError, error) 
 
 func (m *BACnetErrorGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorGetAlarmSummary")
+		if pushErr := io.PushContext("BACnetErrorGetAlarmSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorGetAlarmSummary")
+		if popErr := io.PopContext("BACnetErrorGetAlarmSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorGetAlarmSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorGetAlarmSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorGetAlarmSummary"
 	if name != "" {

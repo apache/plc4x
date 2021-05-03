@@ -100,7 +100,9 @@ func (m *ApduControl) LengthInBytes() uint16 {
 }
 
 func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
-	io.PullContext("ApduControl")
+	if pullErr := io.PullContext("ApduControl"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType, _controlTypeErr := io.ReadUint8("controlType", 2)
@@ -128,7 +130,9 @@ func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ApduControl")
+	if closeErr := io.CloseContext("ApduControl"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -140,7 +144,9 @@ func (m *ApduControl) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduControl) SerializeParent(io utils.WriteBuffer, child IApduControl, serializeChildFunction func() error) error {
-	io.PushContext("ApduControl")
+	if pushErr := io.PushContext("ApduControl"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType := uint8(child.ControlType())
@@ -156,10 +162,13 @@ func (m *ApduControl) SerializeParent(io utils.WriteBuffer, child IApduControl, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ApduControl")
+	if popErr := io.PopContext("ApduControl"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -273,6 +282,7 @@ func (m *ApduControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduControl) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -298,10 +308,12 @@ func (m ApduControl) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ApduControl) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ApduControl) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "ApduControl"
 	if name != "" {

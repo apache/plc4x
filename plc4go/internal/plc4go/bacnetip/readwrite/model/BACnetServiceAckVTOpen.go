@@ -97,9 +97,13 @@ func (m *BACnetServiceAckVTOpen) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckVTOpen")
+	if pullErr := io.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckVTOpen")
+	if closeErr := io.CloseContext("BACnetServiceAckVTOpen"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckVTOpen{
@@ -111,14 +115,19 @@ func BACnetServiceAckVTOpenParse(io utils.ReadBuffer) (*BACnetServiceAck, error)
 
 func (m *BACnetServiceAckVTOpen) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckVTOpen")
+		if pushErr := io.PushContext("BACnetServiceAckVTOpen"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckVTOpen")
+		if popErr := io.PopContext("BACnetServiceAckVTOpen"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckVTOpen) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckVTOpen) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckVTOpen) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckVTOpen) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckVTOpen"
 	if name != "" {

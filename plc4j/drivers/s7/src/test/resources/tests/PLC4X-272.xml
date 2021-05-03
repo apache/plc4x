@@ -22,6 +22,9 @@
 
   <name>S7</name>
 
+  <protocolName>s7</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>s7</driver-name>
 
   <!--
@@ -41,190 +44,428 @@
   <setup>
     <!-- First the driver is expected to send a COTP connection request -->
     <outgoing-plc-message name="Send COTP Connection Request">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest">
-          <parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap">
-              <tsapId>256</tsapId>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">22</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">17</headerLength>
+            <tpduCode dataType="uint" bitLength="8">224</tpduCode>
+            <COTPPacketConnectionRequest>
+              <destinationReference dataType="uint" bitLength="16">0</destinationReference>
+              <sourceReference dataType="uint" bitLength="16">15</sourceReference>
+              <protocolClass>
+                <COTPProtocolClass dataType="int" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
+              </protocolClass>
+            </COTPPacketConnectionRequest>
+            <parameters isList="true">
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">194</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCalledTsap>
+                  <tsapId dataType="uint" bitLength="16">256</tsapId>
+                </COTPParameterCalledTsap>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">193</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCallingTsap>
+                  <tsapId dataType="uint" bitLength="16">785</tsapId>
+                </COTPParameterCallingTsap>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">192</parameterType>
+                <parameterLength dataType="uint" bitLength="8">1</parameterLength>
+                <COTPParameterTpduSize>
+                  <tpduSize>
+                    <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
+                  </tpduSize>
+                </COTPParameterTpduSize>
+              </COTPParameter>
             </parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap">
-              <tsapId>785</tsapId>
-            </parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize">
-              <tpduSize>SIZE_1024</tpduSize>
-            </parameters>
-          </parameters>
-          <payload/>
-          <destinationReference>0</destinationReference>
-          <sourceReference>15</sourceReference>
-          <protocolClass>CLASS_0</protocolClass>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </outgoing-plc-message>
     <!-- The PLC will send a COTP connection response -->
     <incoming-plc-message name="Receive COTP Connection Response">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse">
-          <parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize">
-              <tpduSize>SIZE_1024</tpduSize>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">22</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">17</headerLength>
+            <tpduCode dataType="uint" bitLength="8">208</tpduCode>
+            <COTPPacketConnectionResponse>
+              <destinationReference dataType="uint" bitLength="16">15</destinationReference>
+              <sourceReference dataType="uint" bitLength="16">11</sourceReference>
+              <protocolClass>
+                <COTPProtocolClass dataType="int" bitLength="8" stringRepresentation="CLASS_0">0</COTPProtocolClass>
+              </protocolClass>
+            </COTPPacketConnectionResponse>
+            <parameters isList="true">
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">192</parameterType>
+                <parameterLength dataType="uint" bitLength="8">1</parameterLength>
+                <COTPParameterTpduSize>
+                  <tpduSize>
+                    <COTPTpduSize dataType="int" bitLength="8" stringRepresentation="SIZE_1024">10</COTPTpduSize>
+                  </tpduSize>
+                </COTPParameterTpduSize>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">193</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCallingTsap>
+                  <tsapId dataType="uint" bitLength="16">785</tsapId>
+                </COTPParameterCallingTsap>
+              </COTPParameter>
+              <COTPParameter>
+                <parameterType dataType="uint" bitLength="8">194</parameterType>
+                <parameterLength dataType="uint" bitLength="8">2</parameterLength>
+                <COTPParameterCalledTsap>
+                  <tsapId dataType="uint" bitLength="16">256</tsapId>
+                </COTPParameterCalledTsap>
+              </COTPParameter>
             </parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap">
-              <tsapId>785</tsapId>
-            </parameters>
-            <parameters className="org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap">
-              <tsapId>256</tsapId>
-            </parameters>
-          </parameters>
-          <payload/>
-          <destinationReference>15</destinationReference>
-          <sourceReference>11</sourceReference>
-          <protocolClass>CLASS_0</protocolClass>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </incoming-plc-message>
     <!-- After that the driver will send a S7 connection request -->
     <outgoing-plc-message name="Send S7 Connection Request">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
-          <parameters/>
-          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
-            <tpduReference>0</tpduReference>
-            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication">
-              <maxAmqCaller>8</maxAmqCaller>
-              <maxAmqCallee>8</maxAmqCallee>
-              <pduLength>1008</pduLength>
-            </parameter>
-            <payload/>
-          </payload>
-          <eot>true</eot>
-          <tpduRef>1</tpduRef>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">25</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">2</headerLength>
+            <tpduCode dataType="uint" bitLength="8">240</tpduCode>
+            <COTPPacketData>
+              <eot dataType="bit" bitLength="1">true</eot>
+              <tpduRef dataType="uint" bitLength="7">1</tpduRef>
+            </COTPPacketData>
+            <parameters isList="true">
+            </parameters>
+            <S7Message>
+              <protocolId dataType="uint" bitLength="8">50</protocolId>
+              <messageType dataType="uint" bitLength="8">1</messageType>
+              <reserved dataType="uint" bitLength="16">0</reserved>
+              <tpduReference dataType="uint" bitLength="16">0</tpduReference>
+              <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+              <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+              <S7MessageRequest>
+              </S7MessageRequest>
+              <S7Parameter>
+                <parameterType dataType="uint" bitLength="8">240</parameterType>
+                <S7ParameterSetupCommunication>
+                  <reserved dataType="uint" bitLength="8">0</reserved>
+                  <maxAmqCaller dataType="uint" bitLength="16">8</maxAmqCaller>
+                  <maxAmqCallee dataType="uint" bitLength="16">8</maxAmqCallee>
+                  <pduLength dataType="uint" bitLength="16">1008</pduLength>
+                </S7ParameterSetupCommunication>
+              </S7Parameter>
+            </S7Message>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </outgoing-plc-message>
     <!-- The PLC will send a S7 connection response -->
     <incoming-plc-message name="Receive S7 Connection Response">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
-          <parameters/>
-          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
-            <tpduReference>0</tpduReference>
-            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication">
-              <maxAmqCaller>2</maxAmqCaller>
-              <maxAmqCallee>2</maxAmqCallee>
-              <pduLength>480</pduLength>
-            </parameter>
-            <payload/>
-            <errorClass>0</errorClass>
-            <errorCode>0</errorCode>
-          </payload>
-          <eot>true</eot>
-          <tpduRef>0</tpduRef>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">27</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">2</headerLength>
+            <tpduCode dataType="uint" bitLength="8">240</tpduCode>
+            <COTPPacketData>
+              <eot dataType="bit" bitLength="1">true</eot>
+              <tpduRef dataType="uint" bitLength="7">0</tpduRef>
+            </COTPPacketData>
+            <parameters isList="true">
+            </parameters>
+            <S7Message>
+              <protocolId dataType="uint" bitLength="8">50</protocolId>
+              <messageType dataType="uint" bitLength="8">3</messageType>
+              <reserved dataType="uint" bitLength="16">0</reserved>
+              <tpduReference dataType="uint" bitLength="16">0</tpduReference>
+              <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+              <payloadLength dataType="uint" bitLength="16">0</payloadLength>
+              <S7MessageResponseData>
+                <errorClass dataType="uint" bitLength="8">0</errorClass>
+                <errorCode dataType="uint" bitLength="8">0</errorCode>
+              </S7MessageResponseData>
+              <S7Parameter>
+                <parameterType dataType="uint" bitLength="8">240</parameterType>
+                <S7ParameterSetupCommunication>
+                  <reserved dataType="uint" bitLength="8">0</reserved>
+                  <maxAmqCaller dataType="uint" bitLength="16">2</maxAmqCaller>
+                  <maxAmqCallee dataType="uint" bitLength="16">2</maxAmqCallee>
+                  <pduLength dataType="uint" bitLength="16">480</pduLength>
+                </S7ParameterSetupCommunication>
+              </S7Parameter>
+            </S7Message>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </incoming-plc-message>
     <!-- Next we'll query some type information -->
     <outgoing-plc-message name="Send S7 Identification Request">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
-          <parameters/>
-          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageUserData">
-            <tpduReference>1</tpduReference>
-            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserData">
-              <items>
-                <items className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions">
-                  <method>17</method>
-                  <cpuFunctionType>4</cpuFunctionType>
-                  <cpuFunctionGroup>4</cpuFunctionGroup>
-                  <cpuSubfunction>1</cpuSubfunction>
-                  <sequenceNumber>0</sequenceNumber>
-                  <dataUnitReferenceNumber/>
-                  <lastDataUnit/>
-                  <errorCode/>
-                </items>
-              </items>
-            </parameter>
-            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserData">
-              <items>
-                <items className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest">
-                  <returnCode>OK</returnCode>
-                  <transportSize>OCTET_STRING</transportSize>
-                  <szlId className="org.apache.plc4x.java.s7.readwrite.SzlId">
-                    <typeClass>CPU</typeClass>
-                    <sublistExtract>0</sublistExtract>
-                    <sublistList>MODULE_IDENTIFICATION</sublistList>
-                  </szlId>
-                  <szlIndex>0</szlIndex>
-                </items>
-              </items>
-            </payload>
-          </payload>
-          <eot>true</eot>
-          <tpduRef>2</tpduRef>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">33</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">2</headerLength>
+            <tpduCode dataType="uint" bitLength="8">240</tpduCode>
+            <COTPPacketData>
+              <eot dataType="bit" bitLength="1">true</eot>
+              <tpduRef dataType="uint" bitLength="7">2</tpduRef>
+            </COTPPacketData>
+            <parameters isList="true">
+            </parameters>
+            <S7Message>
+              <protocolId dataType="uint" bitLength="8">50</protocolId>
+              <messageType dataType="uint" bitLength="8">7</messageType>
+              <reserved dataType="uint" bitLength="16">0</reserved>
+              <tpduReference dataType="uint" bitLength="16">1</tpduReference>
+              <parameterLength dataType="uint" bitLength="16">8</parameterLength>
+              <payloadLength dataType="uint" bitLength="16">8</payloadLength>
+              <S7MessageUserData>
+              </S7MessageUserData>
+              <S7Parameter>
+                <parameterType dataType="uint" bitLength="8">0</parameterType>
+                <S7ParameterUserData>
+                  <numItems dataType="uint" bitLength="8">1</numItems>
+                  <items isList="true">
+                    <S7ParameterUserDataItem>
+                      <itemType dataType="uint" bitLength="8">18</itemType>
+                      <S7ParameterUserDataItemCPUFunctions>
+                        <itemLength dataType="uint" bitLength="8">4</itemLength>
+                        <method dataType="uint" bitLength="8">17</method>
+                        <cpuFunctionType dataType="uint" bitLength="4">4</cpuFunctionType>
+                        <cpuFunctionGroup dataType="uint" bitLength="4">4</cpuFunctionGroup>
+                        <cpuSubfunction dataType="uint" bitLength="8">1</cpuSubfunction>
+                        <sequenceNumber dataType="uint" bitLength="8">0</sequenceNumber>
+                      </S7ParameterUserDataItemCPUFunctions>
+                    </S7ParameterUserDataItem>
+                  </items>
+                </S7ParameterUserData>
+              </S7Parameter>
+              <S7Payload>
+                <S7PayloadUserData>
+                  <items isList="true">
+                    <S7PayloadUserDataItem>
+                      <returnCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
+                        </DataTransportErrorCode>
+                      </returnCode>
+                      <transportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
+                        </DataTransportSize>
+                      </transportSize>
+                      <dataLength dataType="uint" bitLength="16">4</dataLength>
+                      <szlId>
+                        <SzlId>
+                          <typeClass>
+                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
+                            </SzlModuleTypeClass>
+                          </typeClass>
+                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                          <sublistList>
+                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
+                            </SzlSublist>
+                          </sublistList>
+                        </SzlId>
+                      </szlId>
+                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
+                      <S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                      </S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                    </S7PayloadUserDataItem>
+                  </items>
+                </S7PayloadUserData>
+              </S7Payload>
+            </S7Message>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </outgoing-plc-message>
     <!-- Which the PLC will gladly provide to us -->
     <incoming-plc-message name="Receive S7 Identification Response">
-      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
-        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
-          <parameters/>
-          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageUserData">
-            <tpduReference>1</tpduReference>
-            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserData">
-              <items>
-                <items className="org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions">
-                  <method>18</method>
-                  <cpuFunctionType>8</cpuFunctionType>
-                  <cpuFunctionGroup>4</cpuFunctionGroup>
-                  <cpuSubfunction>1</cpuSubfunction>
-                  <sequenceNumber>1</sequenceNumber>
-                  <dataUnitReferenceNumber>0</dataUnitReferenceNumber>
-                  <lastDataUnit>0</lastDataUnit>
-                  <errorCode>0</errorCode>
-                </items>
-              </items>
-            </parameter>
-            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserData">
-              <items>
-                <items className="org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse">
-                  <returnCode>OK</returnCode>
-                  <transportSize>OCTET_STRING</transportSize>
-                  <szlId className="org.apache.plc4x.java.s7.readwrite.SzlId">
-                    <typeClass>CPU</typeClass>
-                    <sublistExtract>0</sublistExtract>
-                    <sublistList>MODULE_IDENTIFICATION</sublistList>
-                  </szlId>
-                  <szlIndex>0</szlIndex>
-                  <items>
-                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
-                      <itemIndex>1</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
-                      <moduleTypeId>8224</moduleTypeId>
-                      <ausbg>1</ausbg>
-                      <ausbe>8224</ausbe>
-                    </items>
-                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
-                      <itemIndex>6</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
-                      <moduleTypeId>8224</moduleTypeId>
-                      <ausbg>1</ausbg>
-                      <ausbe>8224</ausbe>
-                    </items>
-                    <items className="org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem">
-                      <itemIndex>7</itemIndex>
-                      <mlfb>NkVTNyAyMTItMUJEMzAtMFhCMCA=</mlfb>
-                      <moduleTypeId>8224</moduleTypeId>
-                      <ausbg>22018</ausbg>
-                      <ausbe>2</ausbe>
-                    </items>
+      <TPKTPacket>
+        <protocolId dataType="uint" bitLength="8">3</protocolId>
+        <reserved dataType="uint" bitLength="8">0</reserved>
+        <len dataType="uint" bitLength="16">125</len>
+        <payload>
+          <COTPPacket>
+            <headerLength dataType="uint" bitLength="8">2</headerLength>
+            <tpduCode dataType="uint" bitLength="8">240</tpduCode>
+            <COTPPacketData>
+              <eot dataType="bit" bitLength="1">true</eot>
+              <tpduRef dataType="uint" bitLength="7">0</tpduRef>
+            </COTPPacketData>
+            <parameters isList="true">
+            </parameters>
+            <S7Message>
+              <protocolId dataType="uint" bitLength="8">50</protocolId>
+              <messageType dataType="uint" bitLength="8">7</messageType>
+              <reserved dataType="uint" bitLength="16">0</reserved>
+              <tpduReference dataType="uint" bitLength="16">1</tpduReference>
+              <parameterLength dataType="uint" bitLength="16">12</parameterLength>
+              <payloadLength dataType="uint" bitLength="16">96</payloadLength>
+              <S7MessageUserData>
+              </S7MessageUserData>
+              <S7Parameter>
+                <parameterType dataType="uint" bitLength="8">0</parameterType>
+                <S7ParameterUserData>
+                  <numItems dataType="uint" bitLength="8">1</numItems>
+                  <items isList="true">
+                    <S7ParameterUserDataItem>
+                      <itemType dataType="uint" bitLength="8">18</itemType>
+                      <S7ParameterUserDataItemCPUFunctions>
+                        <itemLength dataType="uint" bitLength="8">8</itemLength>
+                        <method dataType="uint" bitLength="8">18</method>
+                        <cpuFunctionType dataType="uint" bitLength="4">8</cpuFunctionType>
+                        <cpuFunctionGroup dataType="uint" bitLength="4">4</cpuFunctionGroup>
+                        <cpuSubfunction dataType="uint" bitLength="8">1</cpuSubfunction>
+                        <sequenceNumber dataType="uint" bitLength="8">1</sequenceNumber>
+                        <dataUnitReferenceNumber dataType="uint" bitLength="8">0</dataUnitReferenceNumber>
+                        <lastDataUnit dataType="uint" bitLength="8">0</lastDataUnit>
+                        <errorCode dataType="uint" bitLength="16">0</errorCode>
+                      </S7ParameterUserDataItemCPUFunctions>
+                    </S7ParameterUserDataItem>
                   </items>
-                </items>
-              </items>
-            </payload>
-          </payload>
-          <eot>true</eot>
-          <tpduRef>0</tpduRef>
+                </S7ParameterUserData>
+              </S7Parameter>
+              <S7Payload>
+                <S7PayloadUserData>
+                  <items isList="true">
+                    <S7PayloadUserDataItem>
+                      <returnCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
+                        </DataTransportErrorCode>
+                      </returnCode>
+                      <transportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
+                        </DataTransportSize>
+                      </transportSize>
+                      <dataLength dataType="uint" bitLength="16">92</dataLength>
+                      <szlId>
+                        <SzlId>
+                          <typeClass>
+                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
+                            </SzlModuleTypeClass>
+                          </typeClass>
+                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                          <sublistList>
+                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
+                            </SzlSublist>
+                          </sublistList>
+                        </SzlId>
+                      </szlId>
+                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
+                      <S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                        <szlItemLength dataType="uint" bitLength="16">28</szlItemLength>
+                        <szlItemCount dataType="uint" bitLength="16">3</szlItemCount>
+                        <items isList="true">
+                          <SzlDataTreeItem>
+                            <itemIndex dataType="uint" bitLength="16">1</itemIndex>
+                            <mlfb isList="true">
+                              <value dataType="int" bitLength="8">54</value>
+                              <value dataType="int" bitLength="8">69</value>
+                              <value dataType="int" bitLength="8">83</value>
+                              <value dataType="int" bitLength="8">55</value>
+                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">68</value>
+                              <value dataType="int" bitLength="8">51</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">88</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">32</value>
+                            </mlfb>
+                            <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
+                            <ausbg dataType="uint" bitLength="16">1</ausbg>
+                            <ausbe dataType="uint" bitLength="16">8224</ausbe>
+                          </SzlDataTreeItem>
+                          <SzlDataTreeItem>
+                            <itemIndex dataType="uint" bitLength="16">6</itemIndex>
+                            <mlfb isList="true">
+                              <value dataType="int" bitLength="8">54</value>
+                              <value dataType="int" bitLength="8">69</value>
+                              <value dataType="int" bitLength="8">83</value>
+                              <value dataType="int" bitLength="8">55</value>
+                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">68</value>
+                              <value dataType="int" bitLength="8">51</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">88</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">32</value>
+                            </mlfb>
+                            <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
+                            <ausbg dataType="uint" bitLength="16">1</ausbg>
+                            <ausbe dataType="uint" bitLength="16">8224</ausbe>
+                          </SzlDataTreeItem>
+                          <SzlDataTreeItem>
+                            <itemIndex dataType="uint" bitLength="16">7</itemIndex>
+                            <mlfb isList="true">
+                              <value dataType="int" bitLength="8">54</value>
+                              <value dataType="int" bitLength="8">69</value>
+                              <value dataType="int" bitLength="8">83</value>
+                              <value dataType="int" bitLength="8">55</value>
+                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">50</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">49</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">68</value>
+                              <value dataType="int" bitLength="8">51</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">45</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">88</value>
+                              <value dataType="int" bitLength="8">66</value>
+                              <value dataType="int" bitLength="8">48</value>
+                              <value dataType="int" bitLength="8">32</value>
+                            </mlfb>
+                            <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
+                            <ausbg dataType="uint" bitLength="16">22018</ausbg>
+                            <ausbe dataType="uint" bitLength="16">2</ausbe>
+                          </SzlDataTreeItem>
+                        </items>
+                      </S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                    </S7PayloadUserDataItem>
+                  </items>
+                </S7PayloadUserData>
+              </S7Payload>
+            </S7Message>
+          </COTPPacket>
         </payload>
       </TPKTPacket>
     </incoming-plc-message>
@@ -234,409 +475,409 @@
     <name>100 element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field1</name>
               <address>%DB1.DBD0:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field2</name>
               <address>%DB1.DBD4:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field3</name>
               <address>%DB1.DBD12:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field4</name>
               <address>%DB1.DBD16:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field5</name>
               <address>%DB1.DBD20:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field6</name>
               <address>%DB1.DBD24:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field7</name>
               <address>%DB1.DBD28:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field8</name>
               <address>%DB1.DBD32:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field9</name>
               <address>%DB1.DBD36:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field10</name>
               <address>%DB1.DBD40:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field11</name>
               <address>%DB1.DBD44:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field12</name>
               <address>%DB1.DBD48:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field13</name>
               <address>%DB1.DBD52:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field14</name>
               <address>%DB1.DBD56:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field15</name>
               <address>%DB1.DBD60:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field16</name>
               <address>%DB1.DBD64:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field17</name>
               <address>%DB1.DBD68:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field18</name>
               <address>%DB1.DBD72:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field19</name>
               <address>%DB1.DBD76:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field20</name>
               <address>%DB1.DBD80:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field21</name>
               <address>%DB1.DBD84:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field22</name>
               <address>%DB1.DBD88:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field23</name>
               <address>%DB1.DBD92:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field24</name>
               <address>%DB1.DBD96:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field25</name>
               <address>%DB1.DBD100:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field26</name>
               <address>%DB1.DBD104:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field27</name>
               <address>%DB1.DBD108:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field28</name>
               <address>%DB1.DBD112:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field29</name>
               <address>%DB1.DBD116:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field30</name>
               <address>%DB1.DBD120:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field31</name>
               <address>%DB1.DBD124:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field32</name>
               <address>%DB1.DBD128:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field33</name>
               <address>%DB1.DBD132:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field34</name>
               <address>%DB1.DBD136:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field35</name>
               <address>%DB1.DBD140:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field36</name>
               <address>%DB1.DBD144:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field37</name>
               <address>%DB1.DBD148:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field38</name>
               <address>%DB1.DBD152:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field39</name>
               <address>%DB1.DBD156:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field40</name>
               <address>%DB1.DBD160:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field41</name>
               <address>%DB1.DBD164:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field42</name>
               <address>%DB1.DBD168:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field43</name>
               <address>%DB1.DBD172:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field44</name>
               <address>%DB1.DBD176:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field45</name>
               <address>%DB1.DBD180:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field46</name>
               <address>%DB1.DBD184:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field47</name>
               <address>%DB1.DBD188:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field48</name>
               <address>%DB1.DBD192:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field49</name>
               <address>%DB1.DBD196:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field50</name>
               <address>%DB1.DBD200:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field51</name>
               <address>%DB1.DBD204:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field52</name>
               <address>%DB1.DBD208:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field53</name>
               <address>%DB1.DBD212:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field54</name>
               <address>%DB1.DBD216:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field55</name>
               <address>%DB1.DBD220:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field56</name>
               <address>%DB1.DBD224:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field57</name>
               <address>%DB1.DBD228:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field58</name>
               <address>%DB1.DBD232:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field59</name>
               <address>%DB1.DBD236:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field60</name>
               <address>%DB1.DBD240:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field61</name>
               <address>%DB1.DBD244:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field62</name>
               <address>%DB1.DBD248:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field63</name>
               <address>%DB1.DBD252:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field64</name>
               <address>%DB1.DBD256:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field65</name>
               <address>%DB1.DBD260:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field66</name>
               <address>%DB1.DBD264:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field67</name>
               <address>%DB1.DBD268:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field68</name>
               <address>%DB1.DBD272:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field69</name>
               <address>%DB1.DBD276:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field70</name>
               <address>%DB1.DBD280:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field71</name>
               <address>%DB1.DBD284:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field72</name>
               <address>%DB1.DBD288:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field73</name>
               <address>%DB1.DBD292:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field74</name>
               <address>%DB1.DBD296:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field75</name>
               <address>%DB1.DBD300:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field76</name>
               <address>%DB1.DBD304:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field77</name>
               <address>%DB1.DBD308:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field78</name>
               <address>%DB1.DBD312:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field79</name>
               <address>%DB1.DBD316:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field80</name>
               <address>%DB1.DBD320:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field81</name>
               <address>%DB1.DBD324:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field82</name>
               <address>%DB1.DBD328:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field83</name>
               <address>%DB1.DBD332:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field84</name>
               <address>%DB1.DBD336:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field85</name>
               <address>%DB1.DBD340:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field86</name>
               <address>%DB1.DBD344:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field87</name>
               <address>%DB1.DBD348:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field88</name>
               <address>%DB1.DBD352:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field89</name>
               <address>%DB1.DBD356:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field90</name>
               <address>%DB1.DBD360:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field91</name>
               <address>%DB1.DBD364:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field92</name>
               <address>%DB1.DBD368:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field93</name>
               <address>%DB1.DBD372:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field94</name>
               <address>%DB1.DBD376:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field95</name>
               <address>%DB1.DBD380:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field96</name>
               <address>%DB1.DBD384:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field97</name>
               <address>%DB1.DBD388:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field98</name>
               <address>%DB1.DBD392:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field99</name>
               <address>%DB1.DBD396:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>field100</name>
               <address>%DB1.DBD400:REAL</address>
             </field>
-         </fields>
+          </fields>
         </TestReadRequest>
       </api-request>
       <!--outgoing-plc-message name="Send first part of the S7 Read Request">

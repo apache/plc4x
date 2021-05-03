@@ -138,7 +138,9 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint
 }
 
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	if pullErr := io.PullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (readStartingAddress)
 	readStartingAddress, _readStartingAddressErr := io.ReadUint16("readStartingAddress", 16)
@@ -172,7 +174,9 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer)
 	}
 
 	// Array field (value)
-	io.PullContext("value")
+	if pullErr := io.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
@@ -182,9 +186,13 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer)
 		}
 		value[curItem] = _item
 	}
-	io.CloseContext("value")
+	if closeErr := io.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadWriteMultipleHoldingRegistersRequest{
@@ -201,7 +209,9 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io utils.ReadBuffer)
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+		if pushErr := io.PushContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (readStartingAddress)
 		readStartingAddress := uint16(m.ReadStartingAddress)
@@ -240,22 +250,29 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.W
 
 		// Array Field (value)
 		if m.Value != nil {
-			io.PushContext("value")
+			if pushErr := io.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
-			io.PopContext("value")
+			if popErr := io.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+		if popErr := io.PopContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -314,6 +331,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) UnmarshalXML(d *xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ReadStartingAddress, xml.StartElement{Name: xml.Name{Local: "readStartingAddress"}}); err != nil {
 		return err
@@ -339,6 +357,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadWriteMultipleHoldingRegistersRequest"
 	if name != "" {

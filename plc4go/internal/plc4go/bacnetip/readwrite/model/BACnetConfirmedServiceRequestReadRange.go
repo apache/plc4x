@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestReadRange) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestReadRangeParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestReadRange")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestReadRange"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestReadRange")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestReadRange"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadRange{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestReadRangeParse(io utils.ReadBuffer) (*BACnetCo
 
 func (m *BACnetConfirmedServiceRequestReadRange) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestReadRange")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestReadRange"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestReadRange")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestReadRange"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadRange) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestReadRange) UnmarshalXML(d *xml.Decoder, st
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadRange) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestReadRange) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestReadRange) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestReadRange"
 	if name != "" {

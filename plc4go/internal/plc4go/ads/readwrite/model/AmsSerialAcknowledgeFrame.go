@@ -101,7 +101,9 @@ func (m *AmsSerialAcknowledgeFrame) LengthInBytes() uint16 {
 }
 
 func AmsSerialAcknowledgeFrameParse(io utils.ReadBuffer) (*AmsSerialAcknowledgeFrame, error) {
-	io.PullContext("AmsSerialAcknowledgeFrame")
+	if pullErr := io.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie, _magicCookieErr := io.ReadUint16("magicCookie", 16)
@@ -139,14 +141,18 @@ func AmsSerialAcknowledgeFrameParse(io utils.ReadBuffer) (*AmsSerialAcknowledgeF
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
 	}
 
-	io.CloseContext("AmsSerialAcknowledgeFrame")
+	if closeErr := io.CloseContext("AmsSerialAcknowledgeFrame"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewAmsSerialAcknowledgeFrame(magicCookie, transmitterAddress, receiverAddress, fragmentNumber, length, crc), nil
 }
 
 func (m *AmsSerialAcknowledgeFrame) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("AmsSerialAcknowledgeFrame")
+	if pushErr := io.PushContext("AmsSerialAcknowledgeFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
@@ -190,10 +196,13 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(io utils.WriteBuffer) error {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
-	io.PopContext("AmsSerialAcknowledgeFrame")
+	if popErr := io.PopContext("AmsSerialAcknowledgeFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsSerialAcknowledgeFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -252,6 +261,7 @@ func (m *AmsSerialAcknowledgeFrame) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsSerialAcknowledgeFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsSerialAcknowledgeFrame"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -287,6 +297,7 @@ func (m AmsSerialAcknowledgeFrame) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsSerialAcknowledgeFrame) Box(name string, width int) utils.AsciiBox {
 	boxName := "AmsSerialAcknowledgeFrame"
 	if name != "" {

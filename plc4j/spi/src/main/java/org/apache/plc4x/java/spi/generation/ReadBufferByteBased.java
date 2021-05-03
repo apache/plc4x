@@ -83,11 +83,11 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public void pullContext(String logicalName) {
+    public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
     }
 
     @Override
-    public boolean readBit(String logicalName) throws ParseException {
+    public boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         try {
             return bi.readBoolean();
         } catch (IOException e) {
@@ -96,7 +96,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public byte readUnsignedByte(String logicalName, int bitLength) throws ParseException {
+    public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
@@ -111,7 +111,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public short readUnsignedShort(String logicalName, int bitLength) throws ParseException {
+    public short readUnsignedShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
@@ -127,7 +127,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public int readUnsignedInt(String logicalName, int bitLength) throws ParseException {
+    public int readUnsignedInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
@@ -146,7 +146,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public long readUnsignedLong(String logicalName, int bitLength) throws ParseException {
+    public long readUnsignedLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
@@ -165,7 +165,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readUnsignedBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         //Support specific case where value less than 64 bits and big endian.
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
@@ -191,7 +191,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength) throws ParseException {
+    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }
@@ -206,7 +206,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public short readShort(String logicalName, int bitLength) throws ParseException {
+    public short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
@@ -224,7 +224,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public int readInt(String logicalName, int bitLength) throws ParseException {
+    public int readInt(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -242,7 +242,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public long readLong(String logicalName, int bitLength) throws ParseException {
+    public long readLong(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }
@@ -260,12 +260,12 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public BigInteger readBigInteger(String logicalName, int bitLength) throws ParseException {
+    public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
-    public float readFloat(String logicalName, int bitLength) throws ParseException {
+    public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         try {
             if (bitLength == 16) {
                 // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
@@ -301,7 +301,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public double readDouble(String logicalName, int bitLength) throws ParseException {
+    public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if(bitLength == 64) {
             long longValue = readLong(logicalName,64);
             return Double.longBitsToDouble(longValue);
@@ -311,12 +311,12 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public BigDecimal readBigDecimal(String logicalName, int bitLength) throws ParseException {
+    public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding) {
+    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
         byte[] strBytes = new byte[bitLength / 8];
         for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
             try {
@@ -331,7 +331,7 @@ public class ReadBufferByteBased implements ReadBuffer {
 
 
     @Override
-    public void closeContext(String logicalName) {
+    public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
     }
 
 }

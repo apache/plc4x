@@ -97,9 +97,13 @@ func (m *BACnetServiceAckAtomicReadFile) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckAtomicReadFileParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckAtomicReadFile")
+	if pullErr := io.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckAtomicReadFile")
+	if closeErr := io.CloseContext("BACnetServiceAckAtomicReadFile"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckAtomicReadFile{
@@ -111,14 +115,19 @@ func BACnetServiceAckAtomicReadFileParse(io utils.ReadBuffer) (*BACnetServiceAck
 
 func (m *BACnetServiceAckAtomicReadFile) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckAtomicReadFile")
+		if pushErr := io.PushContext("BACnetServiceAckAtomicReadFile"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckAtomicReadFile")
+		if popErr := io.PopContext("BACnetServiceAckAtomicReadFile"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckAtomicReadFile) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckAtomicReadFile) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckAtomicReadFile) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckAtomicReadFile) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckAtomicReadFile"
 	if name != "" {

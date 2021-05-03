@@ -103,15 +103,26 @@ func (m *TunnelingResponse) LengthInBytes() uint16 {
 }
 
 func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("TunnelingResponse")
+	if pullErr := io.PullContext("TunnelingResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
 	}
+	if closeErr := io.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("TunnelingResponse")
+	if closeErr := io.CloseContext("TunnelingResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &TunnelingResponse{
@@ -124,20 +135,31 @@ func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("TunnelingResponse")
+		if pushErr := io.PushContext("TunnelingResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tunnelingResponseDataBlock)
+		if pushErr := io.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
+		if popErr := io.PopContext("tunnelingResponseDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _tunnelingResponseDataBlockErr != nil {
 			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
-		io.PopContext("TunnelingResponse")
+		if popErr := io.PopContext("TunnelingResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -167,6 +189,7 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TunnelingResponseDataBlock, xml.StartElement{Name: xml.Name{Local: "tunnelingResponseDataBlock"}}); err != nil {
 		return err
@@ -178,6 +201,7 @@ func (m TunnelingResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "TunnelingResponse"
 	if name != "" {

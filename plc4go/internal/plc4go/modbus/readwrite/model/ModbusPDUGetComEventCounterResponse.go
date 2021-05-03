@@ -116,7 +116,9 @@ func (m *ModbusPDUGetComEventCounterResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventCounterResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUGetComEventCounterResponse")
+	if pullErr := io.PullContext("ModbusPDUGetComEventCounterResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (status)
 	status, _statusErr := io.ReadUint16("status", 16)
@@ -130,7 +132,9 @@ func ModbusPDUGetComEventCounterResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field")
 	}
 
-	io.CloseContext("ModbusPDUGetComEventCounterResponse")
+	if closeErr := io.CloseContext("ModbusPDUGetComEventCounterResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventCounterResponse{
@@ -144,7 +148,9 @@ func ModbusPDUGetComEventCounterResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUGetComEventCounterResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUGetComEventCounterResponse")
+		if pushErr := io.PushContext("ModbusPDUGetComEventCounterResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (status)
 		status := uint16(m.Status)
@@ -160,12 +166,15 @@ func (m *ModbusPDUGetComEventCounterResponse) Serialize(io utils.WriteBuffer) er
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
-		io.PopContext("ModbusPDUGetComEventCounterResponse")
+		if popErr := io.PopContext("ModbusPDUGetComEventCounterResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUGetComEventCounterResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -201,6 +210,7 @@ func (m *ModbusPDUGetComEventCounterResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUGetComEventCounterResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Status, xml.StartElement{Name: xml.Name{Local: "status"}}); err != nil {
 		return err
@@ -215,6 +225,7 @@ func (m ModbusPDUGetComEventCounterResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUGetComEventCounterResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUGetComEventCounterResponse"
 	if name != "" {

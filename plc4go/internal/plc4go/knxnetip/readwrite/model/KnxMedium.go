@@ -125,6 +125,7 @@ func (e KnxMedium) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxMedium) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -144,6 +145,7 @@ func (m *KnxMedium) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxMedium) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -173,6 +175,7 @@ func (e KnxMedium) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxMedium) Box(s string, i int) utils.AsciiBox {
 	boxName := "KnxMedium"
 	if s != "" {

@@ -113,12 +113,25 @@ func (m *SearchResponse) LengthInBytes() uint16 {
 }
 
 func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("SearchResponse")
+	if pullErr := io.PullContext("SearchResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+	}
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("dibDeviceInfo"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (dibDeviceInfo)
@@ -126,14 +139,26 @@ func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _dibDeviceInfoErr != nil {
 		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field")
 	}
+	if closeErr := io.CloseContext("dibDeviceInfo"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("dibSuppSvcFamilies"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dibSuppSvcFamilies)
 	dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParse(io)
 	if _dibSuppSvcFamiliesErr != nil {
 		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field")
 	}
+	if closeErr := io.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("SearchResponse")
+	if closeErr := io.CloseContext("SearchResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &SearchResponse{
@@ -148,32 +173,55 @@ func SearchResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *SearchResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("SearchResponse")
+		if pushErr := io.PushContext("SearchResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiControlEndpoint)
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
 		// Simple Field (dibDeviceInfo)
+		if pushErr := io.PushContext("dibDeviceInfo"); pushErr != nil {
+			return pushErr
+		}
 		_dibDeviceInfoErr := m.DibDeviceInfo.Serialize(io)
+		if popErr := io.PopContext("dibDeviceInfo"); popErr != nil {
+			return popErr
+		}
 		if _dibDeviceInfoErr != nil {
 			return errors.Wrap(_dibDeviceInfoErr, "Error serializing 'dibDeviceInfo' field")
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
+		if pushErr := io.PushContext("dibSuppSvcFamilies"); pushErr != nil {
+			return pushErr
+		}
 		_dibSuppSvcFamiliesErr := m.DibSuppSvcFamilies.Serialize(io)
+		if popErr := io.PopContext("dibSuppSvcFamilies"); popErr != nil {
+			return popErr
+		}
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.Wrap(_dibSuppSvcFamiliesErr, "Error serializing 'dibSuppSvcFamilies' field")
 		}
 
-		io.PopContext("SearchResponse")
+		if popErr := io.PopContext("SearchResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -215,6 +263,7 @@ func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.HpaiControlEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiControlEndpoint"}}); err != nil {
 		return err
@@ -232,6 +281,7 @@ func (m SearchResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m SearchResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "SearchResponse"
 	if name != "" {

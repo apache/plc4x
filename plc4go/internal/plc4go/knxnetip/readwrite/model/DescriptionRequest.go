@@ -103,15 +103,26 @@ func (m *DescriptionRequest) LengthInBytes() uint16 {
 }
 
 func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("DescriptionRequest")
+	if pullErr := io.PullContext("DescriptionRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DescriptionRequest")
+	if closeErr := io.CloseContext("DescriptionRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &DescriptionRequest{
@@ -124,20 +135,31 @@ func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("DescriptionRequest")
+		if pushErr := io.PushContext("DescriptionRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiControlEndpoint)
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
-		io.PopContext("DescriptionRequest")
+		if popErr := io.PopContext("DescriptionRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -167,6 +189,7 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.HpaiControlEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiControlEndpoint"}}); err != nil {
 		return err
@@ -178,6 +201,7 @@ func (m DescriptionRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "DescriptionRequest"
 	if name != "" {

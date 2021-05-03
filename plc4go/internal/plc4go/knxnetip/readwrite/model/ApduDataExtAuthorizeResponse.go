@@ -103,7 +103,9 @@ func (m *ApduDataExtAuthorizeResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataExtAuthorizeResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtAuthorizeResponse")
+	if pullErr := io.PullContext("ApduDataExtAuthorizeResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (level)
 	level, _levelErr := io.ReadUint8("level", 8)
@@ -111,7 +113,9 @@ func ApduDataExtAuthorizeResponseParse(io utils.ReadBuffer) (*ApduDataExt, error
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
 
-	io.CloseContext("ApduDataExtAuthorizeResponse")
+	if closeErr := io.CloseContext("ApduDataExtAuthorizeResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtAuthorizeResponse{
@@ -124,7 +128,9 @@ func ApduDataExtAuthorizeResponseParse(io utils.ReadBuffer) (*ApduDataExt, error
 
 func (m *ApduDataExtAuthorizeResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtAuthorizeResponse")
+		if pushErr := io.PushContext("ApduDataExtAuthorizeResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (level)
 		level := uint8(m.Level)
@@ -133,12 +139,15 @@ func (m *ApduDataExtAuthorizeResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
-		io.PopContext("ApduDataExtAuthorizeResponse")
+		if popErr := io.PopContext("ApduDataExtAuthorizeResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtAuthorizeResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *ApduDataExtAuthorizeResponse) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtAuthorizeResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Level, xml.StartElement{Name: xml.Name{Local: "level"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m ApduDataExtAuthorizeResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtAuthorizeResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtAuthorizeResponse"
 	if name != "" {

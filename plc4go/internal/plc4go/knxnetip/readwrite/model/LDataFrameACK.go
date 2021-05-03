@@ -106,9 +106,13 @@ func (m *LDataFrameACK) LengthInBytes() uint16 {
 }
 
 func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
-	io.PullContext("LDataFrameACK")
+	if pullErr := io.PullContext("LDataFrameACK"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("LDataFrameACK")
+	if closeErr := io.CloseContext("LDataFrameACK"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LDataFrameACK{
@@ -120,14 +124,19 @@ func LDataFrameACKParse(io utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataFrameACK) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("LDataFrameACK")
+		if pushErr := io.PushContext("LDataFrameACK"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("LDataFrameACK")
+		if popErr := io.PopContext("LDataFrameACK"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LDataFrameACK) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -151,6 +160,7 @@ func (m *LDataFrameACK) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LDataFrameACK) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -159,6 +169,7 @@ func (m LDataFrameACK) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LDataFrameACK) Box(name string, width int) utils.AsciiBox {
 	boxName := "LDataFrameACK"
 	if name != "" {

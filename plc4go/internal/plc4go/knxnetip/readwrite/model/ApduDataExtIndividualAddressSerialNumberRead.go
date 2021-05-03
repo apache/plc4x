@@ -97,9 +97,13 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) LengthInBytes() uint16 {
 }
 
 func ApduDataExtIndividualAddressSerialNumberReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtIndividualAddressSerialNumberRead")
+	if pullErr := io.PullContext("ApduDataExtIndividualAddressSerialNumberRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtIndividualAddressSerialNumberRead")
+	if closeErr := io.CloseContext("ApduDataExtIndividualAddressSerialNumberRead"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtIndividualAddressSerialNumberRead{
@@ -111,14 +115,19 @@ func ApduDataExtIndividualAddressSerialNumberReadParse(io utils.ReadBuffer) (*Ap
 
 func (m *ApduDataExtIndividualAddressSerialNumberRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtIndividualAddressSerialNumberRead")
+		if pushErr := io.PushContext("ApduDataExtIndividualAddressSerialNumberRead"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtIndividualAddressSerialNumberRead")
+		if popErr := io.PopContext("ApduDataExtIndividualAddressSerialNumberRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtIndividualAddressSerialNumberRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtIndividualAddressSerialNumberRead) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtIndividualAddressSerialNumberRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtIndividualAddressSerialNumberRead) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtIndividualAddressSerialNumberRead) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtIndividualAddressSerialNumberRead"
 	if name != "" {

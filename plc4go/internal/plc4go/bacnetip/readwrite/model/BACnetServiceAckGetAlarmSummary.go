@@ -97,9 +97,13 @@ func (m *BACnetServiceAckGetAlarmSummary) LengthInBytes() uint16 {
 }
 
 func BACnetServiceAckGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
-	io.PullContext("BACnetServiceAckGetAlarmSummary")
+	if pullErr := io.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetServiceAckGetAlarmSummary")
+	if closeErr := io.CloseContext("BACnetServiceAckGetAlarmSummary"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetServiceAckGetAlarmSummary{
@@ -111,14 +115,19 @@ func BACnetServiceAckGetAlarmSummaryParse(io utils.ReadBuffer) (*BACnetServiceAc
 
 func (m *BACnetServiceAckGetAlarmSummary) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetServiceAckGetAlarmSummary")
+		if pushErr := io.PushContext("BACnetServiceAckGetAlarmSummary"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetServiceAckGetAlarmSummary")
+		if popErr := io.PopContext("BACnetServiceAckGetAlarmSummary"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAckGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetServiceAckGetAlarmSummary) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAckGetAlarmSummary) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetServiceAckGetAlarmSummary) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetServiceAckGetAlarmSummary) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetServiceAckGetAlarmSummary"
 	if name != "" {

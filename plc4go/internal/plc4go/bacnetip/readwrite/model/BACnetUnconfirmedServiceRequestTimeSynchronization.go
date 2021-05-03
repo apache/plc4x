@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBytes() uin
 }
 
 func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestTimeSynchronization{
@@ -111,14 +115,19 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io utils.ReadBuffer
 
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestTimeSynchronization")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestTimeSynchronization"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) UnmarshalXML(d *xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestTimeSynchronization) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestTimeSynchronization"
 	if name != "" {

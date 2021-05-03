@@ -107,7 +107,9 @@ func (m *S7ParameterWriteVarResponse) LengthInBytes() uint16 {
 }
 
 func S7ParameterWriteVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error) {
-	io.PullContext("S7ParameterWriteVarResponse")
+	if pullErr := io.PullContext("S7ParameterWriteVarResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numItems)
 	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
@@ -115,7 +117,9 @@ func S7ParameterWriteVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error)
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
 	}
 
-	io.CloseContext("S7ParameterWriteVarResponse")
+	if closeErr := io.CloseContext("S7ParameterWriteVarResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterWriteVarResponse{
@@ -128,7 +132,9 @@ func S7ParameterWriteVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error)
 
 func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7ParameterWriteVarResponse")
+		if pushErr := io.PushContext("S7ParameterWriteVarResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (numItems)
 		numItems := uint8(m.NumItems)
@@ -137,12 +143,15 @@ func (m *S7ParameterWriteVarResponse) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
-		io.PopContext("S7ParameterWriteVarResponse")
+		if popErr := io.PopContext("S7ParameterWriteVarResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -172,6 +181,7 @@ func (m *S7ParameterWriteVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterWriteVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumItems, xml.StartElement{Name: xml.Name{Local: "numItems"}}); err != nil {
 		return err
@@ -183,6 +193,7 @@ func (m S7ParameterWriteVarResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterWriteVarResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7ParameterWriteVarResponse"
 	if name != "" {

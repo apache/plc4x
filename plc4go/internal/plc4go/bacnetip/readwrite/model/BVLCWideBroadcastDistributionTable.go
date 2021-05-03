@@ -97,9 +97,13 @@ func (m *BVLCWideBroadcastDistributionTable) LengthInBytes() uint16 {
 }
 
 func BVLCWideBroadcastDistributionTableParse(io utils.ReadBuffer) (*BVLC, error) {
-	io.PullContext("BVLCWideBroadcastDistributionTable")
+	if pullErr := io.PullContext("BVLCWideBroadcastDistributionTable"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BVLCWideBroadcastDistributionTable")
+	if closeErr := io.CloseContext("BVLCWideBroadcastDistributionTable"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BVLCWideBroadcastDistributionTable{
@@ -111,14 +115,19 @@ func BVLCWideBroadcastDistributionTableParse(io utils.ReadBuffer) (*BVLC, error)
 
 func (m *BVLCWideBroadcastDistributionTable) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BVLCWideBroadcastDistributionTable")
+		if pushErr := io.PushContext("BVLCWideBroadcastDistributionTable"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BVLCWideBroadcastDistributionTable")
+		if popErr := io.PopContext("BVLCWideBroadcastDistributionTable"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCWideBroadcastDistributionTable) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BVLCWideBroadcastDistributionTable) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCWideBroadcastDistributionTable) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BVLCWideBroadcastDistributionTable) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCWideBroadcastDistributionTable) Box(name string, width int) utils.AsciiBox {
 	boxName := "BVLCWideBroadcastDistributionTable"
 	if name != "" {

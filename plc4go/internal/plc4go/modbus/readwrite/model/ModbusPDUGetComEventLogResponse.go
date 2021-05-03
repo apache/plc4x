@@ -133,7 +133,9 @@ func (m *ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUGetComEventLogResponse")
+	if pullErr := io.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
@@ -161,7 +163,9 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 	}
 
 	// Array field (events)
-	io.PullContext("events")
+	if pullErr := io.PullContext("events", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
@@ -171,9 +175,13 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 		}
 		events[curItem] = _item
 	}
-	io.CloseContext("events")
+	if closeErr := io.CloseContext("events", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUGetComEventLogResponse")
+	if closeErr := io.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUGetComEventLogResponse{
@@ -189,7 +197,9 @@ func ModbusPDUGetComEventLogResponseParse(io utils.ReadBuffer) (*ModbusPDU, erro
 
 func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUGetComEventLogResponse")
+		if pushErr := io.PushContext("ModbusPDUGetComEventLogResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
@@ -221,22 +231,29 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error 
 
 		// Array Field (events)
 		if m.Events != nil {
-			io.PushContext("events")
+			if pushErr := io.PushContext("events", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Events {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'events' field")
 				}
 			}
-			io.PopContext("events")
+			if popErr := io.PopContext("events", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUGetComEventLogResponse")
+		if popErr := io.PopContext("ModbusPDUGetComEventLogResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -289,6 +306,7 @@ func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Status, xml.StartElement{Name: xml.Name{Local: "status"}}); err != nil {
 		return err
@@ -311,6 +329,7 @@ func (m ModbusPDUGetComEventLogResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUGetComEventLogResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUGetComEventLogResponse"
 	if name != "" {

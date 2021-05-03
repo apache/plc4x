@@ -148,7 +148,9 @@ func (m *S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
 }
 
 func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7ParameterUserDataItem, error) {
-	io.PullContext("S7ParameterUserDataItemCPUFunctions")
+	if pullErr := io.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	itemLength, _itemLengthErr := io.ReadUint8("itemLength", 8)
@@ -217,7 +219,9 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 		errorCode = &_val
 	}
 
-	io.CloseContext("S7ParameterUserDataItemCPUFunctions")
+	if closeErr := io.CloseContext("S7ParameterUserDataItemCPUFunctions"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7ParameterUserDataItemCPUFunctions{
@@ -237,7 +241,9 @@ func S7ParameterUserDataItemCPUFunctionsParse(io utils.ReadBuffer) (*S7Parameter
 
 func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("S7ParameterUserDataItemCPUFunctions")
+		if pushErr := io.PushContext("S7ParameterUserDataItemCPUFunctions"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
@@ -311,12 +317,15 @@ func (m *S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) er
 			}
 		}
 
-		io.PopContext("S7ParameterUserDataItemCPUFunctions")
+		if popErr := io.PopContext("S7ParameterUserDataItemCPUFunctions"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -412,6 +421,7 @@ func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Method, xml.StartElement{Name: xml.Name{Local: "method"}}); err != nil {
 		return err
@@ -444,6 +454,7 @@ func (m S7ParameterUserDataItemCPUFunctions) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterUserDataItemCPUFunctions) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7ParameterUserDataItemCPUFunctions"
 	if name != "" {

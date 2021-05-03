@@ -97,9 +97,13 @@ func (m *BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
 }
 
 func BACnetErrorRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetError, error) {
-	io.PullContext("BACnetErrorRemovedAuthenticate")
+	if pullErr := io.PullContext("BACnetErrorRemovedAuthenticate"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetErrorRemovedAuthenticate")
+	if closeErr := io.CloseContext("BACnetErrorRemovedAuthenticate"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetErrorRemovedAuthenticate{
@@ -111,14 +115,19 @@ func BACnetErrorRemovedAuthenticateParse(io utils.ReadBuffer) (*BACnetError, err
 
 func (m *BACnetErrorRemovedAuthenticate) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetErrorRemovedAuthenticate")
+		if pushErr := io.PushContext("BACnetErrorRemovedAuthenticate"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetErrorRemovedAuthenticate")
+		if popErr := io.PopContext("BACnetErrorRemovedAuthenticate"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetErrorRemovedAuthenticate) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorRemovedAuthenticate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetErrorRemovedAuthenticate) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorRemovedAuthenticate) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetErrorRemovedAuthenticate"
 	if name != "" {

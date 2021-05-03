@@ -116,7 +116,9 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUWriteMultipleCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUWriteMultipleCoilsResponse")
+	if pullErr := io.PullContext("ModbusPDUWriteMultipleCoilsResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16("startingAddress", 16)
@@ -130,7 +132,9 @@ func ModbusPDUWriteMultipleCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
 	}
 
-	io.CloseContext("ModbusPDUWriteMultipleCoilsResponse")
+	if closeErr := io.CloseContext("ModbusPDUWriteMultipleCoilsResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUWriteMultipleCoilsResponse{
@@ -144,7 +148,9 @@ func ModbusPDUWriteMultipleCoilsResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUWriteMultipleCoilsResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUWriteMultipleCoilsResponse")
+		if pushErr := io.PushContext("ModbusPDUWriteMultipleCoilsResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
@@ -160,12 +166,15 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) Serialize(io utils.WriteBuffer) er
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
-		io.PopContext("ModbusPDUWriteMultipleCoilsResponse")
+		if popErr := io.PopContext("ModbusPDUWriteMultipleCoilsResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUWriteMultipleCoilsResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -201,6 +210,7 @@ func (m *ModbusPDUWriteMultipleCoilsResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUWriteMultipleCoilsResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.StartingAddress, xml.StartElement{Name: xml.Name{Local: "startingAddress"}}); err != nil {
 		return err
@@ -215,6 +225,7 @@ func (m ModbusPDUWriteMultipleCoilsResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUWriteMultipleCoilsResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUWriteMultipleCoilsResponse"
 	if name != "" {

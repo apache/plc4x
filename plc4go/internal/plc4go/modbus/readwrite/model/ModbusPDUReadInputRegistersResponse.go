@@ -118,7 +118,9 @@ func (m *ModbusPDUReadInputRegistersResponse) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadInputRegistersResponse")
+	if pullErr := io.PullContext("ModbusPDUReadInputRegistersResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
@@ -128,7 +130,9 @@ func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 	}
 
 	// Array field (value)
-	io.PullContext("value")
+	if pullErr := io.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
@@ -138,9 +142,13 @@ func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 		}
 		value[curItem] = _item
 	}
-	io.CloseContext("value")
+	if closeErr := io.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ModbusPDUReadInputRegistersResponse")
+	if closeErr := io.CloseContext("ModbusPDUReadInputRegistersResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadInputRegistersResponse{
@@ -153,7 +161,9 @@ func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, 
 
 func (m *ModbusPDUReadInputRegistersResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadInputRegistersResponse")
+		if pushErr := io.PushContext("ModbusPDUReadInputRegistersResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
@@ -164,22 +174,29 @@ func (m *ModbusPDUReadInputRegistersResponse) Serialize(io utils.WriteBuffer) er
 
 		// Array Field (value)
 		if m.Value != nil {
-			io.PushContext("value")
+			if pushErr := io.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
-			io.PopContext("value")
+			if popErr := io.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ModbusPDUReadInputRegistersResponse")
+		if popErr := io.PopContext("ModbusPDUReadInputRegistersResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadInputRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -214,6 +231,7 @@ func (m *ModbusPDUReadInputRegistersResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadInputRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedValue := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Value))
 	_encodedValue = strings.ToUpper(_encodedValue)
@@ -227,6 +245,7 @@ func (m ModbusPDUReadInputRegistersResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadInputRegistersResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadInputRegistersResponse"
 	if name != "" {

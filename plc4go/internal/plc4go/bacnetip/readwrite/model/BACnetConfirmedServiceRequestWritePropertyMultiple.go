@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBytes() uin
 }
 
 func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestWritePropertyMultiple{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io utils.ReadBuffer
 
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceRequestWritePropertyMultiple")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestWritePropertyMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) UnmarshalXML(d *xml
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestWritePropertyMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestWritePropertyMultiple"
 	if name != "" {

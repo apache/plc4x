@@ -97,9 +97,13 @@ func (m *BACnetConfirmedServiceACKReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceACKReadPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
-	io.PullContext("BACnetConfirmedServiceACKReadProperty")
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceACKReadProperty")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKReadProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadProperty{
@@ -111,14 +115,19 @@ func BACnetConfirmedServiceACKReadPropertyParse(io utils.ReadBuffer) (*BACnetCon
 
 func (m *BACnetConfirmedServiceACKReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceACKReadProperty")
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetConfirmedServiceACKReadProperty")
+		if popErr := io.PopContext("BACnetConfirmedServiceACKReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetConfirmedServiceACKReadProperty) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetConfirmedServiceACKReadProperty) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKReadProperty) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceACKReadProperty"
 	if name != "" {

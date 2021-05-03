@@ -127,7 +127,9 @@ func (m *APDUSegmentAck) LengthInBytes() uint16 {
 }
 
 func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
-	io.PullContext("APDUSegmentAck")
+	if pullErr := io.PullContext("APDUSegmentAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
@@ -173,7 +175,9 @@ func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_proposedWindowSizeErr, "Error parsing 'proposedWindowSize' field")
 	}
 
-	io.CloseContext("APDUSegmentAck")
+	if closeErr := io.CloseContext("APDUSegmentAck"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &APDUSegmentAck{
@@ -190,7 +194,9 @@ func APDUSegmentAckParse(io utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("APDUSegmentAck")
+		if pushErr := io.PushContext("APDUSegmentAck"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
@@ -235,12 +241,15 @@ func (m *APDUSegmentAck) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 		}
 
-		io.PopContext("APDUSegmentAck")
+		if popErr := io.PopContext("APDUSegmentAck"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -294,6 +303,7 @@ func (m *APDUSegmentAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUSegmentAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NegativeAck, xml.StartElement{Name: xml.Name{Local: "negativeAck"}}); err != nil {
 		return err
@@ -317,6 +327,7 @@ func (m APDUSegmentAck) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUSegmentAck) Box(name string, width int) utils.AsciiBox {
 	boxName := "APDUSegmentAck"
 	if name != "" {

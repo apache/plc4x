@@ -107,15 +107,26 @@ func (m *AdsWriteControlResponse) LengthInBytes() uint16 {
 }
 
 func AdsWriteControlResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsWriteControlResponse")
+	if pullErr := io.PullContext("AdsWriteControlResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsWriteControlResponse")
+	if closeErr := io.CloseContext("AdsWriteControlResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsWriteControlResponse{
@@ -128,20 +139,31 @@ func AdsWriteControlResponseParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteControlResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsWriteControlResponse")
+		if pushErr := io.PushContext("AdsWriteControlResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
-		io.PopContext("AdsWriteControlResponse")
+		if popErr := io.PopContext("AdsWriteControlResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsWriteControlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -171,6 +193,7 @@ func (m *AdsWriteControlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsWriteControlResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -182,6 +205,7 @@ func (m AdsWriteControlResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsWriteControlResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsWriteControlResponse"
 	if name != "" {

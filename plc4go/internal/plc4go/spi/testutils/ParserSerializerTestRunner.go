@@ -69,11 +69,19 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 		t.Error("Invalid document structure")
 	}
 	littleEndian := node.GetAttributeValue("bigEndian") != "true"
-	var testsuiteName string
+	var (
+		testsuiteName string
+		protocolName  string
+		outputFlavor  string
+	)
 	for _, childPtr := range node.Children {
 		child := *childPtr
 		if child.Name == "name" {
 			testsuiteName = child.Text
+		} else if child.Name == "protocolName" {
+			protocolName = child.Text
+		} else if child.Name == "outputFlavor" {
+			outputFlavor = child.Text
 		} else if child.Name != "testcase" {
 			t.Error("Invalid document structure")
 			return
@@ -116,37 +124,81 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				var helper interface {
 					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
 				}
-				switch testsuiteName {
-				case "Modbus":
+				switch protocolName {
+				case "modbus":
 					helper = new(modbusModel.ModbusParserHelper)
-				case "Beckhoff ADS/AMS":
+				case "ads":
 					helper = new(adsModel.AdsParserHelper)
-				case "S7":
+				case "s7":
 					helper = new(s7Model.S7ParserHelper)
-				case "KNXNet/IP":
+				case "knxnetip":
 					helper = new(knxModel.KnxnetipParserHelper)
 				default:
 					t.Errorf("Testsuite %s has not mapped parser", testsuiteName)
 					return
 				}
+				_ = outputFlavor
 				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
 				if err != nil {
 					t.Error("Error parsing input data: " + err.Error())
 					return
 				}
 
-				// Serialize the parsed object to XML
-				actualSerialized, err := xml.Marshal(msg)
-				if err != nil {
-					t.Error("Error serializing the actual message: " + err.Error())
-					return
-				}
+				{
+					// First try to use the native xml writer
+					var err error
+					serializable := msg.(utils.Serializable)
+					buffer := utils.NewXmlWriteBuffer()
+					useOldXmlCompare := false
+					if err = serializable.Serialize(buffer); err == nil {
+						actualXml := buffer.GetXmlString()
+						err = CompareResults([]byte(actualXml), []byte(referenceSerialized))
+						if err != nil {
+							border := strings.Repeat("=", 100)
+							fmt.Printf(
+								"\n"+
+									// Border
+									"%[1]s\n"+
+									// Testcase name
+									"%[4]s\n"+
+									// diff detected message
+									"Diff detected\n"+
+									// Border
+									"%[1]s\n"+
+									// xml
+									"%[2]s\n"+
+									// Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
+									// Diff
+									"%[3]s\n"+
+									// Double Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Falling back to old jackson based xml mapper\n",
+								border,
+								actualXml,
+								err,
+								testCaseName)
+							useOldXmlCompare = true
+						}
+					}
+					if useOldXmlCompare {
+						// Serialize the parsed object to XML
+						actualXml, err := xml.Marshal(msg)
+						if err != nil {
+							t.Error("Error serializing the actual message: " + err.Error())
+							return
+						}
 
-				// Compare the actual and the expected xml
-				err = CompareResults(actualSerialized, []byte(referenceSerialized))
-				if err != nil {
-					t.Error("Error comparing the results: " + err.Error())
-					return
+						// Compare the actual and the expected xml
+						err = CompareResults(actualXml, []byte(referenceSerialized))
+						if err != nil {
+							t.Error("Error comparing the results: " + err.Error())
+							return
+						}
+					}
 				}
 
 				// If all was ok, serialize the object again

@@ -16,27 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model;
+package org.apache.plc4x.test.driver.internal.api;
 
-public enum StepType {
+public class TestField {
 
-    /*
-                                PLC --------- PLC4X --------- Application
-        SEND_PLC_MESSAGE:           <--------
-        SEND_PLC_BYTES:             <--------
-        RECEIVE_PLC_MESSAGE:        -------->
-        RECEIVE_PLC_BYTES:          -------->
-        API_REQUEST:                                <--------
-        API_RESPONSE:                               -------->
-     */
+    private final String name;
+    private final String address;
 
-    OUTGOING_PLC_MESSAGE,
-    OUTGOING_PLC_BYTES,
-    INCOMING_PLC_MESSAGE,
-    INCOMING_PLC_BYTES,
-    API_REQUEST,
-    API_RESPONSE,
-    DELAY,
-    TERMINATE
+    public TestField(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
 
 }

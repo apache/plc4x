@@ -97,9 +97,13 @@ func (m *ApduDataExtKeyWrite) LengthInBytes() uint16 {
 }
 
 func ApduDataExtKeyWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExtKeyWrite")
+	if pullErr := io.PullContext("ApduDataExtKeyWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ApduDataExtKeyWrite")
+	if closeErr := io.CloseContext("ApduDataExtKeyWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtKeyWrite{
@@ -111,14 +115,19 @@ func ApduDataExtKeyWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
 
 func (m *ApduDataExtKeyWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataExtKeyWrite")
+		if pushErr := io.PushContext("ApduDataExtKeyWrite"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ApduDataExtKeyWrite")
+		if popErr := io.PopContext("ApduDataExtKeyWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtKeyWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *ApduDataExtKeyWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtKeyWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m ApduDataExtKeyWrite) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtKeyWrite) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataExtKeyWrite"
 	if name != "" {

@@ -101,9 +101,13 @@ func (m *BACnetTagApplicationNull) LengthInBytes() uint16 {
 }
 
 func BACnetTagApplicationNullParse(io utils.ReadBuffer) (*BACnetTag, error) {
-	io.PullContext("BACnetTagApplicationNull")
+	if pullErr := io.PullContext("BACnetTagApplicationNull"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetTagApplicationNull")
+	if closeErr := io.CloseContext("BACnetTagApplicationNull"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationNull{
@@ -115,14 +119,19 @@ func BACnetTagApplicationNullParse(io utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationNull) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetTagApplicationNull")
+		if pushErr := io.PushContext("BACnetTagApplicationNull"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetTagApplicationNull")
+		if popErr := io.PopContext("BACnetTagApplicationNull"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationNull) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *BACnetTagApplicationNull) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationNull) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m BACnetTagApplicationNull) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationNull) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetTagApplicationNull"
 	if name != "" {

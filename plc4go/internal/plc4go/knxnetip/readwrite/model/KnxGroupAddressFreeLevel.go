@@ -103,7 +103,9 @@ func (m *KnxGroupAddressFreeLevel) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
-	io.PullContext("KnxGroupAddressFreeLevel")
+	if pullErr := io.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint16("subGroup", 16)
@@ -111,7 +113,9 @@ func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
 	}
 
-	io.CloseContext("KnxGroupAddressFreeLevel")
+	if closeErr := io.CloseContext("KnxGroupAddressFreeLevel"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &KnxGroupAddressFreeLevel{
@@ -124,7 +128,9 @@ func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error
 
 func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("KnxGroupAddressFreeLevel")
+		if pushErr := io.PushContext("KnxGroupAddressFreeLevel"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
@@ -133,12 +139,15 @@ func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
-		io.PopContext("KnxGroupAddressFreeLevel")
+		if popErr := io.PopContext("KnxGroupAddressFreeLevel"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SubGroup, xml.StartElement{Name: xml.Name{Local: "subGroup"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m KnxGroupAddressFreeLevel) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
 	boxName := "KnxGroupAddressFreeLevel"
 	if name != "" {

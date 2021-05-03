@@ -104,7 +104,9 @@ func (m *ModbusPDU) LengthInBytes() uint16 {
 }
 
 func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDU")
+	if pullErr := io.PullContext("ModbusPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
@@ -208,7 +210,9 @@ func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ModbusPDU")
+	if closeErr := io.CloseContext("ModbusPDU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -220,7 +224,9 @@ func (m *ModbusPDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error {
-	io.PushContext("ModbusPDU")
+	if pushErr := io.PushContext("ModbusPDU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
@@ -244,10 +250,13 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ModbusPDU")
+	if popErr := io.PopContext("ModbusPDU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -795,6 +804,7 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.modbus.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -820,10 +830,12 @@ func (m ModbusPDU) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ModbusPDU) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ModbusPDU) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "ModbusPDU"
 	if name != "" {

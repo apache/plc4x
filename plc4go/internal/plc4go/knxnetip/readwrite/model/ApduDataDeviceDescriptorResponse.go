@@ -112,7 +112,9 @@ func (m *ApduDataDeviceDescriptorResponse) LengthInBytes() uint16 {
 }
 
 func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
-	io.PullContext("ApduDataDeviceDescriptorResponse")
+	if pullErr := io.PullContext("ApduDataDeviceDescriptorResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (descriptorType)
 	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
@@ -121,7 +123,9 @@ func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8
 	}
 
 	// Array field (data)
-	io.PullContext("data")
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) }))
 	for curItem := uint16(0); curItem < uint16(utils.InlineIf(bool(bool((dataLength) < (1))), func() uint16 { return uint16(uint16(0)) }, func() uint16 { return uint16(uint16(dataLength) - uint16(uint16(1))) })); curItem++ {
@@ -131,9 +135,13 @@ func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8
 		}
 		data[curItem] = _item
 	}
-	io.CloseContext("data")
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ApduDataDeviceDescriptorResponse")
+	if closeErr := io.CloseContext("ApduDataDeviceDescriptorResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataDeviceDescriptorResponse{
@@ -147,7 +155,9 @@ func ApduDataDeviceDescriptorResponseParse(io utils.ReadBuffer, dataLength uint8
 
 func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ApduDataDeviceDescriptorResponse")
+		if pushErr := io.PushContext("ApduDataDeviceDescriptorResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
@@ -158,22 +168,29 @@ func (m *ApduDataDeviceDescriptorResponse) Serialize(io utils.WriteBuffer) error
 
 		// Array Field (data)
 		if m.Data != nil {
-			io.PushContext("data")
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
-			io.PopContext("data")
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("ApduDataDeviceDescriptorResponse")
+		if popErr := io.PopContext("ApduDataDeviceDescriptorResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataDeviceDescriptorResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -214,6 +231,7 @@ func (m *ApduDataDeviceDescriptorResponse) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataDeviceDescriptorResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DescriptorType, xml.StartElement{Name: xml.Name{Local: "descriptorType"}}); err != nil {
 		return err
@@ -230,6 +248,7 @@ func (m ApduDataDeviceDescriptorResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataDeviceDescriptorResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "ApduDataDeviceDescriptorResponse"
 	if name != "" {

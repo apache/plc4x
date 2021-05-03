@@ -92,7 +92,9 @@ func (m *TunnelingRequestDataBlock) LengthInBytes() uint16 {
 }
 
 func TunnelingRequestDataBlockParse(io utils.ReadBuffer) (*TunnelingRequestDataBlock, error) {
-	io.PullContext("TunnelingRequestDataBlock")
+	if pullErr := io.PullContext("TunnelingRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
@@ -127,14 +129,18 @@ func TunnelingRequestDataBlockParse(io utils.ReadBuffer) (*TunnelingRequestDataB
 		}
 	}
 
-	io.CloseContext("TunnelingRequestDataBlock")
+	if closeErr := io.CloseContext("TunnelingRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewTunnelingRequestDataBlock(communicationChannelId, sequenceCounter), nil
 }
 
 func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("TunnelingRequestDataBlock")
+	if pushErr := io.PushContext("TunnelingRequestDataBlock"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
@@ -165,10 +171,13 @@ func (m *TunnelingRequestDataBlock) Serialize(io utils.WriteBuffer) error {
 		}
 	}
 
-	io.PopContext("TunnelingRequestDataBlock")
+	if popErr := io.PopContext("TunnelingRequestDataBlock"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -203,6 +212,7 @@ func (m *TunnelingRequestDataBlock) UnmarshalXML(d *xml.Decoder, start xml.Start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TunnelingRequestDataBlock) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -226,6 +236,7 @@ func (m TunnelingRequestDataBlock) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TunnelingRequestDataBlock) Box(name string, width int) utils.AsciiBox {
 	boxName := "TunnelingRequestDataBlock"
 	if name != "" {

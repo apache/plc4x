@@ -100,7 +100,9 @@ func (m *ApduDataExt) LengthInBytes() uint16 {
 }
 
 func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
-	io.PullContext("ApduDataExt")
+	if pullErr := io.PullContext("ApduDataExt"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType, _extApciTypeErr := io.ReadUint8("extApciType", 6)
@@ -202,7 +204,9 @@ func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("ApduDataExt")
+	if closeErr := io.CloseContext("ApduDataExt"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -214,7 +218,9 @@ func (m *ApduDataExt) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, serializeChildFunction func() error) error {
-	io.PushContext("ApduDataExt")
+	if pushErr := io.PushContext("ApduDataExt"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.ExtApciType())
@@ -230,10 +236,13 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("ApduDataExt")
+	if popErr := io.PopContext("ApduDataExt"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1001,6 +1010,7 @@ func (m *ApduDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -1026,10 +1036,12 @@ func (m ApduDataExt) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ApduDataExt) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *ApduDataExt) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "ApduDataExt"
 	if name != "" {

@@ -101,9 +101,13 @@ func (m *AdsInvalidRequest) LengthInBytes() uint16 {
 }
 
 func AdsInvalidRequestParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsInvalidRequest")
+	if pullErr := io.PullContext("AdsInvalidRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("AdsInvalidRequest")
+	if closeErr := io.CloseContext("AdsInvalidRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsInvalidRequest{
@@ -115,14 +119,19 @@ func AdsInvalidRequestParse(io utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsInvalidRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsInvalidRequest")
+		if pushErr := io.PushContext("AdsInvalidRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("AdsInvalidRequest")
+		if popErr := io.PopContext("AdsInvalidRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsInvalidRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -146,6 +155,7 @@ func (m *AdsInvalidRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsInvalidRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -154,6 +164,7 @@ func (m AdsInvalidRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsInvalidRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsInvalidRequest"
 	if name != "" {

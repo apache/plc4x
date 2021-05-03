@@ -97,9 +97,13 @@ func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
 }
 
 func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
-	io.PullContext("BACnetUnconfirmedServiceRequestIHave")
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("BACnetUnconfirmedServiceRequestIHave")
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestIHave"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestIHave{
@@ -111,14 +115,19 @@ func BACnetUnconfirmedServiceRequestIHaveParse(io utils.ReadBuffer) (*BACnetUnco
 
 func (m *BACnetUnconfirmedServiceRequestIHave) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetUnconfirmedServiceRequestIHave")
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestIHave"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("BACnetUnconfirmedServiceRequestIHave")
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestIHave"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestIHave) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *BACnetUnconfirmedServiceRequestIHave) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestIHave) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m BACnetUnconfirmedServiceRequestIHave) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestIHave) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetUnconfirmedServiceRequestIHave"
 	if name != "" {

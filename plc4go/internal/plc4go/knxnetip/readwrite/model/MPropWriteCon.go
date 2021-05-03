@@ -97,9 +97,13 @@ func (m *MPropWriteCon) LengthInBytes() uint16 {
 }
 
 func MPropWriteConParse(io utils.ReadBuffer) (*CEMI, error) {
-	io.PullContext("MPropWriteCon")
+	if pullErr := io.PullContext("MPropWriteCon"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("MPropWriteCon")
+	if closeErr := io.CloseContext("MPropWriteCon"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &MPropWriteCon{
@@ -111,14 +115,19 @@ func MPropWriteConParse(io utils.ReadBuffer) (*CEMI, error) {
 
 func (m *MPropWriteCon) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("MPropWriteCon")
+		if pushErr := io.PushContext("MPropWriteCon"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("MPropWriteCon")
+		if popErr := io.PopContext("MPropWriteCon"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MPropWriteCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -142,6 +151,7 @@ func (m *MPropWriteCon) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MPropWriteCon) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -150,6 +160,7 @@ func (m MPropWriteCon) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MPropWriteCon) Box(name string, width int) utils.AsciiBox {
 	boxName := "MPropWriteCon"
 	if name != "" {

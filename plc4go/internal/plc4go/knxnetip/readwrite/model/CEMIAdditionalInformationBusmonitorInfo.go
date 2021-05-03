@@ -135,7 +135,9 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
 }
 
 func CEMIAdditionalInformationBusmonitorInfoParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
-	io.PullContext("CEMIAdditionalInformationBusmonitorInfo")
+	if pullErr := io.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8("len", 8)
@@ -182,7 +184,9 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io utils.ReadBuffer) (*CEMIAdd
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
 	}
 
-	io.CloseContext("CEMIAdditionalInformationBusmonitorInfo")
+	if closeErr := io.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &CEMIAdditionalInformationBusmonitorInfo{
@@ -200,7 +204,9 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io utils.ReadBuffer) (*CEMIAdd
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("CEMIAdditionalInformationBusmonitorInfo")
+		if pushErr := io.PushContext("CEMIAdditionalInformationBusmonitorInfo"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (len)
 		_lenErr := io.WriteUint8("len", 8, 1)
@@ -250,12 +256,15 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
-		io.PopContext("CEMIAdditionalInformationBusmonitorInfo")
+		if popErr := io.PopContext("CEMIAdditionalInformationBusmonitorInfo"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -315,6 +324,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FrameErrorFlag, xml.StartElement{Name: xml.Name{Local: "frameErrorFlag"}}); err != nil {
 		return err
@@ -341,6 +351,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) utils.AsciiBox {
 	boxName := "CEMIAdditionalInformationBusmonitorInfo"
 	if name != "" {

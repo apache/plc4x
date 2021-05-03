@@ -113,7 +113,9 @@ func (m *GroupObjectDescriptorRealisationType2) LengthInBytes() uint16 {
 }
 
 func GroupObjectDescriptorRealisationType2Parse(io utils.ReadBuffer) (*GroupObjectDescriptorRealisationType2, error) {
-	io.PullContext("GroupObjectDescriptorRealisationType2")
+	if pullErr := io.PullContext("GroupObjectDescriptorRealisationType2"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (dataPointer)
 	dataPointer, _dataPointerErr := io.ReadUint8("dataPointer", 8)
@@ -157,10 +159,21 @@ func GroupObjectDescriptorRealisationType2Parse(io utils.ReadBuffer) (*GroupObje
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
+	if pullErr := io.PullContext("priority"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
+	}
+	if closeErr := io.CloseContext("priority"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("valueType"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (valueType)
@@ -168,15 +181,22 @@ func GroupObjectDescriptorRealisationType2Parse(io utils.ReadBuffer) (*GroupObje
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")
 	}
+	if closeErr := io.CloseContext("valueType"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("GroupObjectDescriptorRealisationType2")
+	if closeErr := io.CloseContext("GroupObjectDescriptorRealisationType2"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewGroupObjectDescriptorRealisationType2(dataPointer, updateEnable, transmitEnable, segmentSelectorEnable, writeEnable, readEnable, communicationEnable, priority, valueType), nil
 }
 
 func (m *GroupObjectDescriptorRealisationType2) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("GroupObjectDescriptorRealisationType2")
+	if pushErr := io.PushContext("GroupObjectDescriptorRealisationType2"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (dataPointer)
 	dataPointer := uint8(m.DataPointer)
@@ -228,21 +248,36 @@ func (m *GroupObjectDescriptorRealisationType2) Serialize(io utils.WriteBuffer) 
 	}
 
 	// Simple Field (priority)
+	if pushErr := io.PushContext("priority"); pushErr != nil {
+		return pushErr
+	}
 	_priorityErr := m.Priority.Serialize(io)
+	if popErr := io.PopContext("priority"); popErr != nil {
+		return popErr
+	}
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (valueType)
+	if pushErr := io.PushContext("valueType"); pushErr != nil {
+		return pushErr
+	}
 	_valueTypeErr := m.ValueType.Serialize(io)
+	if popErr := io.PopContext("valueType"); popErr != nil {
+		return popErr
+	}
 	if _valueTypeErr != nil {
 		return errors.Wrap(_valueTypeErr, "Error serializing 'valueType' field")
 	}
 
-	io.PopContext("GroupObjectDescriptorRealisationType2")
+	if popErr := io.PopContext("GroupObjectDescriptorRealisationType2"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *GroupObjectDescriptorRealisationType2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -319,6 +354,7 @@ func (m *GroupObjectDescriptorRealisationType2) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *GroupObjectDescriptorRealisationType2) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.GroupObjectDescriptorRealisationType2"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -363,6 +399,7 @@ func (m GroupObjectDescriptorRealisationType2) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m GroupObjectDescriptorRealisationType2) Box(name string, width int) utils.AsciiBox {
 	boxName := "GroupObjectDescriptorRealisationType2"
 	if name != "" {

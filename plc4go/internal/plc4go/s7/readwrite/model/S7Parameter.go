@@ -101,7 +101,9 @@ func (m *S7Parameter) LengthInBytes() uint16 {
 }
 
 func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
-	io.PullContext("S7Parameter")
+	if pullErr := io.PullContext("S7Parameter"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
@@ -133,7 +135,9 @@ func S7ParameterParse(io utils.ReadBuffer, messageType uint8) (*S7Parameter, err
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("S7Parameter")
+	if closeErr := io.CloseContext("S7Parameter"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -145,7 +149,9 @@ func (m *S7Parameter) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, serializeChildFunction func() error) error {
-	io.PushContext("S7Parameter")
+	if pushErr := io.PushContext("S7Parameter"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
@@ -161,10 +167,13 @@ func (m *S7Parameter) SerializeParent(io utils.WriteBuffer, child IS7Parameter, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("S7Parameter")
+	if popErr := io.PopContext("S7Parameter"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -274,6 +283,7 @@ func (m *S7Parameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Parameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -299,10 +309,12 @@ func (m S7Parameter) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Parameter) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *S7Parameter) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "S7Parameter"
 	if name != "" {

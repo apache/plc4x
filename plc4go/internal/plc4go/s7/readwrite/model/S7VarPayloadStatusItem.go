@@ -81,34 +81,55 @@ func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
 }
 
 func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
-	io.PullContext("S7VarPayloadStatusItem")
+	if pullErr := io.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
+	if pullErr := io.PullContext("returnCode"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
+	if closeErr := io.CloseContext("returnCode"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("S7VarPayloadStatusItem")
+	if closeErr := io.CloseContext("S7VarPayloadStatusItem"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
 func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
-	io.PushContext("S7VarPayloadStatusItem")
+	if pushErr := io.PushContext("S7VarPayloadStatusItem"); pushErr != nil {
+		return pushErr
+	}
 
+	if pushErr := io.PushContext("returnCode"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
+	if popErr := io.PopContext("returnCode"); popErr != nil {
+		return popErr
+	}
 
-	io.PopContext("S7VarPayloadStatusItem")
+	if popErr := io.PopContext("S7VarPayloadStatusItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -137,6 +158,7 @@ func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -157,6 +179,7 @@ func (m S7VarPayloadStatusItem) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
 	boxName := "S7VarPayloadStatusItem"
 	if name != "" {

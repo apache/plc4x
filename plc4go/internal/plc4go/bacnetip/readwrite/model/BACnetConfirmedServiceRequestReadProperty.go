@@ -133,7 +133,9 @@ func (m *BACnetConfirmedServiceRequestReadProperty) LengthInBytes() uint16 {
 }
 
 func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
-	io.PullContext("BACnetConfirmedServiceRequestReadProperty")
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
@@ -172,7 +174,9 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 	}
 
 	// Array field (propertyIdentifier)
-	io.PullContext("propertyIdentifier")
+	if pullErr := io.PullContext("propertyIdentifier", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	propertyIdentifier := make([]int8, propertyIdentifierLength)
 	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
@@ -182,9 +186,13 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 		}
 		propertyIdentifier[curItem] = _item
 	}
-	io.CloseContext("propertyIdentifier")
+	if closeErr := io.CloseContext("propertyIdentifier", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("BACnetConfirmedServiceRequestReadProperty")
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestReadProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReadProperty{
@@ -200,7 +208,9 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io utils.ReadBuffer) (*BACne
 
 func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("BACnetConfirmedServiceRequestReadProperty")
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (objectIdentifierHeader)
 		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0x0C)
@@ -237,22 +247,29 @@ func (m *BACnetConfirmedServiceRequestReadProperty) Serialize(io utils.WriteBuff
 
 		// Array Field (propertyIdentifier)
 		if m.PropertyIdentifier != nil {
-			io.PushContext("propertyIdentifier")
+			if pushErr := io.PushContext("propertyIdentifier", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'propertyIdentifier' field")
 				}
 			}
-			io.PopContext("propertyIdentifier")
+			if popErr := io.PopContext("propertyIdentifier", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("BACnetConfirmedServiceRequestReadProperty")
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -305,6 +322,7 @@ func (m *BACnetConfirmedServiceRequestReadProperty) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectType, xml.StartElement{Name: xml.Name{Local: "objectType"}}); err != nil {
 		return err
@@ -327,6 +345,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestReadProperty) Box(name string, width int) utils.AsciiBox {
 	boxName := "BACnetConfirmedServiceRequestReadProperty"
 	if name != "" {

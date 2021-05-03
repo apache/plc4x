@@ -103,7 +103,9 @@ func (m *COTPParameterCalledTsap) LengthInBytes() uint16 {
 }
 
 func COTPParameterCalledTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
-	io.PullContext("COTPParameterCalledTsap")
+	if pullErr := io.PullContext("COTPParameterCalledTsap"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tsapId)
 	tsapId, _tsapIdErr := io.ReadUint16("tsapId", 16)
@@ -111,7 +113,9 @@ func COTPParameterCalledTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
 	}
 
-	io.CloseContext("COTPParameterCalledTsap")
+	if closeErr := io.CloseContext("COTPParameterCalledTsap"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &COTPParameterCalledTsap{
@@ -124,7 +128,9 @@ func COTPParameterCalledTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("COTPParameterCalledTsap")
+		if pushErr := io.PushContext("COTPParameterCalledTsap"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
@@ -133,12 +139,15 @@ func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
-		io.PopContext("COTPParameterCalledTsap")
+		if popErr := io.PopContext("COTPParameterCalledTsap"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -168,6 +177,7 @@ func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TsapId, xml.StartElement{Name: xml.Name{Local: "tsapId"}}); err != nil {
 		return err
@@ -179,6 +189,7 @@ func (m COTPParameterCalledTsap) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
 	boxName := "COTPParameterCalledTsap"
 	if name != "" {

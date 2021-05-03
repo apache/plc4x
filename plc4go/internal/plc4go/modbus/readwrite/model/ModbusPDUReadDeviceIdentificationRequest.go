@@ -105,9 +105,13 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) LengthInBytes() uint16 {
 }
 
 func ModbusPDUReadDeviceIdentificationRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
-	io.PullContext("ModbusPDUReadDeviceIdentificationRequest")
+	if pullErr := io.PullContext("ModbusPDUReadDeviceIdentificationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
-	io.CloseContext("ModbusPDUReadDeviceIdentificationRequest")
+	if closeErr := io.CloseContext("ModbusPDUReadDeviceIdentificationRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ModbusPDUReadDeviceIdentificationRequest{
@@ -119,14 +123,19 @@ func ModbusPDUReadDeviceIdentificationRequestParse(io utils.ReadBuffer) (*Modbus
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ModbusPDUReadDeviceIdentificationRequest")
+		if pushErr := io.PushContext("ModbusPDUReadDeviceIdentificationRequest"); pushErr != nil {
+			return pushErr
+		}
 
-		io.PopContext("ModbusPDUReadDeviceIdentificationRequest")
+		if popErr := io.PopContext("ModbusPDUReadDeviceIdentificationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadDeviceIdentificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -150,6 +159,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) UnmarshalXML(d *xml.Decoder, 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadDeviceIdentificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
@@ -158,6 +168,7 @@ func (m ModbusPDUReadDeviceIdentificationRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadDeviceIdentificationRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ModbusPDUReadDeviceIdentificationRequest"
 	if name != "" {

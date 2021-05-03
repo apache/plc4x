@@ -107,10 +107,14 @@ func (m *UnknownMessage) LengthInBytes() uint16 {
 }
 
 func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
-	io.PullContext("UnknownMessage")
+	if pullErr := io.PullContext("UnknownMessage"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (unknownData)
-	io.PullContext("unknownData")
+	if pullErr := io.PullContext("unknownData", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
 	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
@@ -120,9 +124,13 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 		}
 		unknownData[curItem] = _item
 	}
-	io.CloseContext("unknownData")
+	if closeErr := io.CloseContext("unknownData", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("UnknownMessage")
+	if closeErr := io.CloseContext("UnknownMessage"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &UnknownMessage{
@@ -135,26 +143,35 @@ func UnknownMessageParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMess
 
 func (m *UnknownMessage) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("UnknownMessage")
+		if pushErr := io.PushContext("UnknownMessage"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
-			io.PushContext("unknownData")
+			if pushErr := io.PushContext("unknownData", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
 				}
 			}
-			io.PopContext("unknownData")
+			if popErr := io.PopContext("unknownData", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
-		io.PopContext("UnknownMessage")
+		if popErr := io.PopContext("UnknownMessage"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -189,6 +206,7 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *UnknownMessage) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedUnknownData := hex.EncodeToString(utils.Int8ArrayToByteArray(m.UnknownData))
 	_encodedUnknownData = strings.ToUpper(_encodedUnknownData)
@@ -202,6 +220,7 @@ func (m UnknownMessage) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m UnknownMessage) Box(name string, width int) utils.AsciiBox {
 	boxName := "UnknownMessage"
 	if name != "" {

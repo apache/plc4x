@@ -112,12 +112,21 @@ func (m *AdsAddDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsAddDeviceNotificationResponse")
+	if pullErr := io.PullContext("AdsAddDeviceNotificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (notificationHandle)
@@ -126,7 +135,9 @@ func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
 	}
 
-	io.CloseContext("AdsAddDeviceNotificationResponse")
+	if closeErr := io.CloseContext("AdsAddDeviceNotificationResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsAddDeviceNotificationResponse{
@@ -140,10 +151,18 @@ func AdsAddDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error
 
 func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsAddDeviceNotificationResponse")
+		if pushErr := io.PushContext("AdsAddDeviceNotificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
@@ -155,12 +174,15 @@ func (m *AdsAddDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
-		io.PopContext("AdsAddDeviceNotificationResponse")
+		if popErr := io.PopContext("AdsAddDeviceNotificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsAddDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -196,6 +218,7 @@ func (m *AdsAddDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsAddDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -210,6 +233,7 @@ func (m AdsAddDeviceNotificationResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsAddDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsAddDeviceNotificationResponse"
 	if name != "" {

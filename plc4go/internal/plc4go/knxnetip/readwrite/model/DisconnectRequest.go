@@ -112,7 +112,9 @@ func (m *DisconnectRequest) LengthInBytes() uint16 {
 }
 
 func DisconnectRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("DisconnectRequest")
+	if pullErr := io.PullContext("DisconnectRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
@@ -134,13 +136,22 @@ func DisconnectRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		}
 	}
 
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
 	}
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("DisconnectRequest")
+	if closeErr := io.CloseContext("DisconnectRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &DisconnectRequest{
@@ -154,7 +165,9 @@ func DisconnectRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DisconnectRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("DisconnectRequest")
+		if pushErr := io.PushContext("DisconnectRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
@@ -172,17 +185,26 @@ func (m *DisconnectRequest) Serialize(io utils.WriteBuffer) error {
 		}
 
 		// Simple Field (hpaiControlEndpoint)
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
-		io.PopContext("DisconnectRequest")
+		if popErr := io.PopContext("DisconnectRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -218,6 +240,7 @@ func (m *DisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
 		return err
@@ -232,6 +255,7 @@ func (m DisconnectRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DisconnectRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "DisconnectRequest"
 	if name != "" {

@@ -98,7 +98,9 @@ func (m *KnxGroupAddress) LengthInBytes() uint16 {
 }
 
 func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
-	io.PullContext("KnxGroupAddress")
+	if pullErr := io.PullContext("KnxGroupAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress
@@ -118,7 +120,9 @@ func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddres
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
-	io.CloseContext("KnxGroupAddress")
+	if closeErr := io.CloseContext("KnxGroupAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent)
@@ -130,7 +134,9 @@ func (m *KnxGroupAddress) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error {
-	io.PushContext("KnxGroupAddress")
+	if pushErr := io.PushContext("KnxGroupAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -138,10 +144,13 @@ func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupA
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	io.PopContext("KnxGroupAddress")
+	if popErr := io.PopContext("KnxGroupAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -215,6 +224,7 @@ func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -240,10 +250,12 @@ func (m KnxGroupAddress) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
 	return m.Child.Box(name, width)
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m *KnxGroupAddress) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
 	boxName := "KnxGroupAddress"
 	if name != "" {

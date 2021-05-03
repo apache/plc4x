@@ -113,12 +113,25 @@ func (m *ConnectionRequest) LengthInBytes() uint16 {
 }
 
 func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
-	io.PullContext("ConnectionRequest")
+	if pullErr := io.PullContext("ConnectionRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParse(io)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field")
+	}
+	if closeErr := io.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("hpaiDataEndpoint"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (hpaiDataEndpoint)
@@ -126,14 +139,26 @@ func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field")
 	}
+	if closeErr := io.CloseContext("hpaiDataEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("connectionRequestInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (connectionRequestInformation)
 	connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParse(io)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field")
 	}
+	if closeErr := io.CloseContext("connectionRequestInformation"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("ConnectionRequest")
+	if closeErr := io.CloseContext("ConnectionRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequest{
@@ -148,32 +173,55 @@ func ConnectionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("ConnectionRequest")
+		if pushErr := io.PushContext("ConnectionRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiDiscoveryEndpoint)
+		if pushErr := io.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiDiscoveryEndpointErr := m.HpaiDiscoveryEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiDiscoveryEndpointErr != nil {
 			return errors.Wrap(_hpaiDiscoveryEndpointErr, "Error serializing 'hpaiDiscoveryEndpoint' field")
 		}
 
 		// Simple Field (hpaiDataEndpoint)
+		if pushErr := io.PushContext("hpaiDataEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiDataEndpointErr := m.HpaiDataEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiDataEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiDataEndpointErr != nil {
 			return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 		}
 
 		// Simple Field (connectionRequestInformation)
+		if pushErr := io.PushContext("connectionRequestInformation"); pushErr != nil {
+			return pushErr
+		}
 		_connectionRequestInformationErr := m.ConnectionRequestInformation.Serialize(io)
+		if popErr := io.PopContext("connectionRequestInformation"); popErr != nil {
+			return popErr
+		}
 		if _connectionRequestInformationErr != nil {
 			return errors.Wrap(_connectionRequestInformationErr, "Error serializing 'connectionRequestInformation' field")
 		}
 
-		io.PopContext("ConnectionRequest")
+		if popErr := io.PopContext("ConnectionRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -218,6 +266,7 @@ func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.HpaiDiscoveryEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiDiscoveryEndpoint"}}); err != nil {
 		return err
@@ -235,6 +284,7 @@ func (m ConnectionRequest) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequest) Box(name string, width int) utils.AsciiBox {
 	boxName := "ConnectionRequest"
 	if name != "" {

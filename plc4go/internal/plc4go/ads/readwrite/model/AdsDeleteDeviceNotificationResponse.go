@@ -107,15 +107,26 @@ func (m *AdsDeleteDeviceNotificationResponse) LengthInBytes() uint16 {
 }
 
 func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
-	io.PullContext("AdsDeleteDeviceNotificationResponse")
+	if pullErr := io.PullContext("AdsDeleteDeviceNotificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
-	io.CloseContext("AdsDeleteDeviceNotificationResponse")
+	if closeErr := io.CloseContext("AdsDeleteDeviceNotificationResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsDeleteDeviceNotificationResponse{
@@ -128,20 +139,31 @@ func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, er
 
 func (m *AdsDeleteDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
-		io.PushContext("AdsDeleteDeviceNotificationResponse")
+		if pushErr := io.PushContext("AdsDeleteDeviceNotificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
-		io.PopContext("AdsDeleteDeviceNotificationResponse")
+		if popErr := io.PopContext("AdsDeleteDeviceNotificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -171,6 +193,7 @@ func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsDeleteDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -182,6 +205,7 @@ func (m AdsDeleteDeviceNotificationResponse) String() string {
 	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsDeleteDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
 	boxName := "AdsDeleteDeviceNotificationResponse"
 	if name != "" {

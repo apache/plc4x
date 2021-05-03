@@ -402,6 +402,7 @@ func (e SupportedPhysicalMedia) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SupportedPhysicalMedia) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -421,6 +422,7 @@ func (m *SupportedPhysicalMedia) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m SupportedPhysicalMedia) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -480,6 +482,7 @@ func (e SupportedPhysicalMedia) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m SupportedPhysicalMedia) Box(s string, i int) utils.AsciiBox {
 	boxName := "SupportedPhysicalMedia"
 	if s != "" {

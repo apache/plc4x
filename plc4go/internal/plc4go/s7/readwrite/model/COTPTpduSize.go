@@ -168,6 +168,7 @@ func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -187,6 +188,7 @@ func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m COTPTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -218,6 +220,7 @@ func (e COTPTpduSize) String() string {
 	return e.name()
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPTpduSize) Box(s string, i int) utils.AsciiBox {
 	boxName := "COTPTpduSize"
 	if s != "" {

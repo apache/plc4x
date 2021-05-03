@@ -22,14 +22,12 @@ package org.apache.plc4x.language.java;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -361,9 +359,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
                 String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
                 String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
-                // TODO: insert logical name
-                return  "((Supplier<" + type + ">) (() -> {" +
-                    "\n            return (" + typeCast + ") toFloat(io, \""+logicalName +"\", "+
+                return "((Supplier<" + type + ">) (() -> {" +
+                    "\n            return (" + typeCast + ") toFloat(io, \"" + logicalName + "\", " +
                     ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false") +
                     ", " + floatTypeReference.getExponent() + ", " +
                     floatTypeReference.getMantissa() + ");" +
@@ -380,61 +377,65 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     @Override
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
-        return getWriteBufferWriteMethodCall("", simpleTypeReference,fieldName,field);
+        return getWriteBufferWriteMethodCall("", simpleTypeReference, fieldName, field);
     }
 
-    public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
+    public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
+        String writerArgsString = "";
+        if (writerArgs.length > 0) {
+            writerArgsString += ", " + StringUtils.join(writerArgs, ", ");
+        }
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.writeBit(\""+logicalName+"\", (boolean) " + fieldName + ")";
+                return "io.writeBit(\"" + logicalName + "\", (boolean) " + fieldName + "" + writerArgsString + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 4) {
-                    return "io.writeUnsignedByte(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
+                    return "io.writeUnsignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeUnsignedShort(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.writeUnsignedShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeUnsignedInt(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.writeUnsignedInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeUnsignedLong(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.writeUnsignedLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
                 }
-                return "io.writeUnsignedBigInteger(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + ")";
+                return "io.writeUnsignedBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + "" + writerArgsString + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeByte(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
+                    return "io.writeByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeShort(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeInt(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.writeInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.writeLong(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.writeLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
                 }
-                return "io.writeBigInteger(\""+logicalName+"\", " + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
+                return "io.writeBigInteger(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + ")" + writerArgsString + ")";
             }
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeFloat(\""+logicalName+"\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
+                    return "io.writeFloat(\"" + logicalName + "\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + "" + writerArgsString + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.writeDouble(\""+logicalName+"\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
+                    return "io.writeDouble(\"" + logicalName + "\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + "" + writerArgsString + ")";
                 } else {
                     throw new RuntimeException("Unsupported float type");
                 }
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.writeString(\""+logicalName+"\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + ", \"" +
-                    stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
+                return "io.writeString(\"" + logicalName + "\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + ", \"" +
+                    stringTypeReference.getEncoding() + "\", (String) " + fieldName + "" + writerArgsString + ")";
             }
         }
         return "Hurz";
