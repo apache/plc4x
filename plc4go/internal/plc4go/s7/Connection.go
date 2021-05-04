@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
@@ -309,7 +308,7 @@ func (m *Connection) extractControllerTypeAndFireConnected(payloadUserData *read
 				if readSzlResponseItemItem.ItemIndex != 0x0001 {
 					continue
 				}
-				articleNumber := string(utils.Int8ArrayToByteArray(readSzlResponseItemItem.Mlfb))
+				articleNumber := string(readSzlResponseItemItem.Mlfb)
 				var controllerType ControllerType
 				if !strings.HasPrefix(articleNumber, "6ES7 ") {
 					controllerType = ControllerType_ANY

@@ -82,7 +82,16 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwBitKey, 1, writerArgs);
             generator.writeBooleanField(sanitizedLogicalName, value);
-        } );
+        });
+    }
+
+    @Override
+    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwByteKey, 8, writerArgs);
+            generator.writeStringField(sanitizedLogicalName, String.format("0x%02x", value));
+        });
     }
 
     @Override
@@ -91,7 +100,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
-        } );
+        });
     }
 
     @Override
@@ -118,7 +127,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
-        } );
+        });
     }
 
     @Override
@@ -131,7 +140,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -145,7 +154,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
-        } );
+        });
     }
 
     @Override

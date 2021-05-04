@@ -172,7 +172,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }

@@ -191,7 +191,7 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }
@@ -320,7 +320,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         byte[] strBytes = new byte[bitLength / 8];
         for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
             try {
-                strBytes[i] = readByte(logicalName,8);
+                strBytes[i] = readByte(logicalName);
             } catch (Exception e) {
                 throw new PlcRuntimeException(e);
             }

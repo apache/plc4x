@@ -243,6 +243,6 @@ func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (*readWri
 	data := io.GetBytes()
 	return readWriteModel.NewS7VarPayloadDataItem(
 		readWriteModel.DataTransportErrorCode_OK,
-		transportSize, utils.Uint8ArrayToInt8Array(data),
+		transportSize, data,
 	), nil
 }

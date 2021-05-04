@@ -91,6 +91,10 @@ func (x *xmlWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ...
 	return x.encodeElement(logicalName, value, x.generateAttr(rwBitKey, 1, writerArgs...), writerArgs...)
 }
 
+func (x *xmlWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error {
+	return x.encodeElement(logicalName, fmt.Sprintf("%#02x", value), x.generateAttr(rwByteKey, 8, writerArgs...), writerArgs...)
+}
+
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
 	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
 }

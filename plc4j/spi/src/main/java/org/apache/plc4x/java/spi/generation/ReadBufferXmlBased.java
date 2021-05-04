@@ -72,6 +72,17 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
+    public byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        move(8);
+        String hexString = decode(logicalName, rwByteKey, 8);
+        if (!hexString.startsWith("0x")) {
+            throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
+        }
+        hexString = hexString.substring(2);
+        return Byte.parseByte(hexString, 16);
+    }
+
+    @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Byte.parseByte(decode(logicalName, rwUintKey, bitLength));
@@ -102,7 +113,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Byte.parseByte(decode(logicalName, rwIntKey, bitLength));
     }
@@ -223,34 +234,34 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         logicalName = sanitizeLogicalName(logicalName);
         if (!startElement.getName().getLocalPart().equals(logicalName)) {
             throw new PlcRuntimeException(String.format("unexpected element '%s'. Expected '%s'", startElement.getName().getLocalPart(), logicalName));
-        } else if (!validateAttr(startElement.getAttributes(), dataType, bitLength)) {
+        } else if (!validateAttr(logicalName, startElement.getAttributes(), dataType, bitLength)) {
             throw new PlcRuntimeException("Error validating Attributes");
         }
         return true;
     }
 
-    private boolean validateAttr(Iterator<Attribute> attr, String dataType, int bitLength) {
+    private boolean validateAttr(String logicalName, Iterator<Attribute> attr, String dataType, int bitLength) {
         boolean dataTypeValidated = false;
         boolean bitLengthValidate = false;
         while (attr.hasNext()) {
             Attribute attribute = attr.next();
             if (attribute.getName().getLocalPart().equals(rwDataTypeKey)) {
                 if (!attribute.getValue().equals(dataType)) {
-                    throw new PlcRuntimeException(String.format("Unexpected dataType :%s. Want %s", attribute.getValue(), dataType));
+                    throw new PlcRuntimeException(String.format("%s: Unexpected dataType :%s. Want %s", logicalName, attribute.getValue(), dataType));
                 }
                 dataTypeValidated = true;
             } else if (attribute.getName().getLocalPart().equals(rwBitLengthKey)) {
                 if (!attribute.getValue().equals(Integer.valueOf(bitLength).toString())) {
-                    throw new PlcRuntimeException(String.format("Unexpected bitLength '%s'. Want '%d'", attribute.getValue(), bitLength));
+                    throw new PlcRuntimeException(String.format("%s: Unexpected bitLength '%s'. Want '%d'", logicalName, attribute.getValue(), bitLength));
                 }
                 bitLengthValidate = true;
             }
         }
         if (!dataTypeValidated) {
-            throw new PlcRuntimeException(String.format("required attribute %s missing", rwDataTypeKey));
+            throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwDataTypeKey));
         }
         if (!bitLengthValidate) {
-            throw new PlcRuntimeException(String.format("required attribute %s missing", rwBitLengthKey));
+            throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwBitLengthKey));
         }
         return true;
     }

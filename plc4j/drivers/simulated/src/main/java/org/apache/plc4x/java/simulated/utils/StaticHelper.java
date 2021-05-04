@@ -18,17 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.simulated.utils;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.nio.charset.Charset;
 
 
@@ -51,15 +45,15 @@ public class StaticHelper {
         final byte[] bytes = value.getString().getBytes(Charset.forName(encoding));
         try {
             if (bytes.length < 256) {
-                io.writeByte(8, (byte) bytes.length);
+                io.writeByte((byte) bytes.length);
                 for (byte aByte : bytes) {
-                    io.writeByte(8, aByte);
+                    io.writeByte(aByte);
                 }
             } else {
-                 throw new ParseException("Error writing string, string > 255 bytes");
+                throw new ParseException("Error writing string, string > 255 bytes");
             }
         } catch (ParseException e) {
-           throw new ParseException("Error writing string", e);
+            throw new ParseException("Error writing string", e);
         }
     }
 

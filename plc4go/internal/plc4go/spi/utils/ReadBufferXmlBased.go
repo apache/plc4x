@@ -20,11 +20,13 @@
 package utils
 
 import (
+	"encoding/hex"
 	"encoding/xml"
 	"fmt"
 	"github.com/pkg/errors"
 	"io"
 	"math/big"
+	"strings"
 )
 
 // NewXmlReadBuffer return as ReadBuffer which doesn't validate attributes and lists
@@ -98,6 +100,25 @@ func (x *xmlReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArgs
 	}
 	x.move(1)
 	return value, nil
+}
+
+func (x *xmlReadBuffer) ReadByte(logicalName string, readerArgs ...WithReaderArgs) (byte, error) {
+	var value string
+	err := x.decode(logicalName, rwBitKey, 1, readerArgs, &value)
+	if err != nil {
+		return 0, err
+	}
+	hexString := value
+	if !strings.HasPrefix(hexString, "0x") {
+		return 0, errors.Errorf("Hex string should start with 0x. Actual value %s", hexString)
+	}
+	hexString = strings.Replace(hexString, "0x", "", 1)
+	decoded, err := hex.DecodeString(hexString)
+	if err != nil {
+		return 0, err
+	}
+	x.move(8)
+	return decoded[0], nil
 }
 
 func (x *xmlReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {

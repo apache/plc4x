@@ -35,14 +35,14 @@ public class StaticHelper {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
                 for(int i = 0; (i < stringLength) && io.hasMore(8); i++) {
-                    final byte curByte = io.readByte(8);
+                    final byte curByte = io.readByte();
                     if (curByte != 0) {
                         bytes.add(curByte);
                     } else {
                         // Gobble up the remaining data, which is not added to the string.
                         i++;
                         for(; (i < stringLength) && io.hasMore(8); i++) {
-                            io.readByte(8);
+                            io.readByte();
                         }
                         break;
                     }

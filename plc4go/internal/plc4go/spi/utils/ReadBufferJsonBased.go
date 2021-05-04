@@ -20,11 +20,13 @@
 package utils
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"io"
 	"math/big"
+	"strings"
 )
 
 // NewJsonReadBuffer return as ReadBuffer which doesn't validate attributes and lists
@@ -136,6 +138,32 @@ func (j *jsonReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArg
 		return value.(bool), nil
 	} else {
 		return false, errors.Errorf("Required element %s not found in %v", logicalName, peek)
+	}
+}
+
+func (j *jsonReadBuffer) ReadByte(logicalName string, readerArgs ...WithReaderArgs) (byte, error) {
+	if j.err != nil {
+		return 0, j.err
+	}
+	logicalName = j.sanitizeLogicalName(logicalName)
+	j.move(8)
+	peek, element := j.getElement(logicalName)
+	if err := j.validateAttr(logicalName, element, "byte", 8, readerArgs...); err != nil {
+		return 0, err
+	}
+	if value, ok := element[logicalName]; ok {
+		hexString := value.(string)
+		if !strings.HasPrefix(hexString, "0x") {
+			return 0, errors.Errorf("Hex string should start with 0x. Actual value %s", hexString)
+		}
+		hexString = strings.Replace(hexString, "0x", "", 1)
+		decoded, err := hex.DecodeString(hexString)
+		if err != nil {
+			return 0, err
+		}
+		return decoded[0], nil
+	} else {
+		return 0, errors.Errorf("Required element %s not found in %v", logicalName, peek)
 	}
 }
 

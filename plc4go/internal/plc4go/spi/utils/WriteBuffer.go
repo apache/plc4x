@@ -27,6 +27,7 @@ type WriteBuffer interface {
 	// PushContext signals opening context with the supplied logical name
 	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
 	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error
+	WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error
 	WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error
 	WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error
 	WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error

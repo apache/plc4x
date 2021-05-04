@@ -34,6 +34,14 @@ public interface WriteBuffer {
         writeBit("", value);
     }
 
+    default void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        writeSignedByte(logicalName, 8, value, writerArgs);
+    }
+
+    default void writeByte(byte value) throws ParseException {
+        writeByte("", value);
+    }
+
     void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeUnsignedByte(int bitLength, byte value) throws ParseException {
@@ -64,10 +72,10 @@ public interface WriteBuffer {
         writeUnsignedBigInteger("", bitLength, value);
     }
 
-    void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;
+    void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;
 
-    default void writeByte(int bitLength, byte value) throws ParseException {
-        writeByte("", bitLength, value);
+    default void writeSignedByte(int bitLength, byte value) throws ParseException {
+        writeSignedByte("", bitLength, value);
     }
 
     void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException;

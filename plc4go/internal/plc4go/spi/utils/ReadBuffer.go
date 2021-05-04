@@ -31,6 +31,7 @@ type ReadBuffer interface {
 	// PullContext signals that we expect now a context with the supplied logical name
 	PullContext(logicalName string, readerArgs ...WithReaderArgs) error
 	ReadBit(logicalName string, readerArgs ...WithReaderArgs) (bool, error)
+	ReadByte(logicalName string, readerArgs ...WithReaderArgs) (byte, error)
 	ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error)
 	ReadUint16(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint16, error)
 	ReadUint32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint32, error)

@@ -85,6 +85,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "bool";
                 }
+                case BYTE: {
+                    return "byte";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
@@ -159,6 +162,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "values.NewPlcBOOL";
                 }
+                case BYTE: {
+                    return "values.NewPlcUINT";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
@@ -231,6 +237,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "false";
                 }
+                case BYTE: {
+                    return "0";
+                }
                 case UINT:
                 case INT: {
                     return "0";
@@ -252,6 +261,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return 1;
+            }
+            case BYTE: {
+                return 8;
             }
             case UINT:
             case INT: {
@@ -289,6 +301,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.ReadBit(\"" + logicalName + "\")";
+            }
+            case BYTE: {
+                return "io.ReadByte(\"" + logicalName + "\")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -355,6 +370,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+            }
+            case BYTE: {
+                return "io.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;

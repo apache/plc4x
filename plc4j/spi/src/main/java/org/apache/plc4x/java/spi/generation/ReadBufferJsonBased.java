@@ -26,10 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ReadBufferJsonBased implements ReadBuffer {
+public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
 
     Stack stack;
 
@@ -73,7 +76,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
             if (!(rootElement instanceof Map)) {
                 throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, rootElement));
             }
-            Object context = ((Map)rootElement).get(logicalName);
+            Object context = ((Map) rootElement).get(logicalName);
             if (context == null) {
                 throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, rootElement));
             }
@@ -113,7 +116,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(1);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "bit", 1);
+        validateAttr(logicalName, element, rwBitKey, 1);
         Boolean value = (Boolean) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -122,11 +125,28 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
+    public byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        logicalName = sanitizeLogicalName(logicalName);
+        move(8);
+        Map element = getElement(logicalName);
+        validateAttr(logicalName, element, rwByteKey, 8);
+        String hexString = (String) element.get(logicalName);
+        if (hexString == null) {
+            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+        }
+        if (!hexString.startsWith("0x")) {
+            throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
+        }
+        hexString = hexString.substring(2);
+        return Byte.parseByte(hexString, 16);
+    }
+
+    @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "uint", bitLength);
+        validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -139,7 +159,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "uint", bitLength);
+        validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -152,7 +172,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "uint", bitLength);
+        validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -165,7 +185,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "uint", bitLength);
+        validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -178,7 +198,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "uint", bitLength);
+        validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -187,11 +207,11 @@ public class ReadBufferJsonBased implements ReadBuffer {
     }
 
     @Override
-    public byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -204,7 +224,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -217,7 +237,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -230,7 +250,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -243,7 +263,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -256,7 +276,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "float", bitLength);
+        validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -269,7 +289,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "float", bitLength);
+        validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -282,7 +302,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "float", bitLength);
+        validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -295,7 +315,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);
-        validateAttr(logicalName, element, "int", bitLength);
+        validateAttr(logicalName, element, rwStringKey, bitLength);
         String value = (String) element.get(logicalName);
         if (value == null) {
             throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
@@ -314,7 +334,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         if (stack.empty()) {
             return;
         }
-        Object peek =stack.peek();
+        Object peek = stack.peek();
         if (peek instanceof List) {
             return;
         }
@@ -322,7 +342,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
             throw new PlcRuntimeException("Invalid parser state");
         }
         Map map = (Map) peek;
-        if (map.get(logicalName)==null) {
+        if (map.get(logicalName) == null) {
             throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
         }
         map.remove(logicalName);
@@ -334,7 +354,7 @@ public class ReadBufferJsonBased implements ReadBuffer {
         Object peek = stack.peek();
         Map element;
         if (peek instanceof List) {
-            List elementList = (List)stack.pop();
+            List elementList = (List) stack.pop();
             element = (Map) elementList.get(0);
             if (elementList.size() < 2) {
                 stack.push(Collections.emptyList());
@@ -362,19 +382,10 @@ public class ReadBufferJsonBased implements ReadBuffer {
         }
         String renderedBitLengthKey = String.format("%s__plc4x_%s", logicalName, "bitLength");
         Integer actualBitLength = (Integer) element.get(renderedBitLengthKey);
-        if (bitLength !=actualBitLength) {
+        if (bitLength != actualBitLength) {
             throw new PlcRuntimeException(String.format("Unexpected %s :%s. Want %s", renderedBitLengthKey, actualBitLength, bitLength));
         }
     }
-
-
-    private String sanitizeLogicalName(String logicalName) {
-        if (logicalName.equals("")) {
-            return "value";
-        }
-        return logicalName;
-    }
-
 
     private void move(int bits) {
         pos += bits;

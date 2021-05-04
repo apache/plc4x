@@ -26,6 +26,7 @@ const (
 	rwBitLengthKey            = "bitLength"
 	rwStringRepresentationKey = "stringRepresentation"
 	rwBitKey                  = "bit"
+	rwByteKey                 = "byte"
 	rwUintKey                 = "uint"
 	rwIntKey                  = "int"
 	rwFloatKey                = "float"

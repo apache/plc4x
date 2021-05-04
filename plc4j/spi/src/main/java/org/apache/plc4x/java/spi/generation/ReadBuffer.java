@@ -35,6 +35,14 @@ public interface ReadBuffer {
         return readBit("");
     }
 
+    default byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        return readSignedByte(logicalName,8,readerArgs);
+    }
+
+    default byte readByte() throws ParseException {
+        return readSignedByte("", 8);
+    }
+
     byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
     default byte readUnsignedByte(int bitLength) throws ParseException {
@@ -65,10 +73,10 @@ public interface ReadBuffer {
         return readUnsignedBigInteger("", bitLength);
     }
 
-    byte readByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
+    byte readSignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
-    default byte readByte(int bitLength) throws ParseException {
-        return readByte("", bitLength);
+    default byte readSignedByte(int bitLength) throws ParseException {
+        return readSignedByte("", bitLength);
     }
 
     short readShort(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;

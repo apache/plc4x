@@ -97,6 +97,10 @@ func (rb *byteWriteBuffer) WriteBit(_ string, value bool, _ ...WithWriterArgs) e
 	return rb.writer.WriteBool(value)
 }
 
+func (rb *byteWriteBuffer) WriteByte(_ string, value byte, _ ...WithWriterArgs) error {
+	return rb.writer.WriteBits(uint64(value), 8)
+}
+
 func (rb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, _ ...WithWriterArgs) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }

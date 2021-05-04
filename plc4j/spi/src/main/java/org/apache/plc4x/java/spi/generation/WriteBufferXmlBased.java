@@ -95,6 +95,12 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
+    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        createAndAppend(logicalName, rwByteKey, 8, String.format("0x%02x", value), writerArgs);
+        move(8);
+    }
+
+    @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Byte.valueOf(value).toString(), writerArgs);
         move(bitLength);
@@ -125,7 +131,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwIntKey, bitLength, Byte.valueOf(value).toString(), writerArgs);
         move(bitLength);
     }

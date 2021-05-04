@@ -100,6 +100,10 @@ func (j *jsonWriteBuffer) WriteBit(logicalName string, value bool, writerArgs ..
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwBitKey, 1, writerArgs...))
 }
 
+func (j *jsonWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error {
+	return j.encodeNode(logicalName, fmt.Sprintf("%#02x", value), j.generateAttr(logicalName, rwByteKey, 8, writerArgs...))
+}
+
 func (j *jsonWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
 	return j.encodeNode(logicalName, value, j.generateAttr(logicalName, rwUintKey, bitLength, writerArgs...))
 }

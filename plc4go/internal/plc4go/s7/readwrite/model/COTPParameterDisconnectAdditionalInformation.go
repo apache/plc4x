@@ -30,7 +30,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterDisconnectAdditionalInformation struct {
-	Data   []uint8
+	Data   []byte
 	Parent *COTPParameter
 }
 
@@ -53,7 +53,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) ParameterType() uint8 {
 func (m *COTPParameterDisconnectAdditionalInformation) InitializeParent(parent *COTPParameter) {
 }
 
-func NewCOTPParameterDisconnectAdditionalInformation(data []uint8) *COTPParameter {
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte) *COTPParameter {
 	child := &COTPParameterDisconnectAdditionalInformation{
 		Data:   data,
 		Parent: NewCOTPParameter(),
@@ -114,9 +114,9 @@ func COTPParameterDisconnectAdditionalInformationParse(io utils.ReadBuffer, rest
 		return nil, pullErr
 	}
 	// Count array
-	data := make([]uint8, rest)
+	data := make([]byte, rest)
 	for curItem := uint16(0); curItem < uint16(rest); curItem++ {
-		_item, _err := io.ReadUint8("", 8)
+		_item, _err := io.ReadByte("")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
@@ -151,7 +151,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteB
 				return pushErr
 			}
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8("", 8, _element)
+				_elementErr := io.WriteByte("", _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
@@ -182,7 +182,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) UnmarshalXML(d *xml.Decod
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "data":
-				var data []uint8
+				var data []byte
 				if err := d.DecodeElement(&data, &tok); err != nil {
 					return err
 				}
@@ -221,9 +221,7 @@ func (m COTPParameterDisconnectAdditionalInformation) Box(name string, width int
 		boxes := make([]utils.AsciiBox, 0)
 		// Array Field (data)
 		if m.Data != nil {
-			// Simple array base type uint8 will be hex dumped
-			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
-			// Simple array base type uint8 will be rendered one by one
+			// Simple array base type byte will be rendered one by one
 			arrayBoxes := make([]utils.AsciiBox, 0)
 			for _, _element := range m.Data {
 				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))

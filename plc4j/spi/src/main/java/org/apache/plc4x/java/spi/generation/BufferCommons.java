@@ -26,6 +26,7 @@ public interface BufferCommons {
     String rwBitLengthKey = "bitLength";
     String rwStringRepresentationKey = "stringRepresentation";
     String rwBitKey = "bit";
+    String rwByteKey = "byte";
     String rwUintKey = "uint";
     String rwIntKey = "int";
     String rwFloatKey = "float";

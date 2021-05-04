@@ -104,7 +104,7 @@ public class DF1Utils {
             // If we read a 0x10, this has to be followed by another 0x10, which is how
             // this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
             if ((rbbb.peekByte(0) == (byte) 0x10) && (rbbb.peekByte(1) == 0x10)) {
-                io.readByte(8);
+                io.readByte();
             }
             return io.readUnsignedShort(8);
         } catch (ParseException e) {

@@ -91,7 +91,7 @@ public class S7IoTest {
                 "                </transportSize>\n" +
                 "                <dataLength dataType=\"uint\" bitLength=\"16\">1</dataLength>\n" +
                 "                <data isList=\"true\">\n" +
-                "                  <value dataType=\"int\" bitLength=\"8\">1</value>\n" +
+                "                  <value dataType=\"byte\" bitLength=\"8\">0x01</value>\n" +
                 "                </data>\n" +
                 "                <padding isList=\"true\">\n" +
                 "                </padding>\n" +
@@ -144,9 +144,9 @@ public class S7IoTest {
             "                  \"S7VarPayloadDataItem\": {\n" +
             "                    \"data\": [\n" +
             "                      {\n" +
-            "                        \"value\": 1,\n" +
+            "                        \"value\": \"0x01\",\n" +
             "                        \"value__plc4x_bitLength\": 8,\n" +
-            "                        \"value__plc4x_dataType\": \"int\"\n" +
+            "                        \"value__plc4x_dataType\": \"byte\"\n" +
             "                      }\n" +
             "                    ],\n" +
             "                    \"dataLength\": 1,\n" +

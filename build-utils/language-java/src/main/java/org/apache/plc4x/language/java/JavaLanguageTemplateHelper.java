@@ -91,6 +91,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case BIT: {
                     return allowPrimitive ? "boolean" : "Boolean";
                 }
+                case BYTE: {
+                    return allowPrimitive ? "byte" : "Byte";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 4) {
@@ -162,6 +165,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case BIT: {
                     return "PlcBOOL";
                 }
+                case BYTE: {
+                    return "PlcSINT";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 4) {
@@ -231,6 +237,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case BIT: {
                     return "false";
                 }
+                case BYTE: {
+                    return "0";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 16) {
@@ -293,6 +302,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BIT: {
                 return 1;
             }
+            case BYTE: {
+                return 8;
+            }
             case UINT:
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -322,6 +334,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BIT: {
                 return "io.readBit(\"" + logicalName + "\")";
             }
+            case BYTE: {
+                ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
+                return "io.readByte(\"" + logicalName + "\")";
+            }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 4) {
@@ -341,7 +357,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
                     return "io.readShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
@@ -389,6 +405,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BIT: {
                 return "io.writeBit(\"" + logicalName + "\", (boolean) " + fieldName + "" + writerArgsString + ")";
             }
+            case BYTE: {
+                ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
+                return "io.writeByte(\"" + logicalName + "\", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+            }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 4) {
@@ -408,7 +428,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
+                    return "io.writeSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
                     return "io.writeShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";

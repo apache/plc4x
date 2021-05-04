@@ -250,20 +250,24 @@
                   <items isList="true">
                     <S7PayloadUserDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
+                        </DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
+                        </DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">4</dataLength>
                       <szlId>
                         <SzlId>
                           <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
+                            </SzlModuleTypeClass>
                           </typeClass>
                           <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
                           <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
+                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
+                            </SzlSublist>
                           </sublistList>
                         </SzlId>
                       </szlId>
@@ -331,20 +335,24 @@
                   <items isList="true">
                     <S7PayloadUserDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
+                        </DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
+                        </DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">92</dataLength>
                       <szlId>
                         <SzlId>
                           <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
+                            </SzlModuleTypeClass>
                           </typeClass>
                           <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
                           <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
+                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
+                            </SzlSublist>
                           </sublistList>
                         </SzlId>
                       </szlId>
@@ -356,26 +364,26 @@
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">1</itemIndex>
                             <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
                             </mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
@@ -384,26 +392,26 @@
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">6</itemIndex>
                             <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
                             </mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
@@ -412,26 +420,26 @@
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">7</itemIndex>
                             <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
+                              <value dataType="byte" bitLength="8">0x36</value>
                             </mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">22018</ausbg>
@@ -502,12 +510,14 @@
                               <addressType dataType="uint" bitLength="8">16</addressType>
                               <S7AddressAny>
                                 <transportSize>
-                                  <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
+                                  <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
+                                  </TransportSize>
                                 </transportSize>
                                 <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                                 <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                                 <area>
-                                  <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
+                                  <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
+                                  </MemoryArea>
                                 </area>
                                 <reserved dataType="uint" bitLength="5">0</reserved>
                                 <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -562,14 +572,16 @@
                     <items isList="true">
                       <S7VarPayloadDataItem>
                         <returnCode>
-                          <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
+                          <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
+                          </DataTransportErrorCode>
                         </returnCode>
                         <transportSize>
-                          <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
+                          <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
+                          </DataTransportSize>
                         </transportSize>
                         <dataLength dataType="uint" bitLength="16">1</dataLength>
                         <data isList="true">
-                          <value dataType="int" bitLength="8">1</value>
+                          <value dataType="byte" bitLength="8">0x01</value>
                         </data>
                         <padding isList="true">
                         </padding>
@@ -659,12 +671,14 @@
                               <addressType dataType="uint" bitLength="8">16</addressType>
                               <S7AddressAny>
                                 <transportSize>
-                                  <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
+                                  <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
+                                  </TransportSize>
                                 </transportSize>
                                 <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                                 <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                                 <area>
-                                  <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
+                                  <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
+                                  </MemoryArea>
                                 </area>
                                 <reserved dataType="uint" bitLength="5">0</reserved>
                                 <byteAddress dataType="uint" bitLength="16">0</byteAddress>
