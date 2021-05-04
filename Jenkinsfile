@@ -155,7 +155,7 @@ pipeline {
                 node {
                     // TODO: Disabled as H50 seems to be the only node with this label and it's currently offline for quite some time.
                     // label 'nexus-deploy'
-                    label 'ubuntu'
+                    label 'ubuntu && !H50'
                 }
             }
             steps {
