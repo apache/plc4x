@@ -33,7 +33,7 @@ import (
 type AbethXmlParserHelper struct {
 }
 
-// Temporary imports to silent compiler warnings
+// Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
