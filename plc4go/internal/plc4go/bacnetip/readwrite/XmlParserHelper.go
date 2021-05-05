@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,32 +37,49 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "APDU":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewAPDU
 		return nil, errors.New("APDU unmappable")
 	case "BACnetTag":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetTag
 		return nil, errors.New("BACnetTag unmappable")
 	case "BACnetTagWithContent":
 		return model.BACnetTagWithContentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetError":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetError
 		return nil, errors.New("BACnetError unmappable")
 	case "NLM":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewNLM
 		return nil, errors.New("NLM unmappable")
 	case "BACnetConfirmedServiceRequest":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetConfirmedServiceRequest
 		return nil, errors.New("BACnetConfirmedServiceRequest unmappable")
 	case "BACnetAddress":
 		return model.BACnetAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceACK":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetConfirmedServiceACK
 		return nil, errors.New("BACnetConfirmedServiceACK unmappable")
 	case "BACnetUnconfirmedServiceRequest":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetUnconfirmedServiceRequest
 		return nil, errors.New("BACnetUnconfirmedServiceRequest unmappable")
 	case "BACnetServiceAck":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBACnetServiceAck
 		return nil, errors.New("BACnetServiceAck unmappable")
 	case "BVLC":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewBVLC
 		return nil, errors.New("BVLC unmappable")
 	case "NPDU":
 		//var npduLength uint16
@@ -73,97 +89,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		}
 		npduLength := uint16(atoi)
 		return model.NPDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), npduLength)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m BacnetipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "APDU":
-		var obj *model.APDU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetTag":
-		var obj *model.BACnetTag
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetTagWithContent":
-		var obj *model.BACnetTagWithContent
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetError":
-		var obj *model.BACnetError
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "NLM":
-		var obj *model.NLM
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetConfirmedServiceRequest":
-		var obj *model.BACnetConfirmedServiceRequest
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetAddress":
-		var obj *model.BACnetAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetConfirmedServiceACK":
-		var obj *model.BACnetConfirmedServiceACK
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetUnconfirmedServiceRequest":
-		var obj *model.BACnetUnconfirmedServiceRequest
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetServiceAck":
-		var obj *model.BACnetServiceAck
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BVLC":
-		var obj *model.BVLC
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "NPDU":
-		var obj *model.NPDU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

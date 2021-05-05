@@ -20,7 +20,6 @@
 package s7
 
 import (
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"reflect"
@@ -31,8 +30,6 @@ import (
 func TestS7MessageBytes(t *testing.T) {
 	type debuggable interface {
 		utils.Serializable
-		fmt.Stringer
-		utils.AsciiBoxer
 	}
 	type args struct {
 		debuggable debuggable
@@ -389,12 +386,13 @@ func TestS7MessageBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Run("Simple 2 String", func(t *testing.T) {
+			// TODO: reimplement String() method with serializer and box based
+			/*t.Run("Simple 2 String", func(t *testing.T) {
 				tt.wantString = strings.Trim(tt.wantString, "\n")
 				if got := tt.args.debuggable.String(); got != tt.wantString {
 					t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
 				}
-			})
+			})*/
 			t.Run("Simple 2 Box", func(t *testing.T) {
 				boxWriter := utils.NewBoxedWriteBuffer()
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {

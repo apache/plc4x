@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -430,20 +427,18 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(io utils.ReadBuffer) (BACnetObjectType, error) {
-	val, err := io.ReadUint16("BACnetObjectType", 10)
+func BACnetObjectTypeParse(readBuffer utils.ReadBuffer) (BACnetObjectType, error) {
+	val, err := readBuffer.ReadUint16("BACnetObjectType", 10)
 	if err != nil {
 		return 0, nil
 	}
 	return BACnetObjectTypeByValue(val), nil
 }
 
-func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e BACnetObjectType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -463,7 +458,6 @@ func (m *BACnetObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m BACnetObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -597,13 +591,4 @@ func (e BACnetObjectType) name() string {
 
 func (e BACnetObjectType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m BACnetObjectType) Box(s string, i int) utils.AsciiBox {
-	boxName := "BACnetObjectType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 3, uint16(m), m.name()), -1)
 }

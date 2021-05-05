@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,14 +37,17 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "CipService":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewCipService
 		return nil, errors.New("CipService unmappable")
 	case "EipPacket":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewEipPacket
 		return nil, errors.New("EipPacket unmappable")
 	case "Services":
 		//var servicesLen uint16
@@ -63,41 +65,6 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		}
 		exchangeLen := uint16(atoi)
 		return model.CipExchangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m EipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "CipService":
-		var obj *model.CipService
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "EipPacket":
-		var obj *model.EipPacket
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "Services":
-		var obj *model.Services
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "CipExchange":
-		var obj *model.CipExchange
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

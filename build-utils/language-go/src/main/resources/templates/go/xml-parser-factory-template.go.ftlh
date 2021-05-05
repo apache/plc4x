@@ -64,7 +64,6 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/X
 package ${outputFlavor?replace("-","")}
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -82,7 +81,6 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
@@ -127,26 +125,12 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
         <#elseif !helper.isDiscriminatedParentTypeDefinition(typeDefinition) && !helper.isDiscriminatedChildTypeDefinition()>
             return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
         <#else>
+			// TODO: implement ${typeDefinition.class}
+			_ = model.New${typeDefinition.name}
             return nil, errors.New("${typeDefinition.name} unmappable")
         </#if>
     </#list>
     }
     return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-<#list helper.getComplexTypeRootDefinitions() as typeDefinition>
-	case "${typeDefinition.name}":
-		var obj *model.${helper.getLanguageTypeNameForTypeReference(typeDefinition.typeReference)}
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err ,"error unmarshalling xml")
-		}
-		return obj, nil
-</#list>
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 </#outputformat>

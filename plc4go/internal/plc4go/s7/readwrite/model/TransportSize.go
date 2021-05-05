@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -42,9 +41,7 @@ type ITransportSize interface {
 	DataTransportSize() DataTransportSize
 	BaseType() TransportSize
 	DataProtocolId() string
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1485,20 +1482,18 @@ func (m TransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TransportSizeParse(io utils.ReadBuffer) (TransportSize, error) {
-	val, err := io.ReadInt8("TransportSize", 8)
+func TransportSizeParse(readBuffer utils.ReadBuffer) (TransportSize, error) {
+	val, err := readBuffer.ReadInt8("TransportSize", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return TransportSizeByValue(val), nil
 }
 
-func (e TransportSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("TransportSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e TransportSize) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("TransportSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1518,7 +1513,6 @@ func (m *TransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m TransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -1586,13 +1580,4 @@ func (e TransportSize) name() string {
 
 func (e TransportSize) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m TransportSize) Box(s string, i int) utils.AsciiBox {
-	boxName := "TransportSize"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

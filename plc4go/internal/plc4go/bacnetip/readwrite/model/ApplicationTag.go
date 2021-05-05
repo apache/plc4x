@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type ApplicationTag int8
 
 type IApplicationTag interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -154,20 +151,18 @@ func (m ApplicationTag) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApplicationTagParse(io utils.ReadBuffer) (ApplicationTag, error) {
-	val, err := io.ReadInt8("ApplicationTag", 4)
+func ApplicationTagParse(readBuffer utils.ReadBuffer) (ApplicationTag, error) {
+	val, err := readBuffer.ReadInt8("ApplicationTag", 4)
 	if err != nil {
 		return 0, nil
 	}
 	return ApplicationTagByValue(val), nil
 }
 
-func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("ApplicationTag", 4, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e ApplicationTag) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("ApplicationTag", 4, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -187,7 +182,6 @@ func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ApplicationTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -229,13 +223,4 @@ func (e ApplicationTag) name() string {
 
 func (e ApplicationTag) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m ApplicationTag) Box(s string, i int) utils.AsciiBox {
-	boxName := "ApplicationTag"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, int8(m), m.name()), -1)
 }

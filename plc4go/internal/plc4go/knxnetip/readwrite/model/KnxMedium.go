@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type KnxMedium uint8
 
 type IKnxMedium interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -112,20 +109,18 @@ func (m KnxMedium) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxMediumParse(io utils.ReadBuffer) (KnxMedium, error) {
-	val, err := io.ReadUint8("KnxMedium", 8)
+func KnxMediumParse(readBuffer utils.ReadBuffer) (KnxMedium, error) {
+	val, err := readBuffer.ReadUint8("KnxMedium", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxMediumByValue(val), nil
 }
 
-func (e KnxMedium) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxMedium) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxMedium) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -145,7 +140,6 @@ func (m *KnxMedium) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxMedium) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -173,13 +167,4 @@ func (e KnxMedium) name() string {
 
 func (e KnxMedium) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxMedium) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxMedium"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

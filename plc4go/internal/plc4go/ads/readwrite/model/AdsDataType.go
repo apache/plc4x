@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -33,9 +32,7 @@ type AdsDataType int8
 type IAdsDataType interface {
 	NumBytes() uint16
 	DataFormatName() string
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -655,20 +652,18 @@ func (m AdsDataType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDataTypeParse(io utils.ReadBuffer) (AdsDataType, error) {
-	val, err := io.ReadInt8("AdsDataType", 8)
+func AdsDataTypeParse(readBuffer utils.ReadBuffer) (AdsDataType, error) {
+	val, err := readBuffer.ReadInt8("AdsDataType", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return AdsDataTypeByValue(val), nil
 }
 
-func (e AdsDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e AdsDataType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -688,7 +683,6 @@ func (m *AdsDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m AdsDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -784,13 +778,4 @@ func (e AdsDataType) name() string {
 
 func (e AdsDataType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m AdsDataType) Box(s string, i int) utils.AsciiBox {
-	boxName := "AdsDataType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

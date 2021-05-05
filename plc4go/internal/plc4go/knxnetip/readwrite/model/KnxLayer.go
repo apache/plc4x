@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type KnxLayer uint8
 
 type IKnxLayer interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -94,20 +91,18 @@ func (m KnxLayer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxLayerParse(io utils.ReadBuffer) (KnxLayer, error) {
-	val, err := io.ReadUint8("KnxLayer", 8)
+func KnxLayerParse(readBuffer utils.ReadBuffer) (KnxLayer, error) {
+	val, err := readBuffer.ReadUint8("KnxLayer", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxLayerByValue(val), nil
 }
 
-func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxLayer) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxLayer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -127,7 +122,6 @@ func (m *KnxLayer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxLayer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -149,13 +143,4 @@ func (e KnxLayer) name() string {
 
 func (e KnxLayer) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxLayer) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxLayer"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

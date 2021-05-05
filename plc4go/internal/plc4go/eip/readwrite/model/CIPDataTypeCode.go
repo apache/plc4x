@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,9 +31,7 @@ type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
 	Size() uint8
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -169,20 +166,18 @@ func (m CIPDataTypeCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CIPDataTypeCodeParse(io utils.ReadBuffer) (CIPDataTypeCode, error) {
-	val, err := io.ReadUint16("CIPDataTypeCode", 16)
+func CIPDataTypeCodeParse(readBuffer utils.ReadBuffer) (CIPDataTypeCode, error) {
+	val, err := readBuffer.ReadUint16("CIPDataTypeCode", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return CIPDataTypeCodeByValue(val), nil
 }
 
-func (e CIPDataTypeCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e CIPDataTypeCode) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CIPDataTypeCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -202,7 +197,6 @@ func (m *CIPDataTypeCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m CIPDataTypeCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -234,13 +228,4 @@ func (e CIPDataTypeCode) name() string {
 
 func (e CIPDataTypeCode) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m CIPDataTypeCode) Box(s string, i int) utils.AsciiBox {
-	boxName := "CIPDataTypeCode"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

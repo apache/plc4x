@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,7 +37,6 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
@@ -56,6 +54,8 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return model.ModbusPDUWriteFileRecordResponseItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDU":
+		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
+		_ = model.NewModbusPDU
 		return nil, errors.New("ModbusPDU unmappable")
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -63,69 +63,6 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 		//var response bool
 		response := parserArguments[0] == "true"
 		return model.ModbusSerialADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m ModbusXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "ModbusPDUWriteFileRecordRequestItem":
-		var obj *model.ModbusPDUWriteFileRecordRequestItem
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusPDUReadFileRecordResponseItem":
-		var obj *model.ModbusPDUReadFileRecordResponseItem
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusConstants":
-		var obj *model.ModbusConstants
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusTcpADU":
-		var obj *model.ModbusTcpADU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusPDUWriteFileRecordResponseItem":
-		var obj *model.ModbusPDUWriteFileRecordResponseItem
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusPDU":
-		var obj *model.ModbusPDU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusPDUReadFileRecordRequestItem":
-		var obj *model.ModbusPDUReadFileRecordRequestItem
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ModbusSerialADU":
-		var obj *model.ModbusSerialADU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type EiPCommand uint16
 
 type IEiPCommand interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -94,20 +91,18 @@ func (m EiPCommand) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func EiPCommandParse(io utils.ReadBuffer) (EiPCommand, error) {
-	val, err := io.ReadUint16("EiPCommand", 16)
+func EiPCommandParse(readBuffer utils.ReadBuffer) (EiPCommand, error) {
+	val, err := readBuffer.ReadUint16("EiPCommand", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return EiPCommandByValue(val), nil
 }
 
-func (e EiPCommand) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e EiPCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *EiPCommand) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -127,7 +122,6 @@ func (m *EiPCommand) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m EiPCommand) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -149,13 +143,4 @@ func (e EiPCommand) name() string {
 
 func (e EiPCommand) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m EiPCommand) Box(s string, i int) utils.AsciiBox {
-	boxName := "EiPCommand"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

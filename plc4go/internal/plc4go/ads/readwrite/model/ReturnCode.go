@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type ReturnCode uint32
 
 type IReturnCode interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -808,20 +805,18 @@ func (m ReturnCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ReturnCodeParse(io utils.ReadBuffer) (ReturnCode, error) {
-	val, err := io.ReadUint32("ReturnCode", 32)
+func ReturnCodeParse(readBuffer utils.ReadBuffer) (ReturnCode, error) {
+	val, err := readBuffer.ReadUint32("ReturnCode", 32)
 	if err != nil {
 		return 0, nil
 	}
 	return ReturnCodeByValue(val), nil
 }
 
-func (e ReturnCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e ReturnCode) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ReturnCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -841,7 +836,6 @@ func (m *ReturnCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ReturnCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -1101,13 +1095,4 @@ func (e ReturnCode) name() string {
 
 func (e ReturnCode) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m ReturnCode) Box(s string, i int) utils.AsciiBox {
-	boxName := "ReturnCode"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }

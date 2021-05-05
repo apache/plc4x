@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type FirmwareType uint16
 
 type IFirmwareType interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -172,20 +169,18 @@ func (m FirmwareType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmwareTypeParse(io utils.ReadBuffer) (FirmwareType, error) {
-	val, err := io.ReadUint16("FirmwareType", 16)
+func FirmwareTypeParse(readBuffer utils.ReadBuffer) (FirmwareType, error) {
+	val, err := readBuffer.ReadUint16("FirmwareType", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return FirmwareTypeByValue(val), nil
 }
 
-func (e FirmwareType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e FirmwareType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *FirmwareType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -205,7 +200,6 @@ func (m *FirmwareType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m FirmwareType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -253,13 +247,4 @@ func (e FirmwareType) name() string {
 
 func (e FirmwareType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m FirmwareType) Box(s string, i int) utils.AsciiBox {
-	boxName := "FirmwareType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

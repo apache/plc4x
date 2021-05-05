@@ -396,7 +396,6 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 func parseMessage(protocolName string, typeName string, payloadString string, step TestStep) (interface{}, error) {
 	type Parser interface {
 		Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
-		ParseOld(typeName string, xmlString string) (interface{}, error)
 	}
 	parserMap := map[string]Parser{
 		"modbus":   modbusIO.ModbusXmlParserHelper{},
@@ -407,11 +406,7 @@ func parseMessage(protocolName string, typeName string, payloadString string, st
 	if parser, ok := parserMap[protocolName]; ok {
 		expected, err := parser.Parse(typeName, payloadString, step.parserArguments...)
 		if err != nil {
-			log.Warn().Err(err).Msg("Unmigrated message detected falling back to old parsing")
-			expected, err = parser.ParseOld(typeName, payloadString)
-			if err != nil {
-				return nil, errors.Wrap(err, "error parsing xml")
-			}
+			return nil, errors.Wrap(err, "error parsing xml")
 		}
 		return expected, nil
 	} else {

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,9 +31,7 @@ type SimulatedDataTypeSizes uint8
 
 type ISimulatedDataTypeSizes interface {
 	DataTypeSize() uint8
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -355,20 +352,18 @@ func (m SimulatedDataTypeSizes) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SimulatedDataTypeSizesParse(io utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
-	val, err := io.ReadUint8("SimulatedDataTypeSizes", 8)
+func SimulatedDataTypeSizesParse(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
+	val, err := readBuffer.ReadUint8("SimulatedDataTypeSizes", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return SimulatedDataTypeSizesByValue(val), nil
 }
 
-func (e SimulatedDataTypeSizes) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e SimulatedDataTypeSizes) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SimulatedDataTypeSizes) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -388,7 +383,6 @@ func (m *SimulatedDataTypeSizes) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m SimulatedDataTypeSizes) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -458,13 +452,4 @@ func (e SimulatedDataTypeSizes) name() string {
 
 func (e SimulatedDataTypeSizes) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m SimulatedDataTypeSizes) Box(s string, i int) utils.AsciiBox {
-	boxName := "SimulatedDataTypeSizes"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -142,20 +139,18 @@ func (m BACnetNetworkType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNetworkTypeParse(io utils.ReadBuffer) (BACnetNetworkType, error) {
-	val, err := io.ReadUint8("BACnetNetworkType", 4)
+func BACnetNetworkTypeParse(readBuffer utils.ReadBuffer) (BACnetNetworkType, error) {
+	val, err := readBuffer.ReadUint8("BACnetNetworkType", 4)
 	if err != nil {
 		return 0, nil
 	}
 	return BACnetNetworkTypeByValue(val), nil
 }
 
-func (e BACnetNetworkType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("BACnetNetworkType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e BACnetNetworkType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNetworkType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNetworkType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -175,7 +170,6 @@ func (m *BACnetNetworkType) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m BACnetNetworkType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -213,13 +207,4 @@ func (e BACnetNetworkType) name() string {
 
 func (e BACnetNetworkType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m BACnetNetworkType) Box(s string, i int) utils.AsciiBox {
-	boxName := "BACnetNetworkType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

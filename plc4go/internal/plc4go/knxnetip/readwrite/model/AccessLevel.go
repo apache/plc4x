@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -33,9 +32,7 @@ type AccessLevel uint8
 type IAccessLevel interface {
 	Purpose() string
 	NeedsAuthentication() bool
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -165,20 +162,18 @@ func (m AccessLevel) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AccessLevelParse(io utils.ReadBuffer) (AccessLevel, error) {
-	val, err := io.ReadUint8("AccessLevel", 4)
+func AccessLevelParse(readBuffer utils.ReadBuffer) (AccessLevel, error) {
+	val, err := readBuffer.ReadUint8("AccessLevel", 4)
 	if err != nil {
 		return 0, nil
 	}
 	return AccessLevelByValue(val), nil
 }
 
-func (e AccessLevel) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e AccessLevel) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("AccessLevel", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AccessLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -198,7 +193,6 @@ func (m *AccessLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m AccessLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -224,13 +218,4 @@ func (e AccessLevel) name() string {
 
 func (e AccessLevel) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m AccessLevel) Box(s string, i int) utils.AsciiBox {
-	boxName := "AccessLevel"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }
