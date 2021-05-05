@@ -53,7 +53,13 @@ uint8_t plc4c_spi_read_unsigned_byte_get_byte_internal(
 }
 
 plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
-    plc4c_spi_read_buffer* buf, uint8_t num_bits, uint8_t* value) {
+    plc4c_spi_read_buffer* buf, uint8_t num_bits, void* opaque_value) {
+
+  // Cast void input to uint8_t so we can walk the bytes, without
+  // casting prior to calling this fcn. Size of values is really
+  // given in the num_bits.
+  uint8_t* value = (void*)opaque_value;
+
   if (buf == NULL) {
     return NULL_VALUE;
   }
@@ -347,7 +353,7 @@ plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf,
   // Shift the bits to the right position.
   if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
-      *value = *value >> 8;
+      *value >>= 8;
     }
   }
   return res;
@@ -366,11 +372,11 @@ plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf,
   // Shift the bits to the right position.
   if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
-      *value = *value >> 24;
+      *value >>= 24;
     } else if (num_bits <= 16) {
-      *value = *value >> 16;
+      *value >>= 16;
     } else if (num_bits <= 24) {
-      *value = *value >> 8;
+      *value >>= 8;
     }
   }
   return res;
@@ -384,24 +390,23 @@ plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Get the bits.
-  plc4c_return_code res =
-      plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
+  plc4c_return_code res = plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
   if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
-      *value = *value >> 56;
+      *value >>= 56;
     } else if (num_bits <= 16) {
-      *value = *value >> 48;
+      *value >>= 48;
     } else if (num_bits <= 24) {
-      *value = *value >> 40;
+      *value >>= 40;
     } else if (num_bits <= 32) {
-      *value = *value >> 32;
+      *value >>= 32;
     } else if (num_bits <= 40) {
-      *value = *value >> 24;
+      *value >>= 24;
     } else if (num_bits <= 48) {
-      *value = *value >> 16;
+      *value >>= 16;
     } else if (num_bits <= 56) {
-      *value = *value >> 8;
+      *value >>= 8;
     }
   }
   return res;
@@ -416,6 +421,7 @@ uint8_t num_bits) { return OK;
 
 plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int8_t* value) {
+
   plc4c_return_code res = plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*) value);
   if(res == OK) {
     plc4c_spi_fill_sign_internal(num_bits, value);
@@ -426,17 +432,18 @@ plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf,
 plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf,
                                               uint8_t num_bits,
                                               int16_t* value) {
+
   plc4c_return_code res = plc4c_spi_read_unsigned_short(buf, num_bits, (uint16_t*) value);
   if(res == OK) {
     if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
       // Potentially fill all higher level bytes with 255
       if(num_bits <= 8) {
-        *value = *value | 65280;
+        *value |= 0xFF00; // use hex, its less like a magic number and typos easier to see
       }
     } else {
       // Potentially fill all higher level bytes with 0
       if(num_bits <= 8) {
-        *value = *value & 255;
+        *value &= 0xFF;
       }
     }
   }
@@ -445,25 +452,26 @@ plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf,
 
 plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf,
                                             uint8_t num_bits, int32_t* value) {
+
   plc4c_return_code res = plc4c_spi_read_unsigned_int(buf, num_bits, (uint32_t*) value);
   if(res == OK) {
     if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
       // Potentially fill all higher level bytes with 255
       if(num_bits <= 8) {
-        *value = *value | 4294967040;
+        *value |= 0xFFFFFF00; 
       } else if(num_bits <= 16) {
-        *value = *value | 4294901760;
+        *value |= 0xFFFF0000; 
       } else if(num_bits <= 24) {
-        *value = *value | 4278190080;
+        *value |= 0xFF000000;
       }
     } else {
       // Potentially fill all higher level bytes with 0
       if(num_bits <= 8) {
-        *value = *value & 255;
+        *value &= 0xFF;
       } else if(num_bits <= 16) {
-        *value = *value & 65535;
+        *value &= 0xFFFF ;
       } else if(num_bits <= 24) {
-        *value = *value & 16777215;
+        *value &= 0xFFFFFF;
       }
     }
   }
@@ -472,41 +480,42 @@ plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf,
 
 plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int64_t* value) {
+
   plc4c_return_code res = plc4c_spi_read_unsigned_long(buf, num_bits, (uint64_t*) value);
   if(res == OK) {
     if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
       // Potentially fill all higher level bytes with 255
       if(num_bits <= 8) {
-        *value = *value | 18446744073709551360;
+        *value |= 0xFFFFFFFFFFFFFF00;
       } else if(num_bits <= 16) {
-        *value = *value | 18446744073709486080;
+        *value |= 0xFFFFFFFFFFFF0000;
       } else if(num_bits <= 24) {
-        *value = *value | 18446744073692774400;
+        *value |= 0xFFFFFFFFFF000000;
       } else if(num_bits <= 32) {
-        *value = *value | 18446744069414584320;
+        *value |= 0xFFFFFFFF00000000;
       } else if(num_bits <= 40) {
-        *value = *value | 18446742974197923840;
+        *value |= 0xFFFFFF0000000000;
       } else if(num_bits <= 48) {
-        *value = *value | 18446462598732840960;
+        *value |= 0xFFFF000000000000;
       } else if(num_bits <= 56) {
-        *value = *value | 18374686479671623680;
+        *value |= 0xFF00000000000000;
       }
     } else {
       // Potentially fill all higher level bytes with 0
       if(num_bits <= 8) {
-        *value = *value & 255;
+        *value &=  0xFF;
       } else if(num_bits <= 16) {
-        *value = *value & 65535;
+        *value &= 0xFFFF;
       } else if(num_bits <= 24) {
-        *value = *value & 16777215;
+        *value &= 0xFFFFFF;
       } else if(num_bits <= 32) {
-        *value = *value & 4294967295;
+        *value &= 0xFFFFFFFF;
       } else if(num_bits <= 40) {
-        *value = *value & 1099511627775;
+        *value &= 0xFFFFFFFFFF;
       } else if(num_bits <= 48) {
-        *value = *value & 281474976710655;
+        *value &= 0xFFFFFFFFFFFF;
       } else if(num_bits <= 56) {
-        *value = *value & 72057594037927935;
+        *value &= 0xFFFFFFFFFFFFFF;
       }
     }
   }
@@ -589,18 +598,19 @@ plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf,
 plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf,
                                         uint8_t num_bits, char* encoding,
                                         char** value) {
+
   // Right now we only support utf-8.
   if(strcmp(encoding,"UTF-8") != 0) {
       return INVALID_ARGUMENT;
   }
 
-  // Allocate enough chars to contain the string and add one for the termination character.
+  // Allocate enough chars to contain the string and termination character.
   char* str = malloc(sizeof(char) * ((num_bits / 8) + 1));
   char* cur_str = str;
   // Read all the bytes one by one.
   for(int i = 0; (i < (num_bits / 8)) && plc4c_spi_read_has_more(buf, 8); i++) {
     plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) cur_str);
-      cur_str++;
+    cur_str++;
   }
   // Terminate the string.
   cur_str = '\0';

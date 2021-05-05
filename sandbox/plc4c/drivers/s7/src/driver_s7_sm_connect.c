@@ -45,9 +45,14 @@ enum plc4c_driver_s7_connect_states {
  * @param task the current system task
  * @return return code of the current state machine step execution
  */
-plc4c_return_code plc4c_driver_s7_connect_machine_function(
-    plc4c_system_task* task) {
-  plc4c_connection* connection = task->context;
+plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* task) {
+
+  plc4c_connection* connection;
+  plc4c_driver_s7_config* configuration;
+  plc4c_return_code return_code;
+  plc4c_s7_read_write_tpkt_packet* packet;
+
+  connection = task->connection;
   if (connection == NULL) {
     return INTERNAL_ERROR;
   }
@@ -55,7 +60,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
   if (plc4c_connection_get_connected(connection)) {
     return ALREADY_CONNECTED;
   }
-  plc4c_driver_s7_config* configuration = connection->configuration;
+  configuration = connection->configuration;
 
   // Initialize the pdu id (The first messages are hard-coded)
   configuration->pdu_id = 4;
@@ -80,7 +85,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       break;
     }
     case PLC4C_DRIVER_S7_CONNECT_TRANSPORT_CONNECT: {
-      plc4c_return_code return_code = connection->transport->open(connection->transport_configuration);
+      return_code = connection->transport->open(connection->transport_configuration);
       if(return_code != OK) {
         return return_code;
       }
@@ -91,16 +96,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     // Send a COTP connection request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_COTP_CONNECT_REQUEST: {
       // Get a COTP connection response for the settings in the config.
-      plc4c_s7_read_write_tpkt_packet* cotp_connect_request_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_create_cotp_connection_request(
-              configuration, &cotp_connect_request_packet);
+      return_code = plc4c_driver_s7_create_cotp_connection_request(configuration, &packet);
       if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = plc4c_driver_s7_send_packet(connection, cotp_connect_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -111,9 +113,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     // Receive a COTP connection response.
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_COTP_CONNECT_RESPONSE: {
       // Read a response packet.
-      plc4c_s7_read_write_tpkt_packet* cotp_connect_response_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_receive_packet(connection, &cotp_connect_response_packet);
+      return_code = plc4c_driver_s7_receive_packet(connection, &packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -123,32 +123,30 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Check if the packet has the right type
-      if (cotp_connect_response_packet->payload->_type !=
+      if (packet->payload->_type !=
           plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_response) {
         return INTERNAL_ERROR;
       }
 
       // Extract the information for: called-tsap-id, calling-tsap-id and
       // tpdu-size.
-      plc4c_list_element* parameter_element =
-          cotp_connect_response_packet->payload->parameters->tail;
+      plc4c_list_element* parameter_element;
+      plc4c_s7_read_write_cotp_parameter* parameter;
+
+      parameter_element = packet->payload->parameters->tail;
       while (parameter_element != NULL) {
-        plc4c_s7_read_write_cotp_parameter* parameter =
-            parameter_element->value;
+        parameter = parameter_element->value;
         switch (parameter->_type) {
           case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
-            configuration->cotp_tpdu_size =
-                parameter->cotp_parameter_tpdu_size_tpdu_size;
+            configuration->cotp_tpdu_size = parameter->cotp_parameter_tpdu_size_tpdu_size;
             break;
           }
           case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap: {
-            configuration->calling_tsap_id =
-                parameter->cotp_parameter_calling_tsap_tsap_id;
+            configuration->calling_tsap_id = parameter->cotp_parameter_calling_tsap_tsap_id;
             break;
           }
           case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap: {
-            configuration->called_tsap_id =
-                parameter->cotp_parameter_called_tsap_tsap_id;
+            configuration->called_tsap_id = parameter->cotp_parameter_called_tsap_tsap_id;
             break;
           }
           default: {
@@ -165,16 +163,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     }
     // Send a S7 connection request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST: {
-      plc4c_s7_read_write_tpkt_packet* s7_connect_request_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_create_s7_connection_request(
-              configuration, &s7_connect_request_packet);
+      return_code = plc4c_driver_s7_create_s7_connection_request(configuration, &packet);
       if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = plc4c_driver_s7_send_packet(connection, s7_connect_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -185,9 +180,10 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     // Receive a S7 connection response.
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_CONNECT_RESPONSE: {
       // Read a response packet.
-      plc4c_s7_read_write_tpkt_packet* s7_connect_response_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_receive_packet(connection, &s7_connect_response_packet);
+      
+      plc4c_s7_read_write_s7_parameter* s7_parameter;
+      
+      return_code = plc4c_driver_s7_receive_packet(connection, &packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -197,34 +193,29 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Check if the packet has the right type
-      if (s7_connect_response_packet->payload->_type !=
+      if (packet->payload->_type !=
           plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data) {
         return INTERNAL_ERROR;
       }
-      if (s7_connect_response_packet->payload->payload->_type !=
+      if (packet->payload->payload->_type !=
           plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data) {
         return INTERNAL_ERROR;
       }
-      if (s7_connect_response_packet->payload->payload->parameter->_type !=
+      if (packet->payload->payload->parameter->_type !=
           plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication) {
         return INTERNAL_ERROR;
       }
 
       // Extract and save the information for:
       // max-amq-caller, max-amq-callee, pdu-size.
-      configuration->pdu_size =
-          s7_connect_response_packet->payload->payload->parameter
-              ->s7_parameter_setup_communication_pdu_length;
-      configuration->max_amq_caller =
-          s7_connect_response_packet->payload->payload->parameter
-              ->s7_parameter_setup_communication_max_amq_caller;
-      configuration->max_amq_callee =
-          s7_connect_response_packet->payload->payload->parameter
-              ->s7_parameter_setup_communication_max_amq_callee;
+      s7_parameter  = packet->payload->payload->parameter;
+      
+      configuration->pdu_size = s7_parameter->s7_parameter_setup_communication_pdu_length;
+      configuration->max_amq_caller = s7_parameter->s7_parameter_setup_communication_max_amq_caller;
+      configuration->max_amq_callee = s7_parameter->s7_parameter_setup_communication_max_amq_callee;
 
       // If no controller is explicitly selected, detect it.
-      if (configuration->controller_type ==
-          PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY) {
+      if (configuration->controller_type == PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY) {
         task->state_id = PLC4C_DRIVER_S7_CONNECT_SEND_S7_IDENTIFICATION_REQUEST;
       }
       // If a controller is explicitly selected, we're done connecting.
@@ -235,31 +226,26 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     }
     // Send a S7 identification request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_IDENTIFICATION_REQUEST: {
-      plc4c_s7_read_write_tpkt_packet* s7_identify_remote_request_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_create_s7_identify_remote_request(
-              &s7_identify_remote_request_packet);
+      return_code = plc4c_driver_s7_create_s7_identify_remote_request(
+              &packet);
       if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
       return_code = plc4c_driver_s7_send_packet(
-          connection, s7_identify_remote_request_packet);
+          connection, packet);
       if (return_code != OK) {
         return return_code;
       }
 
-      task->state_id =
-          PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_IDENTIFICATION_RESPONSE;
+      task->state_id = PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_IDENTIFICATION_RESPONSE;
       break;
     }
     // Receive a S7 identification response.
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_IDENTIFICATION_RESPONSE: {
       // Read a response packet.
-      plc4c_s7_read_write_tpkt_packet* s7_identify_remote_response_packet;
-      plc4c_return_code return_code =
-          plc4c_driver_s7_receive_packet(connection, &s7_identify_remote_response_packet);
+      return_code = plc4c_driver_s7_receive_packet(connection, &packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -269,22 +255,22 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Check if the packet has the right type
-      if (s7_identify_remote_response_packet->payload->_type !=
+      if (packet->payload->_type !=
           plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data) {
         return INTERNAL_ERROR;
       }
-      if (s7_identify_remote_response_packet->payload->payload->_type !=
+      if (packet->payload->payload->_type !=
           plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data) {
         return INTERNAL_ERROR;
       }
-      if (s7_identify_remote_response_packet->payload->payload->payload
+      if (packet->payload->payload->payload
               ->_type !=
           plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data) {
         return INTERNAL_ERROR;
       }
 
       plc4c_list_element* cur_item =
-          s7_identify_remote_response_packet->payload->payload->payload
+          packet->payload->payload->payload
               ->s7_payload_user_data_items->tail;
       while (cur_item != NULL) {
         plc4c_s7_read_write_s7_payload_user_data_item* item = cur_item->value;
@@ -336,6 +322,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
 
 plc4c_return_code plc4c_driver_s7_connect_function(plc4c_connection* connection,
                                                    plc4c_system_task** task) {
+                                                     
   plc4c_system_task* new_task = malloc(sizeof(plc4c_system_task));
   // There's nothing to do here, so no need for a state-machine.
   new_task->state_id = PLC4C_DRIVER_S7_CONNECT_INIT;

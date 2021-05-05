@@ -316,6 +316,13 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       }
     }
 
+    free(memory_area);
+    free(block_number);
+    free(data_type);
+    free(num_elements);
+    free(byte_offset);
+    free(bit_offset);
+    
     s7_item->s7_var_request_parameter_item_address_address = any_address;
   }
   // - Else -> PLC_PROXY_ADDRESS_PATTERN
@@ -356,5 +363,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
   }
 
   *item = s7_item;
+
+ 
   return OK;
 }

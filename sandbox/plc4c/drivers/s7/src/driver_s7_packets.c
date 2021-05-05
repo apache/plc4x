@@ -13,7 +13,7 @@
   software distributed under the License is distributed on an
   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
   KIND, either express or implied.  See the License for the
-  specific language governing permiSchreib' missions and limitations
+  specific language governing permissions and limitations
   under the License.
 */
 
@@ -27,7 +27,7 @@
 
 #include "plc4c/driver_s7_encode_decode.h"
 
-// forward delcaration for helper function todo: move to header or reloacte
+// forward delcaration for helper function todo: move to header or relocate
     //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
 void plc4c_add_data_to_request(plc4c_data* parsed_value, 
     plc4c_s7_read_write_s7_var_payload_data_item* request_value) {
@@ -39,7 +39,7 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
   int items;
   int item_size;
 
-  // If its a list size donst really mean anything we care about list len
+  // If its a list size doesn't really mean anything we care about list len
   if (parsed_value->data_type == PLC4C_LIST) 
     items = plc4c_utils_list_size(&parsed_value->data.list_value);
   else
@@ -149,7 +149,10 @@ plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
   if (return_code != OK) {
     return return_code;
   }
-
+  /* TODO: free when relevant, here works I think
+  free(write_buffer->data);
+  free(write_buffer);
+  */
   return OK;
 }
 
@@ -282,7 +285,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_connection_request(
   (*s7_connect_request_packet)->payload->cotp_packet_data_tpdu_ref = 1;
 
   (*s7_connect_request_packet)->payload->payload =
-      malloc(sizeof(plc4c_s7_read_write_s7_message));
+      calloc(1,sizeof(plc4c_s7_read_write_s7_message));
   if ((*s7_connect_request_packet)->payload->payload == NULL) {
     return NO_MEMORY;
   }
@@ -344,7 +347,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   (*s7_identify_remote_request_packet)->payload->cotp_packet_data_tpdu_ref = 2;
 
   (*s7_identify_remote_request_packet)->payload->payload =
-      malloc(sizeof(plc4c_s7_read_write_s7_message));
+      calloc(1,sizeof(plc4c_s7_read_write_s7_message));
   if ((*s7_identify_remote_request_packet)->payload->payload == NULL) {
     return NO_MEMORY;
   }

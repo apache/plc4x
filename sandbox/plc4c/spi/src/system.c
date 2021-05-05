@@ -402,9 +402,10 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   if (result != OK) {
     return result;
   }
-
-  // Pass the new connection back.
-  *connection = new_connection;
+  
+  // Pass the new connection back (optionally)
+  if (connection)
+    *connection = new_connection;
 
   return OK;
 }
@@ -438,7 +439,8 @@ plc4c_return_code plc4c_system_loop(plc4c_system *system) {
       if (cur_task->connection != NULL) {
         plc4c_connection_task_removed(cur_task->connection);
       }
-      // TODO: clean up the memory of the cur_task_element and cur_task
+      // TODO: leaks: cur_task & cur_task_element
+      // NB. cannot free them here
     }
 
     cur_task_element = cur_task_element->next;

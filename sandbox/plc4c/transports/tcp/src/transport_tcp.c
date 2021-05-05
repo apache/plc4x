@@ -159,6 +159,7 @@ plc4c_return_code plc4c_transport_tcp_select_message_function(
 
   // Create a new read-buffer with the read message data.
   plc4c_spi_read_buffer_create(message_buffer, message_size, message);
+  // TODO: leaks: message_buffer
   return OK;
 }
 

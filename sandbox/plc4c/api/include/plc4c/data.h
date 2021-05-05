@@ -42,7 +42,7 @@ typedef void (*plc4c_data_custom_printf)(plc4c_data *data);
  * @return pointer to plc4c_data
  */
 plc4c_data *plc4c_data_create_bool_data(bool b);
-plc4c_data *plc4c_data_create_bool_data_array(bool *b, int nItem);
+plc4c_data *plc4c_data_create_bool_array(bool *b, int nItem);
 /**
  * Creates a plc4c_data with char
  * @param c the char value
