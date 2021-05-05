@@ -34,12 +34,16 @@ public interface WriteBuffer {
         writeBit("", value);
     }
 
-    default void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
-        writeSignedByte(logicalName, 8, value, writerArgs);
-    }
+    void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException;
 
     default void writeByte(byte value) throws ParseException {
         writeByte("", value);
+    }
+
+    void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException;
+
+    default void writeByteArray(byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+        writeByteArray("", bytes, writerArgs);
     }
 
     void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException;

@@ -153,15 +153,34 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 <#switch field.typeName>
     <#case "array">
         <#assign arrayField = field>
-
+        <#if helper.isByteBased(arrayField.type)>
+        // Byte Array field (${arrayField.name})
+            <#assign numberOfBytesExpression>
+                <#compress>
+                    <#if helper.isCountArrayField(field)>
+                        int numberOfBytes = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+                    <#elseif helper.isLengthArrayField(field)>
+                        int numberOfBytes = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+                    <#elseif helper.isTerminatedArrayField(field)>
+                    <#-- TODO: we need to find out to implement this-->
+                        int numberOfBytes := ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+                    <#else>
+                    <#-- TODO: we should throw a exception here-->
+                        int numberOfBytes := -1
+                    </#if>
+                </#compress>
+            </#assign>
+        ${numberOfBytesExpression}
+        byte[] ${arrayField.name} = io.readByteArray("${arrayField.name}", numberOfBytes);
+        <#else>
         // Array field (${arrayField.name})
         io.pullContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
-        <#-- Only update curPos if the length expression uses it -->
-        <#if arrayField.loopExpression.contains("curPos")>
+            <#-- Only update curPos if the length expression uses it -->
+            <#if arrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
-        </#if>
+            </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
-        <#if helper.isCountArrayField(field)>
+            <#if helper.isCountArrayField(field)>
         // Count array
         if(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
@@ -177,9 +196,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
-        <#else>
+            <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-            <#if helper.isLengthArrayField(field)>
+                <#if helper.isLengthArrayField(field)>
         // Length array
         int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
@@ -187,38 +206,39 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         while(io.getPos() < ${arrayField.name}EndPos) {
             _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if arrayField.loopExpression.contains("curPos")>
+                <#if arrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
-            </#if>
+                </#if>
         }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-            <#elseif helper.isTerminatedArrayField(field)>
+                <#elseif helper.isTerminatedArrayField(field)>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}))) {
             _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if arrayField.loopExpression.contains("curPos")>
+                <#if arrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
-            </#if>
+                </#if>
         }
-            </#if>
-            <#--
-                Convert the list into an array. However if the array is of a primitive
-                type we have to iterate over it's elements and explicitly cast them.
-                Otherwise a simple toArray call is fine.
-            -->
-            <#if helper.isSimpleTypeReference(arrayField.type)>
+                </#if>
+                <#--
+                    Convert the list into an array. However if the array is of a primitive
+                    type we have to iterate over it's elements and explicitly cast them.
+                    Otherwise a simple toArray call is fine.
+                -->
+                <#if helper.isSimpleTypeReference(arrayField.type)>
         ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${arrayField.name}List.size()];
         for(int i = 0; i < _${arrayField.name}List.size(); i++) {
             ${arrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${arrayField.name}List.get(i);
         }
-            <#else>
+                <#else>
         ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}[0]);
+                </#if>
             </#if>
-        </#if>
         io.closeContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+        </#if>
         <#break>
     <#case "checksum">
         <#assign checksumField = field>
@@ -455,21 +475,26 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Array Field (${arrayField.name})
         if(_value.get${arrayField.name?cap_first}() != null) {
+            <#if helper.isByteBased(arrayField.type)>
+            // Byte Array field (${arrayField.name})
+            io.writeByteArray("${arrayField.name}", _value.get${arrayField.name?cap_first}());
+            <#else>
             io.pushContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
             int itemCount = (int) _value.get${arrayField.name?cap_first}().length;
             int curItem = 0;
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
-                <#if helper.isSimpleTypeReference(arrayField.type)>
-                    <#assign simpleTypeReference = arrayField.type>
+                    <#if helper.isSimpleTypeReference(arrayField.type)>
+                        <#assign simpleTypeReference = arrayField.type>
                 ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "element", field)};
-                <#else>
-                    <#assign complexTypeReference = arrayField.type>
+                    <#else>
+                        <#assign complexTypeReference = arrayField.type>
                 boolean lastItem = curItem == (itemCount - 1);
                 ${complexTypeReference.name}IO.staticSerialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
-                </#if>
+                    </#if>
                 curItem++;
             }
             io.popContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+            </#if>
         }
         <#break>
     <#case "checksum">

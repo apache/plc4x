@@ -546,7 +546,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field>
-				<#if helper.isSimpleTypeReference(arrayField.type) && helper.getLanguageTypeNameForTypeReference(arrayField.type) == "byte">
+				<#if helper.isByteBased(arrayField.type)>
 	// Byte Array field (${arrayField.name})
 	<#assign numberOfBytesExpression>
 		<#compress>
@@ -972,7 +972,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
-				<#if helper.isSimpleTypeReference(arrayField.type) && helper.getLanguageTypeNameForTypeReference(arrayField.type) == "byte">
+				<#if helper.isByteBased(arrayField.type)>
 		// Byte Array field (${arrayField.name})
 		_writeArrayErr := io.WriteByteArray("${arrayField.name}", m.${arrayField.name?cap_first})
 		if _writeArrayErr != nil {

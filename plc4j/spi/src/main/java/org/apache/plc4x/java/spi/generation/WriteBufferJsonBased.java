@@ -95,6 +95,19 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
+    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
+        StringBuilder hexString = new StringBuilder("0x");
+        for (byte aByte : bytes) {
+            hexString.append(String.format("%02x", aByte));
+        }
+        wrapIfNecessary(() -> {
+            writeAttr(sanitizedLogicalName, rwByteKey, bytes.length * 8, writerArgs);
+            generator.writeStringField(sanitizedLogicalName, hexString.toString());
+        });
+    }
+
+    @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {

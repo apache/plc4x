@@ -83,6 +83,21 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
+    public byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        move(8 * numberOfBytes);
+        String hexString = decode(logicalName, rwByteKey, 8 * numberOfBytes);
+        if (!hexString.startsWith("0x")) {
+            throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
+        }
+        hexString = hexString.substring(2);
+        byte[] bytes = new byte[numberOfBytes];
+        for (int i = 0; i < hexString.length(); i = i + 2) {
+            bytes[i / 2] = Byte.parseByte(hexString.substring(i, i + 2), 16);
+        }
+        return bytes;
+    }
+
+    @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         move(bitLength);
         return Byte.parseByte(decode(logicalName, rwUintKey, bitLength));

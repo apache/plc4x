@@ -96,6 +96,20 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     @Override
+    public byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
+        return readSignedByte(logicalName, 8, readerArgs);
+    }
+
+    @Override
+    public byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        byte[] bytes = new byte[numberOfBytes];
+        for (int i = 0; i < numberOfBytes; i++) {
+            bytes[i] = readByte();
+        }
+        return bytes;
+    }
+
+    @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
@@ -290,7 +304,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                     throw new NumberFormatException();
                 }
             } else if (bitLength == 32) {
-                int intValue = readInt(logicalName,32);
+                int intValue = readInt(logicalName, 32);
                 return Float.intBitsToFloat(intValue);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
@@ -302,8 +316,8 @@ public class ReadBufferByteBased implements ReadBuffer {
 
     @Override
     public double readDouble(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
-        if(bitLength == 64) {
-            long longValue = readLong(logicalName,64);
+        if (bitLength == 64) {
+            long longValue = readLong(logicalName, 64);
             return Double.longBitsToDouble(longValue);
         } else {
             throw new UnsupportedOperationException("unsupported bit length (only 64 supported)");
@@ -326,7 +340,7 @@ public class ReadBufferByteBased implements ReadBuffer {
             }
         }
         //replaceAll function removes and leading ' char or hypens.
-        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
+        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
     }
 
 
