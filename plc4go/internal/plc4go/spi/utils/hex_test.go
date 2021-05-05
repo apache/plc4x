@@ -21,6 +21,7 @@ package utils
 
 import (
 	"math"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -464,5 +465,13 @@ func Test_calculateBytesPerRowAndIndexWidth(t *testing.T) {
 				t.Errorf("calculateBytesPerRowAndIndexWidth() got index width = %v, want %v", got1, tt.wantIndexWidth)
 			}
 		})
+	}
+}
+
+func Test_Immutability(t *testing.T) {
+	inputBytes := []byte{0, 1, 2, 46, 56, 0, 200}
+	_ = Dump(inputBytes)
+	if !reflect.DeepEqual(inputBytes, []byte{0, 1, 2, 46, 56, 0, 200}) {
+		t.Errorf("Dump has mutated the array got:=%x, want:=%x", inputBytes, []byte{0, 1, 2, 46, 56, 0, 200})
 	}
 }
