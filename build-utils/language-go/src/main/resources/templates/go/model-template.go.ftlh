@@ -546,17 +546,40 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field>
+				<#if helper.isSimpleTypeReference(arrayField.type) && helper.getLanguageTypeNameForTypeReference(arrayField.type) == "byte">
+	// Byte Array field (${arrayField.name})
+	<#assign numberOfBytesExpression>
+		<#compress>
+		<#if helper.isCountArrayField(field)>
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#elseif helper.isLengthArrayField(field)>
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#elseif helper.isTerminatedArrayField(field)>
+			<#-- TODO: we need to find out to implement this-->
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#else>
+			<#-- TODO: we should throw a exception here-->
+			numberOfBytes := int(-1)
+		</#if>
+		</#compress>
+	</#assign>
+	${numberOfBytesExpression}
+	${arrayField.name}, _readArrayErr := io.ReadByteArray("${arrayField.name}", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+				<#else>
 
 	// Array field (${arrayField.name})
 	if pullErr := io.PullContext("${arrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
 		return nil, pullErr
 	}
 			<#-- Only update curPos if the length expression uses it -->
-				<#if arrayField.loopExpression.contains("curPos")>
+					<#if arrayField.loopExpression.contains("curPos")>
 	curPos = io.GetPos() - startPos<@emitImport import="io" />
-				</#if>
+					</#if>
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
-				<#if helper.isCountArrayField(field)>
+					<#if helper.isCountArrayField(field)>
 	// Count array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
 	for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)}); curItem++ {
@@ -570,7 +593,7 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		${arrayField.name}[curItem] = _item
 	}
 				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
-				<#elseif helper.isLengthArrayField(field)>
+					<#elseif helper.isLengthArrayField(field)>
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
@@ -583,12 +606,12 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		}
 		${arrayField.name} = append(${arrayField.name}, _item)
 					<#-- After parsing, update the current position, but only if it's needed -->
-					<#if arrayField.loopExpression.contains("curPos")>
+						<#if arrayField.loopExpression.contains("curPos")>
 		curPos = io.GetPos() - startPos<@emitImport import="io" />
-					</#if>
+						</#if>
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-				<#elseif helper.isTerminatedArrayField(field)>
+					<#elseif helper.isTerminatedArrayField(field)>
 	// Terminated array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); {
@@ -599,14 +622,15 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 		${arrayField.name} = append(${arrayField.name}, _item)
 
 					<#-- After parsing, update the current position, but only if it's needed -->
-					<#if arrayField.loopExpression.contains("curPos")>
+						<#if arrayField.loopExpression.contains("curPos")>
 		curPos = io.GetPos() - startPos<@emitImport import="io" />
-					</#if>
+						</#if>
 	}
-				</#if>
+					</#if>
 	if closeErr := io.CloseContext("${arrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
+				</#if>
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>
@@ -948,18 +972,25 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
+				<#if helper.isSimpleTypeReference(arrayField.type) && helper.getLanguageTypeNameForTypeReference(arrayField.type) == "byte">
+		// Byte Array field (${arrayField.name})
+		_writeArrayErr := io.WriteByteArray("${arrayField.name}", m.${arrayField.name?cap_first})
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		}
+				<#else>
 		if pushErr := io.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-				<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
+					<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
 				</#if>
 		for _, _element := range m.${arrayField.name?cap_first} {
-				<#if helper.isSimpleTypeReference(arrayField.type)>
-					<#assign simpleTypeReference = arrayField.type>
+					<#if helper.isSimpleTypeReference(arrayField.type)>
+						<#assign simpleTypeReference = arrayField.type>
 			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", field)}
-				<#else>
+					<#else>
 					<#assign complexTypeReference = arrayField.type>
 					<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
@@ -969,13 +1000,14 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
-				<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
+					<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
 			curItem++
 				</#if>
 		}
 		if popErr := io.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}
+				</#if>
 	}
 				<#break>
 			<#case "checksum">

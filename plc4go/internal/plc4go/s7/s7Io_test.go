@@ -139,19 +139,22 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║║╚═════════════════════════╝║                ║        ╚═════════╝        ║║              ║                    ║║║
 ║║║║                           ║                ╚═══════════════════════════╝║              ║                    ║║║
 ║║║║                           ╚═════════════════════════════════════════════╝              ║                    ║║║
-║║║║╔═S7Payload════════════════════════════════════════════════════════════════════════════╗║                    ║║║
-║║║║║╔═S7PayloadReadVarResponse═══════════════════════════════════════════════════════════╗║║                    ║║║
-║║║║║║╔═items════════════════════════════════════════════════════════════════════════════╗║║║                    ║║║
-║║║║║║║╔═S7VarPayloadDataItem═══════════════════════════════════════════════════════════╗║║║║                    ║║║
-║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════╗╔═dataLength╗╔═data═╗╔═padding╗║║║║║                    ║║║
-║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize╗║║ 0x0001 1  ║║╔════╗║║        ║║║║║║                    ║║║
-║║║║║║║║║║      0xff 255 OK      ║║║║    0x03 3 BIT    ║║╚═══════════╝║║0x01║║╚════════╝║║║║║                    ║║║
-║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║╚════╝║          ║║║║║                    ║║║
-║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ╚══════╝          ║║║║║                    ║║║
-║║║║║║║╚════════════════════════════════════════════════════════════════════════════════╝║║║║                    ║║║
-║║║║║║╚══════════════════════════════════════════════════════════════════════════════════╝║║║                    ║║║
-║║║║║╚════════════════════════════════════════════════════════════════════════════════════╝║║                    ║║║
-║║║║╚══════════════════════════════════════════════════════════════════════════════════════╝║                    ║║║
+║║║║╔═S7Payload══════════════════════════════════════════════════════════╗                  ║                    ║║║
+║║║║║╔═S7PayloadReadVarResponse═════════════════════════════════════════╗║                  ║                    ║║║
+║║║║║║╔═items══════════════════════════════════════════════════════════╗║║                  ║                    ║║║
+║║║║║║║╔═S7VarPayloadDataItem═════════════════════════════════════════╗║║║                  ║                    ║║║
+║║║║║║║║╔═returnCode══════════════╗╔═transportSize══════╗╔═dataLength╗║║║║                  ║                    ║║║
+║║║║║║║║║╔═DataTransportErrorCode╗║║╔═DataTransportSize╗║║ 0x0001 1  ║║║║║                  ║                    ║║║
+║║║║║║║║║║      0xff 255 OK      ║║║║    0x03 3 BIT    ║║╚═══════════╝║║║║                  ║                    ║║║
+║║║║║║║║║╚═══════════════════════╝║║╚══════════════════╝║             ║║║║                  ║                    ║║║
+║║║║║║║║╚═════════════════════════╝╚════════════════════╝             ║║║║                  ║                    ║║║
+║║║║║║║║╔═data═══════════════════════════════════════╗╔═padding╗      ║║║║                  ║                    ║║║
+║║║║║║║║║0|01                            '.         '║║        ║      ║║║║                  ║                    ║║║
+║║║║║║║║╚════════════════════════════════════════════╝╚════════╝      ║║║║                  ║                    ║║║
+║║║║║║║╚══════════════════════════════════════════════════════════════╝║║║                  ║                    ║║║
+║║║║║║╚════════════════════════════════════════════════════════════════╝║║                  ║                    ║║║
+║║║║║╚══════════════════════════════════════════════════════════════════╝║                  ║                    ║║║
+║║║║╚════════════════════════════════════════════════════════════════════╝                  ║                    ║║║
 ║║║╚════════════════════════════════════════════════════════════════════════════════════════╝                    ║║║
 ║║╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
@@ -186,9 +189,9 @@ func TestS7MessageBytes(t *testing.T) {
 ║║║║╔═returnCode/DataTransportErrorCode════════════╗╔═transportSize/DataTransportSize════════╗╔═dataLength╗║║║║
 ║║║║║                 0xff 255 OK                  ║║               0x03 3 BIT               ║║ 0x0001 1  ║║║║║
 ║║║║╚══════════════════════════════════════════════╝╚════════════════════════════════════════╝╚═══════════╝║║║║
-║║║║╔═data/╗                                                                                               ║║║║
-║║║║║ 0x01 ║                                                                                               ║║║║
-║║║║╚══════╝                                                                                               ║║║║
+║║║║╔═data═══════════════════════════════════════╗                                                         ║║║║
+║║║║║0|01                            '.         '║                                                         ║║║║
+║║║║╚════════════════════════════════════════════╝                                                         ║║║║
 ║║║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝║║║
 ║║╚═════════════════════════════════════════════════════════════════════════════════════════════════════════╝║║
 ║╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝║
@@ -246,9 +249,7 @@ func TestS7MessageBytes(t *testing.T) {
                   <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                 </transportSize>
                 <dataLength dataType="uint" bitLength="16">1</dataLength>
-                <data isList="true">
-                  <value dataType="byte" bitLength="8">0x01</value>
-                </data>
+                <data dataType="byte" bitLength="8">0x01</data>
                 <padding isList="true"></padding>
               </S7VarPayloadDataItem>
             </items>
@@ -299,16 +300,12 @@ func TestS7MessageBytes(t *testing.T) {
               "items": [
                 {
                   "S7VarPayloadDataItem": {
-                    "data": [
-                      {
-                        "value": "0x01",
-                        "value__plc4x_bitLength": 8,
-                        "value__plc4x_dataType": "byte"
-                      }
-                    ],
+                    "data": "0x01",
                     "dataLength": 1,
                     "dataLength__plc4x_bitLength": 16,
                     "dataLength__plc4x_dataType": "uint",
+                    "data__plc4x_bitLength": 8,
+                    "data__plc4x_dataType": "byte",
                     "padding": [],
                     "returnCode": {
                       "DataTransportErrorCode": 255,
@@ -392,15 +389,13 @@ func TestS7MessageBytes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			{
-				// Simple 2 String
+			t.Run("Simple 2 String", func(t *testing.T) {
 				tt.wantString = strings.Trim(tt.wantString, "\n")
 				if got := tt.args.debuggable.String(); got != tt.wantString {
 					t.Errorf("String() = '\n%v\n', want '\n%v\n'", got, tt.wantString)
 				}
-			}
-			{
-				// Simple 2 Box
+			})
+			t.Run("Simple 2 Box", func(t *testing.T) {
 				boxWriter := utils.NewBoxedWriteBuffer()
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
@@ -409,20 +404,18 @@ func TestS7MessageBytes(t *testing.T) {
 				if got := string(boxWriter.GetBox()); got != tt.wantStringSerialized {
 					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerialized)
 				}
-			}
-			{
-				// Simple 2 Compact Box
+			})
+			t.Run("Simple 2 Compact Box", func(t *testing.T) {
 				boxWriter := utils.NewBoxedWriteBufferWithOptions(true, true)
 				if err := tt.args.debuggable.Serialize(boxWriter); err != nil {
 					t.Error(err)
 				}
 				tt.wantStringSerializedCompact = strings.Trim(tt.wantStringSerializedCompact, "\n")
 				if got := string(boxWriter.GetBox()); got != tt.wantStringSerializedCompact {
-					t.Errorf("Serialize Boxed() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
+					t.Errorf("Serialize BoxedCompact() = '\n%v\n', want '\n%v\n'", got, tt.wantStringSerializedCompact)
 				}
-			}
-			{
-				// Simple 2 Xml
+			})
+			t.Run("Simple 2 Xml", func(t *testing.T) {
 				xmlWriteBuffer := utils.NewXmlWriteBuffer()
 				if err := tt.args.debuggable.Serialize(xmlWriteBuffer); err != nil {
 					t.Error(err)
@@ -431,9 +424,8 @@ func TestS7MessageBytes(t *testing.T) {
 				if got := xmlWriteBuffer.GetXmlString(); got != tt.wantStringXml {
 					t.Errorf("Serialize Xml() = '\n%v\n', want '\n%v\n'", got, tt.wantStringXml)
 				}
-			}
-			{
-				// Simple 2 Json
+			})
+			t.Run("Simple 2 Json", func(t *testing.T) {
 				jsonWriteBuffer := utils.NewJsonWriteBuffer()
 				if err := tt.args.debuggable.Serialize(jsonWriteBuffer); err != nil {
 					t.Error(err)
@@ -446,9 +438,8 @@ func TestS7MessageBytes(t *testing.T) {
 						t.Errorf("Serialize Json() = '\n%v\n', want '\n%v\n'", got, tt.wantStringJson)
 					}
 				}
-			}
-			{
-				// Simple Binary Serialize
+			})
+			t.Run("Simple Binary Serialize", func(t *testing.T) {
 				buffer := utils.NewWriteBuffer()
 				if err := tt.args.debuggable.Serialize(buffer); err != nil {
 					t.Error(err)
@@ -457,9 +448,8 @@ func TestS7MessageBytes(t *testing.T) {
 				if got := utils.Dump(buffer.GetBytes()); !reflect.DeepEqual(got, tt.wantDump) {
 					t.Errorf("Serialize() = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 				}
-			}
-			{
-				// and at least a for xml roundtip
+			})
+			t.Run("xml roundtip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringXml)
 				readBuffer := utils.NewXmlReadBuffer(reader)
 				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
@@ -469,9 +459,8 @@ func TestS7MessageBytes(t *testing.T) {
 						t.Errorf("Roundtrip(xml) = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 					}
 				}
-			}
-			{
-				// and at least a for json roundtip
+			})
+			t.Run("json roundtip", func(t *testing.T) {
 				reader := strings.NewReader(tt.wantStringJson)
 				readBuffer := utils.NewJsonReadBuffer(reader)
 				if got, err := model.TPKTPacketParse(readBuffer); err != nil || !reflect.DeepEqual(got, tt.args.debuggable) {
@@ -481,7 +470,7 @@ func TestS7MessageBytes(t *testing.T) {
 						t.Errorf("Roundtrip(json) = '\n%v\n', want '\n%v\n'", got, tt.wantDump)
 					}
 				}
-			}
+			})
 		})
 	}
 }

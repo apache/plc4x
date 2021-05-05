@@ -363,84 +363,21 @@
                         <items isList="true">
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">1</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
                             <ausbe dataType="uint" bitLength="16">8224</ausbe>
                           </SzlDataTreeItem>
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">6</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
                             <ausbe dataType="uint" bitLength="16">8224</ausbe>
                           </SzlDataTreeItem>
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">7</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                              <value dataType="byte" bitLength="8">0x36</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">22018</ausbg>
                             <ausbe dataType="uint" bitLength="16">2</ausbe>
@@ -580,9 +517,7 @@
                           </DataTransportSize>
                         </transportSize>
                         <dataLength dataType="uint" bitLength="16">1</dataLength>
-                        <data isList="true">
-                          <value dataType="byte" bitLength="8">0x01</value>
-                        </data>
+                        <data dataType="byte" bitLength="8">0x01</data>
                         <padding isList="true">
                         </padding>
                       </S7VarPayloadDataItem>

@@ -108,22 +108,11 @@ func SzlDataTreeItemParse(io utils.ReadBuffer) (*SzlDataTreeItem, error) {
 	if _itemIndexErr != nil {
 		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field")
 	}
-
-	// Array field (mlfb)
-	if pullErr := io.PullContext("mlfb", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	mlfb := make([]byte, uint16(20))
-	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
-		_item, _err := io.ReadByte("")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'mlfb' field")
-		}
-		mlfb[curItem] = _item
-	}
-	if closeErr := io.CloseContext("mlfb", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (mlfb)
+	numberOfBytes := int(uint16(20))
+	mlfb, _readArrayErr := io.ReadByteArray("mlfb", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'mlfb' field")
 	}
 
 	// Simple Field (moduleTypeId)
@@ -166,17 +155,10 @@ func (m *SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
 	// Array Field (mlfb)
 	if m.Mlfb != nil {
-		if pushErr := io.PushContext("mlfb", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Mlfb {
-			_elementErr := io.WriteByte("", _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'mlfb' field")
-			}
-		}
-		if popErr := io.PopContext("mlfb", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (mlfb)
+		_writeArrayErr := io.WriteByteArray("mlfb", m.Mlfb)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'mlfb' field")
 		}
 	}
 
