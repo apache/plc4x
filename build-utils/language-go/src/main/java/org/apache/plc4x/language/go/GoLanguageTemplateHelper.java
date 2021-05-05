@@ -52,6 +52,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String.join("", languageFlavorName.split("\\-"));
     }
 
+    // TODO: check if protocol name can be enforced to only contain valid chars
+    public String getSanitizedProtocolName() {
+        return getProtocolName().replaceAll("-","");
+    }
+
     public String packageName(String languageFlavorName) {
         return String.join("", languageFlavorName.split("\\-"));
     }

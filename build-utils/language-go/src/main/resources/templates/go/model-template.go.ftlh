@@ -303,7 +303,9 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#assign manualArrayField = field>
 
 	// Manual Array Field (${manualArrayField.name})
-	lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
+	<#-- TODO: implement below-->
+	// TODO: below expression doesn't work yet
+	// lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
 					<#break>
 				<#case "manual">
 					<#assign manualField = field>
@@ -610,22 +612,18 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 				<#assign checksumField = field>
 				<#assign simpleTypeReference = checksumField.type>
 
-	// Checksum Field (checksum)
+			// Checksum Field (checksum)
 	{
-		checksum = ${helper.getNullValueForTypeReference(checksumField.type)}
-		// Create an array of all the bytes read in this message element so far.
-		<#--TODO: we need a buffered reader so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
-		checksumRawData := io.(ReadBufferByteBased).getBytes(startPos, io.GetPos())<@emitImport import="io" />
 		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference)}
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
-		checksum, _checksumErr = ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
+		checksum, _checksumErr := ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
 		if _checksumErr != nil {
 			return nil, errors.Wrap(_checksumErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		if checksum != checksumRef {
-			return nil, errors.New("Checksum verification failed. Expected " + (checksumRef & 0xFFFF) + " but got " + (checksum & 0xFFFF)")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Errorf("Checksum verification failed. Expected %d but got %d", (checksumRef & 0xFFFF), (checksum & 0xFFFF))<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -707,10 +705,10 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 					<#if helper.isLengthArrayField(field)>
 	// Length array
 	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(16, manualArrayField.loopExpression, type.parserArguments)}
-	List<${helper.getLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>()
+	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
 	${manualArrayField.name}EndPos := io.GetPos() + _${manualArrayField.name}Length<@emitImport import="io" />
 	for ;io.GetPos() < ${manualArrayField.name}EndPos; {<@emitImport import="io" />
-		_${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}))
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)})))
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
 		curPos = io.GetPos() - startPos<@emitImport import="io" />
@@ -719,9 +717,9 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif helper.isTerminatedArrayField(field)>
 	// Terminated array
-	List<${helper.getLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>()
-	for ;!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)})); {
-		_${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}))
+	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	for ;!((bool) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)})); {
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
@@ -735,9 +733,9 @@ func ${type.name}Parse(io utils.ReadBuffer<#if type.parserArguments?has_content>
 					Otherwise a simple toArray call is fine.
 				-->
 					<#if helper.isSimpleTypeReference(field.type)>
-	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}List.size()]
-	for i := 0; i < _${manualArrayField.name}List.size(); i++ {
-		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${manualArrayField.name}List.get(i)
+	${manualArrayField.name} := make([]${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
+	for i := 0; i < len(_${manualArrayField.name}List); i++ {
+		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])
 	}
 					<#else>
 	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = _${manualArrayField.name}List.toArray(new ${helper.getLanguageTypeNameForField(manualArrayField)}[0])
@@ -986,14 +984,13 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Checksum Field (checksum) (Calculated)
 	{
-		_checksum := ${helper.getLanguageTypeNameForField(field)}(${helper.getNullValueForTypeReference(checksumField.type)})
-		// Create an array of all the bytes written in this message element so far.
-		<#--TODO: we need a buffered writer so we can rewind here. ATM casting to an byteBasedReader but this will break on non buffered -->
-		checksumRawData []uint8 = io.(utils.WriteBufferByteBased).getBytes(startPos, io.GetPos())<@emitImport import="io" />
-		_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
-		_checksumErr := ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)}
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
+		_checksum, _checksumErr := ${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
+		if _checksumErr != nil {
+			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
+		}
+		_checksumErr = ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)}
+		if _checksumErr != nil {
+			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -1067,9 +1064,10 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 		if pushErr := io.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
-			${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
-		}
+		//for _, element := range m.${manualArrayField.name?cap_first} {
+			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong -->
+			//${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
+		//}
 		if popErr := io.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}
@@ -1303,6 +1301,8 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 					return err
 				}
 				m.${field.name?cap_first} = &data
+				<#elseif helper.isManualArrayField(field)>
+					// TODO: not implemented yet
 				<#else>
 				var data ${helper.getLanguageTypeNameForField(field)}
 				if err := d.DecodeElement(&data, &tok); err != nil {
@@ -1499,10 +1499,7 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 					<#assign checksumField = field>
 					<#assign simpleTypeReference = checksumField.type>
 	// Checksum Field (checksum) (Calculated)
-	_checksum := ${helper.getLanguageTypeNameForField(field)}(${helper.getNullValueForTypeReference(checksumField.type)})
-	// Create an array of all the bytes written in this message element so far.
-	checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
-	_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
+	_checksum, _ := ${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
 	boxes = append(boxes, utils.BoxAnything("${constField.name?cap_first}", _checksum, -1))
 					<#break>
 				<#case "const">
@@ -1547,11 +1544,11 @@ func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
 				<#case "manualArray">
 					<#assign manualArrayField = field>
 					// Manual Array Field (${manualArrayField.name})
-	if m.${manualArrayField.name?cap_first} != nil {
-		for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
+	//if m.${manualArrayField.name?cap_first} != nil {
+	//	for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
 			// TODO ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
-		}
-	}
+	//	}
+	//}
 					<#break>
 				<#case "manual">
 					<#assign manualField = field>
