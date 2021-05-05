@@ -33,8 +33,15 @@ import (
 type S7XmlParserHelper struct {
 }
 
-func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+// Temporary imports to silent compiler warnings
+func init() {
 	_ = strconv.Atoi
+	_ = strings.Join
+	_ = utils.Dump
+	_ = xml.NewDecoder
+}
+
+func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "SzlId":
 		return model.SzlIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

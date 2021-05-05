@@ -23,7 +23,11 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
+	abethModel "github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	df1Model "github.com/apache/plc4x/plc4go/internal/plc4go/df1/readwrite"
+	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
+	firmataModel "github.com/apache/plc4x/plc4go/internal/plc4go/firmata/readwrite"
 	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
 	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
 	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
@@ -125,10 +129,18 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
 				}
 				switch protocolName {
-				case "modbus":
-					helper = new(modbusModel.ModbusParserHelper)
+				case "abeth":
+					helper = new(abethModel.AbethParserHelper)
 				case "ads":
 					helper = new(adsModel.AdsParserHelper)
+				case "df1":
+					helper = new(df1Model.Df1ParserHelper)
+				case "eip":
+					helper = new(eipModel.EipParserHelper)
+				case "firmata":
+					helper = new(firmataModel.FirmataParserHelper)
+				case "modbus":
+					helper = new(modbusModel.ModbusParserHelper)
 				case "s7":
 					helper = new(s7Model.S7ParserHelper)
 				case "knxnetip":

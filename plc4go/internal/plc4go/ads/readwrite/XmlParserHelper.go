@@ -33,8 +33,15 @@ import (
 type AdsXmlParserHelper struct {
 }
 
-func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+// Temporary imports to silent compiler warnings
+func init() {
 	_ = strconv.Atoi
+	_ = strings.Join
+	_ = utils.Dump
+	_ = xml.NewDecoder
+}
+
+func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":
 		return nil, errors.New("AdsMultiRequestItem unmappable")

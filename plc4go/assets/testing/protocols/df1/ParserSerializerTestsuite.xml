@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                bigEndian="true">
+
+  <name>Allen-Bradley DF1</name>
+
+  <protocolName>df1</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>Unprotected Read Address Request</name>
+    <raw>10020900010001001100021003546F</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">9</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">0</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">1</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadRequest>
+                <address dataType="uint" bitLength="16">4352</address>
+                <size dataType="uint" bitLength="8">2</size>
+              </DF1UnprotectedReadRequest>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">21615</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Unprotected Read Address Response</name>
+    <raw>10020A0941000100FFFF1003DFB9</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">10</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">9</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">65</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadResponse>
+                <data isList="true">
+                  <value dataType="uint" bitLength="8">255</value>
+                  <value dataType="uint" bitLength="8">255</value>
+                </data>
+              </DF1UnprotectedReadResponse>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">57273</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Unprotected Read Address Response (Containing 0x10 in the data)</name>
+    <raw>10020A09410001001010FF1003BAAD</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">2</symbolType>
+        <DF1SymbolMessageFrame>
+          <destinationAddress dataType="uint" bitLength="8">10</destinationAddress>
+          <sourceAddress dataType="uint" bitLength="8">9</sourceAddress>
+          <command>
+            <DF1Command>
+              <commandCode dataType="uint" bitLength="8">65</commandCode>
+              <status dataType="uint" bitLength="8">0</status>
+              <transactionCounter dataType="uint" bitLength="16">256</transactionCounter>
+              <DF1UnprotectedReadResponse>
+                <data isList="true">
+                  <value dataType="uint" bitLength="8">16</value>
+                  <value dataType="uint" bitLength="8">16</value>
+                  <value dataType="uint" bitLength="8">255</value>
+                </data>
+              </DF1UnprotectedReadResponse>
+            </DF1Command>
+          </command>
+          <messageEnd dataType="uint" bitLength="8">16</messageEnd>
+          <endTransaction dataType="uint" bitLength="8">3</endTransaction>
+          <checksum dataType="uint" bitLength="16">47789</checksum>
+        </DF1SymbolMessageFrame>
+      </DF1Symbol>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ACK Response</name>
+    <raw>1006</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">6</symbolType>
+        <DF1SymbolMessageFrameACK>
+        </DF1SymbolMessageFrameACK>
+      </DF1Symbol>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>NACK Response</name>
+    <raw>1015</raw>
+    <root-type>DF1Symbol</root-type>
+    <xml>
+      <DF1Symbol>
+        <messageStart dataType="uint" bitLength="8">16</messageStart>
+        <symbolType dataType="uint" bitLength="8">21</symbolType>
+        <DF1SymbolMessageFrameNAK>
+        </DF1SymbolMessageFrameNAK>
+      </DF1Symbol>
+    </xml>
+  </testcase>
+
+</test:testsuite>

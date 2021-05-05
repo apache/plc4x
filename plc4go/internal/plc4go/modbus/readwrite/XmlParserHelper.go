@@ -33,8 +33,15 @@ import (
 type ModbusXmlParserHelper struct {
 }
 
-func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+// Temporary imports to silent compiler warnings
+func init() {
 	_ = strconv.Atoi
+	_ = strings.Join
+	_ = utils.Dump
+	_ = xml.NewDecoder
+}
+
+func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

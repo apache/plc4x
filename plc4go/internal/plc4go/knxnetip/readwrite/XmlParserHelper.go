@@ -33,8 +33,15 @@ import (
 type KnxnetipXmlParserHelper struct {
 }
 
-func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+// Temporary imports to silent compiler warnings
+func init() {
 	_ = strconv.Atoi
+	_ = strings.Join
+	_ = utils.Dump
+	_ = xml.NewDecoder
+}
+
+func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "HPAIControlEndpoint":
 		return model.HPAIControlEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
