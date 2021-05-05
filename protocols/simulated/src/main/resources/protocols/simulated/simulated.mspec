@@ -19,6 +19,10 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
+[type   'Dummy'
+    [simple uint        16  'dummy']
+]
+
 [dataIo 'DataItem' [string '-1' 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
@@ -158,6 +162,6 @@
     ['23' LDATE_AND_TIME ['8']]
     ['24' CHAR ['1']]
     ['25' WCHAR ['2']]
-    ['26' STRING ['256']]
+    ['26' STRING ['255']]
     ['27' WSTRING ['127']]
 ]
