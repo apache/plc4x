@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,6 +33,8 @@ type COTPTpduSize int8
 type ICOTPTpduSize interface {
 	SizeInBytes() uint16
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -42,6 +46,20 @@ const (
 	COTPTpduSize_SIZE_4096 COTPTpduSize = 0x0c
 	COTPTpduSize_SIZE_8192 COTPTpduSize = 0x0d
 )
+
+var COTPTpduSizeValues []COTPTpduSize
+
+func init() {
+	COTPTpduSizeValues = []COTPTpduSize{
+		COTPTpduSize_SIZE_128,
+		COTPTpduSize_SIZE_256,
+		COTPTpduSize_SIZE_512,
+		COTPTpduSize_SIZE_1024,
+		COTPTpduSize_SIZE_2048,
+		COTPTpduSize_SIZE_4096,
+		COTPTpduSize_SIZE_8192,
+	}
+}
 
 func (e COTPTpduSize) SizeInBytes() uint16 {
 	switch e {
@@ -137,8 +155,8 @@ func (m COTPTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPTpduSizeParse(io *utils.ReadBuffer) (COTPTpduSize, error) {
-	val, err := io.ReadInt8(8)
+func COTPTpduSizeParse(io utils.ReadBuffer) (COTPTpduSize, error) {
+	val, err := io.ReadInt8("COTPTpduSize", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -146,10 +164,11 @@ func COTPTpduSizeParse(io *utils.ReadBuffer) (COTPTpduSize, error) {
 }
 
 func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("COTPTpduSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -169,7 +188,15 @@ func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
-func (e COTPTpduSize) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m COTPTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e COTPTpduSize) name() string {
 	switch e {
 	case COTPTpduSize_SIZE_128:
 		return "SIZE_128"
@@ -187,4 +214,17 @@ func (e COTPTpduSize) String() string {
 		return "SIZE_8192"
 	}
 	return ""
+}
+
+func (e COTPTpduSize) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m COTPTpduSize) Box(s string, i int) utils.AsciiBox {
+	boxName := "COTPTpduSize"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

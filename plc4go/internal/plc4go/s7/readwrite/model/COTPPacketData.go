@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *COTPPacketData) GetTypeName() string {
 }
 
 func (m *COTPPacketData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacketData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (eot)
 	lengthInBits += 1
@@ -104,18 +109,25 @@ func (m *COTPPacketData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDataParse(io *utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketDataParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	if pullErr := io.PullContext("COTPPacketData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (eot)
-	eot, _eotErr := io.ReadBit()
+	eot, _eotErr := io.ReadBit("eot")
 	if _eotErr != nil {
 		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field")
 	}
 
 	// Simple Field (tpduRef)
-	tpduRef, _tpduRefErr := io.ReadUint8(7)
+	tpduRef, _tpduRefErr := io.ReadUint8("tpduRef", 7)
 	if _tpduRefErr != nil {
 		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field")
+	}
+
+	if closeErr := io.CloseContext("COTPPacketData"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -130,33 +142,42 @@ func COTPPacketDataParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("COTPPacketData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (eot)
 		eot := bool(m.Eot)
-		_eotErr := io.WriteBit((eot))
+		_eotErr := io.WriteBit("eot", (eot))
 		if _eotErr != nil {
 			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
 		}
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.TpduRef)
-		_tpduRefErr := io.WriteUint8(7, (tpduRef))
+		_tpduRefErr := io.WriteUint8("tpduRef", 7, (tpduRef))
 		if _tpduRefErr != nil {
 			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}
 
+		if popErr := io.PopContext("COTPPacketData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "eot":
@@ -175,7 +196,7 @@ func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -183,6 +204,7 @@ func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Eot, xml.StartElement{Name: xml.Name{Local: "eot"}}); err != nil {
 		return err
@@ -194,15 +216,24 @@ func (m *COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m COTPPacketData) String() string {
-	return string(m.Box("COTPPacketData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPPacketData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacketData"
+	boxName := "COTPPacketData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Eot", m.Eot, width-2))
-	boxes = append(boxes, utils.BoxAnything("TpduRef", m.TpduRef, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Eot", m.Eot, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("TpduRef", m.TpduRef, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

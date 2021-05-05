@@ -28,6 +28,7 @@ import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
@@ -97,8 +98,8 @@ public class SimulatedDevice {
                 return;
             case RANDOM:
                 switch (field.getPlcDataType()) {
-                    case "IEC61131_STRING":
-                    case "IEC61131_WSTRING":
+                    case "STRING":
+                    case "WSTRING":
                         break;
                     default:
                         try {
@@ -117,12 +118,12 @@ public class SimulatedDevice {
     private PlcValue randomValue(SimulatedField field) {
         Object result = null;
 
-        Short fieldDataTypeSize = SimulatedDataTypeSizes.enumForValue(field.getPlcDataType()).getDataTypeSize();
+        Short fieldDataTypeSize = field.getDataType().getDataTypeSize();
 
         byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
         new Random().nextBytes(b);
 
-        ReadBuffer io = new ReadBuffer(b);
+        ReadBuffer io = new ReadBufferByteBased(b);
         try {
             return DataItemIO.staticParse(io, field.getPlcDataType(), field.getNumberOfElements());
         } catch (ParseException e) {

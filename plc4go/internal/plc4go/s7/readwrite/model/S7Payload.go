@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -55,6 +56,7 @@ type IS7PayloadChild interface {
 	InitializeParent(parent *S7Payload)
 	GetTypeName() string
 	IS7Payload
+	utils.AsciiBoxer
 }
 
 func NewS7Payload() *S7Payload {
@@ -79,10 +81,15 @@ func (m *S7Payload) GetTypeName() string {
 }
 
 func (m *S7Payload) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *S7Payload) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7Payload) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -91,7 +98,10 @@ func (m *S7Payload) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
+func S7PayloadParse(io utils.ReadBuffer, messageType uint8, parameter *S7Parameter) (*S7Payload, error) {
+	if pullErr := io.PullContext("S7Payload"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *S7Payload
@@ -105,9 +115,16 @@ func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter *S7Parame
 		_parent, typeSwitchError = S7PayloadWriteVarResponseParse(io, parameter)
 	case CastS7Parameter(parameter).Child.ParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
 		_parent, typeSwitchError = S7PayloadUserDataParse(io, parameter)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("S7Payload"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -120,6 +137,9 @@ func (m *S7Payload) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("S7Payload"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -127,22 +147,32 @@ func (m *S7Payload) SerializeParent(io utils.WriteBuffer, child IS7Payload, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("S7Payload"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -209,6 +239,7 @@ func (m *S7Payload) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -231,14 +262,22 @@ func (m *S7Payload) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m S7Payload) String() string {
-	return string(m.Box("S7Payload", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m S7Payload) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7Payload"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *S7Payload) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *S7Payload) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "S7Payload"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

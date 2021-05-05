@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReadBufferTest {
 
@@ -32,8 +32,8 @@ class ReadBufferTest {
     @Test
     void readString() {
         String value = new String("abcdef");
-        final ReadBuffer buffer = new ReadBuffer(value.getBytes(StandardCharsets.UTF_8));
-        String answer = buffer.readString(value.length() * 8, "UTF-8");
+        final ReadBuffer buffer = new ReadBufferByteBased(value.getBytes(StandardCharsets.UTF_8));
+        String answer = buffer.readString("", value.length() * 8, "UTF-8");
 
         assertEquals(value, answer);
     }

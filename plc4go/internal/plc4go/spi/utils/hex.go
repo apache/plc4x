@@ -24,68 +24,51 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
+	"math"
 	"strings"
 )
 
 // DefaultWidth defaults to a default screen dumps size
-const DefaultWidth = 51
+const DefaultWidth = 46 // 10 bytes per line on a []byte < 999
 
 // boxLineOverheat Overheat per line when drawing boxes
 const boxLineOverheat = 1 + 1
 
-// Dump dumps a 46 char wide hex string
-func BoxedDump(name string, data []byte) string {
-	// we substract the 2 lines at the side
-	dumpWidth := DefaultWidth - boxLineOverheat
-	return string(BoxString(name, DumpFixedWidth(data, dumpWidth), DefaultWidth))
-}
+// blankWidth blank size of blank
+const blankWidth = 1
 
-// Dump dumps a 46 char wide hex string
+// byteWidth required size of runes required to print one bytes 2 hex digits + 1 blanks
+const byteWidth = 2 + 1
+
+// pipeWidth size of the pipe char
+const pipeWidth = 1
+
+// DebugHex set to true to get debug messages
+var DebugHex bool
+
+// Dump dumps a 56 char wide hex string
 func Dump(data []byte) string {
 	return DumpFixedWidth(data, DefaultWidth)
 }
 
-// BoxedDumpFixedWidth dumps a hex into a beautiful box
-func BoxedDumpFixedWidth(name string, data []byte, charWidth int) string {
-	// we substract the 2 lines at the side
-	dumpWidth := charWidth - 1 - 1
-	return string(BoxString(name, DumpFixedWidth(data, dumpWidth), charWidth))
-}
-
-// DumpAnything dumps anything as hex
-func DumpAnything(anything interface{}) string {
-	convertedBytes, err := toBytes(anything)
-	if err != nil {
-		panic(err)
-	}
-	return DumpFixedWidth(convertedBytes, 1)
-}
-
 // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
-func DumpFixedWidth(data []byte, charWidth int) string {
-	if charWidth <= 0 {
-		panic("charWidth needs to be greater than 0")
+func DumpFixedWidth(data []byte, desiredCharWidth int) string {
+	if data == nil || len(data) < 1 {
+		return ""
 	}
+	// We copy the array to avoid mutations
+	data = append(data[:0:0], data...)
 	hexString := ""
-	// 3 digits index plus one blank
-	const indexWidth = 3 + 1
-	// 2 hex digits + 2 blanks
-	const byteWidth = 2 + 2
-	// strings get quoate by 2 chars
-	const stringRenderOverheat = 2
-	const minWidth = indexWidth + byteWidth + stringRenderOverheat + 1
-	if charWidth < minWidth {
-		charWidth = minWidth + 6
-	}
-	// Formulary to calculate max bytes per row...
-	maxBytesPerRow := ((charWidth - indexWidth - stringRenderOverheat) / (byteWidth + 1)) - 1
+	maxBytesPerRow, indexWidth := calculateBytesPerRowAndIndexWidth(len(data), desiredCharWidth)
 
 	for byteIndex, rowIndex := 0, 0; byteIndex < len(data); byteIndex, rowIndex = byteIndex+maxBytesPerRow, rowIndex+1 {
-		hexString += fmt.Sprintf("%03d 0x: ", byteIndex)
+		indexString := fmt.Sprintf("%0*d|", indexWidth, byteIndex)
+		hexString += indexString
 		for columnIndex := 0; columnIndex < maxBytesPerRow; columnIndex++ {
 			absoluteIndex := byteIndex + columnIndex
 			if absoluteIndex < len(data) {
-				hexString += fmt.Sprintf("%02x  ", data[absoluteIndex])
+				hexString += fmt.Sprintf("%02x ", data[absoluteIndex])
 			} else {
 				// align with empty byte representation
 				hexString += strings.Repeat(" ", byteWidth)
@@ -103,6 +86,48 @@ func DumpFixedWidth(data []byte, charWidth int) string {
 	}
 	// remove last newline
 	return hexString[:len(hexString)-1]
+}
+
+func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (int, int) {
+	if DebugHex {
+		log.Debug().Msgf("Calculating max row and index for %d number of bytes and a desired string width of %d", numberOfBytes, desiredStringWidth)
+	}
+	indexDigits := int(math.Log10(float64(numberOfBytes))) + 1
+	requiredIndexWidth := indexDigits + pipeWidth
+	if DebugHex {
+		log.Debug().Msgf("index width %d for indexDigits %d for bytes %d", requiredIndexWidth, indexDigits, numberOfBytes)
+	}
+	// strings get quoted by 2 chars
+	const quoteRune = 1
+	const potentialStringRenderRune = 1
+	// 0 00  '.'
+	availableSpace := requiredIndexWidth + byteWidth + quoteRune + potentialStringRenderRune + quoteRune
+	if DebugHex {
+		log.Debug().Msgf("calculated %d minimal width for number of bytes %d", availableSpace, numberOfBytes)
+	}
+	if desiredStringWidth >= availableSpace {
+		availableSpace = desiredStringWidth
+	} else {
+		if DebugHex {
+			log.Debug().Msgf("Overflow by %d runes", desiredStringWidth-availableSpace)
+		}
+	}
+	if DebugHex {
+		log.Debug().Msgf("Actual space %d", availableSpace)
+	}
+
+	z := float64(availableSpace)
+	y := float64(requiredIndexWidth)
+	a := float64(byteWidth)
+	b := float64(quoteRune)
+	// c = needed space for bytes x * byteWidth
+	// x = maxBytesPerRow
+	// x = (z - (y + b + x * 1 + b)) / a == x = (-2 * b - y + z)/(a + 1) and a + 1!=0 and a!=0
+	x := ((-2 * b) - y + z) / (a + 1)
+	if DebugHex {
+		log.Debug().Msgf("Calculated number of bytes per row %f in int %d", x, int(x))
+	}
+	return int(x), indexDigits
 }
 
 func maskString(data []byte) string {

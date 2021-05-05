@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *AdsReadStateResponse) GetTypeName() string {
 }
 
 func (m *AdsReadStateResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadStateResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -111,24 +116,38 @@ func (m *AdsReadStateResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadStateResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsReadStateResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (adsState)
-	adsState, _adsStateErr := io.ReadUint16(16)
+	adsState, _adsStateErr := io.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field")
 	}
 
 	// Simple Field (deviceState)
-	deviceState, _deviceStateErr := io.ReadUint16(16)
+	deviceState, _deviceStateErr := io.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field")
+	}
+
+	if closeErr := io.CloseContext("AdsReadStateResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -144,39 +163,54 @@ func AdsReadStateResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsReadStateResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (adsState)
 		adsState := uint16(m.AdsState)
-		_adsStateErr := io.WriteUint16(16, (adsState))
+		_adsStateErr := io.WriteUint16("adsState", 16, (adsState))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.DeviceState)
-		_deviceStateErr := io.WriteUint16(16, (deviceState))
+		_deviceStateErr := io.WriteUint16("deviceState", 16, (deviceState))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
+		if popErr := io.PopContext("AdsReadStateResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -201,7 +235,7 @@ func (m *AdsReadStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -209,6 +243,7 @@ func (m *AdsReadStateResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -223,16 +258,26 @@ func (m *AdsReadStateResponse) MarshalXML(e *xml.Encoder, start xml.StartElement
 }
 
 func (m AdsReadStateResponse) String() string {
-	return string(m.Box("AdsReadStateResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadStateResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadStateResponse"
+	boxName := "AdsReadStateResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-	boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AdsState", m.AdsState, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceState", m.DeviceState, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

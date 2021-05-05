@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package modbus
 
 import (
@@ -84,6 +85,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
+	// TODO: the code below looks strange: where is defaultChanel being used?
 	defaultChanel := make(chan interface{})
 	go func() {
 		for {
@@ -97,7 +99,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 			}
 		}
 	}()
-	codec := NewMessageCodec(transportInstance, nil)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1

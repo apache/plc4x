@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -65,6 +66,10 @@ func (m *SzlId) GetTypeName() string {
 }
 
 func (m *SzlId) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *SzlId) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (typeClass)
@@ -83,24 +88,43 @@ func (m *SzlId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlIdParse(io *utils.ReadBuffer) (*SzlId, error) {
+func SzlIdParse(io utils.ReadBuffer) (*SzlId, error) {
+	if pullErr := io.PullContext("SzlId"); pullErr != nil {
+		return nil, pullErr
+	}
 
+	if pullErr := io.PullContext("typeClass"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
 	if _typeClassErr != nil {
 		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field")
 	}
+	if closeErr := io.CloseContext("typeClass"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (sublistExtract)
-	sublistExtract, _sublistExtractErr := io.ReadUint8(4)
+	sublistExtract, _sublistExtractErr := io.ReadUint8("sublistExtract", 4)
 	if _sublistExtractErr != nil {
 		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field")
 	}
 
+	if pullErr := io.PullContext("sublistList"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (sublistList)
 	sublistList, _sublistListErr := SzlSublistParse(io)
 	if _sublistListErr != nil {
 		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field")
+	}
+	if closeErr := io.CloseContext("sublistList"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("SzlId"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -108,44 +132,65 @@ func SzlIdParse(io *utils.ReadBuffer) (*SzlId, error) {
 }
 
 func (m *SzlId) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("SzlId"); pushErr != nil {
+		return pushErr
+	}
 
+	if pushErr := io.PushContext("typeClass"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (typeClass)
 	typeClass := CastSzlModuleTypeClass(m.TypeClass)
 	_typeClassErr := typeClass.Serialize(io)
 	if _typeClassErr != nil {
 		return errors.Wrap(_typeClassErr, "Error serializing 'typeClass' field")
 	}
+	if popErr := io.PopContext("typeClass"); popErr != nil {
+		return popErr
+	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.SublistExtract)
-	_sublistExtractErr := io.WriteUint8(4, (sublistExtract))
+	_sublistExtractErr := io.WriteUint8("sublistExtract", 4, (sublistExtract))
 	if _sublistExtractErr != nil {
 		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
 	}
 
+	if pushErr := io.PushContext("sublistList"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (sublistList)
 	sublistList := CastSzlSublist(m.SublistList)
 	_sublistListErr := sublistList.Serialize(io)
 	if _sublistListErr != nil {
 		return errors.Wrap(_sublistListErr, "Error serializing 'sublistList' field")
 	}
+	if popErr := io.PopContext("sublistList"); popErr != nil {
+		return popErr
+	}
 
+	if popErr := io.PopContext("SzlId"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "typeClass":
@@ -171,6 +216,7 @@ func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.s7.readwrite.SzlId"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -194,16 +240,24 @@ func (m *SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m SzlId) String() string {
-	return string(m.Box("SzlId", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m SzlId) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "SzlId"
+	boxName := "SzlId"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TypeClass", m.TypeClass, width-2))
-	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, width-2))
-	boxes = append(boxes, utils.BoxAnything("SublistList", m.SublistList, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Enum field (typeClass)
+	typeClass := CastSzlModuleTypeClass(m.TypeClass)
+	boxes = append(boxes, typeClass.Box("typeClass", -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SublistExtract", m.SublistExtract, -1))
+	// Enum field (sublistList)
+	sublistList := CastSzlSublist(m.SublistList)
+	boxes = append(boxes, sublistList.Box("sublistList", -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

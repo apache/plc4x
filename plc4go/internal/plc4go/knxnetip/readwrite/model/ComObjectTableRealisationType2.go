@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *ComObjectTableRealisationType2) GetTypeName() string {
 }
 
 func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ComObjectTableRealisationType2) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -99,8 +104,9 @@ func (m *ComObjectTableRealisationType2) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.ComObjectDescriptors) > 0 {
-		for _, element := range m.ComObjectDescriptors {
-			lengthInBits += element.LengthInBits()
+		for i, element := range m.ComObjectDescriptors {
+			last := i == len(m.ComObjectDescriptors)-1
+			lengthInBits += element.LengthInBitsConditional(last)
 		}
 	}
 
@@ -111,21 +117,27 @@ func (m *ComObjectTableRealisationType2) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType2Parse(io *utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType2Parse(io utils.ReadBuffer) (*ComObjectTable, error) {
+	if pullErr := io.PullContext("ComObjectTableRealisationType2"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numEntries)
-	numEntries, _numEntriesErr := io.ReadUint8(8)
+	numEntries, _numEntriesErr := io.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
 		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field")
 	}
 
 	// Simple Field (ramFlagsTablePointer)
-	ramFlagsTablePointer, _ramFlagsTablePointerErr := io.ReadUint8(8)
+	ramFlagsTablePointer, _ramFlagsTablePointerErr := io.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field")
 	}
 
 	// Array field (comObjectDescriptors)
+	if pullErr := io.PullContext("comObjectDescriptors", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	comObjectDescriptors := make([]*GroupObjectDescriptorRealisationType2, numEntries)
 	for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
@@ -134,6 +146,13 @@ func ComObjectTableRealisationType2Parse(io *utils.ReadBuffer) (*ComObjectTable,
 			return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field")
 		}
 		comObjectDescriptors[curItem] = _item
+	}
+	if closeErr := io.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ComObjectTableRealisationType2"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -149,43 +168,58 @@ func ComObjectTableRealisationType2Parse(io *utils.ReadBuffer) (*ComObjectTable,
 
 func (m *ComObjectTableRealisationType2) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ComObjectTableRealisationType2"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.NumEntries)
-		_numEntriesErr := io.WriteUint8(8, (numEntries))
+		_numEntriesErr := io.WriteUint8("numEntries", 8, (numEntries))
 		if _numEntriesErr != nil {
 			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
 		}
 
 		// Simple Field (ramFlagsTablePointer)
 		ramFlagsTablePointer := uint8(m.RamFlagsTablePointer)
-		_ramFlagsTablePointerErr := io.WriteUint8(8, (ramFlagsTablePointer))
+		_ramFlagsTablePointerErr := io.WriteUint8("ramFlagsTablePointer", 8, (ramFlagsTablePointer))
 		if _ramFlagsTablePointerErr != nil {
 			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}
 
 		// Array Field (comObjectDescriptors)
 		if m.ComObjectDescriptors != nil {
+			if pushErr := io.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ComObjectDescriptors {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 				}
 			}
+			if popErr := io.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ComObjectTableRealisationType2"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTableRealisationType2) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "numEntries":
@@ -210,7 +244,7 @@ func (m *ComObjectTableRealisationType2) UnmarshalXML(d *xml.Decoder, start xml.
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -218,6 +252,7 @@ func (m *ComObjectTableRealisationType2) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ComObjectTableRealisationType2) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumEntries, xml.StartElement{Name: xml.Name{Local: "numEntries"}}); err != nil {
 		return err
@@ -225,31 +260,48 @@ func (m *ComObjectTableRealisationType2) MarshalXML(e *xml.Encoder, start xml.St
 	if err := e.EncodeElement(m.RamFlagsTablePointer, xml.StartElement{Name: xml.Name{Local: "ramFlagsTablePointer"}}); err != nil {
 		return err
 	}
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
+		return err
+	}
 	for _, arrayElement := range m.ComObjectDescriptors {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "comObjectDescriptors"}}); err != nil {
+		return err
 	}
 	return nil
 }
 
 func (m ComObjectTableRealisationType2) String() string {
-	return string(m.Box("ComObjectTableRealisationType2", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ComObjectTableRealisationType2) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ComObjectTableRealisationType2"
+	boxName := "ComObjectTableRealisationType2"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, width-2))
-	boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, width-2))
-	boxes = append(boxes, utils.BoxAnything("ComObjectDescriptors", m.ComObjectDescriptors, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumEntries", m.NumEntries, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("RamFlagsTablePointer", m.RamFlagsTablePointer, -1))
+		// Array Field (comObjectDescriptors)
+		if m.ComObjectDescriptors != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ComObjectDescriptors {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ComObjectDescriptors", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

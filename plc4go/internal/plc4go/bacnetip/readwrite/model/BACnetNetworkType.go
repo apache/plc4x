@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -45,6 +49,24 @@ const (
 	BACnetNetworkType_IPV6               BACnetNetworkType = 0x9
 	BACnetNetworkType_SERIAL             BACnetNetworkType = 0xA
 )
+
+var BACnetNetworkTypeValues []BACnetNetworkType
+
+func init() {
+	BACnetNetworkTypeValues = []BACnetNetworkType{
+		BACnetNetworkType_ETHERNET,
+		BACnetNetworkType_ARCNET,
+		BACnetNetworkType_MSTP,
+		BACnetNetworkType_PTP,
+		BACnetNetworkType_LONTALK,
+		BACnetNetworkType_IPV4,
+		BACnetNetworkType_ZIGBEE,
+		BACnetNetworkType_VIRTUAL,
+		BACnetNetworkType_REMOVED_NON_BACNET,
+		BACnetNetworkType_IPV6,
+		BACnetNetworkType_SERIAL,
+	}
+}
 
 func BACnetNetworkTypeByValue(value uint8) BACnetNetworkType {
 	switch value {
@@ -120,8 +142,8 @@ func (m BACnetNetworkType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNetworkTypeParse(io *utils.ReadBuffer) (BACnetNetworkType, error) {
-	val, err := io.ReadUint8(4)
+func BACnetNetworkTypeParse(io utils.ReadBuffer) (BACnetNetworkType, error) {
+	val, err := io.ReadUint8("BACnetNetworkType", 4)
 	if err != nil {
 		return 0, nil
 	}
@@ -129,10 +151,11 @@ func BACnetNetworkTypeParse(io *utils.ReadBuffer) (BACnetNetworkType, error) {
 }
 
 func (e BACnetNetworkType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("BACnetNetworkType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNetworkType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -152,7 +175,15 @@ func (m *BACnetNetworkType) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
-func (e BACnetNetworkType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m BACnetNetworkType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e BACnetNetworkType) name() string {
 	switch e {
 	case BACnetNetworkType_ETHERNET:
 		return "ETHERNET"
@@ -178,4 +209,17 @@ func (e BACnetNetworkType) String() string {
 		return "SERIAL"
 	}
 	return ""
+}
+
+func (e BACnetNetworkType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m BACnetNetworkType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNetworkType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

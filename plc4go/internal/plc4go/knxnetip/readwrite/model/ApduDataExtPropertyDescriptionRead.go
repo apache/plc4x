@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *ApduDataExtPropertyDescriptionRead) GetTypeName() string {
 }
 
 func (m *ApduDataExtPropertyDescriptionRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtPropertyDescriptionRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -107,24 +112,31 @@ func (m *ApduDataExtPropertyDescriptionRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyDescriptionReadParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyDescriptionReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExtPropertyDescriptionRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint8(8)
+	index, _indexErr := io.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
+	}
+
+	if closeErr := io.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -140,40 +152,49 @@ func ApduDataExtPropertyDescriptionReadParse(io *utils.ReadBuffer) (*ApduDataExt
 
 func (m *ApduDataExtPropertyDescriptionRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataExtPropertyDescriptionRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.Index)
-		_indexErr := io.WriteUint8(8, (index))
+		_indexErr := io.WriteUint8("index", 8, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
+		if popErr := io.PopContext("ApduDataExtPropertyDescriptionRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectIndex":
@@ -198,7 +219,7 @@ func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -206,6 +227,7 @@ func (m *ApduDataExtPropertyDescriptionRead) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtPropertyDescriptionRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectIndex, xml.StartElement{Name: xml.Name{Local: "objectIndex"}}); err != nil {
 		return err
@@ -220,16 +242,27 @@ func (m *ApduDataExtPropertyDescriptionRead) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m ApduDataExtPropertyDescriptionRead) String() string {
-	return string(m.Box("ApduDataExtPropertyDescriptionRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtPropertyDescriptionRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtPropertyDescriptionRead"
+	boxName := "ApduDataExtPropertyDescriptionRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
-	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Index", m.Index, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

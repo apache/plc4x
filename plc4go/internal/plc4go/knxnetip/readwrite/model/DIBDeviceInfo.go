@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -73,6 +74,10 @@ func (m *DIBDeviceInfo) GetTypeName() string {
 }
 
 func (m *DIBDeviceInfo) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DIBDeviceInfo) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -116,19 +121,26 @@ func (m *DIBDeviceInfo) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
+func DIBDeviceInfoParse(io utils.ReadBuffer) (*DIBDeviceInfo, error) {
+	if pullErr := io.PullContext("DIBDeviceInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType, _descriptionTypeErr := io.ReadUint8(8)
+	descriptionType, _descriptionTypeErr := io.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field")
+	}
+
+	if pullErr := io.PullContext("knxMedium"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (knxMedium)
@@ -136,11 +148,25 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if _knxMediumErr != nil {
 		return nil, errors.Wrap(_knxMediumErr, "Error parsing 'knxMedium' field")
 	}
+	if closeErr := io.CloseContext("knxMedium"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("deviceStatus"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (deviceStatus)
 	deviceStatus, _deviceStatusErr := DeviceStatusParse(io)
 	if _deviceStatusErr != nil {
 		return nil, errors.Wrap(_deviceStatusErr, "Error parsing 'deviceStatus' field")
+	}
+	if closeErr := io.CloseContext("deviceStatus"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("knxAddress"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (knxAddress)
@@ -148,22 +174,42 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
 	}
+	if closeErr := io.CloseContext("knxAddress"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("projectInstallationIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (projectInstallationIdentifier)
 	projectInstallationIdentifier, _projectInstallationIdentifierErr := ProjectInstallationIdentifierParse(io)
 	if _projectInstallationIdentifierErr != nil {
 		return nil, errors.Wrap(_projectInstallationIdentifierErr, "Error parsing 'projectInstallationIdentifier' field")
 	}
+	if closeErr := io.CloseContext("projectInstallationIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (knxNetIpDeviceSerialNumber)
+	if pullErr := io.PullContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'knxNetIpDeviceSerialNumber' field")
 		}
 		knxNetIpDeviceSerialNumber[curItem] = _item
+	}
+	if closeErr := io.CloseContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("knxNetIpDeviceMulticastAddress"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -171,22 +217,42 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error parsing 'knxNetIpDeviceMulticastAddress' field")
 	}
+	if closeErr := io.CloseContext("knxNetIpDeviceMulticastAddress"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("knxNetIpDeviceMacAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
 	knxNetIpDeviceMacAddress, _knxNetIpDeviceMacAddressErr := MACAddressParse(io)
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return nil, errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error parsing 'knxNetIpDeviceMacAddress' field")
 	}
+	if closeErr := io.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (deviceFriendlyName)
+	if pullErr := io.PullContext("deviceFriendlyName", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceFriendlyName := make([]int8, uint16(30))
 	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceFriendlyName' field")
 		}
 		deviceFriendlyName[curItem] = _item
+	}
+	if closeErr := io.CloseContext("deviceFriendlyName", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("DIBDeviceInfo"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -194,93 +260,150 @@ func DIBDeviceInfoParse(io *utils.ReadBuffer) (*DIBDeviceInfo, error) {
 }
 
 func (m *DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("DIBDeviceInfo"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.DescriptionType)
-	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
+	_descriptionTypeErr := io.WriteUint8("descriptionType", 8, (descriptionType))
 	if _descriptionTypeErr != nil {
 		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}
 
 	// Simple Field (knxMedium)
+	if pushErr := io.PushContext("knxMedium"); pushErr != nil {
+		return pushErr
+	}
 	_knxMediumErr := m.KnxMedium.Serialize(io)
+	if popErr := io.PopContext("knxMedium"); popErr != nil {
+		return popErr
+	}
 	if _knxMediumErr != nil {
 		return errors.Wrap(_knxMediumErr, "Error serializing 'knxMedium' field")
 	}
 
 	// Simple Field (deviceStatus)
+	if pushErr := io.PushContext("deviceStatus"); pushErr != nil {
+		return pushErr
+	}
 	_deviceStatusErr := m.DeviceStatus.Serialize(io)
+	if popErr := io.PopContext("deviceStatus"); popErr != nil {
+		return popErr
+	}
 	if _deviceStatusErr != nil {
 		return errors.Wrap(_deviceStatusErr, "Error serializing 'deviceStatus' field")
 	}
 
 	// Simple Field (knxAddress)
+	if pushErr := io.PushContext("knxAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxAddressErr := m.KnxAddress.Serialize(io)
+	if popErr := io.PopContext("knxAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxAddressErr != nil {
 		return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 	}
 
 	// Simple Field (projectInstallationIdentifier)
+	if pushErr := io.PushContext("projectInstallationIdentifier"); pushErr != nil {
+		return pushErr
+	}
 	_projectInstallationIdentifierErr := m.ProjectInstallationIdentifier.Serialize(io)
+	if popErr := io.PopContext("projectInstallationIdentifier"); popErr != nil {
+		return popErr
+	}
 	if _projectInstallationIdentifierErr != nil {
 		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
 	}
 
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.KnxNetIpDeviceSerialNumber != nil {
+		if pushErr := io.PushContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.KnxNetIpDeviceSerialNumber {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 			}
 		}
+		if popErr := io.PopContext("knxNetIpDeviceSerialNumber", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
+	if pushErr := io.PushContext("knxNetIpDeviceMulticastAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxNetIpDeviceMulticastAddressErr := m.KnxNetIpDeviceMulticastAddress.Serialize(io)
+	if popErr := io.PopContext("knxNetIpDeviceMulticastAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxNetIpDeviceMulticastAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMulticastAddressErr, "Error serializing 'knxNetIpDeviceMulticastAddress' field")
 	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
+	if pushErr := io.PushContext("knxNetIpDeviceMacAddress"); pushErr != nil {
+		return pushErr
+	}
 	_knxNetIpDeviceMacAddressErr := m.KnxNetIpDeviceMacAddress.Serialize(io)
+	if popErr := io.PopContext("knxNetIpDeviceMacAddress"); popErr != nil {
+		return popErr
+	}
 	if _knxNetIpDeviceMacAddressErr != nil {
 		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}
 
 	// Array Field (deviceFriendlyName)
 	if m.DeviceFriendlyName != nil {
+		if pushErr := io.PushContext("deviceFriendlyName", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.DeviceFriendlyName {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'deviceFriendlyName' field")
 			}
 		}
+		if popErr := io.PopContext("deviceFriendlyName", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
+	if popErr := io.PopContext("DIBDeviceInfo"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "descriptionType":
@@ -352,6 +475,7 @@ func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -397,22 +521,52 @@ func (m *DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m DIBDeviceInfo) String() string {
-	return string(m.Box("DIBDeviceInfo", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DIBDeviceInfo) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DIBDeviceInfo"
+	boxName := "DIBDeviceInfo"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxMedium", m.KnxMedium, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceStatus", m.DeviceStatus, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("ProjectInstallationIdentifier", m.ProjectInstallationIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceSerialNumber", m.KnxNetIpDeviceSerialNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMulticastAddress", m.KnxNetIpDeviceMulticastAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("KnxNetIpDeviceMacAddress", m.KnxNetIpDeviceMacAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceFriendlyName", m.DeviceFriendlyName, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("DescriptionType", m.DescriptionType, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.KnxMedium.Box("knxMedium", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.DeviceStatus.Box("deviceStatus", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.ProjectInstallationIdentifier.Box("projectInstallationIdentifier", width-2))
+	// Array Field (knxNetIpDeviceSerialNumber)
+	if m.KnxNetIpDeviceSerialNumber != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.KnxNetIpDeviceSerialNumber {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("KnxNetIpDeviceSerialNumber", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Complex field (case complex)
+	boxes = append(boxes, m.KnxNetIpDeviceMulticastAddress.Box("knxNetIpDeviceMulticastAddress", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.KnxNetIpDeviceMacAddress.Box("knxNetIpDeviceMacAddress", width-2))
+	// Array Field (deviceFriendlyName)
+	if m.DeviceFriendlyName != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.DeviceFriendlyName {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("DeviceFriendlyName", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

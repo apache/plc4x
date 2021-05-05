@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) GetTypeName() string {
 }
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -97,12 +102,19 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (*ServiceId, error) {
+func KnxNetRemoteConfigurationAndDiagnosisParse(io utils.ReadBuffer) (*ServiceId, error) {
+	if pullErr := io.PullContext("KnxNetRemoteConfigurationAndDiagnosis"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
+	}
+
+	if closeErr := io.CloseContext("KnxNetRemoteConfigurationAndDiagnosis"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,26 +128,35 @@ func KnxNetRemoteConfigurationAndDiagnosisParse(io *utils.ReadBuffer) (*ServiceI
 
 func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("KnxNetRemoteConfigurationAndDiagnosis"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (version)
 		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8("version", 8, (version))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
+		if popErr := io.PopContext("KnxNetRemoteConfigurationAndDiagnosis"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "version":
@@ -148,7 +169,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, sta
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -156,6 +177,7 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Version, xml.StartElement{Name: xml.Name{Local: "version"}}); err != nil {
 		return err
@@ -164,14 +186,21 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) MarshalXML(e *xml.Encoder, start
 }
 
 func (m KnxNetRemoteConfigurationAndDiagnosis) String() string {
-	return string(m.Box("KnxNetRemoteConfigurationAndDiagnosis", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxNetRemoteConfigurationAndDiagnosis) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxNetRemoteConfigurationAndDiagnosis"
+	boxName := "KnxNetRemoteConfigurationAndDiagnosis"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Version", m.Version, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Version", m.Version, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

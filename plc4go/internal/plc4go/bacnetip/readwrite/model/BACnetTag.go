@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -24,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -58,6 +60,7 @@ type IBACnetTagChild interface {
 	InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8)
 	GetTypeName() string
 	IBACnetTag
+	utils.AsciiBoxer
 }
 
 func NewBACnetTag(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
@@ -82,6 +85,14 @@ func (m *BACnetTag) GetTypeName() string {
 }
 
 func (m *BACnetTag) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTag) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetTag) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (typeOrTagNumber)
@@ -102,9 +113,6 @@ func (m *BACnetTag) LengthInBits() uint16 {
 		lengthInBits += 8
 	}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
-
 	return lengthInBits
 }
 
@@ -112,22 +120,25 @@ func (m *BACnetTag) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetTagParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	if pullErr := io.PullContext("BACnetTag"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8("typeOrTagNumber", 4)
 	if _typeOrTagNumberErr != nil {
 		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8("contextSpecificTag", 1)
 	if _contextSpecificTagErr != nil {
 		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
@@ -135,7 +146,7 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
@@ -145,7 +156,7 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val, _err := io.ReadUint8(8)
+		_val, _err := io.ReadUint8("extLength", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extLength' field")
 		}
@@ -184,9 +195,16 @@ func BACnetTagParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 		_parent, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
 	case contextSpecificTag == 1: // BACnetTagContext
 		_parent, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("BACnetTag"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -199,17 +217,20 @@ func (m *BACnetTag) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("BACnetTag"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8("typeOrTagNumber", 4, (typeOrTagNumber))
 	if _typeOrTagNumberErr != nil {
 		return errors.Wrap(_typeOrTagNumberErr, "Error serializing 'typeOrTagNumber' field")
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
 	contextSpecificTag := uint8(child.ContextSpecificTag())
-	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8("contextSpecificTag", 1, (contextSpecificTag))
 
 	if _contextSpecificTagErr != nil {
 		return errors.Wrap(_contextSpecificTagErr, "Error serializing 'contextSpecificTag' field")
@@ -217,7 +238,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8("lengthValueType", 3, (lengthValueType))
 	if _lengthValueTypeErr != nil {
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
@@ -226,7 +247,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 	var extTagNumber *uint8 = nil
 	if m.ExtTagNumber != nil {
 		extTagNumber = m.ExtTagNumber
-		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
+		_extTagNumberErr := io.WriteUint8("extTagNumber", 8, *(extTagNumber))
 		if _extTagNumberErr != nil {
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
@@ -236,7 +257,7 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 	var extLength *uint8 = nil
 	if m.ExtLength != nil {
 		extLength = m.ExtLength
-		_extLengthErr := io.WriteUint8(8, *(extLength))
+		_extLengthErr := io.WriteUint8("extLength", 8, *(extLength))
 		if _extLengthErr != nil {
 			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
@@ -248,22 +269,81 @@ func (m *BACnetTag) SerializeParent(io utils.WriteBuffer, child IBACnetTag, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("BACnetTag"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetTagApplicationNull needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationNull{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationBoolean needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationBoolean{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationOctetString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationOctetString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationCharacterString needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationCharacterString{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationDate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationDate{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationTime needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationTime{
+					Parent: m,
+				}
+			}
+		// BACnetTagApplicationObjectIdentifier needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
+			if m.Child == nil {
+				m.Child = &BACnetTagApplicationObjectIdentifier{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "typeOrTagNumber":
@@ -279,17 +359,33 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				}
 				m.LengthValueType = data
 			case "extTagNumber":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtTagNumber = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtTagNumber = &data
+				}
 			case "extLength":
-				var data uint8
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.ExtLength = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint8(atoi)
+					m.ExtLength = &data
+				}
 			default:
 				attr := start.Attr
 				if attr == nil || len(attr) <= 0 {
@@ -474,6 +570,7 @@ func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -508,18 +605,46 @@ func (m *BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m BACnetTag) String() string {
-	return string(m.Box("BACnetTag", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m BACnetTag) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTag"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BACnetTag) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BACnetTag) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BACnetTag"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtTagNumber", m.ExtTagNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtLength", m.ExtLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TypeOrTagNumber", m.TypeOrTagNumber, -1))
+	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
+	contextSpecificTag := uint8(m.Child.ContextSpecificTag())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ContextSpecificTag", contextSpecificTag, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("LengthValueType", m.LengthValueType, -1))
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.ExtTagNumber != nil {
+		extTagNumber = m.ExtTagNumber
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtTagNumber", *(extTagNumber), -1))
+	}
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.ExtLength != nil {
+		extLength = m.ExtLength
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtLength", *(extLength), -1))
+	}
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

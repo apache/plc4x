@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type DeviceDescriptorMediumType uint8
 
 type IDeviceDescriptorMediumType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -40,6 +44,19 @@ const (
 	DeviceDescriptorMediumType_PL132  DeviceDescriptorMediumType = 0x4
 	DeviceDescriptorMediumType_KNX_IP DeviceDescriptorMediumType = 0x5
 )
+
+var DeviceDescriptorMediumTypeValues []DeviceDescriptorMediumType
+
+func init() {
+	DeviceDescriptorMediumTypeValues = []DeviceDescriptorMediumType{
+		DeviceDescriptorMediumType_TP1,
+		DeviceDescriptorMediumType_PL110,
+		DeviceDescriptorMediumType_RF,
+		DeviceDescriptorMediumType_TP0,
+		DeviceDescriptorMediumType_PL132,
+		DeviceDescriptorMediumType_KNX_IP,
+	}
+}
 
 func DeviceDescriptorMediumTypeByValue(value uint8) DeviceDescriptorMediumType {
 	switch value {
@@ -95,8 +112,8 @@ func (m DeviceDescriptorMediumType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceDescriptorMediumTypeParse(io *utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
-	val, err := io.ReadUint8(4)
+func DeviceDescriptorMediumTypeParse(io utils.ReadBuffer) (DeviceDescriptorMediumType, error) {
+	val, err := io.ReadUint8("DeviceDescriptorMediumType", 4)
 	if err != nil {
 		return 0, nil
 	}
@@ -104,10 +121,11 @@ func DeviceDescriptorMediumTypeParse(io *utils.ReadBuffer) (DeviceDescriptorMedi
 }
 
 func (e DeviceDescriptorMediumType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("DeviceDescriptorMediumType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceDescriptorMediumType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -127,7 +145,15 @@ func (m *DeviceDescriptorMediumType) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
-func (e DeviceDescriptorMediumType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m DeviceDescriptorMediumType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e DeviceDescriptorMediumType) name() string {
 	switch e {
 	case DeviceDescriptorMediumType_TP1:
 		return "TP1"
@@ -143,4 +169,17 @@ func (e DeviceDescriptorMediumType) String() string {
 		return "KNX_IP"
 	}
 	return ""
+}
+
+func (e DeviceDescriptorMediumType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m DeviceDescriptorMediumType) Box(s string, i int) utils.AsciiBox {
+	boxName := "DeviceDescriptorMediumType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

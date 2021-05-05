@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -66,6 +67,10 @@ func (m *ModbusPDUReadFileRecordRequestItem) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadFileRecordRequestItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (referenceType)
@@ -87,30 +92,37 @@ func (m *ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
+func ModbusPDUReadFileRecordRequestItemParse(io utils.ReadBuffer) (*ModbusPDUReadFileRecordRequestItem, error) {
+	if pullErr := io.PullContext("ModbusPDUReadFileRecordRequestItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (referenceType)
-	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
-	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	fileNumber, _fileNumberErr := io.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
-	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	recordNumber, _recordNumberErr := io.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
-	recordLength, _recordLengthErr := io.ReadUint16(16)
+	recordLength, _recordLengthErr := io.ReadUint16("recordLength", 16)
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUReadFileRecordRequestItem"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -118,51 +130,60 @@ func ModbusPDUReadFileRecordRequestItemParse(io *utils.ReadBuffer) (*ModbusPDURe
 }
 
 func (m *ModbusPDUReadFileRecordRequestItem) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("ModbusPDUReadFileRecordRequestItem"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
-	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8("referenceType", 8, (referenceType))
 	if _referenceTypeErr != nil {
 		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.FileNumber)
-	_fileNumberErr := io.WriteUint16(16, (fileNumber))
+	_fileNumberErr := io.WriteUint16("fileNumber", 16, (fileNumber))
 	if _fileNumberErr != nil {
 		return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.RecordNumber)
-	_recordNumberErr := io.WriteUint16(16, (recordNumber))
+	_recordNumberErr := io.WriteUint16("recordNumber", 16, (recordNumber))
 	if _recordNumberErr != nil {
 		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
 	recordLength := uint16(m.RecordLength)
-	_recordLengthErr := io.WriteUint16(16, (recordLength))
+	_recordLengthErr := io.WriteUint16("recordLength", 16, (recordLength))
 	if _recordLengthErr != nil {
 		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}
 
+	if popErr := io.PopContext("ModbusPDUReadFileRecordRequestItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "referenceType":
@@ -194,6 +215,7 @@ func (m *ModbusPDUReadFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -220,17 +242,27 @@ func (m *ModbusPDUReadFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m ModbusPDUReadFileRecordRequestItem) String() string {
-	return string(m.Box("ModbusPDUReadFileRecordRequestItem", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFileRecordRequestItem) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadFileRecordRequestItem"
+	boxName := "ModbusPDUReadFileRecordRequestItem"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, width-2))
-	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReferenceType", m.ReferenceType, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FileNumber", m.FileNumber, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("RecordNumber", m.RecordNumber, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("RecordLength", m.RecordLength, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

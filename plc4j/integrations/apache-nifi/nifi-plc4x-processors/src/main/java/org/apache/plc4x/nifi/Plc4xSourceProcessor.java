@@ -34,7 +34,6 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 @Tags({"plc4x-source"})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
@@ -45,7 +44,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         // Get an instance of a component able to read from a PLC.
-        try(PlcConnection connection = new PooledPlcDriverManager().getConnection(getConnectionString())) {
+        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
 
             // Prepare the request.
             if (!connection.getMetadata().canRead()) {

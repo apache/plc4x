@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -37,6 +41,16 @@ const (
 	BACnetNotifyType_EVENT            BACnetNotifyType = 0x1
 	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
+
+var BACnetNotifyTypeValues []BACnetNotifyType
+
+func init() {
+	BACnetNotifyTypeValues = []BACnetNotifyType{
+		BACnetNotifyType_ALARM,
+		BACnetNotifyType_EVENT,
+		BACnetNotifyType_ACK_NOTIFICATION,
+	}
+}
 
 func BACnetNotifyTypeByValue(value uint8) BACnetNotifyType {
 	switch value {
@@ -80,8 +94,8 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(io *utils.ReadBuffer) (BACnetNotifyType, error) {
-	val, err := io.ReadUint8(4)
+func BACnetNotifyTypeParse(io utils.ReadBuffer) (BACnetNotifyType, error) {
+	val, err := io.ReadUint8("BACnetNotifyType", 4)
 	if err != nil {
 		return 0, nil
 	}
@@ -89,10 +103,11 @@ func BACnetNotifyTypeParse(io *utils.ReadBuffer) (BACnetNotifyType, error) {
 }
 
 func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("BACnetNotifyType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -112,7 +127,15 @@ func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-func (e BACnetNotifyType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m BACnetNotifyType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e BACnetNotifyType) name() string {
 	switch e {
 	case BACnetNotifyType_ALARM:
 		return "ALARM"
@@ -122,4 +145,17 @@ func (e BACnetNotifyType) String() string {
 		return "ACK_NOTIFICATION"
 	}
 	return ""
+}
+
+func (e BACnetNotifyType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m BACnetNotifyType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNotifyType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

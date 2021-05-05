@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *ApduDataRestart) GetTypeName() string {
 }
 
 func (m *ApduDataRestart) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataRestart) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataRestartParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataRestartParse(io utils.ReadBuffer) (*ApduData, error) {
+	if pullErr := io.PullContext("ApduDataRestart"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataRestart"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataRestart{
@@ -103,26 +115,35 @@ func ApduDataRestartParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataRestart) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataRestart"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("ApduDataRestart"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *ApduDataRestart) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataRestart) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m ApduDataRestart) String() string {
-	return string(m.Box("ApduDataRestart", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataRestart) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataRestart"
+	boxName := "ApduDataRestart"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

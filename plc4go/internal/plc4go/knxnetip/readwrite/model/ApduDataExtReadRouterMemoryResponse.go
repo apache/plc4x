@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *ApduDataExtReadRouterMemoryResponse) GetTypeName() string {
 }
 
 func (m *ApduDataExtReadRouterMemoryResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtReadRouterMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *ApduDataExtReadRouterMemoryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtReadRouterMemoryResponseParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtReadRouterMemoryResponseParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExtReadRouterMemoryResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataExtReadRouterMemoryResponse"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtReadRouterMemoryResponse{
@@ -103,26 +115,35 @@ func ApduDataExtReadRouterMemoryResponseParse(io *utils.ReadBuffer) (*ApduDataEx
 
 func (m *ApduDataExtReadRouterMemoryResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataExtReadRouterMemoryResponse"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("ApduDataExtReadRouterMemoryResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtReadRouterMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *ApduDataExtReadRouterMemoryResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtReadRouterMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m ApduDataExtReadRouterMemoryResponse) String() string {
-	return string(m.Box("ApduDataExtReadRouterMemoryResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtReadRouterMemoryResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtReadRouterMemoryResponse"
+	boxName := "ApduDataExtReadRouterMemoryResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

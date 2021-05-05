@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -91,7 +92,11 @@ func (m *AdsMultiRequestItemReadWrite) GetTypeName() string {
 }
 
 func (m *AdsMultiRequestItemReadWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsMultiRequestItemReadWrite) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32
@@ -112,30 +117,37 @@ func (m *AdsMultiRequestItemReadWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsMultiRequestItemReadWriteParse(io *utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+func AdsMultiRequestItemReadWriteParse(io utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+	if pullErr := io.PullContext("AdsMultiRequestItemReadWrite"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (itemIndexGroup)
-	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32(32)
+	itemIndexGroup, _itemIndexGroupErr := io.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
 		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field")
 	}
 
 	// Simple Field (itemIndexOffset)
-	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32(32)
+	itemIndexOffset, _itemIndexOffsetErr := io.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
 		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field")
 	}
 
 	// Simple Field (itemReadLength)
-	itemReadLength, _itemReadLengthErr := io.ReadUint32(32)
+	itemReadLength, _itemReadLengthErr := io.ReadUint32("itemReadLength", 32)
 	if _itemReadLengthErr != nil {
 		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field")
 	}
 
 	// Simple Field (itemWriteLength)
-	itemWriteLength, _itemWriteLengthErr := io.ReadUint32(32)
+	itemWriteLength, _itemWriteLengthErr := io.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
 		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field")
+	}
+
+	if closeErr := io.CloseContext("AdsMultiRequestItemReadWrite"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -152,47 +164,56 @@ func AdsMultiRequestItemReadWriteParse(io *utils.ReadBuffer) (*AdsMultiRequestIt
 
 func (m *AdsMultiRequestItemReadWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsMultiRequestItemReadWrite"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.ItemIndexGroup)
-		_itemIndexGroupErr := io.WriteUint32(32, (itemIndexGroup))
+		_itemIndexGroupErr := io.WriteUint32("itemIndexGroup", 32, (itemIndexGroup))
 		if _itemIndexGroupErr != nil {
 			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
 		}
 
 		// Simple Field (itemIndexOffset)
 		itemIndexOffset := uint32(m.ItemIndexOffset)
-		_itemIndexOffsetErr := io.WriteUint32(32, (itemIndexOffset))
+		_itemIndexOffsetErr := io.WriteUint32("itemIndexOffset", 32, (itemIndexOffset))
 		if _itemIndexOffsetErr != nil {
 			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
 		}
 
 		// Simple Field (itemReadLength)
 		itemReadLength := uint32(m.ItemReadLength)
-		_itemReadLengthErr := io.WriteUint32(32, (itemReadLength))
+		_itemReadLengthErr := io.WriteUint32("itemReadLength", 32, (itemReadLength))
 		if _itemReadLengthErr != nil {
 			return errors.Wrap(_itemReadLengthErr, "Error serializing 'itemReadLength' field")
 		}
 
 		// Simple Field (itemWriteLength)
 		itemWriteLength := uint32(m.ItemWriteLength)
-		_itemWriteLengthErr := io.WriteUint32(32, (itemWriteLength))
+		_itemWriteLengthErr := io.WriteUint32("itemWriteLength", 32, (itemWriteLength))
 		if _itemWriteLengthErr != nil {
 			return errors.Wrap(_itemWriteLengthErr, "Error serializing 'itemWriteLength' field")
 		}
 
+		if popErr := io.PopContext("AdsMultiRequestItemReadWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsMultiRequestItemReadWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "itemIndexGroup":
@@ -223,7 +244,7 @@ func (m *AdsMultiRequestItemReadWrite) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -231,6 +252,7 @@ func (m *AdsMultiRequestItemReadWrite) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsMultiRequestItemReadWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ItemIndexGroup, xml.StartElement{Name: xml.Name{Local: "itemIndexGroup"}}); err != nil {
 		return err
@@ -248,17 +270,30 @@ func (m *AdsMultiRequestItemReadWrite) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m AdsMultiRequestItemReadWrite) String() string {
-	return string(m.Box("AdsMultiRequestItemReadWrite", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsMultiRequestItemReadWrite) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsMultiRequestItemReadWrite"
+	boxName := "AdsMultiRequestItemReadWrite"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, width-2))
-	boxes = append(boxes, utils.BoxAnything("ItemReadLength", m.ItemReadLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemIndexGroup", m.ItemIndexGroup, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemIndexOffset", m.ItemIndexOffset, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemReadLength", m.ItemReadLength, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ItemWriteLength", m.ItemWriteLength, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

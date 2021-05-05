@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package ads
 
 import (
@@ -38,23 +39,23 @@ func NewDriver() plc4go.PlcDriver {
 	}
 }
 
-func (m Driver) GetProtocolCode() string {
+func (m *Driver) GetProtocolCode() string {
 	return "ads"
 }
 
-func (m Driver) GetProtocolName() string {
+func (m *Driver) GetProtocolName() string {
 	return "Beckhoff TwinCat ADS"
 }
 
-func (m Driver) GetDefaultTransport() string {
+func (m *Driver) GetDefaultTransport() string {
 	panic("implement me")
 }
 
-func (m Driver) CheckQuery(query string) error {
+func (m *Driver) CheckQuery(query string) error {
 	panic("implement me")
 }
 
-func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
@@ -78,11 +79,19 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
-	codec := NewMessageCodec(transportInstance, nil)
+	codec := NewMessageCodec(transportInstance)
 	log.Debug().Msgf("working with codec %#v", codec)
 
+	configuration, err := ParseFromOptions(options)
+	if err != nil {
+		log.Error().Err(err).Msgf("Invalid options")
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
+		return ch
+	}
+
 	// Create the new connection
-	connection, err := NewConnection(codec, options, m.fieldHandler)
+	connection, err := NewConnection(codec, configuration, m.fieldHandler)
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
@@ -94,10 +103,10 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	return connection.Connect()
 }
 
-func (m Driver) Discover(_ func(event model.PlcDiscoveryEvent)) error {
+func (m *Driver) Discover(_ func(event model.PlcDiscoveryEvent)) error {
 	panic("not available")
 }
 
-func (m Driver) SupportsDiscovery() bool {
+func (m *Driver) SupportsDiscovery() bool {
 	return false
 }

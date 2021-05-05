@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -41,6 +43,8 @@ type ITransportSize interface {
 	BaseType() TransportSize
 	DataProtocolId() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -71,6 +75,39 @@ const (
 	TransportSize_DATE_AND_TIME TransportSize = 0x1A
 	TransportSize_DT            TransportSize = 0x1B
 )
+
+var TransportSizeValues []TransportSize
+
+func init() {
+	TransportSizeValues = []TransportSize{
+		TransportSize_BOOL,
+		TransportSize_BYTE,
+		TransportSize_WORD,
+		TransportSize_DWORD,
+		TransportSize_LWORD,
+		TransportSize_INT,
+		TransportSize_UINT,
+		TransportSize_SINT,
+		TransportSize_USINT,
+		TransportSize_DINT,
+		TransportSize_UDINT,
+		TransportSize_LINT,
+		TransportSize_ULINT,
+		TransportSize_REAL,
+		TransportSize_LREAL,
+		TransportSize_CHAR,
+		TransportSize_WCHAR,
+		TransportSize_STRING,
+		TransportSize_WSTRING,
+		TransportSize_TIME,
+		TransportSize_LTIME,
+		TransportSize_DATE,
+		TransportSize_TIME_OF_DAY,
+		TransportSize_TOD,
+		TransportSize_DATE_AND_TIME,
+		TransportSize_DT,
+	}
+}
 
 func (e TransportSize) Supported_S7_300() bool {
 	switch e {
@@ -1448,8 +1485,8 @@ func (m TransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TransportSizeParse(io *utils.ReadBuffer) (TransportSize, error) {
-	val, err := io.ReadInt8(8)
+func TransportSizeParse(io utils.ReadBuffer) (TransportSize, error) {
+	val, err := io.ReadInt8("TransportSize", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -1457,10 +1494,11 @@ func TransportSizeParse(io *utils.ReadBuffer) (TransportSize, error) {
 }
 
 func (e TransportSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("TransportSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1480,7 +1518,15 @@ func (m *TransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
-func (e TransportSize) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m TransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e TransportSize) name() string {
 	switch e {
 	case TransportSize_BOOL:
 		return "BOOL"
@@ -1536,4 +1582,17 @@ func (e TransportSize) String() string {
 		return "DT"
 	}
 	return ""
+}
+
+func (e TransportSize) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m TransportSize) Box(s string, i int) utils.AsciiBox {
+	boxName := "TransportSize"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

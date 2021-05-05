@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -56,6 +57,7 @@ type IModbusPDUChild interface {
 	InitializeParent(parent *ModbusPDU)
 	GetTypeName() string
 	IModbusPDU
+	utils.AsciiBoxer
 }
 
 func NewModbusPDU() *ModbusPDU {
@@ -80,14 +82,19 @@ func (m *ModbusPDU) GetTypeName() string {
 }
 
 func (m *ModbusPDU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDU) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ModbusPDU) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (errorFlag)
 	lengthInBits += 1
 	// Discriminator Field (functionFlag)
 	lengthInBits += 7
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -96,16 +103,19 @@ func (m *ModbusPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+func ModbusPDUParse(io utils.ReadBuffer, response bool) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag, _errorFlagErr := io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag, _functionFlagErr := io.ReadUint8(7)
+	functionFlag, _functionFlagErr := io.ReadUint8("functionFlag", 7)
 	if _functionFlagErr != nil {
 		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field")
 	}
@@ -192,9 +202,16 @@ func ModbusPDUParse(io *utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationRequestParse(io)
 	case errorFlag == false && functionFlag == 0x2B && response == true: // ModbusPDUReadDeviceIdentificationResponse
 		_parent, typeSwitchError = ModbusPDUReadDeviceIdentificationResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDU"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -207,10 +224,13 @@ func (m *ModbusPDU) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("ModbusPDU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.ErrorFlag())
-	_errorFlagErr := io.WriteBit((errorFlag))
+	_errorFlagErr := io.WriteBit("errorFlag", (errorFlag))
 
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
@@ -218,7 +238,7 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.FunctionFlag())
-	_functionFlagErr := io.WriteUint8(7, (functionFlag))
+	_functionFlagErr := io.WriteUint8("functionFlag", 7, (functionFlag))
 
 	if _functionFlagErr != nil {
 		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")
@@ -230,22 +250,74 @@ func (m *ModbusPDU) SerializeParent(io utils.WriteBuffer, child IModbusPDU, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("ModbusPDU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ModbusPDUReadExceptionStatusRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadExceptionStatusRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadExceptionStatusRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUGetComEventCounterRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventCounterRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUGetComEventCounterRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUGetComEventLogRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUGetComEventLogRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReportServerIdRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReportServerIdRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReportServerIdRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReadDeviceIdentificationRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadDeviceIdentificationRequest{
+					Parent: m,
+				}
+			}
+		// ModbusPDUReadDeviceIdentificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse":
+			if m.Child == nil {
+				m.Child = &ModbusPDUReadDeviceIdentificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -732,6 +804,7 @@ func (m *ModbusPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.modbus.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -754,14 +827,30 @@ func (m *ModbusPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m ModbusPDU) String() string {
-	return string(m.Box("ModbusPDU", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m ModbusPDU) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDU"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ModbusPDU) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ModbusPDU) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ModbusPDU"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (errorFlag) (Used as input to a switch field)
+	errorFlag := bool(m.Child.ErrorFlag())
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ErrorFlag", errorFlag, -1))
+	// Discriminator Field (functionFlag) (Used as input to a switch field)
+	functionFlag := uint8(m.Child.FunctionFlag())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FunctionFlag", functionFlag, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

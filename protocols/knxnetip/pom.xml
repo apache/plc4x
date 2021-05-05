@@ -96,9 +96,9 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>9.1.0.8</version>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>10.5</version>
           </dependency>
         </dependencies>
       </plugin>

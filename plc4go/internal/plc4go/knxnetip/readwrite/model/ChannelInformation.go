@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -64,6 +65,10 @@ func (m *ChannelInformation) GetTypeName() string {
 }
 
 func (m *ChannelInformation) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ChannelInformation) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (numChannels)
@@ -79,18 +84,25 @@ func (m *ChannelInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ChannelInformationParse(io *utils.ReadBuffer) (*ChannelInformation, error) {
+func ChannelInformationParse(io utils.ReadBuffer) (*ChannelInformation, error) {
+	if pullErr := io.PullContext("ChannelInformation"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numChannels)
-	numChannels, _numChannelsErr := io.ReadUint8(3)
+	numChannels, _numChannelsErr := io.ReadUint8("numChannels", 3)
 	if _numChannelsErr != nil {
 		return nil, errors.Wrap(_numChannelsErr, "Error parsing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
-	channelCode, _channelCodeErr := io.ReadUint16(13)
+	channelCode, _channelCodeErr := io.ReadUint16("channelCode", 13)
 	if _channelCodeErr != nil {
 		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field")
+	}
+
+	if closeErr := io.CloseContext("ChannelInformation"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -98,37 +110,46 @@ func ChannelInformationParse(io *utils.ReadBuffer) (*ChannelInformation, error) 
 }
 
 func (m *ChannelInformation) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("ChannelInformation"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (numChannels)
 	numChannels := uint8(m.NumChannels)
-	_numChannelsErr := io.WriteUint8(3, (numChannels))
+	_numChannelsErr := io.WriteUint8("numChannels", 3, (numChannels))
 	if _numChannelsErr != nil {
 		return errors.Wrap(_numChannelsErr, "Error serializing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
 	channelCode := uint16(m.ChannelCode)
-	_channelCodeErr := io.WriteUint16(13, (channelCode))
+	_channelCodeErr := io.WriteUint16("channelCode", 13, (channelCode))
 	if _channelCodeErr != nil {
 		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}
 
+	if popErr := io.PopContext("ChannelInformation"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ChannelInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "numChannels":
@@ -148,6 +169,7 @@ func (m *ChannelInformation) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ChannelInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.ChannelInformation"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -168,15 +190,21 @@ func (m *ChannelInformation) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m ChannelInformation) String() string {
-	return string(m.Box("ChannelInformation", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ChannelInformation) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ChannelInformation"
+	boxName := "ChannelInformation"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NumChannels", m.NumChannels, width-2))
-	boxes = append(boxes, utils.BoxAnything("ChannelCode", m.ChannelCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NumChannels", m.NumChannels, -1))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ChannelCode", m.ChannelCode, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

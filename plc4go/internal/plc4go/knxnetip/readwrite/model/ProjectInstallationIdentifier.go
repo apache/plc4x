@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -64,6 +65,10 @@ func (m *ProjectInstallationIdentifier) GetTypeName() string {
 }
 
 func (m *ProjectInstallationIdentifier) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ProjectInstallationIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (projectNumber)
@@ -79,18 +84,25 @@ func (m *ProjectInstallationIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
+func ProjectInstallationIdentifierParse(io utils.ReadBuffer) (*ProjectInstallationIdentifier, error) {
+	if pullErr := io.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (projectNumber)
-	projectNumber, _projectNumberErr := io.ReadUint8(8)
+	projectNumber, _projectNumberErr := io.ReadUint8("projectNumber", 8)
 	if _projectNumberErr != nil {
 		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
-	installationNumber, _installationNumberErr := io.ReadUint8(8)
+	installationNumber, _installationNumberErr := io.ReadUint8("installationNumber", 8)
 	if _installationNumberErr != nil {
 		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field")
+	}
+
+	if closeErr := io.CloseContext("ProjectInstallationIdentifier"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -98,37 +110,46 @@ func ProjectInstallationIdentifierParse(io *utils.ReadBuffer) (*ProjectInstallat
 }
 
 func (m *ProjectInstallationIdentifier) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("ProjectInstallationIdentifier"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.ProjectNumber)
-	_projectNumberErr := io.WriteUint8(8, (projectNumber))
+	_projectNumberErr := io.WriteUint8("projectNumber", 8, (projectNumber))
 	if _projectNumberErr != nil {
 		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.InstallationNumber)
-	_installationNumberErr := io.WriteUint8(8, (installationNumber))
+	_installationNumberErr := io.WriteUint8("installationNumber", 8, (installationNumber))
 	if _installationNumberErr != nil {
 		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}
 
+	if popErr := io.PopContext("ProjectInstallationIdentifier"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "projectNumber":
@@ -148,6 +169,7 @@ func (m *ProjectInstallationIdentifier) UnmarshalXML(d *xml.Decoder, start xml.S
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -168,15 +190,21 @@ func (m *ProjectInstallationIdentifier) MarshalXML(e *xml.Encoder, start xml.Sta
 }
 
 func (m ProjectInstallationIdentifier) String() string {
-	return string(m.Box("ProjectInstallationIdentifier", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ProjectInstallationIdentifier) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ProjectInstallationIdentifier"
+	boxName := "ProjectInstallationIdentifier"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ProjectNumber", m.ProjectNumber, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InstallationNumber", m.InstallationNumber, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

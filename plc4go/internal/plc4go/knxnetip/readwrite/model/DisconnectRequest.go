@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -88,7 +89,11 @@ func (m *DisconnectRequest) GetTypeName() string {
 }
 
 func (m *DisconnectRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DisconnectRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -106,17 +111,20 @@ func (m *DisconnectRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DisconnectRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DisconnectRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("DisconnectRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -128,10 +136,21 @@ func DisconnectRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		}
 	}
 
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+	}
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("DisconnectRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -146,40 +165,55 @@ func DisconnectRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DisconnectRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("DisconnectRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
-		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8("communicationChannelId", 8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (hpaiControlEndpoint)
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
+		if popErr := io.PopContext("DisconnectRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":
@@ -198,7 +232,7 @@ func (m *DisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -206,6 +240,7 @@ func (m *DisconnectRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
 		return err
@@ -217,15 +252,26 @@ func (m *DisconnectRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m DisconnectRequest) String() string {
-	return string(m.Box("DisconnectRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DisconnectRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DisconnectRequest"
+	boxName := "DisconnectRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
-	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiControlEndpoint.Box("hpaiControlEndpoint", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

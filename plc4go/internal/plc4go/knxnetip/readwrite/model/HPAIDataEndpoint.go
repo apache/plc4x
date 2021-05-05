@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -65,6 +66,10 @@ func (m *HPAIDataEndpoint) GetTypeName() string {
 }
 
 func (m *HPAIDataEndpoint) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *HPAIDataEndpoint) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (structureLength)
@@ -86,13 +91,20 @@ func (m *HPAIDataEndpoint) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HPAIDataEndpointParse(io *utils.ReadBuffer) (*HPAIDataEndpoint, error) {
+func HPAIDataEndpointParse(io utils.ReadBuffer) (*HPAIDataEndpoint, error) {
+	if pullErr := io.PullContext("HPAIDataEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := io.ReadUint8(8)
+	structureLength, _structureLengthErr := io.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
+	}
+
+	if pullErr := io.PullContext("hostProtocolCode"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (hostProtocolCode)
@@ -100,17 +112,31 @@ func HPAIDataEndpointParse(io *utils.ReadBuffer) (*HPAIDataEndpoint, error) {
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field")
 	}
+	if closeErr := io.CloseContext("hostProtocolCode"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("ipAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (ipAddress)
 	ipAddress, _ipAddressErr := IPAddressParse(io)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")
 	}
+	if closeErr := io.CloseContext("ipAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (ipPort)
-	ipPort, _ipPortErr := io.ReadUint16(16)
+	ipPort, _ipPortErr := io.ReadUint16("ipPort", 16)
 	if _ipPortErr != nil {
 		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field")
+	}
+
+	if closeErr := io.CloseContext("HPAIDataEndpoint"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -118,49 +144,70 @@ func HPAIDataEndpointParse(io *utils.ReadBuffer) (*HPAIDataEndpoint, error) {
 }
 
 func (m *HPAIDataEndpoint) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("HPAIDataEndpoint"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8("structureLength", 8, (structureLength))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (hostProtocolCode)
+	if pushErr := io.PushContext("hostProtocolCode"); pushErr != nil {
+		return pushErr
+	}
 	_hostProtocolCodeErr := m.HostProtocolCode.Serialize(io)
+	if popErr := io.PopContext("hostProtocolCode"); popErr != nil {
+		return popErr
+	}
 	if _hostProtocolCodeErr != nil {
 		return errors.Wrap(_hostProtocolCodeErr, "Error serializing 'hostProtocolCode' field")
 	}
 
 	// Simple Field (ipAddress)
+	if pushErr := io.PushContext("ipAddress"); pushErr != nil {
+		return pushErr
+	}
 	_ipAddressErr := m.IpAddress.Serialize(io)
+	if popErr := io.PopContext("ipAddress"); popErr != nil {
+		return popErr
+	}
 	if _ipAddressErr != nil {
 		return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
 	}
 
 	// Simple Field (ipPort)
 	ipPort := uint16(m.IpPort)
-	_ipPortErr := io.WriteUint16(16, (ipPort))
+	_ipPortErr := io.WriteUint16("ipPort", 16, (ipPort))
 	if _ipPortErr != nil {
 		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
 	}
 
+	if popErr := io.PopContext("HPAIDataEndpoint"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *HPAIDataEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hostProtocolCode":
@@ -186,6 +233,7 @@ func (m *HPAIDataEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *HPAIDataEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -209,16 +257,26 @@ func (m *HPAIDataEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (m HPAIDataEndpoint) String() string {
-	return string(m.Box("HPAIDataEndpoint", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m HPAIDataEndpoint) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "HPAIDataEndpoint"
+	boxName := "HPAIDataEndpoint"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("HostProtocolCode", m.HostProtocolCode, width-2))
-	boxes = append(boxes, utils.BoxAnything("IpAddress", m.IpAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Implicit Field (structureLength)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("StructureLength", structureLength, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.HostProtocolCode.Box("hostProtocolCode", width-2))
+	// Complex field (case complex)
+	boxes = append(boxes, m.IpAddress.Box("ipAddress", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("IpPort", m.IpPort, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -63,6 +64,10 @@ func (m *S7VarPayloadStatusItem) GetTypeName() string {
 }
 
 func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Enum Field (returnCode)
@@ -75,12 +80,25 @@ func (m *S7VarPayloadStatusItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
+func S7VarPayloadStatusItemParse(io utils.ReadBuffer) (*S7VarPayloadStatusItem, error) {
+	if pullErr := io.PullContext("S7VarPayloadStatusItem"); pullErr != nil {
+		return nil, pullErr
+	}
 
+	if pullErr := io.PullContext("returnCode"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
+	}
+	if closeErr := io.CloseContext("returnCode"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("S7VarPayloadStatusItem"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -88,30 +106,45 @@ func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (*S7VarPayloadStatusItem,
 }
 
 func (m *S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("S7VarPayloadStatusItem"); pushErr != nil {
+		return pushErr
+	}
 
+	if pushErr := io.PushContext("returnCode"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
+	if popErr := io.PopContext("returnCode"); popErr != nil {
+		return popErr
+	}
 
+	if popErr := io.PopContext("S7VarPayloadStatusItem"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "returnCode":
@@ -125,6 +158,7 @@ func (m *S7VarPayloadStatusItem) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -142,14 +176,18 @@ func (m *S7VarPayloadStatusItem) MarshalXML(e *xml.Encoder, start xml.StartEleme
 }
 
 func (m S7VarPayloadStatusItem) String() string {
-	return string(m.Box("S7VarPayloadStatusItem", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7VarPayloadStatusItem) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7VarPayloadStatusItem"
+	boxName := "S7VarPayloadStatusItem"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReturnCode", m.ReturnCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Enum field (returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
+	boxes = append(boxes, returnCode.Box("returnCode", -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

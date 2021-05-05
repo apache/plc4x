@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package knxnetip
 
 import (
@@ -24,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
@@ -78,7 +80,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 
 	// Create the new connection
 	connection := NewConnection(transportInstance, options, m.fieldHandler)
-
+	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 

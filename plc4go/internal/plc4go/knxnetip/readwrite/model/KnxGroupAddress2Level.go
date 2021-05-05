@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -87,7 +88,11 @@ func (m *KnxGroupAddress2Level) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress2Level) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddress2Level) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -102,18 +107,25 @@ func (m *KnxGroupAddress2Level) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddress2LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddress2LevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
+	if pullErr := io.PullContext("KnxGroupAddress2Level"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(5)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(11)
+	subGroup, _subGroupErr := io.ReadUint16("subGroup", 11)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
+	}
+
+	if closeErr := io.CloseContext("KnxGroupAddress2Level"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -128,33 +140,42 @@ func KnxGroupAddress2LevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) 
 
 func (m *KnxGroupAddress2Level) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("KnxGroupAddress2Level"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
-		_mainGroupErr := io.WriteUint8(5, (mainGroup))
+		_mainGroupErr := io.WriteUint8("mainGroup", 5, (mainGroup))
 		if _mainGroupErr != nil {
 			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(11, (subGroup))
+		_subGroupErr := io.WriteUint16("subGroup", 11, (subGroup))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
+		if popErr := io.PopContext("KnxGroupAddress2Level"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddress2Level) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "mainGroup":
@@ -173,7 +194,7 @@ func (m *KnxGroupAddress2Level) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -181,6 +202,7 @@ func (m *KnxGroupAddress2Level) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddress2Level) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.MainGroup, xml.StartElement{Name: xml.Name{Local: "mainGroup"}}); err != nil {
 		return err
@@ -192,15 +214,24 @@ func (m *KnxGroupAddress2Level) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m KnxGroupAddress2Level) String() string {
-	return string(m.Box("KnxGroupAddress2Level", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxGroupAddress2Level) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxGroupAddress2Level"
+	boxName := "KnxGroupAddress2Level"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

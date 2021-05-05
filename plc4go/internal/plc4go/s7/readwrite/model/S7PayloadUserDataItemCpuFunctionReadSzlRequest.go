@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetTypeName() string {
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -95,7 +100,14 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+	if pullErr := io.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
@@ -107,26 +119,35 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -134,18 +155,24 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) UnmarshalXML(d *xml.Dec
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
-	return string(m.Box("S7PayloadUserDataItemCpuFunctionReadSzlRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
+	boxName := "S7PayloadUserDataItemCpuFunctionReadSzlRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

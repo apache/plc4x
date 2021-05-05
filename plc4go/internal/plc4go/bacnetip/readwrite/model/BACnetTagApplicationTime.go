@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *BACnetTagApplicationTime) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationTime) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationTime) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -95,7 +100,14 @@ func (m *BACnetTagApplicationTime) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationTimeParse(io *utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetTagApplicationTimeParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	if pullErr := io.PullContext("BACnetTagApplicationTime"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetTagApplicationTime"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationTime{
@@ -107,26 +119,35 @@ func BACnetTagApplicationTimeParse(io *utils.ReadBuffer) (*BACnetTag, error) {
 
 func (m *BACnetTagApplicationTime) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetTagApplicationTime"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetTagApplicationTime"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -134,18 +155,24 @@ func (m *BACnetTagApplicationTime) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationTime) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetTagApplicationTime) String() string {
-	return string(m.Box("BACnetTagApplicationTime", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationTime) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagApplicationTime"
+	boxName := "BACnetTagApplicationTime"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

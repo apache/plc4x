@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,6 +34,8 @@ type IKnxInterfaceObjectType interface {
 	Code() string
 	Name() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -61,6 +65,38 @@ const (
 	KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC        KnxInterfaceObjectType = 23
 	KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC          KnxInterfaceObjectType = 24
 )
+
+var KnxInterfaceObjectTypeValues []KnxInterfaceObjectType
+
+func init() {
+	KnxInterfaceObjectTypeValues = []KnxInterfaceObjectType{
+		KnxInterfaceObjectType_OT_UNKNOWN,
+		KnxInterfaceObjectType_OT_GENERAL,
+		KnxInterfaceObjectType_OT_DEVICE,
+		KnxInterfaceObjectType_OT_ADDRESS_TABLE,
+		KnxInterfaceObjectType_OT_ASSOCIATION_TABLE,
+		KnxInterfaceObjectType_OT_APPLICATION_PROGRAM,
+		KnxInterfaceObjectType_OT_INTERACE_PROGRAM,
+		KnxInterfaceObjectType_OT_EIBOBJECT_ASSOCIATATION_TABLE,
+		KnxInterfaceObjectType_OT_ROUTER,
+		KnxInterfaceObjectType_OT_LTE_ADDRESS_ROUTING_TABLE,
+		KnxInterfaceObjectType_OT_CEMI_SERVER,
+		KnxInterfaceObjectType_OT_GROUP_OBJECT_TABLE,
+		KnxInterfaceObjectType_OT_POLLING_MASTER,
+		KnxInterfaceObjectType_OT_KNXIP_PARAMETER,
+		KnxInterfaceObjectType_OT_FILE_SERVER,
+		KnxInterfaceObjectType_OT_SECURITY,
+		KnxInterfaceObjectType_OT_RF_MEDIUM,
+		KnxInterfaceObjectType_OT_INDOOR_BRIGHTNESS_SENSOR,
+		KnxInterfaceObjectType_OT_INDOOR_LUMINANCE_SENSOR,
+		KnxInterfaceObjectType_OT_LIGHT_SWITCHING_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_DIMMING_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_DIMMING_SENSOR_BASIC,
+		KnxInterfaceObjectType_OT_SWITCHING_SENSOR_BASIC,
+		KnxInterfaceObjectType_OT_SUNBLIND_ACTUATOR_BASIC,
+		KnxInterfaceObjectType_OT_SUNBLIND_SENSOR_BASIC,
+	}
+}
 
 func (e KnxInterfaceObjectType) Code() string {
 	switch e {
@@ -409,8 +445,8 @@ func (m KnxInterfaceObjectType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxInterfaceObjectTypeParse(io *utils.ReadBuffer) (KnxInterfaceObjectType, error) {
-	val, err := io.ReadUint16(16)
+func KnxInterfaceObjectTypeParse(io utils.ReadBuffer) (KnxInterfaceObjectType, error) {
+	val, err := io.ReadUint16("KnxInterfaceObjectType", 16)
 	if err != nil {
 		return 0, nil
 	}
@@ -418,10 +454,11 @@ func KnxInterfaceObjectTypeParse(io *utils.ReadBuffer) (KnxInterfaceObjectType, 
 }
 
 func (e KnxInterfaceObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(16, uint16(e))
+	err := io.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxInterfaceObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -441,7 +478,15 @@ func (m *KnxInterfaceObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
-func (e KnxInterfaceObjectType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m KnxInterfaceObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e KnxInterfaceObjectType) name() string {
 	switch e {
 	case KnxInterfaceObjectType_OT_UNKNOWN:
 		return "OT_UNKNOWN"
@@ -495,4 +540,17 @@ func (e KnxInterfaceObjectType) String() string {
 		return "OT_LTE_ADDRESS_ROUTING_TABLE"
 	}
 	return ""
+}
+
+func (e KnxInterfaceObjectType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m KnxInterfaceObjectType) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxInterfaceObjectType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *COTPParameterChecksum) GetTypeName() string {
 }
 
 func (m *COTPParameterChecksum) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterChecksum) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -97,12 +102,19 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterChecksumParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	if pullErr := io.PullContext("COTPParameterChecksum"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (crc)
-	crc, _crcErr := io.ReadUint8(8)
+	crc, _crcErr := io.ReadUint8("crc", 8)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+	}
+
+	if closeErr := io.CloseContext("COTPParameterChecksum"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,26 +128,35 @@ func COTPParameterChecksumParse(io *utils.ReadBuffer) (*COTPParameter, error) {
 
 func (m *COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("COTPParameterChecksum"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
-		_crcErr := io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8("crc", 8, (crc))
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
+		if popErr := io.PopContext("COTPParameterChecksum"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "crc":
@@ -148,7 +169,7 @@ func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -156,6 +177,7 @@ func (m *COTPParameterChecksum) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Crc, xml.StartElement{Name: xml.Name{Local: "crc"}}); err != nil {
 		return err
@@ -164,14 +186,21 @@ func (m *COTPParameterChecksum) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m COTPParameterChecksum) String() string {
-	return string(m.Box("COTPParameterChecksum", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterChecksum) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPParameterChecksum"
+	boxName := "COTPParameterChecksum"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

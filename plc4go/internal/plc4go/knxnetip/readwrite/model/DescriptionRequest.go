@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *DescriptionRequest) GetTypeName() string {
 }
 
 func (m *DescriptionRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DescriptionRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (hpaiControlEndpoint)
 	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
@@ -97,12 +102,26 @@ func (m *DescriptionRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DescriptionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func DescriptionRequestParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("DescriptionRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("hpaiControlEndpoint"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (hpaiControlEndpoint)
 	hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParse(io)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field")
+	}
+	if closeErr := io.CloseContext("hpaiControlEndpoint"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("DescriptionRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,25 +135,40 @@ func DescriptionRequestParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *DescriptionRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("DescriptionRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (hpaiControlEndpoint)
+		if pushErr := io.PushContext("hpaiControlEndpoint"); pushErr != nil {
+			return pushErr
+		}
 		_hpaiControlEndpointErr := m.HpaiControlEndpoint.Serialize(io)
+		if popErr := io.PopContext("hpaiControlEndpoint"); popErr != nil {
+			return popErr
+		}
 		if _hpaiControlEndpointErr != nil {
 			return errors.Wrap(_hpaiControlEndpointErr, "Error serializing 'hpaiControlEndpoint' field")
 		}
 
+		if popErr := io.PopContext("DescriptionRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "hpaiControlEndpoint":
@@ -147,7 +181,7 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -155,6 +189,7 @@ func (m *DescriptionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.HpaiControlEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiControlEndpoint"}}); err != nil {
 		return err
@@ -163,14 +198,20 @@ func (m *DescriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m DescriptionRequest) String() string {
-	return string(m.Box("DescriptionRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DescriptionRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DescriptionRequest"
+	boxName := "DescriptionRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("HpaiControlEndpoint", m.HpaiControlEndpoint, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.HpaiControlEndpoint.Box("hpaiControlEndpoint", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type ApplicationTag int8
 
 type IApplicationTag interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -47,6 +51,26 @@ const (
 	ApplicationTag_TIME                     ApplicationTag = 0xB
 	ApplicationTag_BACNET_OBJECT_IDENTIFIER ApplicationTag = 0xC
 )
+
+var ApplicationTagValues []ApplicationTag
+
+func init() {
+	ApplicationTagValues = []ApplicationTag{
+		ApplicationTag_NULL,
+		ApplicationTag_BOOLEAN,
+		ApplicationTag_UNSIGNED_INTEGER,
+		ApplicationTag_SIGNED_INTEGER,
+		ApplicationTag_REAL,
+		ApplicationTag_DOUBLE,
+		ApplicationTag_OCTET_STRING,
+		ApplicationTag_CHARACTER_STRING,
+		ApplicationTag_BIT_STRING,
+		ApplicationTag_ENUMERATED,
+		ApplicationTag_DATE,
+		ApplicationTag_TIME,
+		ApplicationTag_BACNET_OBJECT_IDENTIFIER,
+	}
+}
 
 func ApplicationTagByValue(value int8) ApplicationTag {
 	switch value {
@@ -130,8 +154,8 @@ func (m ApplicationTag) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApplicationTagParse(io *utils.ReadBuffer) (ApplicationTag, error) {
-	val, err := io.ReadInt8(4)
+func ApplicationTagParse(io utils.ReadBuffer) (ApplicationTag, error) {
+	val, err := io.ReadInt8("ApplicationTag", 4)
 	if err != nil {
 		return 0, nil
 	}
@@ -139,10 +163,11 @@ func ApplicationTagParse(io *utils.ReadBuffer) (ApplicationTag, error) {
 }
 
 func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(4, int8(e))
+	err := io.WriteInt8("ApplicationTag", 4, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -162,7 +187,15 @@ func (m *ApplicationTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
-func (e ApplicationTag) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ApplicationTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ApplicationTag) name() string {
 	switch e {
 	case ApplicationTag_NULL:
 		return "NULL"
@@ -192,4 +225,17 @@ func (e ApplicationTag) String() string {
 		return "BACNET_OBJECT_IDENTIFIER"
 	}
 	return ""
+}
+
+func (e ApplicationTag) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ApplicationTag) Box(s string, i int) utils.AsciiBox {
+	boxName := "ApplicationTag"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, int8(m), m.name()), -1)
 }

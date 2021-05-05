@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type ICEMIChild interface {
 	InitializeParent(parent *CEMI)
 	GetTypeName() string
 	ICEMI
+	utils.AsciiBoxer
 }
 
 func NewCEMI() *CEMI {
@@ -78,12 +80,17 @@ func (m *CEMI) GetTypeName() string {
 }
 
 func (m *CEMI) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMI) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *CEMI) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageCode)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *CEMI) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIParse(io *utils.ReadBuffer, size uint8) (*CEMI, error) {
+func CEMIParse(io utils.ReadBuffer, size uint8) (*CEMI, error) {
+	if pullErr := io.PullContext("CEMI"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode, _messageCodeErr := io.ReadUint8(8)
+	messageCode, _messageCodeErr := io.ReadUint8("messageCode", 8)
 	if _messageCodeErr != nil {
 		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field")
 	}
@@ -150,9 +160,16 @@ func CEMIParse(io *utils.ReadBuffer, size uint8) (*CEMI, error) {
 		_parent, typeSwitchError = MResetReqParse(io)
 	case messageCode == 0xF0: // MResetInd
 		_parent, typeSwitchError = MResetIndParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("CEMI"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -165,10 +182,13 @@ func (m *CEMI) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("CEMI"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(child.MessageCode())
-	_messageCodeErr := io.WriteUint8(8, (messageCode))
+	_messageCodeErr := io.WriteUint8("messageCode", 8, (messageCode))
 
 	if _messageCodeErr != nil {
 		return errors.Wrap(_messageCodeErr, "Error serializing 'messageCode' field")
@@ -180,22 +200,151 @@ func (m *CEMI) SerializeParent(io utils.WriteBuffer, child ICEMI, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("CEMI"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// LRawReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawReq":
+			if m.Child == nil {
+				m.Child = &LRawReq{
+					Parent: m,
+				}
+			}
+		// LRawInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawInd":
+			if m.Child == nil {
+				m.Child = &LRawInd{
+					Parent: m,
+				}
+			}
+		// LRawCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LRawCon":
+			if m.Child == nil {
+				m.Child = &LRawCon{
+					Parent: m,
+				}
+			}
+		// LPollDataReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataReq":
+			if m.Child == nil {
+				m.Child = &LPollDataReq{
+					Parent: m,
+				}
+			}
+		// LPollDataCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LPollDataCon":
+			if m.Child == nil {
+				m.Child = &LPollDataCon{
+					Parent: m,
+				}
+			}
+		// TDataConnectedReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedReq":
+			if m.Child == nil {
+				m.Child = &TDataConnectedReq{
+					Parent: m,
+				}
+			}
+		// TDataConnectedInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataConnectedInd":
+			if m.Child == nil {
+				m.Child = &TDataConnectedInd{
+					Parent: m,
+				}
+			}
+		// TDataIndividualReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualReq":
+			if m.Child == nil {
+				m.Child = &TDataIndividualReq{
+					Parent: m,
+				}
+			}
+		// TDataIndividualInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.TDataIndividualInd":
+			if m.Child == nil {
+				m.Child = &TDataIndividualInd{
+					Parent: m,
+				}
+			}
+		// MPropWriteReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteReq":
+			if m.Child == nil {
+				m.Child = &MPropWriteReq{
+					Parent: m,
+				}
+			}
+		// MPropWriteCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropWriteCon":
+			if m.Child == nil {
+				m.Child = &MPropWriteCon{
+					Parent: m,
+				}
+			}
+		// MPropInfoInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MPropInfoInd":
+			if m.Child == nil {
+				m.Child = &MPropInfoInd{
+					Parent: m,
+				}
+			}
+		// MFuncPropCommandReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCommandReq":
+			if m.Child == nil {
+				m.Child = &MFuncPropCommandReq{
+					Parent: m,
+				}
+			}
+		// MFuncPropStateReadReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropStateReadReq":
+			if m.Child == nil {
+				m.Child = &MFuncPropStateReadReq{
+					Parent: m,
+				}
+			}
+		// MFuncPropCon needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MFuncPropCon":
+			if m.Child == nil {
+				m.Child = &MFuncPropCon{
+					Parent: m,
+				}
+			}
+		// MResetReq needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MResetReq":
+			if m.Child == nil {
+				m.Child = &MResetReq{
+					Parent: m,
+				}
+			}
+		// MResetInd needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.MResetInd":
+			if m.Child == nil {
+				m.Child = &MResetInd{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -490,6 +639,7 @@ func (m *CEMI) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *CEMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -512,14 +662,26 @@ func (m *CEMI) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m CEMI) String() string {
-	return string(m.Box("CEMI", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m CEMI) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "CEMI"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *CEMI) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *CEMI) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "CEMI"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (messageCode) (Used as input to a switch field)
+	messageCode := uint8(m.Child.MessageCode())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MessageCode", messageCode, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

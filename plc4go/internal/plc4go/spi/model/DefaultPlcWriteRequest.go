@@ -16,26 +16,30 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
+	"time"
 )
 
 type DefaultPlcWriteRequestBuilder struct {
-	writer       spi.PlcWriter
-	fieldHandler spi.PlcFieldHandler
-	valueHandler spi.PlcValueHandler
-	queries      map[string]string
-	queryNames   []string
-	fields       map[string]model.PlcField
-	fieldNames   []string
-	values       map[string]interface{}
+	writer                  spi.PlcWriter
+	fieldHandler            spi.PlcFieldHandler
+	valueHandler            spi.PlcValueHandler
+	queries                 map[string]string
+	queryNames              []string
+	fields                  map[string]model.PlcField
+	fieldNames              []string
+	values                  map[string]interface{}
+	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
 func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter) *DefaultPlcWriteRequestBuilder {
@@ -51,16 +55,40 @@ func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHan
 	}
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) {
+func NewDefaultPlcWriteRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) *DefaultPlcWriteRequestBuilder {
+	return &DefaultPlcWriteRequestBuilder{
+		writer:                  writer,
+		fieldHandler:            fieldHandler,
+		valueHandler:            valueHandler,
+		queries:                 map[string]string{},
+		queryNames:              make([]string, 0),
+		fields:                  map[string]model.PlcField{},
+		fieldNames:              make([]string, 0),
+		values:                  map[string]interface{}{},
+		writeRequestInterceptor: writeRequestInterceptor,
+	}
+}
+
+func (m *DefaultPlcWriteRequestBuilder) GetWriter() spi.PlcWriter {
+	return m.writer
+}
+
+func (m *DefaultPlcWriteRequestBuilder) GetWriteRequestInterceptor() interceptors.WriteRequestInterceptor {
+	return m.writeRequestInterceptor
+}
+
+func (m *DefaultPlcWriteRequestBuilder) AddQuery(name string, query string, value interface{}) model.PlcWriteRequestBuilder {
 	m.queryNames = append(m.queryNames, name)
 	m.queries[name] = query
 	m.values[name] = value
+	return m
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) {
+func (m *DefaultPlcWriteRequestBuilder) AddField(name string, field model.PlcField, value interface{}) model.PlcWriteRequestBuilder {
 	m.fieldNames = append(m.fieldNames, name)
 	m.fields[name] = field
 	m.values[name] = value
+	return m
 }
 
 func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
@@ -83,31 +111,58 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 		}
 		plcValues[name] = value
 	}
-	return DefaultPlcWriteRequest{
-		fields:     m.fields,
-		fieldNames: m.fieldNames,
-		values:     plcValues,
-		writer:     m.writer,
-	}, nil
+	return NewDefaultPlcWriteRequest(m.fields, m.fieldNames, plcValues, m.writer, m.writeRequestInterceptor), nil
 }
 
 type DefaultPlcWriteRequest struct {
-	fields     map[string]model.PlcField
-	fieldNames []string
-	values     map[string]values.PlcValue
-	writer     spi.PlcWriter
+	DefaultRequest
+	values                  map[string]values.PlcValue
+	writer                  spi.PlcWriter
+	writeRequestInterceptor interceptors.WriteRequestInterceptor
+}
+
+func NewDefaultPlcWriteRequest(fields map[string]model.PlcField, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
+	return DefaultPlcWriteRequest{NewDefaultRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
 }
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
-	return m.writer.Write(m)
-}
+	// Shortcut, if no interceptor is defined
+	if m.writeRequestInterceptor == nil {
+		return m.writer.Write(m)
+	}
 
-func (m DefaultPlcWriteRequest) GetFieldNames() []string {
-	return m.fieldNames
-}
+	// Split the requests up into multiple ones.
+	writeRequests := m.writeRequestInterceptor.InterceptWriteRequest(m)
+	// Shortcut for single-request-requests
+	if len(writeRequests) == 1 {
+		return m.writer.Write(writeRequests[0])
+	}
+	// Create a sub-result-channel slice
+	var subResultChannels []<-chan model.PlcWriteRequestResult
 
-func (m DefaultPlcWriteRequest) GetField(name string) model.PlcField {
-	return m.fields[name]
+	// Iterate over all requests and add the result-channels to the list
+	for _, subRequest := range writeRequests {
+		subResultChannels = append(subResultChannels, m.writer.Write(subRequest))
+		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
+		time.Sleep(time.Millisecond * 4)
+	}
+
+	// Create a new result-channel, which completes as soon as all sub-result-channels have returned
+	resultChannel := make(chan model.PlcWriteRequestResult)
+	go func() {
+		var subResults []model.PlcWriteRequestResult
+		// Iterate over all sub-results
+		for _, subResultChannel := range subResultChannels {
+			subResult := <-subResultChannel
+			subResults = append(subResults, subResult)
+		}
+		// As soon as all are done, process the results
+		result := m.writeRequestInterceptor.ProcessWriteResponses(m, subResults)
+		// Return the final result
+		resultChannel <- result
+	}()
+
+	return resultChannel
 }
 
 func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {

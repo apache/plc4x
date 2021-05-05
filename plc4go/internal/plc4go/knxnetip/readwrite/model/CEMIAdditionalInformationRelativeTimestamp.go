@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -104,10 +109,13 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationRelativeTimestampParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	if pullErr := io.PullContext("CEMIAdditionalInformationRelativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (len)
-	len, _lenErr := io.ReadUint8(8)
+	len, _lenErr := io.ReadUint8("len", 8)
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
@@ -115,10 +123,21 @@ func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEM
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CEMIAdditionalInformationRelativeTimestamp_LEN) + " but got " + fmt.Sprintf("%d", len))
 	}
 
+	if pullErr := io.PullContext("relativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (relativeTimestamp)
 	relativeTimestamp, _relativeTimestampErr := RelativeTimestampParse(io)
 	if _relativeTimestampErr != nil {
 		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field")
+	}
+	if closeErr := io.CloseContext("relativeTimestamp"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("CEMIAdditionalInformationRelativeTimestamp"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -132,31 +151,46 @@ func CEMIAdditionalInformationRelativeTimestampParse(io *utils.ReadBuffer) (*CEM
 
 func (m *CEMIAdditionalInformationRelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("CEMIAdditionalInformationRelativeTimestamp"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (len)
-		_lenErr := io.WriteUint8(8, 2)
+		_lenErr := io.WriteUint8("len", 8, 2)
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (relativeTimestamp)
+		if pushErr := io.PushContext("relativeTimestamp"); pushErr != nil {
+			return pushErr
+		}
 		_relativeTimestampErr := m.RelativeTimestamp.Serialize(io)
+		if popErr := io.PopContext("relativeTimestamp"); popErr != nil {
+			return popErr
+		}
 		if _relativeTimestampErr != nil {
 			return errors.Wrap(_relativeTimestampErr, "Error serializing 'relativeTimestamp' field")
 		}
 
+		if popErr := io.PopContext("CEMIAdditionalInformationRelativeTimestamp"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMIAdditionalInformationRelativeTimestamp) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "relativeTimestamp":
@@ -169,7 +203,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) UnmarshalXML(d *xml.Decoder
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -177,6 +211,7 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) UnmarshalXML(d *xml.Decoder
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *CEMIAdditionalInformationRelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.RelativeTimestamp, xml.StartElement{Name: xml.Name{Local: "relativeTimestamp"}}); err != nil {
 		return err
@@ -185,14 +220,22 @@ func (m *CEMIAdditionalInformationRelativeTimestamp) MarshalXML(e *xml.Encoder, 
 }
 
 func (m CEMIAdditionalInformationRelativeTimestamp) String() string {
-	return string(m.Box("CEMIAdditionalInformationRelativeTimestamp", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m CEMIAdditionalInformationRelativeTimestamp) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "CEMIAdditionalInformationRelativeTimestamp"
+	boxName := "CEMIAdditionalInformationRelativeTimestamp"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("RelativeTimestamp", m.RelativeTimestamp, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Const Field (len)
+		boxes = append(boxes, utils.BoxAnything("Len", uint8(2), -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.RelativeTimestamp.Box("relativeTimestamp", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

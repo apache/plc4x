@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *ModbusPDUReadFileRecordRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFileRecordRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadFileRecordRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -112,16 +117,22 @@ func (m *ModbusPDUReadFileRecordRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadFileRecordRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUReadFileRecordRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (items)
+	if pullErr := io.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	items := make([]*ModbusPDUReadFileRecordRequestItem, 0)
 	_itemsLength := byteCount
@@ -132,6 +143,13 @@ func ModbusPDUReadFileRecordRequestParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
 		items = append(items, _item)
+	}
+	if closeErr := io.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUReadFileRecordRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -152,36 +170,51 @@ func (m *ModbusPDUReadFileRecordRequest) Serialize(io utils.WriteBuffer) error {
 		return sizeInBytes
 	}
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUReadFileRecordRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (items)
 		if m.Items != nil {
+			if pushErr := io.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
 			}
+			if popErr := io.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ModbusPDUReadFileRecordRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "items":
@@ -194,7 +227,7 @@ func (m *ModbusPDUReadFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml.
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -202,30 +235,55 @@ func (m *ModbusPDUReadFileRecordRequest) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFileRecordRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+		return err
+	}
 	for _, arrayElement := range m.Items {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
-			return err
-		}
 		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
-			return err
-		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+		return err
 	}
 	return nil
 }
 
 func (m ModbusPDUReadFileRecordRequest) String() string {
-	return string(m.Box("ModbusPDUReadFileRecordRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFileRecordRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadFileRecordRequest"
+	boxName := "ModbusPDUReadFileRecordRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Items", m.Items, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	itemsArraySizeInBytes := func(items []*ModbusPDUReadFileRecordRequestItem) uint32 {
+		var sizeInBytes uint32 = 0
+		for _, v := range items {
+			sizeInBytes += uint32(v.LengthInBytes())
+		}
+		return sizeInBytes
+	}
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(itemsArraySizeInBytes(m.Items)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Array Field (items)
+		if m.Items != nil {
+			// Complex array base type
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Items {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Items", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

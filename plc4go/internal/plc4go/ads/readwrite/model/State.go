@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -72,6 +73,10 @@ func (m *State) GetTypeName() string {
 }
 
 func (m *State) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *State) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (initCommand)
@@ -111,65 +116,68 @@ func (m *State) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func StateParse(io *utils.ReadBuffer) (*State, error) {
+func StateParse(io utils.ReadBuffer) (*State, error) {
+	if pullErr := io.PullContext("State"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (initCommand)
-	initCommand, _initCommandErr := io.ReadBit()
+	initCommand, _initCommandErr := io.ReadBit("initCommand")
 	if _initCommandErr != nil {
 		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field")
 	}
 
 	// Simple Field (updCommand)
-	updCommand, _updCommandErr := io.ReadBit()
+	updCommand, _updCommandErr := io.ReadBit("updCommand")
 	if _updCommandErr != nil {
 		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field")
 	}
 
 	// Simple Field (timestampAdded)
-	timestampAdded, _timestampAddedErr := io.ReadBit()
+	timestampAdded, _timestampAddedErr := io.ReadBit("timestampAdded")
 	if _timestampAddedErr != nil {
 		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field")
 	}
 
 	// Simple Field (highPriorityCommand)
-	highPriorityCommand, _highPriorityCommandErr := io.ReadBit()
+	highPriorityCommand, _highPriorityCommandErr := io.ReadBit("highPriorityCommand")
 	if _highPriorityCommandErr != nil {
 		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field")
 	}
 
 	// Simple Field (systemCommand)
-	systemCommand, _systemCommandErr := io.ReadBit()
+	systemCommand, _systemCommandErr := io.ReadBit("systemCommand")
 	if _systemCommandErr != nil {
 		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field")
 	}
 
 	// Simple Field (adsCommand)
-	adsCommand, _adsCommandErr := io.ReadBit()
+	adsCommand, _adsCommandErr := io.ReadBit("adsCommand")
 	if _adsCommandErr != nil {
 		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field")
 	}
 
 	// Simple Field (noReturn)
-	noReturn, _noReturnErr := io.ReadBit()
+	noReturn, _noReturnErr := io.ReadBit("noReturn")
 	if _noReturnErr != nil {
 		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field")
 	}
 
 	// Simple Field (response)
-	response, _responseErr := io.ReadBit()
+	response, _responseErr := io.ReadBit("response")
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")
 	}
 
 	// Simple Field (broadcast)
-	broadcast, _broadcastErr := io.ReadBit()
+	broadcast, _broadcastErr := io.ReadBit("broadcast")
 	if _broadcastErr != nil {
 		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadInt8(7)
+		reserved, _err := io.ReadInt8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -181,99 +189,112 @@ func StateParse(io *utils.ReadBuffer) (*State, error) {
 		}
 	}
 
+	if closeErr := io.CloseContext("State"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Create the instance
 	return NewState(initCommand, updCommand, timestampAdded, highPriorityCommand, systemCommand, adsCommand, noReturn, response, broadcast), nil
 }
 
 func (m *State) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("State"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (initCommand)
 	initCommand := bool(m.InitCommand)
-	_initCommandErr := io.WriteBit((initCommand))
+	_initCommandErr := io.WriteBit("initCommand", (initCommand))
 	if _initCommandErr != nil {
 		return errors.Wrap(_initCommandErr, "Error serializing 'initCommand' field")
 	}
 
 	// Simple Field (updCommand)
 	updCommand := bool(m.UpdCommand)
-	_updCommandErr := io.WriteBit((updCommand))
+	_updCommandErr := io.WriteBit("updCommand", (updCommand))
 	if _updCommandErr != nil {
 		return errors.Wrap(_updCommandErr, "Error serializing 'updCommand' field")
 	}
 
 	// Simple Field (timestampAdded)
 	timestampAdded := bool(m.TimestampAdded)
-	_timestampAddedErr := io.WriteBit((timestampAdded))
+	_timestampAddedErr := io.WriteBit("timestampAdded", (timestampAdded))
 	if _timestampAddedErr != nil {
 		return errors.Wrap(_timestampAddedErr, "Error serializing 'timestampAdded' field")
 	}
 
 	// Simple Field (highPriorityCommand)
 	highPriorityCommand := bool(m.HighPriorityCommand)
-	_highPriorityCommandErr := io.WriteBit((highPriorityCommand))
+	_highPriorityCommandErr := io.WriteBit("highPriorityCommand", (highPriorityCommand))
 	if _highPriorityCommandErr != nil {
 		return errors.Wrap(_highPriorityCommandErr, "Error serializing 'highPriorityCommand' field")
 	}
 
 	// Simple Field (systemCommand)
 	systemCommand := bool(m.SystemCommand)
-	_systemCommandErr := io.WriteBit((systemCommand))
+	_systemCommandErr := io.WriteBit("systemCommand", (systemCommand))
 	if _systemCommandErr != nil {
 		return errors.Wrap(_systemCommandErr, "Error serializing 'systemCommand' field")
 	}
 
 	// Simple Field (adsCommand)
 	adsCommand := bool(m.AdsCommand)
-	_adsCommandErr := io.WriteBit((adsCommand))
+	_adsCommandErr := io.WriteBit("adsCommand", (adsCommand))
 	if _adsCommandErr != nil {
 		return errors.Wrap(_adsCommandErr, "Error serializing 'adsCommand' field")
 	}
 
 	// Simple Field (noReturn)
 	noReturn := bool(m.NoReturn)
-	_noReturnErr := io.WriteBit((noReturn))
+	_noReturnErr := io.WriteBit("noReturn", (noReturn))
 	if _noReturnErr != nil {
 		return errors.Wrap(_noReturnErr, "Error serializing 'noReturn' field")
 	}
 
 	// Simple Field (response)
 	response := bool(m.Response)
-	_responseErr := io.WriteBit((response))
+	_responseErr := io.WriteBit("response", (response))
 	if _responseErr != nil {
 		return errors.Wrap(_responseErr, "Error serializing 'response' field")
 	}
 
 	// Simple Field (broadcast)
 	broadcast := bool(m.Broadcast)
-	_broadcastErr := io.WriteBit((broadcast))
+	_broadcastErr := io.WriteBit("broadcast", (broadcast))
 	if _broadcastErr != nil {
 		return errors.Wrap(_broadcastErr, "Error serializing 'broadcast' field")
 	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteInt8(7, int8(0x0))
+		_err := io.WriteInt8("reserved", 7, int8(0x0))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
+	if popErr := io.PopContext("State"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *State) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "initCommand":
@@ -335,6 +356,7 @@ func (m *State) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *State) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.State"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -376,22 +398,45 @@ func (m *State) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m State) String() string {
-	return string(m.Box("State", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m State) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "State"
+	boxName := "State"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("TimestampAdded", m.TimestampAdded, width-2))
-	boxes = append(boxes, utils.BoxAnything("HighPriorityCommand", m.HighPriorityCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("SystemCommand", m.SystemCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("AdsCommand", m.AdsCommand, width-2))
-	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, width-2))
-	boxes = append(boxes, utils.BoxAnything("Response", m.Response, width-2))
-	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("InitCommand", m.InitCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UpdCommand", m.UpdCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TimestampAdded", m.TimestampAdded, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("HighPriorityCommand", m.HighPriorityCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SystemCommand", m.SystemCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AdsCommand", m.AdsCommand, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NoReturn", m.NoReturn, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Response", m.Response, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Broadcast", m.Broadcast, -1))
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", int8(0x0), -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

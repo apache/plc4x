@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -91,7 +92,11 @@ func (m *ApduDataExtPropertyValueRead) GetTypeName() string {
 }
 
 func (m *ApduDataExtPropertyValueRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtPropertyValueRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (objectIndex)
 	lengthInBits += 8
@@ -112,30 +117,37 @@ func (m *ApduDataExtPropertyValueRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtPropertyValueReadParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtPropertyValueReadParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExtPropertyValueRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (objectIndex)
-	objectIndex, _objectIndexErr := io.ReadUint8(8)
+	objectIndex, _objectIndexErr := io.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field")
 	}
 
 	// Simple Field (propertyId)
-	propertyId, _propertyIdErr := io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field")
 	}
 
 	// Simple Field (count)
-	count, _countErr := io.ReadUint8(4)
+	count, _countErr := io.ReadUint8("count", 4)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field")
 	}
 
 	// Simple Field (index)
-	index, _indexErr := io.ReadUint16(12)
+	index, _indexErr := io.ReadUint16("index", 12)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
+	}
+
+	if closeErr := io.CloseContext("ApduDataExtPropertyValueRead"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -152,47 +164,56 @@ func ApduDataExtPropertyValueReadParse(io *utils.ReadBuffer) (*ApduDataExt, erro
 
 func (m *ApduDataExtPropertyValueRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataExtPropertyValueRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.ObjectIndex)
-		_objectIndexErr := io.WriteUint8(8, (objectIndex))
+		_objectIndexErr := io.WriteUint8("objectIndex", 8, (objectIndex))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8("propertyId", 8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (count)
 		count := uint8(m.Count)
-		_countErr := io.WriteUint8(4, (count))
+		_countErr := io.WriteUint8("count", 4, (count))
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		// Simple Field (index)
 		index := uint16(m.Index)
-		_indexErr := io.WriteUint16(12, (index))
+		_indexErr := io.WriteUint16("index", 12, (index))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
+		if popErr := io.PopContext("ApduDataExtPropertyValueRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtPropertyValueRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectIndex":
@@ -223,7 +244,7 @@ func (m *ApduDataExtPropertyValueRead) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -231,6 +252,7 @@ func (m *ApduDataExtPropertyValueRead) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtPropertyValueRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectIndex, xml.StartElement{Name: xml.Name{Local: "objectIndex"}}); err != nil {
 		return err
@@ -248,17 +270,30 @@ func (m *ApduDataExtPropertyValueRead) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m ApduDataExtPropertyValueRead) String() string {
-	return string(m.Box("ApduDataExtPropertyValueRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtPropertyValueRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtPropertyValueRead"
+	boxName := "ApduDataExtPropertyValueRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, width-2))
-	boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Count", m.Count, width-2))
-	boxes = append(boxes, utils.BoxAnything("Index", m.Index, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectIndex", m.ObjectIndex, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("PropertyId", m.PropertyId, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Count", m.Count, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Index", m.Index, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

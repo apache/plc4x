@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -56,6 +57,7 @@ type ICOTPPacketChild interface {
 	InitializeParent(parent *COTPPacket, parameters []*COTPParameter, payload *S7Message)
 	GetTypeName() string
 	ICOTPPacket
+	utils.AsciiBoxer
 }
 
 func NewCOTPPacket(parameters []*COTPParameter, payload *S7Message) *COTPPacket {
@@ -80,15 +82,20 @@ func (m *COTPPacket) GetTypeName() string {
 }
 
 func (m *COTPPacket) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacket) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *COTPPacket) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)
 	lengthInBits += 8
 	// Discriminator Field (tpduCode)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	// Array field
 	if len(m.Parameters) > 0 {
@@ -109,19 +116,22 @@ func (m *COTPPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+func COTPPacketParse(io utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
+	if pullErr := io.PullContext("COTPPacket"); pullErr != nil {
+		return nil, pullErr
+	}
 	var startPos = io.GetPos()
 	var curPos uint16
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := io.ReadUint8(8)
+	headerLength, _headerLengthErr := io.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode, _tpduCodeErr := io.ReadUint8(8)
+	tpduCode, _tpduCodeErr := io.ReadUint8("tpduCode", 8)
 	if _tpduCodeErr != nil {
 		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field")
 	}
@@ -142,12 +152,18 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(io)
 	case tpduCode == 0x70: // COTPPacketTpduError
 		_parent, typeSwitchError = COTPPacketTpduErrorParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
 	}
 
 	// Array field (parameters)
+	if pullErr := io.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	curPos = io.GetPos() - startPos
 	// Length array
 	parameters := make([]*COTPParameter, 0)
@@ -161,6 +177,9 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 		parameters = append(parameters, _item)
 		curPos = io.GetPos() - startPos
 	}
+	if closeErr := io.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	curPos = io.GetPos() - startPos
@@ -173,6 +192,10 @@ func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) 
 		payload = _val
 	}
 
+	if closeErr := io.CloseContext("COTPPacket"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Finish initializing
 	_parent.Child.InitializeParent(_parent, parameters, payload)
 	return _parent, nil
@@ -183,17 +206,20 @@ func (m *COTPPacket) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("COTPPacket"); pushErr != nil {
+		return pushErr
+	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), uint16(m.Payload.LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
-	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint8(0)) })))+uint8(uint8(1)))))
+	_headerLengthErr := io.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(child.TpduCode())
-	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
+	_tpduCodeErr := io.WriteUint8("tpduCode", 8, (tpduCode))
 
 	if _tpduCodeErr != nil {
 		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")
@@ -207,11 +233,17 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 
 	// Array Field (parameters)
 	if m.Parameters != nil {
+		if pushErr := io.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
 			}
+		}
+		if popErr := io.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
 		}
 	}
 
@@ -225,22 +257,32 @@ func (m *COTPPacket) SerializeParent(io utils.WriteBuffer, child ICOTPPacket, se
 		}
 	}
 
+	if popErr := io.PopContext("COTPPacket"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "parameters":
@@ -262,6 +304,9 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 			case "payload":
 				var dt *S7Message
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Payload = dt
@@ -353,12 +398,27 @@ func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
 		{Name: xml.Name{Local: "className"}, Value: className},
 	}}); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+		return err
+	}
+	for _, arrayElement := range m.Parameters {
+		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
 		return err
 	}
 	marshaller, ok := m.Child.(xml.Marshaler)
@@ -368,20 +428,6 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := marshaller.MarshalXML(e, start); err != nil {
 		return err
 	}
-	for _, arrayElement := range m.Parameters {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
-			return err
-		}
-	}
-	if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
-		return err
-	}
 	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
 		return err
 	}
@@ -389,16 +435,45 @@ func (m *COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m COTPPacket) String() string {
-	return string(m.Box("COTPPacket", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m COTPPacket) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacket"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *COTPPacket) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *COTPPacket) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "COTPPacket"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Parameters", m.Parameters, width-2))
-	boxes = append(boxes, utils.BoxAnything("Payload", m.Payload, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Implicit Field (headerLength)
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), func() uint16 { return uint16(m.Payload.LengthInBytes()) }, func() uint16 { return uint16(uint8(0)) })))+uint8(uint8(1)))))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("HeaderLength", headerLength, -1))
+	// Discriminator Field (tpduCode) (Used as input to a switch field)
+	tpduCode := uint8(m.Child.TpduCode())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TpduCode", tpduCode, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	// Array Field (parameters)
+	if m.Parameters != nil {
+		// Complex array base type
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Parameters {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Parameters", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Optional Field (payload) (Can be skipped, if the value is null)
+	var payload *S7Message = nil
+	if m.Payload != nil {
+		payload = m.Payload
+		boxes = append(boxes, payload.Box("payload", width-2))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

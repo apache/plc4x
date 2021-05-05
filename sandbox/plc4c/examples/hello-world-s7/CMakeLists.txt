@@ -25,8 +25,18 @@ add_executable(plc4c-examples-hello-world-s7
         src/hello_world_s7.c
         )
 
+add_executable(plc4c-examples-loopback-s7
+		src/hello_world_s7_loopback.c
+		)
+
 IF (NOT WIN32)
     target_link_libraries(plc4c-examples-hello-world-s7
+            plc4c-spi
+            plc4c-driver-s7
+            plc4c-transport-tcp
+            m
+    )
+    target_link_libraries(plc4c-examples-loopback-s7
             plc4c-spi
             plc4c-driver-s7
             plc4c-transport-tcp
@@ -38,4 +48,10 @@ ELSE()
             plc4c-driver-s7
             plc4c-transport-tcp
     )
+    target_link_libraries(plc4c-examples-loopback-s7
+            plc4c-spi
+            plc4c-driver-s7
+            plc4c-transport-tcp
+    )
 ENDIF()
+

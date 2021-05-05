@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -93,6 +97,72 @@ const (
 	BACnetObjectType_ELEVATOR_GROUP         BACnetObjectType = 0x039
 	BACnetObjectType_ESCALATOR              BACnetObjectType = 0x03A
 )
+
+var BACnetObjectTypeValues []BACnetObjectType
+
+func init() {
+	BACnetObjectTypeValues = []BACnetObjectType{
+		BACnetObjectType_ANALOG_INPUT,
+		BACnetObjectType_ANALOG_OUTPUT,
+		BACnetObjectType_ANALOG_VALUE,
+		BACnetObjectType_BINARY_INPUT,
+		BACnetObjectType_BINARY_OUTPUT,
+		BACnetObjectType_BINARY_VALUE,
+		BACnetObjectType_MULTISTATE_INPUT,
+		BACnetObjectType_MULTISTATE_OUTPUT,
+		BACnetObjectType_MULTISTATE_VALUE,
+		BACnetObjectType_SCHEDULE,
+		BACnetObjectType_DEVICE,
+		BACnetObjectType_CALENDAR,
+		BACnetObjectType_COMMAND,
+		BACnetObjectType_EVENT_ENROLLMENT,
+		BACnetObjectType_FILE,
+		BACnetObjectType_GROUP,
+		BACnetObjectType_LOOP,
+		BACnetObjectType_NOTIFICATION_CLASS,
+		BACnetObjectType_PROGRAM,
+		BACnetObjectType_AVERAGING,
+		BACnetObjectType_TREND_LOG,
+		BACnetObjectType_LIFE_SAFETY_POINT,
+		BACnetObjectType_LIFE_SAFETY_ZONE,
+		BACnetObjectType_ACCUMULATOR,
+		BACnetObjectType_PULSE_CONVERTER,
+		BACnetObjectType_EVENT_LOG,
+		BACnetObjectType_GLOBAL_GROUP,
+		BACnetObjectType_TREND_LOG_MULTIPLE,
+		BACnetObjectType_LOAD_CONTROL,
+		BACnetObjectType_STRUCTURED_VIEW,
+		BACnetObjectType_ACCESS_DOOR,
+		BACnetObjectType_TIMER,
+		BACnetObjectType_ACCESS_CREDENTIAL,
+		BACnetObjectType_ACCESS_POINT,
+		BACnetObjectType_ACCESS_RIGHTS,
+		BACnetObjectType_ACCESS_USER,
+		BACnetObjectType_ACCESS_ZONE,
+		BACnetObjectType_CREDENTIAL_DATA_INPUT,
+		BACnetObjectType_NETWORK_SECURITY,
+		BACnetObjectType_BITSTRING_VALUE,
+		BACnetObjectType_CHARACTERSTRING_VALUE,
+		BACnetObjectType_DATEPATTERN_VALUE,
+		BACnetObjectType_DATE_VALUE,
+		BACnetObjectType_DATETIMEPATTERN_VALUE,
+		BACnetObjectType_DATETIME_VALUE,
+		BACnetObjectType_INTEGER_VALUE,
+		BACnetObjectType_LARGE_ANALOG_VALUE,
+		BACnetObjectType_OCTETSTRING_VALUE,
+		BACnetObjectType_POSITIVE_INTEGER_VALUE,
+		BACnetObjectType_TIMEPATTERN_VALUE,
+		BACnetObjectType_TIME_VALUE,
+		BACnetObjectType_NOTIFICATION_FORWARDER,
+		BACnetObjectType_ALERT_ENROLLMENT,
+		BACnetObjectType_CHANNEL,
+		BACnetObjectType_LIGHTING_OUTPUT,
+		BACnetObjectType_BINARY_LIGHTING_OUTPUT,
+		BACnetObjectType_NETWORK_PORT,
+		BACnetObjectType_ELEVATOR_GROUP,
+		BACnetObjectType_ESCALATOR,
+	}
+}
 
 func BACnetObjectTypeByValue(value uint16) BACnetObjectType {
 	switch value {
@@ -360,8 +430,8 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(io *utils.ReadBuffer) (BACnetObjectType, error) {
-	val, err := io.ReadUint16(10)
+func BACnetObjectTypeParse(io utils.ReadBuffer) (BACnetObjectType, error) {
+	val, err := io.ReadUint16("BACnetObjectType", 10)
 	if err != nil {
 		return 0, nil
 	}
@@ -369,10 +439,11 @@ func BACnetObjectTypeParse(io *utils.ReadBuffer) (BACnetObjectType, error) {
 }
 
 func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(10, uint16(e))
+	err := io.WriteUint16("BACnetObjectType", 10, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -392,7 +463,15 @@ func (m *BACnetObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-func (e BACnetObjectType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m BACnetObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e BACnetObjectType) name() string {
 	switch e {
 	case BACnetObjectType_ANALOG_INPUT:
 		return "ANALOG_INPUT"
@@ -514,4 +593,17 @@ func (e BACnetObjectType) String() string {
 		return "ESCALATOR"
 	}
 	return ""
+}
+
+func (e BACnetObjectType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m BACnetObjectType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetObjectType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 3, uint16(m), m.name()), -1)
 }

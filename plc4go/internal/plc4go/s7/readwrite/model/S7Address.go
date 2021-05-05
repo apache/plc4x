@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IS7AddressChild interface {
 	InitializeParent(parent *S7Address)
 	GetTypeName() string
 	IS7Address
+	utils.AsciiBoxer
 }
 
 func NewS7Address() *S7Address {
@@ -78,12 +80,17 @@ func (m *S7Address) GetTypeName() string {
 }
 
 func (m *S7Address) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7Address) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *S7Address) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (addressType)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *S7Address) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
+func S7AddressParse(io utils.ReadBuffer) (*S7Address, error) {
+	if pullErr := io.PullContext("S7Address"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType, _addressTypeErr := io.ReadUint8(8)
+	addressType, _addressTypeErr := io.ReadUint8("addressType", 8)
 	if _addressTypeErr != nil {
 		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field")
 	}
@@ -106,9 +116,16 @@ func S7AddressParse(io *utils.ReadBuffer) (*S7Address, error) {
 	switch {
 	case addressType == 0x10: // S7AddressAny
 		_parent, typeSwitchError = S7AddressAnyParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("S7Address"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -121,10 +138,13 @@ func (m *S7Address) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("S7Address"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.AddressType())
-	_addressTypeErr := io.WriteUint8(8, (addressType))
+	_addressTypeErr := io.WriteUint8("addressType", 8, (addressType))
 
 	if _addressTypeErr != nil {
 		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")
@@ -136,22 +156,32 @@ func (m *S7Address) SerializeParent(io utils.WriteBuffer, child IS7Address, seri
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("S7Address"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -182,6 +212,7 @@ func (m *S7Address) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7Address) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -204,14 +235,26 @@ func (m *S7Address) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m S7Address) String() string {
-	return string(m.Box("S7Address", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m S7Address) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7Address"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *S7Address) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *S7Address) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "S7Address"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (addressType) (Used as input to a switch field)
+	addressType := uint8(m.Child.AddressType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AddressType", addressType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -90,7 +91,11 @@ func (m *S7MessageResponseData) GetTypeName() string {
 }
 
 func (m *S7MessageResponseData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7MessageResponseData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -105,18 +110,25 @@ func (m *S7MessageResponseData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageResponseDataParse(io *utils.ReadBuffer) (*S7Message, error) {
+func S7MessageResponseDataParse(io utils.ReadBuffer) (*S7Message, error) {
+	if pullErr := io.PullContext("S7MessageResponseData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (errorClass)
-	errorClass, _errorClassErr := io.ReadUint8(8)
+	errorClass, _errorClassErr := io.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 	}
 
 	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint8(8)
+	errorCode, _errorCodeErr := io.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field")
+	}
+
+	if closeErr := io.CloseContext("S7MessageResponseData"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -131,33 +143,42 @@ func S7MessageResponseDataParse(io *utils.ReadBuffer) (*S7Message, error) {
 
 func (m *S7MessageResponseData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("S7MessageResponseData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
-		_errorClassErr := io.WriteUint8(8, (errorClass))
+		_errorClassErr := io.WriteUint8("errorClass", 8, (errorClass))
 		if _errorClassErr != nil {
 			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
-		_errorCodeErr := io.WriteUint8(8, (errorCode))
+		_errorCodeErr := io.WriteUint8("errorCode", 8, (errorCode))
 		if _errorCodeErr != nil {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}
 
+		if popErr := io.PopContext("S7MessageResponseData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7MessageResponseData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "errorClass":
@@ -176,7 +197,7 @@ func (m *S7MessageResponseData) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -184,6 +205,7 @@ func (m *S7MessageResponseData) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7MessageResponseData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ErrorClass, xml.StartElement{Name: xml.Name{Local: "errorClass"}}); err != nil {
 		return err
@@ -195,15 +217,24 @@ func (m *S7MessageResponseData) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m S7MessageResponseData) String() string {
-	return string(m.Box("S7MessageResponseData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7MessageResponseData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7MessageResponseData"
+	boxName := "S7MessageResponseData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

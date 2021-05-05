@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequestInformationDeviceManagement) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationDeviceManagementParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	if pullErr := io.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("ConnectionRequestInformationDeviceManagement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequestInformationDeviceManagement{
@@ -103,26 +115,35 @@ func ConnectionRequestInformationDeviceManagementParse(io *utils.ReadBuffer) (*C
 
 func (m *ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ConnectionRequestInformationDeviceManagement"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("ConnectionRequestInformationDeviceManagement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *ConnectionRequestInformationDeviceManagement) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationDeviceManagement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m ConnectionRequestInformationDeviceManagement) String() string {
-	return string(m.Box("ConnectionRequestInformationDeviceManagement", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationDeviceManagement) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionRequestInformationDeviceManagement"
+	boxName := "ConnectionRequestInformationDeviceManagement"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

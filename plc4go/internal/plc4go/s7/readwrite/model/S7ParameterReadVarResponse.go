@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *S7ParameterReadVarResponse) GetTypeName() string {
 }
 
 func (m *S7ParameterReadVarResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *S7ParameterReadVarResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -101,12 +106,19 @@ func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterReadVarResponseParse(io utils.ReadBuffer) (*S7Parameter, error) {
+	if pullErr := io.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (numItems)
-	numItems, _numItemsErr := io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8("numItems", 8)
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field")
+	}
+
+	if closeErr := io.CloseContext("S7ParameterReadVarResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -120,26 +132,35 @@ func S7ParameterReadVarResponseParse(io *utils.ReadBuffer) (*S7Parameter, error)
 
 func (m *S7ParameterReadVarResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("S7ParameterReadVarResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (numItems)
 		numItems := uint8(m.NumItems)
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8("numItems", 8, (numItems))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}
 
+		if popErr := io.PopContext("S7ParameterReadVarResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *S7ParameterReadVarResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "numItems":
@@ -152,7 +173,7 @@ func (m *S7ParameterReadVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,6 +181,7 @@ func (m *S7ParameterReadVarResponse) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *S7ParameterReadVarResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NumItems, xml.StartElement{Name: xml.Name{Local: "numItems"}}); err != nil {
 		return err
@@ -168,14 +190,21 @@ func (m *S7ParameterReadVarResponse) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m S7ParameterReadVarResponse) String() string {
-	return string(m.Box("S7ParameterReadVarResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m S7ParameterReadVarResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "S7ParameterReadVarResponse"
+	boxName := "S7ParameterReadVarResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NumItems", m.NumItems, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumItems", m.NumItems, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

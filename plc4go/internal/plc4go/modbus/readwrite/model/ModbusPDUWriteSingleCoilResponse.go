@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -95,7 +96,11 @@ func (m *ModbusPDUWriteSingleCoilResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteSingleCoilResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteSingleCoilResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -110,18 +115,25 @@ func (m *ModbusPDUWriteSingleCoilResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteSingleCoilResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteSingleCoilResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUWriteSingleCoilResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint16(16)
+	value, _valueErr := io.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUWriteSingleCoilResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -136,33 +148,42 @@ func ModbusPDUWriteSingleCoilResponseParse(io *utils.ReadBuffer) (*ModbusPDU, er
 
 func (m *ModbusPDUWriteSingleCoilResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUWriteSingleCoilResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
-		_valueErr := io.WriteUint16(16, (value))
+		_valueErr := io.WriteUint16("value", 16, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		if popErr := io.PopContext("ModbusPDUWriteSingleCoilResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUWriteSingleCoilResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
@@ -181,7 +202,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) UnmarshalXML(d *xml.Decoder, start xm
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -189,6 +210,7 @@ func (m *ModbusPDUWriteSingleCoilResponse) UnmarshalXML(d *xml.Decoder, start xm
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUWriteSingleCoilResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
@@ -200,15 +222,24 @@ func (m *ModbusPDUWriteSingleCoilResponse) MarshalXML(e *xml.Encoder, start xml.
 }
 
 func (m ModbusPDUWriteSingleCoilResponse) String() string {
-	return string(m.Box("ModbusPDUWriteSingleCoilResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUWriteSingleCoilResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUWriteSingleCoilResponse"
+	boxName := "ModbusPDUWriteSingleCoilResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

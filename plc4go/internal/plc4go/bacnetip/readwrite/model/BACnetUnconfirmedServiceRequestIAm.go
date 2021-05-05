@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -104,7 +105,11 @@ func (m *BACnetUnconfirmedServiceRequestIAm) GetTypeName() string {
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -145,10 +150,13 @@ func (m *BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestIAm"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (objectIdentifierHeader)
-	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
+	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8("objectIdentifierHeader", 8)
 	if _objectIdentifierHeaderErr != nil {
 		return nil, errors.Wrap(_objectIdentifierHeaderErr, "Error parsing 'objectIdentifierHeader' field")
 	}
@@ -157,19 +165,19 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	}
 
 	// Simple Field (objectType)
-	objectType, _objectTypeErr := io.ReadUint16(10)
+	objectType, _objectTypeErr := io.ReadUint16("objectType", 10)
 	if _objectTypeErr != nil {
 		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field")
 	}
 
 	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
+	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32("objectInstanceNumber", 22)
 	if _objectInstanceNumberErr != nil {
 		return nil, errors.Wrap(_objectInstanceNumberErr, "Error parsing 'objectInstanceNumber' field")
 	}
 
 	// Const Field (maximumApduLengthAcceptedHeader)
-	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8(5)
+	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8("maximumApduLengthAcceptedHeader", 5)
 	if _maximumApduLengthAcceptedHeaderErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error parsing 'maximumApduLengthAcceptedHeader' field")
 	}
@@ -178,24 +186,30 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	}
 
 	// Simple Field (maximumApduLengthAcceptedLength)
-	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8(3)
+	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8("maximumApduLengthAcceptedLength", 3)
 	if _maximumApduLengthAcceptedLengthErr != nil {
 		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field")
 	}
 
 	// Array field (maximumApduLengthAccepted)
+	if pullErr := io.PullContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'maximumApduLengthAccepted' field")
 		}
 		maximumApduLengthAccepted[curItem] = _item
 	}
+	if closeErr := io.CloseContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (segmentationSupportedHeader)
-	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8(8)
+	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8("segmentationSupportedHeader", 8)
 	if _segmentationSupportedHeaderErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedHeaderErr, "Error parsing 'segmentationSupportedHeader' field")
 	}
@@ -204,13 +218,13 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	}
 
 	// Simple Field (segmentationSupported)
-	segmentationSupported, _segmentationSupportedErr := io.ReadUint8(8)
+	segmentationSupported, _segmentationSupportedErr := io.ReadUint8("segmentationSupported", 8)
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field")
 	}
 
 	// Const Field (vendorIdHeader)
-	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
+	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8("vendorIdHeader", 8)
 	if _vendorIdHeaderErr != nil {
 		return nil, errors.Wrap(_vendorIdHeaderErr, "Error parsing 'vendorIdHeader' field")
 	}
@@ -219,9 +233,13 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 	}
 
 	// Simple Field (vendorId)
-	vendorId, _vendorIdErr := io.ReadUint8(8)
+	vendorId, _vendorIdErr := io.ReadUint8("vendorId", 8)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field")
+	}
+
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestIAm"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -240,88 +258,103 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (*BACnetUncon
 
 func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestIAm"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (objectIdentifierHeader)
-		_objectIdentifierHeaderErr := io.WriteUint8(8, 0xC4)
+		_objectIdentifierHeaderErr := io.WriteUint8("objectIdentifierHeader", 8, 0xC4)
 		if _objectIdentifierHeaderErr != nil {
 			return errors.Wrap(_objectIdentifierHeaderErr, "Error serializing 'objectIdentifierHeader' field")
 		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
-		_objectTypeErr := io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16("objectType", 10, (objectType))
 		if _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
-		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32("objectInstanceNumber", 22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
 			return errors.Wrap(_objectInstanceNumberErr, "Error serializing 'objectInstanceNumber' field")
 		}
 
 		// Const Field (maximumApduLengthAcceptedHeader)
-		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8(5, 0x04)
+		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8("maximumApduLengthAcceptedHeader", 5, 0x04)
 		if _maximumApduLengthAcceptedHeaderErr != nil {
 			return errors.Wrap(_maximumApduLengthAcceptedHeaderErr, "Error serializing 'maximumApduLengthAcceptedHeader' field")
 		}
 
 		// Simple Field (maximumApduLengthAcceptedLength)
 		maximumApduLengthAcceptedLength := uint8(m.MaximumApduLengthAcceptedLength)
-		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		_maximumApduLengthAcceptedLengthErr := io.WriteUint8("maximumApduLengthAcceptedLength", 3, (maximumApduLengthAcceptedLength))
 		if _maximumApduLengthAcceptedLengthErr != nil {
 			return errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error serializing 'maximumApduLengthAcceptedLength' field")
 		}
 
 		// Array Field (maximumApduLengthAccepted)
 		if m.MaximumApduLengthAccepted != nil {
+			if pushErr := io.PushContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.MaximumApduLengthAccepted {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'maximumApduLengthAccepted' field")
 				}
 			}
+			if popErr := io.PopContext("maximumApduLengthAccepted", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (segmentationSupportedHeader)
-		_segmentationSupportedHeaderErr := io.WriteUint8(8, 0x91)
+		_segmentationSupportedHeaderErr := io.WriteUint8("segmentationSupportedHeader", 8, 0x91)
 		if _segmentationSupportedHeaderErr != nil {
 			return errors.Wrap(_segmentationSupportedHeaderErr, "Error serializing 'segmentationSupportedHeader' field")
 		}
 
 		// Simple Field (segmentationSupported)
 		segmentationSupported := uint8(m.SegmentationSupported)
-		_segmentationSupportedErr := io.WriteUint8(8, (segmentationSupported))
+		_segmentationSupportedErr := io.WriteUint8("segmentationSupported", 8, (segmentationSupported))
 		if _segmentationSupportedErr != nil {
 			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
 		}
 
 		// Const Field (vendorIdHeader)
-		_vendorIdHeaderErr := io.WriteUint8(8, 0x21)
+		_vendorIdHeaderErr := io.WriteUint8("vendorIdHeader", 8, 0x21)
 		if _vendorIdHeaderErr != nil {
 			return errors.Wrap(_vendorIdHeaderErr, "Error serializing 'vendorIdHeader' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
-		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8("vendorId", 8, (vendorId))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestIAm"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "objectType":
@@ -369,7 +402,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -377,6 +410,7 @@ func (m *BACnetUnconfirmedServiceRequestIAm) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ObjectType, xml.StartElement{Name: xml.Name{Local: "objectType"}}); err != nil {
 		return err
@@ -402,19 +436,50 @@ func (m *BACnetUnconfirmedServiceRequestIAm) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestIAm", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestIAm) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestIAm"
+	boxName := "BACnetUnconfirmedServiceRequestIAm"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, width-2))
-	boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAccepted", m.MaximumApduLengthAccepted, width-2))
-	boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, width-2))
-	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Const Field (objectIdentifierHeader)
+		boxes = append(boxes, utils.BoxAnything("ObjectIdentifierHeader", uint8(0xC4), -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectType", m.ObjectType, -1))
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ObjectInstanceNumber", m.ObjectInstanceNumber, -1))
+		// Const Field (maximumApduLengthAcceptedHeader)
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedHeader", uint8(0x04), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("MaximumApduLengthAcceptedLength", m.MaximumApduLengthAcceptedLength, -1))
+		// Array Field (maximumApduLengthAccepted)
+		if m.MaximumApduLengthAccepted != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.MaximumApduLengthAccepted {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("MaximumApduLengthAccepted", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Const Field (segmentationSupportedHeader)
+		boxes = append(boxes, utils.BoxAnything("SegmentationSupportedHeader", uint8(0x91), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SegmentationSupported", m.SegmentationSupported, -1))
+		// Const Field (vendorIdHeader)
+		boxes = append(boxes, utils.BoxAnything("VendorIdHeader", uint8(0x21), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

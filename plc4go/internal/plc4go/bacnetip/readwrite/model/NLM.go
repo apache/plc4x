@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -24,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -55,6 +57,7 @@ type INLMChild interface {
 	InitializeParent(parent *NLM, vendorId *uint16)
 	GetTypeName() string
 	INLM
+	utils.AsciiBoxer
 }
 
 func NewNLM(vendorId *uint16) *NLM {
@@ -79,6 +82,14 @@ func (m *NLM) GetTypeName() string {
 }
 
 func (m *NLM) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NLM) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *NLM) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 8
@@ -88,9 +99,6 @@ func (m *NLM) LengthInBits() uint16 {
 		lengthInBits += 16
 	}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
-
 	return lengthInBits
 }
 
@@ -98,10 +106,13 @@ func (m *NLM) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
+func NLMParse(io utils.ReadBuffer, apduLength uint16) (*NLM, error) {
+	if pullErr := io.PullContext("NLM"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := io.ReadUint8(8)
+	messageType, _messageTypeErr := io.ReadUint8("messageType", 8)
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field")
 	}
@@ -109,7 +120,7 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
 	var vendorId *uint16 = nil
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
-		_val, _err := io.ReadUint16(16)
+		_val, _err := io.ReadUint16("vendorId", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field")
 		}
@@ -124,9 +135,16 @@ func NLMParse(io *utils.ReadBuffer, apduLength uint16) (*NLM, error) {
 		_parent, typeSwitchError = NLMWhoIsRouterToNetworkParse(io, apduLength, messageType)
 	case messageType == 0x1: // NLMIAmRouterToNetwork
 		_parent, typeSwitchError = NLMIAmRouterToNetworkParse(io, apduLength, messageType)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("NLM"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -139,10 +157,13 @@ func (m *NLM) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("NLM"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.MessageType())
-	_messageTypeErr := io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8("messageType", 8, (messageType))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
@@ -152,7 +173,7 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 	var vendorId *uint16 = nil
 	if m.VendorId != nil {
 		vendorId = m.VendorId
-		_vendorIdErr := io.WriteUint16(16, *(vendorId))
+		_vendorIdErr := io.WriteUint16("vendorId", 16, *(vendorId))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
@@ -164,30 +185,48 @@ func (m *NLM) SerializeParent(io utils.WriteBuffer, child INLM, serializeChildFu
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("NLM"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "vendorId":
-				var data uint16
-				if err := d.DecodeElement(&data, &tok); err != nil {
+				// When working with pointers we need to check for an empty element
+				var dataString string
+				if err := d.DecodeElement(&dataString, &tok); err != nil {
 					return err
 				}
-				m.VendorId = &data
+				if dataString != "" {
+					atoi, err := strconv.Atoi(dataString)
+					if err != nil {
+						return err
+					}
+					data := uint16(atoi)
+					m.VendorId = &data
+				}
 			default:
 				attr := start.Attr
 				if attr == nil || len(attr) <= 0 {
@@ -228,6 +267,7 @@ func (m *NLM) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -253,15 +293,33 @@ func (m *NLM) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m NLM) String() string {
-	return string(m.Box("NLM", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m NLM) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "NLM"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *NLM) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *NLM) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "NLM"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("VendorId", m.VendorId, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (messageType) (Used as input to a switch field)
+	messageType := uint8(m.Child.MessageType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MessageType", messageType, -1))
+	// Optional Field (vendorId) (Can be skipped, if the value is null)
+	var vendorId *uint16 = nil
+	if m.VendorId != nil {
+		vendorId = m.VendorId
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("VendorId", *(vendorId), -1))
+	}
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

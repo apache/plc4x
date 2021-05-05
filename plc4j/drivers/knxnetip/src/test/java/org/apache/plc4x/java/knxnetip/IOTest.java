@@ -25,7 +25,9 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxNetIpMessageIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -36,7 +38,7 @@ public class IOTest {
     public void testXml() throws Exception {
         byte[] rData = Hex.decodeHex("061004200019047f02002900bce0110509d405008044a68000");
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData);
+        ReadBuffer rBuf = new ReadBufferByteBased(rData);
         KnxNetIpMessage packet = new KnxNetIpMessageIO().parse(rBuf);
         String xml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
         System.out.println(xml);
@@ -48,7 +50,7 @@ public class IOTest {
     public void testJson() throws Exception {
         byte[] rData = Hex.decodeHex("0610020500180801c0a82a46c4090801c0a82a46c40a0203");
         ObjectMapper mapper = new ObjectMapper().enableDefaultTyping();
-        ReadBuffer rBuf = new ReadBuffer(rData);
+        ReadBuffer rBuf = new ReadBufferByteBased(rData);
         KnxNetIpMessage packet = new KnxNetIpMessageIO().parse(rBuf);
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(packet);
         System.out.println(json);
@@ -67,7 +69,7 @@ public class IOTest {
         // Benchmark the parsing code
         KnxNetIpMessage packet = null;
         for(int i = 0; i < numRunsParse; i++) {
-            ReadBuffer rBuf = new ReadBuffer(rData);
+            ReadBuffer rBuf = new ReadBufferByteBased(rData);
             packet = KnxNetIpMessageIO.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
@@ -79,7 +81,7 @@ public class IOTest {
         int numRunsSerialize = 20000;
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
-            WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
+            WriteBufferByteBased wBuf = new WriteBufferByteBased(packet.getLengthInBytes());
             KnxNetIpMessageIO.staticSerialize(wBuf, packet);
             oData = wBuf.getData();
         }

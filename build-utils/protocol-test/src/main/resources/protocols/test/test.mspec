@@ -32,7 +32,8 @@
 
 [type 'FieldTypeTest'
     [simple         uint 8 'simpleField']
-    [abstract       unit 8  'abstractField']
+    //Abstract fields can only be used within discriminated base types.
+    //[abstract       unit 8  'abstractField']
     [array          uint 8  'arrayField'        count      '5']
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
@@ -51,26 +52,22 @@
     //[typeSwitch 'simpleField' ]
 ]
 
-//The following data types are not yet implemented but have a reference
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 8.23 'ufloatField']
+/*
+ * TODO: doesn't compile in java
+[type 'UFloatTypeTest'
+    [simple ufloat 8.23 'ufloatField']
+    [simple ufloat 11.52 'udoubleField']
+]
+*/
 
-//Not Implemented Yet In
-//TODO: -Java
-//[simple ufloat 11.52 'udoubleField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple time 8 'timeField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple date 8 'dateField']
-
-//Not Implemented Yet In
-//TODO: -Java
-//[simple dateTime 8 'dateTimeField']
+/*
+ * TODO: doesn't compile in java
+[type 'TimeTypeTest'
+    [simple time 8 'timeField']
+    [simple date 8 'dateField']
+    [simple dateTime 8 'dateTimeField']
+]
+*/
 
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
@@ -88,6 +85,28 @@
     [abstract float 8.23 'floatField']
     [abstract float 11.52 'doubleField']
     [abstract string '8' 'UTF-8' 'stringField']
+]
+
+[type 'AbstractTypeTest'
+    //Abstract fields can only be used within discriminated base types.
+    [simple   uint 8 'simpleField']
+    [abstract bit 'abstractBitField']
+    [abstract int 8 'abstractIntField']
+    [abstract uint 8 'abstractUintField']
+    [abstract float 8.23 'abstractFloatField']
+    [abstract float 11.52 'abstractDoubleField']
+    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [typeSwitch 'simpleField'
+        ['0' AbstractedType
+            //Abstract fields need to be overriden in child
+            [simple bit 'abstractBitField']
+            [simple int 8 'abstractIntField']
+            [simple uint 8 'abstractUintField']
+            [simple float 8.23 'abstractFloatField']
+            [simple float 11.52 'abstractDoubleField']
+            [simple string '8' 'UTF-8' 'abstractStringField']
+        ]
+    ]
 ]
 
 [type 'ArrayTypeTest'
@@ -113,7 +132,7 @@
 //]
 
 [type 'ConstTypeTest'
-    [const bit 'bitField' true]
+    [const bit 'bitField' 'true']
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
     [const float 8.23 'floatField' '100.0']
@@ -162,6 +181,33 @@
 [type 'ReservedTypeTest'
     [reserved       uint 8  '0x00']
 ]
+
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[type 'VirtualFieldTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'virtualStringField' 'simpleField']
+//]
+
+//TODO: Virtual fields fail for GO, haven't checked C assuming fails.
+//[discriminatedType 'DiscriminatedVirtualTypeTest'
+//    [simple  uint 8 'simpleField']
+//    [virtual bit 'virtualBitField' 'simpleField == 0']
+//    [virtual int 8 'virtualIntField' 'simpleField']
+//    [virtual uint 8 'virtualUintField' 'simpleField']
+//    [virtual float 8.23 'virtualFloatField' 'simpleField']
+//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual string '24' 'UTF-8' 'virtualStringField' 'simpleField']
+//    [typeSwitch 'simpleField'
+//        ['0' DiscriminatedVirtualType
+//            [simple int 8 'intField']
+//        ]
+//    ]
+//]
 
 [type 'IntTypeTest'
     [simple int 3 'ThreeField']
@@ -272,11 +318,6 @@
 // Enumerated Type Tests
 ////////////////////////////////////////////////////////////////
 
-//Not really useful, but this uses the pojo templates instead of the enum templates
-[enum int 8 'EnumEmpty'
-
-]
-
 [enum bit 'EnumTypeBit'
     ['true' TRUE]
     ['false' FALSE]
@@ -322,8 +363,8 @@
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
 //[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
-//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'IEC61131_BOOL'         , 'BOOL']]
-//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'IEC61131_BYTE'         , 'UINT']]
+//    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
+//    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
 //TODO:  Keyword named parameters aren't allowed
@@ -334,17 +375,13 @@
 
 //Showing allowed parameter types for enums
 [enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string '-1' 'stringType', EnumType 'enumType']
-    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'IEC61131_BOOL'         , 'BOOL']]
-    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'IEC61131_BYTE'         , 'UINT']]
+    ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
+    ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]
 
 ////////////////////////////////////////////////////////////////
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
-
-[dataIo 'DataIOTypeEmpty'
-
-]
 
 [dataIo 'DataIOType' [EnumType 'dataType']
     [typeSwitch 'dataType'

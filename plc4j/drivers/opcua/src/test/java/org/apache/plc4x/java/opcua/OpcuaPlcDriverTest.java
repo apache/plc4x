@@ -83,7 +83,7 @@ public class OpcuaPlcDriverTest {
 
     //Arrays
     private static final String BOOL_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/BooleanArray";
-    private static final String BYTE_STRING_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/ByteStringArray";
+    //private static final String BYTE_STRING_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/ByteStringArray";
     private static final String BYTE_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/ByteArray";
     private static final String DOUBLE_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DoubleArray";
     private static final String FLOAT_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/FloatArray";
@@ -206,7 +206,7 @@ public class OpcuaPlcDriverTest {
             builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
 
             builder.addItem("BoolArray", BOOL_ARRAY_IDENTIFIER);
-            builder.addItem("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
+            //builder.addItem("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
             builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER);
             builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
             builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER);
@@ -267,7 +267,7 @@ public class OpcuaPlcDriverTest {
 
         PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
         builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ":BYTE", 3);
+        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ":BYTE", (short) 3);
         builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
         builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
         builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + ":INT", 1);

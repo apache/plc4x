@@ -16,24 +16,46 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package main
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/rs/zerolog/log"
+	"os"
 	"time"
 )
 
 func main() {
+	// Set logging to INFO
+	logging.InfoLevel()
+
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 
-	// Try to auto-find KNX gateways via broadcast-message discovery
-	_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
-		connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
+	var connectionStrings []string
+	if len(os.Args) < 2 {
+		// Try to auto-find KNX gateways via broadcast-message discovery
+		_ = driverManager.Discover(func(event model.PlcDiscoveryEvent) {
+			connStr := event.ProtocolCode + "://" + event.TransportUrl.Host
+			log.Info().Str("connection string", connStr).Msg("Found KNX Gateway")
+
+			connectionStrings = append(connectionStrings, connStr)
+		})
+		// Wait for 5 seconds for incoming responses
+		time.Sleep(time.Second * 5)
+	} else {
+		connStr := "knxnet-ip://" + os.Args[1] + ":3671"
+		log.Info().Str("connection string", connStr).Msg("Using manually provided KNX Gateway")
+		connectionStrings = append(connectionStrings, connStr)
+	}
+
+	for _, connStr := range connectionStrings {
+		log.Info().Str("connection string", connStr).Msg("Connecting")
 		crc := driverManager.GetConnection(connStr)
 
 		// Wait for the driver to connect (or not)
@@ -42,15 +64,16 @@ func main() {
 			log.Error().Msgf("error connecting to PLC: %s", connectionResult.Err.Error())
 			return
 		}
+		log.Info().Str("connection string", connStr).Msg("Connected")
 		connection := connectionResult.Connection
 		defer connection.BlockingClose()
 
 		// Try to find all KNX devices on the current network
-		browseRequestBuilder := connection.BrowseRequestBuilder()
-		//browseRequestBuilder.AddItem("allDevices", "[1-15].[1-15].[0-255]")
-		browseRequestBuilder.AddItem("allMyDevices", "[1-3].[1-6].[0-60]")
-		//browseRequestBuilder.AddItem("onlyOneDevice", "1.1.20")
-		browseRequest, err := browseRequestBuilder.Build()
+		browseRequest, err := connection.BrowseRequestBuilder().
+			AddItem("allDevices", "[1-15].[1-15].[0-255]").
+			//AddItem("allMyDevices", "[1-3].[1-6].[0-60]").
+			//AddItem("onlyOneDevice", "1.1.20")
+			Build()
 		if err != nil {
 			log.Error().Err(err).Msg("error creating browse request")
 			return
@@ -61,9 +84,9 @@ func main() {
 			log.Info().Msgf("Inspecting detected Device at KNX Address: %s", knxAddress)
 
 			// Try to get all the com-objects and the group addresses they are attached to.
-			browseRequestBuilder = connection.BrowseRequestBuilder()
-			browseRequestBuilder.AddItem("comObjects", knxAddress+"#com-obj")
-			browseRequest, err := browseRequestBuilder.Build()
+			browseRequest, err := connection.BrowseRequestBuilder().
+				AddItem("comObjects", knxAddress+"#com-obj").
+				Build()
 			if err != nil {
 				log.Error().Err(err).Msg("error creating read request")
 				return false
@@ -94,10 +117,10 @@ func main() {
 				log.Info().Msgf(" - %15s (%s) %s", result.Field.GetAddressString(), permissions, result.Name)
 			}
 
-			readRequestBuilder := connection.ReadRequestBuilder()
-			readRequestBuilder.AddQuery("applicationProgramVersion", knxAddress+"#3/13")
-			readRequestBuilder.AddQuery("interfaceProgramVersion", knxAddress+"#4/13")
-			readRequest, err := readRequestBuilder.Build()
+			readRequest, err := connection.ReadRequestBuilder().
+				AddQuery("applicationProgramVersion", knxAddress+"#3/13").
+				AddQuery("interfaceProgramVersion", knxAddress+"#4/13").
+				Build()
 			if err != nil {
 				log.Error().Msgf("Error creating read request for scanning %s", knxAddress)
 				return false
@@ -123,22 +146,22 @@ func main() {
 			applicationVersionMajor := uint8(0)
 			applicationVersionMinor := uint8(0)
 			if rb.GetTotalBytes() == 5 {
-				manufacturerId, err = rb.ReadUint16(16)
+				manufacturerId, err = rb.ReadUint16("manufacturerId", 16)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading manufacturer id from")
 					return false
 				}
-				applicationId, err = rb.ReadUint16(16)
+				applicationId, err = rb.ReadUint16("applicationId", 16)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application id from")
 					return false
 				}
-				applicationVersionMajor, err = rb.ReadUint8(4)
+				applicationVersionMajor, err = rb.ReadUint8("applicationVersionMajor", 4)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application version major from %s", knxAddress)
 					return false
 				}
-				applicationVersionMinor, err = rb.ReadUint8(4)
+				applicationVersionMinor, err = rb.ReadUint8("applicationVersionMinor", 4)
 				if err != nil {
 					log.Error().Err(err).Msgf("Error reading application version minor from %s", knxAddress)
 					return false
@@ -159,7 +182,5 @@ func main() {
 			log.Info().Msgf("Browse Request Result:\n%v", browseRequestResult)
 		}
 		return
-	})
-
-	time.Sleep(time.Second * 1000000)
+	}
 }

@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type ReturnCode uint32
 
 type IReturnCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -156,6 +160,135 @@ const (
 	ReturnCode_WSAECONNREFUSED                    ReturnCode = 0x274D
 	ReturnCode_WSAEHOSTUNREACH                    ReturnCode = 0x2751
 )
+
+var ReturnCodeValues []ReturnCode
+
+func init() {
+	ReturnCodeValues = []ReturnCode{
+		ReturnCode_OK,
+		ReturnCode_INTERNAL_ERROR,
+		ReturnCode_NO_REALTIME,
+		ReturnCode_SAVE_ERROR,
+		ReturnCode_MAILBOX_FULL,
+		ReturnCode_WRONG_HMSG,
+		ReturnCode_TARGET_PORT_NOT_FOUND,
+		ReturnCode_TARGET_HOST_NOT_FOUND,
+		ReturnCode_UNKNOWN_COMMAND_ID,
+		ReturnCode_UNKNOWN_TASK_ID,
+		ReturnCode_NO_IO,
+		ReturnCode_UNKNOWN_ADS_COMMAND,
+		ReturnCode_WIN32_ERROR,
+		ReturnCode_PORT_NOT_CONNECTED,
+		ReturnCode_INVALID_ADS_LENGTH,
+		ReturnCode_INVALID_AMS_NET_ID,
+		ReturnCode_LOW_INSTALLATION_LEVEL,
+		ReturnCode_NO_DEBUGGING_AVAILABLE,
+		ReturnCode_PORT_DEACTIVATED,
+		ReturnCode_PORT_ALREADY_CONNECTED,
+		ReturnCode_ADS_SYNC_WIN32_ERROR,
+		ReturnCode_ADS_SYNC_TIMEOUT,
+		ReturnCode_ADS_SYNC_AMS_ERROR,
+		ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE,
+		ReturnCode_INVALID_ADS_PORT,
+		ReturnCode_NO_MEMORY,
+		ReturnCode_TCP_SENDING_ERROR,
+		ReturnCode_HOST_NOT_REACHABLE,
+		ReturnCode_INVALID_AMS_FRAGMENT,
+		ReturnCode_ROUTERERR_NOLOCKEDMEMORY,
+		ReturnCode_ROUTERERR_RESIZEMEMORY,
+		ReturnCode_ROUTERERR_MAILBOXFULL,
+		ReturnCode_ROUTERERR_DEBUGBOXFULL,
+		ReturnCode_ROUTERERR_UNKNOWNPORTTYPE,
+		ReturnCode_ROUTERERR_NOTINITIALIZED,
+		ReturnCode_ROUTERERR_PORTALREADYINUSE,
+		ReturnCode_ROUTERERR_NOTREGISTERED,
+		ReturnCode_ROUTERERR_NOMOREQUEUES,
+		ReturnCode_ROUTERERR_INVALIDPORT,
+		ReturnCode_ROUTERERR_NOTACTIVATED,
+		ReturnCode_ADSERR_DEVICE_ERROR,
+		ReturnCode_ADSERR_DEVICE_SRVNOTSUPP,
+		ReturnCode_ADSERR_DEVICE_INVALIDGRP,
+		ReturnCode_ADSERR_DEVICE_INVALIDOFFSET,
+		ReturnCode_ADSERR_DEVICE_INVALIDACCESS,
+		ReturnCode_ADSERR_DEVICE_INVALIDSIZE,
+		ReturnCode_ADSERR_DEVICE_INVALIDDATA,
+		ReturnCode_ADSERR_DEVICE_NOTREADY,
+		ReturnCode_ADSERR_DEVICE_BUSY,
+		ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT,
+		ReturnCode_ADSERR_DEVICE_NOMEMORY,
+		ReturnCode_ADSERR_DEVICE_INVALIDPARM,
+		ReturnCode_ADSERR_DEVICE_NOTFOUND,
+		ReturnCode_ADSERR_DEVICE_SYNTAX,
+		ReturnCode_ADSERR_DEVICE_INCOMPATIBLE,
+		ReturnCode_ADSERR_DEVICE_EXISTS,
+		ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND,
+		ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID,
+		ReturnCode_ADSERR_DEVICE_INVALIDSTATE,
+		ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP,
+		ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID,
+		ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN,
+		ReturnCode_ADSERR_DEVICE_NOMOREHDLS,
+		ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE,
+		ReturnCode_ADSERR_DEVICE_NOTINIT,
+		ReturnCode_ADSERR_DEVICE_TIMEOUT,
+		ReturnCode_ADSERR_DEVICE_NOINTERFACE,
+		ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE,
+		ReturnCode_ADSERR_DEVICE_INVALIDCLSID,
+		ReturnCode_ADSERR_DEVICE_INVALIDOBJID,
+		ReturnCode_ADSERR_DEVICE_PENDING,
+		ReturnCode_ADSERR_DEVICE_ABORTED,
+		ReturnCode_ADSERR_DEVICE_WARNING,
+		ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX,
+		ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE,
+		ReturnCode_ADSERR_DEVICE_ACCESSDENIED,
+		ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND,
+		ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED,
+		ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED,
+		ReturnCode_ADSERR_DEVICE_LICENSEINVALID,
+		ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID,
+		ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT,
+		ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE,
+		ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG,
+		ReturnCode_ADSERR_DEVICE_EXCEPTION,
+		ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED,
+		ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID,
+		ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID,
+		ReturnCode_ADSERR_CLIENT_ERROR,
+		ReturnCode_ADSERR_CLIENT_INVALIDPARM,
+		ReturnCode_ADSERR_CLIENT_LISTEMPTY,
+		ReturnCode_ADSERR_CLIENT_VARUSED,
+		ReturnCode_ADSERR_CLIENT_DUPLINVOKEID,
+		ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT,
+		ReturnCode_ADSERR_CLIENT_W32ERROR,
+		ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID,
+		ReturnCode_ADSERR_CLIENT_PORTNOTOPEN,
+		ReturnCode_ADSERR_CLIENT_NOAMSADDR,
+		ReturnCode_ADSERR_CLIENT_SYNCINTERNAL,
+		ReturnCode_ADSERR_CLIENT_ADDHASH,
+		ReturnCode_ADSERR_CLIENT_REMOVEHASH,
+		ReturnCode_ADSERR_CLIENT_NOMORESYM,
+		ReturnCode_ADSERR_CLIENT_SYNCRESINVALID,
+		ReturnCode_RTERR_INTERNAL,
+		ReturnCode_RTERR_BADTIMERPERIODS,
+		ReturnCode_RTERR_INVALIDTASKPTR,
+		ReturnCode_RTERR_INVALIDSTACKPTR,
+		ReturnCode_RTERR_PRIOEXISTS,
+		ReturnCode_RTERR_NOMORETCB,
+		ReturnCode_RTERR_NOMORESEMAS,
+		ReturnCode_RTERR_NOMOREQUEUES,
+		ReturnCode_RTERR_EXTIRQALREADYDEF,
+		ReturnCode_RTERR_EXTIRQNOTDEF,
+		ReturnCode_RTERR_EXTIRQINSTALLFAILED,
+		ReturnCode_RTERR_IRQLNOTLESSOREQUAL,
+		ReturnCode_RTERR_VMXNOTSUPPORTED,
+		ReturnCode_RTERR_VMXDISABLED,
+		ReturnCode_RTERR_VMXCONTROLSMISSING,
+		ReturnCode_RTERR_VMXENABLEFAILS,
+		ReturnCode_WSAETIMEDOUT,
+		ReturnCode_WSAECONNREFUSED,
+		ReturnCode_WSAEHOSTUNREACH,
+	}
+}
 
 func ReturnCodeByValue(value uint32) ReturnCode {
 	switch value {
@@ -675,8 +808,8 @@ func (m ReturnCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ReturnCodeParse(io *utils.ReadBuffer) (ReturnCode, error) {
-	val, err := io.ReadUint32(32)
+func ReturnCodeParse(io utils.ReadBuffer) (ReturnCode, error) {
+	val, err := io.ReadUint32("ReturnCode", 32)
 	if err != nil {
 		return 0, nil
 	}
@@ -684,10 +817,11 @@ func ReturnCodeParse(io *utils.ReadBuffer) (ReturnCode, error) {
 }
 
 func (e ReturnCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32(32, uint32(e))
+	err := io.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ReturnCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -707,7 +841,15 @@ func (m *ReturnCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-func (e ReturnCode) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ReturnCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ReturnCode) name() string {
 	switch e {
 	case ReturnCode_OK:
 		return "OK"
@@ -955,4 +1097,17 @@ func (e ReturnCode) String() string {
 		return "ADSERR_CLIENT_SYNCRESINVALID"
 	}
 	return ""
+}
+
+func (e ReturnCode) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ReturnCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "ReturnCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }

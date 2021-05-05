@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *BVLCOriginalUnicastNPDU) GetTypeName() string {
 }
 
 func (m *BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLCOriginalUnicastNPDU) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.LengthInBits()
@@ -97,12 +102,26 @@ func (m *BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+func BVLCOriginalUnicastNPDUParse(io utils.ReadBuffer, bvlcLength uint16) (*BVLC, error) {
+	if pullErr := io.PullContext("BVLCOriginalUnicastNPDU"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("npdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (npdu)
 	npdu, _npduErr := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field")
+	}
+	if closeErr := io.CloseContext("npdu"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("BVLCOriginalUnicastNPDU"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,25 +135,40 @@ func BVLCOriginalUnicastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (*BVL
 
 func (m *BVLCOriginalUnicastNPDU) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BVLCOriginalUnicastNPDU"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (npdu)
+		if pushErr := io.PushContext("npdu"); pushErr != nil {
+			return pushErr
+		}
 		_npduErr := m.Npdu.Serialize(io)
+		if popErr := io.PopContext("npdu"); popErr != nil {
+			return popErr
+		}
 		if _npduErr != nil {
 			return errors.Wrap(_npduErr, "Error serializing 'npdu' field")
 		}
 
+		if popErr := io.PopContext("BVLCOriginalUnicastNPDU"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "npdu":
@@ -147,7 +181,7 @@ func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -155,6 +189,7 @@ func (m *BVLCOriginalUnicastNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Npdu, xml.StartElement{Name: xml.Name{Local: "npdu"}}); err != nil {
 		return err
@@ -163,14 +198,20 @@ func (m *BVLCOriginalUnicastNPDU) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m BVLCOriginalUnicastNPDU) String() string {
-	return string(m.Box("BVLCOriginalUnicastNPDU", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BVLCOriginalUnicastNPDU) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BVLCOriginalUnicastNPDU"
+	boxName := "BVLCOriginalUnicastNPDU"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Npdu", m.Npdu, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Npdu.Box("npdu", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

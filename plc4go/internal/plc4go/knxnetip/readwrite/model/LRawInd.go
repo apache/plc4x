@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *LRawInd) GetTypeName() string {
 }
 
 func (m *LRawInd) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LRawInd) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *LRawInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LRawIndParse(io *utils.ReadBuffer) (*CEMI, error) {
+func LRawIndParse(io utils.ReadBuffer) (*CEMI, error) {
+	if pullErr := io.PullContext("LRawInd"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("LRawInd"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &LRawInd{
@@ -103,26 +115,35 @@ func LRawIndParse(io *utils.ReadBuffer) (*CEMI, error) {
 
 func (m *LRawInd) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("LRawInd"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("LRawInd"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LRawInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *LRawInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LRawInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m LRawInd) String() string {
-	return string(m.Box("LRawInd", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LRawInd) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LRawInd"
+	boxName := "LRawInd"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

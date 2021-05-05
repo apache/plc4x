@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IApduDataExtChild interface {
 	InitializeParent(parent *ApduDataExt)
 	GetTypeName() string
 	IApduDataExt
+	utils.AsciiBoxer
 }
 
 func NewApduDataExt() *ApduDataExt {
@@ -78,12 +80,17 @@ func (m *ApduDataExt) GetTypeName() string {
 }
 
 func (m *ApduDataExt) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExt) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ApduDataExt) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (extApciType)
 	lengthInBits += 6
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *ApduDataExt) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+func ApduDataExtParse(io utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExt"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
-	extApciType, _extApciTypeErr := io.ReadUint8(6)
+	extApciType, _extApciTypeErr := io.ReadUint8("extApciType", 6)
 	if _extApciTypeErr != nil {
 		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field")
 	}
@@ -186,9 +196,16 @@ func ApduDataExtParse(io *utils.ReadBuffer, length uint8) (*ApduDataExt, error) 
 		_parent, typeSwitchError = ApduDataExtDomainAddressSerialNumberWriteParse(io)
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
 		_parent, typeSwitchError = ApduDataExtFileStreamInfoReportParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("ApduDataExt"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -201,10 +218,13 @@ func (m *ApduDataExt) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("ApduDataExt"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.ExtApciType())
-	_extApciTypeErr := io.WriteUint8(6, (extApciType))
+	_extApciTypeErr := io.WriteUint8("extApciType", 6, (extApciType))
 
 	if _extApciTypeErr != nil {
 		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")
@@ -216,22 +236,270 @@ func (m *ApduDataExt) SerializeParent(io utils.WriteBuffer, child IApduDataExt, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("ApduDataExt"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ApduDataExtOpenRoutingTableRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtOpenRoutingTableRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtOpenRoutingTableRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRoutingTableRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRoutingTableRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRoutingTableRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRoutingTableResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRoutingTableResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRoutingTableResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtWriteRoutingTableRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtWriteRoutingTableRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtWriteRoutingTableRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRouterMemoryRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRouterMemoryRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRouterMemoryRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRouterMemoryResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRouterMemoryResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRouterMemoryResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtWriteRouterMemoryRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtWriteRouterMemoryRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtWriteRouterMemoryRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRouterStatusRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRouterStatusRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRouterStatusRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtReadRouterStatusResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtReadRouterStatusResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtReadRouterStatusResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtWriteRouterStatusRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtWriteRouterStatusRequest":
+			if m.Child == nil {
+				m.Child = &ApduDataExtWriteRouterStatusRequest{
+					Parent: m,
+				}
+			}
+		// ApduDataExtMemoryBitWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtMemoryBitWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtMemoryBitWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtKeyWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtKeyWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtKeyWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtKeyResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtKeyResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtKeyResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtNetworkParameterRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtNetworkParameterRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtNetworkParameterRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtNetworkParameterResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtNetworkParameterResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtNetworkParameterResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtIndividualAddressSerialNumberRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtIndividualAddressSerialNumberRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtIndividualAddressSerialNumberRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtIndividualAddressSerialNumberResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtIndividualAddressSerialNumberResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtIndividualAddressSerialNumberResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtIndividualAddressSerialNumberWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtIndividualAddressSerialNumberWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtIndividualAddressSerialNumberWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressSelectiveRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressSelectiveRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressSelectiveRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtNetworkParameterWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtNetworkParameterWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtNetworkParameterWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtLinkRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtLinkRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtLinkRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtLinkResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtLinkResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtLinkResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtLinkWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtLinkWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtLinkWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtGroupPropertyValueRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtGroupPropertyValueRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtGroupPropertyValueRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtGroupPropertyValueResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtGroupPropertyValueResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtGroupPropertyValueResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtGroupPropertyValueWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtGroupPropertyValueWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtGroupPropertyValueWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtGroupPropertyValueInfoReport needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtGroupPropertyValueInfoReport":
+			if m.Child == nil {
+				m.Child = &ApduDataExtGroupPropertyValueInfoReport{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressSerialNumberRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressSerialNumberRead":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressSerialNumberRead{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressSerialNumberResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressSerialNumberResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressSerialNumberResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataExtDomainAddressSerialNumberWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtDomainAddressSerialNumberWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataExtDomainAddressSerialNumberWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataExtFileStreamInfoReport needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataExtFileStreamInfoReport":
+			if m.Child == nil {
+				m.Child = &ApduDataExtFileStreamInfoReport{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -742,6 +1010,7 @@ func (m *ApduDataExt) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -764,14 +1033,26 @@ func (m *ApduDataExt) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m ApduDataExt) String() string {
-	return string(m.Box("ApduDataExt", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m ApduDataExt) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExt"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduDataExt) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduDataExt) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ApduDataExt"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (extApciType) (Used as input to a switch field)
+	extApciType := uint8(m.Child.ExtApciType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ExtApciType", extApciType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

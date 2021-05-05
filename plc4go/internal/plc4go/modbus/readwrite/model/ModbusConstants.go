@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -66,6 +67,10 @@ func (m *ModbusConstants) GetTypeName() string {
 }
 
 func (m *ModbusConstants) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusConstants) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (modbusTcpDefaultPort)
@@ -78,10 +83,13 @@ func (m *ModbusConstants) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusConstantsParse(io *utils.ReadBuffer) (*ModbusConstants, error) {
+func ModbusConstantsParse(io utils.ReadBuffer) (*ModbusConstants, error) {
+	if pullErr := io.PullContext("ModbusConstants"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (modbusTcpDefaultPort)
-	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
+	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16("modbusTcpDefaultPort", 16)
 	if _modbusTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field")
 	}
@@ -89,34 +97,47 @@ func ModbusConstantsParse(io *utils.ReadBuffer) (*ModbusConstants, error) {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", ModbusConstants_MODBUSTCPDEFAULTPORT) + " but got " + fmt.Sprintf("%d", modbusTcpDefaultPort))
 	}
 
+	if closeErr := io.CloseContext("ModbusConstants"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Create the instance
 	return NewModbusConstants(), nil
 }
 
 func (m *ModbusConstants) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("ModbusConstants"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (modbusTcpDefaultPort)
-	_modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
+	_modbusTcpDefaultPortErr := io.WriteUint16("modbusTcpDefaultPort", 16, 502)
 	if _modbusTcpDefaultPortErr != nil {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}
 
+	if popErr := io.PopContext("ModbusConstants"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusConstants) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
@@ -124,6 +145,7 @@ func (m *ModbusConstants) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.modbus.readwrite.ModbusConstants"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -138,13 +160,17 @@ func (m *ModbusConstants) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m ModbusConstants) String() string {
-	return string(m.Box("ModbusConstants", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusConstants) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusConstants"
+	boxName := "ModbusConstants"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Const Field (modbusTcpDefaultPort)
+	boxes = append(boxes, utils.BoxAnything("ModbusTcpDefaultPort", uint16(502), -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -106,7 +107,11 @@ func (m *LDataExtended) GetTypeName() string {
 }
 
 func (m *LDataExtended) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataExtended) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (groupAddress)
 	lengthInBits += 1
@@ -138,24 +143,31 @@ func (m *LDataExtended) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataExtendedParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataExtendedParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	if pullErr := io.PullContext("LDataExtended"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (groupAddress)
-	groupAddress, _groupAddressErr := io.ReadBit()
+	groupAddress, _groupAddressErr := io.ReadBit("groupAddress")
 	if _groupAddressErr != nil {
 		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field")
 	}
 
 	// Simple Field (hopCount)
-	hopCount, _hopCountErr := io.ReadUint8(3)
+	hopCount, _hopCountErr := io.ReadUint8("hopCount", 3)
 	if _hopCountErr != nil {
 		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field")
 	}
 
 	// Simple Field (extendedFrameFormat)
-	extendedFrameFormat, _extendedFrameFormatErr := io.ReadUint8(4)
+	extendedFrameFormat, _extendedFrameFormatErr := io.ReadUint8("extendedFrameFormat", 4)
 	if _extendedFrameFormatErr != nil {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field")
+	}
+
+	if pullErr := io.PullContext("sourceAddress"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (sourceAddress)
@@ -163,29 +175,49 @@ func LDataExtendedParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	if closeErr := io.CloseContext("sourceAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (destinationAddress)
+	if pullErr := io.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	destinationAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
 		}
 		destinationAddress[curItem] = _item
 	}
+	if closeErr := io.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint8(8)
+	dataLength, _dataLengthErr := io.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
+	}
+
+	if pullErr := io.PullContext("apdu"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (apdu)
 	apdu, _apduErr := ApduParse(io, dataLength)
 	if _apduErr != nil {
 		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field")
+	}
+	if closeErr := io.CloseContext("apdu"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("LDataExtended"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -204,69 +236,96 @@ func LDataExtendedParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LDataExtended) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("LDataExtended"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.GroupAddress)
-		_groupAddressErr := io.WriteBit((groupAddress))
+		_groupAddressErr := io.WriteBit("groupAddress", (groupAddress))
 		if _groupAddressErr != nil {
 			return errors.Wrap(_groupAddressErr, "Error serializing 'groupAddress' field")
 		}
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.HopCount)
-		_hopCountErr := io.WriteUint8(3, (hopCount))
+		_hopCountErr := io.WriteUint8("hopCount", 3, (hopCount))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}
 
 		// Simple Field (extendedFrameFormat)
 		extendedFrameFormat := uint8(m.ExtendedFrameFormat)
-		_extendedFrameFormatErr := io.WriteUint8(4, (extendedFrameFormat))
+		_extendedFrameFormatErr := io.WriteUint8("extendedFrameFormat", 4, (extendedFrameFormat))
 		if _extendedFrameFormatErr != nil {
 			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
 		}
 
 		// Simple Field (sourceAddress)
+		if pushErr := io.PushContext("sourceAddress"); pushErr != nil {
+			return pushErr
+		}
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
+		if popErr := io.PopContext("sourceAddress"); popErr != nil {
+			return popErr
+		}
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
+			if pushErr := io.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DestinationAddress {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 				}
+			}
+			if popErr := io.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
 			}
 		}
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
-		_dataLengthErr := io.WriteUint8(8, (dataLength))
+		_dataLengthErr := io.WriteUint8("dataLength", 8, (dataLength))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 		}
 
 		// Simple Field (apdu)
+		if pushErr := io.PushContext("apdu"); pushErr != nil {
+			return pushErr
+		}
 		_apduErr := m.Apdu.Serialize(io)
+		if popErr := io.PopContext("apdu"); popErr != nil {
+			return popErr
+		}
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}
 
+		if popErr := io.PopContext("LDataExtended"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "groupAddress":
@@ -307,6 +366,9 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 			case "apdu":
 				var dt *Apdu
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Apdu = dt
@@ -314,7 +376,7 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -322,6 +384,7 @@ func (m *LDataExtended) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LDataExtended) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.GroupAddress, xml.StartElement{Name: xml.Name{Local: "groupAddress"}}); err != nil {
 		return err
@@ -347,19 +410,44 @@ func (m *LDataExtended) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m LDataExtended) String() string {
-	return string(m.Box("LDataExtended", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LDataExtended) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LDataExtended"
+	boxName := "LDataExtended"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, width-2))
-	boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, width-2))
-	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("DestinationAddress", m.DestinationAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("Apdu", m.Apdu, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("GroupAddress", m.GroupAddress, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("HopCount", m.HopCount, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ExtendedFrameFormat", m.ExtendedFrameFormat, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.SourceAddress.Box("sourceAddress", width-2))
+		// Array Field (destinationAddress)
+		if m.DestinationAddress != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DestinationAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DestinationAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Implicit Field (dataLength)
+		dataLength := uint8(uint8(m.Apdu.LengthInBytes()) - uint8(uint8(1)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Apdu.Box("apdu", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

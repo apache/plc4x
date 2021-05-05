@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -99,7 +100,11 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) GetTypeName() string {
 }
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -129,10 +134,13 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(io utils.ReadBuffer) (*CEMIAdditionalInformation, error) {
+	if pullErr := io.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (len)
-	len, _lenErr := io.ReadUint8(8)
+	len, _lenErr := io.ReadUint8("len", 8)
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
@@ -141,39 +149,43 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAd
 	}
 
 	// Simple Field (frameErrorFlag)
-	frameErrorFlag, _frameErrorFlagErr := io.ReadBit()
+	frameErrorFlag, _frameErrorFlagErr := io.ReadBit("frameErrorFlag")
 	if _frameErrorFlagErr != nil {
 		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field")
 	}
 
 	// Simple Field (bitErrorFlag)
-	bitErrorFlag, _bitErrorFlagErr := io.ReadBit()
+	bitErrorFlag, _bitErrorFlagErr := io.ReadBit("bitErrorFlag")
 	if _bitErrorFlagErr != nil {
 		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field")
 	}
 
 	// Simple Field (parityErrorFlag)
-	parityErrorFlag, _parityErrorFlagErr := io.ReadBit()
+	parityErrorFlag, _parityErrorFlagErr := io.ReadBit("parityErrorFlag")
 	if _parityErrorFlagErr != nil {
 		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field")
 	}
 
 	// Simple Field (unknownFlag)
-	unknownFlag, _unknownFlagErr := io.ReadBit()
+	unknownFlag, _unknownFlagErr := io.ReadBit("unknownFlag")
 	if _unknownFlagErr != nil {
 		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field")
 	}
 
 	// Simple Field (lostFlag)
-	lostFlag, _lostFlagErr := io.ReadBit()
+	lostFlag, _lostFlagErr := io.ReadBit("lostFlag")
 	if _lostFlagErr != nil {
 		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field")
 	}
 
 	// Simple Field (sequenceNumber)
-	sequenceNumber, _sequenceNumberErr := io.ReadUint8(3)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8("sequenceNumber", 3)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field")
+	}
+
+	if closeErr := io.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -192,67 +204,76 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (*CEMIAd
 
 func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("CEMIAdditionalInformationBusmonitorInfo"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (len)
-		_lenErr := io.WriteUint8(8, 1)
+		_lenErr := io.WriteUint8("len", 8, 1)
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (frameErrorFlag)
 		frameErrorFlag := bool(m.FrameErrorFlag)
-		_frameErrorFlagErr := io.WriteBit((frameErrorFlag))
+		_frameErrorFlagErr := io.WriteBit("frameErrorFlag", (frameErrorFlag))
 		if _frameErrorFlagErr != nil {
 			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
 		}
 
 		// Simple Field (bitErrorFlag)
 		bitErrorFlag := bool(m.BitErrorFlag)
-		_bitErrorFlagErr := io.WriteBit((bitErrorFlag))
+		_bitErrorFlagErr := io.WriteBit("bitErrorFlag", (bitErrorFlag))
 		if _bitErrorFlagErr != nil {
 			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
 		}
 
 		// Simple Field (parityErrorFlag)
 		parityErrorFlag := bool(m.ParityErrorFlag)
-		_parityErrorFlagErr := io.WriteBit((parityErrorFlag))
+		_parityErrorFlagErr := io.WriteBit("parityErrorFlag", (parityErrorFlag))
 		if _parityErrorFlagErr != nil {
 			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
 		}
 
 		// Simple Field (unknownFlag)
 		unknownFlag := bool(m.UnknownFlag)
-		_unknownFlagErr := io.WriteBit((unknownFlag))
+		_unknownFlagErr := io.WriteBit("unknownFlag", (unknownFlag))
 		if _unknownFlagErr != nil {
 			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
 		}
 
 		// Simple Field (lostFlag)
 		lostFlag := bool(m.LostFlag)
-		_lostFlagErr := io.WriteBit((lostFlag))
+		_lostFlagErr := io.WriteBit("lostFlag", (lostFlag))
 		if _lostFlagErr != nil {
 			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(3, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8("sequenceNumber", 3, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
+		if popErr := io.PopContext("CEMIAdditionalInformationBusmonitorInfo"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "frameErrorFlag":
@@ -295,7 +316,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, s
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -303,6 +324,7 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, s
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FrameErrorFlag, xml.StartElement{Name: xml.Name{Local: "frameErrorFlag"}}); err != nil {
 		return err
@@ -326,19 +348,38 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, sta
 }
 
 func (m CEMIAdditionalInformationBusmonitorInfo) String() string {
-	return string(m.Box("CEMIAdditionalInformationBusmonitorInfo", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m CEMIAdditionalInformationBusmonitorInfo) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "CEMIAdditionalInformationBusmonitorInfo"
+	boxName := "CEMIAdditionalInformationBusmonitorInfo"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("ParityErrorFlag", m.ParityErrorFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("UnknownFlag", m.UnknownFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("LostFlag", m.LostFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Const Field (len)
+		boxes = append(boxes, utils.BoxAnything("Len", uint8(1), -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("FrameErrorFlag", m.FrameErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("BitErrorFlag", m.BitErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ParityErrorFlag", m.ParityErrorFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("UnknownFlag", m.UnknownFlag, -1))
+		// Simple field (case simple)
+		// bool can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("LostFlag", m.LostFlag, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SequenceNumber", m.SequenceNumber, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

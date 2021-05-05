@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -87,7 +88,11 @@ func (m *ApduDataExtAuthorizeRequest) GetTypeName() string {
 }
 
 func (m *ApduDataExtAuthorizeRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtAuthorizeRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (level)
 	lengthInBits += 8
@@ -104,23 +109,36 @@ func (m *ApduDataExtAuthorizeRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeRequestParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (level)
-	level, _levelErr := io.ReadUint8(8)
+	level, _levelErr := io.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
 
 	// Array field (data)
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
+	}
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataExtAuthorizeRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -135,36 +153,51 @@ func ApduDataExtAuthorizeRequestParse(io *utils.ReadBuffer) (*ApduDataExt, error
 
 func (m *ApduDataExtAuthorizeRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataExtAuthorizeRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (level)
 		level := uint8(m.Level)
-		_levelErr := io.WriteUint8(8, (level))
+		_levelErr := io.WriteUint8("level", 8, (level))
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ApduDataExtAuthorizeRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtAuthorizeRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "level":
@@ -183,7 +216,7 @@ func (m *ApduDataExtAuthorizeRequest) UnmarshalXML(d *xml.Decoder, start xml.Sta
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -191,6 +224,7 @@ func (m *ApduDataExtAuthorizeRequest) UnmarshalXML(d *xml.Decoder, start xml.Sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtAuthorizeRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Level, xml.StartElement{Name: xml.Name{Local: "level"}}); err != nil {
 		return err
@@ -202,15 +236,32 @@ func (m *ApduDataExtAuthorizeRequest) MarshalXML(e *xml.Encoder, start xml.Start
 }
 
 func (m ApduDataExtAuthorizeRequest) String() string {
-	return string(m.Box("ApduDataExtAuthorizeRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtAuthorizeRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtAuthorizeRequest"
+	boxName := "ApduDataExtAuthorizeRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Level", m.Level, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Level", m.Level, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type uint8 will be hex dumped
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+			// Simple array base type uint8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

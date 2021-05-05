@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,6 +33,8 @@ type MemoryArea uint8
 type IMemoryArea interface {
 	ShortName() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -44,6 +48,22 @@ const (
 	MemoryArea_INSTANCE_DATA_BLOCKS     MemoryArea = 0x85
 	MemoryArea_LOCAL_DATA               MemoryArea = 0x86
 )
+
+var MemoryAreaValues []MemoryArea
+
+func init() {
+	MemoryAreaValues = []MemoryArea{
+		MemoryArea_COUNTERS,
+		MemoryArea_TIMERS,
+		MemoryArea_DIRECT_PERIPHERAL_ACCESS,
+		MemoryArea_INPUTS,
+		MemoryArea_OUTPUTS,
+		MemoryArea_FLAGS_MARKERS,
+		MemoryArea_DATA_BLOCKS,
+		MemoryArea_INSTANCE_DATA_BLOCKS,
+		MemoryArea_LOCAL_DATA,
+	}
+}
 
 func (e MemoryArea) ShortName() string {
 	switch e {
@@ -155,8 +175,8 @@ func (m MemoryArea) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MemoryAreaParse(io *utils.ReadBuffer) (MemoryArea, error) {
-	val, err := io.ReadUint8(8)
+func MemoryAreaParse(io utils.ReadBuffer) (MemoryArea, error) {
+	val, err := io.ReadUint8("MemoryArea", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -164,10 +184,11 @@ func MemoryAreaParse(io *utils.ReadBuffer) (MemoryArea, error) {
 }
 
 func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("MemoryArea", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MemoryArea) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -187,7 +208,15 @@ func (m *MemoryArea) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-func (e MemoryArea) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m MemoryArea) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e MemoryArea) name() string {
 	switch e {
 	case MemoryArea_COUNTERS:
 		return "COUNTERS"
@@ -209,4 +238,17 @@ func (e MemoryArea) String() string {
 		return "LOCAL_DATA"
 	}
 	return ""
+}
+
+func (e MemoryArea) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m MemoryArea) Box(s string, i int) utils.AsciiBox {
+	boxName := "MemoryArea"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

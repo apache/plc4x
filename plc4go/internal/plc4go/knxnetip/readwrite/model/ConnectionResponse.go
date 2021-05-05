@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -91,7 +92,11 @@ func (m *ConnectionResponse) GetTypeName() string {
 }
 
 func (m *ConnectionResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -116,18 +121,28 @@ func (m *ConnectionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func ConnectionResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("ConnectionResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field")
+	}
+
+	if pullErr := io.PullContext("status"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (status)
 	status, _statusErr := StatusParse(io)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")
+	}
+	if closeErr := io.CloseContext("status"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
@@ -150,6 +165,10 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 		connectionResponseDataBlock = _val
 	}
 
+	if closeErr := io.CloseContext("ConnectionResponse"); closeErr != nil {
+		return nil, closeErr
+	}
+
 	// Create a partially initialized instance
 	_child := &ConnectionResponse{
 		CommunicationChannelId:      communicationChannelId,
@@ -164,16 +183,25 @@ func ConnectionResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ConnectionResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
-		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8("communicationChannelId", 8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
 
 		// Simple Field (status)
+		if pushErr := io.PushContext("status"); pushErr != nil {
+			return pushErr
+		}
 		_statusErr := m.Status.Serialize(io)
+		if popErr := io.PopContext("status"); popErr != nil {
+			return popErr
+		}
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
@@ -198,18 +226,24 @@ func (m *ConnectionResponse) Serialize(io utils.WriteBuffer) error {
 			}
 		}
 
+		if popErr := io.PopContext("ConnectionResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "communicationChannelId":
@@ -233,6 +267,9 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 			case "connectionResponseDataBlock":
 				var dt *ConnectionResponseDataBlock
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ConnectionResponseDataBlock = dt
@@ -240,7 +277,7 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -248,6 +285,7 @@ func (m *ConnectionResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
 		return err
@@ -265,17 +303,35 @@ func (m *ConnectionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) 
 }
 
 func (m ConnectionResponse) String() string {
-	return string(m.Box("ConnectionResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionResponse"
+	boxName := "ConnectionResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Status", m.Status, width-2))
-	boxes = append(boxes, utils.BoxAnything("HpaiDataEndpoint", m.HpaiDataEndpoint, width-2))
-	boxes = append(boxes, utils.BoxAnything("ConnectionResponseDataBlock", m.ConnectionResponseDataBlock, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("CommunicationChannelId", m.CommunicationChannelId, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Status.Box("status", width-2))
+		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
+		var hpaiDataEndpoint *HPAIDataEndpoint = nil
+		if m.HpaiDataEndpoint != nil {
+			hpaiDataEndpoint = m.HpaiDataEndpoint
+			boxes = append(boxes, hpaiDataEndpoint.Box("hpaiDataEndpoint", width-2))
+		}
+		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
+		var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
+		if m.ConnectionResponseDataBlock != nil {
+			connectionResponseDataBlock = m.ConnectionResponseDataBlock
+			boxes = append(boxes, connectionResponseDataBlock.Box("connectionResponseDataBlock", width-2))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

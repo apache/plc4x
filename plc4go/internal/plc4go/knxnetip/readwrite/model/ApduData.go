@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IApduDataChild interface {
 	InitializeParent(parent *ApduData)
 	GetTypeName() string
 	IApduData
+	utils.AsciiBoxer
 }
 
 func NewApduData() *ApduData {
@@ -78,12 +80,17 @@ func (m *ApduData) GetTypeName() string {
 }
 
 func (m *ApduData) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduData) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ApduData) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (apciType)
 	lengthInBits += 4
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *ApduData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	if pullErr := io.PullContext("ApduData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
-	apciType, _apciTypeErr := io.ReadUint8(4)
+	apciType, _apciTypeErr := io.ReadUint8("apciType", 4)
 	if _apciTypeErr != nil {
 		return nil, errors.Wrap(_apciTypeErr, "Error parsing 'apciType' field")
 	}
@@ -136,9 +146,16 @@ func ApduDataParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 		_parent, typeSwitchError = ApduDataRestartParse(io)
 	case apciType == 0xF: // ApduDataOther
 		_parent, typeSwitchError = ApduDataOtherParse(io, dataLength)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("ApduData"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -151,10 +168,13 @@ func (m *ApduData) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduData) SerializeParent(io utils.WriteBuffer, child IApduData, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("ApduData"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
 	apciType := uint8(child.ApciType())
-	_apciTypeErr := io.WriteUint8(4, (apciType))
+	_apciTypeErr := io.WriteUint8("apciType", 4, (apciType))
 
 	if _apciTypeErr != nil {
 		return errors.Wrap(_apciTypeErr, "Error serializing 'apciType' field")
@@ -166,22 +186,88 @@ func (m *ApduData) SerializeParent(io utils.WriteBuffer, child IApduData, serial
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("ApduData"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ApduDataIndividualAddressWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataIndividualAddressRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressRead":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressRead{
+					Parent: m,
+				}
+			}
+		// ApduDataIndividualAddressResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataIndividualAddressResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataIndividualAddressResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataAdcRead needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataAdcRead":
+			if m.Child == nil {
+				m.Child = &ApduDataAdcRead{
+					Parent: m,
+				}
+			}
+		// ApduDataAdcResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataAdcResponse":
+			if m.Child == nil {
+				m.Child = &ApduDataAdcResponse{
+					Parent: m,
+				}
+			}
+		// ApduDataMemoryWrite needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataMemoryWrite":
+			if m.Child == nil {
+				m.Child = &ApduDataMemoryWrite{
+					Parent: m,
+				}
+			}
+		// ApduDataUserMessage needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataUserMessage":
+			if m.Child == nil {
+				m.Child = &ApduDataUserMessage{
+					Parent: m,
+				}
+			}
+		// ApduDataRestart needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduDataRestart":
+			if m.Child == nil {
+				m.Child = &ApduDataRestart{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -392,6 +478,7 @@ func (m *ApduData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -414,14 +501,26 @@ func (m *ApduData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m ApduData) String() string {
-	return string(m.Box("ApduData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m ApduData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduData"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduData) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduData) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ApduData"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (apciType) (Used as input to a switch field)
+	apciType := uint8(m.Child.ApciType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ApciType", apciType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

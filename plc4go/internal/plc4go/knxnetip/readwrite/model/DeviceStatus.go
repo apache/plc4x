@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -64,6 +65,10 @@ func (m *DeviceStatus) GetTypeName() string {
 }
 
 func (m *DeviceStatus) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceStatus) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Reserved Field (reserved)
@@ -79,11 +84,14 @@ func (m *DeviceStatus) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
+func DeviceStatusParse(io utils.ReadBuffer) (*DeviceStatus, error) {
+	if pullErr := io.PullContext("DeviceStatus"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(7)
+		reserved, _err := io.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -96,9 +104,13 @@ func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
 	}
 
 	// Simple Field (programMode)
-	programMode, _programModeErr := io.ReadBit()
+	programMode, _programModeErr := io.ReadBit("programMode")
 	if _programModeErr != nil {
 		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field")
+	}
+
+	if closeErr := io.CloseContext("DeviceStatus"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -106,10 +118,13 @@ func DeviceStatusParse(io *utils.ReadBuffer) (*DeviceStatus, error) {
 }
 
 func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("DeviceStatus"); pushErr != nil {
+		return pushErr
+	}
 
 	// Reserved Field (reserved)
 	{
-		_err := io.WriteUint8(7, uint8(0x00))
+		_err := io.WriteUint8("reserved", 7, uint8(0x00))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -117,27 +132,33 @@ func (m *DeviceStatus) Serialize(io utils.WriteBuffer) error {
 
 	// Simple Field (programMode)
 	programMode := bool(m.ProgramMode)
-	_programModeErr := io.WriteBit((programMode))
+	_programModeErr := io.WriteBit("programMode", (programMode))
 	if _programModeErr != nil {
 		return errors.Wrap(_programModeErr, "Error serializing 'programMode' field")
 	}
 
+	if popErr := io.PopContext("DeviceStatus"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "programMode":
@@ -151,6 +172,7 @@ func (m *DeviceStatus) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -168,14 +190,21 @@ func (m *DeviceStatus) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m DeviceStatus) String() string {
-	return string(m.Box("DeviceStatus", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceStatus) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DeviceStatus"
+	boxName := "DeviceStatus"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Reserved Field (reserved)
+	// reserved field can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ProgramMode", m.ProgramMode, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

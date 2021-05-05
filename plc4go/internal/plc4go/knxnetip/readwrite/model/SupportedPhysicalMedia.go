@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,6 +34,8 @@ type ISupportedPhysicalMedia interface {
 	KnxSupport() bool
 	Description() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -57,6 +61,34 @@ const (
 	SupportedPhysicalMedia_GARBAGE                   SupportedPhysicalMedia = 0x29
 	SupportedPhysicalMedia_RADIO_CONVERTER           SupportedPhysicalMedia = 0x37
 )
+
+var SupportedPhysicalMediaValues []SupportedPhysicalMedia
+
+func init() {
+	SupportedPhysicalMediaValues = []SupportedPhysicalMedia{
+		SupportedPhysicalMedia_OTHER,
+		SupportedPhysicalMedia_OIL_METER,
+		SupportedPhysicalMedia_ELECTRICITY_METER,
+		SupportedPhysicalMedia_GAS_METER,
+		SupportedPhysicalMedia_HEAT_METER,
+		SupportedPhysicalMedia_STEAM_METER,
+		SupportedPhysicalMedia_WARM_WATER_METER,
+		SupportedPhysicalMedia_WATER_METER,
+		SupportedPhysicalMedia_HEAT_COST_ALLOCATOR,
+		SupportedPhysicalMedia_COMPRESSED_AIR,
+		SupportedPhysicalMedia_COOLING_LOAD_METER_INLET,
+		SupportedPhysicalMedia_COOLING_LOAD_METER_OUTLET,
+		SupportedPhysicalMedia_HEAT_INLET,
+		SupportedPhysicalMedia_HEAT_AND_COOL,
+		SupportedPhysicalMedia_BUS_OR_SYSTEM,
+		SupportedPhysicalMedia_UNKNOWN_DEVICE_TYPE,
+		SupportedPhysicalMedia_BREAKER,
+		SupportedPhysicalMedia_VALVE,
+		SupportedPhysicalMedia_WASTE_WATER_METER,
+		SupportedPhysicalMedia_GARBAGE,
+		SupportedPhysicalMedia_RADIO_CONVERTER,
+	}
+}
 
 func (e SupportedPhysicalMedia) KnxSupport() bool {
 	switch e {
@@ -357,8 +389,8 @@ func (m SupportedPhysicalMedia) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SupportedPhysicalMediaParse(io *utils.ReadBuffer) (SupportedPhysicalMedia, error) {
-	val, err := io.ReadUint8(8)
+func SupportedPhysicalMediaParse(io utils.ReadBuffer) (SupportedPhysicalMedia, error) {
+	val, err := io.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -366,10 +398,11 @@ func SupportedPhysicalMediaParse(io *utils.ReadBuffer) (SupportedPhysicalMedia, 
 }
 
 func (e SupportedPhysicalMedia) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SupportedPhysicalMedia) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -389,7 +422,15 @@ func (m *SupportedPhysicalMedia) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
-func (e SupportedPhysicalMedia) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m SupportedPhysicalMedia) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e SupportedPhysicalMedia) name() string {
 	switch e {
 	case SupportedPhysicalMedia_OTHER:
 		return "OTHER"
@@ -435,4 +476,17 @@ func (e SupportedPhysicalMedia) String() string {
 		return "RADIO_CONVERTER"
 	}
 	return ""
+}
+
+func (e SupportedPhysicalMedia) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m SupportedPhysicalMedia) Box(s string, i int) utils.AsciiBox {
+	boxName := "SupportedPhysicalMedia"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

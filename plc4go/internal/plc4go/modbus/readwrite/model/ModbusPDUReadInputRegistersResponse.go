@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -95,7 +96,11 @@ func (m *ModbusPDUReadInputRegistersResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadInputRegistersResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadInputRegistersResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -112,24 +117,37 @@ func (m *ModbusPDUReadInputRegistersResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadInputRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadInputRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUReadInputRegistersResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Array field (value)
+	if pullErr := io.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	value := make([]int8, byteCount)
 	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'value' field")
 		}
 		value[curItem] = _item
+	}
+	if closeErr := io.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUReadInputRegistersResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -143,36 +161,51 @@ func ModbusPDUReadInputRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPDU,
 
 func (m *ModbusPDUReadInputRegistersResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUReadInputRegistersResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8("byteCount", 8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Array Field (value)
 		if m.Value != nil {
+			if pushErr := io.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Value {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'value' field")
 				}
 			}
+			if popErr := io.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ModbusPDUReadInputRegistersResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadInputRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "value":
@@ -190,7 +223,7 @@ func (m *ModbusPDUReadInputRegistersResponse) UnmarshalXML(d *xml.Decoder, start
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -198,6 +231,7 @@ func (m *ModbusPDUReadInputRegistersResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadInputRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	_encodedValue := hex.EncodeToString(utils.Int8ArrayToByteArray(m.Value))
 	_encodedValue = strings.ToUpper(_encodedValue)
@@ -208,14 +242,31 @@ func (m *ModbusPDUReadInputRegistersResponse) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m ModbusPDUReadInputRegistersResponse) String() string {
-	return string(m.Box("ModbusPDUReadInputRegistersResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadInputRegistersResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadInputRegistersResponse"
+	boxName := "ModbusPDUReadInputRegistersResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (byteCount)
+		byteCount := uint8(uint8(len(m.Value)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Array Field (value)
+		if m.Value != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Value {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Value", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

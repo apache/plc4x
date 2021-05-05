@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *ModbusPDUReadFifoQueueResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadFifoQueueResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -113,31 +118,44 @@ func (m *ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadFifoQueueResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint16(16)
+	byteCount, _byteCountErr := io.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	fifoCount, _fifoCountErr := io.ReadUint16(16)
+	fifoCount, _fifoCountErr := io.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
 		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field")
 	}
 
 	// Array field (fifoValue)
+	if pullErr := io.PullContext("fifoValue", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	fifoValue := make([]uint16, fifoCount)
 	for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
-		_item, _err := io.ReadUint16(16)
+		_item, _err := io.ReadUint16("", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field")
 		}
 		fifoValue[curItem] = _item
+	}
+	if closeErr := io.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUReadFifoQueueResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -151,43 +169,58 @@ func ModbusPDUReadFifoQueueResponseParse(io *utils.ReadBuffer) (*ModbusPDU, erro
 
 func (m *ModbusPDUReadFifoQueueResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUReadFifoQueueResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
-		_byteCountErr := io.WriteUint16(16, (byteCount))
+		_byteCountErr := io.WriteUint16("byteCount", 16, (byteCount))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
-		_fifoCountErr := io.WriteUint16(16, (fifoCount))
+		_fifoCountErr := io.WriteUint16("fifoCount", 16, (fifoCount))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
 
 		// Array Field (fifoValue)
 		if m.FifoValue != nil {
+			if pushErr := io.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.FifoValue {
-				_elementErr := io.WriteUint16(16, _element)
+				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 				}
 			}
+			if popErr := io.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ModbusPDUReadFifoQueueResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "fifoValue":
@@ -200,7 +233,7 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -208,6 +241,7 @@ func (m *ModbusPDUReadFifoQueueResponse) UnmarshalXML(d *xml.Decoder, start xml.
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.FifoValue, xml.StartElement{Name: xml.Name{Local: "fifoValue"}}); err != nil {
 		return err
@@ -216,14 +250,35 @@ func (m *ModbusPDUReadFifoQueueResponse) MarshalXML(e *xml.Encoder, start xml.St
 }
 
 func (m ModbusPDUReadFifoQueueResponse) String() string {
-	return string(m.Box("ModbusPDUReadFifoQueueResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadFifoQueueResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadFifoQueueResponse"
+	boxName := "ModbusPDUReadFifoQueueResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("FifoValue", m.FifoValue, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (byteCount)
+		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ByteCount", byteCount, -1))
+		// Implicit Field (fifoCount)
+		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("FifoCount", fifoCount, -1))
+		// Array Field (fifoValue)
+		if m.FifoValue != nil {
+			// Simple array base type uint16 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.FifoValue {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("FifoValue", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

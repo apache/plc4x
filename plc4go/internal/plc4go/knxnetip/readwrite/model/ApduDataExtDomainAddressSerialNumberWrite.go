@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) GetTypeName() string {
 }
 
 func (m *ApduDataExtDomainAddressSerialNumberWrite) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataExtDomainAddressSerialNumberWrite) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtDomainAddressSerialNumberWriteParse(io *utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtDomainAddressSerialNumberWriteParse(io utils.ReadBuffer) (*ApduDataExt, error) {
+	if pullErr := io.PullContext("ApduDataExtDomainAddressSerialNumberWrite"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataExtDomainAddressSerialNumberWrite"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &ApduDataExtDomainAddressSerialNumberWrite{
@@ -103,26 +115,35 @@ func ApduDataExtDomainAddressSerialNumberWriteParse(io *utils.ReadBuffer) (*Apdu
 
 func (m *ApduDataExtDomainAddressSerialNumberWrite) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataExtDomainAddressSerialNumberWrite"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("ApduDataExtDomainAddressSerialNumberWrite"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataExtDomainAddressSerialNumberWrite) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *ApduDataExtDomainAddressSerialNumberWrite) UnmarshalXML(d *xml.Decoder,
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataExtDomainAddressSerialNumberWrite) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m ApduDataExtDomainAddressSerialNumberWrite) String() string {
-	return string(m.Box("ApduDataExtDomainAddressSerialNumberWrite", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataExtDomainAddressSerialNumberWrite) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataExtDomainAddressSerialNumberWrite"
+	boxName := "ApduDataExtDomainAddressSerialNumberWrite"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

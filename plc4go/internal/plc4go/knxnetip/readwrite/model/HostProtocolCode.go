@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,12 +32,23 @@ type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
 	HostProtocolCode_IPV4_UDP HostProtocolCode = 0x01
 	HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
+
+var HostProtocolCodeValues []HostProtocolCode
+
+func init() {
+	HostProtocolCodeValues = []HostProtocolCode{
+		HostProtocolCode_IPV4_UDP,
+		HostProtocolCode_IPV4_TCP,
+	}
+}
 
 func HostProtocolCodeByValue(value uint8) HostProtocolCode {
 	switch value {
@@ -75,8 +88,8 @@ func (m HostProtocolCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HostProtocolCodeParse(io *utils.ReadBuffer) (HostProtocolCode, error) {
-	val, err := io.ReadUint8(8)
+func HostProtocolCodeParse(io utils.ReadBuffer) (HostProtocolCode, error) {
+	val, err := io.ReadUint8("HostProtocolCode", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -84,10 +97,11 @@ func HostProtocolCodeParse(io *utils.ReadBuffer) (HostProtocolCode, error) {
 }
 
 func (e HostProtocolCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("HostProtocolCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *HostProtocolCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -107,7 +121,15 @@ func (m *HostProtocolCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-func (e HostProtocolCode) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m HostProtocolCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e HostProtocolCode) name() string {
 	switch e {
 	case HostProtocolCode_IPV4_UDP:
 		return "IPV4_UDP"
@@ -115,4 +137,17 @@ func (e HostProtocolCode) String() string {
 		return "IPV4_TCP"
 	}
 	return ""
+}
+
+func (e HostProtocolCode) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m HostProtocolCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "HostProtocolCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

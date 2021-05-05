@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *AdsDeleteDeviceNotificationResponse) GetTypeName() string {
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeleteDeviceNotificationResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -101,12 +106,26 @@ func (m *AdsDeleteDeviceNotificationResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeleteDeviceNotificationResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsDeleteDeviceNotificationResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("AdsDeleteDeviceNotificationResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -120,25 +139,40 @@ func AdsDeleteDeviceNotificationResponseParse(io *utils.ReadBuffer) (*AdsData, e
 
 func (m *AdsDeleteDeviceNotificationResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsDeleteDeviceNotificationResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
+		if popErr := io.PopContext("AdsDeleteDeviceNotificationResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -151,7 +185,7 @@ func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,6 +193,7 @@ func (m *AdsDeleteDeviceNotificationResponse) UnmarshalXML(d *xml.Decoder, start
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsDeleteDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -167,14 +202,20 @@ func (m *AdsDeleteDeviceNotificationResponse) MarshalXML(e *xml.Encoder, start x
 }
 
 func (m AdsDeleteDeviceNotificationResponse) String() string {
-	return string(m.Box("AdsDeleteDeviceNotificationResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsDeleteDeviceNotificationResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsDeleteDeviceNotificationResponse"
+	boxName := "AdsDeleteDeviceNotificationResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

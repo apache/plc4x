@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,6 +34,8 @@ type IAdsDataType interface {
 	NumBytes() uint16
 	DataFormatName() string
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -76,6 +80,53 @@ const (
 	AdsDataType_DATE_AND_TIME AdsDataType = 0x27
 	AdsDataType_DT            AdsDataType = 0x28
 )
+
+var AdsDataTypeValues []AdsDataType
+
+func init() {
+	AdsDataTypeValues = []AdsDataType{
+		AdsDataType_BOOL,
+		AdsDataType_BIT,
+		AdsDataType_BIT8,
+		AdsDataType_BYTE,
+		AdsDataType_BITARR8,
+		AdsDataType_WORD,
+		AdsDataType_BITARR16,
+		AdsDataType_DWORD,
+		AdsDataType_BITARR32,
+		AdsDataType_SINT,
+		AdsDataType_INT8,
+		AdsDataType_USINT,
+		AdsDataType_UINT8,
+		AdsDataType_INT,
+		AdsDataType_INT16,
+		AdsDataType_UINT,
+		AdsDataType_UINT16,
+		AdsDataType_DINT,
+		AdsDataType_INT32,
+		AdsDataType_UDINT,
+		AdsDataType_UINT32,
+		AdsDataType_LINT,
+		AdsDataType_INT64,
+		AdsDataType_ULINT,
+		AdsDataType_UINT64,
+		AdsDataType_REAL,
+		AdsDataType_FLOAT,
+		AdsDataType_LREAL,
+		AdsDataType_DOUBLE,
+		AdsDataType_CHAR,
+		AdsDataType_WCHAR,
+		AdsDataType_STRING,
+		AdsDataType_WSTRING,
+		AdsDataType_TIME,
+		AdsDataType_LTIME,
+		AdsDataType_DATE,
+		AdsDataType_TIME_OF_DAY,
+		AdsDataType_TOD,
+		AdsDataType_DATE_AND_TIME,
+		AdsDataType_DT,
+	}
+}
 
 func (e AdsDataType) NumBytes() uint16 {
 	switch e {
@@ -604,8 +655,8 @@ func (m AdsDataType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDataTypeParse(io *utils.ReadBuffer) (AdsDataType, error) {
-	val, err := io.ReadInt8(8)
+func AdsDataTypeParse(io utils.ReadBuffer) (AdsDataType, error) {
+	val, err := io.ReadInt8("AdsDataType", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -613,10 +664,11 @@ func AdsDataTypeParse(io *utils.ReadBuffer) (AdsDataType, error) {
 }
 
 func (e AdsDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -636,7 +688,15 @@ func (m *AdsDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
-func (e AdsDataType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m AdsDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e AdsDataType) name() string {
 	switch e {
 	case AdsDataType_BOOL:
 		return "BOOL"
@@ -720,4 +780,17 @@ func (e AdsDataType) String() string {
 		return "DT"
 	}
 	return ""
+}
+
+func (e AdsDataType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m AdsDataType) Box(s string, i int) utils.AsciiBox {
+	boxName := "AdsDataType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

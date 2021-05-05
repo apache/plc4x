@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *TunnelingResponse) GetTypeName() string {
 }
 
 func (m *TunnelingResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
@@ -97,12 +102,26 @@ func (m *TunnelingResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
+func TunnelingResponseParse(io utils.ReadBuffer) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("TunnelingResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParse(io)
 	if _tunnelingResponseDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field")
+	}
+	if closeErr := io.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("TunnelingResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,25 +135,40 @@ func TunnelingResponseParse(io *utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 func (m *TunnelingResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("TunnelingResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tunnelingResponseDataBlock)
+		if pushErr := io.PushContext("tunnelingResponseDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_tunnelingResponseDataBlockErr := m.TunnelingResponseDataBlock.Serialize(io)
+		if popErr := io.PopContext("tunnelingResponseDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _tunnelingResponseDataBlockErr != nil {
 			return errors.Wrap(_tunnelingResponseDataBlockErr, "Error serializing 'tunnelingResponseDataBlock' field")
 		}
 
+		if popErr := io.PopContext("TunnelingResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingResponseDataBlock":
@@ -147,7 +181,7 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -155,6 +189,7 @@ func (m *TunnelingResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TunnelingResponseDataBlock, xml.StartElement{Name: xml.Name{Local: "tunnelingResponseDataBlock"}}); err != nil {
 		return err
@@ -163,14 +198,20 @@ func (m *TunnelingResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m TunnelingResponse) String() string {
-	return string(m.Box("TunnelingResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TunnelingResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "TunnelingResponse"
+	boxName := "TunnelingResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TunnelingResponseDataBlock", m.TunnelingResponseDataBlock, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.TunnelingResponseDataBlock.Box("tunnelingResponseDataBlock", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

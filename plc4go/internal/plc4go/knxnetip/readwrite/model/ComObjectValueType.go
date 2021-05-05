@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,6 +33,8 @@ type ComObjectValueType uint8
 type IComObjectValueType interface {
 	SizeInBytes() uint8
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -50,6 +54,28 @@ const (
 	ComObjectValueType_BYTE10 ComObjectValueType = 0x0D
 	ComObjectValueType_BYTE14 ComObjectValueType = 0x0E
 )
+
+var ComObjectValueTypeValues []ComObjectValueType
+
+func init() {
+	ComObjectValueTypeValues = []ComObjectValueType{
+		ComObjectValueType_BIT1,
+		ComObjectValueType_BIT2,
+		ComObjectValueType_BIT3,
+		ComObjectValueType_BIT4,
+		ComObjectValueType_BIT5,
+		ComObjectValueType_BIT6,
+		ComObjectValueType_BIT7,
+		ComObjectValueType_BYTE1,
+		ComObjectValueType_BYTE2,
+		ComObjectValueType_BYTE3,
+		ComObjectValueType_BYTE4,
+		ComObjectValueType_BYTE6,
+		ComObjectValueType_BYTE8,
+		ComObjectValueType_BYTE10,
+		ComObjectValueType_BYTE14,
+	}
+}
 
 func (e ComObjectValueType) SizeInBytes() uint8 {
 	switch e {
@@ -209,8 +235,8 @@ func (m ComObjectValueType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectValueTypeParse(io *utils.ReadBuffer) (ComObjectValueType, error) {
-	val, err := io.ReadUint8(8)
+func ComObjectValueTypeParse(io utils.ReadBuffer) (ComObjectValueType, error) {
+	val, err := io.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -218,10 +244,11 @@ func ComObjectValueTypeParse(io *utils.ReadBuffer) (ComObjectValueType, error) {
 }
 
 func (e ComObjectValueType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectValueType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -241,7 +268,15 @@ func (m *ComObjectValueType) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
-func (e ComObjectValueType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ComObjectValueType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ComObjectValueType) name() string {
 	switch e {
 	case ComObjectValueType_BIT1:
 		return "BIT1"
@@ -275,4 +310,17 @@ func (e ComObjectValueType) String() string {
 		return "BYTE14"
 	}
 	return ""
+}
+
+func (e ComObjectValueType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ComObjectValueType) Box(s string, i int) utils.AsciiBox {
+	boxName := "ComObjectValueType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

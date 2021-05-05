@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -98,7 +99,11 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) GetTypeName() string {
 }
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
 	lengthInBits += 5
@@ -129,10 +134,13 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
-	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
+	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8("deviceInstanceRangeLowLimitHeader", 5)
 	if _deviceInstanceRangeLowLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeLowLimitHeaderErr, "Error parsing 'deviceInstanceRangeLowLimitHeader' field")
 	}
@@ -141,24 +149,30 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Simple Field (deviceInstanceRangeLowLimitLength)
-	deviceInstanceRangeLowLimitLength, _deviceInstanceRangeLowLimitLengthErr := io.ReadUint8(3)
+	deviceInstanceRangeLowLimitLength, _deviceInstanceRangeLowLimitLengthErr := io.ReadUint8("deviceInstanceRangeLowLimitLength", 3)
 	if _deviceInstanceRangeLowLimitLengthErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeLowLimitLengthErr, "Error parsing 'deviceInstanceRangeLowLimitLength' field")
 	}
 
 	// Array field (deviceInstanceRangeLowLimit)
+	if pullErr := io.PullContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		}
 		deviceInstanceRangeLowLimit[curItem] = _item
 	}
+	if closeErr := io.CloseContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
-	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8(5)
+	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8("deviceInstanceRangeHighLimitHeader", 5)
 	if _deviceInstanceRangeHighLimitHeaderErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeHighLimitHeaderErr, "Error parsing 'deviceInstanceRangeHighLimitHeader' field")
 	}
@@ -167,20 +181,30 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 	}
 
 	// Simple Field (deviceInstanceRangeHighLimitLength)
-	deviceInstanceRangeHighLimitLength, _deviceInstanceRangeHighLimitLengthErr := io.ReadUint8(3)
+	deviceInstanceRangeHighLimitLength, _deviceInstanceRangeHighLimitLengthErr := io.ReadUint8("deviceInstanceRangeHighLimitLength", 3)
 	if _deviceInstanceRangeHighLimitLengthErr != nil {
 		return nil, errors.Wrap(_deviceInstanceRangeHighLimitLengthErr, "Error parsing 'deviceInstanceRangeHighLimitLength' field")
 	}
 
 	// Array field (deviceInstanceRangeHighLimit)
+	if pullErr := io.PullContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		}
 		deviceInstanceRangeHighLimit[curItem] = _item
+	}
+	if closeErr := io.CloseContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestWhoIs"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -197,65 +221,86 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (*BACnetUnc
 
 func (m *BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestWhoIs"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (deviceInstanceRangeLowLimitHeader)
-		_deviceInstanceRangeLowLimitHeaderErr := io.WriteUint8(5, 0x01)
+		_deviceInstanceRangeLowLimitHeaderErr := io.WriteUint8("deviceInstanceRangeLowLimitHeader", 5, 0x01)
 		if _deviceInstanceRangeLowLimitHeaderErr != nil {
 			return errors.Wrap(_deviceInstanceRangeLowLimitHeaderErr, "Error serializing 'deviceInstanceRangeLowLimitHeader' field")
 		}
 
 		// Simple Field (deviceInstanceRangeLowLimitLength)
 		deviceInstanceRangeLowLimitLength := uint8(m.DeviceInstanceRangeLowLimitLength)
-		_deviceInstanceRangeLowLimitLengthErr := io.WriteUint8(3, (deviceInstanceRangeLowLimitLength))
+		_deviceInstanceRangeLowLimitLengthErr := io.WriteUint8("deviceInstanceRangeLowLimitLength", 3, (deviceInstanceRangeLowLimitLength))
 		if _deviceInstanceRangeLowLimitLengthErr != nil {
 			return errors.Wrap(_deviceInstanceRangeLowLimitLengthErr, "Error serializing 'deviceInstanceRangeLowLimitLength' field")
 		}
 
 		// Array Field (deviceInstanceRangeLowLimit)
 		if m.DeviceInstanceRangeLowLimit != nil {
+			if pushErr := io.PushContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DeviceInstanceRangeLowLimit {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeLowLimit' field")
 				}
 			}
+			if popErr := io.PopContext("deviceInstanceRangeLowLimit", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (deviceInstanceRangeHighLimitHeader)
-		_deviceInstanceRangeHighLimitHeaderErr := io.WriteUint8(5, 0x03)
+		_deviceInstanceRangeHighLimitHeaderErr := io.WriteUint8("deviceInstanceRangeHighLimitHeader", 5, 0x03)
 		if _deviceInstanceRangeHighLimitHeaderErr != nil {
 			return errors.Wrap(_deviceInstanceRangeHighLimitHeaderErr, "Error serializing 'deviceInstanceRangeHighLimitHeader' field")
 		}
 
 		// Simple Field (deviceInstanceRangeHighLimitLength)
 		deviceInstanceRangeHighLimitLength := uint8(m.DeviceInstanceRangeHighLimitLength)
-		_deviceInstanceRangeHighLimitLengthErr := io.WriteUint8(3, (deviceInstanceRangeHighLimitLength))
+		_deviceInstanceRangeHighLimitLengthErr := io.WriteUint8("deviceInstanceRangeHighLimitLength", 3, (deviceInstanceRangeHighLimitLength))
 		if _deviceInstanceRangeHighLimitLengthErr != nil {
 			return errors.Wrap(_deviceInstanceRangeHighLimitLengthErr, "Error serializing 'deviceInstanceRangeHighLimitLength' field")
 		}
 
 		// Array Field (deviceInstanceRangeHighLimit)
 		if m.DeviceInstanceRangeHighLimit != nil {
+			if pushErr := io.PushContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DeviceInstanceRangeHighLimit {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'deviceInstanceRangeHighLimit' field")
 				}
 			}
+			if popErr := io.PopContext("deviceInstanceRangeHighLimit", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestWhoIs"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "deviceInstanceRangeLowLimitLength":
@@ -296,7 +341,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -304,6 +349,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DeviceInstanceRangeLowLimitLength, xml.StartElement{Name: xml.Name{Local: "deviceInstanceRangeLowLimitLength"}}); err != nil {
 		return err
@@ -325,17 +371,46 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) MarshalXML(e *xml.Encoder, start 
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoIs) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestWhoIs", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestWhoIs) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestWhoIs"
+	boxName := "BACnetUnconfirmedServiceRequestWhoIs"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitLength", m.DeviceInstanceRangeLowLimitLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimit", m.DeviceInstanceRangeLowLimit, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitLength", m.DeviceInstanceRangeHighLimitLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimit", m.DeviceInstanceRangeHighLimit, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Const Field (deviceInstanceRangeLowLimitHeader)
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitHeader", uint8(0x01), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeLowLimitLength", m.DeviceInstanceRangeLowLimitLength, -1))
+		// Array Field (deviceInstanceRangeLowLimit)
+		if m.DeviceInstanceRangeLowLimit != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DeviceInstanceRangeLowLimit {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DeviceInstanceRangeLowLimit", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Const Field (deviceInstanceRangeHighLimitHeader)
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitHeader", uint8(0x03), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DeviceInstanceRangeHighLimitLength", m.DeviceInstanceRangeHighLimitLength, -1))
+		// Array Field (deviceInstanceRangeHighLimit)
+		if m.DeviceInstanceRangeHighLimit != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DeviceInstanceRangeHighLimit {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DeviceInstanceRangeHighLimit", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

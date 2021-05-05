@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -58,6 +59,7 @@ type IBVLCChild interface {
 	InitializeParent(parent *BVLC)
 	GetTypeName() string
 	IBVLC
+	utils.AsciiBoxer
 }
 
 func NewBVLC() *BVLC {
@@ -82,6 +84,14 @@ func (m *BVLC) GetTypeName() string {
 }
 
 func (m *BVLC) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BVLC) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BVLC) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetType)
@@ -92,9 +102,6 @@ func (m *BVLC) LengthInBits() uint16 {
 	// Implicit Field (bvlcLength)
 	lengthInBits += 16
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
-
 	return lengthInBits
 }
 
@@ -102,10 +109,13 @@ func (m *BVLC) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
+func BVLCParse(io utils.ReadBuffer) (*BVLC, error) {
+	if pullErr := io.PullContext("BVLC"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (bacnetType)
-	bacnetType, _bacnetTypeErr := io.ReadUint8(8)
+	bacnetType, _bacnetTypeErr := io.ReadUint8("bacnetType", 8)
 	if _bacnetTypeErr != nil {
 		return nil, errors.Wrap(_bacnetTypeErr, "Error parsing 'bacnetType' field")
 	}
@@ -114,13 +124,13 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction, _bvlcFunctionErr := io.ReadUint8(8)
+	bvlcFunction, _bvlcFunctionErr := io.ReadUint8("bvlcFunction", 8)
 	if _bvlcFunctionErr != nil {
 		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	bvlcLength, _bvlcLengthErr := io.ReadUint16(16)
+	bvlcLength, _bvlcLengthErr := io.ReadUint16("bvlcLength", 16)
 	_ = bvlcLength
 	if _bvlcLengthErr != nil {
 		return nil, errors.Wrap(_bvlcLengthErr, "Error parsing 'bvlcLength' field")
@@ -156,9 +166,16 @@ func BVLCParse(io *utils.ReadBuffer) (*BVLC, error) {
 		_parent, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
 	case bvlcFunction == 0x0C: // BVLCSecureBVLL
 		_parent, typeSwitchError = BVLCSecureBVLLParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("BVLC"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -171,16 +188,19 @@ func (m *BVLC) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("BVLC"); pushErr != nil {
+		return pushErr
+	}
 
 	// Const Field (bacnetType)
-	_bacnetTypeErr := io.WriteUint8(8, 0x81)
+	_bacnetTypeErr := io.WriteUint8("bacnetType", 8, 0x81)
 	if _bacnetTypeErr != nil {
 		return errors.Wrap(_bacnetTypeErr, "Error serializing 'bacnetType' field")
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction := uint8(child.BvlcFunction())
-	_bvlcFunctionErr := io.WriteUint8(8, (bvlcFunction))
+	_bvlcFunctionErr := io.WriteUint8("bvlcFunction", 8, (bvlcFunction))
 
 	if _bvlcFunctionErr != nil {
 		return errors.Wrap(_bvlcFunctionErr, "Error serializing 'bvlcFunction' field")
@@ -188,7 +208,7 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.LengthInBytes()))
-	_bvlcLengthErr := io.WriteUint16(16, (bvlcLength))
+	_bvlcLengthErr := io.WriteUint16("bvlcLength", 16, (bvlcLength))
 	if _bvlcLengthErr != nil {
 		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}
@@ -199,22 +219,102 @@ func (m *BVLC) SerializeParent(io utils.WriteBuffer, child IBVLC, serializeChild
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("BVLC"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BVLC) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BVLCResult needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCResult":
+			if m.Child == nil {
+				m.Child = &BVLCResult{
+					Parent: m,
+				}
+			}
+		// BVLCWideBroadcastDistributionTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCWideBroadcastDistributionTable":
+			if m.Child == nil {
+				m.Child = &BVLCWideBroadcastDistributionTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadBroadcastDistributionTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTable":
+			if m.Child == nil {
+				m.Child = &BVLCReadBroadcastDistributionTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadBroadcastDistributionTableAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadBroadcastDistributionTableAck":
+			if m.Child == nil {
+				m.Child = &BVLCReadBroadcastDistributionTableAck{
+					Parent: m,
+				}
+			}
+		// BVLCRegisterForeignDevice needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCRegisterForeignDevice":
+			if m.Child == nil {
+				m.Child = &BVLCRegisterForeignDevice{
+					Parent: m,
+				}
+			}
+		// BVLCReadForeignDeviceTable needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTable":
+			if m.Child == nil {
+				m.Child = &BVLCReadForeignDeviceTable{
+					Parent: m,
+				}
+			}
+		// BVLCReadForeignDeviceTableAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCReadForeignDeviceTableAck":
+			if m.Child == nil {
+				m.Child = &BVLCReadForeignDeviceTableAck{
+					Parent: m,
+				}
+			}
+		// BVLCDeleteForeignDeviceTableEntry needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDeleteForeignDeviceTableEntry":
+			if m.Child == nil {
+				m.Child = &BVLCDeleteForeignDeviceTableEntry{
+					Parent: m,
+				}
+			}
+		// BVLCDistributeBroadcastToNetwork needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCDistributeBroadcastToNetwork":
+			if m.Child == nil {
+				m.Child = &BVLCDistributeBroadcastToNetwork{
+					Parent: m,
+				}
+			}
+		// BVLCSecureBVLL needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BVLCSecureBVLL":
+			if m.Child == nil {
+				m.Child = &BVLCSecureBVLL{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -389,6 +489,7 @@ func (m *BVLC) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -411,14 +512,32 @@ func (m *BVLC) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m BVLC) String() string {
-	return string(m.Box("BVLC", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m BVLC) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BVLC"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BVLC) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BVLC) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BVLC"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Const Field (bacnetType)
+	boxes = append(boxes, utils.BoxAnything("BacnetType", uint8(0x81), -1))
+	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
+	bvlcFunction := uint8(m.Child.BvlcFunction())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("BvlcFunction", bvlcFunction, -1))
+	// Implicit Field (bvlcLength)
+	bvlcLength := uint16(uint16(m.LengthInBytes()))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("BvlcLength", bvlcLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

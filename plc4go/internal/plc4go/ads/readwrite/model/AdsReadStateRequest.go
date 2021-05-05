@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *AdsReadStateRequest) GetTypeName() string {
 }
 
 func (m *AdsReadStateRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadStateRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -95,7 +100,14 @@ func (m *AdsReadStateRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadStateRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadStateRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsReadStateRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("AdsReadStateRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadStateRequest{
@@ -107,26 +119,35 @@ func AdsReadStateRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadStateRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsReadStateRequest"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("AdsReadStateRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -134,18 +155,24 @@ func (m *AdsReadStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadStateRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m AdsReadStateRequest) String() string {
-	return string(m.Box("AdsReadStateRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadStateRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadStateRequest"
+	boxName := "AdsReadStateRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

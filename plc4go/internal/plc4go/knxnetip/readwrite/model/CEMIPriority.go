@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type CEMIPriority uint8
 
 type ICEMIPriority interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -38,6 +42,17 @@ const (
 	CEMIPriority_URGENT CEMIPriority = 0x2
 	CEMIPriority_LOW    CEMIPriority = 0x3
 )
+
+var CEMIPriorityValues []CEMIPriority
+
+func init() {
+	CEMIPriorityValues = []CEMIPriority{
+		CEMIPriority_SYSTEM,
+		CEMIPriority_NORMAL,
+		CEMIPriority_URGENT,
+		CEMIPriority_LOW,
+	}
+}
 
 func CEMIPriorityByValue(value uint8) CEMIPriority {
 	switch value {
@@ -85,8 +100,8 @@ func (m CEMIPriority) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIPriorityParse(io *utils.ReadBuffer) (CEMIPriority, error) {
-	val, err := io.ReadUint8(2)
+func CEMIPriorityParse(io utils.ReadBuffer) (CEMIPriority, error) {
+	val, err := io.ReadUint8("CEMIPriority", 2)
 	if err != nil {
 		return 0, nil
 	}
@@ -94,10 +109,11 @@ func CEMIPriorityParse(io *utils.ReadBuffer) (CEMIPriority, error) {
 }
 
 func (e CEMIPriority) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(2, uint8(e))
+	err := io.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CEMIPriority) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -117,7 +133,15 @@ func (m *CEMIPriority) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
-func (e CEMIPriority) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m CEMIPriority) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e CEMIPriority) name() string {
 	switch e {
 	case CEMIPriority_SYSTEM:
 		return "SYSTEM"
@@ -129,4 +153,17 @@ func (e CEMIPriority) String() string {
 		return "LOW"
 	}
 	return ""
+}
+
+func (e CEMIPriority) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m CEMIPriority) Box(s string, i int) utils.AsciiBox {
+	boxName := "CEMIPriority"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

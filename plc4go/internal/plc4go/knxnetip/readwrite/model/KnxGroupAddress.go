@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IKnxGroupAddressChild interface {
 	InitializeParent(parent *KnxGroupAddress)
 	GetTypeName() string
 	IKnxGroupAddress
+	utils.AsciiBoxer
 }
 
 func NewKnxGroupAddress() *KnxGroupAddress {
@@ -78,10 +80,15 @@ func (m *KnxGroupAddress) GetTypeName() string {
 }
 
 func (m *KnxGroupAddress) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *KnxGroupAddress) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *KnxGroupAddress) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -90,7 +97,10 @@ func (m *KnxGroupAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+func KnxGroupAddressParse(io utils.ReadBuffer, numLevels uint8) (*KnxGroupAddress, error) {
+	if pullErr := io.PullContext("KnxGroupAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *KnxGroupAddress
@@ -102,9 +112,16 @@ func KnxGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (*KnxGroupAddre
 		_parent, typeSwitchError = KnxGroupAddress2LevelParse(io)
 	case numLevels == 3: // KnxGroupAddress3Level
 		_parent, typeSwitchError = KnxGroupAddress3LevelParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("KnxGroupAddress"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -117,6 +134,9 @@ func (m *KnxGroupAddress) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupAddress, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("KnxGroupAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -124,22 +144,32 @@ func (m *KnxGroupAddress) SerializeParent(io utils.WriteBuffer, child IKnxGroupA
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("KnxGroupAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -194,6 +224,7 @@ func (m *KnxGroupAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -216,14 +247,22 @@ func (m *KnxGroupAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m KnxGroupAddress) String() string {
-	return string(m.Box("KnxGroupAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxGroupAddress"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *KnxGroupAddress) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *KnxGroupAddress) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "KnxGroupAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

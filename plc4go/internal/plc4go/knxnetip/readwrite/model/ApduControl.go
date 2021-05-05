@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IApduControlChild interface {
 	InitializeParent(parent *ApduControl)
 	GetTypeName() string
 	IApduControl
+	utils.AsciiBoxer
 }
 
 func NewApduControl() *ApduControl {
@@ -78,12 +80,17 @@ func (m *ApduControl) GetTypeName() string {
 }
 
 func (m *ApduControl) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduControl) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *ApduControl) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (controlType)
 	lengthInBits += 2
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *ApduControl) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlParse(io *utils.ReadBuffer) (*ApduControl, error) {
+func ApduControlParse(io utils.ReadBuffer) (*ApduControl, error) {
+	if pullErr := io.PullContext("ApduControl"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType, _controlTypeErr := io.ReadUint8(2)
+	controlType, _controlTypeErr := io.ReadUint8("controlType", 2)
 	if _controlTypeErr != nil {
 		return nil, errors.Wrap(_controlTypeErr, "Error parsing 'controlType' field")
 	}
@@ -112,9 +122,16 @@ func ApduControlParse(io *utils.ReadBuffer) (*ApduControl, error) {
 		_parent, typeSwitchError = ApduControlAckParse(io)
 	case controlType == 0x3: // ApduControlNack
 		_parent, typeSwitchError = ApduControlNackParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("ApduControl"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -127,10 +144,13 @@ func (m *ApduControl) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *ApduControl) SerializeParent(io utils.WriteBuffer, child IApduControl, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("ApduControl"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType := uint8(child.ControlType())
-	_controlTypeErr := io.WriteUint8(2, (controlType))
+	_controlTypeErr := io.WriteUint8("controlType", 2, (controlType))
 
 	if _controlTypeErr != nil {
 		return errors.Wrap(_controlTypeErr, "Error serializing 'controlType' field")
@@ -142,22 +162,60 @@ func (m *ApduControl) SerializeParent(io utils.WriteBuffer, child IApduControl, 
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("ApduControl"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// ApduControlConnect needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlConnect":
+			if m.Child == nil {
+				m.Child = &ApduControlConnect{
+					Parent: m,
+				}
+			}
+		// ApduControlDisconnect needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlDisconnect":
+			if m.Child == nil {
+				m.Child = &ApduControlDisconnect{
+					Parent: m,
+				}
+			}
+		// ApduControlAck needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlAck":
+			if m.Child == nil {
+				m.Child = &ApduControlAck{
+					Parent: m,
+				}
+			}
+		// ApduControlNack needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.ApduControlNack":
+			if m.Child == nil {
+				m.Child = &ApduControlNack{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -224,6 +282,7 @@ func (m *ApduControl) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduControl) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -246,14 +305,26 @@ func (m *ApduControl) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m ApduControl) String() string {
-	return string(m.Box("ApduControl", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m ApduControl) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduControl"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduControl) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *ApduControl) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "ApduControl"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (controlType) (Used as input to a switch field)
+	controlType := uint8(m.Child.ControlType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ControlType", controlType, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

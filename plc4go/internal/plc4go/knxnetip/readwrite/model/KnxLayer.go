@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type KnxLayer uint8
 
 type IKnxLayer interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -37,6 +41,16 @@ const (
 	KnxLayer_TUNNEL_RAW        KnxLayer = 0x04
 	KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
+
+var KnxLayerValues []KnxLayer
+
+func init() {
+	KnxLayerValues = []KnxLayer{
+		KnxLayer_TUNNEL_LINK_LAYER,
+		KnxLayer_TUNNEL_RAW,
+		KnxLayer_TUNNEL_BUSMONITOR,
+	}
+}
 
 func KnxLayerByValue(value uint8) KnxLayer {
 	switch value {
@@ -80,8 +94,8 @@ func (m KnxLayer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxLayerParse(io *utils.ReadBuffer) (KnxLayer, error) {
-	val, err := io.ReadUint8(8)
+func KnxLayerParse(io utils.ReadBuffer) (KnxLayer, error) {
+	val, err := io.ReadUint8("KnxLayer", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -89,10 +103,11 @@ func KnxLayerParse(io *utils.ReadBuffer) (KnxLayer, error) {
 }
 
 func (e KnxLayer) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("KnxLayer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxLayer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -112,7 +127,15 @@ func (m *KnxLayer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
-func (e KnxLayer) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m KnxLayer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e KnxLayer) name() string {
 	switch e {
 	case KnxLayer_TUNNEL_LINK_LAYER:
 		return "TUNNEL_LINK_LAYER"
@@ -122,4 +145,17 @@ func (e KnxLayer) String() string {
 		return "TUNNEL_BUSMONITOR"
 	}
 	return ""
+}
+
+func (e KnxLayer) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m KnxLayer) Box(s string, i int) utils.AsciiBox {
+	boxName := "KnxLayer"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

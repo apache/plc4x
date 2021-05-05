@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *COTPParameterCalledTsap) GetTypeName() string {
 }
 
 func (m *COTPParameterCalledTsap) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameterCalledTsap) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -97,12 +102,19 @@ func (m *COTPParameterCalledTsap) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterCalledTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterCalledTsapParse(io utils.ReadBuffer) (*COTPParameter, error) {
+	if pullErr := io.PullContext("COTPParameterCalledTsap"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tsapId)
-	tsapId, _tsapIdErr := io.ReadUint16(16)
+	tsapId, _tsapIdErr := io.ReadUint16("tsapId", 16)
 	if _tsapIdErr != nil {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field")
+	}
+
+	if closeErr := io.CloseContext("COTPParameterCalledTsap"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,26 +128,35 @@ func COTPParameterCalledTsapParse(io *utils.ReadBuffer) (*COTPParameter, error) 
 
 func (m *COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("COTPParameterCalledTsap"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
-		_tsapIdErr := io.WriteUint16(16, (tsapId))
+		_tsapIdErr := io.WriteUint16("tsapId", 16, (tsapId))
 		if _tsapIdErr != nil {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}
 
+		if popErr := io.PopContext("COTPParameterCalledTsap"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tsapId":
@@ -148,7 +169,7 @@ func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -156,6 +177,7 @@ func (m *COTPParameterCalledTsap) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TsapId, xml.StartElement{Name: xml.Name{Local: "tsapId"}}); err != nil {
 		return err
@@ -164,14 +186,21 @@ func (m *COTPParameterCalledTsap) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m COTPParameterCalledTsap) String() string {
-	return string(m.Box("COTPParameterCalledTsap", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPParameterCalledTsap) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPParameterCalledTsap"
+	boxName := "COTPParameterCalledTsap"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("TsapId", m.TsapId, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

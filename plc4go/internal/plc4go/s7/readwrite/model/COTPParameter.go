@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type ICOTPParameterChild interface {
 	InitializeParent(parent *COTPParameter)
 	GetTypeName() string
 	ICOTPParameter
+	utils.AsciiBoxer
 }
 
 func NewCOTPParameter() *COTPParameter {
@@ -78,15 +80,20 @@ func (m *COTPParameter) GetTypeName() string {
 }
 
 func (m *COTPParameter) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPParameter) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *COTPParameter) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (parameterType)
 	lengthInBits += 8
 
 	// Implicit Field (parameterLength)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -95,16 +102,19 @@ func (m *COTPParameter) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterParse(io utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+	if pullErr := io.PullContext("COTPParameter"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := io.ReadUint8(8)
+	parameterType, _parameterTypeErr := io.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := io.ReadUint8(8)
+	parameterLength, _parameterLengthErr := io.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field")
@@ -124,9 +134,16 @@ func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (*COTPParameter, error
 		_parent, typeSwitchError = COTPParameterChecksumParse(io)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
 		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("COTPParameter"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -139,10 +156,13 @@ func (m *COTPParameter) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParameter, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("COTPParameter"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.ParameterType())
-	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+	_parameterTypeErr := io.WriteUint8("parameterType", 8, (parameterType))
 
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
@@ -150,7 +170,7 @@ func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParamet
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-	_parameterLengthErr := io.WriteUint8(8, (parameterLength))
+	_parameterLengthErr := io.WriteUint8("parameterLength", 8, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
@@ -161,22 +181,32 @@ func (m *COTPParameter) SerializeParent(io utils.WriteBuffer, child ICOTPParamet
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("COTPParameter"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -255,6 +285,7 @@ func (m *COTPParameter) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.s7.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -277,14 +308,30 @@ func (m *COTPParameter) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m COTPParameter) String() string {
-	return string(m.Box("COTPParameter", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m COTPParameter) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPParameter"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *COTPParameter) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *COTPParameter) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "COTPParameter"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (parameterType) (Used as input to a switch field)
+	parameterType := uint8(m.Child.ParameterType())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ParameterType", parameterType, -1))
+	// Implicit Field (parameterLength)
+	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ParameterLength", parameterLength, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

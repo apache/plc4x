@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *BACnetConfirmedServiceRequestAddListElement) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAddListElementParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestAddListElement"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestAddListElement{
@@ -103,26 +115,35 @@ func BACnetConfirmedServiceRequestAddListElementParse(io *utils.ReadBuffer) (*BA
 
 func (m *BACnetConfirmedServiceRequestAddListElement) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestAddListElement"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestAddListElement"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestAddListElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *BACnetConfirmedServiceRequestAddListElement) UnmarshalXML(d *xml.Decode
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestAddListElement) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetConfirmedServiceRequestAddListElement) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestAddListElement", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestAddListElement) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestAddListElement"
+	boxName := "BACnetConfirmedServiceRequestAddListElement"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

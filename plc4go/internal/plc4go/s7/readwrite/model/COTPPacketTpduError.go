@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *COTPPacketTpduError) GetTypeName() string {
 }
 
 func (m *COTPPacketTpduError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *COTPPacketTpduError) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -104,18 +109,25 @@ func (m *COTPPacketTpduError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketTpduErrorParse(io utils.ReadBuffer) (*COTPPacket, error) {
+	if pullErr := io.PullContext("COTPPacketTpduError"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field")
 	}
 
 	// Simple Field (rejectCause)
-	rejectCause, _rejectCauseErr := io.ReadUint8(8)
+	rejectCause, _rejectCauseErr := io.ReadUint8("rejectCause", 8)
 	if _rejectCauseErr != nil {
 		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field")
+	}
+
+	if closeErr := io.CloseContext("COTPPacketTpduError"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -130,33 +142,42 @@ func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (*COTPPacket, error) {
 
 func (m *COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("COTPPacketTpduError"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
-		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+		_destinationReferenceErr := io.WriteUint16("destinationReference", 16, (destinationReference))
 		if _destinationReferenceErr != nil {
 			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (rejectCause)
 		rejectCause := uint8(m.RejectCause)
-		_rejectCauseErr := io.WriteUint8(8, (rejectCause))
+		_rejectCauseErr := io.WriteUint8("rejectCause", 8, (rejectCause))
 		if _rejectCauseErr != nil {
 			return errors.Wrap(_rejectCauseErr, "Error serializing 'rejectCause' field")
 		}
 
+		if popErr := io.PopContext("COTPPacketTpduError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPPacketTpduError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "destinationReference":
@@ -175,7 +196,7 @@ func (m *COTPPacketTpduError) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -183,6 +204,7 @@ func (m *COTPPacketTpduError) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *COTPPacketTpduError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DestinationReference, xml.StartElement{Name: xml.Name{Local: "destinationReference"}}); err != nil {
 		return err
@@ -194,15 +216,24 @@ func (m *COTPPacketTpduError) MarshalXML(e *xml.Encoder, start xml.StartElement)
 }
 
 func (m COTPPacketTpduError) String() string {
-	return string(m.Box("COTPPacketTpduError", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m COTPPacketTpduError) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "COTPPacketTpduError"
+	boxName := "COTPPacketTpduError"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, width-2))
-	boxes = append(boxes, utils.BoxAnything("RejectCause", m.RejectCause, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DestinationReference", m.DestinationReference, -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("RejectCause", m.RejectCause, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

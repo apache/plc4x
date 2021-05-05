@@ -85,7 +85,7 @@
             [simple uint 8 'crc']
         ]
         ['0xE0' COTPParameterDisconnectAdditionalInformation [uint 8 'rest']
-            [array  uint 8 'data' count 'rest']
+            [array byte 'data' count 'rest']
         ]
     ]
 ]
@@ -202,7 +202,7 @@
 
 [type 'SzlDataTreeItem'
     [simple uint 16 'itemIndex']
-    [array  int 8   'mlfb' count '20']
+    [array  byte    'mlfb' count '20']
     [simple uint 16 'moduleTypeId']
     [simple uint 16 'ausbg']
     [simple uint 16 'ausbe']
@@ -233,7 +233,7 @@
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
-    [array    int  8                 'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
+    [array    byte                   'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
     [padding  uint 8                 'pad'        '0x00' 'lastItem ? 0 : COUNT(data) % 2']
 ]
 

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *ModbusPDUReadExceptionStatusResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUReadExceptionStatusResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -105,12 +110,19 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadUint8(8)
+	value, _valueErr := io.ReadUint8("value", 8)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUReadExceptionStatusResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -124,26 +136,35 @@ func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (*ModbusPDU
 
 func (m *ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUReadExceptionStatusResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := uint8(m.Value)
-		_valueErr := io.WriteUint8(8, (value))
+		_valueErr := io.WriteUint8("value", 8, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		if popErr := io.PopContext("ModbusPDUReadExceptionStatusResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "value":
@@ -156,7 +177,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -164,6 +185,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
 		return err
@@ -172,14 +194,21 @@ func (m *ModbusPDUReadExceptionStatusResponse) MarshalXML(e *xml.Encoder, start 
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) String() string {
-	return string(m.Box("ModbusPDUReadExceptionStatusResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUReadExceptionStatusResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUReadExceptionStatusResponse"
+	boxName := "ModbusPDUReadExceptionStatusResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

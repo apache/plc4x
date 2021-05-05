@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *NLMIAmRouterToNetwork) GetTypeName() string {
 }
 
 func (m *NLMIAmRouterToNetwork) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *NLMIAmRouterToNetwork) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Array field
 	if len(m.DestinationNetworkAddress) > 0 {
@@ -100,19 +105,32 @@ func (m *NLMIAmRouterToNetwork) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NLMIAmRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+func NLMIAmRouterToNetworkParse(io utils.ReadBuffer, apduLength uint16, messageType uint8) (*NLM, error) {
+	if pullErr := io.PullContext("NLMIAmRouterToNetwork"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (destinationNetworkAddress)
+	if pullErr := io.PullContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Length array
 	destinationNetworkAddress := make([]uint16, 0)
-	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), uint16(uint16(3)), uint16(uint16(1)))))
+	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), func() uint16 { return uint16(uint16(3)) }, func() uint16 { return uint16(uint16(1)) })))
 	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
-		_item, _err := io.ReadUint16(16)
+		_item, _err := io.ReadUint16("", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field")
 		}
 		destinationNetworkAddress = append(destinationNetworkAddress, _item)
+	}
+	if closeErr := io.CloseContext("destinationNetworkAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("NLMIAmRouterToNetwork"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -126,29 +144,44 @@ func NLMIAmRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, message
 
 func (m *NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("NLMIAmRouterToNetwork"); pushErr != nil {
+			return pushErr
+		}
 
 		// Array Field (destinationNetworkAddress)
 		if m.DestinationNetworkAddress != nil {
+			if pushErr := io.PushContext("destinationNetworkAddress", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.DestinationNetworkAddress {
-				_elementErr := io.WriteUint16(16, _element)
+				_elementErr := io.WriteUint16("", 16, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddress' field")
 				}
 			}
+			if popErr := io.PopContext("destinationNetworkAddress", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("NLMIAmRouterToNetwork"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *NLMIAmRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "destinationNetworkAddress":
@@ -161,7 +194,7 @@ func (m *NLMIAmRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -169,6 +202,7 @@ func (m *NLMIAmRouterToNetwork) UnmarshalXML(d *xml.Decoder, start xml.StartElem
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *NLMIAmRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DestinationNetworkAddress, xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
 		return err
@@ -177,14 +211,27 @@ func (m *NLMIAmRouterToNetwork) MarshalXML(e *xml.Encoder, start xml.StartElemen
 }
 
 func (m NLMIAmRouterToNetwork) String() string {
-	return string(m.Box("NLMIAmRouterToNetwork", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m NLMIAmRouterToNetwork) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "NLMIAmRouterToNetwork"
+	boxName := "NLMIAmRouterToNetwork"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DestinationNetworkAddress", m.DestinationNetworkAddress, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Array Field (destinationNetworkAddress)
+		if m.DestinationNetworkAddress != nil {
+			// Simple array base type uint16 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.DestinationNetworkAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("DestinationNetworkAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -18,7 +18,7 @@
 //
 module github.com/apache/plc4x/plc4go
 
-go 1.15
+go 1.16
 
 require (
 	github.com/ajankovic/xdiff v0.0.1
@@ -28,6 +28,6 @@ require (
 	github.com/rs/zerolog v1.20.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect
-	golang.org/x/tools v0.1.0 // indirect
-	gotest.tools/gotestsum v1.6.3 // indirect
+	golang.org/x/tools v0.1.0
+	gotest.tools/gotestsum v1.6.4 // indirect
 )

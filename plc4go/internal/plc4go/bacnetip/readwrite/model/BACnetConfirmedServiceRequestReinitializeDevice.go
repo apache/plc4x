@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestReinitializeDevice{
@@ -103,26 +115,35 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *utils.ReadBuffer) 
 
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestReinitializeDevice"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestReinitializeDevice"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *BACnetConfirmedServiceRequestReinitializeDevice) UnmarshalXML(d *xml.De
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestReinitializeDevice) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetConfirmedServiceRequestReinitializeDevice) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestReinitializeDevice", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestReinitializeDevice) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestReinitializeDevice"
+	boxName := "BACnetConfirmedServiceRequestReinitializeDevice"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,6 +33,8 @@ type DataTransportSize uint8
 type IDataTransportSize interface {
 	SizeInBits() bool
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -42,6 +46,20 @@ const (
 	DataTransportSize_REAL            DataTransportSize = 0x07
 	DataTransportSize_OCTET_STRING    DataTransportSize = 0x09
 )
+
+var DataTransportSizeValues []DataTransportSize
+
+func init() {
+	DataTransportSizeValues = []DataTransportSize{
+		DataTransportSize_NULL,
+		DataTransportSize_BIT,
+		DataTransportSize_BYTE_WORD_DWORD,
+		DataTransportSize_INTEGER,
+		DataTransportSize_DINTEGER,
+		DataTransportSize_REAL,
+		DataTransportSize_OCTET_STRING,
+	}
+}
 
 func (e DataTransportSize) SizeInBits() bool {
 	switch e {
@@ -137,8 +155,8 @@ func (m DataTransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DataTransportSizeParse(io *utils.ReadBuffer) (DataTransportSize, error) {
-	val, err := io.ReadUint8(8)
+func DataTransportSizeParse(io utils.ReadBuffer) (DataTransportSize, error) {
+	val, err := io.ReadUint8("DataTransportSize", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -146,10 +164,11 @@ func DataTransportSizeParse(io *utils.ReadBuffer) (DataTransportSize, error) {
 }
 
 func (e DataTransportSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DataTransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -169,7 +188,15 @@ func (m *DataTransportSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
-func (e DataTransportSize) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m DataTransportSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e DataTransportSize) name() string {
 	switch e {
 	case DataTransportSize_NULL:
 		return "NULL"
@@ -187,4 +214,17 @@ func (e DataTransportSize) String() string {
 		return "OCTET_STRING"
 	}
 	return ""
+}
+
+func (e DataTransportSize) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m DataTransportSize) Box(s string, i int) utils.AsciiBox {
+	boxName := "DataTransportSize"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

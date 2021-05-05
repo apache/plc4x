@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -97,7 +98,11 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) GetTypeName() string {
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -115,24 +120,31 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (referenceAddress)
-	referenceAddress, _referenceAddressErr := io.ReadUint16(16)
+	referenceAddress, _referenceAddressErr := io.ReadUint16("referenceAddress", 16)
 	if _referenceAddressErr != nil {
 		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field")
 	}
 
 	// Simple Field (andMask)
-	andMask, _andMaskErr := io.ReadUint16(16)
+	andMask, _andMaskErr := io.ReadUint16("andMask", 16)
 	if _andMaskErr != nil {
 		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field")
 	}
 
 	// Simple Field (orMask)
-	orMask, _orMaskErr := io.ReadUint16(16)
+	orMask, _orMaskErr := io.ReadUint16("orMask", 16)
 	if _orMaskErr != nil {
 		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUMaskWriteHoldingRegisterRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -148,40 +160,49 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *utils.ReadBuffer) (*Modbu
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUMaskWriteHoldingRegisterRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.ReferenceAddress)
-		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
+		_referenceAddressErr := io.WriteUint16("referenceAddress", 16, (referenceAddress))
 		if _referenceAddressErr != nil {
 			return errors.Wrap(_referenceAddressErr, "Error serializing 'referenceAddress' field")
 		}
 
 		// Simple Field (andMask)
 		andMask := uint16(m.AndMask)
-		_andMaskErr := io.WriteUint16(16, (andMask))
+		_andMaskErr := io.WriteUint16("andMask", 16, (andMask))
 		if _andMaskErr != nil {
 			return errors.Wrap(_andMaskErr, "Error serializing 'andMask' field")
 		}
 
 		// Simple Field (orMask)
 		orMask := uint16(m.OrMask)
-		_orMaskErr := io.WriteUint16(16, (orMask))
+		_orMaskErr := io.WriteUint16("orMask", 16, (orMask))
 		if _orMaskErr != nil {
 			return errors.Wrap(_orMaskErr, "Error serializing 'orMask' field")
 		}
 
+		if popErr := io.PopContext("ModbusPDUMaskWriteHoldingRegisterRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "referenceAddress":
@@ -206,7 +227,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) UnmarshalXML(d *xml.Decoder, 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -214,6 +235,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) UnmarshalXML(d *xml.Decoder, 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ReferenceAddress, xml.StartElement{Name: xml.Name{Local: "referenceAddress"}}); err != nil {
 		return err
@@ -228,16 +250,27 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) MarshalXML(e *xml.Encoder, st
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
-	return string(m.Box("ModbusPDUMaskWriteHoldingRegisterRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUMaskWriteHoldingRegisterRequest"
+	boxName := "ModbusPDUMaskWriteHoldingRegisterRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, width-2))
-	boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ReferenceAddress", m.ReferenceAddress, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("AndMask", m.AndMask, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OrMask", m.OrMask, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

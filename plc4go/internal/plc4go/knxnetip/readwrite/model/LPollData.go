@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -101,7 +102,11 @@ func (m *LPollData) GetTypeName() string {
 }
 
 func (m *LPollData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LPollData) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.LengthInBits()
@@ -124,28 +129,44 @@ func (m *LPollData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LPollDataParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	if pullErr := io.PullContext("LPollData"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("sourceAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(io)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")
 	}
+	if closeErr := io.CloseContext("sourceAddress"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Array field (targetAddress)
+	if pullErr := io.PullContext("targetAddress", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	targetAddress := make([]int8, uint16(2))
 	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'targetAddress' field")
 		}
 		targetAddress[curItem] = _item
 	}
+	if closeErr := io.CloseContext("targetAddress", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -158,9 +179,13 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 	}
 
 	// Simple Field (numberExpectedPollData)
-	numberExpectedPollData, _numberExpectedPollDataErr := io.ReadUint8(6)
+	numberExpectedPollData, _numberExpectedPollDataErr := io.ReadUint8("numberExpectedPollData", 6)
 	if _numberExpectedPollDataErr != nil {
 		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field")
+	}
+
+	if closeErr := io.CloseContext("LPollData"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -176,26 +201,41 @@ func LPollDataParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 
 func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("LPollData"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (sourceAddress)
+		if pushErr := io.PushContext("sourceAddress"); pushErr != nil {
+			return pushErr
+		}
 		_sourceAddressErr := m.SourceAddress.Serialize(io)
+		if popErr := io.PopContext("sourceAddress"); popErr != nil {
+			return popErr
+		}
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
+			if pushErr := io.PushContext("targetAddress", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.TargetAddress {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
 				}
+			}
+			if popErr := io.PopContext("targetAddress", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
 			}
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x00))
+			_err := io.WriteUint8("reserved", 4, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -203,23 +243,29 @@ func (m *LPollData) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (numberExpectedPollData)
 		numberExpectedPollData := uint8(m.NumberExpectedPollData)
-		_numberExpectedPollDataErr := io.WriteUint8(6, (numberExpectedPollData))
+		_numberExpectedPollDataErr := io.WriteUint8("numberExpectedPollData", 6, (numberExpectedPollData))
 		if _numberExpectedPollDataErr != nil {
 			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}
 
+		if popErr := io.PopContext("LPollData"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "sourceAddress":
@@ -249,7 +295,7 @@ func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -257,6 +303,7 @@ func (m *LPollData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LPollData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
 		return err
@@ -273,16 +320,35 @@ func (m *LPollData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m LPollData) String() string {
-	return string(m.Box("LPollData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m LPollData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LPollData"
+	boxName := "LPollData"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SourceAddress", m.SourceAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("TargetAddress", m.TargetAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.SourceAddress.Box("sourceAddress", width-2))
+		// Array Field (targetAddress)
+		if m.TargetAddress != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.TargetAddress {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("TargetAddress", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumberExpectedPollData", m.NumberExpectedPollData, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

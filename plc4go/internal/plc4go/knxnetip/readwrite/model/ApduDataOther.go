@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *ApduDataOther) GetTypeName() string {
 }
 
 func (m *ApduDataOther) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataOther) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (extendedApdu)
 	lengthInBits += m.ExtendedApdu.LengthInBits()
@@ -97,12 +102,26 @@ func (m *ApduDataOther) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataOtherParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+func ApduDataOtherParse(io utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
+	if pullErr := io.PullContext("ApduDataOther"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("extendedApdu"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (extendedApdu)
 	extendedApdu, _extendedApduErr := ApduDataExtParse(io, dataLength)
 	if _extendedApduErr != nil {
 		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field")
+	}
+	if closeErr := io.CloseContext("extendedApdu"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataOther"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,30 +135,48 @@ func ApduDataOtherParse(io *utils.ReadBuffer, dataLength uint8) (*ApduData, erro
 
 func (m *ApduDataOther) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataOther"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (extendedApdu)
+		if pushErr := io.PushContext("extendedApdu"); pushErr != nil {
+			return pushErr
+		}
 		_extendedApduErr := m.ExtendedApdu.Serialize(io)
+		if popErr := io.PopContext("extendedApdu"); popErr != nil {
+			return popErr
+		}
 		if _extendedApduErr != nil {
 			return errors.Wrap(_extendedApduErr, "Error serializing 'extendedApdu' field")
 		}
 
+		if popErr := io.PopContext("ApduDataOther"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataOther) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "extendedApdu":
 				var dt *ApduDataExt
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ExtendedApdu = dt
@@ -147,7 +184,7 @@ func (m *ApduDataOther) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -155,6 +192,7 @@ func (m *ApduDataOther) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataOther) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ExtendedApdu, xml.StartElement{Name: xml.Name{Local: "extendedApdu"}}); err != nil {
 		return err
@@ -163,14 +201,20 @@ func (m *ApduDataOther) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m ApduDataOther) String() string {
-	return string(m.Box("ApduDataOther", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataOther) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataOther"
+	boxName := "ApduDataOther"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ExtendedApdu", m.ExtendedApdu, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.ExtendedApdu.Box("extendedApdu", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

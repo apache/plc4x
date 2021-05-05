@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -44,6 +48,23 @@ const (
 	ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE                ModbusErrorCode = 10
 	ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND ModbusErrorCode = 11
 )
+
+var ModbusErrorCodeValues []ModbusErrorCode
+
+func init() {
+	ModbusErrorCodeValues = []ModbusErrorCode{
+		ModbusErrorCode_ILLEGAL_FUNCTION,
+		ModbusErrorCode_ILLEGAL_DATA_ADDRESS,
+		ModbusErrorCode_ILLEGAL_DATA_VALUE,
+		ModbusErrorCode_SLAVE_DEVICE_FAILURE,
+		ModbusErrorCode_ACKNOWLEDGE,
+		ModbusErrorCode_SLAVE_DEVICE_BUSY,
+		ModbusErrorCode_NEGATIVE_ACKNOWLEDGE,
+		ModbusErrorCode_MEMORY_PARITY_ERROR,
+		ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE,
+		ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND,
+	}
+}
 
 func ModbusErrorCodeByValue(value uint8) ModbusErrorCode {
 	switch value {
@@ -115,8 +136,8 @@ func (m ModbusErrorCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
-	val, err := io.ReadUint8(8)
+func ModbusErrorCodeParse(io utils.ReadBuffer) (ModbusErrorCode, error) {
+	val, err := io.ReadUint8("ModbusErrorCode", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -124,10 +145,11 @@ func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
 }
 
 func (e ModbusErrorCode) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("ModbusErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusErrorCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -147,7 +169,15 @@ func (m *ModbusErrorCode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
-func (e ModbusErrorCode) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ModbusErrorCode) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ModbusErrorCode) name() string {
 	switch e {
 	case ModbusErrorCode_ILLEGAL_FUNCTION:
 		return "ILLEGAL_FUNCTION"
@@ -171,4 +201,17 @@ func (e ModbusErrorCode) String() string {
 		return "MEMORY_PARITY_ERROR"
 	}
 	return ""
+}
+
+func (e ModbusErrorCode) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ModbusErrorCode) Box(s string, i int) utils.AsciiBox {
+	boxName := "ModbusErrorCode"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

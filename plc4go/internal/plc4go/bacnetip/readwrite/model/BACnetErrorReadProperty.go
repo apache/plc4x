@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -98,7 +99,11 @@ func (m *BACnetErrorReadProperty) GetTypeName() string {
 }
 
 func (m *BACnetErrorReadProperty) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetErrorReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Const Field (errorClassHeader)
 	lengthInBits += 5
@@ -129,10 +134,13 @@ func (m *BACnetErrorReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
+func BACnetErrorReadPropertyParse(io utils.ReadBuffer) (*BACnetError, error) {
+	if pullErr := io.PullContext("BACnetErrorReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Const Field (errorClassHeader)
-	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
+	errorClassHeader, _errorClassHeaderErr := io.ReadUint8("errorClassHeader", 5)
 	if _errorClassHeaderErr != nil {
 		return nil, errors.Wrap(_errorClassHeaderErr, "Error parsing 'errorClassHeader' field")
 	}
@@ -141,24 +149,30 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Simple Field (errorClassLength)
-	errorClassLength, _errorClassLengthErr := io.ReadUint8(3)
+	errorClassLength, _errorClassLengthErr := io.ReadUint8("errorClassLength", 3)
 	if _errorClassLengthErr != nil {
 		return nil, errors.Wrap(_errorClassLengthErr, "Error parsing 'errorClassLength' field")
 	}
 
 	// Array field (errorClass)
+	if pullErr := io.PullContext("errorClass", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	errorClass := make([]int8, errorClassLength)
 	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorClass' field")
 		}
 		errorClass[curItem] = _item
 	}
+	if closeErr := io.CloseContext("errorClass", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Const Field (errorCodeHeader)
-	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8(5)
+	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8("errorCodeHeader", 5)
 	if _errorCodeHeaderErr != nil {
 		return nil, errors.Wrap(_errorCodeHeaderErr, "Error parsing 'errorCodeHeader' field")
 	}
@@ -167,20 +181,30 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 	}
 
 	// Simple Field (errorCodeLength)
-	errorCodeLength, _errorCodeLengthErr := io.ReadUint8(3)
+	errorCodeLength, _errorCodeLengthErr := io.ReadUint8("errorCodeLength", 3)
 	if _errorCodeLengthErr != nil {
 		return nil, errors.Wrap(_errorCodeLengthErr, "Error parsing 'errorCodeLength' field")
 	}
 
 	// Array field (errorCode)
+	if pullErr := io.PullContext("errorCode", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	errorCode := make([]int8, errorCodeLength)
 	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'errorCode' field")
 		}
 		errorCode[curItem] = _item
+	}
+	if closeErr := io.CloseContext("errorCode", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("BACnetErrorReadProperty"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -197,65 +221,86 @@ func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (*BACnetError, error) {
 
 func (m *BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetErrorReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
 		// Const Field (errorClassHeader)
-		_errorClassHeaderErr := io.WriteUint8(5, 0x12)
+		_errorClassHeaderErr := io.WriteUint8("errorClassHeader", 5, 0x12)
 		if _errorClassHeaderErr != nil {
 			return errors.Wrap(_errorClassHeaderErr, "Error serializing 'errorClassHeader' field")
 		}
 
 		// Simple Field (errorClassLength)
 		errorClassLength := uint8(m.ErrorClassLength)
-		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
+		_errorClassLengthErr := io.WriteUint8("errorClassLength", 3, (errorClassLength))
 		if _errorClassLengthErr != nil {
 			return errors.Wrap(_errorClassLengthErr, "Error serializing 'errorClassLength' field")
 		}
 
 		// Array Field (errorClass)
 		if m.ErrorClass != nil {
+			if pushErr := io.PushContext("errorClass", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ErrorClass {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorClass' field")
 				}
 			}
+			if popErr := io.PopContext("errorClass", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
 		// Const Field (errorCodeHeader)
-		_errorCodeHeaderErr := io.WriteUint8(5, 0x12)
+		_errorCodeHeaderErr := io.WriteUint8("errorCodeHeader", 5, 0x12)
 		if _errorCodeHeaderErr != nil {
 			return errors.Wrap(_errorCodeHeaderErr, "Error serializing 'errorCodeHeader' field")
 		}
 
 		// Simple Field (errorCodeLength)
 		errorCodeLength := uint8(m.ErrorCodeLength)
-		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
+		_errorCodeLengthErr := io.WriteUint8("errorCodeLength", 3, (errorCodeLength))
 		if _errorCodeLengthErr != nil {
 			return errors.Wrap(_errorCodeLengthErr, "Error serializing 'errorCodeLength' field")
 		}
 
 		// Array Field (errorCode)
 		if m.ErrorCode != nil {
+			if pushErr := io.PushContext("errorCode", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.ErrorCode {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'errorCode' field")
 				}
 			}
+			if popErr := io.PopContext("errorCode", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("BACnetErrorReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "errorClassLength":
@@ -296,7 +341,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -304,6 +349,7 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ErrorClassLength, xml.StartElement{Name: xml.Name{Local: "errorClassLength"}}); err != nil {
 		return err
@@ -325,17 +371,46 @@ func (m *BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m BACnetErrorReadProperty) String() string {
-	return string(m.Box("BACnetErrorReadProperty", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetErrorReadProperty) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetErrorReadProperty"
+	boxName := "BACnetErrorReadProperty"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorClass", m.ErrorClass, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorCode", m.ErrorCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Const Field (errorClassHeader)
+		boxes = append(boxes, utils.BoxAnything("ErrorClassHeader", uint8(0x12), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorClassLength", m.ErrorClassLength, -1))
+		// Array Field (errorClass)
+		if m.ErrorClass != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ErrorClass {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ErrorClass", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		// Const Field (errorCodeHeader)
+		boxes = append(boxes, utils.BoxAnything("ErrorCodeHeader", uint8(0x12), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("ErrorCodeLength", m.ErrorCodeLength, -1))
+		// Array Field (errorCode)
+		if m.ErrorCode != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.ErrorCode {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("ErrorCode", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

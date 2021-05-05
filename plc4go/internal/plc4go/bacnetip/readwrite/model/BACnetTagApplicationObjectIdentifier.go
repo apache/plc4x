@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *BACnetTagApplicationObjectIdentifier) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationObjectIdentifier) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationObjectIdentifier) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -95,7 +100,14 @@ func (m *BACnetTagApplicationObjectIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationObjectIdentifierParse(io *utils.ReadBuffer) (*BACnetTag, error) {
+func BACnetTagApplicationObjectIdentifierParse(io utils.ReadBuffer) (*BACnetTag, error) {
+	if pullErr := io.PullContext("BACnetTagApplicationObjectIdentifier"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetTagApplicationObjectIdentifier"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetTagApplicationObjectIdentifier{
@@ -107,26 +119,35 @@ func BACnetTagApplicationObjectIdentifierParse(io *utils.ReadBuffer) (*BACnetTag
 
 func (m *BACnetTagApplicationObjectIdentifier) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetTagApplicationObjectIdentifier"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetTagApplicationObjectIdentifier"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -134,18 +155,24 @@ func (m *BACnetTagApplicationObjectIdentifier) UnmarshalXML(d *xml.Decoder, star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationObjectIdentifier) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetTagApplicationObjectIdentifier) String() string {
-	return string(m.Box("BACnetTagApplicationObjectIdentifier", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationObjectIdentifier) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagApplicationObjectIdentifier"
+	boxName := "BACnetTagApplicationObjectIdentifier"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

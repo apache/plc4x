@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *BACnetConfirmedServiceACKReadProperty) GetTypeName() string {
 }
 
 func (m *BACnetConfirmedServiceACKReadProperty) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceACKReadProperty) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *BACnetConfirmedServiceACKReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+func BACnetConfirmedServiceACKReadPropertyParse(io utils.ReadBuffer) (*BACnetConfirmedServiceACK, error) {
+	if pullErr := io.PullContext("BACnetConfirmedServiceACKReadProperty"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetConfirmedServiceACKReadProperty"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceACKReadProperty{
@@ -103,26 +115,35 @@ func BACnetConfirmedServiceACKReadPropertyParse(io *utils.ReadBuffer) (*BACnetCo
 
 func (m *BACnetConfirmedServiceACKReadProperty) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetConfirmedServiceACKReadProperty"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetConfirmedServiceACKReadProperty"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceACKReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *BACnetConfirmedServiceACKReadProperty) UnmarshalXML(d *xml.Decoder, sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceACKReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetConfirmedServiceACKReadProperty) String() string {
-	return string(m.Box("BACnetConfirmedServiceACKReadProperty", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceACKReadProperty) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceACKReadProperty"
+	boxName := "BACnetConfirmedServiceACKReadProperty"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

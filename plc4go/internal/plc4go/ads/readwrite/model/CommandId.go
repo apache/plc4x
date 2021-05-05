@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type CommandId uint16
 
 type ICommandId interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -44,6 +48,23 @@ const (
 	CommandId_ADS_DEVICE_NOTIFICATION        CommandId = 0x0008
 	CommandId_ADS_READ_WRITE                 CommandId = 0x0009
 )
+
+var CommandIdValues []CommandId
+
+func init() {
+	CommandIdValues = []CommandId{
+		CommandId_INVALID,
+		CommandId_ADS_READ_DEVICE_INFO,
+		CommandId_ADS_READ,
+		CommandId_ADS_WRITE,
+		CommandId_ADS_READ_STATE,
+		CommandId_ADS_WRITE_CONTROL,
+		CommandId_ADS_ADD_DEVICE_NOTIFICATION,
+		CommandId_ADS_DELETE_DEVICE_NOTIFICATION,
+		CommandId_ADS_DEVICE_NOTIFICATION,
+		CommandId_ADS_READ_WRITE,
+	}
+}
 
 func CommandIdByValue(value uint16) CommandId {
 	switch value {
@@ -115,8 +136,8 @@ func (m CommandId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CommandIdParse(io *utils.ReadBuffer) (CommandId, error) {
-	val, err := io.ReadUint16(16)
+func CommandIdParse(io utils.ReadBuffer) (CommandId, error) {
+	val, err := io.ReadUint16("CommandId", 16)
 	if err != nil {
 		return 0, nil
 	}
@@ -124,10 +145,11 @@ func CommandIdParse(io *utils.ReadBuffer) (CommandId, error) {
 }
 
 func (e CommandId) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(16, uint16(e))
+	err := io.WriteUint16("CommandId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *CommandId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -147,7 +169,15 @@ func (m *CommandId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
-func (e CommandId) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m CommandId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e CommandId) name() string {
 	switch e {
 	case CommandId_INVALID:
 		return "INVALID"
@@ -171,4 +201,17 @@ func (e CommandId) String() string {
 		return "ADS_READ_WRITE"
 	}
 	return ""
+}
+
+func (e CommandId) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m CommandId) Box(s string, i int) utils.AsciiBox {
+	boxName := "CommandId"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -55,6 +56,7 @@ type IAdsDataChild interface {
 	InitializeParent(parent *AdsData)
 	GetTypeName() string
 	IAdsData
+	utils.AsciiBoxer
 }
 
 func NewAdsData() *AdsData {
@@ -79,10 +81,15 @@ func (m *AdsData) GetTypeName() string {
 }
 
 func (m *AdsData) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
+func (m *AdsData) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *AdsData) ParentLengthInBits() uint16 {
+	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
@@ -91,7 +98,10 @@ func (m *AdsData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDataParse(io *utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+func AdsDataParse(io utils.ReadBuffer, commandId *CommandId, response bool) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsData"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _parent *AdsData
@@ -137,9 +147,16 @@ func AdsDataParse(io *utils.ReadBuffer, commandId *CommandId, response bool) (*A
 		_parent, typeSwitchError = AdsReadWriteRequestParse(io)
 	case *commandId == CommandId_ADS_READ_WRITE && response == true: // AdsReadWriteResponse
 		_parent, typeSwitchError = AdsReadWriteResponseParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("AdsData"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -152,6 +169,9 @@ func (m *AdsData) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("AdsData"); pushErr != nil {
+		return pushErr
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
@@ -159,22 +179,67 @@ func (m *AdsData) SerializeParent(io utils.WriteBuffer, child IAdsData, serializ
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("AdsData"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// AdsInvalidRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidRequest":
+			if m.Child == nil {
+				m.Child = &AdsInvalidRequest{
+					Parent: m,
+				}
+			}
+		// AdsInvalidResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsInvalidResponse":
+			if m.Child == nil {
+				m.Child = &AdsInvalidResponse{
+					Parent: m,
+				}
+			}
+		// AdsReadDeviceInfoRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadDeviceInfoRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadDeviceInfoRequest{
+					Parent: m,
+				}
+			}
+		// AdsReadStateRequest needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsReadStateRequest":
+			if m.Child == nil {
+				m.Child = &AdsReadStateRequest{
+					Parent: m,
+				}
+			}
+		// AdsDeviceNotificationResponse needs special treatment as it has no fields
+		case "org.apache.plc4x.java.ads.readwrite.AdsDeviceNotificationResponse":
+			if m.Child == nil {
+				m.Child = &AdsDeviceNotificationResponse{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -433,6 +498,7 @@ func (m *AdsData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.ads.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -455,14 +521,22 @@ func (m *AdsData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m AdsData) String() string {
-	return string(m.Box("AdsData", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m AdsData) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsData"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *AdsData) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *AdsData) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "AdsData"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -28,6 +28,9 @@ import java.util.Optional;
 
 public class Testcase implements LocationAware {
 
+    private final String testSuiteName;
+    private final String protocolName;
+    private final String outputFlavor;
     private final String name;
     private final String description;
     private final byte[] raw;
@@ -37,13 +40,28 @@ public class Testcase implements LocationAware {
 
     private Location location;
 
-    public Testcase(String name, String description, byte[] raw, String rootType, List<String> parserArguments, Element xml) {
+    public Testcase(String testSuiteName, String protocolName, String outputFlavor, String name, String description, byte[] raw, String rootType, List<String> parserArguments, Element xml) {
+        this.testSuiteName = testSuiteName;
+        this.protocolName = protocolName;
+        this.outputFlavor = outputFlavor;
         this.name = name;
         this.description = description;
         this.raw = raw;
         this.rootType = rootType;
         this.parserArguments = parserArguments;
         this.xml = xml;
+    }
+
+    public String getTestSuiteName() {
+        return testSuiteName;
+    }
+
+    public String getProtocolName() {
+        return protocolName;
+    }
+
+    public String getOutputFlavor() {
+        return outputFlavor;
     }
 
     public String getName() {

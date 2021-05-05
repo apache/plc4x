@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -87,7 +88,11 @@ func (m *ApduDataMemoryResponse) GetTypeName() string {
 }
 
 func (m *ApduDataMemoryResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataMemoryResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Implicit Field (numBytes)
 	lengthInBits += 6
@@ -107,30 +112,43 @@ func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryResponseParse(io utils.ReadBuffer) (*ApduData, error) {
+	if pullErr := io.PullContext("ApduDataMemoryResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	numBytes, _numBytesErr := io.ReadUint8(6)
+	numBytes, _numBytesErr := io.ReadUint8("numBytes", 6)
 	_ = numBytes
 	if _numBytesErr != nil {
 		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field")
 	}
 
 	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
 	// Array field (data)
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]uint8, numBytes)
 	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
+	}
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -145,43 +163,58 @@ func ApduDataMemoryResponseParse(io *utils.ReadBuffer) (*ApduData, error) {
 
 func (m *ApduDataMemoryResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataMemoryResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.Data)))
-		_numBytesErr := io.WriteUint8(6, (numBytes))
+		_numBytesErr := io.WriteUint8("numBytes", 6, (numBytes))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16("address", 16, (address))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
-				_elementErr := io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("ApduDataMemoryResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
@@ -200,7 +233,7 @@ func (m *ApduDataMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -208,6 +241,7 @@ func (m *ApduDataMemoryResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
 		return err
@@ -219,15 +253,36 @@ func (m *ApduDataMemoryResponse) MarshalXML(e *xml.Encoder, start xml.StartEleme
 }
 
 func (m ApduDataMemoryResponse) String() string {
-	return string(m.Box("ApduDataMemoryResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataMemoryResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataMemoryResponse"
+	boxName := "ApduDataMemoryResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Implicit Field (numBytes)
+		numBytes := uint8(uint8(len(m.Data)))
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NumBytes", numBytes, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Address", m.Address, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type uint8 will be hex dumped
+			boxes = append(boxes, utils.BoxedDumpAnything("Data", m.Data))
+			// Simple array base type uint8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

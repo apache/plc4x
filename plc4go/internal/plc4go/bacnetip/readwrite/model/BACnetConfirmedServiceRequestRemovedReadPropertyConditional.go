@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) GetTypeNam
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBy
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io *utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetConfirmedServiceRequestRemovedReadPropertyConditional{
@@ -103,26 +115,35 @@ func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io *utils.
 
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) UnmarshalX
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) String() string {
-	return string(m.Box("BACnetConfirmedServiceRequestRemovedReadPropertyConditional", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetConfirmedServiceRequestRemovedReadPropertyConditional"
+	boxName := "BACnetConfirmedServiceRequestRemovedReadPropertyConditional"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

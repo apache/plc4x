@@ -20,6 +20,8 @@
 package tests
 
 import (
+	"fmt"
+	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
@@ -69,10 +71,21 @@ func TestManualAds(t *testing.T) {
 		     *
 	*/
 
+	spsIp := "192.168.23.20"
+	/////
+	// TODO: adjust this to your ip address
+	clientIp := "192.168.24.1"
+	//
+	////
+	sourceAmsNetId := clientIp + ".1.1"
+	sourceAmsPort := 65534
+	targetAmsNetId := spsIp + ".1.1"
+	targetAmsPort := 851
+	connectionString := fmt.Sprintf("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort)
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(ads.NewDriver())
 	driverManager.RegisterTransport(tcp.NewTransport())
-	test := testutils.NewManualTestSuite("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851", driverManager)
+	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
 	test.AddTestCase("main.hurz_BOOL:BOOL", true)
 	test.AddTestCase("main.hurz_BYTE:BYTE", []bool{false, false, true, false, true, false, true, false})
 	test.AddTestCase("main.hurz_WORD:WORD", []bool{true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false})

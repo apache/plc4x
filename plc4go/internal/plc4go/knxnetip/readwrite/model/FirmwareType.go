@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type FirmwareType uint16
 
 type IFirmwareType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -50,6 +54,29 @@ const (
 	FirmwareType_SYSTEM_1_PL132             FirmwareType = 0x4000
 	FirmwareType_SYSTEM_7_KNX_NET_IP        FirmwareType = 0x5700
 )
+
+var FirmwareTypeValues []FirmwareType
+
+func init() {
+	FirmwareTypeValues = []FirmwareType{
+		FirmwareType_SYSTEM_1,
+		FirmwareType_SYSTEM_2,
+		FirmwareType_SYSTEM_300,
+		FirmwareType_SYSTEM_7,
+		FirmwareType_SYSTEM_B,
+		FirmwareType_IR_DECODER,
+		FirmwareType_COUPLER,
+		FirmwareType_NONE,
+		FirmwareType_SYSTEM_1_PL110,
+		FirmwareType_SYSTEM_B_PL110,
+		FirmwareType_MEDIA_COUPLER_PL_TP,
+		FirmwareType_RF_BI_DIRECTIONAL_DEVICES,
+		FirmwareType_RF_UNI_DIRECTIONAL_DEVICES,
+		FirmwareType_SYSTEM_1_TP0,
+		FirmwareType_SYSTEM_1_PL132,
+		FirmwareType_SYSTEM_7_KNX_NET_IP,
+	}
+}
 
 func FirmwareTypeByValue(value uint16) FirmwareType {
 	switch value {
@@ -145,8 +172,8 @@ func (m FirmwareType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmwareTypeParse(io *utils.ReadBuffer) (FirmwareType, error) {
-	val, err := io.ReadUint16(16)
+func FirmwareTypeParse(io utils.ReadBuffer) (FirmwareType, error) {
+	val, err := io.ReadUint16("FirmwareType", 16)
 	if err != nil {
 		return 0, nil
 	}
@@ -154,10 +181,11 @@ func FirmwareTypeParse(io *utils.ReadBuffer) (FirmwareType, error) {
 }
 
 func (e FirmwareType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16(16, uint16(e))
+	err := io.WriteUint16("FirmwareType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *FirmwareType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -177,7 +205,15 @@ func (m *FirmwareType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
-func (e FirmwareType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m FirmwareType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e FirmwareType) name() string {
 	switch e {
 	case FirmwareType_SYSTEM_1:
 		return "SYSTEM_1"
@@ -213,4 +249,17 @@ func (e FirmwareType) String() string {
 		return "SYSTEM_7_KNX_NET_IP"
 	}
 	return ""
+}
+
+func (e FirmwareType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m FirmwareType) Box(s string, i int) utils.AsciiBox {
+	boxName := "FirmwareType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

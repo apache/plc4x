@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *AdsReadDeviceInfoRequest) GetTypeName() string {
 }
 
 func (m *AdsReadDeviceInfoRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadDeviceInfoRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -95,7 +100,14 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("AdsReadDeviceInfoRequest"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &AdsReadDeviceInfoRequest{
@@ -107,26 +119,35 @@ func AdsReadDeviceInfoRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadDeviceInfoRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsReadDeviceInfoRequest"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("AdsReadDeviceInfoRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadDeviceInfoRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -134,18 +155,24 @@ func (m *AdsReadDeviceInfoRequest) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadDeviceInfoRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m AdsReadDeviceInfoRequest) String() string {
-	return string(m.Box("AdsReadDeviceInfoRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadDeviceInfoRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadDeviceInfoRequest"
+	boxName := "AdsReadDeviceInfoRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

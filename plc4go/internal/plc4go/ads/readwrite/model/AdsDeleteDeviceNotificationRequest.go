@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *AdsDeleteDeviceNotificationRequest) GetTypeName() string {
 }
 
 func (m *AdsDeleteDeviceNotificationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsDeleteDeviceNotificationRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (notificationHandle)
 	lengthInBits += 32
@@ -101,12 +106,19 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsDeleteDeviceNotificationRequestParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (notificationHandle)
-	notificationHandle, _notificationHandleErr := io.ReadUint32(32)
+	notificationHandle, _notificationHandleErr := io.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field")
+	}
+
+	if closeErr := io.CloseContext("AdsDeleteDeviceNotificationRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -120,26 +132,35 @@ func AdsDeleteDeviceNotificationRequestParse(io *utils.ReadBuffer) (*AdsData, er
 
 func (m *AdsDeleteDeviceNotificationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsDeleteDeviceNotificationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.NotificationHandle)
-		_notificationHandleErr := io.WriteUint32(32, (notificationHandle))
+		_notificationHandleErr := io.WriteUint32("notificationHandle", 32, (notificationHandle))
 		if _notificationHandleErr != nil {
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}
 
+		if popErr := io.PopContext("AdsDeleteDeviceNotificationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsDeleteDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "notificationHandle":
@@ -152,7 +173,7 @@ func (m *AdsDeleteDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,6 +181,7 @@ func (m *AdsDeleteDeviceNotificationRequest) UnmarshalXML(d *xml.Decoder, start 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsDeleteDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.NotificationHandle, xml.StartElement{Name: xml.Name{Local: "notificationHandle"}}); err != nil {
 		return err
@@ -168,14 +190,21 @@ func (m *AdsDeleteDeviceNotificationRequest) MarshalXML(e *xml.Encoder, start xm
 }
 
 func (m AdsDeleteDeviceNotificationRequest) String() string {
-	return string(m.Box("AdsDeleteDeviceNotificationRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsDeleteDeviceNotificationRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsDeleteDeviceNotificationRequest"
+	boxName := "AdsDeleteDeviceNotificationRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("NotificationHandle", m.NotificationHandle, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

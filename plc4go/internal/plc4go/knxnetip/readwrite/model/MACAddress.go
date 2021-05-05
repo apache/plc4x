@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -65,6 +66,10 @@ func (m *MACAddress) GetTypeName() string {
 }
 
 func (m *MACAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *MACAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -79,17 +84,30 @@ func (m *MACAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
+func MACAddressParse(io utils.ReadBuffer) (*MACAddress, error) {
+	if pullErr := io.PullContext("MACAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (addr)
+	if pullErr := io.PullContext("addr", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	addr := make([]int8, uint16(6))
 	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'addr' field")
 		}
 		addr[curItem] = _item
+	}
+	if closeErr := io.CloseContext("addr", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("MACAddress"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -97,33 +115,48 @@ func MACAddressParse(io *utils.ReadBuffer) (*MACAddress, error) {
 }
 
 func (m *MACAddress) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("MACAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Array Field (addr)
 	if m.Addr != nil {
+		if pushErr := io.PushContext("addr", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Addr {
-			_elementErr := io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
 			}
 		}
+		if popErr := io.PopContext("addr", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
 	}
 
+	if popErr := io.PopContext("MACAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "addr":
@@ -142,6 +175,7 @@ func (m *MACAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.MACAddress"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -161,14 +195,24 @@ func (m *MACAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m MACAddress) String() string {
-	return string(m.Box("MACAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m MACAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "MACAddress"
+	boxName := "MACAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Addr", m.Addr, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Array Field (addr)
+	if m.Addr != nil {
+		// Simple array base type int8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Addr {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Addr", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

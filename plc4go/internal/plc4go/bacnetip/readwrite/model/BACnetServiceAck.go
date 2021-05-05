@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -54,6 +55,7 @@ type IBACnetServiceAckChild interface {
 	InitializeParent(parent *BACnetServiceAck)
 	GetTypeName() string
 	IBACnetServiceAck
+	utils.AsciiBoxer
 }
 
 func NewBACnetServiceAck() *BACnetServiceAck {
@@ -78,12 +80,17 @@ func (m *BACnetServiceAck) GetTypeName() string {
 }
 
 func (m *BACnetServiceAck) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetServiceAck) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *BACnetServiceAck) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 
 	return lengthInBits
 }
@@ -92,10 +99,13 @@ func (m *BACnetServiceAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
+func BACnetServiceAckParse(io utils.ReadBuffer) (*BACnetServiceAck, error) {
+	if pullErr := io.PullContext("BACnetServiceAck"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8("serviceChoice", 8)
 	if _serviceChoiceErr != nil {
 		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field")
 	}
@@ -132,9 +142,16 @@ func BACnetServiceAckParse(io *utils.ReadBuffer) (*BACnetServiceAck, error) {
 		_parent, typeSwitchError = BACnetServiceAckRemovedAuthenticateParse(io)
 	case serviceChoice == 0x0D: // BACnetServiceAckRemovedReadPropertyConditional
 		_parent, typeSwitchError = BACnetServiceAckRemovedReadPropertyConditionalParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("BACnetServiceAck"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -147,10 +164,13 @@ func (m *BACnetServiceAck) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *BACnetServiceAck) SerializeParent(io utils.WriteBuffer, child IBACnetServiceAck, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("BACnetServiceAck"); pushErr != nil {
+		return pushErr
+	}
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(child.ServiceChoice())
-	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8("serviceChoice", 8, (serviceChoice))
 
 	if _serviceChoiceErr != nil {
 		return errors.Wrap(_serviceChoiceErr, "Error serializing 'serviceChoice' field")
@@ -162,22 +182,123 @@ func (m *BACnetServiceAck) SerializeParent(io utils.WriteBuffer, child IBACnetSe
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("BACnetServiceAck"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetServiceAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// BACnetServiceAckGetAlarmSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetAlarmSummary":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetAlarmSummary{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckGetEnrollmentSummary needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEnrollmentSummary":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetEnrollmentSummary{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckGetEventInformation needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckGetEventInformation":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckGetEventInformation{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckAtomicReadFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicReadFile":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckAtomicReadFile{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckAtomicWriteFile needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckAtomicWriteFile":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckAtomicWriteFile{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckCreateObject needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckCreateObject":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckCreateObject{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckReadPropertyMultiple needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadPropertyMultiple":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckReadPropertyMultiple{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckReadRange needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckReadRange":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckReadRange{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckConfirmedPrivateTransfer needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckConfirmedPrivateTransfer":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckConfirmedPrivateTransfer{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckVTOpen needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTOpen":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckVTOpen{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckVTData needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckVTData":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckVTData{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckRemovedAuthenticate needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedAuthenticate":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckRemovedAuthenticate{
+					Parent: m,
+				}
+			}
+		// BACnetServiceAckRemovedReadPropertyConditional needs special treatment as it has no fields
+		case "org.apache.plc4x.java.bacnetip.readwrite.BACnetServiceAckRemovedReadPropertyConditional":
+			if m.Child == nil {
+				m.Child = &BACnetServiceAckRemovedReadPropertyConditional{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			default:
@@ -364,6 +485,7 @@ func (m *BACnetServiceAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.bacnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -386,14 +508,26 @@ func (m *BACnetServiceAck) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (m BACnetServiceAck) String() string {
-	return string(m.Box("BACnetServiceAck", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m BACnetServiceAck) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetServiceAck"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BACnetServiceAck) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *BACnetServiceAck) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "BACnetServiceAck"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(m.Child.ServiceChoice())
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ServiceChoice", serviceChoice, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

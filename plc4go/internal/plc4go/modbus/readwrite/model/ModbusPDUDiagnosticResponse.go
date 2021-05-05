@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -95,7 +96,11 @@ func (m *ModbusPDUDiagnosticResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUDiagnosticResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUDiagnosticResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subFunction)
 	lengthInBits += 16
@@ -110,18 +115,25 @@ func (m *ModbusPDUDiagnosticResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUDiagnosticResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUDiagnosticResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUDiagnosticResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (subFunction)
-	subFunction, _subFunctionErr := io.ReadUint16(16)
+	subFunction, _subFunctionErr := io.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field")
 	}
 
 	// Simple Field (data)
-	data, _dataErr := io.ReadUint16(16)
+	data, _dataErr := io.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUDiagnosticResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -136,33 +148,42 @@ func ModbusPDUDiagnosticResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) 
 
 func (m *ModbusPDUDiagnosticResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUDiagnosticResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.SubFunction)
-		_subFunctionErr := io.WriteUint16(16, (subFunction))
+		_subFunctionErr := io.WriteUint16("subFunction", 16, (subFunction))
 		if _subFunctionErr != nil {
 			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.Data)
-		_dataErr := io.WriteUint16(16, (data))
+		_dataErr := io.WriteUint16("data", 16, (data))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
+		if popErr := io.PopContext("ModbusPDUDiagnosticResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUDiagnosticResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "subFunction":
@@ -181,7 +202,7 @@ func (m *ModbusPDUDiagnosticResponse) UnmarshalXML(d *xml.Decoder, start xml.Sta
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -189,6 +210,7 @@ func (m *ModbusPDUDiagnosticResponse) UnmarshalXML(d *xml.Decoder, start xml.Sta
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUDiagnosticResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SubFunction, xml.StartElement{Name: xml.Name{Local: "subFunction"}}); err != nil {
 		return err
@@ -200,15 +222,24 @@ func (m *ModbusPDUDiagnosticResponse) MarshalXML(e *xml.Encoder, start xml.Start
 }
 
 func (m ModbusPDUDiagnosticResponse) String() string {
-	return string(m.Box("ModbusPDUDiagnosticResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUDiagnosticResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUDiagnosticResponse"
+	boxName := "ModbusPDUDiagnosticResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubFunction", m.SubFunction, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Data", m.Data, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

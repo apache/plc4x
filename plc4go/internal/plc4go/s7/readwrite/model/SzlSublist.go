@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type SzlSublist uint8
 
 type ISzlSublist interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -53,6 +57,32 @@ const (
 	SzlSublist_DIAGNOSTIC_BUFFER                                             SzlSublist = 0xA0
 	SzlSublist_MODULE_DIAGNOSTIC_DATA                                        SzlSublist = 0xB1
 )
+
+var SzlSublistValues []SzlSublist
+
+func init() {
+	SzlSublistValues = []SzlSublist{
+		SzlSublist_MODULE_IDENTIFICATION,
+		SzlSublist_CPU_FEATURES,
+		SzlSublist_USER_MEMORY_AREA,
+		SzlSublist_SYSTEM_AREAS,
+		SzlSublist_BLOCK_TYPES,
+		SzlSublist_STATUS_MODULE_LEDS,
+		SzlSublist_COMPONENT_IDENTIFICATION,
+		SzlSublist_INTERRUPT_STATUS,
+		SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS,
+		SzlSublist_COMMUNICATION_STATUS_DATA,
+		SzlSublist_STATUS_SINGLE_MODULE_LED,
+		SzlSublist_DP_MASTER_SYSTEM_INFORMATION,
+		SzlSublist_MODULE_STATUS_INFORMATION,
+		SzlSublist_RACK_OR_STATION_STATUS_INFORMATION,
+		SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2,
+		SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION,
+		SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP,
+		SzlSublist_DIAGNOSTIC_BUFFER,
+		SzlSublist_MODULE_DIAGNOSTIC_DATA,
+	}
+}
 
 func SzlSublistByValue(value uint8) SzlSublist {
 	switch value {
@@ -160,8 +190,8 @@ func (m SzlSublist) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlSublistParse(io *utils.ReadBuffer) (SzlSublist, error) {
-	val, err := io.ReadUint8(8)
+func SzlSublistParse(io utils.ReadBuffer) (SzlSublist, error) {
+	val, err := io.ReadUint8("SzlSublist", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -169,10 +199,11 @@ func SzlSublistParse(io *utils.ReadBuffer) (SzlSublist, error) {
 }
 
 func (e SzlSublist) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlSublist) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -192,7 +223,15 @@ func (m *SzlSublist) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-func (e SzlSublist) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m SzlSublist) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e SzlSublist) name() string {
 	switch e {
 	case SzlSublist_MODULE_IDENTIFICATION:
 		return "MODULE_IDENTIFICATION"
@@ -234,4 +273,17 @@ func (e SzlSublist) String() string {
 		return "MODULE_DIAGNOSTIC_DATA"
 	}
 	return ""
+}
+
+func (e SzlSublist) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m SzlSublist) Box(s string, i int) utils.AsciiBox {
+	boxName := "SzlSublist"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

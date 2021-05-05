@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -88,7 +89,11 @@ func (m *APDUError) GetTypeName() string {
 }
 
 func (m *APDUError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUError) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -106,11 +111,14 @@ func (m *APDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUErrorParse(io *utils.ReadBuffer) (*APDU, error) {
+func APDUErrorParse(io utils.ReadBuffer) (*APDU, error) {
+	if pullErr := io.PullContext("APDUError"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -123,15 +131,26 @@ func APDUErrorParse(io *utils.ReadBuffer) (*APDU, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
+	}
+
+	if pullErr := io.PullContext("error"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (error)
 	error, _errorErr := BACnetErrorParse(io)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")
+	}
+	if closeErr := io.CloseContext("error"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("APDUError"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -146,10 +165,13 @@ func APDUErrorParse(io *utils.ReadBuffer) (*APDU, error) {
 
 func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("APDUError"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0x00))
+			_err := io.WriteUint8("reserved", 4, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -157,29 +179,41 @@ func (m *APDUError) Serialize(io utils.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8("originalInvokeId", 8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (error)
+		if pushErr := io.PushContext("error"); pushErr != nil {
+			return pushErr
+		}
 		_errorErr := m.Error.Serialize(io)
+		if popErr := io.PopContext("error"); popErr != nil {
+			return popErr
+		}
 		if _errorErr != nil {
 			return errors.Wrap(_errorErr, "Error serializing 'error' field")
 		}
 
+		if popErr := io.PopContext("APDUError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "originalInvokeId":
@@ -191,6 +225,9 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			case "error":
 				var dt *BACnetError
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Error = dt
@@ -198,7 +235,7 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -206,6 +243,7 @@ func (m *APDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.OriginalInvokeId, xml.StartElement{Name: xml.Name{Local: "originalInvokeId"}}); err != nil {
 		return err
@@ -217,15 +255,26 @@ func (m *APDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m APDUError) String() string {
-	return string(m.Box("APDUError", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUError) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUError"
+	boxName := "APDUError"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, width-2))
-	boxes = append(boxes, utils.BoxAnything("Error", m.Error, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("OriginalInvokeId", m.OriginalInvokeId, -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Error.Box("error", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

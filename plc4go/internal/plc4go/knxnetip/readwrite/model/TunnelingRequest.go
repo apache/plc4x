@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -87,7 +88,11 @@ func (m *TunnelingRequest) GetTypeName() string {
 }
 
 func (m *TunnelingRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *TunnelingRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
@@ -102,18 +107,39 @@ func (m *TunnelingRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func TunnelingRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("TunnelingRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (tunnelingRequestDataBlock)
 	tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParse(io)
 	if _tunnelingRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field")
 	}
+	if closeErr := io.CloseContext("tunnelingRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("cemi"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
+	}
+	if closeErr := io.CloseContext("cemi"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("TunnelingRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -128,31 +154,52 @@ func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpM
 
 func (m *TunnelingRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("TunnelingRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (tunnelingRequestDataBlock)
+		if pushErr := io.PushContext("tunnelingRequestDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_tunnelingRequestDataBlockErr := m.TunnelingRequestDataBlock.Serialize(io)
+		if popErr := io.PopContext("tunnelingRequestDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _tunnelingRequestDataBlockErr != nil {
 			return errors.Wrap(_tunnelingRequestDataBlockErr, "Error serializing 'tunnelingRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
+		if pushErr := io.PushContext("cemi"); pushErr != nil {
+			return pushErr
+		}
 		_cemiErr := m.Cemi.Serialize(io)
+		if popErr := io.PopContext("cemi"); popErr != nil {
+			return popErr
+		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
+		if popErr := io.PopContext("TunnelingRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "tunnelingRequestDataBlock":
@@ -164,6 +211,9 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Cemi = dt
@@ -171,7 +221,7 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -179,6 +229,7 @@ func (m *TunnelingRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.TunnelingRequestDataBlock, xml.StartElement{Name: xml.Name{Local: "tunnelingRequestDataBlock"}}); err != nil {
 		return err
@@ -190,15 +241,22 @@ func (m *TunnelingRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) er
 }
 
 func (m TunnelingRequest) String() string {
-	return string(m.Box("TunnelingRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m TunnelingRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "TunnelingRequest"
+	boxName := "TunnelingRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TunnelingRequestDataBlock", m.TunnelingRequestDataBlock, width-2))
-	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.TunnelingRequestDataBlock.Box("tunnelingRequestDataBlock", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Cemi.Box("cemi", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

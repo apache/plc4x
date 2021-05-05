@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *KnxGroupAddressFreeLevel) GetTypeName() string {
 }
 
 func (m *KnxGroupAddressFreeLevel) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxGroupAddressFreeLevel) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -97,12 +102,19 @@ func (m *KnxGroupAddressFreeLevel) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxGroupAddressFreeLevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, error) {
+func KnxGroupAddressFreeLevelParse(io utils.ReadBuffer) (*KnxGroupAddress, error) {
+	if pullErr := io.PullContext("KnxGroupAddressFreeLevel"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(16)
+	subGroup, _subGroupErr := io.ReadUint16("subGroup", 16)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
+	}
+
+	if closeErr := io.CloseContext("KnxGroupAddressFreeLevel"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,26 +128,35 @@ func KnxGroupAddressFreeLevelParse(io *utils.ReadBuffer) (*KnxGroupAddress, erro
 
 func (m *KnxGroupAddressFreeLevel) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("KnxGroupAddressFreeLevel"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(16, (subGroup))
+		_subGroupErr := io.WriteUint16("subGroup", 16, (subGroup))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}
 
+		if popErr := io.PopContext("KnxGroupAddressFreeLevel"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "subGroup":
@@ -148,7 +169,7 @@ func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartE
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -156,6 +177,7 @@ func (m *KnxGroupAddressFreeLevel) UnmarshalXML(d *xml.Decoder, start xml.StartE
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.SubGroup, xml.StartElement{Name: xml.Name{Local: "subGroup"}}); err != nil {
 		return err
@@ -164,14 +186,21 @@ func (m *KnxGroupAddressFreeLevel) MarshalXML(e *xml.Encoder, start xml.StartEle
 }
 
 func (m KnxGroupAddressFreeLevel) String() string {
-	return string(m.Box("KnxGroupAddressFreeLevel", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxGroupAddressFreeLevel) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxGroupAddressFreeLevel"
+	boxName := "KnxGroupAddressFreeLevel"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

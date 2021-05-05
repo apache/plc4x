@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *ConnectionRequestInformationTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionRequestInformationTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxLayer)
 	lengthInBits += 8
@@ -101,17 +106,27 @@ func (m *ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+func ConnectionRequestInformationTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionRequestInformation, error) {
+	if pullErr := io.PullContext("ConnectionRequestInformationTunnelConnection"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("knxLayer"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")
 	}
+	if closeErr := io.CloseContext("knxLayer"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(8)
+		reserved, _err := io.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -121,6 +136,10 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 				"got value":      reserved,
 			}).Msg("Got unexpected response.")
 		}
+	}
+
+	if closeErr := io.CloseContext("ConnectionRequestInformationTunnelConnection"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -134,33 +153,48 @@ func ConnectionRequestInformationTunnelConnectionParse(io *utils.ReadBuffer) (*C
 
 func (m *ConnectionRequestInformationTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ConnectionRequestInformationTunnelConnection"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (knxLayer)
+		if pushErr := io.PushContext("knxLayer"); pushErr != nil {
+			return pushErr
+		}
 		_knxLayerErr := m.KnxLayer.Serialize(io)
+		if popErr := io.PopContext("knxLayer"); popErr != nil {
+			return popErr
+		}
 		if _knxLayerErr != nil {
 			return errors.Wrap(_knxLayerErr, "Error serializing 'knxLayer' field")
 		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(8, uint8(0x00))
+			_err := io.WriteUint8("reserved", 8, uint8(0x00))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
+		if popErr := io.PopContext("ConnectionRequestInformationTunnelConnection"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxLayer":
@@ -173,7 +207,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -181,6 +215,7 @@ func (m *ConnectionRequestInformationTunnelConnection) UnmarshalXML(d *xml.Decod
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.KnxLayer, xml.StartElement{Name: xml.Name{Local: "knxLayer"}}); err != nil {
 		return err
@@ -189,14 +224,23 @@ func (m *ConnectionRequestInformationTunnelConnection) MarshalXML(e *xml.Encoder
 }
 
 func (m ConnectionRequestInformationTunnelConnection) String() string {
-	return string(m.Box("ConnectionRequestInformationTunnelConnection", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionRequestInformationTunnelConnection) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionRequestInformationTunnelConnection"
+	boxName := "ConnectionRequestInformationTunnelConnection"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("KnxLayer", m.KnxLayer, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.KnxLayer.Box("knxLayer", width-2))
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0x00), -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

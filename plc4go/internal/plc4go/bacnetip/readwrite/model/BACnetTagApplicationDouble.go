@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *BACnetTagApplicationDouble) GetTypeName() string {
 }
 
 func (m *BACnetTagApplicationDouble) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetTagApplicationDouble) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -101,12 +106,19 @@ func (m *BACnetTagApplicationDouble) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagApplicationDoubleParse(io utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+	if pullErr := io.PullContext("BACnetTagApplicationDouble"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (value)
-	value, _valueErr := io.ReadFloat64(true, 11, 52)
+	value, _valueErr := io.ReadFloat64("value", true, 11, 52)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+	}
+
+	if closeErr := io.CloseContext("BACnetTagApplicationDouble"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -120,26 +132,35 @@ func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8
 
 func (m *BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetTagApplicationDouble"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (value)
 		value := float64(m.Value)
-		_valueErr := io.WriteFloat64(64, (value))
+		_valueErr := io.WriteFloat64("value", 64, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
+		if popErr := io.PopContext("BACnetTagApplicationDouble"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetTagApplicationDouble) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "value":
@@ -152,7 +173,7 @@ func (m *BACnetTagApplicationDouble) UnmarshalXML(d *xml.Decoder, start xml.Star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -160,6 +181,7 @@ func (m *BACnetTagApplicationDouble) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
 		return err
@@ -168,14 +190,21 @@ func (m *BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m BACnetTagApplicationDouble) String() string {
-	return string(m.Box("BACnetTagApplicationDouble", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetTagApplicationDouble) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetTagApplicationDouble"
+	boxName := "BACnetTagApplicationDouble"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Value", m.Value, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// float64 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Value", m.Value, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,6 +33,8 @@ type ModbusDataType uint8
 type IModbusDataType interface {
 	DataTypeSize() uint8
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -62,6 +66,40 @@ const (
 	ModbusDataType_STRING         ModbusDataType = 26
 	ModbusDataType_WSTRING        ModbusDataType = 27
 )
+
+var ModbusDataTypeValues []ModbusDataType
+
+func init() {
+	ModbusDataTypeValues = []ModbusDataType{
+		ModbusDataType_BOOL,
+		ModbusDataType_BYTE,
+		ModbusDataType_WORD,
+		ModbusDataType_DWORD,
+		ModbusDataType_LWORD,
+		ModbusDataType_SINT,
+		ModbusDataType_INT,
+		ModbusDataType_DINT,
+		ModbusDataType_LINT,
+		ModbusDataType_USINT,
+		ModbusDataType_UINT,
+		ModbusDataType_UDINT,
+		ModbusDataType_ULINT,
+		ModbusDataType_REAL,
+		ModbusDataType_LREAL,
+		ModbusDataType_TIME,
+		ModbusDataType_LTIME,
+		ModbusDataType_DATE,
+		ModbusDataType_LDATE,
+		ModbusDataType_TIME_OF_DAY,
+		ModbusDataType_LTIME_OF_DAY,
+		ModbusDataType_DATE_AND_TIME,
+		ModbusDataType_LDATE_AND_TIME,
+		ModbusDataType_CHAR,
+		ModbusDataType_WCHAR,
+		ModbusDataType_STRING,
+		ModbusDataType_WSTRING,
+	}
+}
 
 func (e ModbusDataType) DataTypeSize() uint8 {
 	switch e {
@@ -317,8 +355,8 @@ func (m ModbusDataType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusDataTypeParse(io *utils.ReadBuffer) (ModbusDataType, error) {
-	val, err := io.ReadUint8(8)
+func ModbusDataTypeParse(io utils.ReadBuffer) (ModbusDataType, error) {
+	val, err := io.ReadUint8("ModbusDataType", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -326,10 +364,11 @@ func ModbusDataTypeParse(io *utils.ReadBuffer) (ModbusDataType, error) {
 }
 
 func (e ModbusDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("ModbusDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -349,7 +388,15 @@ func (m *ModbusDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
-func (e ModbusDataType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ModbusDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ModbusDataType) name() string {
 	switch e {
 	case ModbusDataType_BOOL:
 		return "BOOL"
@@ -407,4 +454,17 @@ func (e ModbusDataType) String() string {
 		return "LINT"
 	}
 	return ""
+}
+
+func (e ModbusDataType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ModbusDataType) Box(s string, i int) utils.AsciiBox {
+	boxName := "ModbusDataType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

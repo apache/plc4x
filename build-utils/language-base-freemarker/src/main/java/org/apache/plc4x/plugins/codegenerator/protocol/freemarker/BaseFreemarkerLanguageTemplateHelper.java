@@ -29,15 +29,11 @@ import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReferen
 import org.apache.plc4x.plugins.codegenerator.types.references.StringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class BaseFreemarkerLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
 
     private final TypeDefinition thisType;
     private final String protocolName;
@@ -157,6 +153,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumTypeReference(TypeReference typeReference) {
+        if (!isComplexTypeReference(typeReference)) {
+            return false;
+        }
         return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
     }
 
@@ -258,6 +257,14 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (implicitFieldOptional.isPresent()) {
             final ImplicitField implicitField = implicitFieldOptional.get();
             return Optional.of(implicitField.getType());
+        }
+        // Check if the expression is a VirtualField
+        final Optional<VirtualField> virtualFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof VirtualField).map(field -> (VirtualField) field).filter(
+            virtualField -> virtualField.getName().equals(propertyName)).findFirst();
+        if(virtualFieldOptional.isPresent()) {
+            final VirtualField virtualField = virtualFieldOptional.get();
+            return Optional.of(virtualField.getType());
         }
         // Check if the expression root is referencing an argument
         if (baseType.getParserArguments() != null) {
@@ -515,7 +522,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        if (!(typeReference instanceof ComplexTypeReference)) {
+        if (!isComplexTypeReference(typeReference)) {
             throw new RuntimeException("Type reference must be a complex type reference");
         }
         return getTypeDefinitions().get(((ComplexTypeReference) typeReference).getName());

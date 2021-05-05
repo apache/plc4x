@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package tests
 
 import (
@@ -25,6 +26,5 @@ import (
 )
 
 func TestAdsParserSerializer(t *testing.T) {
-	t.Skip("Still a work in progress")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml")
 }

@@ -36,45 +36,58 @@ plc4c_return_code plc4c_write_request_add_item(
     plc4c_write_request *write_request, char *address, plc4c_data *value) {
   // Parse an address string and get a driver-dependent data-structure
   // representing the address back.
-  plc4c_item *address_item = malloc(sizeof(plc4c_item));
-  if(address_item == NULL) {
+  plc4c_request_value_item *value_item;
+  plc4c_item *address_item;
+  plc4c_return_code result;
+
+  address_item = malloc(sizeof(plc4c_item));
+  if(address_item == NULL) 
     return NO_MEMORY;
-  }
-
-  plc4c_return_code result =
-      write_request->connection->driver->parse_address_function(address, &(address_item->address));
-
+  
+  result = write_request->connection->driver->parse_address_function(
+          address, &address_item->address);
+  
+  if(result != OK) 
+    return result;
+  
   // Create a new value item, binding an address item to a value.
-  plc4c_request_value_item *value_item =
-      malloc(sizeof(plc4c_request_value_item));
+  value_item = malloc(sizeof(plc4c_request_value_item));
   value_item->item = address_item;
-  value_item->value = (plc4c_data *)value;
+  value_item->value = value;
 
-  // Add the new item ot the list of items.
-  plc4c_utils_list_insert_tail_value(write_request->items, value_item);
+  plc4c_utils_list_insert_head_value(write_request->items, value_item);
   return OK;
 }
 
 plc4c_return_code plc4c_write_request_execute(
     plc4c_write_request *write_request,
     plc4c_write_request_execution **write_request_execution) {
+
+  plc4c_write_request_execution *new_write_request_execution;
+  plc4c_connection *connection;
+  plc4c_driver *driver;
+  plc4c_system *system;
+  plc4c_list *system_tasks;
+
+  // Extract some plc4c pointers for clarity
+  connection = plc4c_write_request_get_connection(write_request);
+  system = plc4c_connection_get_system(connection);
+  driver = plc4c_connection_get_driver(connection);
+  system_tasks = plc4c_system_get_task_list(system);
+
   // Inject the default write context into the system task.
-  plc4c_write_request_execution *new_write_request_execution =
-      malloc(sizeof(plc4c_write_request_execution));
+  new_write_request_execution = malloc(sizeof(plc4c_write_request_execution));
   new_write_request_execution->write_request = write_request;
   new_write_request_execution->write_response = NULL;
   new_write_request_execution->system_task = NULL;
+  
+  driver->write_function(new_write_request_execution, &(new_write_request_execution->system_task));
 
-  plc4c_system_task *system_task;
-  plc4c_connection_get_driver(plc4c_write_request_get_connection(write_request))
-      ->write_function(new_write_request_execution, &system_task);
   // Increment the number of running tasks for this connection.
-  plc4c_connection_task_added(write_request->connection);
+  plc4c_connection_task_added(connection);
+
   // Add the new task to the task-list.
-  plc4c_utils_list_insert_tail_value(
-      plc4c_system_get_task_list(plc4c_connection_get_system(
-          plc4c_write_request_get_connection(write_request))),
-      system_task);
+  plc4c_utils_list_insert_tail_value(system_tasks, new_write_request_execution->system_task);
 
   *write_request_execution = new_write_request_execution;
   return OK;

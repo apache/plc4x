@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *AdsReadResponse) GetTypeName() string {
 }
 
 func (m *AdsReadResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsReadResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -113,30 +118,50 @@ func (m *AdsReadResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsReadResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsReadResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
 	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint32(32)
+	length, _lengthErr := io.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Array field (data)
+	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	data := make([]int8, length)
 	for curItem := uint16(0); curItem < uint16(length); curItem++ {
-		_item, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
 		}
 		data[curItem] = _item
+	}
+	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("AdsReadResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -151,42 +176,63 @@ func AdsReadResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsReadResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsReadResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.Data)))
-		_lengthErr := io.WriteUint32(32, (length))
+		_lengthErr := io.WriteUint32("length", 32, (length))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Array Field (data)
 		if m.Data != nil {
+			if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
+				return pushErr
+			}
 			for _, _element := range m.Data {
-				_elementErr := io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8("", 8, _element)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'data' field")
 				}
 			}
+			if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
+				return popErr
+			}
 		}
 
+		if popErr := io.PopContext("AdsReadResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -210,7 +256,7 @@ func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -218,6 +264,7 @@ func (m *AdsReadResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -231,15 +278,33 @@ func (m *AdsReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 }
 
 func (m AdsReadResponse) String() string {
-	return string(m.Box("AdsReadResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsReadResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsReadResponse"
+	boxName := "AdsReadResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-	boxes = append(boxes, utils.BoxAnything("Data", m.Data, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		// Implicit Field (length)
+		length := uint32(uint32(len(m.Data)))
+		// uint32 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+		// Array Field (data)
+		if m.Data != nil {
+			// Simple array base type int8 will be rendered one by one
+			arrayBoxes := make([]utils.AsciiBox, 0)
+			for _, _element := range m.Data {
+				arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+			}
+			boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
+		}
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

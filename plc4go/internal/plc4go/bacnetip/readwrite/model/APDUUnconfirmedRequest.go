@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -86,7 +87,11 @@ func (m *APDUUnconfirmedRequest) GetTypeName() string {
 }
 
 func (m *APDUUnconfirmedRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *APDUUnconfirmedRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -101,11 +106,14 @@ func (m *APDUUnconfirmedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+func APDUUnconfirmedRequestParse(io utils.ReadBuffer, apduLength uint16) (*APDU, error) {
+	if pullErr := io.PullContext("APDUUnconfirmedRequest"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := io.ReadUint8(4)
+		reserved, _err := io.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")
 		}
@@ -117,10 +125,21 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 		}
 	}
 
+	if pullErr := io.PullContext("serviceRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
 	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")
+	}
+	if closeErr := io.CloseContext("serviceRequest"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -134,38 +153,56 @@ func APDUUnconfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (*APDU
 
 func (m *APDUUnconfirmedRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("APDUUnconfirmedRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Reserved Field (reserved)
 		{
-			_err := io.WriteUint8(4, uint8(0))
+			_err := io.WriteUint8("reserved", 4, uint8(0))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
 		}
 
 		// Simple Field (serviceRequest)
+		if pushErr := io.PushContext("serviceRequest"); pushErr != nil {
+			return pushErr
+		}
 		_serviceRequestErr := m.ServiceRequest.Serialize(io)
+		if popErr := io.PopContext("serviceRequest"); popErr != nil {
+			return popErr
+		}
 		if _serviceRequestErr != nil {
 			return errors.Wrap(_serviceRequestErr, "Error serializing 'serviceRequest' field")
 		}
 
+		if popErr := io.PopContext("APDUUnconfirmedRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "serviceRequest":
 				var dt *BACnetUnconfirmedServiceRequest
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.ServiceRequest = dt
@@ -173,7 +210,7 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -181,6 +218,7 @@ func (m *APDUUnconfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ServiceRequest, xml.StartElement{Name: xml.Name{Local: "serviceRequest"}}); err != nil {
 		return err
@@ -189,14 +227,23 @@ func (m *APDUUnconfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartEleme
 }
 
 func (m APDUUnconfirmedRequest) String() string {
-	return string(m.Box("APDUUnconfirmedRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m APDUUnconfirmedRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "APDUUnconfirmedRequest"
+	boxName := "APDUUnconfirmedRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ServiceRequest", m.ServiceRequest, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Reserved Field (reserved)
+		// reserved field can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("reserved", uint8(0), -1))
+		// Complex field (case complex)
+		boxes = append(boxes, m.ServiceRequest.Box("serviceRequest", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

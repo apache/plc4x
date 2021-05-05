@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *ApduDataDeviceDescriptorRead) GetTypeName() string {
 }
 
 func (m *ApduDataDeviceDescriptorRead) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ApduDataDeviceDescriptorRead) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (descriptorType)
 	lengthInBits += 6
@@ -97,12 +102,19 @@ func (m *ApduDataDeviceDescriptorRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataDeviceDescriptorReadParse(io *utils.ReadBuffer) (*ApduData, error) {
+func ApduDataDeviceDescriptorReadParse(io utils.ReadBuffer) (*ApduData, error) {
+	if pullErr := io.PullContext("ApduDataDeviceDescriptorRead"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (descriptorType)
-	descriptorType, _descriptorTypeErr := io.ReadUint8(6)
+	descriptorType, _descriptorTypeErr := io.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field")
+	}
+
+	if closeErr := io.CloseContext("ApduDataDeviceDescriptorRead"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,26 +128,35 @@ func ApduDataDeviceDescriptorReadParse(io *utils.ReadBuffer) (*ApduData, error) 
 
 func (m *ApduDataDeviceDescriptorRead) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ApduDataDeviceDescriptorRead"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.DescriptorType)
-		_descriptorTypeErr := io.WriteUint8(6, (descriptorType))
+		_descriptorTypeErr := io.WriteUint8("descriptorType", 6, (descriptorType))
 		if _descriptorTypeErr != nil {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}
 
+		if popErr := io.PopContext("ApduDataDeviceDescriptorRead"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ApduDataDeviceDescriptorRead) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "descriptorType":
@@ -148,7 +169,7 @@ func (m *ApduDataDeviceDescriptorRead) UnmarshalXML(d *xml.Decoder, start xml.St
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -156,6 +177,7 @@ func (m *ApduDataDeviceDescriptorRead) UnmarshalXML(d *xml.Decoder, start xml.St
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ApduDataDeviceDescriptorRead) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DescriptorType, xml.StartElement{Name: xml.Name{Local: "descriptorType"}}); err != nil {
 		return err
@@ -164,14 +186,21 @@ func (m *ApduDataDeviceDescriptorRead) MarshalXML(e *xml.Encoder, start xml.Star
 }
 
 func (m ApduDataDeviceDescriptorRead) String() string {
-	return string(m.Box("ApduDataDeviceDescriptorRead", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ApduDataDeviceDescriptorRead) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ApduDataDeviceDescriptorRead"
+	boxName := "ApduDataDeviceDescriptorRead"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint8 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("DescriptorType", m.DescriptorType, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

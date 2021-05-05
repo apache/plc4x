@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -65,6 +66,10 @@ func (m *KnxAddress) GetTypeName() string {
 }
 
 func (m *KnxAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *KnxAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (mainGroup)
@@ -83,24 +88,31 @@ func (m *KnxAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxAddressParse(io *utils.ReadBuffer) (*KnxAddress, error) {
+func KnxAddressParse(io utils.ReadBuffer) (*KnxAddress, error) {
+	if pullErr := io.PullContext("KnxAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(4)
+	mainGroup, _mainGroupErr := io.ReadUint8("mainGroup", 4)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
-	middleGroup, _middleGroupErr := io.ReadUint8(4)
+	middleGroup, _middleGroupErr := io.ReadUint8("middleGroup", 4)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint8(8)
+	subGroup, _subGroupErr := io.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field")
+	}
+
+	if closeErr := io.CloseContext("KnxAddress"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -108,44 +120,53 @@ func KnxAddressParse(io *utils.ReadBuffer) (*KnxAddress, error) {
 }
 
 func (m *KnxAddress) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("KnxAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.MainGroup)
-	_mainGroupErr := io.WriteUint8(4, (mainGroup))
+	_mainGroupErr := io.WriteUint8("mainGroup", 4, (mainGroup))
 	if _mainGroupErr != nil {
 		return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
 	middleGroup := uint8(m.MiddleGroup)
-	_middleGroupErr := io.WriteUint8(4, (middleGroup))
+	_middleGroupErr := io.WriteUint8("middleGroup", 4, (middleGroup))
 	if _middleGroupErr != nil {
 		return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup := uint8(m.SubGroup)
-	_subGroupErr := io.WriteUint8(8, (subGroup))
+	_subGroupErr := io.WriteUint8("subGroup", 8, (subGroup))
 	if _subGroupErr != nil {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}
 
+	if popErr := io.PopContext("KnxAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "mainGroup":
@@ -171,6 +192,7 @@ func (m *KnxAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.KnxAddress"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -194,16 +216,24 @@ func (m *KnxAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m KnxAddress) String() string {
-	return string(m.Box("KnxAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m KnxAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "KnxAddress"
+	boxName := "KnxAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, width-2))
-	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MainGroup", m.MainGroup, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MiddleGroup", m.MiddleGroup, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("SubGroup", m.SubGroup, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

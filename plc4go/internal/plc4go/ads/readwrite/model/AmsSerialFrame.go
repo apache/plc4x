@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -69,6 +70,10 @@ func (m *AmsSerialFrame) GetTypeName() string {
 }
 
 func (m *AmsSerialFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AmsSerialFrame) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (magicCookie)
@@ -99,36 +104,43 @@ func (m *AmsSerialFrame) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AmsSerialFrameParse(io *utils.ReadBuffer) (*AmsSerialFrame, error) {
+func AmsSerialFrameParse(io utils.ReadBuffer) (*AmsSerialFrame, error) {
+	if pullErr := io.PullContext("AmsSerialFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (magicCookie)
-	magicCookie, _magicCookieErr := io.ReadUint16(16)
+	magicCookie, _magicCookieErr := io.ReadUint16("magicCookie", 16)
 	if _magicCookieErr != nil {
 		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
-	transmitterAddress, _transmitterAddressErr := io.ReadInt8(8)
+	transmitterAddress, _transmitterAddressErr := io.ReadInt8("transmitterAddress", 8)
 	if _transmitterAddressErr != nil {
 		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
-	receiverAddress, _receiverAddressErr := io.ReadInt8(8)
+	receiverAddress, _receiverAddressErr := io.ReadInt8("receiverAddress", 8)
 	if _receiverAddressErr != nil {
 		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
-	fragmentNumber, _fragmentNumberErr := io.ReadInt8(8)
+	fragmentNumber, _fragmentNumberErr := io.ReadInt8("fragmentNumber", 8)
 	if _fragmentNumberErr != nil {
 		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
-	length, _lengthErr := io.ReadInt8(8)
+	length, _lengthErr := io.ReadInt8("length", 8)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
+	}
+
+	if pullErr := io.PullContext("userdata"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (userdata)
@@ -136,11 +148,18 @@ func AmsSerialFrameParse(io *utils.ReadBuffer) (*AmsSerialFrame, error) {
 	if _userdataErr != nil {
 		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field")
 	}
+	if closeErr := io.CloseContext("userdata"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (crc)
-	crc, _crcErr := io.ReadUint16(16)
+	crc, _crcErr := io.ReadUint16("crc", 16)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field")
+	}
+
+	if closeErr := io.CloseContext("AmsSerialFrame"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -148,71 +167,86 @@ func AmsSerialFrameParse(io *utils.ReadBuffer) (*AmsSerialFrame, error) {
 }
 
 func (m *AmsSerialFrame) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("AmsSerialFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.MagicCookie)
-	_magicCookieErr := io.WriteUint16(16, (magicCookie))
+	_magicCookieErr := io.WriteUint16("magicCookie", 16, (magicCookie))
 	if _magicCookieErr != nil {
 		return errors.Wrap(_magicCookieErr, "Error serializing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress := int8(m.TransmitterAddress)
-	_transmitterAddressErr := io.WriteInt8(8, (transmitterAddress))
+	_transmitterAddressErr := io.WriteInt8("transmitterAddress", 8, (transmitterAddress))
 	if _transmitterAddressErr != nil {
 		return errors.Wrap(_transmitterAddressErr, "Error serializing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress := int8(m.ReceiverAddress)
-	_receiverAddressErr := io.WriteInt8(8, (receiverAddress))
+	_receiverAddressErr := io.WriteInt8("receiverAddress", 8, (receiverAddress))
 	if _receiverAddressErr != nil {
 		return errors.Wrap(_receiverAddressErr, "Error serializing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber := int8(m.FragmentNumber)
-	_fragmentNumberErr := io.WriteInt8(8, (fragmentNumber))
+	_fragmentNumberErr := io.WriteInt8("fragmentNumber", 8, (fragmentNumber))
 	if _fragmentNumberErr != nil {
 		return errors.Wrap(_fragmentNumberErr, "Error serializing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length := int8(m.Length)
-	_lengthErr := io.WriteInt8(8, (length))
+	_lengthErr := io.WriteInt8("length", 8, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (userdata)
+	if pushErr := io.PushContext("userdata"); pushErr != nil {
+		return pushErr
+	}
 	_userdataErr := m.Userdata.Serialize(io)
+	if popErr := io.PopContext("userdata"); popErr != nil {
+		return popErr
+	}
 	if _userdataErr != nil {
 		return errors.Wrap(_userdataErr, "Error serializing 'userdata' field")
 	}
 
 	// Simple Field (crc)
 	crc := uint16(m.Crc)
-	_crcErr := io.WriteUint16(16, (crc))
+	_crcErr := io.WriteUint16("crc", 16, (crc))
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}
 
+	if popErr := io.PopContext("AmsSerialFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AmsSerialFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "magicCookie":
@@ -262,6 +296,7 @@ func (m *AmsSerialFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AmsSerialFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.ads.readwrite.AmsSerialFrame"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -297,20 +332,35 @@ func (m *AmsSerialFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m AmsSerialFrame) String() string {
-	return string(m.Box("AmsSerialFrame", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AmsSerialFrame) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AmsSerialFrame"
+	boxName := "AmsSerialFrame"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, width-2))
-	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, width-2))
-	boxes = append(boxes, utils.BoxAnything("Length", m.Length, width-2))
-	boxes = append(boxes, utils.BoxAnything("Userdata", m.Userdata, width-2))
-	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("MagicCookie", m.MagicCookie, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransmitterAddress", m.TransmitterAddress, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ReceiverAddress", m.ReceiverAddress, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FragmentNumber", m.FragmentNumber, -1))
+	// Simple field (case simple)
+	// int8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", m.Length, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Userdata.Box("userdata", width-2))
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Crc", m.Crc, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -87,7 +88,11 @@ func (m *DeviceConfigurationRequest) GetTypeName() string {
 }
 
 func (m *DeviceConfigurationRequest) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *DeviceConfigurationRequest) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (deviceConfigurationRequestDataBlock)
 	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
@@ -102,18 +107,39 @@ func (m *DeviceConfigurationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+func DeviceConfigurationRequestParse(io utils.ReadBuffer, totalLength uint16) (*KnxNetIpMessage, error) {
+	if pullErr := io.PullContext("DeviceConfigurationRequest"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(io)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
 	}
+	if closeErr := io.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if pullErr := io.PullContext("cemi"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")
+	}
+	if closeErr := io.CloseContext("cemi"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("DeviceConfigurationRequest"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -128,31 +154,52 @@ func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (
 
 func (m *DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("DeviceConfigurationRequest"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
+		if pushErr := io.PushContext("deviceConfigurationRequestDataBlock"); pushErr != nil {
+			return pushErr
+		}
 		_deviceConfigurationRequestDataBlockErr := m.DeviceConfigurationRequestDataBlock.Serialize(io)
+		if popErr := io.PopContext("deviceConfigurationRequestDataBlock"); popErr != nil {
+			return popErr
+		}
 		if _deviceConfigurationRequestDataBlockErr != nil {
 			return errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error serializing 'deviceConfigurationRequestDataBlock' field")
 		}
 
 		// Simple Field (cemi)
+		if pushErr := io.PushContext("cemi"); pushErr != nil {
+			return pushErr
+		}
 		_cemiErr := m.Cemi.Serialize(io)
+		if popErr := io.PopContext("cemi"); popErr != nil {
+			return popErr
+		}
 		if _cemiErr != nil {
 			return errors.Wrap(_cemiErr, "Error serializing 'cemi' field")
 		}
 
+		if popErr := io.PopContext("DeviceConfigurationRequest"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "deviceConfigurationRequestDataBlock":
@@ -164,6 +211,9 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 			case "cemi":
 				var dt *CEMI
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Cemi = dt
@@ -171,7 +221,7 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -179,6 +229,7 @@ func (m *DeviceConfigurationRequest) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.DeviceConfigurationRequestDataBlock, xml.StartElement{Name: xml.Name{Local: "deviceConfigurationRequestDataBlock"}}); err != nil {
 		return err
@@ -190,15 +241,22 @@ func (m *DeviceConfigurationRequest) MarshalXML(e *xml.Encoder, start xml.StartE
 }
 
 func (m DeviceConfigurationRequest) String() string {
-	return string(m.Box("DeviceConfigurationRequest", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m DeviceConfigurationRequest) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "DeviceConfigurationRequest"
+	boxName := "DeviceConfigurationRequest"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("DeviceConfigurationRequestDataBlock", m.DeviceConfigurationRequestDataBlock, width-2))
-	boxes = append(boxes, utils.BoxAnything("Cemi", m.Cemi, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.DeviceConfigurationRequestDataBlock.Box("deviceConfigurationRequestDataBlock", width-2))
+		// Complex field (case complex)
+		boxes = append(boxes, m.Cemi.Box("cemi", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

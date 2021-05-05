@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -39,6 +43,18 @@ const (
 	COTPProtocolClass_CLASS_3 COTPProtocolClass = 0x30
 	COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
+
+var COTPProtocolClassValues []COTPProtocolClass
+
+func init() {
+	COTPProtocolClassValues = []COTPProtocolClass{
+		COTPProtocolClass_CLASS_0,
+		COTPProtocolClass_CLASS_1,
+		COTPProtocolClass_CLASS_2,
+		COTPProtocolClass_CLASS_3,
+		COTPProtocolClass_CLASS_4,
+	}
+}
 
 func COTPProtocolClassByValue(value int8) COTPProtocolClass {
 	switch value {
@@ -90,8 +106,8 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPProtocolClassParse(io *utils.ReadBuffer) (COTPProtocolClass, error) {
-	val, err := io.ReadInt8(8)
+func COTPProtocolClassParse(io utils.ReadBuffer) (COTPProtocolClass, error) {
+	val, err := io.ReadInt8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -99,10 +115,11 @@ func COTPProtocolClassParse(io *utils.ReadBuffer) (COTPProtocolClass, error) {
 }
 
 func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8(8, int8(e))
+	err := io.WriteInt8("COTPProtocolClass", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPProtocolClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -122,7 +139,15 @@ func (m *COTPProtocolClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
-func (e COTPProtocolClass) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m COTPProtocolClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e COTPProtocolClass) name() string {
 	switch e {
 	case COTPProtocolClass_CLASS_0:
 		return "CLASS_0"
@@ -136,4 +161,17 @@ func (e COTPProtocolClass) String() string {
 		return "CLASS_4"
 	}
 	return ""
+}
+
+func (e COTPProtocolClass) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m COTPProtocolClass) Box(s string, i int) utils.AsciiBox {
+	boxName := "COTPProtocolClass"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

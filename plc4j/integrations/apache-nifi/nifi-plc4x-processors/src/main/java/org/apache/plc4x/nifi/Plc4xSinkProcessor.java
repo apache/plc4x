@@ -31,7 +31,6 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -50,7 +49,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         }
 
         // Get an instance of a component able to write to a PLC.
-        try(PlcConnection connection = new PooledPlcDriverManager().getConnection(getConnectionString())) {
+        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
             if (!connection.getMetadata().canWrite()) {
                 throw new ProcessException("Writing not supported by connection");
             }

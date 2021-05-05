@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -82,7 +83,11 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) GetT
 }
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	return lengthInBits
 }
@@ -91,7 +96,14 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Leng
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io *utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+	if pullErr := io.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if closeErr := io.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create a partially initialized instance
 	_child := &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
@@ -103,26 +115,35 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io *
 
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); pushErr != nil {
+			return pushErr
+		}
 
+		if popErr := io.PopContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			}
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -130,18 +151,24 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Unma
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) String() string {
-	return string(m.Box("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
+	boxName := "BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

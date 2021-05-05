@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -85,7 +86,11 @@ func (m *ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 }
 
 func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.LengthInBits()
@@ -97,12 +102,26 @@ func (m *ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(io utils.ReadBuffer) (*ConnectionResponseDataBlock, error) {
+	if pullErr := io.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("knxAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (knxAddress)
 	knxAddress, _knxAddressErr := KnxAddressParse(io)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field")
+	}
+	if closeErr := io.CloseContext("knxAddress"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ConnectionResponseDataBlockTunnelConnection"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -116,25 +135,40 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (*Co
 
 func (m *ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ConnectionResponseDataBlockTunnelConnection"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (knxAddress)
+		if pushErr := io.PushContext("knxAddress"); pushErr != nil {
+			return pushErr
+		}
 		_knxAddressErr := m.KnxAddress.Serialize(io)
+		if popErr := io.PopContext("knxAddress"); popErr != nil {
+			return popErr
+		}
 		if _knxAddressErr != nil {
 			return errors.Wrap(_knxAddressErr, "Error serializing 'knxAddress' field")
 		}
 
+		if popErr := io.PopContext("ConnectionResponseDataBlockTunnelConnection"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "knxAddress":
@@ -147,7 +181,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decode
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -155,6 +189,7 @@ func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decode
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.KnxAddress, xml.StartElement{Name: xml.Name{Local: "knxAddress"}}); err != nil {
 		return err
@@ -163,14 +198,20 @@ func (m *ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder,
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) String() string {
-	return string(m.Box("ConnectionResponseDataBlockTunnelConnection", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ConnectionResponseDataBlockTunnelConnection) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ConnectionResponseDataBlockTunnelConnection"
+	boxName := "ConnectionResponseDataBlockTunnelConnection"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("KnxAddress", m.KnxAddress, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.KnxAddress.Box("knxAddress", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

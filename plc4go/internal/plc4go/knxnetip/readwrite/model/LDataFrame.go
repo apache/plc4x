@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -60,6 +61,7 @@ type ILDataFrameChild interface {
 	InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool)
 	GetTypeName() string
 	ILDataFrame
+	utils.AsciiBoxer
 }
 
 func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
@@ -84,6 +86,14 @@ func (m *LDataFrame) GetTypeName() string {
 }
 
 func (m *LDataFrame) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *LDataFrame) LengthInBitsConditional(lastItem bool) uint16 {
+	return m.Child.LengthInBits()
+}
+
+func (m *LDataFrame) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)
@@ -105,9 +115,6 @@ func (m *LDataFrame) LengthInBits() uint16 {
 	// Simple field (errorFlag)
 	lengthInBits += 1
 
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
-
 	return lengthInBits
 }
 
@@ -115,46 +122,55 @@ func (m *LDataFrame) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
+func LDataFrameParse(io utils.ReadBuffer) (*LDataFrame, error) {
+	if pullErr := io.PullContext("LDataFrame"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (frameType)
-	frameType, _frameTypeErr := io.ReadBit()
+	frameType, _frameTypeErr := io.ReadBit("frameType")
 	if _frameTypeErr != nil {
 		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field")
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling, _pollingErr := io.ReadBit()
+	polling, _pollingErr := io.ReadBit("polling")
 	if _pollingErr != nil {
 		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field")
 	}
 
 	// Simple Field (notRepeated)
-	notRepeated, _notRepeatedErr := io.ReadBit()
+	notRepeated, _notRepeatedErr := io.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
 		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field")
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame, _notAckFrameErr := io.ReadBit()
+	notAckFrame, _notAckFrameErr := io.ReadBit("notAckFrame")
 	if _notAckFrameErr != nil {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
 
+	if pullErr := io.PullContext("priority"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
 	}
+	if closeErr := io.CloseContext("priority"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit()
+	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
 		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field")
 	}
 
 	// Simple Field (errorFlag)
-	errorFlag, _errorFlagErr := io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field")
 	}
@@ -169,9 +185,16 @@ func LDataFrameParse(io *utils.ReadBuffer) (*LDataFrame, error) {
 		_parent, typeSwitchError = LPollDataParse(io)
 	case notAckFrame == false: // LDataFrameACK
 		_parent, typeSwitchError = LDataFrameACKParse(io)
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")
+	}
+
+	if closeErr := io.CloseContext("LDataFrame"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Finish initializing
@@ -184,17 +207,20 @@ func (m *LDataFrame) Serialize(io utils.WriteBuffer) error {
 }
 
 func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, serializeChildFunction func() error) error {
+	if pushErr := io.PushContext("LDataFrame"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (frameType)
 	frameType := bool(m.FrameType)
-	_frameTypeErr := io.WriteBit((frameType))
+	_frameTypeErr := io.WriteBit("frameType", (frameType))
 	if _frameTypeErr != nil {
 		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling := bool(child.Polling())
-	_pollingErr := io.WriteBit((polling))
+	_pollingErr := io.WriteBit("polling", (polling))
 
 	if _pollingErr != nil {
 		return errors.Wrap(_pollingErr, "Error serializing 'polling' field")
@@ -202,36 +228,42 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 
 	// Simple Field (notRepeated)
 	notRepeated := bool(m.NotRepeated)
-	_notRepeatedErr := io.WriteBit((notRepeated))
+	_notRepeatedErr := io.WriteBit("notRepeated", (notRepeated))
 	if _notRepeatedErr != nil {
 		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame := bool(child.NotAckFrame())
-	_notAckFrameErr := io.WriteBit((notAckFrame))
+	_notAckFrameErr := io.WriteBit("notAckFrame", (notAckFrame))
 
 	if _notAckFrameErr != nil {
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
 	}
 
+	if pushErr := io.PushContext("priority"); pushErr != nil {
+		return pushErr
+	}
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.Priority)
 	_priorityErr := priority.Serialize(io)
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
+	if popErr := io.PopContext("priority"); popErr != nil {
+		return popErr
+	}
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.AcknowledgeRequested)
-	_acknowledgeRequestedErr := io.WriteBit((acknowledgeRequested))
+	_acknowledgeRequestedErr := io.WriteBit("acknowledgeRequested", (acknowledgeRequested))
 	if _acknowledgeRequestedErr != nil {
 		return errors.Wrap(_acknowledgeRequestedErr, "Error serializing 'acknowledgeRequested' field")
 	}
 
 	// Simple Field (errorFlag)
 	errorFlag := bool(m.ErrorFlag)
-	_errorFlagErr := io.WriteBit((errorFlag))
+	_errorFlagErr := io.WriteBit("errorFlag", (errorFlag))
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
 	}
@@ -242,22 +274,39 @@ func (m *LDataFrame) SerializeParent(io utils.WriteBuffer, child ILDataFrame, se
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
+	if popErr := io.PopContext("LDataFrame"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
+	if start.Attr != nil && len(start.Attr) > 0 {
+		switch start.Attr[0].Value {
+		// LDataFrameACK needs special treatment as it has no fields
+		case "org.apache.plc4x.java.knxnetip.readwrite.LDataFrameACK":
+			if m.Child == nil {
+				m.Child = &LDataFrameACK{
+					Parent: m,
+				}
+			}
+		}
+	}
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "frameType":
@@ -342,6 +391,7 @@ func (m *LDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := reflect.TypeOf(m.Child).String()
 	className = "org.apache.plc4x.java.knxnetip.readwrite." + className[strings.LastIndex(className, ".")+1:]
@@ -379,19 +429,45 @@ func (m *LDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 }
 
 func (m LDataFrame) String() string {
-	return string(m.Box("LDataFrame", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
-func (m LDataFrame) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "LDataFrame"
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *LDataFrame) Box(name string, width int) utils.AsciiBox {
+	return m.Child.Box(name, width)
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m *LDataFrame) BoxParent(name string, width int, childBoxer func() []utils.AsciiBox) utils.AsciiBox {
+	boxName := "LDataFrame"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, width-2))
-	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, width-2))
-	boxes = append(boxes, utils.BoxAnything("Priority", m.Priority, width-2))
-	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, width-2))
-	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, width-2))
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("FrameType", m.FrameType, -1))
+	// Discriminator Field (polling) (Used as input to a switch field)
+	polling := bool(m.Child.Polling())
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Polling", polling, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NotRepeated", m.NotRepeated, -1))
+	// Discriminator Field (notAckFrame) (Used as input to a switch field)
+	notAckFrame := bool(m.Child.NotAckFrame())
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("NotAckFrame", notAckFrame, -1))
+	// Enum field (priority)
+	priority := CastCEMIPriority(m.Priority)
+	boxes = append(boxes, priority.Box("priority", -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("AcknowledgeRequested", m.AcknowledgeRequested, -1))
+	// Simple field (case simple)
+	// bool can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("ErrorFlag", m.ErrorFlag, -1))
+	// Switch field (Depending on the discriminator values, passes the boxing to a sub-type)
+	boxes = append(boxes, childBoxer()...)
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

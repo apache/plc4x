@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -56,6 +60,35 @@ const (
 	BACnetNodeType_ROOM           BACnetNodeType = 0x14
 	BACnetNodeType_ZONE           BACnetNodeType = 0x15
 )
+
+var BACnetNodeTypeValues []BACnetNodeType
+
+func init() {
+	BACnetNodeTypeValues = []BACnetNodeType{
+		BACnetNodeType_UNKNOWN,
+		BACnetNodeType_SYSTEM,
+		BACnetNodeType_NETWORK,
+		BACnetNodeType_DEVICE,
+		BACnetNodeType_ORGANIZATIONAL,
+		BACnetNodeType_AREA,
+		BACnetNodeType_EQUIPMENT,
+		BACnetNodeType_POINT,
+		BACnetNodeType_COLLECTION,
+		BACnetNodeType_PROPERTY,
+		BACnetNodeType_FUNCTIONAL,
+		BACnetNodeType_OTHER,
+		BACnetNodeType_SUBSYSTEM,
+		BACnetNodeType_BUILDING,
+		BACnetNodeType_FLOOR,
+		BACnetNodeType_SECTION,
+		BACnetNodeType_MODULE,
+		BACnetNodeType_TREE,
+		BACnetNodeType_MEMBER,
+		BACnetNodeType_PROTOCOL,
+		BACnetNodeType_ROOM,
+		BACnetNodeType_ZONE,
+	}
+}
 
 func BACnetNodeTypeByValue(value uint8) BACnetNodeType {
 	switch value {
@@ -175,8 +208,8 @@ func (m BACnetNodeType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNodeTypeParse(io *utils.ReadBuffer) (BACnetNodeType, error) {
-	val, err := io.ReadUint8(8)
+func BACnetNodeTypeParse(io utils.ReadBuffer) (BACnetNodeType, error) {
+	val, err := io.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
 		return 0, nil
 	}
@@ -184,10 +217,11 @@ func BACnetNodeTypeParse(io *utils.ReadBuffer) (BACnetNodeType, error) {
 }
 
 func (e BACnetNodeType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(8, uint8(e))
+	err := io.WriteUint8("BACnetNodeType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNodeType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -207,7 +241,15 @@ func (m *BACnetNodeType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
-func (e BACnetNodeType) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m BACnetNodeType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e BACnetNodeType) name() string {
 	switch e {
 	case BACnetNodeType_UNKNOWN:
 		return "UNKNOWN"
@@ -255,4 +297,17 @@ func (e BACnetNodeType) String() string {
 		return "ZONE"
 	}
 	return ""
+}
+
+func (e BACnetNodeType) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m BACnetNodeType) Box(s string, i int) utils.AsciiBox {
+	boxName := "BACnetNodeType"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

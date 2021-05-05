@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -38,6 +42,17 @@ const (
 	SzlModuleTypeClass_FM  SzlModuleTypeClass = 0x8
 	SzlModuleTypeClass_CP  SzlModuleTypeClass = 0xC
 )
+
+var SzlModuleTypeClassValues []SzlModuleTypeClass
+
+func init() {
+	SzlModuleTypeClassValues = []SzlModuleTypeClass{
+		SzlModuleTypeClass_CPU,
+		SzlModuleTypeClass_IM,
+		SzlModuleTypeClass_FM,
+		SzlModuleTypeClass_CP,
+	}
+}
 
 func SzlModuleTypeClassByValue(value uint8) SzlModuleTypeClass {
 	switch value {
@@ -85,8 +100,8 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
-	val, err := io.ReadUint8(4)
+func SzlModuleTypeClassParse(io utils.ReadBuffer) (SzlModuleTypeClass, error) {
+	val, err := io.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
 		return 0, nil
 	}
@@ -94,10 +109,11 @@ func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
 }
 
 func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8(4, uint8(e))
+	err := io.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlModuleTypeClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -117,7 +133,15 @@ func (m *SzlModuleTypeClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
-func (e SzlModuleTypeClass) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m SzlModuleTypeClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e SzlModuleTypeClass) name() string {
 	switch e {
 	case SzlModuleTypeClass_CPU:
 		return "CPU"
@@ -129,4 +153,17 @@ func (e SzlModuleTypeClass) String() string {
 		return "CP"
 	}
 	return ""
+}
+
+func (e SzlModuleTypeClass) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m SzlModuleTypeClass) Box(s string, i int) utils.AsciiBox {
+	boxName := "SzlModuleTypeClass"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

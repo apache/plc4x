@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -69,6 +70,10 @@ func (m *ModbusTcpADU) GetTypeName() string {
 }
 
 func (m *ModbusTcpADU) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusTcpADU) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (transactionIdentifier)
@@ -93,16 +98,19 @@ func (m *ModbusTcpADU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
+func ModbusTcpADUParse(io utils.ReadBuffer, response bool) (*ModbusTcpADU, error) {
+	if pullErr := io.PullContext("ModbusTcpADU"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (transactionIdentifier)
-	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)
+	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16("transactionIdentifier", 16)
 	if _transactionIdentifierErr != nil {
 		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
-	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16(16)
+	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16("protocolIdentifier", 16)
 	if _protocolIdentifierErr != nil {
 		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field")
 	}
@@ -111,16 +119,20 @@ func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, erro
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16("length", 16)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
-	unitIdentifier, _unitIdentifierErr := io.ReadUint8(8)
+	unitIdentifier, _unitIdentifierErr := io.ReadUint8("unitIdentifier", 8)
 	if _unitIdentifierErr != nil {
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
+	}
+
+	if pullErr := io.PullContext("pdu"); pullErr != nil {
+		return nil, pullErr
 	}
 
 	// Simple Field (pdu)
@@ -128,62 +140,84 @@ func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (*ModbusTcpADU, erro
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
 	}
+	if closeErr := io.CloseContext("pdu"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ModbusTcpADU"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Create the instance
 	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
 }
 
 func (m *ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("ModbusTcpADU"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.TransactionIdentifier)
-	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
+	_transactionIdentifierErr := io.WriteUint16("transactionIdentifier", 16, (transactionIdentifier))
 	if _transactionIdentifierErr != nil {
 		return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 	}
 
 	// Const Field (protocolIdentifier)
-	_protocolIdentifierErr := io.WriteUint16(16, 0x0000)
+	_protocolIdentifierErr := io.WriteUint16("protocolIdentifier", 16, 0x0000)
 	if _protocolIdentifierErr != nil {
 		return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
-	_lengthErr := io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16("length", 16, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier := uint8(m.UnitIdentifier)
-	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
+	_unitIdentifierErr := io.WriteUint8("unitIdentifier", 8, (unitIdentifier))
 	if _unitIdentifierErr != nil {
 		return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
 	}
 
 	// Simple Field (pdu)
+	if pushErr := io.PushContext("pdu"); pushErr != nil {
+		return pushErr
+	}
 	_pduErr := m.Pdu.Serialize(io)
+	if popErr := io.PopContext("pdu"); popErr != nil {
+		return popErr
+	}
 	if _pduErr != nil {
 		return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 	}
 
+	if popErr := io.PopContext("ModbusTcpADU"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusTcpADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "transactionIdentifier":
@@ -201,6 +235,9 @@ func (m *ModbusTcpADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 			case "pdu":
 				var dt *ModbusPDU
 				if err := d.DecodeElement(&dt, &tok); err != nil {
+					if err == io.EOF {
+						continue
+					}
 					return err
 				}
 				m.Pdu = dt
@@ -209,6 +246,7 @@ func (m *ModbusTcpADU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusTcpADU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -232,16 +270,29 @@ func (m *ModbusTcpADU) MarshalXML(e *xml.Encoder, start xml.StartElement) error 
 }
 
 func (m ModbusTcpADU) String() string {
-	return string(m.Box("ModbusTcpADU", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusTcpADU) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusTcpADU"
+	boxName := "ModbusTcpADU"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, width-2))
-	boxes = append(boxes, utils.BoxAnything("Pdu", m.Pdu, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("TransactionIdentifier", m.TransactionIdentifier, -1))
+	// Const Field (protocolIdentifier)
+	boxes = append(boxes, utils.BoxAnything("ProtocolIdentifier", uint16(0x0000), -1))
+	// Implicit Field (length)
+	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Length", length, -1))
+	// Simple field (case simple)
+	// uint8 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("UnitIdentifier", m.UnitIdentifier, -1))
+	// Complex field (case complex)
+	boxes = append(boxes, m.Pdu.Box("pdu", width-2))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

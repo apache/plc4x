@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -64,6 +65,10 @@ func (m *BACnetAddress) GetTypeName() string {
 }
 
 func (m *BACnetAddress) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *BACnetAddress) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Array field
@@ -81,23 +86,36 @@ func (m *BACnetAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
+func BACnetAddressParse(io utils.ReadBuffer) (*BACnetAddress, error) {
+	if pullErr := io.PullContext("BACnetAddress"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Array field (address)
+	if pullErr := io.PullContext("address", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Count array
 	address := make([]uint8, uint16(4))
 	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'address' field")
 		}
 		address[curItem] = _item
 	}
+	if closeErr := io.CloseContext("address", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 
 	// Simple Field (port)
-	port, _portErr := io.ReadUint16(16)
+	port, _portErr := io.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field")
+	}
+
+	if closeErr := io.CloseContext("BACnetAddress"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -105,40 +123,55 @@ func BACnetAddressParse(io *utils.ReadBuffer) (*BACnetAddress, error) {
 }
 
 func (m *BACnetAddress) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("BACnetAddress"); pushErr != nil {
+		return pushErr
+	}
 
 	// Array Field (address)
 	if m.Address != nil {
+		if pushErr := io.PushContext("address", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		for _, _element := range m.Address {
-			_elementErr := io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'address' field")
 			}
+		}
+		if popErr := io.PopContext("address", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
 		}
 	}
 
 	// Simple Field (port)
 	port := uint16(m.Port)
-	_portErr := io.WriteUint16(16, (port))
+	_portErr := io.WriteUint16("port", 16, (port))
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
+	if popErr := io.PopContext("BACnetAddress"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "address":
@@ -158,6 +191,7 @@ func (m *BACnetAddress) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.bacnetip.readwrite.BACnetAddress"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -178,15 +212,29 @@ func (m *BACnetAddress) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 }
 
 func (m BACnetAddress) String() string {
-	return string(m.Box("BACnetAddress", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m BACnetAddress) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "BACnetAddress"
+	boxName := "BACnetAddress"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Address", m.Address, width-2))
-	boxes = append(boxes, utils.BoxAnything("Port", m.Port, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Array Field (address)
+	if m.Address != nil {
+		// Simple array base type uint8 will be hex dumped
+		boxes = append(boxes, utils.BoxedDumpAnything("Address", m.Address))
+		// Simple array base type uint8 will be rendered one by one
+		arrayBoxes := make([]utils.AsciiBox, 0)
+		for _, _element := range m.Address {
+			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
+		}
+		boxes = append(boxes, utils.BoxBox("Address", utils.AlignBoxes(arrayBoxes, width-4), 0))
+	}
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Port", m.Port, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -95,7 +96,11 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) GetTypeName() string {
 }
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -110,18 +115,25 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteMultipleHoldingRegistersResponseParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUWriteMultipleHoldingRegistersResponse"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (startingAddress)
-	startingAddress, _startingAddressErr := io.ReadUint16(16)
+	startingAddress, _startingAddressErr := io.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field")
 	}
 
 	// Simple Field (quantity)
-	quantity, _quantityErr := io.ReadUint16(16)
+	quantity, _quantityErr := io.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field")
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUWriteMultipleHoldingRegistersResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -136,33 +148,42 @@ func ModbusPDUWriteMultipleHoldingRegistersResponseParse(io *utils.ReadBuffer) (
 
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUWriteMultipleHoldingRegistersResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
-		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16("startingAddress", 16, (startingAddress))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
-		_quantityErr := io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16("quantity", 16, (quantity))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
+		if popErr := io.PopContext("ModbusPDUWriteMultipleHoldingRegistersResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "startingAddress":
@@ -181,7 +202,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Dec
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -189,6 +210,7 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Dec
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.StartingAddress, xml.StartElement{Name: xml.Name{Local: "startingAddress"}}); err != nil {
 		return err
@@ -200,15 +222,24 @@ func (m *ModbusPDUWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.Encod
 }
 
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {
-	return string(m.Box("ModbusPDUWriteMultipleHoldingRegistersResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUWriteMultipleHoldingRegistersResponse"
+	boxName := "ModbusPDUWriteMultipleHoldingRegistersResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, width-2))
-	boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("StartingAddress", m.StartingAddress, -1))
+		// Simple field (case simple)
+		// uint16 can be boxed as anything with the least amount of space
+		boxes = append(boxes, utils.BoxAnything("Quantity", m.Quantity, -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

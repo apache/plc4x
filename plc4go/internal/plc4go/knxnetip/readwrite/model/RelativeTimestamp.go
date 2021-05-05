@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -63,6 +64,10 @@ func (m *RelativeTimestamp) GetTypeName() string {
 }
 
 func (m *RelativeTimestamp) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *RelativeTimestamp) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
@@ -75,12 +80,19 @@ func (m *RelativeTimestamp) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func RelativeTimestampParse(io *utils.ReadBuffer) (*RelativeTimestamp, error) {
+func RelativeTimestampParse(io utils.ReadBuffer) (*RelativeTimestamp, error) {
+	if pullErr := io.PullContext("RelativeTimestamp"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (timestamp)
-	timestamp, _timestampErr := io.ReadUint16(16)
+	timestamp, _timestampErr := io.ReadUint16("timestamp", 16)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field")
+	}
+
+	if closeErr := io.CloseContext("RelativeTimestamp"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create the instance
@@ -88,30 +100,39 @@ func RelativeTimestampParse(io *utils.ReadBuffer) (*RelativeTimestamp, error) {
 }
 
 func (m *RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
+	if pushErr := io.PushContext("RelativeTimestamp"); pushErr != nil {
+		return pushErr
+	}
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.Timestamp)
-	_timestampErr := io.WriteUint16(16, (timestamp))
+	_timestampErr := io.WriteUint16("timestamp", 16, (timestamp))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
+	if popErr := io.PopContext("RelativeTimestamp"); popErr != nil {
+		return popErr
+	}
 	return nil
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *RelativeTimestamp) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	for {
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
 		}
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "timestamp":
@@ -125,6 +146,7 @@ func (m *RelativeTimestamp) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	className := "org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp"
 	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
@@ -142,14 +164,18 @@ func (m *RelativeTimestamp) MarshalXML(e *xml.Encoder, start xml.StartElement) e
 }
 
 func (m RelativeTimestamp) String() string {
-	return string(m.Box("RelativeTimestamp", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m RelativeTimestamp) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "RelativeTimestamp"
+	boxName := "RelativeTimestamp"
+	if name != "" {
+		boxName += "/" + name
 	}
 	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	// Simple field (case simple)
+	// uint16 can be boxed as anything with the least amount of space
+	boxes = append(boxes, utils.BoxAnything("Timestamp", m.Timestamp, -1))
+	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

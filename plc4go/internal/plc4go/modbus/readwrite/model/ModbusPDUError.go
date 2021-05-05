@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -93,7 +94,11 @@ func (m *ModbusPDUError) GetTypeName() string {
 }
 
 func (m *ModbusPDUError) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Enum Field (exceptionCode)
 	lengthInBits += 8
@@ -105,12 +110,25 @@ func (m *ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUErrorParse(io utils.ReadBuffer) (*ModbusPDU, error) {
+	if pullErr := io.PullContext("ModbusPDUError"); pullErr != nil {
+		return nil, pullErr
+	}
 
+	if pullErr := io.PullContext("exceptionCode"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(io)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
+	}
+	if closeErr := io.CloseContext("exceptionCode"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("ModbusPDUError"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -124,26 +142,41 @@ func ModbusPDUErrorParse(io *utils.ReadBuffer) (*ModbusPDU, error) {
 
 func (m *ModbusPDUError) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("ModbusPDUError"); pushErr != nil {
+			return pushErr
+		}
 
+		if pushErr := io.PushContext("exceptionCode"); pushErr != nil {
+			return pushErr
+		}
 		// Enum field (exceptionCode)
 		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
 		_exceptionCodeErr := exceptionCode.Serialize(io)
 		if _exceptionCodeErr != nil {
 			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
+		if popErr := io.PopContext("exceptionCode"); popErr != nil {
+			return popErr
+		}
 
+		if popErr := io.PopContext("ModbusPDUError"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "exceptionCode":
@@ -156,7 +189,7 @@ func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -164,6 +197,7 @@ func (m *ModbusPDUError) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.ExceptionCode, xml.StartElement{Name: xml.Name{Local: "exceptionCode"}}); err != nil {
 		return err
@@ -172,14 +206,21 @@ func (m *ModbusPDUError) MarshalXML(e *xml.Encoder, start xml.StartElement) erro
 }
 
 func (m ModbusPDUError) String() string {
-	return string(m.Box("ModbusPDUError", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m ModbusPDUError) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "ModbusPDUError"
+	boxName := "ModbusPDUError"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("ExceptionCode", m.ExceptionCode, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Enum field (exceptionCode)
+		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
+		boxes = append(boxes, exceptionCode.Box("exceptionCode", -1))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }

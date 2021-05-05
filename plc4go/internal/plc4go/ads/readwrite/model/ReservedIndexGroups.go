@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -30,6 +32,8 @@ type ReservedIndexGroups uint32
 
 type IReservedIndexGroups interface {
 	Serialize(io utils.WriteBuffer) error
+	xml.Marshaler
+	xml.Unmarshaler
 }
 
 const (
@@ -64,6 +68,43 @@ const (
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE       ReservedIndexGroups = 0x00000000
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE       ReservedIndexGroups = 0x00000002
 )
+
+var ReservedIndexGroupsValues []ReservedIndexGroups
+
+func init() {
+	ReservedIndexGroupsValues = []ReservedIndexGroups{
+		ReservedIndexGroups_ADSIGRP_SYMTAB,
+		ReservedIndexGroups_ADSIGRP_SYMNAME,
+		ReservedIndexGroups_ADSIGRP_SYMVAL,
+		ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VALBYHND,
+		ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND,
+		ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME,
+		ReservedIndexGroups_ADSIGRP_SYM_VERSION,
+		ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX,
+		ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD,
+		ReservedIndexGroups_ADSIGRP_SYM_UPLOAD,
+		ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO,
+		ReservedIndexGroups_ADSIGRP_SYMNOTE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO,
+		ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE,
+		ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE,
+		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
+		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
+		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
+	}
+}
 
 func ReservedIndexGroupsByValue(value uint32) ReservedIndexGroups {
 	switch value {
@@ -215,8 +256,8 @@ func (m ReservedIndexGroups) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ReservedIndexGroupsParse(io *utils.ReadBuffer) (ReservedIndexGroups, error) {
-	val, err := io.ReadUint32(32)
+func ReservedIndexGroupsParse(io utils.ReadBuffer) (ReservedIndexGroups, error) {
+	val, err := io.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, nil
 	}
@@ -224,10 +265,11 @@ func ReservedIndexGroupsParse(io *utils.ReadBuffer) (ReservedIndexGroups, error)
 }
 
 func (e ReservedIndexGroups) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32(32, uint32(e))
+	err := io.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 	return err
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ReservedIndexGroups) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -247,7 +289,15 @@ func (m *ReservedIndexGroups) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
-func (e ReservedIndexGroups) String() string {
+// Deprecated: the utils.WriteBufferReadBased should be used instead
+func (m ReservedIndexGroups) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.String(), start); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e ReservedIndexGroups) name() string {
 	switch e {
 	case ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE:
 		return "ADSIOFFS_DEVDATA_ADSSTATE"
@@ -311,4 +361,17 @@ func (e ReservedIndexGroups) String() string {
 		return "ADSIGRP_DEVICE_DATA"
 	}
 	return ""
+}
+
+func (e ReservedIndexGroups) String() string {
+	return e.name()
+}
+
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
+func (m ReservedIndexGroups) Box(s string, i int) utils.AsciiBox {
+	boxName := "ReservedIndexGroups"
+	if s != "" {
+		boxName += "/" + s
+	}
+	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }

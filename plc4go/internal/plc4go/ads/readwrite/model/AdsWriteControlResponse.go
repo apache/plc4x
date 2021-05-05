@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -89,7 +90,11 @@ func (m *AdsWriteControlResponse) GetTypeName() string {
 }
 
 func (m *AdsWriteControlResponse) LengthInBits() uint16 {
-	lengthInBits := uint16(0)
+	return m.LengthInBitsConditional(false)
+}
+
+func (m *AdsWriteControlResponse) LengthInBitsConditional(lastItem bool) uint16 {
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -101,12 +106,26 @@ func (m *AdsWriteControlResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteControlResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteControlResponseParse(io utils.ReadBuffer) (*AdsData, error) {
+	if pullErr := io.PullContext("AdsWriteControlResponse"); pullErr != nil {
+		return nil, pullErr
+	}
+
+	if pullErr := io.PullContext("result"); pullErr != nil {
+		return nil, pullErr
+	}
 
 	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(io)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")
+	}
+	if closeErr := io.CloseContext("result"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	if closeErr := io.CloseContext("AdsWriteControlResponse"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Create a partially initialized instance
@@ -120,25 +139,40 @@ func AdsWriteControlResponseParse(io *utils.ReadBuffer) (*AdsData, error) {
 
 func (m *AdsWriteControlResponse) Serialize(io utils.WriteBuffer) error {
 	ser := func() error {
+		if pushErr := io.PushContext("AdsWriteControlResponse"); pushErr != nil {
+			return pushErr
+		}
 
 		// Simple Field (result)
+		if pushErr := io.PushContext("result"); pushErr != nil {
+			return pushErr
+		}
 		_resultErr := m.Result.Serialize(io)
+		if popErr := io.PopContext("result"); popErr != nil {
+			return popErr
+		}
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
+		if popErr := io.PopContext("AdsWriteControlResponse"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
 	return m.Parent.SerializeParent(io, m, ser)
 }
 
+// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *AdsWriteControlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
+	foundContent := false
 	token = start
 	for {
 		switch token.(type) {
 		case xml.StartElement:
+			foundContent = true
 			tok := token.(xml.StartElement)
 			switch tok.Name.Local {
 			case "result":
@@ -151,7 +185,7 @@ func (m *AdsWriteControlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 		}
 		token, err = d.Token()
 		if err != nil {
-			if err == io.EOF {
+			if err == io.EOF && foundContent {
 				return nil
 			}
 			return err
@@ -159,6 +193,7 @@ func (m *AdsWriteControlResponse) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
+// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m *AdsWriteControlResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.Result, xml.StartElement{Name: xml.Name{Local: "result"}}); err != nil {
 		return err
@@ -167,14 +202,20 @@ func (m *AdsWriteControlResponse) MarshalXML(e *xml.Encoder, start xml.StartElem
 }
 
 func (m AdsWriteControlResponse) String() string {
-	return string(m.Box("AdsWriteControlResponse", utils.DefaultWidth*2))
+	return string(m.Box("", 120))
 }
 
+// Deprecated: the utils.WriteBufferBoxBased should be used instead
 func (m AdsWriteControlResponse) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "AdsWriteControlResponse"
+	boxName := "AdsWriteControlResponse"
+	if name != "" {
+		boxName += "/" + name
 	}
-	boxes := make([]utils.AsciiBox, 0)
-	boxes = append(boxes, utils.BoxAnything("Result", m.Result, width-2))
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
+	childBoxer := func() []utils.AsciiBox {
+		boxes := make([]utils.AsciiBox, 0)
+		// Complex field (case complex)
+		boxes = append(boxes, m.Result.Box("result", width-2))
+		return boxes
+	}
+	return m.Parent.BoxParent(boxName, width, childBoxer)
 }
