@@ -170,33 +170,43 @@ plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection) {
   }
   // Increment the number of running tasks for this connection.
   connection->num_running_system_tasks++;
-  plc4c_utils_list_insert_tail_value(
-      plc4c_system_get_task_list(plc4c_connection_get_system(connection)),
-      new_disconnection_task);
+  plc4c_system *system = plc4c_connection_get_system(connection);
+  plc4c_utils_list_insert_tail_value(system->task_list, new_disconnection_task);
+
   return OK;
 }
 
+
 void plc4c_connection_destroy(plc4c_connection *connection) {
+  
   if (connection == NULL) {
     return;
   }
   if (connection->connection_string != NULL) {
     free(connection->connection_string);
+    connection->connection_string = NULL;
   }
-  if (connection->transport != NULL) {
-    free(connection->transport);
-  }
+  // do not do this here, else do so for driver also here
+  // as transport is owned by system not connection
+  /*if (connection->transport != NULL) {
+    //free(connection->transport);
+    //connection->transport = NULL;
+  }*/
   if (connection->transport_code != NULL) {
     free(connection->transport_code);
+    connection->transport_code = NULL;
   }
   if (connection->transport_connect_information != NULL) {
     free(connection->transport_connect_information);
+    connection->transport_connect_information = NULL;
   }
   if (connection->protocol_code != NULL) {
     free(connection->protocol_code);
+    connection->protocol_code = NULL;
   }
   if (connection->parameters != NULL) {
     free(connection->parameters);
+    connection->parameters = NULL;
   }
 }
 

@@ -142,13 +142,20 @@ plc4c_return_code plc4c_driver_s7_write_function(
 void plc4c_driver_s7_free_write_response_item(
     plc4c_list_element* write_item_element) {
   
-  plc4c_response_value_item* value_item;
-  value_item = (plc4c_response_value_item*)write_item_element->value;
-  // do not delete the plc4c_item
-  // we also, in THIS case don't delete the random value which isn't really
-  // a pointer
-  // free(value_item->value);
-  value_item->value = NULL;
+  plc4c_response_item* value_item;
+  value_item = (plc4c_response_item*)write_item_element->value;
+  /*
+      // do not delete the plc4c_item
+      // we also, in THIS case don't delete the random value which
+      // isn't really a pointer. 
+
+    TODO: what does above comment mean? Possibly written as we where
+    casting to plc4c_response_value_item insted of plc4c_response_item
+    in which case random explosion would probably occur on NULL'ing and 
+    freeing. Cast correctly I think comment is no more valid...
+  */
+  //free(value_item->item);
+  //value_item->item = NULL;
 }
 
 void plc4c_driver_s7_free_write_response(plc4c_write_response* response) {

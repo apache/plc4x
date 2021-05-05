@@ -32,6 +32,22 @@
 #define strtok_r strtok_s
 #endif
 
+// TODO reloate plc4c_driver_destroy 
+void plc4c_driver_destroy(plc4c_driver *driver) {
+  if (driver) {
+    free(driver);
+    driver = NULL;
+  }
+}
+
+// TODO reloate plc4c_transport_destroy 
+void plc4c_transport_destroy(plc4c_transport *transport) {
+  if (transport) {
+    free(transport);
+    transport = NULL;
+  }
+}
+
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
 bool plc4c_is_bigendian() {
@@ -41,13 +57,13 @@ bool plc4c_is_bigendian() {
 
 static void delete_driver_list_element(plc4c_list_element *driver_element) {
   plc4c_driver *driver = (plc4c_driver *)driver_element->value;
-  // plc4c_driver_destroy(driver);
+  plc4c_driver_destroy(driver);
 }
 
 static void delete_transport_list_element(
     plc4c_list_element *transport_element) {
   plc4c_transport *transport = (plc4c_transport *)transport_element->value;
-  // plc4c_transport_destroy(transport);
+  plc4c_transport_destroy(transport);
 }
 static void delete_connection_list_element(
     plc4c_list_element *connection_element) {
@@ -57,6 +73,7 @@ static void delete_connection_list_element(
 }
 static void delete_task_list_element(plc4c_list_element *task_list_element) {
   plc4c_driver *driver = (plc4c_driver *)task_list_element->value;
+  // TODO: delete task lists
   // plc4c_driver_destroy(driver);
 }
 

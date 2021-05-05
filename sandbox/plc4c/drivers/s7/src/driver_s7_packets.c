@@ -443,7 +443,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
 
   configuration = read_request->connection->configuration;
   
-  *s7_read_request_packet = malloc(sizeof(s7_read_request_packet));
+  *s7_read_request_packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
   if (*s7_read_request_packet == NULL) {
     return NO_MEMORY;
   }
@@ -460,7 +460,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
   payload->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
   payload->cotp_packet_data_eot = true;
   payload->parameters = NULL;
-  payload->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  payload->payload = calloc(1,sizeof(plc4c_s7_read_write_s7_message));
   if(payload->payload == NULL) {
     return NO_MEMORY;
   }
@@ -550,7 +550,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
   cotp_packet->parameters = NULL;
 
   // Allocate and initalise payload->payload 
-  cotp_packet->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  cotp_packet->payload = calloc(1,sizeof(plc4c_s7_read_write_s7_message));
   s7_packet = cotp_packet->payload;
   if (s7_packet == NULL)
     return NO_MEMORY;
