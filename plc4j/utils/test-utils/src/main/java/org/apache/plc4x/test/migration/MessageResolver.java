@@ -46,45 +46,33 @@ public class MessageResolver {
      * @param protocolName name of the protocol
      * @param outputFlavor flavor of the output (e.g read-write)
      * @param name         name of the message
-     * @param className    deprecated fallback classname attribute
      * @return the found MessageIO
      * @throws DriverTestsuiteException if a MessageIO couldn't be found.
      */
     @SuppressWarnings("rawtypes")
-    public static MessageIO getMessageIO(String protocolName, String outputFlavor, String name, @Deprecated String className) throws DriverTestsuiteException {
+    public static MessageIO getMessageIO(String protocolName, String outputFlavor, String name) throws DriverTestsuiteException {
         try {
             return MessageResolver.getMessageIOType(protocolName, outputFlavor, name).newInstance();
-        } catch (InstantiationException | IllegalAccessException ignore) {
-            LOGGER.warn("\n!!!Un-migrated test!!!\n");
-            try {
-                return MessageResolver.getMessageIOTypeFallback(className).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DriverTestsuiteException(e);
-            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new DriverTestsuiteException(e);
         }
     }
 
-    public static MessageIO getMessageIOStaticLinked(String protocolName, String outputFlavor, String typeName, @Deprecated String classNameAttributeValue) throws ParserSerializerTestsuiteException {
+    public static MessageIO getMessageIOStaticLinked(String protocolName, String outputFlavor, String typeName) throws ParserSerializerTestsuiteException {
         String ioClassName, ioRootClassName;
+        String classPackage = String.format("org.apache.plc4x.java.%s.%s", protocolName, StringUtils.replace(outputFlavor, "-", ""));
         try {
-            String classPackage = String.format("org.apache.plc4x.java.%s.%s", protocolName, StringUtils.replace(outputFlavor, "-", ""));
-            try {
-                Package.getPackage(classPackage);
-            } catch (RuntimeException e) {
-                throw new RuntimeException("fallback to old", e);
-            }
-            ioRootClassName = classPackage + "." + typeName;
-            ioClassName = classPackage + ".io." + typeName + "IO";
-            try {
-                Class.forName(ioRootClassName);
-                Class.forName(ioClassName);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("fallback to old", e);
-            }
+            Package.getPackage(classPackage);
         } catch (RuntimeException e) {
-            LOGGER.error("Error in serializer", e);
-            ioRootClassName = classNameAttributeValue.substring(0, classNameAttributeValue.lastIndexOf('.') + 1) + typeName;
-            ioClassName = classNameAttributeValue.substring(0, classNameAttributeValue.lastIndexOf('.') + 1) + "io." + typeName + "IO";
+            throw new DriverTestsuiteException("fallback to old", e);
+        }
+        ioRootClassName = classPackage + "." + typeName;
+        ioClassName = classPackage + ".io." + typeName + "IO";
+        try {
+            Class.forName(ioRootClassName);
+            Class.forName(ioClassName);
+        } catch (ClassNotFoundException e) {
+            throw new ParserSerializerTestsuiteException(e);
         }
         try {
             Class<?> ioRootClass = Class.forName(ioRootClassName);
@@ -172,7 +160,7 @@ public class MessageResolver {
         try {
             Package.getPackage(classPackage);
         } catch (RuntimeException e) {
-            throw new RuntimeException("fallback to old", e);
+            throw new DriverTestsuiteException(e);
         }
         String ioRootClassName = classPackage + "." + typeName;
         String ioClassName = classPackage + ".io." + typeName + "IO";
@@ -180,22 +168,7 @@ public class MessageResolver {
             Class.forName(ioRootClassName);
             return (Class<? extends MessageIO<?, ?>>) Class.forName(ioClassName);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("fallback to old", e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Class<? extends MessageIO<?, ?>> getMessageIOTypeFallback(String messageClassName) throws DriverTestsuiteException {
-        String ioClassName = messageClassName.substring(0, messageClassName.lastIndexOf('.')) + ".io." +
-            messageClassName.substring(messageClassName.lastIndexOf('.') + 1) + "IO";
-        try {
-            final Class<?> ioClass = Class.forName(ioClassName);
-            if (MessageIO.class.isAssignableFrom(ioClass)) {
-                return (Class<? extends MessageIO<?, ?>>) ioClass;
-            }
-            throw new DriverTestsuiteException("IO class muss implement MessageIO interface");
-        } catch (ClassNotFoundException e) {
-            throw new DriverTestsuiteException("Error loading io class", e);
+            throw new DriverTestsuiteException(e);
         }
     }
 
