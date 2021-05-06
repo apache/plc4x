@@ -52,6 +52,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String.join("", languageFlavorName.split("\\-"));
     }
 
+    // TODO: check if protocol name can be enforced to only contain valid chars
+    public String getSanitizedProtocolName() {
+        return getProtocolName().replaceAll("-","");
+    }
+
     public String packageName(String languageFlavorName) {
         return String.join("", languageFlavorName.split("\\-"));
     }
@@ -84,6 +89,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             switch (simpleTypeReference.getBaseType()) {
                 case BIT: {
                     return "bool";
+                }
+                case BYTE: {
+                    return "byte";
                 }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -159,6 +167,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "values.NewPlcBOOL";
                 }
+                case BYTE: {
+                    return "values.NewPlcUINT";
+                }
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
@@ -231,6 +242,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "false";
                 }
+                case BYTE: {
+                    return "0";
+                }
                 case UINT:
                 case INT: {
                     return "0";
@@ -252,6 +266,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return 1;
+            }
+            case BYTE: {
+                return 8;
             }
             case UINT:
             case INT: {
@@ -288,53 +305,56 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.ReadBit(\"" + logicalName + "\")";
+                return "readBuffer.ReadBit(\"" + logicalName + "\")";
+            }
+            case BYTE: {
+                return "readBuffer.ReadByte(\"" + logicalName + "\")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                return "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                    return "readBuffer.ReadInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                return "readBuffer.ReadBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.ReadFloat32(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "readBuffer.ReadFloat32(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.ReadFloat64(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                    return "readBuffer.ReadFloat64(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
                 }
-                return "io.ReadBigFloat(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
+                return "readBuffer.ReadBigFloat(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
             }
         }
         return "Hurz";
@@ -354,56 +374,59 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+            }
+            case BYTE: {
+                return "writeBuffer.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteUint8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteUint16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteUint32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteUint64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "io.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "io.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
                 }
-                return "io.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "io.WriteString(\"" + logicalName + "\", uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
+                return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), getThisTypeDefinition().getParserArguments()) + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
         }
@@ -639,7 +662,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" is the default name of the reader argument which is always available.
-                    boolean isParserArg = "io".equals(va.getName()) || ((getThisTypeDefinition() instanceof DataIoTypeDefinition) && "_value".equals(va.getName()));
+                    boolean isParserArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || ((getThisTypeDefinition() instanceof DataIoTypeDefinition) && "_value".equals(va.getName()));
                     boolean isTypeArg = "_type".equals(va.getName());
                     if (!isParserArg && !isTypeArg && parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
@@ -691,7 +714,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if ("ARRAY_SIZE_IN_BYTES".equals(vl.getName())) {
             VariableLiteral va = (VariableLiteral) vl.getArgs().get(0);
             // "io" and "m" are always available in every parser.
-            boolean isSerializerArg = "io".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
+            boolean isSerializerArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
             if (!isSerializerArg && serializerArguments != null) {
                 for (Argument serializerArgument : serializerArguments) {
                     if (serializerArgument.getName().equals(va.getName())) {

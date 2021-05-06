@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class ModbusDriverIT extends DriverTestsuiteRunner {
 
     public ModbusDriverIT() {
-        super("/protocols/modbus/DriverTestsuite.xml");
+        super("/protocols/modbus/DriverTestsuite.xml", true);
     }
 
 }

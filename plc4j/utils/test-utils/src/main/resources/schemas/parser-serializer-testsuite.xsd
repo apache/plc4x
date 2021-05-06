@@ -23,7 +23,12 @@
     <xs:element name="testsuite">
         <xs:complexType>
             <xs:sequence>
+                <!-- The name of the testsuite -->
                 <xs:element name="name" type="xs:string"/>
+                <!-- The protocolName(id) of the protocol -->
+                <xs:element name="protocolName" type="xs:string"/>
+                <!-- The outputFlavor of the protocol-->
+                <xs:element name="outputFlavor" type="xs:string"/>
                 <!--
                     Each testcase is a set of hexadecimal input and expected output.
                     A test will parse the binary input and compare the parsed result

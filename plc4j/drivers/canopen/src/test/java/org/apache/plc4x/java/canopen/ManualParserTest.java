@@ -84,7 +84,7 @@ public class ManualParserTest {
         boolean remote = (rawId & REMOTE_TRANSMISSION_FLAG) != 0;
         boolean error = (rawId & ERROR_FRAME_FLAG) != 0;
         int id = extended ? (rawId & EXTENDED_FORMAT_IDENTIFIER_MASK) : (rawId & STANDARD_FORMAT_IDENTIFIER_MASK);
-        int length = readBuffer.readByte(8);
+        int length = readBuffer.readByte();
         byte[] data = readBuffer.getBytes(8, 8 + length);
 
         return new SocketCanFrameStub(

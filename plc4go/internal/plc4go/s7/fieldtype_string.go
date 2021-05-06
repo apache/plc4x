@@ -25,13 +25,13 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[FIELD-0]
-	_ = x[STRING_FIELD-1]
+	_ = x[S7Field-0]
+	_ = x[S7StringField-1]
 }
 
-const _FieldType_name = "FIELDSTRING_FIELD"
+const _FieldType_name = "S7FieldS7StringField"
 
-var _FieldType_index = [...]uint8{0, 5, 17}
+var _FieldType_index = [...]uint8{0, 7, 20}
 
 func (i FieldType) String() string {
 	if i >= FieldType(len(_FieldType_index)-1) {

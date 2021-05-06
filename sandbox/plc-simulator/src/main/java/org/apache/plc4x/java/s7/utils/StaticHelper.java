@@ -101,10 +101,10 @@ public class StaticHelper {
             int month = io.readUnsignedInt(8);
             int day = io.readUnsignedInt(8);
             // Skip day-of-week
-            io.readByte(8);
-            int hour = io.readByte(8);
-            int minute = io.readByte(8);
-            int second = io.readByte(8);
+            io.readByte();
+            int hour = io.readByte();
+            int minute = io.readByte();
+            int second = io.readByte();
             int nanosecond = io.readUnsignedInt(24);
 
             return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);

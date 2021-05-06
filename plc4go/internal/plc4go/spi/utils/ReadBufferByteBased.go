@@ -111,6 +111,24 @@ func (rb *byteReadBuffer) ReadBit(_ string, _ ...WithReaderArgs) (bool, error) {
 	return rb.reader.ReadBool()
 }
 
+func (rb *byteReadBuffer) ReadByte(_ string, _ ...WithReaderArgs) (byte, error) {
+	rb.pos += 8
+	return rb.reader.ReadByte()
+}
+
+func (rb *byteReadBuffer) ReadByteArray(_ string, numberOfBytes int, _ ...WithReaderArgs) ([]byte, error) {
+	byteArray := make([]byte, numberOfBytes)
+	for i := 0; i < numberOfBytes; i++ {
+		rb.pos += 8
+		readByte, err := rb.reader.ReadByte()
+		if err != nil {
+			return nil, err
+		}
+		byteArray[i] = readByte
+	}
+	return byteArray, nil
+}
+
 func (rb *byteReadBuffer) ReadUint8(_ string, bitLength uint8, _ ...WithReaderArgs) (uint8, error) {
 	rb.pos += uint64(bitLength)
 	res := uint8(rb.reader.TryReadBits(bitLength))

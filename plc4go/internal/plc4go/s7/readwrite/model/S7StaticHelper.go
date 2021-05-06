@@ -123,29 +123,31 @@ func StaticHelperSerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValu
 }
 
 func StaticHelperParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
-	/*try {
-	      // This is the maximum number of bytes a string can be long.
-	      short maxLength = io.readUnsignedShort(8);
-	      // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-	      short totalStringLength = io.readShort(8);
-	      // Read the full size of the string.
-	      String str = io.readString(stringLength * 8, (String) encoding);
-	      // Cut off the parts that don't belong to it.
-	      return str.substring(0, totalStringLength);
-	  } catch (ParseException e) {
-	      return null;
-	  }*/
-	return "", nil
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
 func StaticHelperSerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
-	return nil
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.WriteString("", uint8(stringLength*multiplier), encoding, value.GetString())
 }
 
 func StaticHelperParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
-	return 0, nil
+	return io.ReadUint8("", 8)
 }
 
 func StaticHelperSerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
-	return nil
+	return io.WriteUint8("", 8, value.GetUint8())
 }

@@ -59,7 +59,9 @@ func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, f
 		messageCodec: messageCodec,
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
 			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcWriteRequest,
 			internalModel.NewDefaultPlcReadResponse,
+			internalModel.NewDefaultPlcWriteResponse,
 		),
 		reader: &reader,
 		writer: &writer,

@@ -61,7 +61,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private Duration requestTimeout;
     private short unitIdentifier;
     private RequestTransactionManager tm;
-    private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
+    private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     private final static int FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH = 2;
     private final static int FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH = 10000;
 
@@ -378,7 +378,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
             ReadBuffer io = new ReadBufferByteBased(resp.getValue());
             if(fieldDataTypeSize < 2) {
-                io.readByte(8);
+                io.readByte();
             }
             return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
@@ -390,7 +390,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBufferByteBased(resp.getValue());
             if((dataType != ModbusDataType.STRING) && fieldDataTypeSize < 2) {
-                io.readByte(8);
+                io.readByte();
             }
             return DataItemIO.staticParse(io, dataType, Math.max(Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)), 1));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
@@ -416,7 +416,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                   "Expected " + req.getItems().length + ", but got " + resp.getItems().length);
             }
             if(fieldDataTypeSize < 2) {
-                io.readByte(8);
+                io.readByte();
             }
             return DataItemIO.staticParse(io, dataType, Math.round(Math.max(dataLength/2.0f, 1)/Math.max(fieldDataTypeSize/2.0f, 1)));
         }

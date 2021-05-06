@@ -80,44 +80,44 @@ func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 
 type DefaultPlcReadRequest struct {
 	DefaultRequest
-	Reader                 spi.PlcReader
-	ReadRequestInterceptor interceptors.ReadRequestInterceptor
+	reader                 spi.PlcReader
+	readRequestInterceptor interceptors.ReadRequestInterceptor
 }
 
 func NewDefaultPlcReadRequest(fields map[string]model.PlcField, fieldNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
 	return DefaultPlcReadRequest{
 		DefaultRequest:         NewDefaultRequest(fields, fieldNames),
-		Reader:                 reader,
-		ReadRequestInterceptor: readRequestInterceptor,
+		reader:                 reader,
+		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
 func (m DefaultPlcReadRequest) GetReader() spi.PlcReader {
-	return m.Reader
+	return m.reader
 }
 
 func (m DefaultPlcReadRequest) GetReadRequestInterceptor() interceptors.ReadRequestInterceptor {
-	return m.ReadRequestInterceptor
+	return m.readRequestInterceptor
 }
 
 func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	// Shortcut, if no interceptor is defined
-	if m.ReadRequestInterceptor == nil {
-		return m.Reader.Read(m)
+	if m.readRequestInterceptor == nil {
+		return m.reader.Read(m)
 	}
 
 	// Split the requests up into multiple ones.
-	readRequests := m.ReadRequestInterceptor.InterceptReadRequest(m)
+	readRequests := m.readRequestInterceptor.InterceptReadRequest(m)
 	// Shortcut for single-request-requests
 	if len(readRequests) == 1 {
-		return m.Reader.Read(readRequests[0])
+		return m.reader.Read(readRequests[0])
 	}
 	// Create a sub-result-channel slice
 	var subResultChannels []<-chan model.PlcReadRequestResult
 
 	// Iterate over all requests and add the result-channels to the list
 	for _, subRequest := range readRequests {
-		subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
+		subResultChannels = append(subResultChannels, m.reader.Read(subRequest))
 		// TODO: Replace this with a real queueing of requests. Later on we need throttling. At the moment this avoids race condition as the read above writes to fast on the line which is a problem for the test
 		time.Sleep(time.Millisecond * 4)
 	}
@@ -132,7 +132,7 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 			subResults = append(subResults, subResult)
 		}
 		// As soon as all are done, process the results
-		result := m.ReadRequestInterceptor.ProcessReadResponses(m, subResults)
+		result := m.readRequestInterceptor.ProcessReadResponses(m, subResults)
 		// Return the final result
 		resultChannel <- result
 	}()

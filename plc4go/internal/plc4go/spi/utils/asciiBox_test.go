@@ -20,12 +20,152 @@
 package utils
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
 
 func init() {
 	DebugAsciiBox = true
+}
+
+func TestAsciiBox_GetBoxName(t *testing.T) {
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "simple name",
+			args: args{
+				box: BoxString("someName", "some content", 0),
+			},
+			want: "someName",
+		},
+		{
+			name: "no name",
+			args: args{
+				box: BoxString("", "some content", 0),
+			},
+			want: "",
+		},
+		{
+			name: "long name",
+			args: args{
+				box: BoxString("veryLongName12_13", "some content", 0),
+			},
+			want: "veryLongName12_13",
+		},
+		{
+			name: "name with spaces and slashes",
+			args: args{
+				box: BoxString("payload / Message / Concrete Message", "some content", 0),
+			},
+			want: "payload / Message / Concrete Message",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.args.box.GetBoxName(); got != tt.want {
+				t.Errorf("AsciiBox_GetBoxName() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAsciiBox_ChangeBoxName(t *testing.T) {
+	type args struct {
+		box     AsciiBox
+		newName string
+	}
+	tests := []struct {
+		name string
+		args args
+		want AsciiBox
+	}{
+		{
+			name: "box with simple name",
+			args: args{
+				box:     BoxString("simpleName", "some content", 0),
+				newName: "newSimpleName",
+			},
+			want: BoxString("newSimpleName", "some content", 0),
+		},
+		{
+			name: "box with shorter name",
+			args: args{
+				box:     BoxString("veryLongName", "some content", 0),
+				newName: "name",
+			},
+			want: BoxString("name", "some content", 0),
+		},
+		{
+			name: "box getting dressed",
+			args: args{
+				box:     `some content`,
+				newName: "name",
+			},
+			want: BoxString("name", "some content", 0),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.want = trimBox(tt.want)
+			if got := tt.args.box.ChangeBoxName(tt.args.newName); got != tt.want {
+				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAsciiBox_IsEmpty(t *testing.T) {
+	type args struct {
+		box AsciiBox
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "empty box",
+			args: args{
+				box: "",
+			},
+			want: true,
+		},
+		{
+			name: "non empty box",
+			args: args{
+				box: "a",
+			},
+			want: false,
+		},
+		{
+			name: "name empty box",
+			args: args{
+				box: BoxString("name", "", 0),
+			},
+			want: true,
+		},
+		{
+			name: "non empty box",
+			args: args{
+				box: BoxString("name", "a", 0),
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.args.box.IsEmpty(); got != tt.want {
+				t.Errorf("AsciiBox_IsEmpty() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
 }
 
 func TestBoxSideBySide(t *testing.T) {
@@ -145,6 +285,18 @@ func TestBoxSideBySide(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkBoxSideBySide(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	box := BoxString("RandomBox", bigString, 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		BoxSideBySide(box, box)
+	}
+	DebugAsciiBox = oldSetting
 }
 
 func TestBoxBelowBox(t *testing.T) {
@@ -280,6 +432,20 @@ func TestBoxString(t *testing.T) {
 ╚════════════════════════╝
 `,
 		},
+		{
+			name: "simplebox with too long name",
+			args: args{
+				name:      "sampleFieldsampleFieldsampleFieldsampleField",
+				data:      "123123123123\n123123123123123123123123",
+				charWidth: 1,
+			},
+			want: `
+╔═sampleFieldsampleFieldsampleFieldsampleField╗
+║                123123123123                 ║
+║          123123123123123123123123           ║
+╚═════════════════════════════════════════════╝
+`,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -289,6 +455,17 @@ func TestBoxString(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkBoxString(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		BoxString("randomName", bigString, 50)
+	}
+	DebugAsciiBox = oldSetting
 }
 
 func TestAlignBoxes(t *testing.T) {
@@ -626,6 +803,72 @@ zxyzxyzxy
 	}
 }
 
+func TestExpandBox(t *testing.T) {
+	type args struct {
+		box   AsciiBox
+		width int
+	}
+	tests := []struct {
+		name string
+		args
+		want AsciiBox
+	}{
+		{
+			name: "Small expand",
+			args: args{
+				box: `
+123123123
+123123123
+123123123
+`,
+				width: 100,
+			},
+			want: `
+123123123                                                                                           
+123123123                                                                                           
+123123123                                                                                           
+`,
+		},
+		{
+			name: "Big expand",
+			args: args{
+				box: `
+123123123
+123123123
+123123123
+`,
+				width: 10000,
+			},
+			want: AsciiBox(fmt.Sprintf(`
+123123123%[1]s
+123123123%[1]s
+123123123%[1]s
+`, strings.Repeat(" ", 10000-9))),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.box = trimBox(tt.args.box)
+			tt.want = trimBox(tt.want)
+			if got := expandBox(tt.args.box, tt.args.width); got != tt.want {
+				t.Errorf("mergeHorizontal() = '\n%v\n', want '\n%v\n'", got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkExpandBox(b *testing.B) {
+	oldSetting := DebugAsciiBox
+	DebugAsciiBox = false
+	bigString := strings.Repeat(strings.Repeat("LoreIpsum", 100)+"\n", 100)
+	box := BoxString("RandomBox", bigString, 100)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		expandBox(box, 10000)
+	}
+	DebugAsciiBox = oldSetting
+}
+
 func trimBox(box AsciiBox) AsciiBox {
-	return AsciiBox(strings.Trim(string(box), "\n"))
+	return AsciiBox(strings.Trim(box.String(), "\n"))
 }

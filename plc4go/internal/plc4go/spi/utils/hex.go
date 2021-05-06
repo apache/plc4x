@@ -57,6 +57,8 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	if data == nil || len(data) < 1 {
 		return ""
 	}
+	// We copy the array to avoid mutations
+	data = append(data[:0:0], data...)
 	hexString := ""
 	maxBytesPerRow, indexWidth := calculateBytesPerRowAndIndexWidth(len(data), desiredCharWidth)
 

@@ -20,17 +20,32 @@
 package utils
 
 import (
+	"encoding/hex"
 	"encoding/xml"
 	"fmt"
 	"github.com/pkg/errors"
 	"io"
 	"math/big"
+	"strings"
 )
 
+// NewXmlReadBuffer return as ReadBuffer which doesn't validate attributes and lists
 func NewXmlReadBuffer(reader io.Reader) ReadBuffer {
 	return &xmlReadBuffer{
-		xml.NewDecoder(reader),
-		1,
+		Decoder:        xml.NewDecoder(reader),
+		pos:            1,
+		doValidateList: false,
+		doValidateAttr: false,
+	}
+}
+
+// NewStrictXmlReadBuffer return as ReadBuffer which does validate attributes and lists depending on the setting
+func NewStrictXmlReadBuffer(reader io.Reader, validateAttr bool, validateList bool) ReadBuffer {
+	return &xmlReadBuffer{
+		Decoder:        xml.NewDecoder(reader),
+		pos:            1,
+		doValidateAttr: validateAttr,
+		doValidateList: validateList,
 	}
 }
 
@@ -41,8 +56,11 @@ func NewXmlReadBuffer(reader io.Reader) ReadBuffer {
 //
 
 type xmlReadBuffer struct {
+	bufferCommons
 	*xml.Decoder
-	pos uint
+	pos            uint
+	doValidateAttr bool
+	doValidateList bool
 }
 
 //
@@ -56,6 +74,7 @@ func (x *xmlReadBuffer) GetPos() uint16 {
 }
 
 func (x *xmlReadBuffer) HasMore(bitLength uint8) bool {
+	// TODO: work with x.InputOffset() and check if we are at EOF
 	return true
 }
 
@@ -67,12 +86,15 @@ func (x *xmlReadBuffer) PullContext(logicalName string, readerArgs ...WithReader
 	if startElement.Name.Local != logicalName {
 		return errors.Errorf("Unexpected Start element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
 	}
+	if err := x.validateIfList(readerArgs, startElement); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (x *xmlReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArgs) (bool, error) {
 	var value bool
-	err := x.decode(logicalName, "bit", 1, readerArgs, &value)
+	err := x.decode(logicalName, rwBitKey, 1, readerArgs, &value)
 	if err != nil {
 		return false, err
 	}
@@ -80,9 +102,47 @@ func (x *xmlReadBuffer) ReadBit(logicalName string, readerArgs ...WithReaderArgs
 	return value, nil
 }
 
+func (x *xmlReadBuffer) ReadByte(logicalName string, readerArgs ...WithReaderArgs) (byte, error) {
+	var value string
+	err := x.decode(logicalName, rwByteKey, 8, readerArgs, &value)
+	if err != nil {
+		return 0, err
+	}
+	hexString := value
+	if !strings.HasPrefix(hexString, "0x") {
+		return 0, errors.Errorf("Hex string should start with 0x. Actual value %s", hexString)
+	}
+	hexString = strings.Replace(hexString, "0x", "", 1)
+	decoded, err := hex.DecodeString(hexString)
+	if err != nil {
+		return 0, err
+	}
+	x.move(8)
+	return decoded[0], nil
+}
+
+func (x *xmlReadBuffer) ReadByteArray(logicalName string, numberOfBytes int, readerArgs ...WithReaderArgs) ([]byte, error) {
+	var value string
+	err := x.decode(logicalName, rwByteKey, uint(numberOfBytes/8), readerArgs, &value)
+	if err != nil {
+		return nil, err
+	}
+	hexString := value
+	if !strings.HasPrefix(hexString, "0x") {
+		return nil, errors.Errorf("Hex string should start with 0x. Actual value %s", hexString)
+	}
+	hexString = strings.Replace(hexString, "0x", "", 1)
+	decoded, err := hex.DecodeString(hexString)
+	if err != nil {
+		return nil, err
+	}
+	x.move(uint8(numberOfBytes / 8))
+	return decoded, nil
+}
+
 func (x *xmlReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {
 	var value uint8
-	err := x.decode(logicalName, "uint8", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwUintKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -92,7 +152,7 @@ func (x *xmlReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint16, error) {
 	var value uint16
-	err := x.decode(logicalName, "uint16", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwUintKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -102,7 +162,7 @@ func (x *xmlReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint32, error) {
 	var value uint32
-	err := x.decode(logicalName, "uint32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwUintKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -112,7 +172,7 @@ func (x *xmlReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint64, error) {
 	var value uint64
-	err := x.decode(logicalName, "uint64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwUintKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -122,7 +182,7 @@ func (x *xmlReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerAr
 
 func (x *xmlReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int8, error) {
 	var value int8
-	err := x.decode(logicalName, "int8", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwIntKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -132,7 +192,7 @@ func (x *xmlReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArgs
 
 func (x *xmlReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int16, error) {
 	var value int16
-	err := x.decode(logicalName, "int16", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwIntKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -142,7 +202,7 @@ func (x *xmlReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int32, error) {
 	var value int32
-	err := x.decode(logicalName, "int32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwIntKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -152,7 +212,7 @@ func (x *xmlReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (int64, error) {
 	var value int64
-	err := x.decode(logicalName, "int64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwIntKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -162,8 +222,7 @@ func (x *xmlReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerArg
 
 func (x *xmlReadBuffer) ReadBigInt(logicalName string, bitLength uint64, readerArgs ...WithReaderArgs) (*big.Int, error) {
 	var value big.Int
-	// TODO: bitLength is too short for a big int
-	err := x.decode(logicalName, "bigInt", uint8(bitLength), readerArgs, &value)
+	err := x.decode(logicalName, rwIntKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +236,7 @@ func (x *xmlReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBit
 		bitLength += 1
 	}
 	var value float32
-	err := x.decode(logicalName, "float32", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -191,7 +250,7 @@ func (x *xmlReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBit
 		bitLength += 1
 	}
 	var value float64
-	err := x.decode(logicalName, "float64", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return 0, err
 	}
@@ -205,7 +264,7 @@ func (x *xmlReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBi
 		bitLength += 1
 	}
 	var value big.Float
-	err := x.decode(logicalName, "bigFloat", bitLength, readerArgs, &value)
+	err := x.decode(logicalName, rwFloatKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +275,7 @@ func (x *xmlReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBi
 func (x *xmlReadBuffer) ReadString(logicalName string, bitLength uint32, readerArgs ...WithReaderArgs) (string, error) {
 	var value string
 	// TODO: bitlength too short
-	err := x.decode(logicalName, "string", uint8(bitLength), readerArgs, &value)
+	err := x.decode(logicalName, rwStringKey, uint(bitLength), readerArgs, &value)
 	if err != nil {
 		return "", err
 	}
@@ -240,8 +299,6 @@ func (x *xmlReadBuffer) move(bits uint8) {
 }
 
 func (x *xmlReadBuffer) travelToNextStartElement() (xml.StartElement, error) {
-	var startElement xml.StartElement
-findTheStartToken:
 	for {
 		token, err := x.Token()
 		if err != nil {
@@ -249,13 +306,11 @@ findTheStartToken:
 		}
 		switch token.(type) {
 		case xml.StartElement:
-			startElement = token.(xml.StartElement)
-			break findTheStartToken
+			return token.(xml.StartElement), nil
 		case xml.EndElement:
 			return xml.StartElement{}, errors.Errorf("unexpected end element %s", token.(xml.EndElement).Name)
 		}
 	}
-	return startElement, nil
 }
 
 func (x *xmlReadBuffer) travelToNextEndElement() (xml.EndElement, error) {
@@ -277,12 +332,12 @@ findTheEndToken:
 	return endElement, nil
 }
 
-func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength uint8, readerArgs []WithReaderArgs, targetValue interface{}) error {
+func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength uint, readerArgs []WithReaderArgs, targetValue interface{}) error {
 	startElement, err := x.travelToNextStartElement()
 	if err != nil {
 		return err
 	}
-	err = validateStartElement(startElement, logicalName, dataType, bitLength, readerArgs...)
+	err = x.validateStartElement(startElement, logicalName, dataType, bitLength, readerArgs...)
 	if err != nil {
 		return err
 	}
@@ -293,38 +348,58 @@ func (x *xmlReadBuffer) decode(logicalName string, dataType string, bitLength ui
 	return nil
 }
 
-func validateStartElement(startElement xml.StartElement, logicalName string, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
-	logicalName = sanitizeLogicalName(logicalName)
+func (x *xmlReadBuffer) validateIfList(readerArgs []WithReaderArgs, startElement xml.StartElement) error {
+	if !x.doValidateList {
+		return nil
+	}
+	if x.isToBeRenderedAsList(upcastReaderArgs(readerArgs...)...) {
+		for _, attr := range startElement.Attr {
+			switch attr.Name.Local {
+			case rwIsListKey:
+				if attr.Value != "true" {
+					return errors.Errorf("Startelement should be marked as %s=true", rwIsListKey)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (x *xmlReadBuffer) validateStartElement(startElement xml.StartElement, logicalName string, dataType string, bitLength uint, readerArgs ...WithReaderArgs) error {
+	logicalName = x.sanitizeLogicalName(logicalName)
 	if startElement.Name.Local != logicalName {
-		return errors.Errorf("unexpected element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
-	} else if err := validateAttr(startElement.Attr, dataType, bitLength, readerArgs...); err != nil {
+		return errors.Errorf("unexpected start element '%s'. Expected '%s'", startElement.Name.Local, logicalName)
+	} else if err := x.validateAttr(startElement.Attr, dataType, bitLength, readerArgs...); err != nil {
 		return errors.Wrap(err, "Error validating Attributes")
 	}
 	return nil
 }
 
-func validateAttr(attr []xml.Attr, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
+func (x *xmlReadBuffer) validateAttr(attr []xml.Attr, dataType string, bitLength uint, _ ...WithReaderArgs) error {
+	if !x.doValidateAttr {
+		return nil
+	}
 	dataTypeValidated := false
 	bitLengthValidate := false
 	for _, attribute := range attr {
 		switch attribute.Name.Local {
-		case "dataType":
+		case rwDataTypeKey:
 			if attribute.Value != dataType {
-				return errors.Errorf("Unexpected dataType :%s. Want %s", attribute.Value, dataType)
+				return errors.Errorf("Unexpected %s :%s. Want %s", rwDataTypeKey, attribute.Value, dataType)
 			}
 			dataTypeValidated = true
-		case "bitLength":
+		case rwBitLengthKey:
 			if attribute.Value != fmt.Sprintf("%d", bitLength) {
-				return errors.Errorf("Unexpected bitLength '%s'. Want '%d'", attribute.Value, bitLength)
+				return errors.Errorf("Unexpected %s '%s'. Want '%d'", rwBitLengthKey, attribute.Value, bitLength)
 			}
 			bitLengthValidate = true
 		}
 	}
 	if !dataTypeValidated {
-		return errors.New("required attribute dataType missing")
+		return errors.Errorf("required attribute %s missing", rwDataTypeKey)
 	}
 	if !bitLengthValidate {
-		return errors.New("required attribute bitLength missing")
+		return errors.Errorf("required attribute %s missing", rwBitLengthKey)
 	}
 	return nil
 }

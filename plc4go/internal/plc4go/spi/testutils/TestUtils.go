@@ -46,8 +46,8 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 	if diff != nil {
 		cleanDiff := make([]xdiff.Delta, 0)
 		for _, delta := range diff {
-			if delta.Object.Value == nil && delta.Subject.Value == nil {
-				log.Warn().Msgf("%v seems to be an empty element", delta)
+			if delta.Operation == xdiff.Delete && delta.Subject.Value == nil {
+				log.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
 				continue
 			}
 			cleanDiff = append(cleanDiff, delta)

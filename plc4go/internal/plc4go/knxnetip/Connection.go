@@ -166,7 +166,9 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 		valueHandler: NewValueHandler(),
 		requestInterceptor: interceptors.NewSingleItemRequestInterceptor(
 			internalModel.NewDefaultPlcReadRequest,
+			internalModel.NewDefaultPlcWriteRequest,
 			internalModel.NewDefaultPlcReadResponse,
+			internalModel.NewDefaultPlcWriteResponse,
 		),
 		subscribers:             []*Subscriber{},
 		valueCache:              map[uint16][]int8{},

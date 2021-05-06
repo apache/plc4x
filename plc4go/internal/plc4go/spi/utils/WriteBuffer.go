@@ -24,8 +24,11 @@ import (
 )
 
 type WriteBuffer interface {
+	// PushContext signals opening context with the supplied logical name
 	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
 	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error
+	WriteByte(logicalName string, value byte, writerArgs ...WithWriterArgs) error
+	WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error
 	WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error
 	WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error
 	WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error
@@ -39,6 +42,7 @@ type WriteBuffer interface {
 	WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error
 	WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error
 	WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error
+	// PopContext signals work done with the context with the supplied logical name
 	PopContext(logicalName string, writerArgs ...WithWriterArgs) error
 }
 

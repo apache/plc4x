@@ -29,7 +29,7 @@ type DefaultPlcWriteResponse struct {
 	request model.PlcWriteRequest
 }
 
-func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcWriteResponse {
+func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse {
 	return DefaultPlcWriteResponse{
 		DefaultResponse: NewDefaultResponse(responseCodes),
 		request:         request,

@@ -25,7 +25,7 @@
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
-#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://192.168.23.30:20"
+#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://192.168.23.30:102"
 
 int numOpenConnections = 0;
 

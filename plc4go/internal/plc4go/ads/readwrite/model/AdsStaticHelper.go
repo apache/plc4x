@@ -25,9 +25,23 @@ import (
 )
 
 func StaticHelperParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
-	return "hurz", nil
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
-func StaticHelperSerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, dataFormatName string) error {
-	return nil
+func StaticHelperSerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.WriteString("", uint8(stringLength*multiplier), encoding, value.GetString())
 }

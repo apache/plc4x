@@ -31,9 +31,9 @@ public class FirmataUtils {
 
     public static byte parseSysexString(ReadBuffer io) {
         try {
-            byte b = io.readByte(8);
+            byte b = io.readByte();
             // Skip the empty byte.
-            io.readByte(8);
+            io.readByte();
             return b;
         } catch (ParseException e) {
             return 0;
@@ -42,8 +42,8 @@ public class FirmataUtils {
 
     public static void serializeSysexString(WriteBuffer io, byte data) {
         try {
-            io.writeByte(8, data);
-            io.writeByte(8, (byte) 0x00);
+            io.writeByte(data);
+            io.writeByte((byte) 0x00);
         } catch (ParseException e) {
         }
     }

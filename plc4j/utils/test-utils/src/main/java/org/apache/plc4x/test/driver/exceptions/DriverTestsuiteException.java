@@ -19,7 +19,11 @@
 
 package org.apache.plc4x.test.driver.exceptions;
 
-public class DriverTestsuiteException extends Exception {
+public class DriverTestsuiteException extends RuntimeException {
+
+    public DriverTestsuiteException(Throwable cause) {
+        super(cause);
+    }
 
     public DriverTestsuiteException(String message) {
         super(message);

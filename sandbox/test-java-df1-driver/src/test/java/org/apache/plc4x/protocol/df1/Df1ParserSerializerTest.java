@@ -24,7 +24,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class Df1ParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public Df1ParserSerializerTest() {
-        super("/protocols/df1/ParserSerializerTestsuite.xml");
+        super("/protocols/df1/ParserSerializerTestsuite.xml", true);
     }
 
 }

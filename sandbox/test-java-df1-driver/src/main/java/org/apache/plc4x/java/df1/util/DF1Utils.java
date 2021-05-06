@@ -21,9 +21,7 @@ package org.apache.plc4x.java.df1.util;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 
 public class DF1Utils {
 
@@ -36,7 +34,7 @@ public class DF1Utils {
         if(command instanceof DF1UnprotectedReadRequest) {
             try {
                 DF1UnprotectedReadRequest unprotectedReadRequest = (DF1UnprotectedReadRequest) command;
-                WriteBuffer writeBuffer = new WriteBuffer(10, false);
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(10, false);
                 writeBuffer.writeUnsignedShort(8, destinationAddress);
                 writeBuffer.writeUnsignedShort(8, sourceAddress);
                 writeBuffer.writeUnsignedShort(8, command.getCommandCode());
@@ -56,7 +54,7 @@ public class DF1Utils {
             DF1UnprotectedReadResponse unprotectedReadResponseCommand = (DF1UnprotectedReadResponse) command;
             try {
                 // TODO: size has to be dependent on actual size requested
-                WriteBuffer writeBuffer = new WriteBuffer(10, false);
+                WriteBufferByteBased writeBuffer = new WriteBufferByteBased(10, false);
                 writeBuffer.writeUnsignedShort(8, destinationAddress);
                 writeBuffer.writeUnsignedShort(8, sourceAddress);
                 writeBuffer.writeUnsignedShort(8, command.getCommandCode());
@@ -87,10 +85,11 @@ public class DF1Utils {
     }
 
     public static boolean dataTerminate(ReadBuffer io) {
+        ReadBufferByteBased rbbb = (ReadBufferByteBased)io;
         try {
             // The byte sequence 0x10 followed by 0x03 indicates the end of the message,
             // so if we would read this, we abort the loop and stop reading data.
-            if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == (byte) 0x03)) {
+            if ((rbbb.peekByte(0) == (byte) 0x10) && (rbbb.peekByte(1) == (byte) 0x03)) {
                 return true;
             }
         } catch (ParseException e) {
@@ -100,11 +99,12 @@ public class DF1Utils {
     }
 
     public static short readData(ReadBuffer io) {
+        ReadBufferByteBased rbbb = (ReadBufferByteBased)io;
         try {
             // If we read a 0x10, this has to be followed by another 0x10, which is how
             // this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
-            if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == 0x10)) {
-                io.readByte(8);
+            if ((rbbb.peekByte(0) == (byte) 0x10) && (rbbb.peekByte(1) == 0x10)) {
+                io.readByte();
             }
             return io.readUnsignedShort(8);
         } catch (ParseException e) {

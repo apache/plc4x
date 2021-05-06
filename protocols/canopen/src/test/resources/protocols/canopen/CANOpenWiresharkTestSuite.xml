@@ -21,6 +21,8 @@
 
   <name>Tests of CANopen frames from Wireshark sample PCAP files.</name>
 
+  <protocolName>canopen</protocolName>
+  <outputFlavor>read-write</outputFlavor>
 
   <testcase>
     <name>SDO initiate request: 4008100000000000</name>
@@ -30,15 +32,27 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>INITIATE_UPLOAD</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-            <index>4104</index>
-            <subindex>0</subindex>
-          </address>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateUploadRequest>
+                <reserved dataType="uint" bitLength="5">0</reserved>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <reserved dataType="int" bitLength="32">0</reserved>
+              </SDOInitiateUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -50,20 +64,36 @@
       <arg1>TRANSMIT_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-        <command>INITIATE_UPLOAD</command>
-        <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-          <expedited>false</expedited>
-          <indicated>true</indicated>
-          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-            <index>4104</index>
-            <subindex>0</subindex>
-          </address>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateSegmentedUploadResponse">
-            <bytes>21</bytes>
-          </payload>
-        </response>
-      </CANOpenSDOResponse>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOInitiateUploadResponse>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">0</size>
+                <expedited dataType="bit" bitLength="1">false</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">0</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateSegmentedUploadResponse>
+                      <bytes dataType="uint" bitLength="32">21</bytes>
+                    </SDOInitiateSegmentedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -75,12 +105,22 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>SEGMENT_UPLOAD</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
-          <toggle>false</toggle>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOSegmentUploadRequest>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <reserved dataType="uint" bitLength="4">0</reserved>
+                <reserved dataType="int" bitLength="56">0</reserved>
+              </SDOSegmentUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -92,18 +132,31 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>ABORT</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOAbortRequest">
-          <abort className="org.apache.plc4x.java.canopen.readwrite.SDOAbort">
-            <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-              <index>0</index>
-              <subindex>0</subindex>
-            </address>
-            <code>134217761</code>
-          </abort>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOAbortRequest>
+                <abort>
+                  <SDOAbort>
+                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <address>
+                      <IndexAddress>
+                        <index dataType="uint" bitLength="16">0</index>
+                        <subindex dataType="uint" bitLength="8">0</subindex>
+                      </IndexAddress>
+                    </address>
+                    <code dataType="uint" bitLength="32">134217761</code>
+                  </SDOAbort>
+                </abort>
+              </SDOAbortRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -115,14 +168,33 @@
       <arg1>TRANSMIT_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-        <command>SEGMENT_UPLOAD</command>
-        <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
-          <toggle>false</toggle>
-          <last>false</last>
-          <data>556C7472614869</data>
-        </response>
-      </CANOpenSDOResponse>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOSegmentUploadResponse>
+                <toggle dataType="bit" bitLength="1">false</toggle>
+                <size dataType="uint" bitLength="3">0</size>
+                <last dataType="bit" bitLength="1">false</last>
+                <data isList="true">
+                  <value dataType="int" bitLength="8">85</value>
+                  <value dataType="int" bitLength="8">108</value>
+                  <value dataType="int" bitLength="8">116</value>
+                  <value dataType="int" bitLength="8">114</value>
+                  <value dataType="int" bitLength="8">97</value>
+                  <value dataType="int" bitLength="8">72</value>
+                  <value dataType="int" bitLength="8">105</value>
+                </data>
+                <padding isList="true">
+                </padding>
+              </SDOSegmentUploadResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -134,12 +206,22 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>SEGMENT_UPLOAD</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
-          <toggle>true</toggle>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOSegmentUploadRequest>
+                <toggle dataType="bit" bitLength="1">true</toggle>
+                <reserved dataType="uint" bitLength="4">0</reserved>
+                <reserved dataType="int" bitLength="56">0</reserved>
+              </SDOSegmentUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -151,15 +233,27 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>INITIATE_UPLOAD</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-            <index>4104</index>
-            <subindex>42</subindex>
-          </address>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateUploadRequest>
+                <reserved dataType="uint" bitLength="5">0</reserved>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">4104</index>
+                    <subindex dataType="uint" bitLength="8">42</subindex>
+                  </IndexAddress>
+                </address>
+                <reserved dataType="int" bitLength="32">0</reserved>
+              </SDOInitiateUploadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -171,10 +265,15 @@
       <arg1>NMT</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
-        <request>START</request>
-        <node>66</node>
-      </CANOpenNetworkPayload>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">66</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -186,10 +285,15 @@
       <arg1>NMT</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
-        <request>START</request>
-        <node>0</node>
-      </CANOpenNetworkPayload>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="START">1</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">0</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -201,10 +305,15 @@
       <arg1>NMT</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenNetworkPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload">
-        <request>STOP</request>
-        <node>99</node>
-      </CANOpenNetworkPayload>
+      <CANOpenPayload>
+        <CANOpenNetworkPayload>
+          <request>
+            <NMTStateRequest dataType="uint" bitLength="8" stringRepresentation="STOP">2</NMTStateRequest>
+          </request>
+          <reserved dataType="uint" bitLength="1">0</reserved>
+          <node dataType="uint" bitLength="7">99</node>
+        </CANOpenNetworkPayload>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -216,20 +325,43 @@
       <arg1>RECEIVE_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-        <command>INITIATE_DOWNLOAD</command>
-        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateDownloadRequest">
-          <expedited>true</expedited>
-          <indicated>true</indicated>
-          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-            <index>25088</index>
-            <subindex>1</subindex>
-          </address>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-            <data>61736466</data>
-          </payload>
-        </request>
-      </CANOpenSDORequest>
+      <CANOpenPayload>
+        <CANOpenSDORequest>
+          <command>
+            <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_DOWNLOAD">1</SDORequestCommand>
+          </command>
+          <request>
+            <SDORequest>
+              <SDOInitiateDownloadRequest>
+                <reserved dataType="uint" bitLength="1">0</reserved>
+                <size dataType="uint" bitLength="2">0</size>
+                <expedited dataType="bit" bitLength="1">true</expedited>
+                <indicated dataType="bit" bitLength="1">true</indicated>
+                <address>
+                  <IndexAddress>
+                    <index dataType="uint" bitLength="16">25088</index>
+                    <subindex dataType="uint" bitLength="8">1</subindex>
+                  </IndexAddress>
+                </address>
+                <payload>
+                  <SDOInitiateUploadResponsePayload>
+                    <SDOInitiateExpeditedUploadResponse>
+                      <data isList="true">
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">115</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">102</value>
+                      </data>
+                      <padding isList="true">
+                      </padding>
+                    </SDOInitiateExpeditedUploadResponse>
+                  </SDOInitiateUploadResponsePayload>
+                </payload>
+              </SDOInitiateDownloadRequest>
+            </SDORequest>
+          </request>
+        </CANOpenSDORequest>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -241,18 +373,31 @@
       <arg1>TRANSMIT_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-        <command>ABORT</command>
-        <response className="org.apache.plc4x.java.canopen.readwrite.SDOAbortResponse">
-          <abort className="org.apache.plc4x.java.canopen.readwrite.SDOAbort">
-            <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-              <index>25088</index>
-              <subindex>1</subindex>
-            </address>
-            <code>100794368</code>
-          </abort>
-        </response>
-      </CANOpenSDOResponse>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOAbortResponse>
+                <abort>
+                  <SDOAbort>
+                    <reserved dataType="uint" bitLength="5">0</reserved>
+                    <address>
+                      <IndexAddress>
+                        <index dataType="uint" bitLength="16">25088</index>
+                        <subindex dataType="uint" bitLength="8">1</subindex>
+                      </IndexAddress>
+                    </address>
+                    <code dataType="uint" bitLength="32">100794368</code>
+                  </SDOAbort>
+                </abort>
+              </SDOAbortResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
     </xml>
   </testcase>
 
@@ -264,15 +409,33 @@
       <arg1>TRANSMIT_SDO</arg1>
     </parser-arguments>
     <xml>
-      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-        <command>BLOCK</command>
-        <response className="org.apache.plc4x.java.canopen.readwrite.SDOBlockResponse">
-          <block className="org.apache.plc4x.java.canopen.readwrite.SDOBlockData">
-            <flags>2</flags>
-            <data>08100015000000</data>
-          </block>
-        </response>
-      </CANOpenSDOResponse>
+      <CANOpenPayload>
+        <CANOpenSDOResponse>
+          <command>
+            <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="BLOCK">6</SDOResponseCommand>
+          </command>
+          <response>
+            <SDOResponse>
+              <SDOBlockResponse>
+                <block>
+                  <SDOBlockData>
+                    <flags dataType="uint" bitLength="5">2</flags>
+                    <data isList="true">
+                      <value dataType="int" bitLength="8">8</value>
+                      <value dataType="int" bitLength="8">16</value>
+                      <value dataType="int" bitLength="8">0</value>
+                      <value dataType="int" bitLength="8">21</value>
+                      <value dataType="int" bitLength="8">0</value>
+                      <value dataType="int" bitLength="8">0</value>
+                      <value dataType="int" bitLength="8">0</value>
+                    </data>
+                  </SDOBlockData>
+                </block>
+              </SDOBlockResponse>
+            </SDOResponse>
+          </response>
+        </CANOpenSDOResponse>
+      </CANOpenPayload>
     </xml>
   </testcase>
 </test:testsuite>
