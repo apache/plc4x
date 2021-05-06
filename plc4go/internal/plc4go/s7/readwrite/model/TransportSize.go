@@ -1064,7 +1064,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x0E:
 		{ /* '0x0E' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return DataTransportSize_REAL
 		}
 	case 0x0F:
 		{ /* '0x0F' */
