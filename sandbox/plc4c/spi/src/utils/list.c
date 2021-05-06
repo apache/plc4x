@@ -143,15 +143,17 @@ void plc4c_utils_list_remove(plc4c_list *list, plc4c_list_element *element) {
   // Reset the pointers to the neighboring elements.
   element->next = NULL;
   element->previous = NULL;
+
 }
 
 plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list *list) {
   plc4c_list_element *removed_element = list->head;
   if (removed_element != NULL) {
-    if (list->head->next != NULL) {
-      list->head = list->head->next;
-      list->head->previous = NULL;
+    if (list->head->previous != NULL) {
+      list->head = list->head->previous;
+      //list->head->previous = NULL;
     } else {
+      list->tail = NULL;
       list->head = NULL;
     }
     removed_element->previous = NULL;

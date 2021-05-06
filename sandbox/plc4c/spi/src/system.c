@@ -48,6 +48,14 @@ void plc4c_transport_destroy(plc4c_transport *transport) {
   }
 }
 
+// TODO reloate plc4c_driver_destroy 
+void plc4c_task_destroy(plc4c_system_task *task) {
+  if (task) {
+    free(task);
+    task = NULL;
+  }
+}
+
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
 bool plc4c_is_bigendian() {
@@ -65,21 +73,21 @@ static void delete_transport_list_element(
   plc4c_transport *transport = (plc4c_transport *)transport_element->value;
   plc4c_transport_destroy(transport);
 }
-static void delete_connection_list_element(
-    plc4c_list_element *connection_element) {
+
+static void delete_connection_list_element(plc4c_list_element *connection_element) {
   plc4c_connection *connection = (plc4c_connection *)connection_element->value;
   plc4c_connection_destroy(connection);
   connection_element->value = NULL;
 }
+
 static void delete_task_list_element(plc4c_list_element *task_list_element) {
-  plc4c_driver *driver = (plc4c_driver *)task_list_element->value;
-  // TODO: delete task lists
-  // plc4c_driver_destroy(driver);
+  plc4c_system_task *task = (plc4c_system_task *) task_list_element->value;
+  plc4c_task_destroy(task);
 }
 
 plc4c_return_code plc4c_system_create(plc4c_system **system) {
+  
   plc4c_system *new_system = malloc(sizeof(plc4c_system));
-
   plc4c_list *new_list = NULL;
   plc4c_utils_list_create(&new_list);
   new_system->driver_list = new_list;
@@ -140,12 +148,14 @@ void plc4c_system_set_on_driver_load_failure_callback(
 }
 
 void plc4c_system_set_on_connect_success_callback(
-    plc4c_system *system, plc4c_system_on_connect_success_callback callback) {
+    plc4c_system *system, 
+    plc4c_system_on_connect_success_callback callback) {
   system->on_connect_success_callback = callback;
 }
 
 void plc4c_system_set_on_connect_failure_callback(
-    plc4c_system *system, plc4c_system_on_connect_failure_callback callback) {
+    plc4c_system *system, 
+    plc4c_system_on_connect_failure_callback callback) {
   system->on_connect_failure_callback = callback;
 }
 
@@ -162,12 +172,14 @@ void plc4c_system_set_on_disconnection_failure_callback(
 }
 
 void plc4c_system_set_on_loop_failure_callback(
-    plc4c_system *system, plc4c_system_on_loop_failure_callback callback) {
+    plc4c_system *system, 
+    plc4c_system_on_loop_failure_callback callback) {
   system->on_loop_failure_callback = callback;
 }
 
 plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
                                           plc4c_driver *driver) {
+
   // If the system is not initialized, return an error.
   // There is nothing we can do here.
   if (system == NULL) {
@@ -207,15 +219,18 @@ plc4c_return_code plc4c_system_add_connection(plc4c_system *system,
 
 void plc4c_system_remove_connection(plc4c_system *system,
                                     plc4c_connection *connection) {
+
   if (system == NULL || connection == NULL) {
     return;
   }
-  plc4c_list_element *element = plc4c_utils_list_find_element_by_item(
+  plc4c_list_element *element;
+  element = plc4c_utils_list_find_element_by_item(
       system->connection_list, connection);
   if (element != NULL) {
     plc4c_utils_list_remove(system->connection_list, element);
+    free(element);
   }
-  free(element);
+  
 }
 
 plc4c_return_code plc4c_system_init(plc4c_system *system) {
@@ -301,11 +316,13 @@ plc4c_return_code plc4c_system_create_connection(
 plc4c_return_code plc4c_system_connect(plc4c_system *system,
                                        char *connection_string,
                                        plc4c_connection **connection) {
+
   // Parse the connection string and initialize some of the connection field
   // variables from this.
-  plc4c_connection *new_connection = NULL;
-  plc4c_return_code result =
-      plc4c_system_create_connection(connection_string, &new_connection);
+  plc4c_connection *new_connection;
+  plc4c_return_code result;
+
+  result = plc4c_system_create_connection(connection_string, &new_connection);
   if (result != OK) {
     return result;
   }
@@ -429,39 +446,42 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
 
 plc4c_return_code plc4c_system_loop(plc4c_system *system) {
   
-  plc4c_list_element *cur_task_element;
-  plc4c_system_task *cur_task;
+  plc4c_list_element *task_list;
+  plc4c_list_element *task_list_tmp;
+  plc4c_system_task *task;
   
   // If the task-queue is empty, just return.
   if (plc4c_utils_list_empty(system->task_list)) {
     return OK;
   }
 
-  cur_task_element = plc4c_utils_list_head(system->task_list);
+  task_list = plc4c_utils_list_head(system->task_list);
   
   do {
     // Get the current element's system task.
-    cur_task = cur_task_element->value;
+    task = task_list->value;
 
     // If the task is already completed, no need to do anything.
-    if ((!cur_task->completed) && (cur_task->state_machine_function != NULL)) {
+    if ((!task->completed) && (task->state_machine_function != NULL)) {
       // Pass the task itself to the state-machine function of this task.
-      cur_task->state_machine_function(cur_task);
+      task->state_machine_function(task);
     }
 
     // If the current task is completed at the end, remove it from the
     // task_queue.
-    if (cur_task->completed) {
-      plc4c_utils_list_remove(system->task_list, cur_task_element);
-      if (cur_task->connection != NULL) {
-        plc4c_connection_task_removed(cur_task->connection);
+    if (task->completed) {
+      plc4c_utils_list_remove(system->task_list, task_list);
+      if (task->connection != NULL) {
+        plc4c_connection_task_removed(task->connection);
       }
-      // TODO: leaks: cur_task & cur_task_element
-      // NB. cannot free them here
+      // while loop is guaranteed to be finished now
+      free(task_list);
+      plc4c_task_destroy(task);
+      task_list = NULL;
+    } else {
+      task_list = task_list->next;
     }
-
-    cur_task_element = cur_task_element->next;
-  } while (cur_task_element != NULL);
+  } while (task_list != NULL);
 
   return OK;
 }

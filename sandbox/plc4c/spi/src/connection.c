@@ -159,12 +159,16 @@ void plc4c_connection_set_configuration(plc4c_connection *connection,
   connection->configuration = configuration;
 }
 
-bool plc4c_connection_has_error(plc4c_connection *connection) { return false; }
+bool plc4c_connection_has_error(plc4c_connection *connection) { 
+  return false; 
+}
 
 plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection) {
+  
   plc4c_system_task *new_disconnection_task = NULL;
-  plc4c_return_code result = connection->driver->disconnect_function(
-      connection, &new_disconnection_task);
+  plc4c_return_code result;
+  
+  result = connection->driver->disconnect_function(connection, &new_disconnection_task);
   if (result != OK) {
     return -1;
   }
@@ -186,12 +190,14 @@ void plc4c_connection_destroy(plc4c_connection *connection) {
     free(connection->connection_string);
     connection->connection_string = NULL;
   }
-  // do not do this here, else do so for driver also here
-  // as transport is owned by system not connection
-  /*if (connection->transport != NULL) {
-    //free(connection->transport);
-    //connection->transport = NULL;
-  }*/
+  if (connection->configuration != NULL) {
+    free(connection->configuration);
+    connection->configuration = NULL;
+  }
+  if (connection->transport_configuration != NULL) {
+    free(connection->transport_configuration);
+    connection->transport_configuration = NULL;
+  }
   if (connection->transport_code != NULL) {
     free(connection->transport_code);
     connection->transport_code = NULL;
@@ -208,6 +214,9 @@ void plc4c_connection_destroy(plc4c_connection *connection) {
     free(connection->parameters);
     connection->parameters = NULL;
   }
+  // TODO: verify free, seems too obvious to omit next line
+  free(connection);
+  connection = NULL;
 }
 
 char *plc4c_connection_get_connection_string(plc4c_connection *connection) {

@@ -28,6 +28,7 @@
 #include "cotp_protocol_class.h"
 #include "tpkt_packet.h"
 
+
 enum plc4c_driver_s7_connect_states {
   PLC4C_DRIVER_S7_CONNECT_INIT,
   PLC4C_DRIVER_S7_CONNECT_TRANSPORT_CONNECT,
@@ -106,7 +107,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
       if (return_code != OK) {
         return return_code;
       }
-
+      plc4c_driver_s7_destroy_cotp_connection_request(packet);
       task->state_id = PLC4C_DRIVER_S7_CONNECT_RECEIVE_COTP_CONNECT_RESPONSE;
       break;
     }
@@ -155,7 +156,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
         }
         parameter_element = parameter_element->next;
       }
-
+      plc4c_driver_s7_destroy_receive_packet(packet);
       // If we got the expected response, continue with the next higher level
       // of connection.
       task->state_id = PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST;
@@ -163,6 +164,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
     }
     // Send a S7 connection request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST: {
+       //plc4c_s7_read_write_tpkt_packet* packet1;
       return_code = plc4c_driver_s7_create_s7_connection_request(configuration, &packet);
       if (return_code != OK) {
         return return_code;
@@ -173,8 +175,9 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
       if (return_code != OK) {
         return return_code;
       }
-
+    
       task->state_id = PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_CONNECT_RESPONSE;
+      plc4c_driver_s7_destroy_s7_connection_request(packet);
       break;
     }
     // Receive a S7 connection response.
@@ -222,6 +225,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
       else {
         task->state_id = PLC4C_DRIVER_S7_CONNECT_FINISHED;
       }
+      plc4c_driver_s7_destroy_receive_packet(packet);
       break;
     }
     // Send a S7 identification request.
@@ -238,7 +242,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
       if (return_code != OK) {
         return return_code;
       }
-
+      plc4c_driver_s7_destroy_s7_identify_remote_request(packet);
       task->state_id = PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_IDENTIFICATION_RESPONSE;
       break;
     }
@@ -263,45 +267,44 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(plc4c_system_task* ta
           plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data) {
         return INTERNAL_ERROR;
       }
-      if (packet->payload->payload->payload
-              ->_type !=
+      if (packet->payload->payload->payload->_type !=
           plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data) {
         return INTERNAL_ERROR;
       }
 
-      plc4c_list_element* cur_item =
-          packet->payload->payload->payload
-              ->s7_payload_user_data_items->tail;
+      // Get the user data s7 itmes list which should contains szl_data_tree items
+      // 
+      plc4c_list_element* cur_item;
+      plc4c_s7_read_write_s7_payload_user_data_item* item;
+      plc4c_list_element* szl_item;
+      plc4c_s7_read_write_szl_data_tree_item* data_tree_item;
+      char* article_number;
+
+      cur_item = packet->payload->payload->payload->s7_payload_user_data_items->tail;
       while (cur_item != NULL) {
-        plc4c_s7_read_write_s7_payload_user_data_item* item = cur_item->value;
-        if (item->_type ==
-            plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response) {
-          plc4c_list_element* szl_item =
-              item->s7_payload_user_data_item_cpu_function_read_szl_response_items
-                  ->tail;
+        item = cur_item->value;
+        if (item->_type == plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response) {
+          szl_item = item->s7_payload_user_data_item_cpu_function_read_szl_response_items->tail;
           while (szl_item != NULL) {
-            plc4c_s7_read_write_szl_data_tree_item* data_tree_item =
-                szl_item->value;
+            data_tree_item = szl_item->value;
             if (data_tree_item->item_index == 0x0001) {
-              char* article_number = list_to_string(data_tree_item->mlfb);
+              article_number = list_to_string(data_tree_item->mlfb);
               if (article_number != NULL) {
-                configuration->controller_type =
-                    decode_controller_type(article_number);
+                configuration->controller_type = decode_controller_type(article_number);
                 free(article_number);
                 break;
               } else {
-                configuration->controller_type =
-                    PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;
+                configuration->controller_type = PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;
               }
             }
             szl_item = szl_item->next;
           }
         }
-
         cur_item = cur_item->next;
       }
 
       task->state_id = PLC4C_DRIVER_S7_CONNECT_FINISHED;
+      plc4c_driver_s7_destroy_receive_packet(packet);
       break;
     }
     // Clean up some internal data-structures.

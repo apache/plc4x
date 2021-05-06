@@ -25,6 +25,8 @@
 #include <string.h>
 #include <tpkt_packet.h>
 
+#include "plc4c/driver_s7_packets.h"
+
 #include "plc4c/driver_s7_encode_decode.h"
 
 // forward delcaration for helper function todo: move to header or relocate
@@ -62,9 +64,6 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
   }
 }
 
-// forward declaration of helper function, TODO: move somewhere, or re-inline
-void plc4c_driver_s7_time_transport_size(
-    plc4c_s7_read_write_transport_size *transport_size);
 
 /**
  * Function used by the driver to tell the transport if there is a full
@@ -149,10 +148,10 @@ plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
   if (return_code != OK) {
     return return_code;
   }
-  /* TODO: free when relevant, here works I think
+
+  /* TODO: free when relevant, here works I think*/
   free(write_buffer->data);
   free(write_buffer);
-  */
   return OK;
 }
 
@@ -161,10 +160,12 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
   // Check with the transport if there is a packet available.
   // If it is, get a read_buffer for reading it.
   plc4c_spi_read_buffer* read_buffer;
-  plc4c_return_code return_code = connection->transport->select_message(
-      connection->transport_configuration,
-      4, plc4c_driver_s7_select_message_function,
-      &read_buffer);
+  plc4c_return_code return_code;
+  
+  return_code = connection->transport->select_message(
+      connection->transport_configuration, 4, 
+      plc4c_driver_s7_select_message_function, &read_buffer);
+
   // OK is only returned if a packet is available.
   if (return_code != OK) {
     return return_code;
@@ -177,9 +178,152 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
     return return_code;
   }
 
+  // TODO: verify and maybe move
+  free(read_buffer->data);
+  free(read_buffer);
+  
   // In this case a packet was available and parsed.
   return OK;
 }
+
+
+void delete_s7_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_parameter *item;
+  item = element->value;
+  free(item);
+}
+void delete_s7_read_responce_payload_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_var_payload_data_item *item;
+  item = element->value;
+  free(item);
+}
+void delete_s7_write_request_payload_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_var_payload_data_item *item;
+  item = element->value;
+  free(item);
+}
+void delete_s7_write_responce_payload_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_var_payload_status_item *item;
+  item = element->value;
+  free(item);
+}
+void delete_mlfb_list(plc4c_list_element *element) {
+  int8_t* item;
+  item = element->value;
+  free(item);
+}
+void delete_szl_list(plc4c_list_element *element){
+  plc4c_s7_read_write_szl_data_tree_item *item;
+  item = element->value;
+  plc4c_utils_list_delete_elements(item->mlfb,delete_mlfb_list);
+  free(item->mlfb);
+  free(item);
+}
+void delete_s7_user_data_payload_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_payload_user_data_item *item;
+  item = element->value;
+  plc4c_utils_list_delete_elements(
+    item->s7_payload_user_data_item_cpu_function_read_szl_response_items, 
+    delete_szl_list);
+  free(item->s7_payload_user_data_item_cpu_function_read_szl_response_items);
+  free(item->szl_id);
+  free(item);
+}
+void delete_s7_read_request_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_var_request_parameter_item *item;
+  item = element->value;
+  free(item);
+}
+void delete_s7_write_request_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_var_request_parameter_item *item;
+  item = element->value;
+  free(item);
+}
+void delete_s7_user_data_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_parameter_user_data_item *item;
+  item = element->value;
+  // this is basically a copy of generated sources logic
+  if (item->s7_parameter_user_data_item_cpu_functions_cpu_function_type == 8) {
+    free(item->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number);
+    free(item->s7_parameter_user_data_item_cpu_functions_last_data_unit);
+    free(item->s7_parameter_user_data_item_cpu_functions_error_code);
+  }
+  free(item);
+}
+void plc4c_driver_s7_destroy_receive_packet(
+    plc4c_s7_read_write_tpkt_packet* packet) {
+
+  plc4c_s7_read_write_cotp_packet *cotp_packet;
+  plc4c_s7_read_write_s7_message *s7_message;
+  plc4c_s7_read_write_s7_parameter *s7_param;
+  plc4c_s7_read_write_s7_payload *s7_payload;
+
+  cotp_packet = packet->payload;
+  s7_message = packet->payload->payload;
+
+  // Destroy s7 message with its parameters
+  // and payload (note last 2 are optional)
+  if (s7_message) {
+    if ((s7_param = s7_message->parameter)) {
+      switch (s7_param->_type) {
+        case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request:
+          plc4c_utils_list_delete_elements(s7_param->s7_parameter_read_var_request_items, 
+              delete_s7_read_request_parameter_list_element);
+          free(s7_param->s7_parameter_read_var_request_items);
+          break;
+        case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request:
+          plc4c_utils_list_delete_elements(s7_param->s7_parameter_write_var_request_items, 
+              delete_s7_write_request_parameter_list_element);
+          free(s7_param->s7_parameter_write_var_request_items);
+          break;
+        case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data:
+          plc4c_utils_list_delete_elements(s7_param->s7_parameter_user_data_items, 
+              delete_s7_user_data_parameter_list_element);
+          free(s7_param->s7_parameter_user_data_items);
+          break;
+      }
+      free(s7_param);
+    }
+
+    if ((s7_payload = s7_message->payload)) {
+      switch (s7_payload->_type) {
+        case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response:
+          plc4c_utils_list_delete_elements(s7_payload->s7_payload_read_var_response_items, 
+              delete_s7_read_responce_payload_list_element);
+          free(s7_payload->s7_payload_read_var_response_items);
+          break;
+        case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request:
+          plc4c_utils_list_delete_elements(s7_payload->s7_payload_write_var_request_items, 
+              delete_s7_write_request_payload_list_element);
+          free(s7_payload->s7_payload_write_var_request_items);
+          break;
+        case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response:
+          plc4c_utils_list_delete_elements(s7_payload->s7_payload_write_var_response_items, 
+              delete_s7_write_responce_payload_list_element);
+          free(s7_payload->s7_payload_write_var_response_items);
+          break;
+        case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data:
+          plc4c_utils_list_delete_elements(s7_payload->s7_payload_user_data_items, 
+              delete_s7_user_data_payload_list_element);
+          free(s7_payload->s7_payload_user_data_items);
+          break;
+      }
+      free(s7_payload);
+    }
+    free(s7_message);
+  }
+
+  // Destroy copt message inc paramters list
+  plc4c_utils_list_delete_elements(cotp_packet->parameters,
+        delete_copt_parameter_list_element);
+  free(cotp_packet->parameters);
+  free(cotp_packet);
+
+  // Destroy tpkt message
+  free(packet);
+}
+
+
 
 /**
  * Create a COTP connection request packet.
@@ -190,73 +334,82 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
  */
 plc4c_return_code plc4c_driver_s7_create_cotp_connection_request(
     plc4c_driver_s7_config* configuration,
-    plc4c_s7_read_write_tpkt_packet** cotp_connect_request_packet) {
-  *cotp_connect_request_packet =
-      malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
-  if (*cotp_connect_request_packet == NULL) {
+    plc4c_s7_read_write_tpkt_packet** packet) {
+  
+  *packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+  if (*packet == NULL) {
     return NO_MEMORY;
   }
-  (*cotp_connect_request_packet)->payload =
-      malloc(sizeof(plc4c_s7_read_write_cotp_packet));
-  if ((*cotp_connect_request_packet)->payload == NULL) {
+
+  (*packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
+  if ((*packet)->payload == NULL) {
     return NO_MEMORY;
   }
-  (*cotp_connect_request_packet)->payload->_type =
+
+  (*packet)->payload->_type = 
       plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_request;
-  (*cotp_connect_request_packet)
-      ->payload->cotp_packet_connection_request_destination_reference = 0x0000;
-  (*cotp_connect_request_packet)
-      ->payload->cotp_packet_connection_request_source_reference = 0x000F;
-  (*cotp_connect_request_packet)
-      ->payload->cotp_packet_connection_request_protocol_class =
+  (*packet)->payload->cotp_packet_connection_request_destination_reference = 0x0000;
+  (*packet)->payload->cotp_packet_connection_request_source_reference = 0x000F;
+  (*packet)->payload->cotp_packet_connection_request_protocol_class =
       plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
 
   // Add the COTP parameters: Called TSAP, Calling TSAP and TPDU Size.
-  plc4c_utils_list_create(
-      &((*cotp_connect_request_packet)->payload->parameters));
-  plc4c_s7_read_write_cotp_parameter* called_tsap_parameter =
-      malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
-  if (called_tsap_parameter == NULL) {
+  plc4c_utils_list_create(&((*packet)->payload->parameters));
+  plc4c_s7_read_write_cotp_parameter* called_tsap_param;
+  plc4c_s7_read_write_cotp_parameter* calling_tsap_param;
+  plc4c_s7_read_write_cotp_parameter* tpdu_size_param;
+  
+  called_tsap_param = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
+  if (called_tsap_param == NULL) {
     return NO_MEMORY;
   }
-  called_tsap_parameter->_type =
+  called_tsap_param->_type =
       plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap;
-  called_tsap_parameter->cotp_parameter_called_tsap_tsap_id =
-      configuration->called_tsap_id;
+  called_tsap_param->cotp_parameter_called_tsap_tsap_id = configuration->called_tsap_id;
 
-  plc4c_utils_list_insert_head_value(
-      (*cotp_connect_request_packet)->payload->parameters,
-      called_tsap_parameter);
-  plc4c_s7_read_write_cotp_parameter* calling_tsap_parameter =
-      malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
-  if (calling_tsap_parameter == NULL) {
+  plc4c_utils_list_insert_head_value((*packet)->payload->parameters, called_tsap_param);
+  calling_tsap_param = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
+  if (calling_tsap_param == NULL) {
     return NO_MEMORY;
   }
-  calling_tsap_parameter->_type =
+  calling_tsap_param->_type =
       plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap;
-  calling_tsap_parameter->cotp_parameter_calling_tsap_tsap_id =
+  calling_tsap_param->cotp_parameter_calling_tsap_tsap_id =
       configuration->calling_tsap_id;
 
-  plc4c_utils_list_insert_head_value(
-      (*cotp_connect_request_packet)->payload->parameters,
-      calling_tsap_parameter);
-  plc4c_s7_read_write_cotp_parameter* tpdu_size_parameter =
-      malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
-  if (tpdu_size_parameter == NULL) {
+  plc4c_utils_list_insert_head_value((*packet)->payload->parameters, calling_tsap_param);
+  tpdu_size_param = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
+  if (tpdu_size_param == NULL) {
     return NO_MEMORY;
   }
-  tpdu_size_parameter->_type =
+  tpdu_size_param->_type =
       plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
-  tpdu_size_parameter->cotp_parameter_tpdu_size_tpdu_size =
+  tpdu_size_param->cotp_parameter_tpdu_size_tpdu_size =
       configuration->cotp_tpdu_size;
 
   plc4c_utils_list_insert_head_value(
-      (*cotp_connect_request_packet)->payload->parameters, tpdu_size_parameter);
+      (*packet)->payload->parameters, tpdu_size_param);
 
   // For a COTP connection request, there is no payload.
-  (*cotp_connect_request_packet)->payload->payload = NULL;
+  (*packet)->payload->payload = NULL;
 
   return OK;
+}
+
+
+void delete_copt_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_cotp_parameter *item;
+  item = element->value;
+  free(item);
+}
+
+void plc4c_driver_s7_destroy_cotp_connection_request(
+    plc4c_s7_read_write_tpkt_packet *packet) {
+    plc4c_utils_list_delete_elements(packet->payload->parameters,
+        delete_copt_parameter_list_element);
+    free(packet->payload->parameters);
+    free(packet->payload);
+    free(packet);
 }
 
 /**
@@ -319,6 +472,16 @@ plc4c_return_code plc4c_driver_s7_create_s7_connection_request(
   (*s7_connect_request_packet)->payload->payload->payload->_type =
       plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data;*/
   return OK;
+}
+
+void plc4c_driver_s7_destroy_s7_connection_request(
+    plc4c_s7_read_write_tpkt_packet* packet) {
+
+  free(packet->payload->payload->parameter);
+  free(packet->payload->payload);
+  free(packet->payload);
+  free(packet);
+
 }
 
 /**
@@ -426,6 +589,46 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   return OK;
 }
 
+void delete_payload_user_data_item_list_element(
+    plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_payload_user_data_item *item;
+  item = (plc4c_s7_read_write_s7_payload_user_data_item *)element->value;
+  free(item->szl_id);
+  free(item);
+}
+
+void delete_parameter_user_data_item_list_element(
+  plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_parameter_user_data_item *item;
+  item = element->value;
+  free(item);
+}
+
+void plc4c_driver_s7_destroy_s7_identify_remote_request(
+    plc4c_s7_read_write_tpkt_packet* packet) {
+
+  // Delete the s7 payload list
+  plc4c_s7_read_write_s7_message *s7_message;
+  s7_message = packet->payload->payload;
+  plc4c_utils_list_delete_elements(
+      s7_message->payload->s7_payload_user_data_items,
+      delete_payload_user_data_item_list_element);
+  free(s7_message->payload->s7_payload_user_data_items);
+  free(s7_message->payload);
+
+  // Delete the parameters list 
+  plc4c_utils_list_delete_elements(
+      s7_message->parameter->s7_parameter_user_data_items,
+      delete_parameter_user_data_item_list_element);
+  free(s7_message->parameter->s7_parameter_user_data_items);
+  free(s7_message->parameter);
+
+  // Free copt payload, tpkp payload and tpk packet
+  free(packet->payload->payload);
+  free(packet->payload);
+  free(packet);
+
+}
 /**
  * Create a S7 read request packet
  *

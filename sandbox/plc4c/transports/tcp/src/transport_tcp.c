@@ -122,6 +122,7 @@ plc4c_return_code plc4c_transport_tcp_send_message_function(
 plc4c_return_code plc4c_transport_tcp_select_message_function(
     void* transport_configuration, uint8_t min_size,
     accept_message_function accept_message, plc4c_spi_read_buffer** message) {
+      
   plc4c_transport_tcp_config* tcp_config = transport_configuration;
 
   // First try to read the minimum number of bytes the driver needs to know
