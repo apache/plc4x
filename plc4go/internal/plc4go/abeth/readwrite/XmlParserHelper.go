@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,54 +37,23 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "DF1RequestCommand":
-		return nil, errors.New("DF1RequestCommand unmappable")
+		return model.DF1RequestCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1RequestMessage":
-		return nil, errors.New("DF1RequestMessage unmappable")
+		return model.DF1RequestMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1ResponseMessage":
-		return nil, errors.New("DF1ResponseMessage unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		payloadLength := uint16(atoi)
+		return model.DF1ResponseMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
 	case "CIPEncapsulationPacket":
-		return nil, errors.New("CIPEncapsulationPacket unmappable")
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m AbethXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "DF1RequestCommand":
-		var obj *model.DF1RequestCommand
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DF1RequestMessage":
-		var obj *model.DF1RequestMessage
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DF1ResponseMessage":
-		var obj *model.DF1ResponseMessage
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "CIPEncapsulationPacket":
-		var obj *model.CIPEncapsulationPacket
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
+		return model.CIPEncapsulationPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/firmata/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,45 +37,19 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "SysexCommand":
-		return nil, errors.New("SysexCommand unmappable")
+		response := parserArguments[0] == "true"
+		return model.SysexCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataMessage":
-		return nil, errors.New("FirmataMessage unmappable")
+		response := parserArguments[0] == "true"
+		return model.FirmataMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataCommand":
-		return nil, errors.New("FirmataCommand unmappable")
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m FirmataXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "SysexCommand":
-		var obj *model.SysexCommand
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "FirmataMessage":
-		var obj *model.FirmataMessage
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "FirmataCommand":
-		var obj *model.FirmataCommand
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
+		response := parserArguments[0] == "true"
+		return model.FirmataCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

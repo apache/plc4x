@@ -20,10 +20,8 @@
 package model
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"io"
 	"math"
 )
 
@@ -40,9 +38,7 @@ type S7VarPayloadDataItem struct {
 type IS7VarPayloadDataItem interface {
 	LengthInBytes() uint16
 	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *S7VarPayloadDataItem {
@@ -100,78 +96,67 @@ func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
-	if pullErr := io.PullContext("S7VarPayloadDataItem"); pullErr != nil {
+func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
+	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
 
-	if pullErr := io.PullContext("returnCode"); pullErr != nil {
+	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
 	// Enum field (returnCode)
-	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
+	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
 	}
-	if closeErr := io.CloseContext("returnCode"); closeErr != nil {
+	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
 		return nil, closeErr
 	}
 
-	if pullErr := io.PullContext("transportSize"); pullErr != nil {
+	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
 	}
 	// Enum field (transportSize)
-	transportSize, _transportSizeErr := DataTransportSizeParse(io)
+	transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
 	}
-	if closeErr := io.CloseContext("transportSize"); closeErr != nil {
+	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, closeErr
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := io.ReadUint16("dataLength", 16)
+	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
-
-	// Array field (data)
-	if pullErr := io.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]byte, utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) })); curItem++ {
-		_item, _err := io.ReadByte("")
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := io.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (data)
+	numberOfBytes := int(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() uint16 { return uint16(dataLength) }))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	// Padding Field (padding)
 	{
-		if pullErr := io.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
+		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
 			return nil, pullErr
 		}
 		_timesPadding := (utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(data))) % uint8(uint8(2))) }))
-		for ; (io.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
+		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
-			_, _err := io.ReadUint8("", 8)
+			_, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")
 			}
 		}
-		if closeErr := io.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
+		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
 			return nil, closeErr
 		}
 	}
 
-	if closeErr := io.CloseContext("S7VarPayloadDataItem"); closeErr != nil {
+	if closeErr := readBuffer.CloseContext("S7VarPayloadDataItem"); closeErr != nil {
 		return nil, closeErr
 	}
 
@@ -179,34 +164,34 @@ func S7VarPayloadDataItemParse(io utils.ReadBuffer, lastItem bool) (*S7VarPayloa
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
-	if pushErr := io.PushContext("S7VarPayloadDataItem"); pushErr != nil {
+func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem bool) error {
+	if pushErr := writeBuffer.PushContext("S7VarPayloadDataItem"); pushErr != nil {
 		return pushErr
 	}
 
-	if pushErr := io.PushContext("returnCode"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return pushErr
 	}
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	_returnCodeErr := returnCode.Serialize(io)
+	_returnCodeErr := returnCode.Serialize(writeBuffer)
 	if _returnCodeErr != nil {
 		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
-	if popErr := io.PopContext("returnCode"); popErr != nil {
+	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return popErr
 	}
 
-	if pushErr := io.PushContext("transportSize"); pushErr != nil {
+	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return pushErr
 	}
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.TransportSize)
-	_transportSizeErr := transportSize.Serialize(io)
+	_transportSizeErr := transportSize.Serialize(writeBuffer)
 	if _transportSizeErr != nil {
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
-	if popErr := io.PopContext("transportSize"); popErr != nil {
+	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 		return popErr
 	}
 
@@ -214,154 +199,40 @@ func (m *S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) er
 	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
 		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
 	}))))
-	_dataLengthErr := io.WriteUint16("dataLength", 16, (dataLength))
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Array Field (data)
 	if m.Data != nil {
-		if pushErr := io.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Data {
-			_elementErr := io.WriteByte("", _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := io.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (data)
+		_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 		}
 	}
 
 	// Padding Field (padding)
 	{
-		if pushErr := io.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
+		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
 		_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
-			_paddingErr := io.WriteUint8("", 8, (_paddingValue))
+			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}
 		}
-		if popErr := io.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
+		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}
 	}
 
-	if popErr := io.PopContext("S7VarPayloadDataItem"); popErr != nil {
+	if popErr := writeBuffer.PopContext("S7VarPayloadDataItem"); popErr != nil {
 		return popErr
 	}
 	return nil
-}
-
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
-func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	var token xml.Token
-	var err error
-	foundContent := false
-	for {
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF && foundContent {
-				return nil
-			}
-			return err
-		}
-		switch token.(type) {
-		case xml.StartElement:
-			foundContent = true
-			tok := token.(xml.StartElement)
-			switch tok.Name.Local {
-			case "returnCode":
-				var data DataTransportErrorCode
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.ReturnCode = data
-			case "transportSize":
-				var data DataTransportSize
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.TransportSize = data
-			case "data":
-				var data []byte
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.Data = data
-			}
-		}
-	}
-}
-
-// Deprecated: the utils.WriteBufferReadBased should be used instead
-func (m *S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	className := "org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem"
-	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "className"}, Value: className},
-	}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.ReturnCode, xml.StartElement{Name: xml.Name{Local: "returnCode"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.TransportSize, xml.StartElement{Name: xml.Name{Local: "transportSize"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Data, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m S7VarPayloadDataItem) String() string {
-	return string(m.Box("", 120))
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m S7VarPayloadDataItem) Box(name string, width int) utils.AsciiBox {
-	boxName := "S7VarPayloadDataItem"
-	if name != "" {
-		boxName += "/" + name
-	}
-	boxes := make([]utils.AsciiBox, 0)
-	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	boxes = append(boxes, returnCode.Box("returnCode", -1))
-	// Enum field (transportSize)
-	transportSize := CastDataTransportSize(m.TransportSize)
-	boxes = append(boxes, transportSize.Box("transportSize", -1))
-	// Implicit Field (dataLength)
-	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
-		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
-	}))))
-	// uint16 can be boxed as anything with the least amount of space
-	boxes = append(boxes, utils.BoxAnything("DataLength", dataLength, -1))
-	// Array Field (data)
-	if m.Data != nil {
-		// Simple array base type byte will be rendered one by one
-		arrayBoxes := make([]utils.AsciiBox, 0)
-		for _, _element := range m.Data {
-			arrayBoxes = append(arrayBoxes, utils.BoxAnything("", _element, width-2))
-		}
-		boxes = append(boxes, utils.BoxBox("Data", utils.AlignBoxes(arrayBoxes, width-4), 0))
-	}
-	// Padding Field (padding)
-	lastItem := false // TODO: not sure if its worth to calculate here
-	_ = lastItem
-	_timesPadding := uint8(utils.InlineIf(lastItem, func() uint16 { return uint16(uint8(0)) }, func() uint16 { return uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }))
-	for ; _timesPadding > 0; _timesPadding-- {
-		_paddingValue := uint8(uint8(0))
-		boxes = append(boxes, utils.BoxAnything("padding", _paddingValue, -1))
-	}
-	return utils.BoxBox(boxName, utils.AlignBoxes(boxes, width-2), 0)
 }

@@ -155,11 +155,6 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>

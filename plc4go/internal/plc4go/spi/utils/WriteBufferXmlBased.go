@@ -95,56 +95,60 @@ func (x *xmlWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ..
 	return x.encodeElement(logicalName, fmt.Sprintf("%#02x", value), x.generateAttr(rwByteKey, 8, writerArgs...), writerArgs...)
 }
 
+func (x *xmlWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
+	return x.encodeElement(logicalName, fmt.Sprintf("%#02x", data), x.generateAttr(rwByteKey, uint(len(data)*8), writerArgs...), writerArgs...)
+}
+
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint16(logicalName string, bitLength uint8, value uint16, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint32(logicalName string, bitLength uint8, value uint32, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint64(logicalName string, bitLength uint8, value uint64, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwUintKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt8(logicalName string, bitLength uint8, value int8, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt16(logicalName string, bitLength uint8, value int16, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt32(logicalName string, bitLength uint8, value int32, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteInt64(logicalName string, bitLength uint8, value int64, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwIntKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, bitLength, writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
-	attr := x.generateAttr(rwStringKey, bitLength, writerArgs...)
+	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
 	return x.encodeElement(logicalName, value, attr, writerArgs...)
 }
@@ -167,7 +171,7 @@ func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, at
 	})
 }
 
-func (x *xmlWriteBuffer) generateAttr(dataType string, bitLength uint8, writerArgs ...WithWriterArgs) []xml.Attr {
+func (x *xmlWriteBuffer) generateAttr(dataType string, bitLength uint, writerArgs ...WithWriterArgs) []xml.Attr {
 	attrs := make([]xml.Attr, 2)
 	if !x.doRenderAttr {
 		return attrs

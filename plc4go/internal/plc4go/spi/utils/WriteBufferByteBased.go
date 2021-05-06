@@ -101,6 +101,16 @@ func (rb *byteWriteBuffer) WriteByte(_ string, value byte, _ ...WithWriterArgs) 
 	return rb.writer.WriteBits(uint64(value), 8)
 }
 
+func (rb *byteWriteBuffer) WriteByteArray(_ string, data []byte, _ ...WithWriterArgs) error {
+	for _, dataElement := range data {
+		err := rb.writer.WriteBits(uint64(dataElement), 8)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (rb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, _ ...WithWriterArgs) error {
 	return rb.writer.WriteBits(uint64(value), bitLength)
 }

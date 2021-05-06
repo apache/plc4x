@@ -96,6 +96,15 @@ func (b *boxedWriteBuffer) WriteByte(logicalName string, value byte, writerArgs 
 	return nil
 }
 
+func (b *boxedWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
+	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
+	if additionalStringRepresentation != "" {
+		additionalStringRepresentation += "\n"
+	}
+	b.PushBack(BoxString(logicalName, fmt.Sprintf("%s%s", additionalStringRepresentation, Dump(data)), 0))
+	return nil
+}
+
 func (b *boxedWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(upcastWriterArgs(writerArgs...)...)
 	b.PushBack(BoxString(logicalName, fmt.Sprintf("%#0*x %d%s", bitLength/4, value, value, additionalStringRepresentation), 0))

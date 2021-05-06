@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type SzlSublist uint8
 
 type ISzlSublist interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -190,20 +187,18 @@ func (m SzlSublist) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlSublistParse(io utils.ReadBuffer) (SzlSublist, error) {
-	val, err := io.ReadUint8("SzlSublist", 8)
+func SzlSublistParse(readBuffer utils.ReadBuffer) (SzlSublist, error) {
+	val, err := readBuffer.ReadUint8("SzlSublist", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return SzlSublistByValue(val), nil
 }
 
-func (e SzlSublist) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e SzlSublist) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlSublist) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -223,7 +218,6 @@ func (m *SzlSublist) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m SzlSublist) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -277,13 +271,4 @@ func (e SzlSublist) name() string {
 
 func (e SzlSublist) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m SzlSublist) Box(s string, i int) utils.AsciiBox {
-	boxName := "SzlSublist"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -33,9 +32,7 @@ type KnxInterfaceObjectType uint16
 type IKnxInterfaceObjectType interface {
 	Code() string
 	Name() string
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -445,20 +442,18 @@ func (m KnxInterfaceObjectType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxInterfaceObjectTypeParse(io utils.ReadBuffer) (KnxInterfaceObjectType, error) {
-	val, err := io.ReadUint16("KnxInterfaceObjectType", 16)
+func KnxInterfaceObjectTypeParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectType, error) {
+	val, err := readBuffer.ReadUint16("KnxInterfaceObjectType", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxInterfaceObjectTypeByValue(val), nil
 }
 
-func (e KnxInterfaceObjectType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxInterfaceObjectType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("KnxInterfaceObjectType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxInterfaceObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -478,7 +473,6 @@ func (m *KnxInterfaceObjectType) UnmarshalXML(d *xml.Decoder, start xml.StartEle
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxInterfaceObjectType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -544,13 +538,4 @@ func (e KnxInterfaceObjectType) name() string {
 
 func (e KnxInterfaceObjectType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxInterfaceObjectType) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxInterfaceObjectType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -106,20 +103,18 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPProtocolClassParse(io utils.ReadBuffer) (COTPProtocolClass, error) {
-	val, err := io.ReadInt8("COTPProtocolClass", 8)
+func COTPProtocolClassParse(readBuffer utils.ReadBuffer) (COTPProtocolClass, error) {
+	val, err := readBuffer.ReadInt8("COTPProtocolClass", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return COTPProtocolClassByValue(val), nil
 }
 
-func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("COTPProtocolClass", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e COTPProtocolClass) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("COTPProtocolClass", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPProtocolClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -139,7 +134,6 @@ func (m *COTPProtocolClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement)
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m COTPProtocolClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -165,13 +159,4 @@ func (e COTPProtocolClass) name() string {
 
 func (e COTPProtocolClass) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m COTPProtocolClass) Box(s string, i int) utils.AsciiBox {
-	boxName := "COTPProtocolClass"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

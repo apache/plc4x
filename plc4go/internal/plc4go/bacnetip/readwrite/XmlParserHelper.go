@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,132 +37,59 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "APDU":
-		return nil, errors.New("APDU unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		apduLength := uint16(atoi)
+		return model.APDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetTag":
-		return nil, errors.New("BACnetTag unmappable")
+		return model.BACnetTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetTagWithContent":
 		return model.BACnetTagWithContentParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetError":
-		return nil, errors.New("BACnetError unmappable")
+		return model.BACnetErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":
-		return nil, errors.New("NLM unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		apduLength := uint16(atoi)
+		return model.NLMParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetConfirmedServiceRequest":
-		return nil, errors.New("BACnetConfirmedServiceRequest unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		len := uint16(atoi)
+		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceACK":
-		return nil, errors.New("BACnetConfirmedServiceACK unmappable")
+		return model.BACnetConfirmedServiceACKParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetUnconfirmedServiceRequest":
-		return nil, errors.New("BACnetUnconfirmedServiceRequest unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		len := uint16(atoi)
+		return model.BACnetUnconfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
 	case "BACnetServiceAck":
-		return nil, errors.New("BACnetServiceAck unmappable")
+		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BVLC":
-		return nil, errors.New("BVLC unmappable")
+		return model.BVLCParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NPDU":
-		//var npduLength uint16
 		atoi, err := strconv.Atoi(parserArguments[0])
 		if err != nil {
 			return nil, err
 		}
 		npduLength := uint16(atoi)
 		return model.NPDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), npduLength)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m BacnetipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "APDU":
-		var obj *model.APDU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetTag":
-		var obj *model.BACnetTag
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetTagWithContent":
-		var obj *model.BACnetTagWithContent
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetError":
-		var obj *model.BACnetError
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "NLM":
-		var obj *model.NLM
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetConfirmedServiceRequest":
-		var obj *model.BACnetConfirmedServiceRequest
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetAddress":
-		var obj *model.BACnetAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetConfirmedServiceACK":
-		var obj *model.BACnetConfirmedServiceACK
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetUnconfirmedServiceRequest":
-		var obj *model.BACnetUnconfirmedServiceRequest
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BACnetServiceAck":
-		var obj *model.BACnetServiceAck
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "BVLC":
-		var obj *model.BVLC
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "NPDU":
-		var obj *model.NPDU
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

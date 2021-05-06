@@ -115,7 +115,7 @@
         ['0x79','true' SysexCommandReportFirmwareResponse
             [simple uint 8 'majorVersion']
             [simple uint 8 'minorVersion']
-            [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", io, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
+            [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", writeBuffer, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
         ]
         ['0x7A' SysexCommandSamplingInterval
         ]

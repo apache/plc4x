@@ -464,10 +464,10 @@
 //            [simple string '16' 'UTF-16' 'value']
         ]
         ['IEC61131_STRING' STRING
-            [manual   string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [manual   string '-1' 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2']
         ]
 
         // -----------------------------------------

@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -34,9 +33,7 @@ type IKnxDatapointMainType interface {
 	Number() uint16
 	Name() string
 	SizeInBits() uint8
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1185,20 +1182,18 @@ func (m KnxDatapointMainType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxDatapointMainTypeParse(io utils.ReadBuffer) (KnxDatapointMainType, error) {
-	val, err := io.ReadUint16("KnxDatapointMainType", 16)
+func KnxDatapointMainTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointMainType, error) {
+	val, err := readBuffer.ReadUint16("KnxDatapointMainType", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxDatapointMainTypeByValue(val), nil
 }
 
-func (e KnxDatapointMainType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("KnxDatapointMainType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxDatapointMainType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("KnxDatapointMainType", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxDatapointMainType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1218,7 +1213,6 @@ func (m *KnxDatapointMainType) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxDatapointMainType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -1354,13 +1348,4 @@ func (e KnxDatapointMainType) name() string {
 
 func (e KnxDatapointMainType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxDatapointMainType) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxDatapointMainType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

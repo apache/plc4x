@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -33,9 +32,7 @@ type DeviceDescriptor uint16
 type IDeviceDescriptor interface {
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -501,20 +498,18 @@ func (m DeviceDescriptor) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceDescriptorParse(io utils.ReadBuffer) (DeviceDescriptor, error) {
-	val, err := io.ReadUint16("DeviceDescriptor", 16)
+func DeviceDescriptorParse(readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
+	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return DeviceDescriptorByValue(val), nil
 }
 
-func (e DeviceDescriptor) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e DeviceDescriptor) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *DeviceDescriptor) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -534,7 +529,6 @@ func (m *DeviceDescriptor) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m DeviceDescriptor) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -608,13 +602,4 @@ func (e DeviceDescriptor) name() string {
 
 func (e DeviceDescriptor) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m DeviceDescriptor) Box(s string, i int) utils.AsciiBox {
-	boxName := "DeviceDescriptor"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

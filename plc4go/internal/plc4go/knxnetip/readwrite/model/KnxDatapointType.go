@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -34,9 +33,7 @@ type IKnxDatapointType interface {
 	Number() uint16
 	Name() string
 	DatapointMainType() KnxDatapointMainType
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -6369,20 +6366,18 @@ func (m KnxDatapointType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxDatapointTypeParse(io utils.ReadBuffer) (KnxDatapointType, error) {
-	val, err := io.ReadUint32("KnxDatapointType", 32)
+func KnxDatapointTypeParse(readBuffer utils.ReadBuffer) (KnxDatapointType, error) {
+	val, err := readBuffer.ReadUint32("KnxDatapointType", 32)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxDatapointTypeByValue(val), nil
 }
 
-func (e KnxDatapointType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxDatapointType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint32("KnxDatapointType", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxDatapointType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -6402,7 +6397,6 @@ func (m *KnxDatapointType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxDatapointType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -7114,13 +7108,4 @@ func (e KnxDatapointType) name() string {
 
 func (e KnxDatapointType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxDatapointType) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxDatapointType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }

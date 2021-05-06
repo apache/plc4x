@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,9 +31,7 @@ type ComObjectValueType uint8
 
 type IComObjectValueType interface {
 	SizeInBytes() uint8
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -235,20 +232,18 @@ func (m ComObjectValueType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectValueTypeParse(io utils.ReadBuffer) (ComObjectValueType, error) {
-	val, err := io.ReadUint8("ComObjectValueType", 8)
+func ComObjectValueTypeParse(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
+	val, err := readBuffer.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return ComObjectValueTypeByValue(val), nil
 }
 
-func (e ComObjectValueType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e ComObjectValueType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectValueType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -268,7 +263,6 @@ func (m *ComObjectValueType) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ComObjectValueType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -314,13 +308,4 @@ func (e ComObjectValueType) name() string {
 
 func (e ComObjectValueType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m ComObjectValueType) Box(s string, i int) utils.AsciiBox {
-	boxName := "ComObjectValueType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

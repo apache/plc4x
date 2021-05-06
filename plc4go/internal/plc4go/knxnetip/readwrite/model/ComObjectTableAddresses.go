@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,9 +31,7 @@ type ComObjectTableAddresses uint16
 
 type IComObjectTableAddresses interface {
 	ComObjectTableAddress() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -17145,20 +17142,18 @@ func (m ComObjectTableAddresses) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableAddressesParse(io utils.ReadBuffer) (ComObjectTableAddresses, error) {
-	val, err := io.ReadUint16("ComObjectTableAddresses", 16)
+func ComObjectTableAddressesParse(readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {
+	val, err := readBuffer.ReadUint16("ComObjectTableAddresses", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return ComObjectTableAddressesByValue(val), nil
 }
 
-func (e ComObjectTableAddresses) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e ComObjectTableAddresses) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ComObjectTableAddresses) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -17178,7 +17173,6 @@ func (m *ComObjectTableAddresses) UnmarshalXML(d *xml.Decoder, start xml.StartEl
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ComObjectTableAddresses) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -20606,13 +20600,4 @@ func (e ComObjectTableAddresses) name() string {
 
 func (e ComObjectTableAddresses) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m ComObjectTableAddresses) Box(s string, i int) utils.AsciiBox {
-	boxName := "ComObjectTableAddresses"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

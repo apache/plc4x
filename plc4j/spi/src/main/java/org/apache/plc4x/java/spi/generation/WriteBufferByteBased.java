@@ -77,6 +77,18 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
+    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+        writeSignedByte(logicalName, 8, value, writerArgs);
+    }
+
+    @Override
+    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+        for (byte aByte : bytes) {
+            writeSignedByte(logicalName, 8, aByte, writerArgs);
+        }
+    }
+
+    @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");

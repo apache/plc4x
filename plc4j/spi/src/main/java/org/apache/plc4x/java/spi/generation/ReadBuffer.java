@@ -35,12 +35,16 @@ public interface ReadBuffer {
         return readBit("");
     }
 
-    default byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
-        return readSignedByte(logicalName,8,readerArgs);
-    }
+    byte readByte(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 
     default byte readByte() throws ParseException {
         return readSignedByte("", 8);
+    }
+
+    byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException;
+
+    default byte[] readByteArray(int numbersOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        return readByteArray("", numbersOfBytes, readerArgs);
     }
 
     byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
@@ -124,7 +128,7 @@ public interface ReadBuffer {
     String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs);
 
     default String readString(int bitLength, String encoding) {
-        return readString("", bitLength,encoding);
+        return readString("", bitLength, encoding);
     }
 
 

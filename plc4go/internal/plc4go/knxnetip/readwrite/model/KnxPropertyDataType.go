@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -34,9 +33,7 @@ type IKnxPropertyDataType interface {
 	Number() uint8
 	SizeInBytes() uint8
 	Name() string
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -1005,20 +1002,18 @@ func (m KnxPropertyDataType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxPropertyDataTypeParse(io utils.ReadBuffer) (KnxPropertyDataType, error) {
-	val, err := io.ReadUint8("KnxPropertyDataType", 8)
+func KnxPropertyDataTypeParse(readBuffer utils.ReadBuffer) (KnxPropertyDataType, error) {
+	val, err := readBuffer.ReadUint8("KnxPropertyDataType", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxPropertyDataTypeByValue(val), nil
 }
 
-func (e KnxPropertyDataType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxPropertyDataType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("KnxPropertyDataType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxPropertyDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -1038,7 +1033,6 @@ func (m *KnxPropertyDataType) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxPropertyDataType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -1154,13 +1148,4 @@ func (e KnxPropertyDataType) name() string {
 
 func (e KnxPropertyDataType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxPropertyDataType) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxPropertyDataType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, uint8(m), m.name()), -1)
 }

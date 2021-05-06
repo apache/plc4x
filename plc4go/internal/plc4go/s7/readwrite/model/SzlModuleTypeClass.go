@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -100,20 +97,18 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(io utils.ReadBuffer) (SzlModuleTypeClass, error) {
-	val, err := io.ReadUint8("SzlModuleTypeClass", 4)
+func SzlModuleTypeClassParse(readBuffer utils.ReadBuffer) (SzlModuleTypeClass, error) {
+	val, err := readBuffer.ReadUint8("SzlModuleTypeClass", 4)
 	if err != nil {
 		return 0, nil
 	}
 	return SzlModuleTypeClassByValue(val), nil
 }
 
-func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e SzlModuleTypeClass) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("SzlModuleTypeClass", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *SzlModuleTypeClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -133,7 +128,6 @@ func (m *SzlModuleTypeClass) UnmarshalXML(d *xml.Decoder, start xml.StartElement
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m SzlModuleTypeClass) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -157,13 +151,4 @@ func (e SzlModuleTypeClass) name() string {
 
 func (e SzlModuleTypeClass) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m SzlModuleTypeClass) Box(s string, i int) utils.AsciiBox {
-	boxName := "SzlModuleTypeClass"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

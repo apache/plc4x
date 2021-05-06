@@ -90,9 +90,7 @@ public class S7IoTest {
                 "                  <DataTransportSize dataType=\"uint\" bitLength=\"8\" stringRepresentation=\"BIT\">3</DataTransportSize>\n" +
                 "                </transportSize>\n" +
                 "                <dataLength dataType=\"uint\" bitLength=\"16\">1</dataLength>\n" +
-                "                <data isList=\"true\">\n" +
-                "                  <value dataType=\"byte\" bitLength=\"8\">0x01</value>\n" +
-                "                </data>\n" +
+                "                <data dataType=\"byte\" bitLength=\"8\">0x01</data>\n" +
                 "                <padding isList=\"true\">\n" +
                 "                </padding>\n" +
                 "              </S7VarPayloadDataItem>\n" +
@@ -142,16 +140,12 @@ public class S7IoTest {
             "              \"items\": [\n" +
             "                {\n" +
             "                  \"S7VarPayloadDataItem\": {\n" +
-            "                    \"data\": [\n" +
-            "                      {\n" +
-            "                        \"value\": \"0x01\",\n" +
-            "                        \"value__plc4x_bitLength\": 8,\n" +
-            "                        \"value__plc4x_dataType\": \"byte\"\n" +
-            "                      }\n" +
-            "                    ],\n" +
+            "                    \"data\": \"0x01\",\n" +
             "                    \"dataLength\": 1,\n" +
             "                    \"dataLength__plc4x_bitLength\": 16,\n" +
             "                    \"dataLength__plc4x_dataType\": \"uint\",\n" +
+            "                    \"data__plc4x_bitLength\": 8,\n" +
+            "                    \"data__plc4x_dataType\": \"byte\",\n" +
             "                    \"padding\": [],\n" +
             "                    \"returnCode\": {\n" +
             "                      \"DataTransportErrorCode\": 255,\n" +

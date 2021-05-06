@@ -64,7 +64,6 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/X
 package ${outputFlavor?replace("-","")}
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -82,18 +81,15 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
     switch typeName {
     <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
         case "${typeDefinition.name}":
-        <#if typeDefinition.parserArguments?? && !helper.isDiscriminatedParentTypeDefinition(typeDefinition) && !helper.isDiscriminatedChildTypeDefinition()>
+        <#if typeDefinition.parserArguments??>
             <#list 0..typeDefinition.parserArguments?size-1 as i>
                 <#assign parserArgument=typeDefinition.parserArguments[i]>
-                <#assign interfaceIndicator><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>I</#if></#assign>
-            //var ${parserArgument.name} ${interfaceIndicator}${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
                 <#if helper.isEnumTypeReference(parserArgument.type)>
             ${parserArgument.name} := model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}ByName(parserArguments[${i}])
                 <#else>
@@ -101,6 +97,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
                         <#case "bool">
             ${parserArgument.name} := parserArguments[${i}] == "true"
                             <#break>
+						<#case "byte">
                         <#case "uint8">
                         <#case "uint16">
                         <#case "uint32">
@@ -116,37 +113,19 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
             ${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(atoi)
                             <#break>
                         <#default>
-            // TODO: we only need base types here anyway so some things are just not possible
-            ${parserArgument.name} := nil
+			// TODO: find a way to parse the sub types
+            var ${parserArgument.name} model.${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
                             <#break>
                     </#switch>
                 </#if>
             </#list>
-            <#assign parserArgumentList><#list typeDefinition.parserArguments as parserArgument><#if helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
+            <#assign parserArgumentList><#list typeDefinition.parserArguments as parserArgument><#if helper.isEnumTypeReference(parserArgument.type) || helper.isComplexTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#sep> </#list> </#assign>
             return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), ${parserArgumentList})
-        <#elseif !helper.isDiscriminatedParentTypeDefinition(typeDefinition) && !helper.isDiscriminatedChildTypeDefinition()>
-            return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
         <#else>
-            return nil, errors.New("${typeDefinition.name} unmappable")
+			return model.${typeDefinition.name}Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
         </#if>
     </#list>
     }
     return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-<#list helper.getComplexTypeRootDefinitions() as typeDefinition>
-	case "${typeDefinition.name}":
-		var obj *model.${helper.getLanguageTypeNameForTypeReference(typeDefinition.typeReference)}
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err ,"error unmarshalling xml")
-		}
-		return obj, nil
-</#list>
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
 }
 </#outputformat>

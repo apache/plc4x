@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -35,9 +34,7 @@ type IKnxInterfaceObjectProperty interface {
 	Name() string
 	PropertyId() uint8
 	ObjectType() KnxInterfaceObjectType
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -4867,20 +4864,18 @@ func (m KnxInterfaceObjectProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxInterfaceObjectPropertyParse(io utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
-	val, err := io.ReadUint32("KnxInterfaceObjectProperty", 32)
+func KnxInterfaceObjectPropertyParse(readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
+	val, err := readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxInterfaceObjectPropertyByValue(val), nil
 }
 
-func (e KnxInterfaceObjectProperty) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxInterfaceObjectProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxInterfaceObjectProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -4900,7 +4895,6 @@ func (m *KnxInterfaceObjectProperty) UnmarshalXML(d *xml.Decoder, start xml.Star
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxInterfaceObjectProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -5348,13 +5342,4 @@ func (e KnxInterfaceObjectProperty) name() string {
 
 func (e KnxInterfaceObjectProperty) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxInterfaceObjectProperty) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxInterfaceObjectProperty"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }

@@ -167,14 +167,40 @@ func (j *jsonReadBuffer) ReadByte(logicalName string, readerArgs ...WithReaderAr
 	}
 }
 
+func (j *jsonReadBuffer) ReadByteArray(logicalName string, numberOfBytes int, readerArgs ...WithReaderArgs) ([]byte, error) {
+	if j.err != nil {
+		return nil, j.err
+	}
+	logicalName = j.sanitizeLogicalName(logicalName)
+	j.move(uint(numberOfBytes / 8))
+	peek, element := j.getElement(logicalName)
+	if err := j.validateAttr(logicalName, element, "byte", uint(numberOfBytes*8), readerArgs...); err != nil {
+		return nil, err
+	}
+	if value, ok := element[logicalName]; ok {
+		hexString := value.(string)
+		if !strings.HasPrefix(hexString, "0x") {
+			return nil, errors.Errorf("Hex string should start with 0x. Actual value %s", hexString)
+		}
+		hexString = strings.Replace(hexString, "0x", "", 1)
+		decoded, err := hex.DecodeString(hexString)
+		if err != nil {
+			return nil, err
+		}
+		return decoded, nil
+	} else {
+		return nil, errors.Errorf("Required element %s not found in %v", logicalName, peek)
+	}
+}
+
 func (j *jsonReadBuffer) ReadUint8(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (uint8, error) {
 	if j.err != nil {
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "uint", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -189,9 +215,9 @@ func (j *jsonReadBuffer) ReadUint16(logicalName string, bitLength uint8, readerA
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "uint", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -206,9 +232,9 @@ func (j *jsonReadBuffer) ReadUint32(logicalName string, bitLength uint8, readerA
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "uint", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -223,9 +249,9 @@ func (j *jsonReadBuffer) ReadUint64(logicalName string, bitLength uint8, readerA
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "uint", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "uint", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -240,9 +266,9 @@ func (j *jsonReadBuffer) ReadInt8(logicalName string, bitLength uint8, readerArg
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "int", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -257,9 +283,9 @@ func (j *jsonReadBuffer) ReadInt16(logicalName string, bitLength uint8, readerAr
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "int", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -274,9 +300,9 @@ func (j *jsonReadBuffer) ReadInt32(logicalName string, bitLength uint8, readerAr
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "int", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -291,9 +317,9 @@ func (j *jsonReadBuffer) ReadInt64(logicalName string, bitLength uint8, readerAr
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "int", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -311,7 +337,7 @@ func (j *jsonReadBuffer) ReadBigInt(logicalName string, bitLength uint64, reader
 	logicalName = j.sanitizeLogicalName(logicalName)
 	peek, element := j.getElement(logicalName)
 	// TODO: not enough bits
-	if err := j.validateAttr(logicalName, element, "int", uint8(bitLength), readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "int", uint(bitLength), readerArgs...); err != nil {
 		return nil, err
 	}
 	newInt := big.NewInt(0)
@@ -332,9 +358,9 @@ func (j *jsonReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBi
 	if signed {
 		bitLength += 1
 	}
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "float", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -353,9 +379,9 @@ func (j *jsonReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBi
 	if signed {
 		bitLength += 1
 	}
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "float", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
 		return 0, err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -374,9 +400,9 @@ func (j *jsonReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentB
 	if signed {
 		bitLength += 1
 	}
-	j.move(bitLength)
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "float", bitLength, readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
 		return nil, err
 	}
 	newFloat := big.NewFloat(0)
@@ -393,10 +419,9 @@ func (j *jsonReadBuffer) ReadString(logicalName string, bitLength uint32, reader
 		return "", j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	// TODO: not enough bits
-	j.move(uint8(bitLength))
+	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
-	if err := j.validateAttr(logicalName, element, "string", uint8(bitLength), readerArgs...); err != nil {
+	if err := j.validateAttr(logicalName, element, "string", uint(bitLength), readerArgs...); err != nil {
 		return "", err
 	}
 	if value, ok := element[logicalName]; ok {
@@ -454,11 +479,11 @@ func (j *jsonReadBuffer) getElement(logicalName string) (interface{}, map[string
 	return peek, element
 }
 
-func (j *jsonReadBuffer) move(bits uint8) {
-	j.pos += uint(bits)
+func (j *jsonReadBuffer) move(bits uint) {
+	j.pos += bits
 }
 
-func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]interface{}, dataType string, bitLength uint8, readerArgs ...WithReaderArgs) error {
+func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]interface{}, dataType string, bitLength uint, readerArgs ...WithReaderArgs) error {
 	if !j.doValidateAttr {
 		return nil
 	}
@@ -467,7 +492,7 @@ func (j *jsonReadBuffer) validateAttr(logicalName string, element map[string]int
 		return errors.Errorf("Unexpected %s :%s. Want %s", renderedKeyDataLengthKey, value, dataType)
 	}
 	renderedBitLengthKey := fmt.Sprintf("%s__plc4x_%s", logicalName, rwBitLengthKey)
-	if value, ok := element[renderedBitLengthKey]; !ok || uint8(value.(float64)) != bitLength {
+	if value, ok := element[renderedBitLengthKey]; !ok || uint(value.(float64)) != bitLength {
 		return errors.Errorf("Unexpected %s :%d. Want %d", renderedBitLengthKey, value, bitLength)
 	}
 	return nil

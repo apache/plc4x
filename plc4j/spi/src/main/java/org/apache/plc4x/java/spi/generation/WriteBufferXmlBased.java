@@ -101,6 +101,16 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
+    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+        StringBuilder hexString = new StringBuilder("0x");
+        for (byte aByte : bytes) {
+            hexString.append(String.format("%02x", aByte));
+        }
+        createAndAppend(logicalName, rwByteKey, bytes.length * 8, hexString.toString(), writerArgs);
+        move(8 * bytes.length);
+    }
+
+    @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwUintKey, bitLength, Byte.valueOf(value).toString(), writerArgs);
         move(bitLength);

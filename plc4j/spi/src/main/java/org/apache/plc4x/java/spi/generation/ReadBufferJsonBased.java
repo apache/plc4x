@@ -142,6 +142,27 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
+    public byte[] readByteArray(String logicalName, int numberOfBytes, WithReaderArgs... readerArgs) throws ParseException {
+        logicalName = sanitizeLogicalName(logicalName);
+        move(8 * numberOfBytes);
+        Map element = getElement(logicalName);
+        validateAttr(logicalName, element, rwByteKey, 8 * numberOfBytes);
+        String hexString = (String) element.get(logicalName);
+        if (hexString == null) {
+            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+        }
+        if (!hexString.startsWith("0x")) {
+            throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
+        }
+        hexString = hexString.substring(2);
+        byte[] bytes = new byte[numberOfBytes];
+        for (int i = 0; i < hexString.length(); i = i + 2) {
+            bytes[i / 2] = Byte.parseByte(hexString.substring(i, i + 2), 16);
+        }
+        return bytes;
+    }
+
+    @Override
     public byte readUnsignedByte(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);

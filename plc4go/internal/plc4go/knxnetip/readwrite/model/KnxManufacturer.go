@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -33,9 +32,7 @@ type KnxManufacturer uint16
 type IKnxManufacturer interface {
 	Number() uint16
 	Name() string
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -7809,20 +7806,18 @@ func (m KnxManufacturer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxManufacturerParse(io utils.ReadBuffer) (KnxManufacturer, error) {
-	val, err := io.ReadUint16("KnxManufacturer", 16)
+func KnxManufacturerParse(readBuffer utils.ReadBuffer) (KnxManufacturer, error) {
+	val, err := readBuffer.ReadUint16("KnxManufacturer", 16)
 	if err != nil {
 		return 0, nil
 	}
 	return KnxManufacturerByValue(val), nil
 }
 
-func (e KnxManufacturer) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e KnxManufacturer) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint16("KnxManufacturer", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *KnxManufacturer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -7842,7 +7837,6 @@ func (m *KnxManufacturer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) e
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m KnxManufacturer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -8960,13 +8954,4 @@ func (e KnxManufacturer) name() string {
 
 func (e KnxManufacturer) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m KnxManufacturer) Box(s string, i int) utils.AsciiBox {
-	boxName := "KnxManufacturer"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 4, uint16(m), m.name()), -1)
 }

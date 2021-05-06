@@ -20,7 +20,6 @@
 package readwrite
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -38,7 +37,6 @@ func init() {
 	_ = strconv.Atoi
 	_ = strings.Join
 	_ = utils.Dump
-	_ = xml.NewDecoder
 }
 
 func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
@@ -54,23 +52,33 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionRequestInformation":
-		return nil, errors.New("ConnectionRequestInformation unmappable")
+		return model.ConnectionRequestInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Apdu":
-		return nil, errors.New("Apdu unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		dataLength := uint8(atoi)
+		return model.ApduParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "HPAIDiscoveryEndpoint":
 		return model.HPAIDiscoveryEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ProjectInstallationIdentifier":
 		return model.ProjectInstallationIdentifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ServiceId":
-		return nil, errors.New("ServiceId unmappable")
+		return model.ServiceIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HPAIDataEndpoint":
 		return model.HPAIDataEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMI":
-		return nil, errors.New("CEMI unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		size := uint8(atoi)
+		return model.CEMIParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
 	case "KnxNetIpMessage":
-		return nil, errors.New("KnxNetIpMessage unmappable")
+		return model.KnxNetIpMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DeviceStatus":
 		return model.DeviceStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IPAddress":
@@ -78,13 +86,14 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationTypeB":
 		return model.GroupObjectDescriptorRealisationTypeBParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMIAdditionalInformation":
-		return nil, errors.New("CEMIAdditionalInformation unmappable")
+		return model.CEMIAdditionalInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ComObjectTable":
-		return nil, errors.New("ComObjectTable unmappable")
+		firmwareType := model.FirmwareTypeByName(parserArguments[0])
+		return model.ComObjectTableParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), &firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionResponseDataBlock":
-		return nil, errors.New("ConnectionResponseDataBlock unmappable")
+		return model.ConnectionResponseDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TunnelingRequestDataBlock":
 		return model.TunnelingRequestDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DIBDeviceInfo":
@@ -94,13 +103,23 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "DIBSuppSvcFamilies":
 		return model.DIBSuppSvcFamiliesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LDataFrame":
-		return nil, errors.New("LDataFrame unmappable")
+		return model.LDataFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduDataExt":
-		return nil, errors.New("ApduDataExt unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		length := uint8(atoi)
+		return model.ApduDataExtParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length)
 	case "ApduControl":
-		return nil, errors.New("ApduControl unmappable")
+		return model.ApduControlParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "KnxGroupAddress":
-		return nil, errors.New("KnxGroupAddress unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		numLevels := uint8(atoi)
+		return model.KnxGroupAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels)
 	case "GroupObjectDescriptorRealisationType6":
 		return model.GroupObjectDescriptorRealisationType6Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "GroupObjectDescriptorRealisationType7":
@@ -110,261 +129,14 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationType2":
 		return model.GroupObjectDescriptorRealisationType2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduData":
-		return nil, errors.New("ApduData unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		dataLength := uint8(atoi)
+		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
-}
-
-// Deprecated: will be removed in favor of Parse soon
-func (m KnxnetipXmlParserHelper) ParseOld(typeName string, xmlString string) (interface{}, error) {
-	switch typeName {
-	case "HPAIControlEndpoint":
-		var obj *model.HPAIControlEndpoint
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "TunnelingResponseDataBlock":
-		var obj *model.TunnelingResponseDataBlock
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DeviceDescriptorType2":
-		var obj *model.DeviceDescriptorType2
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ChannelInformation":
-		var obj *model.ChannelInformation
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DeviceConfigurationAckDataBlock":
-		var obj *model.DeviceConfigurationAckDataBlock
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ConnectionRequestInformation":
-		var obj *model.ConnectionRequestInformation
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "Apdu":
-		var obj *model.Apdu
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "HPAIDiscoveryEndpoint":
-		var obj *model.HPAIDiscoveryEndpoint
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ProjectInstallationIdentifier":
-		var obj *model.ProjectInstallationIdentifier
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ServiceId":
-		var obj *model.ServiceId
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "HPAIDataEndpoint":
-		var obj *model.HPAIDataEndpoint
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "RelativeTimestamp":
-		var obj *model.RelativeTimestamp
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "CEMI":
-		var obj *model.CEMI
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "KnxNetIpMessage":
-		var obj *model.KnxNetIpMessage
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DeviceStatus":
-		var obj *model.DeviceStatus
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "IPAddress":
-		var obj *model.IPAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "GroupObjectDescriptorRealisationTypeB":
-		var obj *model.GroupObjectDescriptorRealisationTypeB
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "CEMIAdditionalInformation":
-		var obj *model.CEMIAdditionalInformation
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ComObjectTable":
-		var obj *model.ComObjectTable
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "KnxAddress":
-		var obj *model.KnxAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ConnectionResponseDataBlock":
-		var obj *model.ConnectionResponseDataBlock
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "TunnelingRequestDataBlock":
-		var obj *model.TunnelingRequestDataBlock
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DIBDeviceInfo":
-		var obj *model.DIBDeviceInfo
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DeviceConfigurationRequestDataBlock":
-		var obj *model.DeviceConfigurationRequestDataBlock
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "DIBSuppSvcFamilies":
-		var obj *model.DIBSuppSvcFamilies
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "LDataFrame":
-		var obj *model.LDataFrame
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ApduDataExt":
-		var obj *model.ApduDataExt
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ApduControl":
-		var obj *model.ApduControl
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "KnxGroupAddress":
-		var obj *model.KnxGroupAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "GroupObjectDescriptorRealisationType6":
-		var obj *model.GroupObjectDescriptorRealisationType6
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "GroupObjectDescriptorRealisationType7":
-		var obj *model.GroupObjectDescriptorRealisationType7
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "MACAddress":
-		var obj *model.MACAddress
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "GroupObjectDescriptorRealisationType2":
-		var obj *model.GroupObjectDescriptorRealisationType2
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "ApduData":
-		var obj *model.ApduData
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
-	case "GroupObjectDescriptorRealisationType1":
-		var obj *model.GroupObjectDescriptorRealisationType1
-		err := xml.Unmarshal([]byte(xmlString), &obj)
-		if err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling xml")
-		}
-		return obj, nil
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

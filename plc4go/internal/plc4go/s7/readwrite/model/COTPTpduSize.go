@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -32,9 +31,7 @@ type COTPTpduSize int8
 
 type ICOTPTpduSize interface {
 	SizeInBytes() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -155,20 +152,18 @@ func (m COTPTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPTpduSizeParse(io utils.ReadBuffer) (COTPTpduSize, error) {
-	val, err := io.ReadInt8("COTPTpduSize", 8)
+func COTPTpduSizeParse(readBuffer utils.ReadBuffer) (COTPTpduSize, error) {
+	val, err := readBuffer.ReadInt8("COTPTpduSize", 8)
 	if err != nil {
 		return 0, nil
 	}
 	return COTPTpduSizeByValue(val), nil
 }
 
-func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteInt8("COTPTpduSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e COTPTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt8("COTPTpduSize", 8, int8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -188,7 +183,6 @@ func (m *COTPTpduSize) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m COTPTpduSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -218,13 +212,4 @@ func (e COTPTpduSize) name() string {
 
 func (e COTPTpduSize) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m COTPTpduSize) Box(s string, i int) utils.AsciiBox {
-	boxName := "COTPTpduSize"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 2, int8(m), m.name()), -1)
 }

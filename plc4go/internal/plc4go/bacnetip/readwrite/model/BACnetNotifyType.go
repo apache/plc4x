@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -94,20 +91,18 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(io utils.ReadBuffer) (BACnetNotifyType, error) {
-	val, err := io.ReadUint8("BACnetNotifyType", 4)
+func BACnetNotifyTypeParse(readBuffer utils.ReadBuffer) (BACnetNotifyType, error) {
+	val, err := readBuffer.ReadUint8("BACnetNotifyType", 4)
 	if err != nil {
 		return 0, nil
 	}
 	return BACnetNotifyTypeByValue(val), nil
 }
 
-func (e BACnetNotifyType) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint8("BACnetNotifyType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e BACnetNotifyType) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint8("BACnetNotifyType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -127,7 +122,6 @@ func (m *BACnetNotifyType) UnmarshalXML(d *xml.Decoder, start xml.StartElement) 
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m BACnetNotifyType) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -149,13 +143,4 @@ func (e BACnetNotifyType) name() string {
 
 func (e BACnetNotifyType) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m BACnetNotifyType) Box(s string, i int) utils.AsciiBox {
-	boxName := "BACnetNotifyType"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 1, uint8(m), m.name()), -1)
 }

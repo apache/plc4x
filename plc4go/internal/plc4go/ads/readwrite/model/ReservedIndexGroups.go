@@ -21,7 +21,6 @@ package model
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"io"
 )
@@ -31,9 +30,7 @@ import (
 type ReservedIndexGroups uint32
 
 type IReservedIndexGroups interface {
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler
-	xml.Unmarshaler
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 const (
@@ -256,20 +253,18 @@ func (m ReservedIndexGroups) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ReservedIndexGroupsParse(io utils.ReadBuffer) (ReservedIndexGroups, error) {
-	val, err := io.ReadUint32("ReservedIndexGroups", 32)
+func ReservedIndexGroupsParse(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
+	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, nil
 	}
 	return ReservedIndexGroupsByValue(val), nil
 }
 
-func (e ReservedIndexGroups) Serialize(io utils.WriteBuffer) error {
-	err := io.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
-	return err
+func (e ReservedIndexGroups) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.name()))
 }
 
-// Deprecated: the utils.ReadBufferWriteBased should be used instead
 func (m *ReservedIndexGroups) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var token xml.Token
 	var err error
@@ -289,7 +284,6 @@ func (m *ReservedIndexGroups) UnmarshalXML(d *xml.Decoder, start xml.StartElemen
 	}
 }
 
-// Deprecated: the utils.WriteBufferReadBased should be used instead
 func (m ReservedIndexGroups) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeElement(m.String(), start); err != nil {
 		return err
@@ -365,13 +359,4 @@ func (e ReservedIndexGroups) name() string {
 
 func (e ReservedIndexGroups) String() string {
 	return e.name()
-}
-
-// Deprecated: the utils.WriteBufferBoxBased should be used instead
-func (m ReservedIndexGroups) Box(s string, i int) utils.AsciiBox {
-	boxName := "ReservedIndexGroups"
-	if s != "" {
-		boxName += "/" + s
-	}
-	return utils.BoxString(boxName, fmt.Sprintf("%#0*x %s", 8, uint32(m), m.name()), -1)
 }
