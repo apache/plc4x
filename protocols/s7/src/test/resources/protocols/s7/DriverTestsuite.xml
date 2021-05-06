@@ -400,7 +400,7 @@
     <name>Single element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
@@ -559,7 +559,7 @@
     <name>Single element read request with disabled PUT/GET</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
