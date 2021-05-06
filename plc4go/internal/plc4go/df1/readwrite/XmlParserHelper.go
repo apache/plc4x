@@ -42,13 +42,9 @@ func init() {
 func (m Df1XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "DF1Symbol":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewDF1Symbol
-		return nil, errors.New("DF1Symbol unmappable")
+		return model.DF1SymbolParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1Command":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewDF1Command
-		return nil, errors.New("DF1Command unmappable")
+		return model.DF1CommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

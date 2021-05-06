@@ -42,17 +42,14 @@ func init() {
 func (m FirmataXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "SysexCommand":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewSysexCommand
-		return nil, errors.New("SysexCommand unmappable")
+		response := parserArguments[0] == "true"
+		return model.SysexCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataMessage":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewFirmataMessage
-		return nil, errors.New("FirmataMessage unmappable")
+		response := parserArguments[0] == "true"
+		return model.FirmataMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "FirmataCommand":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewFirmataCommand
-		return nil, errors.New("FirmataCommand unmappable")
+		response := parserArguments[0] == "true"
+		return model.FirmataCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

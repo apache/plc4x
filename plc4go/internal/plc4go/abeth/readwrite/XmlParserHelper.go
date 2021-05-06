@@ -42,21 +42,18 @@ func init() {
 func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "DF1RequestCommand":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewDF1RequestCommand
-		return nil, errors.New("DF1RequestCommand unmappable")
+		return model.DF1RequestCommandParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1RequestMessage":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewDF1RequestMessage
-		return nil, errors.New("DF1RequestMessage unmappable")
+		return model.DF1RequestMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1ResponseMessage":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewDF1ResponseMessage
-		return nil, errors.New("DF1ResponseMessage unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		payloadLength := uint16(atoi)
+		return model.DF1ResponseMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
 	case "CIPEncapsulationPacket":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCIPEncapsulationPacket
-		return nil, errors.New("CIPEncapsulationPacket unmappable")
+		return model.CIPEncapsulationPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

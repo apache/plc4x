@@ -52,33 +52,33 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "DeviceConfigurationAckDataBlock":
 		return model.DeviceConfigurationAckDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionRequestInformation":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewConnectionRequestInformation
-		return nil, errors.New("ConnectionRequestInformation unmappable")
+		return model.ConnectionRequestInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Apdu":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewApdu
-		return nil, errors.New("Apdu unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		dataLength := uint8(atoi)
+		return model.ApduParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "HPAIDiscoveryEndpoint":
 		return model.HPAIDiscoveryEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ProjectInstallationIdentifier":
 		return model.ProjectInstallationIdentifierParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ServiceId":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewServiceId
-		return nil, errors.New("ServiceId unmappable")
+		return model.ServiceIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "HPAIDataEndpoint":
 		return model.HPAIDataEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMI":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCEMI
-		return nil, errors.New("CEMI unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		size := uint8(atoi)
+		return model.CEMIParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
 	case "KnxNetIpMessage":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewKnxNetIpMessage
-		return nil, errors.New("KnxNetIpMessage unmappable")
+		return model.KnxNetIpMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DeviceStatus":
 		return model.DeviceStatusParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "IPAddress":
@@ -86,19 +86,14 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationTypeB":
 		return model.GroupObjectDescriptorRealisationTypeBParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMIAdditionalInformation":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCEMIAdditionalInformation
-		return nil, errors.New("CEMIAdditionalInformation unmappable")
+		return model.CEMIAdditionalInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ComObjectTable":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewComObjectTable
-		return nil, errors.New("ComObjectTable unmappable")
+		firmwareType := model.FirmwareTypeByName(parserArguments[0])
+		return model.ComObjectTableParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), &firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionResponseDataBlock":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewConnectionResponseDataBlock
-		return nil, errors.New("ConnectionResponseDataBlock unmappable")
+		return model.ConnectionResponseDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TunnelingRequestDataBlock":
 		return model.TunnelingRequestDataBlockParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DIBDeviceInfo":
@@ -108,21 +103,23 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "DIBSuppSvcFamilies":
 		return model.DIBSuppSvcFamiliesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "LDataFrame":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewLDataFrame
-		return nil, errors.New("LDataFrame unmappable")
+		return model.LDataFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduDataExt":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewApduDataExt
-		return nil, errors.New("ApduDataExt unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		length := uint8(atoi)
+		return model.ApduDataExtParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length)
 	case "ApduControl":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewApduControl
-		return nil, errors.New("ApduControl unmappable")
+		return model.ApduControlParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "KnxGroupAddress":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewKnxGroupAddress
-		return nil, errors.New("KnxGroupAddress unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		numLevels := uint8(atoi)
+		return model.KnxGroupAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels)
 	case "GroupObjectDescriptorRealisationType6":
 		return model.GroupObjectDescriptorRealisationType6Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "GroupObjectDescriptorRealisationType7":
@@ -132,9 +129,12 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationType2":
 		return model.GroupObjectDescriptorRealisationType2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduData":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewApduData
-		return nil, errors.New("ApduData unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		dataLength := uint8(atoi)
+		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}

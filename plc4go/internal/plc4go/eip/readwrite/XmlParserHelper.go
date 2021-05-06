@@ -42,15 +42,15 @@ func init() {
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "CipService":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCipService
-		return nil, errors.New("CipService unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		serviceLen := uint16(atoi)
+		return model.CipServiceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
 	case "EipPacket":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewEipPacket
-		return nil, errors.New("EipPacket unmappable")
+		return model.EipPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Services":
-		//var servicesLen uint16
 		atoi, err := strconv.Atoi(parserArguments[0])
 		if err != nil {
 			return nil, err
@@ -58,7 +58,6 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		servicesLen := uint16(atoi)
 		return model.ServicesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
 	case "CipExchange":
-		//var exchangeLen uint16
 		atoi, err := strconv.Atoi(parserArguments[0])
 		if err != nil {
 			return nil, err

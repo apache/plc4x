@@ -44,51 +44,59 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	case "SzlId":
 		return model.SzlIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Message":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7Message
-		return nil, errors.New("S7Message unmappable")
+		return model.S7MessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadStatusItem":
 		return model.S7VarPayloadStatusItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Parameter":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7Parameter
-		return nil, errors.New("S7Parameter unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		messageType := uint8(atoi)
+		return model.S7ParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType)
 	case "SzlDataTreeItem":
 		return model.SzlDataTreeItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "COTPPacket":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCOTPPacket
-		return nil, errors.New("COTPPacket unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		cotpLen := uint16(atoi)
+		return model.COTPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cotpLen)
 	case "S7PayloadUserDataItem":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7PayloadUserDataItem
-		return nil, errors.New("S7PayloadUserDataItem unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		cpuFunctionType := uint8(atoi)
+		return model.S7PayloadUserDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType)
 	case "COTPParameter":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewCOTPParameter
-		return nil, errors.New("COTPParameter unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		rest := uint8(atoi)
+		return model.COTPParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), rest)
 	case "TPKTPacket":
 		return model.TPKTPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Payload":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7Payload
-		return nil, errors.New("S7Payload unmappable")
+		atoi, err := strconv.Atoi(parserArguments[0])
+		if err != nil {
+			return nil, err
+		}
+		messageType := uint8(atoi)
+		// TODO: find a way to parse the sub types
+		var parameter model.S7Parameter
+		return model.S7PayloadParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, &parameter)
 	case "S7VarRequestParameterItem":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7VarRequestParameterItem
-		return nil, errors.New("S7VarRequestParameterItem unmappable")
+		return model.S7VarRequestParameterItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadDataItem":
-		//var lastItem bool
 		lastItem := parserArguments[0] == "true"
 		return model.S7VarPayloadDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), lastItem)
 	case "S7Address":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7Address
-		return nil, errors.New("S7Address unmappable")
+		return model.S7AddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7ParameterUserDataItem":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewS7ParameterUserDataItem
-		return nil, errors.New("S7ParameterUserDataItem unmappable")
+		return model.S7ParameterUserDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

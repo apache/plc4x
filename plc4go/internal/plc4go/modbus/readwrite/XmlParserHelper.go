@@ -48,19 +48,16 @@ func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserAr
 	case "ModbusConstants":
 		return model.ModbusConstantsParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusTcpADU":
-		//var response bool
 		response := parserArguments[0] == "true"
 		return model.ModbusTcpADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "ModbusPDUWriteFileRecordResponseItem":
 		return model.ModbusPDUWriteFileRecordResponseItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusPDU":
-		// TODO: implement class org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition
-		_ = model.NewModbusPDU
-		return nil, errors.New("ModbusPDU unmappable")
+		response := parserArguments[0] == "true"
+		return model.ModbusPDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ModbusSerialADU":
-		//var response bool
 		response := parserArguments[0] == "true"
 		return model.ModbusSerialADUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	}
