@@ -26,6 +26,6 @@ import (
 )
 
 func TestEipParserSerializer(t *testing.T) {
-	t.Skip("Still a WIP")
+	//t.Skip("Still a WIP")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuite.xml")
 }

@@ -34,7 +34,7 @@
         <len dataType="uint" bitLength="16">4</len>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -65,7 +65,7 @@
         <len dataType="uint" bitLength="16">40</len>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">1</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -104,7 +104,7 @@
                           <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
                               but there seems to be some mismatch with the XML generation from Objects
                               (arguments are also in the wrong order) -->
-                          <tag>
+                          <tag isList="true">
                             <value dataType="int" bitLength="8">-111</value>
                             <value dataType="int" bitLength="8">4</value>
                             <value dataType="int" bitLength="8">114</value>
@@ -139,7 +139,7 @@
         <len dataType="uint" bitLength="16">26</len>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">1</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -169,7 +169,7 @@
                     <dataType> <!--0xC4-->
                       <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
                     </dataType>
-                    <data>  <!--0x216 but again issue when parsing Object to XML-->
+                    <data isList="true">  <!--0x216 but again issue when parsing Object to XML-->
                       <value dataType="int" bitLength="8">0</value>
                       <value dataType="int" bitLength="8">0</value>
                       <value dataType="int" bitLength="8">2</value>
@@ -197,7 +197,7 @@
         <len dataType="uint" bitLength="16">52</len>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">1</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
@@ -236,7 +236,7 @@
                           <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
                               but there seems to be some mismatch with the XML generation from Objects
                               (arguments are also in the wrong order) -->
-                          <tag>
+                          <tag isList="true">
                             <value dataType="int" bitLength="8">-111</value>
                             <value dataType="int" bitLength="8">22</value>
                             <value dataType="int" bitLength="8">67</value>
@@ -255,7 +255,7 @@
                             </CIPDataTypeCode>
                           </dataType>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
-                          <data> <!--0x14 but again issue when parsing Object to XML-->
+                          <data isList="true"> <!--0x14 but again issue when parsing Object to XML-->
                             <value dataType="int" bitLength="8">0</value>
                             <value dataType="int" bitLength="8">0</value>
                             <value dataType="int" bitLength="8">0</value>
@@ -287,7 +287,7 @@
         <len dataType="uint" bitLength="16">20</len>
         <sessionHandle dataType="uint" bitLength="32">4660</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext>
+        <senderContext isList="true">
           <value dataType="uint" bitLength="8">1</value>
           <value dataType="uint" bitLength="8">0</value>
           <value dataType="uint" bitLength="8">0</value>
