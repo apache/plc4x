@@ -136,9 +136,13 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		return nil, pullErr
 	}
 	// Enum field (transportSize)
-	transportSize, _transportSizeErr := TransportSizeParse(readBuffer)
+	transportSizeCode, _transportSizeCodeErr := readBuffer.ReadUint8("TransportSize", 8)
+	if _transportSizeCodeErr != nil {
+		return nil, errors.Wrap(_transportSizeCodeErr, "Error serializing 'transportSize' field")
+	}
+	transportSize, _transportSizeErr := TransportSizeFirstEnumForFieldCode(transportSizeCode)
 	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
+		return nil, errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, closeErr

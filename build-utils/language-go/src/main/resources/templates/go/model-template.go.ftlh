@@ -633,7 +633,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_
 				<#assign checksumField = field>
 				<#assign simpleTypeReference = checksumField.type>
 
-			// Checksum Field (checksum)
+	// Checksum Field (checksum)
 	{
 		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference)}
 		if _checksumRefErr != nil {
@@ -682,11 +682,23 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_
 	if pullErr := readBuffer.PullContext("${enumField.name}"); pullErr != nil {
 		return nil, pullErr
 	}
+				<#if enumField.fieldName?has_content>
+	// Enum field (${enumField.name})
+	${enumField.name}${enumField.fieldName?cap_first}, _${enumField.name}${enumField.fieldName?cap_first}Err := ${helper.getReadBufferReadMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName))}
+	if _${enumField.name}${enumField.fieldName?cap_first}Err != nil {
+		return nil, errors.Wrap(_${enumField.name}${enumField.fieldName?cap_first}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}FirstEnumForField${enumField.fieldName?cap_first}(${enumField.name}${enumField.fieldName?cap_first})
+	if _${enumField.name}Err != nil {
+		return nil, errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+				<#else>
 	// Enum field (${enumField.name})
 	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 	if _${enumField.name}Err != nil {
 		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
+				</#if>
 	if closeErr := readBuffer.CloseContext("${enumField.name}"); closeErr != nil {
 		return nil, closeErr
 	}
