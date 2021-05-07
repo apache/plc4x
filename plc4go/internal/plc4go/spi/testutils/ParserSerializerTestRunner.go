@@ -21,7 +21,6 @@ package testutils
 
 import (
 	"encoding/hex"
-	"encoding/xml"
 	"fmt"
 	abethModel "github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
@@ -161,7 +160,6 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					var err error
 					serializable := msg.(utils.Serializable)
 					buffer := utils.NewXmlWriteBuffer()
-					useOldXmlCompare := false
 					if err = serializable.Serialize(buffer); err == nil {
 						actualXml := buffer.GetXmlString()
 						err = CompareResults([]byte(actualXml), []byte(referenceSerialized))
@@ -191,20 +189,6 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 								actualXml,
 								err,
 								testCaseName)
-							useOldXmlCompare = true
-						}
-					}
-					if useOldXmlCompare {
-						// Serialize the parsed object to XML
-						actualXml, err := xml.Marshal(msg)
-						if err != nil {
-							t.Error("Error serializing the actual message: " + err.Error())
-							return
-						}
-
-						// Compare the actual and the expected xml
-						err = CompareResults(actualXml, []byte(referenceSerialized))
-						if err != nil {
 							t.Error("Error comparing the results: " + err.Error())
 							return
 						}
