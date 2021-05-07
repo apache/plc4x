@@ -62,7 +62,7 @@ func GroupAddressToString(groupAddress *driverModel.KnxGroupAddress) string {
 }
 
 func Int8ArrayToKnxAddress(data []int8) *driverModel.KnxAddress {
-	readBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(data))
+	readBuffer := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(data))
 	knxAddress, err := driverModel.KnxAddressParse(readBuffer)
 	if err != nil {
 		return nil
@@ -93,7 +93,7 @@ func Uint16ToKnxGroupAddress(data uint16, numLevels uint8) *driverModel.KnxGroup
 	rawData := make([]uint8, 2)
 	rawData[0] = uint8(data >> 8)
 	rawData[1] = uint8(data & 0xFF)
-	readBuffer := utils.NewReadBuffer(rawData)
+	readBuffer := utils.NewReadBufferByteBased(rawData)
 	knxGroupAddress, err := driverModel.KnxGroupAddressParse(readBuffer, numLevels)
 	if err != nil {
 		return nil

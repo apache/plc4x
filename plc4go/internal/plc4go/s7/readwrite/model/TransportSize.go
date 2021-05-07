@@ -225,7 +225,7 @@ func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (TransportSize, 
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Supported_S7_300 not found", value)
 }
 
 func (e TransportSize) Supported_LOGO() bool {
@@ -347,7 +347,7 @@ func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (TransportSize, er
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Supported_LOGO not found", value)
 }
 
 func (e TransportSize) Code() uint8 {
@@ -469,7 +469,7 @@ func TransportSizeFirstEnumForFieldCode(value uint8) (TransportSize, error) {
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Code not found", value)
 }
 
 func (e TransportSize) SizeInBytes() uint8 {
@@ -591,7 +591,7 @@ func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (TransportSize, erro
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
 }
 
 func (e TransportSize) Supported_S7_400() bool {
@@ -713,7 +713,7 @@ func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (TransportSize, 
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Supported_S7_400 not found", value)
 }
 
 func (e TransportSize) Supported_S7_1200() bool {
@@ -835,7 +835,7 @@ func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (TransportSize,
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Supported_S7_1200 not found", value)
 }
 
 func (e TransportSize) ShortName() uint8 {
@@ -957,7 +957,7 @@ func TransportSizeFirstEnumForFieldShortName(value uint8) (TransportSize, error)
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing ShortName not found", value)
 }
 
 func (e TransportSize) Supported_S7_1500() bool {
@@ -1079,7 +1079,7 @@ func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (TransportSize,
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Supported_S7_1500 not found", value)
 }
 
 func (e TransportSize) DataTransportSize() DataTransportSize {
@@ -1201,7 +1201,7 @@ func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (T
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing DataTransportSize not found", value)
 }
 
 func (e TransportSize) BaseType() TransportSize {
@@ -1323,7 +1323,7 @@ func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize,
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing BaseType not found", value)
 }
 
 func (e TransportSize) DataProtocolId() string {
@@ -1445,7 +1445,7 @@ func TransportSizeFirstEnumForFieldDataProtocolId(value string) (TransportSize, 
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing DataProtocolId not found", value)
 }
 func TransportSizeByValue(value int8) TransportSize {
 	switch value {

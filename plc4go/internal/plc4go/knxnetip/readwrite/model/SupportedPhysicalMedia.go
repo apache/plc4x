@@ -186,7 +186,7 @@ func SupportedPhysicalMediaFirstEnumForFieldKnxSupport(value bool) (SupportedPhy
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing KnxSupport not found", value)
 }
 
 func (e SupportedPhysicalMedia) Description() string {
@@ -288,7 +288,7 @@ func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (Supported
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Description not found", value)
 }
 func SupportedPhysicalMediaByValue(value uint8) SupportedPhysicalMedia {
 	switch value {

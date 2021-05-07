@@ -32,3 +32,7 @@ func FirmataUtilsParseSysexString(io utils.ReadBuffer) int8 {
 func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, i int8) {
 
 }
+
+func FirmataUtilsLengthSysexString(data []int8) uint16 {
+	return 0
+}

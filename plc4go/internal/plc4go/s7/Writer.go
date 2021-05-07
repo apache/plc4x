@@ -235,7 +235,7 @@ func serializePlcValue(field model.PlcField, plcValue values.PlcValue) (*readWri
 	if s7StringField, ok := field.(*PlcStringField); ok {
 		stringLength = s7StringField.stringLength
 	}
-	io := utils.NewWriteBuffer()
+	io := utils.NewWriteBufferByteBased()
 	err := readWriteModel.DataItemSerialize(io, plcValue, s7Field.GetDataType().DataProtocolId(), int32(stringLength))
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error serializing field item of type: '%v'", s7Field.GetDataType())

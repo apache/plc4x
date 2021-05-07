@@ -103,8 +103,8 @@ func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bo
 	lengthInBits += 8
 
 	// Manual Array Field (fileName)
-	// TODO: below expression doesn't work yet
-	// lengthInBits += FirmataUtilsLengthSysexString(fileName) * 8
+	fileName := m.FileName
+	lengthInBits += FirmataUtilsLengthSysexString(fileName) * 8
 
 	return lengthInBits
 }
@@ -187,9 +187,9 @@ func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBu
 			if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			//for _, element := range m.FileName {
-			//FirmataUtilsSerializeSysexString(writeBuffer, m.Element)
-			//}
+			for _, Element := range m.FileName {
+				FirmataUtilsSerializeSysexString(writeBuffer, Element)
+			}
 			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
 			}

@@ -221,7 +221,7 @@ func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (ModbusDataType, e
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing DataTypeSize not found", value)
 }
 func ModbusDataTypeByValue(value uint8) ModbusDataType {
 	switch value {

@@ -248,9 +248,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		var expectedWriteBuffer utils.WriteBufferByteBased
 		switch m.driverName {
 		case "ads":
-			expectedWriteBuffer = utils.NewLittleEndianWriteBuffer()
+			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
 		default:
-			expectedWriteBuffer = utils.NewWriteBuffer()
+			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		}
 		err = expectedSerializable.Serialize(expectedWriteBuffer)
 		if err != nil {
@@ -283,19 +283,19 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				switch m.driverName {
 				case "modbus":
 					expectation := expectedSerializable.(*modbusModel.ModbusTcpADU)
-					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBuffer(actualRawOutput), false)
+					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBufferByteBased(actualRawOutput), false)
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "ads":
 					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
-					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBuffer(actualRawOutput))
+					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "s7":
 					expectation := expectedSerializable.(*s7Model.TPKTPacket)
-					actual, err := s7Model.TPKTPacketParse(utils.NewReadBuffer(actualRawOutput))
+					actual, err := s7Model.TPKTPacketParse(utils.NewReadBufferByteBased(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "knx":
 					expectation := expectedSerializable.(*knxModel.KnxNetIpMessage)
-					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBuffer(actualRawOutput))
+					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBufferByteBased(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				}
 				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", actualRawOutput, expectedRawOutput)
@@ -342,9 +342,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		var wb utils.WriteBufferByteBased
 		switch m.driverName {
 		case "ads":
-			wb = utils.NewLittleEndianWriteBuffer()
+			wb = utils.NewLittleEndianWriteBufferByteBased()
 		default:
-			wb = utils.NewWriteBuffer()
+			wb = utils.NewWriteBufferByteBased()
 		}
 		err = expectedSerializable.Serialize(wb)
 		if err != nil {

@@ -35,7 +35,7 @@ type WriteBufferByteBased interface {
 	GetTotalBytes() uint64
 }
 
-func NewWriteBuffer() WriteBufferByteBased {
+func NewWriteBufferByteBased() WriteBufferByteBased {
 	data := &bytes.Buffer{}
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{
@@ -45,7 +45,7 @@ func NewWriteBuffer() WriteBufferByteBased {
 	}
 }
 
-func NewLittleEndianWriteBuffer() WriteBufferByteBased {
+func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
 	data := &bytes.Buffer{}
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{

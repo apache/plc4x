@@ -149,7 +149,7 @@ func ComObjectValueTypeFirstEnumForFieldSizeInBytes(value uint8) (ComObjectValue
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
 }
 func ComObjectValueTypeByValue(value uint8) ComObjectValueType {
 	switch value {

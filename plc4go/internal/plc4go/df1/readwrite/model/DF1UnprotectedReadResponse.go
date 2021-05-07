@@ -90,8 +90,8 @@ func (m *DF1UnprotectedReadResponse) LengthInBitsConditional(lastItem bool) uint
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
 	// Manual Array Field (data)
-	// TODO: below expression doesn't work yet
-	// lengthInBits += DF1UtilsDataLength(data) * 8
+	data := m.Data
+	lengthInBits += DF1UtilsDataLength(data) * 8
 
 	return lengthInBits
 }
@@ -146,9 +146,9 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			//for _, element := range m.Data {
-			//DF1UtilsWriteData(writeBuffer, m.Element)
-			//}
+			for _, Element := range m.Data {
+				DF1UtilsWriteData(writeBuffer, Element)
+			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
 			}

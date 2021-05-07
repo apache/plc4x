@@ -48,7 +48,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	tcpPaket := model.CastAmsTCPPacket(message)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBuffer()
+	wb := utils.NewLittleEndianWriteBufferByteBased()
 	err := tcpPaket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
@@ -84,7 +84,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBuffer(data)
+		rb := utils.NewLittleEndianReadBufferByteBased(data)
 		tcpPacket, err := model.AmsTCPPacketParse(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")

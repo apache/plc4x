@@ -90,7 +90,7 @@ func AccessLevelFirstEnumForFieldPurpose(value string) (AccessLevel, error) {
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Purpose not found", value)
 }
 
 func (e AccessLevel) NeedsAuthentication() bool {
@@ -128,7 +128,7 @@ func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, e
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing NeedsAuthentication not found", value)
 }
 func AccessLevelByValue(value uint8) AccessLevel {
 	switch value {

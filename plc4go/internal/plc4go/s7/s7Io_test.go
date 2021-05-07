@@ -903,7 +903,7 @@ TBD
 				}
 			})
 			t.Run("Simple Binary Serialize", func(t *testing.T) {
-				buffer := utils.NewWriteBuffer()
+				buffer := utils.NewWriteBufferByteBased()
 				if err := tt.args.debuggable.Serialize(buffer); err != nil {
 					t.Error(err)
 				}

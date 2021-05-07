@@ -371,14 +371,14 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
 		data := utils.Int8ArrayToUint8Array(readResponse.Data)
-		rb = utils.NewLittleEndianReadBuffer(data)
+		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		for _, fieldName := range readRequest.GetFieldNames() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
 	case *readWriteModel.AdsReadWriteResponse:
 		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
 		data := utils.Int8ArrayToUint8Array(readResponse.Data)
-		rb = utils.NewLittleEndianReadBuffer(data)
+		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		// When parsing a multi-item response, the error codes of each items come
 		// in sequence and then come the values.
 		for _, fieldName := range readRequest.GetFieldNames() {

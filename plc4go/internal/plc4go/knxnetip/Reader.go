@@ -202,7 +202,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 				values[stringAddress] = internalValues.NewPlcByteArray(utils.Int8ArrayToByteArray(int8s))
 			} else {
 				// Decode the data according to the fields type
-				rb := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(int8s))
+				rb := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(int8s))
 				if field.GetFieldType() == nil {
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
 				}

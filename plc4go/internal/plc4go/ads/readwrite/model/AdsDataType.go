@@ -300,7 +300,7 @@ func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, error) {
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
 }
 
 func (e AdsDataType) DataFormatName() string {
@@ -478,7 +478,7 @@ func AdsDataTypeFirstEnumForFieldDataFormatName(value string) (AdsDataType, erro
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing DataFormatName not found", value)
 }
 func AdsDataTypeByValue(value int8) AdsDataType {
 	switch value {

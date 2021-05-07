@@ -10295,7 +10295,7 @@ func ComObjectTableAddressesFirstEnumForFieldComObjectTableAddress(value uint16)
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing ComObjectTableAddress not found", value)
 }
 func ComObjectTableAddressesByValue(value uint16) ComObjectTableAddresses {
 	switch value {

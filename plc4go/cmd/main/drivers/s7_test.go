@@ -33,7 +33,7 @@ func TestS7(t *testing.T) {
 	if err != nil {
 		// Output an error ...
 	}
-	rb := utils.NewReadBuffer(request)
+	rb := utils.NewReadBufferByteBased(request)
 	adu, err := model.TPKTPacketParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)

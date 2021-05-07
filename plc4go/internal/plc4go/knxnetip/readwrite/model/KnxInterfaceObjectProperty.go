@@ -1358,7 +1358,7 @@ func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyDataType(value KnxProper
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing PropertyDataType not found", value)
 }
 
 func (e KnxInterfaceObjectProperty) Name() string {
@@ -2240,7 +2240,7 @@ func KnxInterfaceObjectPropertyFirstEnumForFieldName(value string) (KnxInterface
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Name not found", value)
 }
 
 func (e KnxInterfaceObjectProperty) PropertyId() uint8 {
@@ -3122,7 +3122,7 @@ func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyId(value uint8) (KnxInte
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing PropertyId not found", value)
 }
 
 func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
@@ -4004,7 +4004,7 @@ func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObj
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing ObjectType not found", value)
 }
 func KnxInterfaceObjectPropertyByValue(value uint32) KnxInterfaceObjectProperty {
 	switch value {

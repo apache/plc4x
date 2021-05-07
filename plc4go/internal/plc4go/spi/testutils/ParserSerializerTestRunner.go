@@ -119,9 +119,9 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var readBuffer utils.ReadBuffer
 				if littleEndian {
-					readBuffer = utils.NewLittleEndianReadBuffer(rawInput)
+					readBuffer = utils.NewLittleEndianReadBufferByteBased(rawInput)
 				} else {
-					readBuffer = utils.NewReadBuffer(rawInput)
+					readBuffer = utils.NewReadBufferByteBased(rawInput)
 				}
 
 				// Parse the input according to the settings of the testcase
@@ -186,9 +186,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 									// Diff
 									"%[3]s\n"+
 									// Double Border
-									"%[1]s\n%[1]s\n"+
-									// Text
-									"Falling back to old jackson based xml mapper\n",
+									"%[1]s\n%[1]s\n",
 								border,
 								actualXml,
 								err,
@@ -221,9 +219,9 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				}
 				var writeBuffer utils.WriteBufferByteBased
 				if littleEndian {
-					writeBuffer = utils.NewLittleEndianWriteBuffer()
+					writeBuffer = utils.NewLittleEndianWriteBufferByteBased()
 				} else {
-					writeBuffer = utils.NewWriteBuffer()
+					writeBuffer = utils.NewWriteBufferByteBased()
 				}
 				err = s.Serialize(writeBuffer)
 				if !ok {

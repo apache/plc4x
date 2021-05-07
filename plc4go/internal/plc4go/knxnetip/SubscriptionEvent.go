@@ -51,7 +51,7 @@ func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
  */
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBuffer(utils.Int8ArrayToUint8Array(rawAddress))
+	rawAddressReadBuffer := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(rawAddress))
 	field := m.DefaultPlcSubscriptionEvent.GetField(name)
 	var groupAddress *driverModel.KnxGroupAddress
 	var err error

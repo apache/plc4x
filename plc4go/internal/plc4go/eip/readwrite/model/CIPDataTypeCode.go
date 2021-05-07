@@ -111,7 +111,7 @@ func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, error) 
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Size not found", value)
 }
 func CIPDataTypeCodeByValue(value uint16) CIPDataTypeCode {
 	switch value {

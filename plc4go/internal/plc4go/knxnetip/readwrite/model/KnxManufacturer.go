@@ -3366,7 +3366,7 @@ func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, erro
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Number not found", value)
 }
 
 func (e KnxManufacturer) Name() string {
@@ -5588,7 +5588,7 @@ func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, error)
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing Name not found", value)
 }
 func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	switch value {

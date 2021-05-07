@@ -300,9 +300,8 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#assign manualArrayField = field>
 
 	// Manual Array Field (${manualArrayField.name})
-	<#-- TODO: implement below-->
-	// TODO: below expression doesn't work yet
-	// lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
+	${manualArrayField.name} := m.${manualArrayField.name?cap_first}<#-- TODO: ugly workaround for missing static evaluation-->
+	lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
 					<#break>
 				<#case "manual">
 					<#assign manualField = field>
@@ -1105,10 +1104,10 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 		if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		//for _, element := range m.${manualArrayField.name?cap_first} {
-			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong -->
-			//${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
-		//}
+		for _, Element := range m.${manualArrayField.name?cap_first} {
+			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong therefore we substract it with substring-->
+			${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)?replace("m.","")}
+		}
 		if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}

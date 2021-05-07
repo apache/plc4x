@@ -234,7 +234,7 @@ func DeviceDescriptorFirstEnumForFieldFirmwareType(value FirmwareType) (DeviceDe
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing FirmwareType not found", value)
 }
 
 func (e DeviceDescriptor) MediumType() DeviceDescriptorMediumType {
@@ -368,7 +368,7 @@ func DeviceDescriptorFirstEnumForFieldMediumType(value DeviceDescriptorMediumTyp
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v not found", value)
+	return 0, errors.Errorf("enum for %v describing MediumType not found", value)
 }
 func DeviceDescriptorByValue(value uint16) DeviceDescriptor {
 	switch value {
