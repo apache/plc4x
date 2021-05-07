@@ -21,6 +21,10 @@ package org.apache.plc4x.test.parserserializer.exceptions;
 
 public class ParserSerializerTestsuiteException extends Exception {
 
+    public ParserSerializerTestsuiteException(Throwable cause) {
+        super(cause);
+    }
+
     public ParserSerializerTestsuiteException(String message) {
         super(message);
     }

@@ -139,8 +139,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             MessageIO messageIO = MessageResolver.getMessageIOStaticLinked(
                 testcase.getProtocolName(),
                 testcase.getOutputFlavor(),
-                testcase.getXml().elements().get(0).getName(),
-                testcase.getXml().elements().get(0).attributeValue(new QName("className"))
+                testcase.getXml().elements().get(0).getName()
             );
             Object parsedOutput = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());
             MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(

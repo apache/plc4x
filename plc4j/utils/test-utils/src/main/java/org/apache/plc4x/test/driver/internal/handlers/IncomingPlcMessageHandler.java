@@ -29,7 +29,6 @@ import org.apache.plc4x.test.driver.internal.DriverTestsuiteConfiguration;
 import org.apache.plc4x.test.migration.MessageResolver;
 import org.apache.plc4x.test.migration.MessageValidatorAndMigrator;
 import org.dom4j.Element;
-import org.dom4j.QName;
 
 import java.util.List;
 
@@ -57,10 +56,9 @@ public class IncomingPlcMessageHandler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public byte[] getBytesFromXml(Element referenceXml, boolean bigEndian) throws DriverTestsuiteException {
         final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, !bigEndian);
-        final String className = referenceXml.attributeValue(new QName("className"));
-        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getProtocolName(), driverTestsuiteConfiguration.getOutputFlavor(), referenceXml.getName(), className);
+        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getProtocolName(), driverTestsuiteConfiguration.getOutputFlavor(), referenceXml.getName());
         // Get Message and Validate
-        Message message = MessageValidatorAndMigrator.validateInboundMessageMigrateAndGet(messageIO, referenceXml, className, parserArguments, driverTestsuiteConfiguration.isAutoMigrate(), driverTestsuiteConfiguration.getSuiteUri());
+        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
 
         // Get Bytes
         try {

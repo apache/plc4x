@@ -33,7 +33,7 @@
     <name>Single element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
@@ -116,7 +116,7 @@
     <name>Array element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
@@ -206,7 +206,7 @@
     <name>Multi element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.internal.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz1</name>
@@ -350,7 +350,7 @@
     <name>Single element write request</name>
     <steps>
       <api-request name="Receive Write Request from application">
-        <TestWriteRequest className="org.apache.plc4x.test.driver.internal.api.TestWriteRequest">
+        <TestWriteRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
               <name>hurz</name>
@@ -435,7 +435,7 @@
     <name>Array element write request</name>
     <steps>
       <api-request name="Receive Write Request from application">
-        <TestWriteRequest className="org.apache.plc4x.test.driver.internal.api.TestWriteRequest">
+        <TestWriteRequest>
           <fields>
             <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
               <name>hurz</name>

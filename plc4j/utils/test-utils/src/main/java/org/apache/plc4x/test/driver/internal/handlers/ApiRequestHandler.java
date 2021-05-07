@@ -42,10 +42,9 @@ public class ApiRequestHandler {
 
     public void executeApiRequest(PlcConnection plcConnection) {
         assert synchronizer != null;
-        // TODO: replace with language agnostic lookup
-        String className = payload.attributeValue("className");
-        switch (className) {
-            case "org.apache.plc4x.test.driver.internal.api.TestReadRequest": {
+        String typeName = payload.getName();
+        switch (typeName) {
+            case "TestReadRequest": {
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                 if (payload.element("fields") != null) {
                     for (Element fieldElement : payload.element("fields").elements("field")) {
@@ -62,7 +61,7 @@ public class ApiRequestHandler {
                 synchronizer.responseFuture = plc4xRequest.execute();
                 break;
             }
-            case "org.apache.plc4x.test.driver.internal.api.TestWriteRequest": {
+            case "TestWriteRequest": {
                 final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
                 if (payload.element("fields") != null) {
                     for (Element fieldElement : payload.element("fields").elements("field")) {
@@ -86,7 +85,7 @@ public class ApiRequestHandler {
                 break;
             }
             default:
-                throw new PlcRuntimeException("Unknown class name" + className);
+                throw new PlcRuntimeException("Unknown class name" + typeName);
         }
     }
 

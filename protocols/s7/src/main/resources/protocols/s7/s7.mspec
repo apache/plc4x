@@ -437,7 +437,7 @@
     ['0x0D' ULINT            ['0x00'       , 'X'               , '16'                , 'INT'                   , 'null'             , 'IEC61131_ULINT'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
 
     // Floating point values
-    ['0x0E' REAL             ['0x08'       , 'D'               , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_REAL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x0E' REAL             ['0x08'       , 'D'               , '4'                 , 'null'                  , 'REAL'             , 'IEC61131_REAL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0F' LREAL            ['0x30'       , 'X'               , '8'                 , 'REAL'                  , 'null'             , 'IEC61131_LREAL'        , 'false'               , 'false'               , 'true'                 , 'true'                 , 'false'             ]]
 
     // Characters and Strings

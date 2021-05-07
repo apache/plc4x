@@ -129,7 +129,7 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	if err := e.EncodeElement(m.MemoryArea, xml.StartElement{Name: xml.Name{Local: "memoryArea"}}); err != nil {
+	if err := e.EncodeElement(m.MemoryArea.String(), xml.StartElement{Name: xml.Name{Local: "memoryArea"}}); err != nil {
 		return err
 	}
 	if err := e.EncodeElement(m.BlockNumber, xml.StartElement{Name: xml.Name{Local: "blockNumber"}}); err != nil {
