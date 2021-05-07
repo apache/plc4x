@@ -22,17 +22,24 @@ package model
 import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 
 func FirmataUtilsIsSysexEnd(io utils.ReadBuffer) bool {
-	return true
+	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
 }
 
 func FirmataUtilsParseSysexString(io utils.ReadBuffer) int8 {
-	return 0
+	aByte, err := io.ReadInt8("", 8)
+	if err != nil {
+		return 0
+	}
+	// Skip the empty byte.
+	_, _ = io.ReadByte("")
+	return aByte
 }
 
-func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, i int8) {
-
+func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, data int8) {
+	_ = io.WriteByte("", byte(data))
+	_ = io.WriteByte("", 0x00)
 }
 
 func FirmataUtilsLengthSysexString(data []int8) uint16 {
-	return 0
+	return uint16(len(data) * 2)
 }
