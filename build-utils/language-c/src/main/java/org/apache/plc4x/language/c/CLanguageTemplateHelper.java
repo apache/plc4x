@@ -18,12 +18,10 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
-import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
@@ -184,6 +182,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
                     return "bool";
+                case BYTE:
+                    return "char";
                 case UINT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                     if (integerTypeReference.getSizeInBits() <= 8) {
@@ -271,6 +271,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
                     return " : 1";
+                case BYTE:
+                    return " : 8";
                 case UINT:
                 case INT:
                     // If the bit-size is exactly one of the built-in tpye-sizes, omit the suffix.
@@ -348,48 +350,50 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "plc4c_spi_read_bit(io, (bool*) " + valueString + ")";
+                return "plc4c_spi_read_bit(readBuffer, (bool*) " + valueString + ")";
+            case BYTE:
+                return "plc4c_spi_read_char(readBuffer, (char*) " + valueString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_read_unsigned_byte(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint8_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_byte(readBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint8_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_read_unsigned_short(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint16_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_short(readBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint16_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_unsigned_int(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint32_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_int(readBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint32_t*) " + valueString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_unsigned_long(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint64_t*) " + valueString + ")";
+                    return "plc4c_spi_read_unsigned_long(readBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", (uint64_t*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported unsigned integer type with " + unsignedIntegerTypeReference.getSizeInBits() + " bits");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_read_signed_byte(io, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_byte(readBuffer, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_read_signed_short(io, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_short(readBuffer, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_signed_int(io, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_int(readBuffer, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_signed_long(io, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_long(readBuffer, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_float(io, " + floatTypeReference.getSizeInBits() + ", (float*) " + valueString + ")";
+                    return "plc4c_spi_read_float(readBuffer, " + floatTypeReference.getSizeInBits() + ", (float*) " + valueString + ")";
                 } else if(floatTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_double(io, " + floatTypeReference.getSizeInBits() + ", (double*) " + valueString + ")";
+                    return "plc4c_spi_read_double(readBuffer, " + floatTypeReference.getSizeInBits() + ", (double*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_read_string(io, " + toParseExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                return "plc4c_spi_read_string(readBuffer, " + toParseExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -400,48 +404,50 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "plc4c_spi_write_bit(io, " + fieldName + ")";
+                return "plc4c_spi_write_bit(writeBuffer, " + fieldName + ")";
+            case BYTE:
+                return "plc4c_spi_write_char(writeBuffer, " + fieldName + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_write_unsigned_byte(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_byte(writeBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_unsigned_short(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_short(writeBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_unsigned_int(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_int(writeBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_unsigned_long(io, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_unsigned_long(writeBuffer, " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported unsigned integer type with " + unsignedIntegerTypeReference.getSizeInBits() + " bits");
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_write_signed_byte(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_byte(writeBuffer, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_signed_short(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_short(writeBuffer, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_signed_int(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_int(writeBuffer, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_signed_long(io, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_long(writeBuffer, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_float(io, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_float(writeBuffer, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 } else if(floatTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_double(io, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_double(writeBuffer, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_write_string(io, " + toSerializationExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                return "plc4c_spi_write_string(writeBuffer, " + toSerializationExpression(getThisTypeDefinition(), field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\", " + fieldName + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
@@ -455,6 +461,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             switch (simpleTypeReference.getBaseType()) {
                 case BIT:
                     return "false";
+                case BYTE:
+                    return "0";
                 case UINT:
                 case INT:
                     return "0";
@@ -655,8 +663,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 appendVariableExpressionRest(sb, baseType, vl.getChild());
             }
             return sb.toString();
-        } else if("io".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder("io");
+        } else if("readBuffer".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder("readBuffer");
+            if(vl.getChild() != null) {
+                sb.append(".");
+                appendVariableExpressionRest(sb, baseType, vl.getChild());
+            }
+            return sb.toString();
+        } else if("writeBuffer".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder("writeBuffer");
             if(vl.getChild() != null) {
                 sb.append(".");
                 appendVariableExpressionRest(sb, baseType, vl.getChild());

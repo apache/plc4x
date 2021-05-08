@@ -87,9 +87,9 @@ typedef struct plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter
 // Create an empty NULL-struct
 plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter_null();
 
-plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* io, uint8_t messageType, plc4c_s7_read_write_s7_parameter** message);
+plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* readBuffer, uint8_t messageType, plc4c_s7_read_write_s7_parameter** message);
 
-plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_parameter* message);
+plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_parameter* message);
 
 uint16_t plc4c_s7_read_write_s7_parameter_length_in_bytes(plc4c_s7_read_write_s7_parameter* message);
 

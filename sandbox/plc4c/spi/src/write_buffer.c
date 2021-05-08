@@ -295,6 +295,10 @@ plc4c_return_code plc4c_spi_write_bit(plc4c_spi_write_buffer* buf, bool value) {
   return OK;
 }
 
+plc4c_return_code plc4c_spi_write_char(plc4c_spi_write_buffer* buf, char value) {
+    return plc4c_spi_write_signed_int(buf, 8, (int8_t) value);
+}
+
 // Unsigned Integers ...
 
 plc4c_return_code plc4c_spi_write_unsigned_byte(plc4c_spi_write_buffer* buf,

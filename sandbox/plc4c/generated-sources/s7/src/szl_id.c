@@ -25,8 +25,8 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_szl_id** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(io);
+plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_id** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -38,7 +38,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
 
   // Enum field (typeClass)
   plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_s7_read_write_szl_module_type_class_null();
-  _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &typeClass);
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &typeClass);
   if(_res != OK) {
     return _res;
   }
@@ -46,7 +46,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
 
   // Simple Field (sublistExtract)
   uint8_t sublistExtract = 0;
-  _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &sublistExtract);
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &sublistExtract);
   if(_res != OK) {
     return _res;
   }
@@ -54,7 +54,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
 
   // Enum field (sublistList)
   plc4c_s7_read_write_szl_sublist sublistList = plc4c_s7_read_write_szl_sublist_null();
-  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &sublistList);
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &sublistList);
   if(_res != OK) {
     return _res;
   }
@@ -63,23 +63,23 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_szl_id* _message) {
+plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_id* _message) {
   plc4c_return_code _res = OK;
 
   // Enum field (typeClass)
-  _res = plc4c_spi_write_unsigned_byte(io, 4, _message->type_class);
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, _message->type_class);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (sublistExtract)
-  _res = plc4c_spi_write_unsigned_byte(io, 4, _message->sublist_extract);
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, _message->sublist_extract);
   if(_res != OK) {
     return _res;
   }
 
   // Enum field (sublistList)
-  _res = plc4c_spi_write_unsigned_byte(io, 8, _message->sublist_list);
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->sublist_list);
   if(_res != OK) {
     return _res;
   }

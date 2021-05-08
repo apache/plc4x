@@ -69,9 +69,9 @@ typedef struct plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address;
 // Create an empty NULL-struct
 plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address_null();
 
-plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_s7_address** message);
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_address** message);
 
-plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_address* message);
+plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_address* message);
 
 uint16_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_address* message);
 

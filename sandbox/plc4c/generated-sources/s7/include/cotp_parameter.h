@@ -79,9 +79,9 @@ typedef struct plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_param
 // Create an empty NULL-struct
 plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter_null();
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* io, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message);
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* readBuffer, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message);
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_cotp_parameter* message);
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_parameter* message);
 
 uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* message);
 

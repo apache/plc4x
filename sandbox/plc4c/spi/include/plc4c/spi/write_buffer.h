@@ -47,6 +47,8 @@ plc4c_return_code plc4c_spi_write_get_bytes(plc4c_spi_write_buffer* buf, uint16_
 
 plc4c_return_code plc4c_spi_write_bit(plc4c_spi_write_buffer* buf, bool value);
 
+plc4c_return_code plc4c_spi_write_char(plc4c_spi_write_buffer* buf, char value);
+
 // Unsigned Integers ...
 
 plc4c_return_code plc4c_spi_write_unsigned_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint8_t value);

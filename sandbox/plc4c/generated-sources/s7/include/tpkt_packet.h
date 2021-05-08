@@ -46,9 +46,9 @@ typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;
 // Create an empty NULL-struct
 plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet_null();
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_tpkt_packet** message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_tpkt_packet** message);
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_tpkt_packet* message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_tpkt_packet* message);
 
 uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4c_s7_read_write_tpkt_packet* message);
 

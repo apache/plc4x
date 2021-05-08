@@ -115,8 +115,8 @@ ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTy
 </#if>
 
 // Parse function.
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* io, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(io);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -134,7 +134,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Array field (${arrayField.name})
             <#-- Only update curPos if the length expression uses it -->
             <#if arrayField.loopExpression.contains("curPos")>
-<#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(io) - startPos;
+<#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
             </#if>
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
 <#if indentContent>  </#if>  plc4c_list* ${arrayField.name} = NULL;
@@ -159,7 +159,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(io<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -170,8 +170,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#elseif helper.isLengthArrayField(field)>
 <#if indentContent>  </#if>    // Length array
 <#if indentContent>  </#if>    uint8_t _${arrayField.name}Length = ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)};
-<#if indentContent>  </#if>    uint8_t ${arrayField.name}EndPos = plc4c_spi_read_get_pos(io) + _${arrayField.name}Length;
-<#if indentContent>  </#if>    while(plc4c_spi_read_get_pos(io) < ${arrayField.name}EndPos) {
+<#if indentContent>  </#if>    uint8_t ${arrayField.name}EndPos = plc4c_spi_read_get_pos(readBuffer) + _${arrayField.name}Length;
+<#if indentContent>  </#if>    while(plc4c_spi_read_get_pos(readBuffer) < ${arrayField.name}EndPos) {
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
@@ -183,7 +183,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(io<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -191,7 +191,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 </#if>
                 <#-- After parsing, update the current position, but only if it's needed -->
                 <#if arrayField.loopExpression.contains("curPos")>
-<#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(io) - startPos;
+<#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
                 </#if>
 <#if indentContent>  </#if>    }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
@@ -209,7 +209,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
-<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(io<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+<#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(readBuffer<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
@@ -217,7 +217,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 </#if>
               <#-- After parsing, update the current position, but only if it's needed -->
               <#if arrayField.loopExpression.contains("curPos")>
-<#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(io) - startPos;
+<#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
               </#if>
 <#if indentContent>  </#if>    }
             </#if>
@@ -231,7 +231,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>  </#if>  {
 <#if indentContent>  </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>  </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>  </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(readBuffer, startPos, plc4c_spi_read_get_pos(readBuffer));
 <#if indentContent>  </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getNullValueForTypeReference(checksumField.type)};
 <#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(checksumField.type, "&_checksumRef", field)};
 <#if indentContent>  </#if>    if(_res != OK) {
@@ -327,7 +327,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
             <#if optionalField.conditionExpression.contains("curPos")>
-<#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(io) - startPos;
+<#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
             </#if>
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${optionalField.name} = NULL;
 <#if indentContent>  </#if>  if(${helper.toParseExpression(baseType, field, optionalField.conditionExpression, baseType.parserArguments)}) {
@@ -339,7 +339,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
 <#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name, field)};
         <#else>
-<#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(io<#if optionalField.params?has_content>, <#list optionalField.params as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
+<#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(readBuffer<#if optionalField.params?has_content>, <#list optionalField.params as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
         </#if>
 <#if indentContent>  </#if>    if(_res != OK) {
 <#if indentContent>  </#if>      return _res;
@@ -355,7 +355,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Padding Field (padding)
 <#if indentContent>  </#if>  {
-<#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(io, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)}));
+<#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(readBuffer, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)}));
 <#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(paddingField.type)};
@@ -393,7 +393,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};
-<#if indentContent>  </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_parse(io<#if simpleField.params?has_content>, <#list simpleField.params as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
+<#if indentContent>  </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_parse(readBuffer<#if simpleField.params?has_content>, <#list simpleField.params as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
             </#if>
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
@@ -441,7 +441,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
   return OK;
 }
 
-plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* io, ${helper.getCTypeName(type.name)}* _message<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) {
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) {
   plc4c_return_code _res = OK;
 <#macro fieldSerializer baseType field indentContent>
     <#switch field.typeName>
@@ -458,7 +458,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(arrayField.type, "*_value", field)};
             <#else>
-<#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(io, (void*) _value<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>);
+<#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(writeBuffer, (void*) _value<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>);
 <#if indentContent>    </#if>      if(_res != OK) {
 <#if indentContent>    </#if>        return _res;
 <#if indentContent>    </#if>      }
@@ -473,7 +473,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>  // Checksum Field (${checksumField.name})
 <#if indentContent>    </#if>  {
 <#if indentContent>    </#if>    // Create an array of all the bytes read in this message element so far.
-<#if indentContent>    </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(io, startPos, plc4c_spi_read_get_pos(io));
+<#if indentContent>    </#if>    unsigned char checksumRawData[] = plc4c_spi_read_get_bytes(writeBuffer, startPos, plc4c_spi_read_get_pos(writeBuffer));
 <#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksumRef = ${helper.getReadBufferReadMethodCall(checksumField.type, field)};
 <#if indentContent>    </#if>    ${helper.getLanguageTypeNameForField(field)} _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, checksumField, checksumField.checksumExpression, baseType.parserArguments)});
 <#if indentContent>    </#if>    if(_checksum != _checksumRef) {
@@ -540,7 +540,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(manualField.type)>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, arrayField), field)};
             <#else>
-<#if indentContent>    </#if>  _res = ${helper.getCTypeName(manualField.type.name)}_serialize(io, (void*) &_value);
+<#if indentContent>    </#if>  _res = ${helper.getCTypeName(manualField.type.name)}_serialize(writeBuffer, (void*) &_value);
             </#if>
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
@@ -554,7 +554,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(optionalField.type)>
 <#if indentContent>    </#if>    _res = ${helper.getWriteBufferWriteMethodCall(optionalField.type, "*_message->" + helper.getFieldName(baseType, optionalField), field)};
             <#else>
-<#if indentContent>    </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_serialize(io, _message-><@fieldName baseType=baseType field=optionalField/>);
+<#if indentContent>    </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
 <#if indentContent>    </#if>    if(_res != OK) {
 <#if indentContent>    </#if>      return _res;
@@ -595,7 +595,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(simpleField.type)>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField), field)};
             <#else>
-<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(io, _message-><@fieldName baseType=baseType field=simpleField/>);
+<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;

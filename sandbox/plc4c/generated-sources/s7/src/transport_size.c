@@ -1097,7 +1097,7 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
       return -1;
     }
     case plc4c_s7_read_write_transport_size_REAL: { /* '0x0E' */
-      return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
+      return plc4c_s7_read_write_data_transport_size_REAL;
     }
     case plc4c_s7_read_write_transport_size_LREAL: { /* '0x0F' */
       return -1;
@@ -1151,6 +1151,9 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
         }
         case plc4c_s7_read_write_data_transport_size_INTEGER: {
             return plc4c_s7_read_write_transport_size_INT;
+        }
+        case plc4c_s7_read_write_data_transport_size_REAL: {
+            return plc4c_s7_read_write_transport_size_REAL;
         }
         case -1: {
             return plc4c_s7_read_write_transport_size_LWORD;

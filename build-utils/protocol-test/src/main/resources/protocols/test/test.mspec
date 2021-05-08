@@ -71,6 +71,7 @@
 
 [type 'SimpleTypeTest'
     [simple bit 'bitField']
+    [simple byte 'byteField']
     [simple int 8 'intField']
     [simple uint 8 'uintField']
     [simple float 8.23 'floatField']
