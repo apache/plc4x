@@ -87,6 +87,8 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		if err != nil {
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
+		// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
+		time.Sleep(time.Second)
 	}
 
 	// Run the actual scenario steps
