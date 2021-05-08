@@ -74,6 +74,12 @@ typedef plc4c_return_code (*plc4c_connection_unsubscribe_function)(
     plc4c_unsubscription_request_execution *unsubscription_request_execution,
     plc4c_system_task **task);
 
+typedef void (*plc4c_connect_free_read_request_function)(
+    plc4c_read_request *request);
+
+typedef void (*plc4c_connect_free_write_request_function)(
+    plc4c_write_request *request);
+    
 typedef void (*plc4c_connect_free_read_response_function)(
     plc4c_read_response *response);
 
@@ -152,6 +158,8 @@ struct plc4c_driver_t {
   plc4c_connection_write_function write_function;
   plc4c_connection_subscribe_function subscribe_function;
   plc4c_connection_unsubscribe_function unsubscribe_function;
+  plc4c_connect_free_read_request_function free_read_request_function;
+  plc4c_connect_free_write_request_function free_write_request_function;
   plc4c_connect_free_read_response_function free_read_response_function;
   plc4c_connect_free_write_response_function free_write_response_function;
   plc4c_connect_free_subscription_response_function free_subscription_response_function;

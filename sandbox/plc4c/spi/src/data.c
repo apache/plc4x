@@ -216,7 +216,7 @@ plc4c_data* plc4c_data_create_uint64_t_array(uint64_t *ui, int nItems) {
 }
 
 plc4c_data *plc4c_data_create_float_data(float f) {
-  plc4c_data *data = malloc(sizeof(plc4c_data));
+  plc4c_data *data = calloc(1,sizeof(plc4c_data));
   data->data_type = PLC4C_FLOAT;
   data->size = sizeof(float);
   data->data.float_value = f;
@@ -454,6 +454,8 @@ void plc4c_data_destroy(plc4c_data *data) {
       case PLC4C_STRING_POINTER:
         free(data->data.pstring_value);
         break;
+      case PLC4C_LIST:
+        // TODO
       default:
         break;
     }

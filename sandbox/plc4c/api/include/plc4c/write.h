@@ -107,7 +107,7 @@ plc4c_write_response *plc4c_write_request_execution_get_response(
  * Destroys a given write_response
  * @param write_response the write_response
  */
-void plc4c_write_destroy_write_response(plc4c_write_response *write_response);
+void plc4c_write_response_destroy(plc4c_write_response *write_response);
 
 #ifdef __cplusplus
 }

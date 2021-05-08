@@ -35,89 +35,104 @@ enum plc4c_driver_s7_write_states {
 
 // Forward declaration of helper function to stop PLC4C_DRIVER_S7_WRITE_FINISHED
 // state become too big, TODO: move to some header or inline
-plc4c_return_code plc4c_driver_s7_parse_write_responce(plc4c_write_request* request, 
-    plc4c_write_response* response, plc4c_s7_read_write_tpkt_packet* packet);
+plc4c_return_code plc4c_driver_s7_parse_write_responce( 
+     plc4c_write_request_execution* execution, plc4c_s7_read_write_tpkt_packet* packet);
+
+
+plc4c_return_code plc4c_driver_s7_sm_write_init(
+    plc4c_connection* connection, plc4c_write_request_execution* execution) {
+  
+  plc4c_s7_read_write_tpkt_packet* packet;
+  plc4c_return_code result;
+
+  result = plc4c_driver_s7_create_s7_write_request(execution->write_request, &packet);
+  if (result != OK) {
+    return result;
+  }
+
+  // Send the packet to the remote. 
+  result = plc4c_driver_s7_send_packet(connection, packet);
+  if (result != OK) {
+    return result;
+  }
+  plc4c_driver_s7_destroy_s7_write_request(packet);
+
+  return OK;
+
+}
+
+plc4c_return_code plc4c_driver_s7_sm_write_finished(
+    plc4c_connection* connection, plc4c_write_request_execution* execution) {
+  
+  plc4c_s7_read_write_tpkt_packet* packet;
+  plc4c_return_code result;
+
+  // Read a response packet. If we haven't read enough to process
+  // a full message, just try again next time.
+  result = plc4c_driver_s7_receive_packet(connection, &packet);
+  if (result != OK) 
+    return result;
+
+  // Check the response packet s7 parameter is of correct type and 
+  // number of parameter items match number of request items 
+  if (packet->payload->payload->parameter->_type != 
+      plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response)
+    return INTERNAL_ERROR;
+
+  if (packet->payload->payload->parameter->s7_parameter_read_var_response_num_items !=
+      plc4c_utils_list_size(execution->write_request->items)) 
+    return INTERNAL_ERROR;
+  
+  // Make a new responce item and bind to the execution, also bind
+  // the request to the responce (usefull of parseing)
+  execution->write_response = malloc(sizeof(plc4c_write_response));
+  if (execution->write_response == NULL) 
+    return NO_MEMORY;
+  execution->write_response->write_request = execution->write_request;
+  
+  // Set the write responce status from the s7 payload responce status
+  result = plc4c_driver_s7_parse_write_responce(execution, packet);
+  
+  if (result != OK)
+    return result;
+
+  plc4c_driver_s7_destroy_receive_packet(packet);
+  return OK;
+}
 
 plc4c_return_code plc4c_driver_s7_write_machine_function(
     plc4c_system_task* task) {
 
-  plc4c_write_request_execution* write_request_execution;
-  plc4c_write_request* write_request;
+  plc4c_write_request_execution* execution;
   plc4c_connection* connection;
-  plc4c_s7_read_write_tpkt_packet* write_packet;
-  plc4c_return_code return_code;
+  plc4c_return_code result;
 
-  write_request_execution = task->context;
-  if (write_request_execution == NULL) {
-    return INTERNAL_ERROR;
-  }
-  write_request = write_request_execution->write_request;
-  if (write_request == NULL) {
-    return INTERNAL_ERROR;
-  }
+  execution = task->context;
   connection = task->connection;
-  if (connection == NULL) {
+
+  if ((!execution) || (!execution->write_request) || (!connection))
     return INTERNAL_ERROR;
-  }
 
   switch (task->state_id) {
-    case PLC4C_DRIVER_S7_WRITE_INIT: {
-      return_code = plc4c_driver_s7_create_s7_write_request(write_request, &write_packet);
-      if (return_code != OK) {
-        return return_code;
-      }
 
-      // Send the packet to the remote.
-      return_code = plc4c_driver_s7_send_packet(connection, write_packet);
-      if (return_code != OK) {
-        return return_code;
-      }
-
-      task->state_id = PLC4C_DRIVER_S7_WRITE_FINISHED;
+    case PLC4C_DRIVER_S7_WRITE_INIT: 
+      result = plc4c_driver_s7_sm_write_init(connection, execution);
+      if (result == OK)
+        task->state_id = PLC4C_DRIVER_S7_WRITE_FINISHED;
+      else
+        return result;
       break;
-    }
-    case PLC4C_DRIVER_S7_WRITE_FINISHED: {
+    
+    case PLC4C_DRIVER_S7_WRITE_FINISHED: 
 
-      plc4c_s7_read_write_s7_message* s7_packet;
-      plc4c_write_response* write_response;
-
-      // Read a response packet.
-      return_code = plc4c_driver_s7_receive_packet(connection, &write_packet);
-      // If we haven't read enough to process a full message, just try again
-      // next time.
-      if (return_code == UNFINISHED) {
+      result = plc4c_driver_s7_sm_write_finished(connection, execution);
+      if (result == OK)
+        task->completed = true;
+      else if (result == UNFINISHED) 
         return OK;
-      } else if (return_code != OK) {
-        return return_code;
-      }
-
-      // Check the response
-      s7_packet = write_packet->payload->payload;
-      if (s7_packet->parameter->_type != plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response) {
-        return INTERNAL_ERROR;
-      }
-      // Check if the number of items matches that of the request
-      // (Otherwise we won't know how to interpret the items)
-      if (s7_packet->parameter->s7_parameter_read_var_response_num_items != plc4c_utils_list_size(write_request->items)) {
-        return INTERNAL_ERROR;
-      }
-
-      write_response = malloc(sizeof(plc4c_write_response));
-      if (write_response == NULL) {
-        return NO_MEMORY;
-      }
-      write_response->write_request = write_request;
-      write_request_execution->write_response = write_response;
-      plc4c_utils_list_create(&write_response->response_items);
-
-      return_code = plc4c_driver_s7_parse_write_responce(write_request, write_response, write_packet);
-      if (return_code != OK)
-        return return_code;
-
-      // TODO: Return the results to the API ...
-      task->completed = true;
-      break;
-    }
+      else
+        return result;
+    
   }
   return OK;
 }
@@ -139,76 +154,90 @@ plc4c_return_code plc4c_driver_s7_write_function(
   return OK;
 }
 
+
+// TDOO: remove hacked include but think doing so needes a driver
+// callback for request items due to malloc on: 
+//  s7_var_request_parameter_item_address_address
+// either way it dosnt belong in this file.
+void plc4c_driver_s7_free_write_request_item(plc4c_list_element *element) {
+  plc4c_request_value_item *item;
+  item = element->value;
+
+  plc4c_s7_read_write_s7_var_request_parameter_item *addr_item;
+  addr_item = item->item->address;
+  free(addr_item->s7_var_request_parameter_item_address_address );
+  free(addr_item);
+
+  free(item->item);
+  // todo : require call expcitly or add here
+  plc4c_data_destroy(item->value);
+  free(item);
+}
+
+void plc4c_driver_s7_free_write_request(plc4c_write_request *request) {
+  plc4c_utils_list_delete_elements(request->items,
+      plc4c_driver_s7_free_write_request_item);
+  free(request->items);
+  // actual request free'd by caller
+}
+
 void plc4c_driver_s7_free_write_response_item(
     plc4c_list_element* write_item_element) {
   
-  plc4c_response_item* value_item;
-  value_item = (plc4c_response_item*)write_item_element->value;
-  /*
-      // do not delete the plc4c_item
-      // we also, in THIS case don't delete the random value which
-      // isn't really a pointer. 
-
-    TODO: what does above comment mean? Possibly written as we where
-    casting to plc4c_response_value_item insted of plc4c_response_item
-    in which case random explosion would probably occur on NULL'ing and 
-    freeing. Cast correctly I think comment is no more valid...
-  */
-  //free(value_item->item);
-  //value_item->item = NULL;
+  plc4c_response_item* responce_item;
+  responce_item = write_item_element->value;
+  // dont free responce_item-item->item its managed by the request not responce
+  free(responce_item); 
 }
 
 void plc4c_driver_s7_free_write_response(plc4c_write_response* response) {
-  // the request will be cleaned up elsewhere
-  plc4c_utils_list_delete_elements(response->response_items,
-                                   &plc4c_driver_s7_free_write_response_item);
+  
+    plc4c_utils_list_delete_elements(response->response_items,
+      plc4c_driver_s7_free_write_response_item);
+    free(response->response_items);
 }
 
+
 plc4c_return_code plc4c_driver_s7_parse_write_responce(
-                                plc4c_write_request* request, 
-                                plc4c_write_response* response,
-                                plc4c_s7_read_write_tpkt_packet* packet) {
-  
-  // Locals
-  plc4c_s7_read_write_s7_message* s7_packet;
-  plc4c_list_element* request_list_element;
-  plc4c_list_element* response_list_element;
-  
+    plc4c_write_request_execution *execution, 
+    plc4c_s7_read_write_tpkt_packet* packet) {
+
+  // Locals first 4 are just used for walking two lists
+  plc4c_list_element* request_elements;
   plc4c_request_value_item* request_item;
-  plc4c_s7_read_write_s7_var_payload_status_item* s7_payload_status;
+  plc4c_list_element* s7_payload_elements;
+  plc4c_s7_read_write_s7_var_payload_status_item* s7_payload_item;
   plc4c_response_item* response_item;
   plc4c_return_code result;
   
-	// Iterate over the request items and use the types to decode the
-	// response items. TODO: Decode the return codes in the response ...
-  s7_packet = packet->payload->payload;
-	request_list_element = plc4c_utils_list_tail(request->items);
-	response_list_element = plc4c_utils_list_tail(s7_packet->payload->s7_payload_write_var_response_items);
+  // Make the unfilled responce a list 
+  plc4c_utils_list_create(&execution->write_response->response_items);
 
-	while ((request_list_element != NULL) && (response_list_element != NULL)) {
+	// Iterate over the request items setting return codes as needed.
+	request_elements = plc4c_utils_list_tail(execution->write_request->items);
+	s7_payload_elements = plc4c_utils_list_tail(packet->payload->payload->payload->s7_payload_write_var_response_items);
+
+	while ((request_elements != NULL) && (s7_payload_elements != NULL)) {
 		
-    request_item = request_list_element->value;
-		s7_payload_status = response_list_element->value;
+    request_item = request_elements->value;
+		s7_payload_item = s7_payload_elements->value;
 
-		// Create a new response value-item
-		response_item = malloc(sizeof(plc4c_response_item));
+    // Make a new response item, bind the related request item
+		response_item = malloc(sizeof(plc4c_response_item)); 
 		if (response_item == NULL)
 		  return NO_MEMORY;
-		
-		response_item->item = request_item->item;
-    if (s7_payload_status->return_code == plc4c_s7_read_write_data_transport_error_code_OK)
+    response_item->item = request_item->item;
+
+    // TODO: better map transport error codes to responce error codes
+    if (s7_payload_item->return_code == plc4c_s7_read_write_data_transport_error_code_OK)
       response_item->response_code = PLC4C_RESPONSE_CODE_OK;
     else
-      // TODO: how to map plc4c_s7_read_write_data_transport_error_code to 
-      // plc4c_responce_code, same issue in driver_s7_sm_read.c
       response_item->response_code = PLC4C_RESPONSE_CODE_INTERNAL_ERROR;
 
+		plc4c_utils_list_insert_head_value(execution->write_response->response_items, response_item);
 
-		// Add the value-item to the list.
-		plc4c_utils_list_insert_head_value(response->response_items, response_item);
-
-		request_list_element = request_list_element->next;
-		response_list_element = response_list_element->next;
+		request_elements = request_elements->next;
+		s7_payload_elements = s7_payload_elements->next;
 	}
   return OK;
 }

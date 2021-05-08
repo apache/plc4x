@@ -16,6 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+#define _GNU_SOURCE
+/*#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 1
+#endif*/
+
+
 #include <plc4c/driver_s7.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/transport_tcp.h>
@@ -54,23 +61,27 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
 }
 
 
+bool syncBoolLoop(plc4c_connection *conn, 
+  bool (passCallback)(plc4c_connection* conn),
+  bool (failCallback)(plc4c_connection *conn)  ) {
 
-enum plc4c_connection_state_t {
-  CONNECTING,
-  WRITE_REQUEST_CREATE,
-  WRITE_REQUEST_SENT,
-  WRITE_RESPONSE_RECEIVED,
-  READ_REQUEST_CREATE,
-  READ_REQUEST_SENT,
-  READ_RESPONSE_RECEIVED,
-  DISCONNECTING,
-  DISCONNECTED
-};
-typedef enum plc4c_connection_state_t plc4c_connection_state;
+  plc4c_system *system;
+  system = plc4c_connection_get_system(conn);
+  while (true) {
+    if (passCallback(conn))
+      return EXIT_SUCCESS;
+    else if (failCallback(conn))
+      return EXIT_FAILURE;
+    if (plc4c_system_loop(system) != OK)
+      return EXIT_FAILURE;
+  }
+
+
+}
+
 
 //#pragma clang diagnostic push
 //#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
-
 
 #define CHECK_RESULT(chk, ret, fs) do {if (chk) {printf(fs); return(ret);}} while(0)
 
@@ -89,8 +100,7 @@ int main(int argc, char** argv) {
 
   char* connection_test_string;
   plc4c_return_code result;
-  plc4c_connection_state state;
-  bool loop = true;
+  bool errorFlag = false;
   int idx = 0;
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
@@ -109,24 +119,18 @@ int main(int argc, char** argv) {
   long loopback_value[7] = {0,0,0,0,0};
   plc4c_data *loopback_data;
   
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  bool doRead = 1;
+  bool doWrite = 1;
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
   // Connection string argument and do_write test arg (defaults to off as
   // not currently working)
-  if (argc < 2)
-    connection_test_string = DEFAULT_CONNECTION_TEST_STRING;
-  else
-    connection_test_string = argv[1];
-
-  if (argc < 3) {
-    loopback_value[0] = 0; // bool
-    loopback_value[1] = 44; // uint8
-    loopback_value[2] = -55; // int8
-    loopback_value[3] = 666; // uint16
-    loopback_value[4] = -777; //int16
-    loopback_value[5] = 88888; // uint32
-    loopback_value[6] = -99999; //int32
-  } else {
-    get_user_loopback_values(argc - 2, &argv[2], loopback_value);
-  }
+  connection_test_string = DEFAULT_CONNECTION_TEST_STRING;
 
   // Initialisation and startup sequence
   result = plc4c_system_create(&system);
@@ -143,118 +147,64 @@ int main(int argc, char** argv) {
   // Register the global callbacks
   plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
   plc4c_system_set_on_disconnect_success_callback(system, &onGlobalDisconnect);
+  
 
   // Establish connections to remote devices
   result = plc4c_system_connect(system, connection_test_string, &connection);
   CHECK_RESULT(result != OK, result, "plc4c_system_connect failed\n");
 
+  unsigned int loopTimes;
+  if (argc >= 2)
+    loopTimes = (unsigned int) atoi(argv[1]);
+  else
+    loopTimes = 1;
+
+  unsigned int loopCount = 0;
+  float valuetowrite = 4.4;
 
   // Central program loop ...
-  state = CONNECTING;
-
-  while (loop) {
-    
-    // Give plc4c a chance to do something. This is where all I/O is done.
-    if (plc4c_system_loop(system) != OK) {
-      printf("ERROR in the system loop\n");
-      break;
-    }
-
-    // Depending on the current state, implement some logic
-    switch (state) {
-      case CONNECTING: {
-        // Check if the connection is established:
-        if (plc4c_connection_get_connected(connection)) {
-          state = WRITE_REQUEST_CREATE;
-        } else if (plc4c_connection_has_error(connection)) {
-          printf("FAILED\n");
-          return -1;
-        }
-        break;
-      }
-
-      
-      case WRITE_REQUEST_CREATE: {
-
+  syncBoolLoop(connection, plc4c_connection_get_connected, plc4c_connection_has_error);
+        
+  while ( (!errorFlag) && (loopCount++ < loopTimes)) {
+    if (doWrite) {
+      { // Write request create scope
         result = plc4c_connection_create_write_request(connection, &write_request);
         CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
 
-        float valuestowrite[] = {1.1,2.2};
-        printf("Writing %f %f to %%DB2:4.0:REAL[2] ...\n", valuestowrite[0], valuestowrite[1]);
-        loopback_data = plc4c_data_create_float_array(valuestowrite, 2);
-        result = plc4c_write_request_add_item(write_request, "%DB2:0.0:REAL[2]", loopback_data);
-        
-        float valuetowrite = {4.4};
-        loopback_data = plc4c_data_create_float_data(valuetowrite);
+        loopback_data = plc4c_data_create_float_data(valuetowrite++);
         result = plc4c_write_request_add_item(write_request, "%DB2:4.0:REAL", loopback_data);
         
-        /*
-        printf("Writing %d to %%DB2:0.0:BOOL ...\n", (bool) loopback_value[0]);
-        loopback_data = plc4c_data_create_bool_data(true);
-        result = plc4c_write_request_add_item(write_request, "%DB2:100.0:BOOL", loopback_data);
-        
-        printf("Writing %d to %%DB2:4.0:USINT ...\n", (uint8_t) loopback_value[1]);
-        loopback_data = plc4c_data_create_uint8_t_data((uint8_t) loopback_value[1]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:USINT", loopback_data);
-        
-        printf("Writing %d to %%DB2:8.0:SINT ...\n", (int8_t) loopback_value[2]);
-        loopback_data = plc4c_data_create_int8_t_data((int8_t) loopback_value[2]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:8.0:SINT", loopback_data);
-                
-        printf("Writing %d to %%DB2:12.0:UINT ...\n", (uint16_t) loopback_value[3]);
-        loopback_data = plc4c_data_create_uint16_t_data((uint16_t) loopback_value[3]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:12.0:UINT", loopback_data);
-        
-        printf("Writing %d to %%DB2:16.0:INT ...\n", (int16_t) loopback_value[4]);
-        loopback_data = plc4c_data_create_int16_t_data((int16_t) loopback_value[4]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:16.0:INT", loopback_data);
-               
-        printf("Writing %d to %%DB2:20.0:UDINT ...\n", (uint32_t) loopback_value[5]);
-        loopback_data = plc4c_data_create_uint32_t_data((uint32_t) loopback_value[5]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:20.0:UDINT", loopback_data);
-        
-        printf("Writing %d to %%DB2:24.0:DINT ...\n", (int32_t) loopback_value[6]);
-        loopback_data = plc4c_data_create_int32_t_data((int32_t) loopback_value[6]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:24.0:DINT", loopback_data);
+        #ifdef S7_LOOPBACK_TIME_IO
+          clock_gettime(CLOCK_MONOTONIC,&start);
+        #endif
 
-        printf("Writing %d to %%DB2:28.0:BYTE ...\n", (uint8_t) loopback_value[1]);
-        loopback_data = plc4c_data_create_uint8_t_data((uint8_t) loopback_value[1]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:28.0:BYTE", loopback_data);
-        
-        printf("Writing %d to %%DB2:32.0:WORD ...\n", (uint16_t) loopback_value[3]);
-        loopback_data = plc4c_data_create_uint16_t_data((uint16_t) loopback_value[3]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:32.0:WORD", loopback_data);
-
-        printf("Writing %d to %%DB2:36.0:DWORD ...\n", (uint32_t) loopback_value[5]);
-        loopback_data = plc4c_data_create_uint32_t_data((uint32_t) loopback_value[5]);
-        result = plc4c_write_request_add_item(write_request, "%DB2:36.0:DWORD", loopback_data);
-
-        printf("Writing %f to %%DB2:40.0:REAL ...\n", (float) loopback_value[5]/3.14);
-        loopback_data = plc4c_data_create_float_data((float) loopback_value[5]/3.14);
-        result = plc4c_write_request_add_item(write_request, "%DB2:40.0:REAL", loopback_data);
-        */
-#ifdef S7_LOOPBACK_TIME_IO
-        clock_gettime(CLOCK_MONOTONIC,&start);
-#endif
         result = plc4c_write_request_execute(write_request, &write_request_execution);
         CHECK_RESULT(result != OK, result,"plc4c_write_request_execute failed\n");
         
-        state = WRITE_REQUEST_SENT;
-        break;
-      }
-
-      case WRITE_REQUEST_SENT: {
-        if (plc4c_write_request_check_finished_successfully(write_request_execution)) {
-          printf("Success\n");
-          state = WRITE_RESPONSE_RECEIVED;
-        } else if (plc4c_write_request_execution_check_completed_with_error(write_request_execution)) {
-          printf("FAILED\n");
-          return -1;
+        if (plc4c_system_loop(system) != OK) {
+          printf("ERROR in the system loop\n");
+          break;
         }
-        break;
       }
 
-      case WRITE_RESPONSE_RECEIVED: {
+      { // Write request sent scope
+        while(1) {
+          if (plc4c_write_request_check_finished_successfully(write_request_execution)) {
+            break;
+          } else if (plc4c_write_request_execution_check_completed_with_error(write_request_execution)) {
+            printf("FAILED\n");
+            errorFlag = true;
+            break;
+          }
+          if (plc4c_system_loop(system) != OK) {
+            printf("ERROR in the system loop\n");
+            errorFlag = true;
+            break;
+          }
+        }
+      }
+
+      { // WRITE_RESPONSE_RECEIVED scope
         write_response = plc4c_write_request_execution_get_response(write_request_execution);
         CHECK_RESULT(write_response == NULL, -1,"plc4c_write_request_execution_get_response failed (no responce)\n");
         cur_element = plc4c_utils_list_tail(write_response->response_items);
@@ -262,98 +212,81 @@ int main(int argc, char** argv) {
         while (cur_element != NULL) {
           plc4c_response_item *checker = (plc4c_response_item*) cur_element->value;
           printf("Write item %d status: '%s'\n", idx++,
-                 plc4c_response_code_to_message(checker->response_code));
+              plc4c_response_code_to_message(checker->response_code));
           cur_element = cur_element->next;
         }
 
-#ifdef S7_LOOPBACK_TIME_IO
-        clock_gettime(CLOCK_MONOTONIC,&finish);
-        diff_s = finish.tv_sec - start.tv_sec;
-        diff_ns = finish.tv_nsec - start.tv_nsec;
-        delta_us = (diff_s * 1000000L) + (diff_ns / 1000L);
-        printf("Write took %ld us\n", delta_us);
-#endif
-        state = READ_REQUEST_CREATE;
-        plc4c_write_destroy_write_response(write_response);
-        plc4c_write_request_execution_destroy(write_request_execution);
-        plc4c_write_request_destroy(write_request);
-        break;
-      }
-
-      case READ_REQUEST_CREATE: {
-        result = plc4c_connection_create_read_request(connection, &read_request);
-        CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:0.0:WORD[163]");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "REAL","%DB2:8.0:REAL[63]");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        /*
-        result = plc4c_read_request_add_item(read_request, "BOOL", "%DB2:100.0:BOOL");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "USINT", "%DB2:4.0:USINT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "SINT", "%DB2:8.0:SINT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "UINT", "%DB2:12.0:UINT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "INT", "%DB2:16.0:INT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "UDINT", "%DB2:20.0:UDINT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        
-        result = plc4c_read_request_add_item(read_request, "DINT", "%DB2:24.0:DINT");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-
-        result = plc4c_read_request_add_item(read_request,"BYTE", "%DB2:28.0:BYTE");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-
-        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:32.0:WORD");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-
-        result = plc4c_read_request_add_item(read_request, "DWORD", "%DB2:36.0:DWORD");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
- 
-        result = plc4c_read_request_add_item(read_request, "REAL", "%DB2:40.0:REAL");
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
-        */
-        result = plc4c_read_request_execute(read_request, &read_request_execution);
-        CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");
-        
-        state = READ_REQUEST_SENT;
-
-#ifdef S7_LOOPBACK_TIME_IO
-        clock_gettime(CLOCK_MONOTONIC,&start);
-#endif
-        break;
-      }
-
-      // Wait until the read-request execution is finished
-      case READ_REQUEST_SENT: {
-        if (plc4c_read_request_execution_check_finished_successfully(read_request_execution)) {
-          state = READ_RESPONSE_RECEIVED;
-#ifdef S7_LOOPBACK_TIME_IO
+        #ifdef S7_LOOPBACK_TIME_IO
           clock_gettime(CLOCK_MONOTONIC,&finish);
           diff_s = finish.tv_sec - start.tv_sec;
           diff_ns = finish.tv_nsec - start.tv_nsec;
           delta_us = (diff_s * 1000000L) + (diff_ns / 1000L);
-          printf("Read took %ld us\n", delta_us);
-#endif
-        } else if (plc4c_read_request_execution_check_finished_with_error(read_request_execution)) {
-          printf("plc4c_read_request_execution_check_finished_with_error FAILED\n");
-          return -1;
+          printf("Write %ldus%c", delta_us, doRead ? '\t' : '\n');
+        #endif
+        
+        //plc4c_data_destroy(loopback_data);
+        
+        plc4c_write_response_destroy(write_response);
+        plc4c_write_request_execution_destroy(write_request_execution);
+        plc4c_write_request_destroy(write_request);
+        
+        if (plc4c_system_loop(system) != OK) {
+          printf("ERROR in the system loop\n");
+          break;
         }
-        break;
+      }
+    } // end of doWrite
+
+
+    if (doRead) {
+      { // READ_REQUEST_CREATE scope
+        
+        result = plc4c_connection_create_read_request(connection, &read_request);
+        CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
+        
+        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:4.0:REAL");
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
+
+        result = plc4c_read_request_execute(read_request, &read_request_execution);
+        CHECK_RESULT(result != OK, result, "plc4c_read_request_execute failed\n");
+        
+        #ifdef S7_LOOPBACK_TIME_IO
+          clock_gettime(CLOCK_MONOTONIC,&start);
+        #endif
+
+        if (plc4c_system_loop(system) != OK) {
+          printf("ERROR in the system loop\n");
+          break;
+        }
       }
 
-      case READ_RESPONSE_RECEIVED: {
+
+      { // READ_REQUEST_SENT scope
+        while(true) {
+          if (plc4c_read_request_execution_check_finished_successfully(read_request_execution)) {
+            #ifdef S7_LOOPBACK_TIME_IO
+              clock_gettime(CLOCK_MONOTONIC,&finish);
+              diff_s = finish.tv_sec - start.tv_sec;
+              diff_ns = finish.tv_nsec - start.tv_nsec;
+              delta_us = (diff_s * 1000000L) + (diff_ns / 1000L);
+              printf("Read %ldus\n", delta_us);
+            #endif
+            break;
+          } else if (plc4c_read_request_execution_check_finished_with_error(read_request_execution)) {
+            printf("plc4c_read_request_execution_check_finished_with_error FAILED\n");
+            errorFlag= true;
+            break;
+          }
+          if (plc4c_system_loop(system) != OK) {
+            printf("ERROR in the system loop\n");
+            errorFlag = true;
+            break;
+          }
+        }
+      }
+
+
+      { // READ_RESPONSE_RECEIVED scope
 
         read_response = plc4c_read_request_execution_get_response(read_request_execution);
         CHECK_RESULT(read_response == NULL, -1, "plc4c_read_request_execution_get_response failed (No Response)\n");
@@ -363,43 +296,38 @@ int main(int argc, char** argv) {
         while (cur_element != NULL) {
           value_item = cur_element->value;
           printf("Value %s (%s): ", value_item->item->name,
-                 plc4c_response_code_to_message(value_item->response_code));
+                  plc4c_response_code_to_message(value_item->response_code));
           plc4c_data_printf(value_item->value);
           printf("\n");
           cur_element = cur_element->next;
         }
 
-        plc4c_read_destroy_read_response(read_response);
+        plc4c_read_response_destroy(read_response);
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
-        result = plc4c_connection_disconnect(connection);
-        CHECK_RESULT(result != OK, -1,"plc4c_connection_disconnect failed\n");
-        state = DISCONNECTING;
-        break;
-      }
-      
-      // Wait until the connection is disconnected
-      case DISCONNECTING: {
-        if (!plc4c_connection_get_connected(connection)) {
-          printf("SUCCESS\n");
-          plc4c_system_remove_connection(system, connection);
-          plc4c_connection_destroy(connection);
-          state = DISCONNECTED;
-          loop = false;
+        if (plc4c_system_loop(system) != OK) {
+          printf("ERROR in the system loop\n");
+          errorFlag = true;
+          break;
         }
-        break;
       }
-      
-      // End the loop
-      case DISCONNECTED: {
-        loop = false;
-        break;
-      }
-      default: {
-      }
-    }
+    } // end of do read
+  } 
 
+  // Start disconnecting, break on error or dis-connection
+  result = plc4c_connection_disconnect(connection);
+  CHECK_RESULT(result != OK, -1,"plc4c_connection_disconnect failed\n");
+
+  while (true) {
+    if (plc4c_system_loop(system) != OK) {
+      printf("ERROR in the system loop\n");
+      return EXIT_FAILURE;
+    } else if (!plc4c_connection_get_connected(connection)) {
+      plc4c_system_remove_connection(system, connection);
+      plc4c_connection_destroy(connection);
+      break;
+    }
   }
 
   // Make sure everything is cleaned up correctly then destroy the 

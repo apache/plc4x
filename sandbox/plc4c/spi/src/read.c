@@ -110,8 +110,10 @@ plc4c_read_response *plc4c_read_request_execution_get_response(
   return read_request_execution->read_response;
 }
 
-void plc4c_read_request_destroy(plc4c_read_request *read_request) {
-  free(read_request);
+
+void plc4c_read_request_destroy(plc4c_read_request *request) {
+  request->connection->driver->free_read_request_function(request);
+  free(request);
 }
 
 void plc4c_read_request_execution_destroy(
@@ -119,9 +121,10 @@ void plc4c_read_request_execution_destroy(
   free(read_request_execution);
 }
 
-void plc4c_read_destroy_read_response(
+void plc4c_read_response_destroy(
     plc4c_read_response *read_response) {
   read_response->read_request->connection->driver->free_read_response_function(
       read_response);
+    free(read_response);
 }
 

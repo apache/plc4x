@@ -95,6 +95,7 @@ plc4c_return_code plc4c_write_request_execute(
 
 bool plc4c_write_request_check_finished_successfully(
     plc4c_write_request_execution *write_request_execution) {
+
   if (write_request_execution == NULL) {
     return true;
   }
@@ -117,7 +118,11 @@ plc4c_write_response *plc4c_write_request_execution_get_response(
   return write_request_execution->write_response;
 }
 
+
+
+
 void plc4c_write_request_destroy(plc4c_write_request *write_request) {
+  write_request->connection->driver->free_write_request_function(write_request);
   free(write_request);
 }
 
@@ -126,9 +131,10 @@ void plc4c_write_request_execution_destroy(
   free(write_request_execution);
 }
 
-void plc4c_write_destroy_write_response(
+void plc4c_write_response_destroy(
     plc4c_write_response *write_response) {
   write_response->write_request->connection->driver
       ->free_write_response_function(write_response);
+  free(write_response);
 }
 

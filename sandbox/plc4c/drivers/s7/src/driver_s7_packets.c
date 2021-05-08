@@ -26,8 +26,11 @@
 #include <tpkt_packet.h>
 
 #include "plc4c/driver_s7_packets.h"
-
 #include "plc4c/driver_s7_encode_decode.h"
+
+// undef to use pointer to plc4c_data item on writes
+// probably safe to comment out but on for now.
+//#define DEEP_WRITE_DATA_COPY 
 
 // forward delcaration for helper function todo: move to header or relocate
     //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
@@ -35,6 +38,9 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
     plc4c_s7_read_write_s7_var_payload_data_item* request_value) {
 
   uint8_t* data_array;
+#ifdef DEEP_WRITE_DATA_COPY
+  uint8_t* deep_data_array;
+#endif
   plc4c_list_element* list_array;
   plc4c_data* the_data;
   int i, j;
@@ -49,6 +55,7 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
 
   for (i = 0 ; i < items ; i++) {
     if (parsed_value->data_type == PLC4C_LIST) {
+      // will not work with nested lists if thats even a thing
       list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
       the_data = list_array->value;
       item_size = the_data->size;
@@ -58,9 +65,15 @@ void plc4c_add_data_to_request(plc4c_data* parsed_value,
       data_array = (int8_t*) &parsed_value->data;
     }
     // Now add the bytes to a list
-    for (j = 0 ; j < item_size ; j++) 
-      plc4c_utils_list_insert_tail_value(request_value->data, data_array + j);
-    
+    for (j = 0 ; j < item_size ; j++) {
+#ifdef DEEP_WRITE_DATA_COPY
+        deep_data_array = calloc(1,sizeof(uint8_t));
+        memcpy(deep_data_array, data_array + j, sizeof(uint8_t));
+        plc4c_utils_list_insert_tail_value(request_value->data, deep_data_array);
+#else
+        plc4c_utils_list_insert_tail_value(request_value->data, data_array + j);
+#endif
+    }
   }
 }
 
@@ -186,7 +199,11 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
   return OK;
 }
 
-
+void delete_byte_list(plc4c_list_element *element) {
+  int8_t* item;
+  item = element->value;
+  free(item);
+}
 void delete_s7_parameter_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_parameter *item;
   item = element->value;
@@ -195,6 +212,8 @@ void delete_s7_parameter_list_element(plc4c_list_element *element) {
 void delete_s7_read_responce_payload_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_var_payload_data_item *item;
   item = element->value;
+  plc4c_utils_list_delete_elements(item->data, delete_byte_list);
+  free(item->data);
   free(item);
 }
 void delete_s7_write_request_payload_list_element(plc4c_list_element *element) {
@@ -250,6 +269,26 @@ void delete_s7_user_data_parameter_list_element(plc4c_list_element *element) {
   }
   free(item);
 }
+void delete_copt_parameter_list_element(plc4c_list_element *element) {
+  plc4c_s7_read_write_cotp_parameter *item;
+  item = element->value;
+  free(item);
+}
+void delete_payload_user_data_item_list_element(
+    plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_payload_user_data_item *item;
+  item = (plc4c_s7_read_write_s7_payload_user_data_item *)element->value;
+  free(item->szl_id);
+  free(item);
+}
+
+void delete_parameter_user_data_item_list_element(
+  plc4c_list_element *element) {
+  plc4c_s7_read_write_s7_parameter_user_data_item *item;
+  item = element->value;
+  free(item);
+}
+
 void plc4c_driver_s7_destroy_receive_packet(
     plc4c_s7_read_write_tpkt_packet* packet) {
 
@@ -280,6 +319,13 @@ void plc4c_driver_s7_destroy_receive_packet(
           plc4c_utils_list_delete_elements(s7_param->s7_parameter_user_data_items, 
               delete_s7_user_data_parameter_list_element);
           free(s7_param->s7_parameter_user_data_items);
+          break;
+        case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response:
+          // todo: something
+          break;
+        case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response:
+          // TODO: something
+          //just num of items so nothing to do
           break;
       }
       free(s7_param);
@@ -322,8 +368,6 @@ void plc4c_driver_s7_destroy_receive_packet(
   // Destroy tpkt message
   free(packet);
 }
-
-
 
 /**
  * Create a COTP connection request packet.
@@ -396,12 +440,6 @@ plc4c_return_code plc4c_driver_s7_create_cotp_connection_request(
   return OK;
 }
 
-
-void delete_copt_parameter_list_element(plc4c_list_element *element) {
-  plc4c_s7_read_write_cotp_parameter *item;
-  item = element->value;
-  free(item);
-}
 
 void plc4c_driver_s7_destroy_cotp_connection_request(
     plc4c_s7_read_write_tpkt_packet *packet) {
@@ -589,21 +627,6 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   return OK;
 }
 
-void delete_payload_user_data_item_list_element(
-    plc4c_list_element *element) {
-  plc4c_s7_read_write_s7_payload_user_data_item *item;
-  item = (plc4c_s7_read_write_s7_payload_user_data_item *)element->value;
-  free(item->szl_id);
-  free(item);
-}
-
-void delete_parameter_user_data_item_list_element(
-  plc4c_list_element *element) {
-  plc4c_s7_read_write_s7_parameter_user_data_item *item;
-  item = element->value;
-  free(item);
-}
-
 void plc4c_driver_s7_destroy_s7_identify_remote_request(
     plc4c_s7_read_write_tpkt_packet* packet) {
 
@@ -638,53 +661,60 @@ void plc4c_driver_s7_destroy_s7_identify_remote_request(
  */
 plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     plc4c_read_request* read_request,
-    plc4c_s7_read_write_tpkt_packet** s7_read_request_packet) {
+    plc4c_s7_read_write_tpkt_packet** packet) {
 
   plc4c_driver_s7_config* configuration;
-  plc4c_s7_read_write_cotp_packet *payload;
+  plc4c_s7_read_write_cotp_packet *cotp_packet;
+  plc4c_s7_read_write_s7_message *s7_message;
   plc4c_list_element* cur_item;
 
   configuration = read_request->connection->configuration;
   
-  *s7_read_request_packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
-  if (*s7_read_request_packet == NULL) {
+  *packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+  if (*packet == NULL) {
     return NO_MEMORY;
   }
 
-  (*s7_read_request_packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
+  (*packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
     
   // Terse local variable for clarity
-  payload = (*s7_read_request_packet)->payload;
+  cotp_packet = (*packet)->payload;
 
-  if (payload == NULL) {
+  if (cotp_packet == NULL) {
     return NO_MEMORY;
   }
-  payload->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
-  payload->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
-  payload->cotp_packet_data_eot = true;
-  payload->parameters = NULL;
-  payload->payload = calloc(1,sizeof(plc4c_s7_read_write_s7_message));
-  if(payload->payload == NULL) {
+  cotp_packet->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
+  cotp_packet->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
+  cotp_packet->cotp_packet_data_eot = true;
+  cotp_packet->parameters = NULL;
+  cotp_packet->payload = calloc(1,sizeof(plc4c_s7_read_write_s7_message));
+  s7_message = cotp_packet->payload;
+  if(s7_message == NULL) {
     return NO_MEMORY;
   }
-  payload->payload->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
-  payload->payload->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-  if(payload->payload->parameter == NULL) {
+  s7_message->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
+  s7_message->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  if(s7_message->parameter == NULL) {
     return NO_MEMORY;
   }
-  payload->payload->parameter->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
-  plc4c_utils_list_create(&payload->payload->parameter->s7_parameter_read_var_request_items);
+  s7_message->parameter->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
+  plc4c_utils_list_create(&s7_message->parameter->s7_parameter_read_var_request_items);
 
   cur_item = read_request->items->tail;
   
   while (cur_item != NULL) {
-    plc4c_item* item = cur_item->value;
+
+    plc4c_item* item;
+    plc4c_s7_read_write_s7_var_request_parameter_item* parsed_item_address;
+    plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address;
+
+    item = cur_item->value;
+
     // Get the item address from the API request.
-    plc4c_s7_read_write_s7_var_request_parameter_item* parsed_item_address = item->address;
+    parsed_item_address = item->address;
 
     // Create a copy of the request item...
-    plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address = 
-        malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+    updated_item_address = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
     if (updated_item_address == NULL) {
       return NO_MEMORY;
     }
@@ -705,14 +735,41 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     
     // Add the new item to the request.
     plc4c_utils_list_insert_head_value(
-        payload->payload->parameter->s7_parameter_read_var_request_items,
+        s7_message->parameter->s7_parameter_read_var_request_items,
         updated_item_address);
 
     cur_item = cur_item->next;
   }
 
-  payload->payload->payload = NULL;
+  s7_message->payload = NULL;
   return OK;
+}
+
+void delete_s7_parameter_read_var_request_item_element(plc4c_list_element *element) {
+  
+  plc4c_s7_read_write_s7_var_request_parameter_item *item;
+  item = element->value;
+  free(item->s7_var_request_parameter_item_address_address);
+  free(item);
+}
+
+void plc4c_driver_s7_destroy_s7_read_request(
+    plc4c_s7_read_write_tpkt_packet* packet) {
+
+  plc4c_s7_read_write_s7_message *s7_message;
+  s7_message = packet->payload->payload;
+
+  // Free the s7 message its parameter, and its parameter list
+  plc4c_utils_list_delete_elements(
+    s7_message->parameter->s7_parameter_read_var_request_items, 
+    delete_s7_parameter_read_var_request_item_element);
+  free(s7_message->parameter->s7_parameter_read_var_request_items);
+  free(s7_message->parameter);
+  free(s7_message);
+
+  //s7_parameter_read_var_request_items
+  free(packet->payload);
+  free(packet);
 }
 
 /**
@@ -826,8 +883,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     
     plc4c_utils_list_create(&request_value->data);
     
-    
-    plc4c_add_data_to_request( parsed_value, request_value);
+    plc4c_add_data_to_request(parsed_value, request_value);
 
     // Add the new parameter to the request
     plc4c_utils_list_insert_head_value(s7_parameters->s7_parameter_write_var_request_items, request_param);
@@ -838,11 +894,66 @@ plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     list_item = list_item->next;
   }
 
-
-  // TODO: Implement the value encoding ...
-  // TODO: Add all the encoded item values ...
-
   return OK;
+}
+
+
+void delete_s7_data_list_element(plc4c_list_element* element) {
+
+  uint8_t *item;
+  item = element->value;
+#ifdef DEEP_WRITE_DATA_COPY
+  free(item);
+#endif
+}
+
+void delete_s7_payload_write_request_list_element(
+    plc4c_list_element* element) {
+
+  plc4c_s7_read_write_s7_var_payload_data_item *item;
+  item = element->value;
+  
+  plc4c_utils_list_delete_elements(item->data,
+      delete_s7_data_list_element);
+  free(item->data);
+  free(item);
+}
+
+void delete_s7_parameter_write_request_list_element(
+    plc4c_list_element* element) {
+
+  plc4c_s7_read_write_s7_var_request_parameter_item *item;
+  item = element->value;
+
+  free(item->s7_var_request_parameter_item_address_address);
+  free(item);
+
+}
+
+void plc4c_driver_s7_destroy_s7_write_request(
+    plc4c_s7_read_write_tpkt_packet* packet) {
+  
+  plc4c_s7_read_write_s7_message *s7_message;
+  s7_message = packet->payload->payload;
+
+  // Delete the s7 payload items
+  plc4c_utils_list_delete_elements(
+      s7_message->payload->s7_payload_write_var_request_items,
+      delete_s7_payload_write_request_list_element);
+
+  free(s7_message->payload->s7_payload_write_var_request_items);
+  free(s7_message->payload);
+
+  // Delete the s7 parameter items
+  plc4c_utils_list_delete_elements(
+      s7_message->parameter->s7_parameter_write_var_request_items,
+      delete_s7_parameter_write_request_list_element);
+  free(s7_message->parameter->s7_parameter_write_var_request_items);
+  free(s7_message->parameter);
+
+  free(s7_message);
+  free(packet->payload);
+  free(packet);
 }
 
 /**

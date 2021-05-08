@@ -28,6 +28,10 @@ extern "C" {
 #include "plc4c/driver_s7.h"
 
 // fcn added by thomas ~~~~~~~~~
+void plc4c_driver_s7_destroy_s7_write_request(
+    plc4c_s7_read_write_tpkt_packet* packet);
+void plc4c_driver_s7_destroy_s7_read_request(
+    plc4c_s7_read_write_tpkt_packet* packet);
 void plc4c_driver_s7_time_transport_size(
     plc4c_s7_read_write_transport_size *transport_size);
 void plc4c_add_data_to_request(plc4c_data* parsed_value, 

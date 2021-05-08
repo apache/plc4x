@@ -475,9 +475,11 @@ plc4c_return_code plc4c_system_loop(plc4c_system *system) {
         plc4c_connection_task_removed(task->connection);
       }
       // while loop is guaranteed to be finished now
+      // ie when task completed task_list is at head
       free(task_list);
       plc4c_task_destroy(task);
       task_list = NULL;
+      task = NULL;
     } else {
       task_list = task_list->next;
     }

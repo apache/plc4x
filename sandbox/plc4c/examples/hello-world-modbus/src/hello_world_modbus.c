@@ -303,7 +303,7 @@ int main() {
         }
 
         // Clean up.
-        plc4c_read_destroy_read_response(read_response);
+        plc4c_read_response_destroy(read_response);
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
