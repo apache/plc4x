@@ -254,7 +254,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		var expectedWriteBuffer utils.WriteBufferByteBased
 		switch m.driverName {
-		case "ads":
+		case "ads", "eip":
 			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
 		default:
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
@@ -298,7 +298,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "eip":
 					expectation := expectedSerializable.(*eipModel.EipPacket)
-					actual, err := eipModel.EipPacketParse(utils.NewReadBufferByteBased(actualRawOutput))
+					actual, err := eipModel.EipPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "s7":
 					expectation := expectedSerializable.(*s7Model.TPKTPacket)
@@ -352,7 +352,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		var wb utils.WriteBufferByteBased
 		switch m.driverName {
-		case "ads":
+		case "ads", "eip":
 			wb = utils.NewLittleEndianWriteBufferByteBased()
 		default:
 			wb = utils.NewWriteBufferByteBased()
