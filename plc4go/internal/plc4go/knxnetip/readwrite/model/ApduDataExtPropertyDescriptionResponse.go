@@ -364,6 +364,9 @@ func (m *ApduDataExtPropertyDescriptionResponse) Serialize(writeBuffer utils.Wri
 }
 
 func (m *ApduDataExtPropertyDescriptionResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

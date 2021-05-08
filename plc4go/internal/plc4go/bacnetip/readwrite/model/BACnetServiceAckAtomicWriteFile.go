@@ -124,6 +124,9 @@ func (m *BACnetServiceAckAtomicWriteFile) Serialize(writeBuffer utils.WriteBuffe
 }
 
 func (m *BACnetServiceAckAtomicWriteFile) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

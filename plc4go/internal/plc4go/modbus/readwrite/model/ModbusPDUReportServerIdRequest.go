@@ -132,6 +132,9 @@ func (m *ModbusPDUReportServerIdRequest) Serialize(writeBuffer utils.WriteBuffer
 }
 
 func (m *ModbusPDUReportServerIdRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

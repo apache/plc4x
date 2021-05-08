@@ -201,6 +201,9 @@ func (m *APDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *APDUError) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

@@ -229,6 +229,9 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) Serialize(writeBuffer utils.WriteBu
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

@@ -1231,6 +1231,9 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 
 <#if !type.parserArguments?has_content><#-- We only generate String() methods for serializer witout arguments -->
 func (m *${type.name}) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

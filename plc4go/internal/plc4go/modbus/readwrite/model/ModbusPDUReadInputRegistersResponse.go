@@ -191,6 +191,9 @@ func (m *ModbusPDUReadInputRegistersResponse) Serialize(writeBuffer utils.WriteB
 }
 
 func (m *ModbusPDUReadInputRegistersResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

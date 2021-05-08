@@ -199,6 +199,9 @@ func (m *AmsSerialResetFrame) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *AmsSerialResetFrame) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

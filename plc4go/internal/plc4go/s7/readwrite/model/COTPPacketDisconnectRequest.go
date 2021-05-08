@@ -196,6 +196,9 @@ func (m *COTPPacketDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) e
 }
 
 func (m *COTPPacketDisconnectRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

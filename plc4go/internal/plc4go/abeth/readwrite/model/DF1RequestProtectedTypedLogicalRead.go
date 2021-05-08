@@ -220,6 +220,9 @@ func (m *DF1RequestProtectedTypedLogicalRead) Serialize(writeBuffer utils.WriteB
 }
 
 func (m *DF1RequestProtectedTypedLogicalRead) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

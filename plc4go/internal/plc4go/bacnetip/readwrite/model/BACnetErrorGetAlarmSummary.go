@@ -124,6 +124,9 @@ func (m *BACnetErrorGetAlarmSummary) Serialize(writeBuffer utils.WriteBuffer) er
 }
 
 func (m *BACnetErrorGetAlarmSummary) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

@@ -148,6 +148,9 @@ func (m *SysexCommandAnalogMappingQueryResponse) Serialize(writeBuffer utils.Wri
 }
 
 func (m *SysexCommandAnalogMappingQueryResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

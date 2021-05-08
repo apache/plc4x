@@ -124,6 +124,9 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(writeB
 }
 
 func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

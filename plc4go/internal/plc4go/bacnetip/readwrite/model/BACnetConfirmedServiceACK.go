@@ -182,6 +182,9 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(writeBuffer utils.WriteBuffe
 }
 
 func (m *BACnetConfirmedServiceACK) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

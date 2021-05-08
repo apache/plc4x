@@ -160,6 +160,9 @@ func (m *DF1CommandRequestMessage) Serialize(writeBuffer utils.WriteBuffer) erro
 }
 
 func (m *DF1CommandRequestMessage) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

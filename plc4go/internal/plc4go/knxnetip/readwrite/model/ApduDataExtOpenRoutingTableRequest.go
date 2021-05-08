@@ -124,6 +124,9 @@ func (m *ApduDataExtOpenRoutingTableRequest) Serialize(writeBuffer utils.WriteBu
 }
 
 func (m *ApduDataExtOpenRoutingTableRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

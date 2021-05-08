@@ -182,6 +182,9 @@ func (m *KnxGroupAddress3Level) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *KnxGroupAddress3Level) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

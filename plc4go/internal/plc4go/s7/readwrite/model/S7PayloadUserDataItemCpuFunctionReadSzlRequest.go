@@ -128,6 +128,9 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(writeBuffer u
 }
 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

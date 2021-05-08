@@ -156,6 +156,9 @@ func (m *S7Address) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Addr
 }
 
 func (m *S7Address) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

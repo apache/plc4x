@@ -250,6 +250,9 @@ func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 }
 
 func (m *DF1RequestMessage) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

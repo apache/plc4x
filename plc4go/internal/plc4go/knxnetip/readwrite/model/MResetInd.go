@@ -124,6 +124,9 @@ func (m *MResetInd) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *MResetInd) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

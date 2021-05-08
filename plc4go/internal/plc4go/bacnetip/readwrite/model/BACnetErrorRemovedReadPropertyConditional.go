@@ -124,6 +124,9 @@ func (m *BACnetErrorRemovedReadPropertyConditional) Serialize(writeBuffer utils.
 }
 
 func (m *BACnetErrorRemovedReadPropertyConditional) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

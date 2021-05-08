@@ -156,6 +156,9 @@ func (m *S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffe
 }
 
 func (m *S7VarRequestParameterItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

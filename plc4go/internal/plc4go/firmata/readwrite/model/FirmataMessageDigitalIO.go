@@ -185,6 +185,9 @@ func (m *FirmataMessageDigitalIO) Serialize(writeBuffer utils.WriteBuffer) error
 }
 
 func (m *FirmataMessageDigitalIO) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

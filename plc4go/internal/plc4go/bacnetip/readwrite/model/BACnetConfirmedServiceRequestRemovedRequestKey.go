@@ -124,6 +124,9 @@ func (m *BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(writeBuffer u
 }
 
 func (m *BACnetConfirmedServiceRequestRemovedRequestKey) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

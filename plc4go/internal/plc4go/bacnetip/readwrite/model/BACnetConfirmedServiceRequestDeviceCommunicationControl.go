@@ -124,6 +124,9 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 }
 
 func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

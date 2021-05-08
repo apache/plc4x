@@ -190,6 +190,9 @@ func (m *ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(writeBuffer utils.W
 }
 
 func (m *ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

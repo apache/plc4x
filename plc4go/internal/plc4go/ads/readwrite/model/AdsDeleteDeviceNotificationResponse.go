@@ -160,6 +160,9 @@ func (m *AdsDeleteDeviceNotificationResponse) Serialize(writeBuffer utils.WriteB
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

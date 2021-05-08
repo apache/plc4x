@@ -124,6 +124,9 @@ func (m *BACnetConfirmedServiceRequestAddListElement) Serialize(writeBuffer util
 }
 
 func (m *BACnetConfirmedServiceRequestAddListElement) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

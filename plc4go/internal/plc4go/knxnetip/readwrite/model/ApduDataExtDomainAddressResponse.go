@@ -124,6 +124,9 @@ func (m *ApduDataExtDomainAddressResponse) Serialize(writeBuffer utils.WriteBuff
 }
 
 func (m *ApduDataExtDomainAddressResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

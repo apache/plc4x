@@ -96,6 +96,9 @@ func (m *GroupObjectDescriptorRealisationType6) Serialize(writeBuffer utils.Writ
 }
 
 func (m *GroupObjectDescriptorRealisationType6) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

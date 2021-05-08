@@ -128,6 +128,9 @@ func (m *BACnetTagApplicationOctetString) Serialize(writeBuffer utils.WriteBuffe
 }
 
 func (m *BACnetTagApplicationOctetString) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

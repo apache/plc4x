@@ -148,6 +148,9 @@ func (m *S7ParameterWriteVarResponse) Serialize(writeBuffer utils.WriteBuffer) e
 }
 
 func (m *S7ParameterWriteVarResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

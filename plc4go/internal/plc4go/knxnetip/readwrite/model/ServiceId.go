@@ -168,6 +168,9 @@ func (m *ServiceId) SerializeParent(writeBuffer utils.WriteBuffer, child IServic
 }
 
 func (m *ServiceId) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

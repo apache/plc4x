@@ -124,6 +124,9 @@ func (m *BACnetConfirmedServiceACKGetEventInformation) Serialize(writeBuffer uti
 }
 
 func (m *BACnetConfirmedServiceACKGetEventInformation) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

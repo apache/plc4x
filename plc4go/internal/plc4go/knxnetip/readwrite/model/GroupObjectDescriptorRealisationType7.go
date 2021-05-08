@@ -274,6 +274,9 @@ func (m *GroupObjectDescriptorRealisationType7) Serialize(writeBuffer utils.Writ
 }
 
 func (m *GroupObjectDescriptorRealisationType7) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

@@ -131,6 +131,9 @@ func (m *ChannelInformation) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *ChannelInformation) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

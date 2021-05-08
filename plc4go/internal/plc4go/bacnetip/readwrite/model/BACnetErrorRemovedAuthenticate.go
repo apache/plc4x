@@ -124,6 +124,9 @@ func (m *BACnetErrorRemovedAuthenticate) Serialize(writeBuffer utils.WriteBuffer
 }
 
 func (m *BACnetErrorRemovedAuthenticate) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

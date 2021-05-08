@@ -220,6 +220,9 @@ func (m *LDataReq) Serialize(writeBuffer utils.WriteBuffer) error {
 }
 
 func (m *LDataReq) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

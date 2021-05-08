@@ -124,6 +124,9 @@ func (m *BVLCDeleteForeignDeviceTableEntry) Serialize(writeBuffer utils.WriteBuf
 }
 
 func (m *BVLCDeleteForeignDeviceTableEntry) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

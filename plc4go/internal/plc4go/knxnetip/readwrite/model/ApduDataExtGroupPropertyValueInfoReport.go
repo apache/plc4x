@@ -124,6 +124,9 @@ func (m *ApduDataExtGroupPropertyValueInfoReport) Serialize(writeBuffer utils.Wr
 }
 
 func (m *ApduDataExtGroupPropertyValueInfoReport) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

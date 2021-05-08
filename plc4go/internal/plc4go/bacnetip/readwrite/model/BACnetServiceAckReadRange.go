@@ -124,6 +124,9 @@ func (m *BACnetServiceAckReadRange) Serialize(writeBuffer utils.WriteBuffer) err
 }
 
 func (m *BACnetServiceAckReadRange) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()

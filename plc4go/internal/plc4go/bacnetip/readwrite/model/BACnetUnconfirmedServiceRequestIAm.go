@@ -340,6 +340,9 @@ func (m *BACnetUnconfirmedServiceRequestIAm) Serialize(writeBuffer utils.WriteBu
 }
 
 func (m *BACnetUnconfirmedServiceRequestIAm) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
 	m.Serialize(buffer)
 	return buffer.GetBox().String()
