@@ -93,7 +93,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	result := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
 		log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		m.messageCodec.SendRequest(
+		_ = m.messageCodec.SendRequest(
 			readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, make([]byte, 8), 0),
 			func(message interface{}) bool {
 				return true

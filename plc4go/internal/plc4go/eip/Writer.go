@@ -278,7 +278,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 }
 
 func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]int8, error) {
-	buffer := utils.NewWriteBufferByteBased()
+	buffer := utils.NewLittleEndianWriteBufferByteBased()
 	switch _type {
 	case readWriteModel.CIPDataTypeCode_SINT:
 		err := buffer.WriteByte("", value.GetUint8())

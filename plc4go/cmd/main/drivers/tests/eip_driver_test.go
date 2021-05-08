@@ -27,6 +27,5 @@ import (
 )
 
 func TestEIPDriver(t *testing.T) {
-	t.Skip("Driver should work, currently there is a issue where the session id comes too late (due to Testframework won't wait)")
 	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml")
 }

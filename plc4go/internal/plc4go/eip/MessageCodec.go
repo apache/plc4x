@@ -48,7 +48,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	eipPacket := model.CastEipPacket(message)
 	// Serialize the request
-	wb := utils.NewWriteBufferByteBased()
+	wb := utils.NewLittleEndianWriteBufferByteBased()
 	err := eipPacket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
@@ -74,7 +74,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			return nil, nil
 		}
 		//Second byte for the size and then add the header size 24
-		packetSize := uint32(((uint16(data[2]) << 8) + uint16(data[3])) + 24)
+		packetSize := uint32(((uint16(data[3]) << 8) + uint16(data[2])) + 24)
 		if num < packetSize {
 			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
@@ -85,7 +85,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBufferByteBased(data)
+		rb := utils.NewLittleEndianReadBufferByteBased(data)
 		eipPacket, err := model.EipPacketParse(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")

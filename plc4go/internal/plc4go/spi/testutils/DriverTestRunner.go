@@ -291,25 +291,25 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				case "modbus":
 					expectation := expectedSerializable.(*modbusModel.ModbusTcpADU)
 					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBufferByteBased(actualRawOutput), false)
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "ads":
 					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
 					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "eip":
 					expectation := expectedSerializable.(*eipModel.EipPacket)
 					actual, err := eipModel.EipPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "s7":
 					expectation := expectedSerializable.(*s7Model.TPKTPacket)
 					actual, err := s7Model.TPKTPacketParse(utils.NewReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "knx":
 					expectation := expectedSerializable.(*knxModel.KnxNetIpMessage)
 					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", actualRawOutput, expectedRawOutput)
+				return errors.Errorf("actual output doesn't match expected output:\nactual:\n%s\nexpected:\n%s", utils.Dump(actualRawOutput), utils.Dump(expectedRawOutput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging

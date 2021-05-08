@@ -71,21 +71,27 @@ func (m PlcField) GetElementNb() uint16 {
 
 func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "Field"}}); err != nil {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "EipField"}}); err != nil {
 		return err
 	}
 
 	if err := e.EncodeElement(m.Tag, xml.StartElement{Name: xml.Name{Local: "node"}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Type, xml.StartElement{Name: xml.Name{Local: "type"}}); err != nil {
-		return err
+	if m.Type != 0 {
+		if err := e.EncodeElement(m.Type, xml.StartElement{Name: xml.Name{Local: "type"}}); err != nil {
+			return err
+		}
 	}
 	if err := e.EncodeElement(m.ElementNb, xml.StartElement{Name: xml.Name{Local: "elementNb"}}); err != nil {
 		return err
 	}
+	// TODO: remove this from the spec
+	if err := e.EncodeElement("java.lang.Object", xml.StartElement{Name: xml.Name{Local: "defaultJavaType"}}); err != nil {
+		return err
+	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "Field"}}); err != nil {
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "EipField"}}); err != nil {
 		return err
 	}
 	return nil

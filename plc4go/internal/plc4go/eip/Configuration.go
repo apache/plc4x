@@ -32,8 +32,8 @@ type Configuration struct {
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	configuration := Configuration{
-		backplane: 1,
-		slot:      1,
+		backplane: 0,
+		slot:      0,
 	}
 	if localRackString := getFromOptions(options, "backplane"); localRackString != "" {
 		atoi, err := strconv.Atoi(localRackString)

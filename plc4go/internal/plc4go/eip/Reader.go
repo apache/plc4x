@@ -20,7 +20,6 @@
 package eip
 
 import (
-	"encoding/ascii85"
 	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	plc4goModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
@@ -330,20 +329,8 @@ func toAnsi(tag string) ([]int8, error) {
 		return nil, err
 	}
 
-	tagBytes := make([]byte, ascii85.MaxEncodedLen(len([]byte(tagFinal))))
-	encodedBytes := ascii85.Encode(tagBytes, []byte(tagFinal))
-	tagBytes = tagBytes[:encodedBytes]
-
-	err = buffer.WriteByteArray("", tagBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	err = buffer.WriteByte("", 0x00)
-	if err != nil {
-		return nil, err
-	}
-	err = buffer.WriteByte("", 0x00)
+	quoteToASCII := strconv.QuoteToASCII(tagFinal)
+	err = buffer.WriteByteArray("", []byte(quoteToASCII)[1:len(quoteToASCII)-1])
 	if err != nil {
 		return nil, err
 	}
