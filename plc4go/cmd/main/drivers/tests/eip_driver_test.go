@@ -21,12 +21,12 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
 	"testing"
 )
 
 func TestEIPDriver(t *testing.T) {
-	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml")
+	t.Skip("Driver should work, currently there is a issue where the session id comes too late (due to Testframework won't wait)")
+	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml")
 }

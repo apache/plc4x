@@ -17,16 +17,16 @@
 // under the License.
 //
 
-package tests
+package eip
 
 import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"testing"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 )
 
-func TestKNXNetIPDriver(t *testing.T) {
-	t.Skip("No test yet")
-	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml")
+type ValueHandler struct {
+	values.IEC61131ValueHandler
+}
+
+func NewValueHandler() ValueHandler {
+	return ValueHandler{}
 }

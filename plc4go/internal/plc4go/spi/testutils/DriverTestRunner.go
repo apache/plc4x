@@ -25,6 +25,8 @@ import (
 	"fmt"
 	adsIO "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
 	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	eipIO "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
+	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
 	knxIO "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
 	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
@@ -238,12 +240,15 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
 		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
+		if err != nil {
+			return errors.Wrap(err, "Error parsing message")
+		}
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Write to bytes")
 		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
-			return errors.New("error converting type into Serializable type")
+			return errors.Errorf("error converting type %t into Serializable type", expectedMessage)
 		}
 		var expectedWriteBuffer utils.WriteBufferByteBased
 		switch m.driverName {
@@ -288,6 +293,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				case "ads":
 					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
 					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				case "eip":
+					expectation := expectedSerializable.(*eipModel.EipPacket)
+					actual, err := eipModel.EipPacketParse(utils.NewReadBufferByteBased(actualRawOutput))
 					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "s7":
 					expectation := expectedSerializable.(*s7Model.TPKTPacket)
@@ -400,6 +409,7 @@ func parseMessage(protocolName string, typeName string, payloadString string, st
 	parserMap := map[string]Parser{
 		"modbus":   modbusIO.ModbusXmlParserHelper{},
 		"ads":      adsIO.AdsXmlParserHelper{},
+		"eip":      eipIO.EipXmlParserHelper{},
 		"knxnetip": knxIO.KnxnetipXmlParserHelper{},
 		"s7":       s7IO.S7XmlParserHelper{},
 	}
@@ -474,7 +484,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		return
 	}
 
-	// We don't want to await completion of connection initalization
+	// We don't want to await completion of connection initialization
 	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
 		connectionConnectAwaiter.SetAwaitSetupComplete(false)
 		connectionConnectAwaiter.SetAwaitDisconnectComplete(false)

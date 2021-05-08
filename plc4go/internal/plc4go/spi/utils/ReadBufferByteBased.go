@@ -33,10 +33,10 @@ type ReadBufferByteBased interface {
 	Reset()
 	GetBytes() []byte
 	GetTotalBytes() uint64
-	PeekByte(offset uint8) uint8
+	PeekByte(offset byte) byte
 }
 
-func NewReadBufferByteBased(data []uint8) ReadBufferByteBased {
+func NewReadBufferByteBased(data []byte) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{
@@ -47,7 +47,7 @@ func NewReadBufferByteBased(data []uint8) ReadBufferByteBased {
 	}
 }
 
-func NewLittleEndianReadBufferByteBased(data []uint8) ReadBufferByteBased {
+func NewLittleEndianReadBufferByteBased(data []byte) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{

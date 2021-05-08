@@ -17,16 +17,20 @@
 // under the License.
 //
 
-package tests
+package eip
 
-import (
-	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
-	"testing"
-)
+type DriverContext struct {
+	Backplane               int8
+	Slot                    int8
+	awaitSetupComplete      bool
+	awaitDisconnectComplete bool
+}
 
-func TestKNXNetIPDriver(t *testing.T) {
-	t.Skip("No test yet")
-	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml")
+func NewDriverContext(configuration Configuration) (DriverContext, error) {
+	backplane := configuration.backplane
+	slot := configuration.slot
+	return DriverContext{
+		Backplane: backplane,
+		Slot:      slot,
+	}, nil
 }

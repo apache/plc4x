@@ -31,7 +31,7 @@ import (
 type WriteBufferByteBased interface {
 	WriteBuffer
 	GetPos() uint16
-	GetBytes() []uint8
+	GetBytes() []byte
 	GetTotalBytes() uint64
 }
 
@@ -85,7 +85,7 @@ func (rb *byteWriteBuffer) GetPos() uint16 {
 	return 0
 }
 
-func (rb *byteWriteBuffer) GetBytes() []uint8 {
+func (rb *byteWriteBuffer) GetBytes() []byte {
 	return rb.data.Bytes()
 }
 
