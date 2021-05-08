@@ -59,6 +59,14 @@ func (m PlcValueAdapter) GetBoolArray() []bool {
 	return nil
 }
 
+func (m PlcValueAdapter) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcValueAdapter) GetByte() byte {
+	return m.GetUint8()
+}
+
 // Integer
 func (m PlcValueAdapter) IsUint8() bool {
 	return false

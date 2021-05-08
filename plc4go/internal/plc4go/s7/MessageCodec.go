@@ -31,13 +31,10 @@ import (
 
 type MessageCodec struct {
 	_default.DefaultCodec
-	expectationCounter int32
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{
-		expectationCounter: 1,
-	}
+	codec := &MessageCodec{}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec
 }

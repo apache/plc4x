@@ -35,6 +35,10 @@ type PlcValue interface {
 	GetBoolAt(index uint32) bool
 	GetBoolArray() []bool
 
+	// Byte
+	IsByte() bool
+	GetByte() byte
+
 	// Integer
 	IsUint8() bool
 	GetUint8() uint8

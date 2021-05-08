@@ -39,6 +39,14 @@ func (m PlcSimpleNumericValueAdapter) IsBool() bool {
 	return true
 }
 
+func (m PlcSimpleNumericValueAdapter) IsByte() bool {
+	return m.IsUint8()
+}
+
+func (m PlcSimpleNumericValueAdapter) GetByte() byte {
+	return m.GetUint8()
+}
+
 func (m PlcSimpleNumericValueAdapter) IsUint8() bool {
 	return true
 }
