@@ -265,3 +265,9 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(writeBuffe
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

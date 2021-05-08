@@ -122,3 +122,9 @@ func (m *ApduDataAdcResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataAdcResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

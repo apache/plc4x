@@ -300,3 +300,9 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) Serialize(writeBuffer utils.Writ
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -171,3 +171,9 @@ func (m *AdsStampHeader) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+func (m *AdsStampHeader) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

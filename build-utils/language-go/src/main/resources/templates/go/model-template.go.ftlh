@@ -1229,6 +1229,14 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 	</#if>
 }
 
+<#if !type.parserArguments?has_content><#-- We only generate String() methods for serializer witout arguments -->
+func (m *${type.name}) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}
+</#if>
+
 </@importSectionWithContentBelow>
 
 </#outputformat>

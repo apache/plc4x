@@ -268,3 +268,9 @@ func (m *AdsAddDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBuffe
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *AdsAddDeviceNotificationRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

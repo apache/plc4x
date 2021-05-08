@@ -150,3 +150,9 @@ func (m *ModbusPDUReadExceptionStatusResponse) Serialize(writeBuffer utils.Write
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ModbusPDUReadExceptionStatusResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

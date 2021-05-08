@@ -142,3 +142,9 @@ func (m *KnxNetRemoteConfigurationAndDiagnosis) Serialize(writeBuffer utils.Writ
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *KnxNetRemoteConfigurationAndDiagnosis) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

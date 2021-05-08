@@ -290,3 +290,9 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *S7AddressAny) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

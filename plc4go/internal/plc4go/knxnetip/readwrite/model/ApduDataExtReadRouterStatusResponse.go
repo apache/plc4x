@@ -122,3 +122,9 @@ func (m *ApduDataExtReadRouterStatusResponse) Serialize(writeBuffer utils.WriteB
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataExtReadRouterStatusResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

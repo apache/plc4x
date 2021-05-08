@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceACKAtomicReadFile) Serialize(writeBuffer utils.Wr
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceACKAtomicReadFile) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

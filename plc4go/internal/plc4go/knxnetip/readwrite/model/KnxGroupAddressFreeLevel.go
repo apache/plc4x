@@ -142,3 +142,9 @@ func (m *KnxGroupAddressFreeLevel) Serialize(writeBuffer utils.WriteBuffer) erro
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *KnxGroupAddressFreeLevel) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -122,3 +122,9 @@ func (m *BVLCReadForeignDeviceTable) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BVLCReadForeignDeviceTable) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

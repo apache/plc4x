@@ -126,3 +126,9 @@ func (m *BACnetTagApplicationObjectIdentifier) Serialize(writeBuffer utils.Write
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetTagApplicationObjectIdentifier) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -130,3 +130,9 @@ func (m *ModbusPDUGetComEventCounterRequest) Serialize(writeBuffer utils.WriteBu
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ModbusPDUGetComEventCounterRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

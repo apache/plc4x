@@ -183,3 +183,9 @@ func (m *ApduDataExtAuthorizeRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataExtAuthorizeRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

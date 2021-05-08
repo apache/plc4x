@@ -172,3 +172,9 @@ func (m *DeviceConfigurationRequestDataBlock) Serialize(writeBuffer utils.WriteB
 	}
 	return nil
 }
+
+func (m *DeviceConfigurationRequestDataBlock) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

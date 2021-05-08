@@ -122,3 +122,9 @@ func (m *ApduDataExtDomainAddressRead) Serialize(writeBuffer utils.WriteBuffer) 
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataExtDomainAddressRead) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

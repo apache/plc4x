@@ -313,3 +313,9 @@ func (m *DeviceDescriptorType2) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+func (m *DeviceDescriptorType2) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

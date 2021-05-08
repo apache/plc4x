@@ -175,3 +175,9 @@ func (m *DeviceConfigurationAckDataBlock) Serialize(writeBuffer utils.WriteBuffe
 	}
 	return nil
 }
+
+func (m *DeviceConfigurationAckDataBlock) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

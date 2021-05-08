@@ -272,3 +272,9 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 	}
 	return nil
 }
+
+func (m *LDataFrame) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

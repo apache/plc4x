@@ -124,3 +124,9 @@ func (m *S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 	return nil
 }
+
+func (m *S7VarPayloadStatusItem) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

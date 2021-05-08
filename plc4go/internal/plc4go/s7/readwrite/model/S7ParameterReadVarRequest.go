@@ -188,3 +188,9 @@ func (m *S7ParameterReadVarRequest) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *S7ParameterReadVarRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

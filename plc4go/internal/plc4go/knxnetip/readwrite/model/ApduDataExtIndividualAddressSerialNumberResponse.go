@@ -122,3 +122,9 @@ func (m *ApduDataExtIndividualAddressSerialNumberResponse) Serialize(writeBuffer
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataExtIndividualAddressSerialNumberResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

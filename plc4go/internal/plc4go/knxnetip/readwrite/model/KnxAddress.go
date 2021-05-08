@@ -146,3 +146,9 @@ func (m *KnxAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+func (m *KnxAddress) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -172,3 +172,9 @@ func (m *TunnelingRequestDataBlock) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return nil
 }
+
+func (m *TunnelingRequestDataBlock) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

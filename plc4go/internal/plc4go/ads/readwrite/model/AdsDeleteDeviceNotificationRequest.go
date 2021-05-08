@@ -146,3 +146,9 @@ func (m *AdsDeleteDeviceNotificationRequest) Serialize(writeBuffer utils.WriteBu
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *AdsDeleteDeviceNotificationRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

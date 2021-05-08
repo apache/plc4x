@@ -122,3 +122,9 @@ func (m *ConnectionRequestInformationDeviceManagement) Serialize(writeBuffer uti
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ConnectionRequestInformationDeviceManagement) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

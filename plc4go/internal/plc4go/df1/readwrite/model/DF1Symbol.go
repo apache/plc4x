@@ -180,3 +180,9 @@ func (m *DF1Symbol) SerializeParent(writeBuffer utils.WriteBuffer, child IDF1Sym
 	}
 	return nil
 }
+
+func (m *DF1Symbol) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -173,3 +173,9 @@ func (m *ConnectionResponseDataBlock) SerializeParent(writeBuffer utils.WriteBuf
 	}
 	return nil
 }
+
+func (m *ConnectionResponseDataBlock) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

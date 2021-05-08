@@ -255,3 +255,9 @@ func (m *GroupObjectDescriptorRealisationTypeB) Serialize(writeBuffer utils.Writ
 	}
 	return nil
 }
+
+func (m *GroupObjectDescriptorRealisationTypeB) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

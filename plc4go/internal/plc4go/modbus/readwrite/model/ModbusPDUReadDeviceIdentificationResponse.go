@@ -130,3 +130,9 @@ func (m *ModbusPDUReadDeviceIdentificationResponse) Serialize(writeBuffer utils.
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ModbusPDUReadDeviceIdentificationResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

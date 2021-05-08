@@ -265,3 +265,9 @@ func (m *EipPacket) SerializeParent(writeBuffer utils.WriteBuffer, child IEipPac
 	}
 	return nil
 }
+
+func (m *EipPacket) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

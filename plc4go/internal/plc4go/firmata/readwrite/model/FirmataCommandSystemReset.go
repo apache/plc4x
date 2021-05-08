@@ -122,3 +122,9 @@ func (m *FirmataCommandSystemReset) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *FirmataCommandSystemReset) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

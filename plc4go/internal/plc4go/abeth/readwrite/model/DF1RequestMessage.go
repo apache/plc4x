@@ -248,3 +248,9 @@ func (m *DF1RequestMessage) SerializeParent(writeBuffer utils.WriteBuffer, child
 	}
 	return nil
 }
+
+func (m *DF1RequestMessage) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

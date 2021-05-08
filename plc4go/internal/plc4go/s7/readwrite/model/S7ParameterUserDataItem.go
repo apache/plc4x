@@ -154,3 +154,9 @@ func (m *S7ParameterUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer,
 	}
 	return nil
 }
+
+func (m *S7ParameterUserDataItem) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

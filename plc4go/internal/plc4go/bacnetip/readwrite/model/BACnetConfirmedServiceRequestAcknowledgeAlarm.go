@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(writeBuffer ut
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

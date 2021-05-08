@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

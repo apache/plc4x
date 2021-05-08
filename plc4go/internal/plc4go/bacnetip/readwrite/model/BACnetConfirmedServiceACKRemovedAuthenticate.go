@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(writeBuffer uti
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceACKRemovedAuthenticate) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

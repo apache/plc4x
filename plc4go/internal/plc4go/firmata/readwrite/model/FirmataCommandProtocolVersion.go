@@ -161,3 +161,9 @@ func (m *FirmataCommandProtocolVersion) Serialize(writeBuffer utils.WriteBuffer)
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *FirmataCommandProtocolVersion) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

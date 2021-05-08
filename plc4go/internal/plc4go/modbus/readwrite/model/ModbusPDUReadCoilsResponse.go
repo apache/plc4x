@@ -189,3 +189,9 @@ func (m *ModbusPDUReadCoilsResponse) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ModbusPDUReadCoilsResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

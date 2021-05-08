@@ -158,3 +158,9 @@ func (m *CIPEncapsulationReadRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *CIPEncapsulationReadRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

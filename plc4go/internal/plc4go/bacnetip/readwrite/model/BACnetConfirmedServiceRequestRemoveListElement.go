@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) Serialize(writeBuffer u
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestRemoveListElement) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

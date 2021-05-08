@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceACKGetAlarmSummary) Serialize(writeBuffer utils.W
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceACKGetAlarmSummary) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

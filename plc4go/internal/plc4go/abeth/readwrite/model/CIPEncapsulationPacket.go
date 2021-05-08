@@ -293,3 +293,9 @@ func (m *CIPEncapsulationPacket) SerializeParent(writeBuffer utils.WriteBuffer, 
 	}
 	return nil
 }
+
+func (m *CIPEncapsulationPacket) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

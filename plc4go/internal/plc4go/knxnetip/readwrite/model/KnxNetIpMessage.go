@@ -240,3 +240,9 @@ func (m *KnxNetIpMessage) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 	return nil
 }
+
+func (m *KnxNetIpMessage) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

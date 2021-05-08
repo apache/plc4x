@@ -122,3 +122,9 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(wr
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

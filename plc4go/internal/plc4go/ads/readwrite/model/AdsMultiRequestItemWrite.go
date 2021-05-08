@@ -180,3 +180,9 @@ func (m *AdsMultiRequestItemWrite) Serialize(writeBuffer utils.WriteBuffer) erro
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *AdsMultiRequestItemWrite) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

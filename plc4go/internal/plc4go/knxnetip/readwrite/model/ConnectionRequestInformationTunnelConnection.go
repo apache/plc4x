@@ -180,3 +180,9 @@ func (m *ConnectionRequestInformationTunnelConnection) Serialize(writeBuffer uti
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ConnectionRequestInformationTunnelConnection) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

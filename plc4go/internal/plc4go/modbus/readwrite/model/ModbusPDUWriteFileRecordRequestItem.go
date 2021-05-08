@@ -204,3 +204,9 @@ func (m *ModbusPDUWriteFileRecordRequestItem) Serialize(writeBuffer utils.WriteB
 	}
 	return nil
 }
+
+func (m *ModbusPDUWriteFileRecordRequestItem) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -161,3 +161,9 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *DF1UnprotectedReadResponse) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestAddListElement) Serialize(writeBuffer util
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestAddListElement) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

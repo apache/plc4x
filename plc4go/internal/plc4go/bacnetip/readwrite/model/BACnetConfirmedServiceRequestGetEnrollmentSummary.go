@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) Serialize(writeBuffe
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

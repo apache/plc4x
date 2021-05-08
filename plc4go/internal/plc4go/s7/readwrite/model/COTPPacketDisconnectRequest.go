@@ -194,3 +194,9 @@ func (m *COTPPacketDisconnectRequest) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *COTPPacketDisconnectRequest) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -259,3 +259,9 @@ func (m *CEMIAdditionalInformationBusmonitorInfo) Serialize(writeBuffer utils.Wr
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -217,3 +217,9 @@ func (m *BVLC) SerializeParent(writeBuffer utils.WriteBuffer, child IBVLC, seria
 	}
 	return nil
 }
+
+func (m *BVLC) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

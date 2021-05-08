@@ -122,3 +122,9 @@ func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(writ
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

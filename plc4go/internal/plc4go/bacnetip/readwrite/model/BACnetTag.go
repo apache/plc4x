@@ -266,3 +266,9 @@ func (m *BACnetTag) SerializeParent(writeBuffer utils.WriteBuffer, child IBACnet
 	}
 	return nil
 }
+
+func (m *BACnetTag) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

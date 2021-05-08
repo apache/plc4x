@@ -357,3 +357,9 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BACnetConfirmedServiceRequestSubscribeCOV) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

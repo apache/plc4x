@@ -122,3 +122,9 @@ func (m *ApduDataExtGroupPropertyValueRead) Serialize(writeBuffer utils.WriteBuf
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataExtGroupPropertyValueRead) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

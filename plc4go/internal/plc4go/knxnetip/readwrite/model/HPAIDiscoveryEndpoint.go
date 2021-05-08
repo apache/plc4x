@@ -187,3 +187,9 @@ func (m *HPAIDiscoveryEndpoint) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+func (m *HPAIDiscoveryEndpoint) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

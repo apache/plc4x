@@ -311,3 +311,9 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	}
 	return nil
 }
+
+func (m *S7Message) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

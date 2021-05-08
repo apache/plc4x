@@ -197,3 +197,9 @@ func (m *AmsSerialAcknowledgeFrame) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return nil
 }
+
+func (m *AmsSerialAcknowledgeFrame) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

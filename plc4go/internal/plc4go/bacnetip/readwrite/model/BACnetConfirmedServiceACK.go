@@ -180,3 +180,9 @@ func (m *BACnetConfirmedServiceACK) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 	return nil
 }
+
+func (m *BACnetConfirmedServiceACK) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

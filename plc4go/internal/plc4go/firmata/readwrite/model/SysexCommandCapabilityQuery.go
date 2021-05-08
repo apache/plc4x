@@ -126,3 +126,9 @@ func (m *SysexCommandCapabilityQuery) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *SysexCommandCapabilityQuery) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

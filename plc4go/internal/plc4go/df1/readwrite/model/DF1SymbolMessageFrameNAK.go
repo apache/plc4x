@@ -122,3 +122,9 @@ func (m *DF1SymbolMessageFrameNAK) Serialize(writeBuffer utils.WriteBuffer) erro
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *DF1SymbolMessageFrameNAK) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

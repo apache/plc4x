@@ -205,3 +205,9 @@ func (m *ComObjectTableRealisationType2) Serialize(writeBuffer utils.WriteBuffer
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ComObjectTableRealisationType2) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

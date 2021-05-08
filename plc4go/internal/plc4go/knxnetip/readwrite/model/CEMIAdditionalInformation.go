@@ -156,3 +156,9 @@ func (m *CEMIAdditionalInformation) SerializeParent(writeBuffer utils.WriteBuffe
 	}
 	return nil
 }
+
+func (m *CEMIAdditionalInformation) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

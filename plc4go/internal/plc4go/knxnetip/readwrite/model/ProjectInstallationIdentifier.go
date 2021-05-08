@@ -129,3 +129,9 @@ func (m *ProjectInstallationIdentifier) Serialize(writeBuffer utils.WriteBuffer)
 	}
 	return nil
 }
+
+func (m *ProjectInstallationIdentifier) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

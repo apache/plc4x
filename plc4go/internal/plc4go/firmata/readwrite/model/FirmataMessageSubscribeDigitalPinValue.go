@@ -187,3 +187,9 @@ func (m *FirmataMessageSubscribeDigitalPinValue) Serialize(writeBuffer utils.Wri
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *FirmataMessageSubscribeDigitalPinValue) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

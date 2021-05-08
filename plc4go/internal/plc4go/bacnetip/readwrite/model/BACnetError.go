@@ -180,3 +180,9 @@ func (m *BACnetError) SerializeParent(writeBuffer utils.WriteBuffer, child IBACn
 	}
 	return nil
 }
+
+func (m *BACnetError) String() string {
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}
