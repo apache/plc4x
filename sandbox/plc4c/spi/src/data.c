@@ -35,14 +35,14 @@ plc4c_data *plc4c_data_create_bool_data(bool b) {
 }
 
 plc4c_data* plc4c_data_create_bool_array(bool *b, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_bool_data(*(b + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 
@@ -57,14 +57,14 @@ plc4c_data *plc4c_data_create_int8_t_data(int8_t c) {
 }
 
 plc4c_data* plc4c_data_create_int8_t_array(int8_t *c, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_int8_t_data(*(c + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint8_t_data(uint8_t uc) {
@@ -78,14 +78,14 @@ plc4c_data *plc4c_data_create_uint8_t_data(uint8_t uc) {
 }
 
 plc4c_data* plc4c_data_create_uint8_t_array(uint8_t *uc, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_uint8_t_data(*(uc + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_int16_t_data(int16_t s) {
@@ -99,14 +99,14 @@ plc4c_data *plc4c_data_create_int16_t_data(int16_t s) {
 }
 
 plc4c_data* plc4c_data_create_int16_t_array(int16_t *s, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_int16_t_data(*(s + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 
@@ -121,14 +121,14 @@ plc4c_data *plc4c_data_create_uint16_t_data(uint16_t us) {
 }
 
 plc4c_data* plc4c_data_create_uint16_t_array(uint16_t *us, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_uint16_t_data(*(us + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_int32_t_data(int32_t i) {
@@ -142,14 +142,14 @@ plc4c_data *plc4c_data_create_int32_t_data(int32_t i) {
 }
 
 plc4c_data* plc4c_data_create_int32_t_array(int32_t *i, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_int32_t_data(*(i + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint32_t_data(uint32_t ui) {
@@ -163,14 +163,14 @@ plc4c_data *plc4c_data_create_uint32_t_data(uint32_t ui) {
 }
 
 plc4c_data* plc4c_data_create_uint32_t_array(uint32_t *ui, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_uint32_t_data(*(ui + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_int64_t_data(int64_t i) {
@@ -184,14 +184,14 @@ plc4c_data *plc4c_data_create_int64_t_data(int64_t i) {
 }
 
 plc4c_data* plc4c_data_create_int64_t_array(int64_t *i, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_int64_t_data(*(i + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint64_t_data(uint64_t ui) {
@@ -205,14 +205,14 @@ plc4c_data *plc4c_data_create_uint64_t_data(uint64_t ui) {
 }
 
 plc4c_data* plc4c_data_create_uint64_t_array(uint64_t *ui, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_uint64_t_data(*(ui + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_float_data(float f) {
@@ -226,14 +226,14 @@ plc4c_data *plc4c_data_create_float_data(float f) {
 }
 
 plc4c_data* plc4c_data_create_float_array(float *f, int nItems) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItems ; idx++) {
     elem = plc4c_data_create_float_data(*(f + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_double_data(double d) {
@@ -247,14 +247,14 @@ plc4c_data *plc4c_data_create_double_data(double d) {
 }
 
 plc4c_data* plc4c_data_create_double_array(double *d, int nItem) {
-  plc4c_list* list;
+  plc4c_list list;
   plc4c_data* elem;
-  plc4c_utils_list_create(&list);
+  plc4c_utils_list_init(&list);
   for (size_t idx = 0; idx < nItem; idx++) {
     elem = plc4c_data_create_double_data(*(d + idx));
-    plc4c_utils_list_insert_head_value(list, elem);
+    plc4c_utils_list_insert_head_value(&list, elem);
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 
@@ -303,50 +303,50 @@ plc4c_data *plc4c_data_create_list_data(plc4c_list list) {
 
 plc4c_data *plc4c_data_create_uint8_t_bit_string_data(uint8_t uc) {
   uint8_t cur_bit = ((uint8_t) 1) << 7;
-  plc4c_list* list = NULL;
-  plc4c_utils_list_create(&list);
+  plc4c_list list ;
+  plc4c_utils_list_init(&list);
   for(int i = 0; i < 8; i++) {
     plc4c_data *item = plc4c_data_create_bool_data((uc & cur_bit) != 0);
-    plc4c_utils_list_insert_head_value(list, item);
+    plc4c_utils_list_insert_head_value(&list, item);
     cur_bit = cur_bit >> 1;
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint16_t_bit_string_data(uint16_t us) {
   uint16_t cur_bit = ((uint16_t) 1) << 15;
-  plc4c_list* list = NULL;
-  plc4c_utils_list_create(&list);
+  plc4c_list list ;
+  plc4c_utils_list_init(&list);
   for(int i = 0; i < 16; i++) {
     plc4c_data *item = plc4c_data_create_bool_data((us & cur_bit) != 0);
-    plc4c_utils_list_insert_head_value(list, item);
+    plc4c_utils_list_insert_head_value(&list, item);
     cur_bit = cur_bit >> 1;
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint32_t_bit_string_data(uint32_t ui) {
   uint32_t cur_bit = ((uint32_t) 1) << 31;
-  plc4c_list* list = NULL;
-  plc4c_utils_list_create(&list);
+  plc4c_list list;
+  plc4c_utils_list_init(&list);
   for(int i = 0; i < 32; i++) {
     plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
-    plc4c_utils_list_insert_head_value(list, item);
+    plc4c_utils_list_insert_head_value(&list, item);
     cur_bit = cur_bit >> 1;
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_uint64_t_bit_string_data(uint64_t ui) {
   uint64_t cur_bit = ((uint64_t) 1) << 63;
-  plc4c_list* list = NULL;
-  plc4c_utils_list_create(&list);
+  plc4c_list list;
+  plc4c_utils_list_init(&list);
   for(int i = 0; i < 64; i++) {
     plc4c_data *item = plc4c_data_create_bool_data((ui & cur_bit) != 0);
-    plc4c_utils_list_insert_head_value(list, item);
+    plc4c_utils_list_insert_head_value(&list, item);
     cur_bit = cur_bit >> 1;
   }
-  return plc4c_data_create_list_data(*list);
+  return plc4c_data_create_list_data(list);
 }
 
 plc4c_data *plc4c_data_create_void_pointer_data(void *v) {
@@ -442,6 +442,12 @@ void plc4c_data_set_custom_printf(plc4c_data *data,
   data->custom_printf = data_custom_printf;
 }
 
+void list_data_rm(plc4c_list_element *elem) {
+  plc4c_data* value;
+  value = elem->value;
+  plc4c_data_destroy(value);
+}
+
 void plc4c_data_destroy(plc4c_data *data) {
   assert(data != NULL);
   if (data->custom_destroy != NULL) {
@@ -455,10 +461,92 @@ void plc4c_data_destroy(plc4c_data *data) {
         free(data->data.pstring_value);
         break;
       case PLC4C_LIST:
-        // TODO
+        plc4c_utils_list_delete_elements(&data->data.list_value,
+            list_data_rm);
+        //free(&data->data.list_value);
       default:
         break;
     }
   }
   free(data);
 }
+
+
+#include <string.h>
+void* plc4c_data_update_values(plc4c_data *data, void *newData) {
+
+  switch (data->data_type) {
+      case PLC4C_BOOL:
+        data->data.boolean_value = *(bool*)newData;
+        newData += sizeof(bool);
+        break;
+      case PLC4C_CHAR:
+        data->data.char_value = *(int8_t*)newData;
+        newData += sizeof(int8_t);
+        break;
+      case PLC4C_UCHAR:
+        data->data.char_value = *(int8_t*)newData;
+        newData += sizeof(int8_t);
+        break;
+      case PLC4C_SHORT:
+        data->data.short_value = *(int16_t*)newData;
+        newData += sizeof(int16_t);
+        break;
+      case PLC4C_USHORT:
+        data->data.ushort_value = *(uint16_t*)newData;
+        newData += sizeof(uint16_t);
+        break;
+      case PLC4C_INT:
+        data->data.int_value = *(int32_t*)newData;
+        newData += sizeof(int32_t);
+        break;
+      case PLC4C_UINT:
+        data->data.uint_value = *(uint32_t*)newData;
+        newData += sizeof(uint32_t);
+        break;
+      case PLC4C_LINT:
+        data->data.lint_value = *(int64_t*)newData;
+        newData += sizeof(int64_t);
+        break;
+      case PLC4C_ULINT:
+        data->data.ulint_value = *(uint64_t*)newData;
+        newData += sizeof(uint64_t);
+        break;
+      case PLC4C_FLOAT:
+        data->data.float_value = *(float*)newData;
+        newData += sizeof(float);
+        break;
+      case PLC4C_DOUBLE:
+        data->data.double_value = *(double*)newData;
+        newData += sizeof(double);
+        break;
+      case PLC4C_STRING_POINTER:
+        data->data.pstring_value = (char*) newData;
+        newData += strlen(newData) + 1;
+        break;
+      case PLC4C_CONSTANT_STRING:
+        data->data.const_string_value = (char *)newData;
+        newData += strlen(newData) + 1;
+        break;
+      case PLC4C_VOID_POINTER:
+        data->data.pvoid_value = newData;
+        newData += sizeof(void*);
+        break;
+      case PLC4C_LIST: {
+        plc4c_list_element *list_element;
+        plc4c_data *list_data;
+        list_element = plc4c_utils_list_tail(&data->data.list_value);
+        do {
+          plc4c_data *list_data = list_element->value;
+          newData = plc4c_data_update_values(list_data, newData);
+          list_element = list_element->next;
+        } while (list_element != NULL);
+        break;
+      }
+      case PLC4C_STRUCT:
+        // TODO
+        break;
+  }
+  return newData;
+}
+

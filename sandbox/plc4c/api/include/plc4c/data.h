@@ -188,6 +188,9 @@ void plc4c_data_printf(plc4c_data *data);
  */
 void plc4c_data_destroy(plc4c_data *data);
 
+
+void* plc4c_data_update_values(plc4c_data *data, void *newData);
+
 #ifdef __cplusplus
 }
 #endif

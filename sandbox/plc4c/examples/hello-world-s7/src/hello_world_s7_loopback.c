@@ -75,10 +75,7 @@ bool syncBoolLoop(plc4c_connection *conn,
     if (plc4c_system_loop(system) != OK)
       return EXIT_FAILURE;
   }
-
-
 }
-
 
 //#pragma clang diagnostic push
 //#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
@@ -118,7 +115,6 @@ int main(int argc, char** argv) {
 
   long loopback_value[7] = {0,0,0,0,0};
   plc4c_data *loopback_data;
-  
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,7 +122,6 @@ int main(int argc, char** argv) {
   bool doWrite = 1;
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   // Connection string argument and do_write test arg (defaults to off as
   // not currently working)
@@ -148,7 +143,6 @@ int main(int argc, char** argv) {
   plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
   plc4c_system_set_on_disconnect_success_callback(system, &onGlobalDisconnect);
   
-
   // Establish connections to remote devices
   result = plc4c_system_connect(system, connection_test_string, &connection);
   CHECK_RESULT(result != OK, result, "plc4c_system_connect failed\n");
@@ -160,25 +154,37 @@ int main(int argc, char** argv) {
     loopTimes = 1;
 
   unsigned int loopCount = 0;
-  float valuetowrite = 4.4;
+  #define NREAD 3
+  float valuetowrite[NREAD] = {1.1 ,2.2, 3.3};//, 5.5};
+
+  #define ITEM_STR "%DB2:4.0:REAL[3]"
 
   // Central program loop ...
   syncBoolLoop(connection, plc4c_connection_get_connected, plc4c_connection_has_error);
-        
+  bool rtMalloc = false;
+  
   while ( (!errorFlag) && (loopCount++ < loopTimes)) {
     if (doWrite) {
       { // Write request create scope
-        result = plc4c_connection_create_write_request(connection, &write_request);
-        CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
-
-        loopback_data = plc4c_data_create_float_data(valuetowrite++);
-        result = plc4c_write_request_add_item(write_request, "%DB2:4.0:REAL", loopback_data);
+        if (loopCount == 1 || rtMalloc) {
+          result = plc4c_connection_create_write_request(connection, &write_request);
+          CHECK_RESULT(result != OK, result,"plc4c_connection_create_write_request failed\n");
+          loopback_data = plc4c_data_create_float_array(valuetowrite,NREAD);
+          valuetowrite[(loopCount-1)%NREAD]++;
+          result = plc4c_write_request_add_item(write_request, ITEM_STR, loopback_data);
+        } else {
+          plc4c_data_update_values(loopback_data, valuetowrite);
+          valuetowrite[(loopCount-1)%NREAD]++;
+          //valuetowrite++;
+        }
         
+
         #ifdef S7_LOOPBACK_TIME_IO
           clock_gettime(CLOCK_MONOTONIC,&start);
         #endif
 
         result = plc4c_write_request_execute(write_request, &write_request_execution);
+        
         CHECK_RESULT(result != OK, result,"plc4c_write_request_execute failed\n");
         
         if (plc4c_system_loop(system) != OK) {
@@ -224,12 +230,12 @@ int main(int argc, char** argv) {
           printf("Write %ldus%c", delta_us, doRead ? '\t' : '\n');
         #endif
         
-        //plc4c_data_destroy(loopback_data);
-        
+        if (rtMalloc)
+          plc4c_write_request_destroy(write_request);
+  
         plc4c_write_response_destroy(write_response);
         plc4c_write_request_execution_destroy(write_request_execution);
-        plc4c_write_request_destroy(write_request);
-        
+
         if (plc4c_system_loop(system) != OK) {
           printf("ERROR in the system loop\n");
           break;
@@ -244,7 +250,7 @@ int main(int argc, char** argv) {
         result = plc4c_connection_create_read_request(connection, &read_request);
         CHECK_RESULT(result != OK, result, "plc4c_connection_create_read_request failed\n");
         
-        result = plc4c_read_request_add_item(read_request, "WORD", "%DB2:4.0:REAL");
+        result = plc4c_read_request_add_item(read_request, "A_REQUEST", ITEM_STR);
         CHECK_RESULT(result != OK, result, "plc4c_read_request_add_item failed\n");
 
         result = plc4c_read_request_execute(read_request, &read_request_execution);
@@ -315,6 +321,9 @@ int main(int argc, char** argv) {
     } // end of do read
   } 
 
+  if (!rtMalloc && doWrite) 
+    plc4c_write_request_destroy(write_request);
+  
   // Start disconnecting, break on error or dis-connection
   result = plc4c_connection_disconnect(connection);
   CHECK_RESULT(result != OK, -1,"plc4c_connection_disconnect failed\n");

@@ -109,6 +109,8 @@ plc4c_write_response *plc4c_write_request_execution_get_response(
  */
 void plc4c_write_response_destroy(plc4c_write_response *write_response);
 
+plc4c_return_code plc4x_write_execution_status(plc4c_write_request_execution *execution);
+
 #ifdef __cplusplus
 }
 #endif

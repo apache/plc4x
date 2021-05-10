@@ -20,6 +20,11 @@
 #include <plc4c/utils/list.h>
 #include <stdint.h>
 
+void plc4c_utils_list_init(plc4c_list *list) {
+  list->head = NULL;
+  list->tail = NULL;
+}
+
 void plc4c_utils_list_create(plc4c_list **list) {
 
   plc4c_list *new_list = malloc(sizeof(plc4c_list));

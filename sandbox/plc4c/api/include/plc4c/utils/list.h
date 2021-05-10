@@ -42,6 +42,8 @@ struct plc4c_list_element {
   void *value;
 };
 
+void plc4c_utils_list_init(plc4c_list *list);
+
 void plc4c_utils_list_create(plc4c_list **list);
 
 size_t plc4c_utils_list_size(plc4c_list *list);

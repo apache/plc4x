@@ -85,6 +85,19 @@ plc4c_return_code plc4c_read_request_execute(
   return OK;
 }
 
+plc4c_return_code plc4x_read_execution_status(plc4c_read_request_execution *execution) {
+  
+  plc4c_return_code res;
+
+  if ((res = plc4c_read_request_execution_check_finished_with_error(execution)))
+    return (res = INTERNAL_ERROR);
+  else if ((res = plc4c_read_request_execution_check_finished_successfully(execution)))
+    return (res = OK);
+  else
+    return (res = UNFINISHED);
+}
+
+
 bool plc4c_read_request_execution_check_finished_successfully(
     plc4c_read_request_execution *read_request_execution) {
   if (read_request_execution == NULL) {

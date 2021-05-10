@@ -81,6 +81,7 @@ plc4c_return_code plc4c_write_request_execute(
   new_write_request_execution->write_response = NULL;
   new_write_request_execution->system_task = NULL;
   
+  // Driver specific function to add the task function pinters (callbacks)
   driver->write_function(new_write_request_execution, &(new_write_request_execution->system_task));
 
   // Increment the number of running tasks for this connection.
@@ -91,6 +92,18 @@ plc4c_return_code plc4c_write_request_execute(
 
   *write_request_execution = new_write_request_execution;
   return OK;
+}
+
+plc4c_return_code plc4x_write_execution_status(plc4c_write_request_execution *execution) {
+  
+  plc4c_return_code res;
+
+  if ((res = plc4c_write_request_execution_check_completed_with_error(execution)))
+    return (res = INTERNAL_ERROR);
+  else if ((res = plc4c_write_request_check_finished_successfully(execution)))
+    return (res = OK);
+  else
+    return (res = UNFINISHED);
 }
 
 bool plc4c_write_request_check_finished_successfully(

@@ -109,6 +109,8 @@ plc4c_read_response *plc4c_read_request_execution_get_response(
  */
 void plc4c_read_response_destroy(plc4c_read_response *read_response);
 
+plc4c_return_code plc4x_read_execution_status(plc4c_read_request_execution *execution);
+
 #ifdef __cplusplus
 }
 #endif
