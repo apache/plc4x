@@ -1,4 +1,4 @@
-//
+ //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -223,7 +223,7 @@
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
         ['0x00','0x07' S7PayloadUserData [S7Parameter 'parameter']
-            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
+            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType','CAST(CAST(parameter, S7ParameterUserData).items[1], S7ParameterUserDataItemCPUFunctions).cpuSubfunction']]
         ]
     ]
 ]
@@ -241,16 +241,20 @@
     [enum DataTransportErrorCode 'returnCode']
 ]
 
-[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType']
+////////////////////////////////////////////////////////////////
+// DataItem by Sub function
+
+
+[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'lengthInBytes - 4']
-    [simple   SzlId                  'szlId']
-    [simple   uint 16                'szlIndex']
-    [typeSwitch 'cpuFunctionType'
-        ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
+    [typeSwitch 'cpuFunctionType', 'cpuSubfunction'
+        ['0x04', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlRequest
+            [simple   SzlId                  'szlId']
+            [simple   uint 16                'szlIndex']
         ]
-        ['0x08' S7PayloadUserDataItemCpuFunctionReadSzlResponse
+        ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
             [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']

@@ -28,6 +28,7 @@
   </parent>
 
   <artifactId>plc4j-driver-s7</artifactId>
+      
   <name>PLC4J: Driver: S7 (Step7)</name>
   <description>Implementation of a PLC4X driver for the classic Step7 S7 protocol.</description>
 
