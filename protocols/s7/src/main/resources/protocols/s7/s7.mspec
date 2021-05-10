@@ -242,8 +242,28 @@
 ]
 
 ////////////////////////////////////////////////////////////////
-// DataItem by Sub function
-
+// DataItem by Function Type:
+// 0x00 PUSH
+// 0x04 TYPE_REQ
+// 0x08 TYPE_RES
+//
+// DataItem by Sub Function Type:
+// 0x01 CPU_READSZL
+// 0x02 CPU_MSGS 
+// 0x03 CPU_DIAGMSG
+// 0x05 ALARM8_IND
+// 0x06 NOTIFY_IND
+// 0x07 ALARM8LOCK
+// 0x08 ALARM8UNLOCK
+// 0x0b ALARMACK
+// 0x0c ALARMACK_IND
+// 0x0d ALARM8LOCK_IND
+// 0x0e ALARM8UNLOCK_IND
+// 0x11 ALARMSQ_IND
+// 0x12 ALARMS_IND
+// 0x13 ALARMQUERY
+// 0x16 NOTIFY8_IND
+////////////////////////////////////////////////////////////////
 
 [discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
     [enum     DataTransportErrorCode 'returnCode']
@@ -259,6 +279,17 @@
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
         ]
+        ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
+            [simple   uint 8    'Subscription']
+            [reserved uint 5    '0x00']
+            [padding uint 64 'key'  'HmiRtm  ' '1']
+        ]
+        ['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+            [const    uint 16 'szlItemLength' '28']
+            [implicit uint 16 'szlItemCount'  'COUNT(items)']
+            [array SzlDataTreeItem 'items' count 'szlItemCount']
+        ]
+
     ]
 ]
 
