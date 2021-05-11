@@ -197,3 +197,12 @@ func (m *ModbusTcpADU) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return nil
 }
+
+func (m *ModbusTcpADU) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

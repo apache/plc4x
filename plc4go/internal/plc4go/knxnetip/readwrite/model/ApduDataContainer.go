@@ -156,3 +156,12 @@ func (m *ApduDataContainer) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataContainer) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

@@ -261,3 +261,12 @@ func (m *S7PayloadUserDataItem) SerializeParent(writeBuffer utils.WriteBuffer, c
 	}
 	return nil
 }
+
+func (m *S7PayloadUserDataItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

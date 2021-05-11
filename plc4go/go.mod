@@ -26,8 +26,6 @@ require (
 	github.com/icza/bitio v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.20.0
-	github.com/sigurn/crc16 v0.0.0-20160107003519-da416fad5162
-	github.com/sigurn/utils v0.0.0-20190728110027-e1fefb11a144 // indirect
 	github.com/snksoft/crc v1.1.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/tebeka/go2xunit v1.4.10 // indirect

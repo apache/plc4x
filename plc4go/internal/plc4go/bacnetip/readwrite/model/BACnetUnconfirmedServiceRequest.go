@@ -176,3 +176,12 @@ func (m *BACnetUnconfirmedServiceRequest) SerializeParent(writeBuffer utils.Writ
 	}
 	return nil
 }
+
+func (m *BACnetUnconfirmedServiceRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

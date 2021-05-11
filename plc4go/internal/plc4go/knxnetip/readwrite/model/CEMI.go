@@ -198,3 +198,12 @@ func (m *CEMI) SerializeParent(writeBuffer utils.WriteBuffer, child ICEMI, seria
 	}
 	return nil
 }
+
+func (m *CEMI) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

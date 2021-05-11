@@ -273,3 +273,12 @@ func (m *DF1ResponseMessage) SerializeParent(writeBuffer utils.WriteBuffer, chil
 	}
 	return nil
 }
+
+func (m *DF1ResponseMessage) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

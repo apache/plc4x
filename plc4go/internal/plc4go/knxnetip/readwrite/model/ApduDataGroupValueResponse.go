@@ -183,3 +183,12 @@ func (m *ApduDataGroupValueResponse) Serialize(writeBuffer utils.WriteBuffer) er
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *ApduDataGroupValueResponse) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

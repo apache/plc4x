@@ -190,3 +190,12 @@ func (m *Apdu) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu, seria
 	}
 	return nil
 }
+
+func (m *Apdu) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

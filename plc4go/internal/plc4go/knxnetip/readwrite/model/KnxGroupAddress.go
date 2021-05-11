@@ -142,3 +142,12 @@ func (m *KnxGroupAddress) SerializeParent(writeBuffer utils.WriteBuffer, child I
 	}
 	return nil
 }
+
+func (m *KnxGroupAddress) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

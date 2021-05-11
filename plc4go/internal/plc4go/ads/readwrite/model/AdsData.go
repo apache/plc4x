@@ -177,3 +177,12 @@ func (m *AdsData) SerializeParent(writeBuffer utils.WriteBuffer, child IAdsData,
 	}
 	return nil
 }
+
+func (m *AdsData) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

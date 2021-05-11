@@ -182,3 +182,12 @@ func (m *NLM) SerializeParent(writeBuffer utils.WriteBuffer, child INLM, seriali
 	}
 	return nil
 }
+
+func (m *NLM) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

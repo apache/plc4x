@@ -209,3 +209,12 @@ func (m *CipRRData) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *CipRRData) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

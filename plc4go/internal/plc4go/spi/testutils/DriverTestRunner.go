@@ -23,16 +23,6 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	adsIO "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
-	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-	eipIO "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
-	knxIO "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
-	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
-	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	s7IO "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
-	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
@@ -56,9 +46,37 @@ type DriverTestsuite struct {
 	outputFlavor     string
 	driverName       string
 	driverParameters map[string]string
+	bigEndian        bool
+	parser           XmlParser
+	rootTypeParser   func(utils.ReadBufferByteBased) (interface{}, error)
 	setupSteps       []TestStep
 	teardownSteps    []TestStep
 	testcases        []Testcase
+}
+
+type XmlParser interface {
+	Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+}
+
+type WithOption interface {
+	isOption() bool
+}
+
+type option struct {
+}
+
+func (_ option) isOption() bool {
+	return true
+}
+
+// WithRootTypeParser Can be used to output the root type of a protocol for better debugging
+func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) WithOption {
+	return withRootTypeParser{rootTypeParser: rootTypeParser}
+}
+
+type withRootTypeParser struct {
+	option
+	rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
 }
 
 func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Testcase) error {
@@ -241,7 +259,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
-		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
+		expectedMessage, err := m.parseMessage(typeName, payloadString, step)
 		if err != nil {
 			return errors.Wrap(err, "Error parsing message")
 		}
@@ -253,11 +271,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Errorf("error converting type %t into Serializable type", expectedMessage)
 		}
 		var expectedWriteBuffer utils.WriteBufferByteBased
-		switch m.driverName {
-		case "ads", "eip":
-			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
-		default:
+		if m.bigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
+		} else {
+			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
 		}
 		err = expectedSerializable.Serialize(expectedWriteBuffer)
 		if err != nil {
@@ -283,31 +300,20 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
+		var bufferFactory func([]byte) utils.ReadBufferByteBased
+		if m.bigEndian {
+			bufferFactory = utils.NewReadBufferByteBased
+		} else {
+			bufferFactory = utils.NewLittleEndianReadBufferByteBased
+		}
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
 			if expectedRawOutput[i] != actualRawOutput[i] {
-				switch m.driverName {
-				case "modbus":
-					expectation := expectedSerializable.(*modbusModel.ModbusTcpADU)
-					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBufferByteBased(actualRawOutput), false)
-					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
-				case "ads":
-					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
-					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
-				case "eip":
-					expectation := expectedSerializable.(*eipModel.EipPacket)
-					actual, err := eipModel.EipPacketParse(utils.NewLittleEndianReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
-				case "s7":
-					expectation := expectedSerializable.(*s7Model.TPKTPacket)
-					actual, err := s7Model.TPKTPacketParse(utils.NewReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
-				case "knx":
-					expectation := expectedSerializable.(*knxModel.KnxNetIpMessage)
-					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBufferByteBased(actualRawOutput))
-					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				if m.rootTypeParser != nil {
+					readBufferByteBased := bufferFactory(actualRawOutput)
+					actual, err := m.rootTypeParser(readBufferByteBased)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectedSerializable, actual)
 				}
 				return errors.Errorf("actual output doesn't match expected output:\nactual:\n%s\nexpected:\n%s", utils.Dump(actualRawOutput), utils.Dump(expectedRawOutput))
 			}
@@ -339,7 +345,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
-		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
+		expectedMessage, err := m.parseMessage(typeName, payloadString, step)
 		if err != nil {
 			return errors.Wrap(err, "error parsing message")
 		}
@@ -351,11 +357,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.New("error converting type into Serializable type")
 		}
 		var wb utils.WriteBufferByteBased
-		switch m.driverName {
-		case "ads", "eip":
-			wb = utils.NewLittleEndianWriteBufferByteBased()
-		default:
+		if m.bigEndian {
 			wb = utils.NewWriteBufferByteBased()
+		} else {
+			wb = utils.NewLittleEndianWriteBufferByteBased()
 		}
 		err = expectedSerializable.Serialize(wb)
 		if err != nil {
@@ -404,26 +409,15 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	return nil
 }
 
-func parseMessage(protocolName string, typeName string, payloadString string, step TestStep) (interface{}, error) {
-	type Parser interface {
-		Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step TestStep) (interface{}, error) {
+	if m.parser == nil {
+		return nil, errors.Errorf("Protocol name %s has no mapped parser", m.protocolName)
 	}
-	parserMap := map[string]Parser{
-		"modbus":   modbusIO.ModbusXmlParserHelper{},
-		"ads":      adsIO.AdsXmlParserHelper{},
-		"eip":      eipIO.EipXmlParserHelper{},
-		"knxnetip": knxIO.KnxnetipXmlParserHelper{},
-		"s7":       s7IO.S7XmlParserHelper{},
+	parse, err := m.parser.Parse(typeName, payloadString, step.parserArguments...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error parsing xml")
 	}
-	if parser, ok := parserMap[protocolName]; ok {
-		expected, err := parser.Parse(typeName, payloadString, step.parserArguments...)
-		if err != nil {
-			return nil, errors.Wrap(err, "error parsing xml")
-		}
-		return expected, nil
-	} else {
-		return nil, errors.Errorf("Protocol name %s has no mapped parser", protocolName)
-	}
+	return parse, err
 }
 
 func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
@@ -459,7 +453,11 @@ const (
 	StepTypeTerminate          StepType = 0x08
 )
 
-func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, skippedTestCases ...string) {
+func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, skippedTestCases ...string) {
+	RunDriverTestsuiteWithOptions(t, driver, testPath, parser, nil, skippedTestCases...)
+}
+
+func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, options []WithOption, skippedTestCases ...string) {
 	skippedTestCasesMap := map[string]bool{}
 	for _, skippedTestCase := range skippedTestCases {
 		skippedTestCasesMap[skippedTestCase] = true
@@ -472,8 +470,16 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		return
 	}
 
+	var rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
+	for _, withOption := range options {
+		switch withOption.(type) {
+		case withRootTypeParser:
+			log.Info().Msg("Using root type parser for better output")
+			rootTypeParser = withOption.(withRootTypeParser).rootTypeParser
+		}
+	}
 	// Parse the contents of the test-specification
-	testsuite, err := ParseDriverTestsuite(*rootNode)
+	testsuite, err := ParseDriverTestsuite(*rootNode, parser, rootTypeParser)
 	if err != nil {
 		// TODO: zerolog doesn't render stack human readable :(
 		fmt.Printf("%+v\n", err)
@@ -553,10 +559,11 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	return node, nil
 }
 
-func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
+func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) (*DriverTestsuite, error) {
 	if node.Name != "driver-testsuite" {
 		return nil, errors.New("invalid document structure")
 	}
+	bigEndian := node.GetAttributeValue("bigEndian") != "false"
 	var testsuiteName string
 	var protocolName string
 	var outputFlavor string
@@ -629,6 +636,9 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		outputFlavor:     outputFlavor,
 		driverName:       driverName,
 		driverParameters: driverParameters,
+		bigEndian:        bigEndian,
+		parser:           parser,
+		rootTypeParser:   rootTypeParser,
 		setupSteps:       setupSteps,
 		teardownSteps:    teardownSteps,
 		testcases:        testcases,

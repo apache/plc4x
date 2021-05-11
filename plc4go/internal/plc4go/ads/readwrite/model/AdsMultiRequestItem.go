@@ -142,3 +142,12 @@ func (m *AdsMultiRequestItem) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	}
 	return nil
 }
+
+func (m *AdsMultiRequestItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

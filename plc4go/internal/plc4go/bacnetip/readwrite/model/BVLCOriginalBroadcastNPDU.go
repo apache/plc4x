@@ -154,3 +154,12 @@ func (m *BVLCOriginalBroadcastNPDU) Serialize(writeBuffer utils.WriteBuffer) err
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *BVLCOriginalBroadcastNPDU) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

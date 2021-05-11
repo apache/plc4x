@@ -22,10 +22,16 @@ package tests
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"testing"
 )
 
 func TestModbusDriver(t *testing.T) {
-	testutils.RunDriverTestsuite(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml")
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+		return modbusModel.ModbusTcpADUParse(readBufferByteBased, false)
+	})}
+	testutils.RunDriverTestsuiteWithOptions(t, modbus.NewDriver(), "assets/testing/protocols/modbus/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, options)
 }

@@ -176,3 +176,12 @@ func (m *S7PayloadWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) erro
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
 }
+
+func (m *S7PayloadWriteVarRequest) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

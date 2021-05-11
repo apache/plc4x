@@ -145,3 +145,12 @@ func (m *S7Payload) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Payl
 	}
 	return nil
 }
+
+func (m *S7Payload) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

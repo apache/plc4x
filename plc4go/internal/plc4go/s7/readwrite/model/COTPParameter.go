@@ -179,3 +179,12 @@ func (m *COTPParameter) SerializeParent(writeBuffer utils.WriteBuffer, child ICO
 	}
 	return nil
 }
+
+func (m *COTPParameter) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}

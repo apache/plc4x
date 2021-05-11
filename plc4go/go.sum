@@ -31,10 +31,6 @@ github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINE
 github.com/rs/xid v1.2.1/go.mod h1:+uKXf+4Djp6Md1KODXJxgGQPKngRmWyn10oCKFzNHOQ=
 github.com/rs/zerolog v1.20.0 h1:38k9hgtUBdxFwE34yS8rTHmHBa4eN16E4DJlv177LNs=
 github.com/rs/zerolog v1.20.0/go.mod h1:IzD0RJ65iWH0w97OQQebJEvTZYvsCUm9WVLWBQrJRjo=
-github.com/sigurn/crc16 v0.0.0-20160107003519-da416fad5162 h1:2zlAtlrum6lg2lMiUWznq04fDudBDajMFl94Zyis67Y=
-github.com/sigurn/crc16 v0.0.0-20160107003519-da416fad5162/go.mod h1:9/etS5gpQq9BJsJMWg1wpLbfuSnkm8dPF6FdW2JXVhA=
-github.com/sigurn/utils v0.0.0-20190728110027-e1fefb11a144 h1:ccb8W1+mYuZvlpn/mJUMAbsFHTMCpcJBS78AsBQxNcY=
-github.com/sigurn/utils v0.0.0-20190728110027-e1fefb11a144/go.mod h1:VRI4lXkrUH5Cygl6mbG1BRUfMMoT2o8BkrtBDUAm+GU=
 github.com/snksoft/crc v1.1.0 h1:HkLdI4taFlgGGG1KvsWMpz78PkOC9TkPVpTV/cuWn48=
 github.com/snksoft/crc v1.1.0/go.mod h1:5/gUOsgAm7OmIhb6WJzw7w5g2zfJi4FrHYgGPdshE+A=
 github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=

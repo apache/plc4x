@@ -234,3 +234,12 @@ func (m *ApduDataExt) SerializeParent(writeBuffer utils.WriteBuffer, child IApdu
 	}
 	return nil
 }
+
+func (m *ApduDataExt) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
+}
