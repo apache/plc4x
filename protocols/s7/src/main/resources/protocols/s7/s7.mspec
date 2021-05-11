@@ -281,13 +281,20 @@
         ]
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
             [simple   uint 8    'Subscription']
-            [reserved uint 5    '0x00']
-            [padding uint 64 'key'  'HmiRtm  ' '1']
+            [reserved uint 8    '0x00']
+            [simple string '8' 'UTF-8' 'stringKey']
         ]
         ['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-            [const    uint 16 'szlItemLength' '28']
-            [implicit uint 16 'szlItemCount'  'COUNT(items)']
-            [array SzlDataTreeItem 'items' count 'szlItemCount']
+            [const    uint 16 'Result' '0x02']
+            [reserved uint 5    '0x00']
+            [optional ]
+            [optional ]
+            [optional ]
+       ]
+        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
+            [simple   uint 8    'Subscription']
+            [reserved uint 8    '0x00']
+            [simple string '8' 'UTF-8' 'stringKey']
         ]
 
     ]
@@ -551,3 +558,11 @@
     ['0xA0' DIAGNOSTIC_BUFFER]
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
+
+[enum uint 8 'CpuSubscribeEvents'
+    ['0x01' CPU]
+    ['0x02' IM]
+    ['0x04' FM]
+    ['0x80' CP]
+]
+
