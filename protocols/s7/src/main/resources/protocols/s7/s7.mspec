@@ -241,6 +241,55 @@
     [enum DataTransportErrorCode 'returnCode']
 ]
 
+
+////////////////////////////////////////////////////////////////
+// Event 7 Alarms Types
+////////////////////////////////////////////////////////////////
+[type AlarmMessageType
+    [simple DateAndTime Timestamp]
+    [const uint 8 'functionId' '0x40']  
+]
+
+[type AlarmMessageObjectType
+    [const uint 8 'variableSpec' '0x12']
+    [const uint 8 'length' '0x10']  
+    [const uint 8 'functionId' '0x40'] 
+    [const uint 8 'functionId' '0x40']
+    [simple uint 32 'eventId']
+    [simple State 'eventState']
+    [simple State 'localState']
+    [simple State 'ackStateGoing']
+    [simple State 'ackStateComing']
+
+]
+
+[type AssociatedValue
+    [const uint 8 'variableSpec' '0x12']
+]
+
+[type DateAndTime
+    [simple uint 8 'year']
+    [simple uint 8  'month']
+    [simple uint 8  'day']
+    [simple uint 8  'hour']
+    [simple uint 8  'minutes']
+    [simple uint 8  'seconds']
+    [simple uint 12 'msec']
+    [simple uint 4  'dow'] 
+]
+
+[type State
+    [simple bit 'SIG_1']
+    [simple bit 'SIG_1']  
+    [simple bit 'SIG_1']
+    [simple bit 'SIG_1'] 
+    [simple bit 'SIG_1']
+    [simple bit 'SIG_1']  
+    [simple bit 'SIG_1']
+    [simple bit 'SIG_1']   
+]
+
+
 ////////////////////////////////////////////////////////////////
 // DataItem by Function Type:
 // 0x00 PUSH
@@ -292,6 +341,9 @@
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'lengthInBytes - 4']
     [typeSwitch 'cpuFunctionType', 'cpuSubfunction'
+        ['0x00', '0x12' S7PayloadAlarmMessage
+
+        ]
         ['0x04', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlRequest
             [simple   SzlId                  'szlId']
             [simple   uint 16                'szlIndex']
@@ -592,7 +644,6 @@
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
 
-<<<<<<< HEAD
 [enum uint 8 'CpuSubscribeEvents'
     ['0x01' CPU]
     ['0x02' IM]
@@ -600,7 +651,6 @@
     ['0x80' CP]
 ]
 
-=======
 [enum uint 8 'EventType'
     ['0x01' MODE]
     ['0x02' SYS]
@@ -644,4 +694,4 @@
     ['0x02' ALARM_8]
     ['0x04' ALARM_S]
 ]
->>>>>>> 305b5e13fe8985d195f90249a99f0159975b03f6
+
