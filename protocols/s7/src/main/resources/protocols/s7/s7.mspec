@@ -265,6 +265,28 @@
 // 0x16 NOTIFY8_IND
 ////////////////////////////////////////////////////////////////
 
+[discriminatedType  'S7DataAlarmMessage' [uint 4 'cpuFunctionType']
+    [const    uint 8 'functionId' '0x00']
+    [const    uint 8 'numberMessageObj' '0x01']
+    [typeSwitch 'cpuFunctionType'
+        ['0x04' S7MessageObjectRequest
+            [const  uint 8  'variableSpec'  '0x12']
+            [const  uint 8  'length'        '0x08']
+            [enum   SyntaxIdType    'syntaxId']
+            [reserved uint 8        '0x00']
+            [enum   QueryType    'queryType']
+            [reserved uint 8        '0x34']
+            [enum   AlarmType    'alarmType']
+        ]
+        ['0x08' S7MessageObjectResponse
+            [enum     DataTransportErrorCode 'returnCode']
+            [enum     DataTransportSize      'transportSize']
+            [reserved uint 8        '0x00']
+        ]        
+    ]
+]
+
+
 [discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
@@ -280,6 +302,7 @@
             [array SzlDataTreeItem 'items' count 'szlItemCount']
         ]
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
+<<<<<<< HEAD
             [simple   uint 8    'Subscription']
             [reserved uint 8    '0x00']
             [simple string '8' 'UTF-8' 'stringKey']
@@ -295,8 +318,36 @@
             [simple   uint 8    'Subscription']
             [reserved uint 8    '0x00']
             [simple string '8' 'UTF-8' 'stringKey']
+=======
+            [simple   uint 8    'subscribedEvents']
+            [reserved uint 8    '0x00']
+            [simple string '8'  'magicKey']
         ]
-
+        ['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+            [const    uint 16 'result' '0x02']
+            [reserved uint 8    '0x00']
+        ]
+        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
+            //[simple S7DataAlarmMessage 'alarmMessage' ['CAST(CAST(cpuFunctionType, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
+            [const    uint 8 'functionId' '0x00']
+            [const    uint 8 'numberMessageObj' '0x01']
+            [const  uint 8  'variableSpec'  '0x12']
+            [const  uint 8  'length'        '0x08']
+            [enum   SyntaxIdType    'syntaxId']
+            [reserved uint 8        '0x00']
+            [enum   QueryType    'queryType']
+            [reserved uint 8        '0x34']
+            [enum   AlarmType    'alarmType']
+        ]
+        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+            //[simple S7DataAlarmMessage 'alarmMessage' ['CAST(CAST(cpuFunctionType, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
+            [const    uint 8 'functionId' '0x00']
+            [const    uint 8 'numberMessageObj' '0x01']
+            [enum     DataTransportErrorCode 'pudicfReturnCode']
+            [enum     DataTransportSize      'pudicftransportSize']
+            [reserved uint 8        '0x00']
+>>>>>>> 305b5e13fe8985d195f90249a99f0159975b03f6
+        ]
     ]
 ]
 
@@ -559,6 +610,7 @@
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
 
+<<<<<<< HEAD
 [enum uint 8 'CpuSubscribeEvents'
     ['0x01' CPU]
     ['0x02' IM]
@@ -566,3 +618,48 @@
     ['0x80' CP]
 ]
 
+=======
+[enum uint 8 'EventType'
+    ['0x01' MODE]
+    ['0x02' SYS]
+    ['0x04' USR]
+    ['0x80' ALM]
+]
+
+[enum uint 8 'SyntaxIdType'
+    ['0x01' S7ANY]
+    ['0x13' PBC_ID]
+    ['0x15' ALARM_LOCKFREESET]
+    ['0x16' ALARM_INDSET]
+    ['0x19' ALARM_ACKSET]
+    ['0x1A' ALARM_QUERYREQSET]
+    ['0x1C' NOTIFY_INDSET]
+    ['0x82' NCK]
+    ['0x83' NCK_METRIC]
+    ['0x84' NCK_INCH]
+    ['0xA2' DRIVEESANY]
+    ['0xB2' SYM1200]
+    ['0xB0' DBREAD]
+]
+
+[enum uint 8 'AlarmType'
+    ['0x01' SCAN]
+    ['0x02' ALARM_8]
+    ['0x04' ALARM_S]
+]
+
+[enum uint 8 'AlarmStateType'
+    ['0x00' SCAN_ABORT]
+    ['0x01' SCAN_INITIATE]
+    ['0x04' ALARM_ABORT]
+    ['0x05' ALARM_INITIATE]
+    ['0x08' ALARM_S_ABORT]
+    ['0x09' ALARM_S_INITIATE]
+]
+
+[enum uint 8 'QueryType'
+    ['0x01' BYALARMTYPE]
+    ['0x02' ALARM_8]
+    ['0x04' ALARM_S]
+]
+>>>>>>> 305b5e13fe8985d195f90249a99f0159975b03f6
