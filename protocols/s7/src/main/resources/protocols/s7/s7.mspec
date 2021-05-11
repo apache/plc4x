@@ -296,34 +296,17 @@
             [simple   SzlId                  'szlId']
             [simple   uint 16                'szlIndex']
         ]
+        ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
+            [simple   uint 8    'Subscription']
+            [reserved uint 8    '0x00']
+            [simple string '8' 'UTF-8' 'magicKey']
+        ]
         ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
             [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
         ]
-        ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
-<<<<<<< HEAD
-            [simple   uint 8    'Subscription']
-            [reserved uint 8    '0x00']
-            [simple string '8' 'UTF-8' 'stringKey']
-        ]
-        ['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-            [const    uint 16 'Result' '0x02']
-            [reserved uint 5    '0x00']
-            [optional ]
-            [optional ]
-            [optional ]
-       ]
-        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
-            [simple   uint 8    'Subscription']
-            [reserved uint 8    '0x00']
-            [simple string '8' 'UTF-8' 'stringKey']
-=======
-            [simple   uint 8    'subscribedEvents']
-            [reserved uint 8    '0x00']
-            [simple string '8'  'magicKey']
-        ]
-        ['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+	['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
             [const    uint 16 'result' '0x02']
             [reserved uint 8    '0x00']
         ]
@@ -346,7 +329,6 @@
             [enum     DataTransportErrorCode 'pudicfReturnCode']
             [enum     DataTransportSize      'pudicftransportSize']
             [reserved uint 8        '0x00']
->>>>>>> 305b5e13fe8985d195f90249a99f0159975b03f6
         ]
     ]
 ]
