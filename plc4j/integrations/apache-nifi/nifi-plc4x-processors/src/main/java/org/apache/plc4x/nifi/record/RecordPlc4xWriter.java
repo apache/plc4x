@@ -34,6 +34,7 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	private RecordSet fullRecordSet;
 	private RecordSchema writeSchema;
 	
+	
 	public RecordPlc4xWriter(RecordSetWriterFactory recordSetWriterFactory, Map<String, String> originalAttributes) {
 		this.recordSetWriterFactory = recordSetWriterFactory;
         this.writeResultRef = new AtomicReference<>();
@@ -41,15 +42,12 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	}
 
 	@Override
-	public long writePlcReadResponse(PlcReadResponse response, Map<String, String> plcAddressMap, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, PLC4X_PROTOCOL PROTOCOL) throws Exception {
+	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
 		if (fullRecordSet == null) {	
-            final Schema avroSchema = Plc4xCommon.createSchema(plcAddressMap, PROTOCOL);
-            
-            final RecordSchema recordAvroSchema = AvroTypeUtil.createSchema(avroSchema);
-            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(plcAddressMap, response, recordAvroSchema, callback, PROTOCOL);
+            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
-        }
-                
+         }
+        
         try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream)) {
             writeResultRef.set(resultSetWriter.write(fullRecordSet));
             if (mimeType == null) {
@@ -102,8 +100,8 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	
 	private static class Plc4xReadResponseRecordSetWithCallback extends Plc4xReadResponseRecordSet {
         private final Plc4xReadResponseRowCallback callback;
-        public Plc4xReadResponseRecordSetWithCallback(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema, Plc4xReadResponseRowCallback callback, PLC4X_PROTOCOL PROTOCOL) throws IOException {
-            super(plcAddressMap, readResponse, readerSchema, PROTOCOL);
+        public Plc4xReadResponseRecordSetWithCallback(final PlcReadResponse readResponse, Plc4xReadResponseRowCallback callback) throws IOException {
+            super(readResponse);
             this.callback = callback;
         }
         @Override

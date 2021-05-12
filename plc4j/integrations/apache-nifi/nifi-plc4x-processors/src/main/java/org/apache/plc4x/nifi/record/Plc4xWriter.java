@@ -20,7 +20,7 @@ public interface Plc4xWriter {
      * @return the number of rows written to the output stream
      * @throws Exception if any errors occur during the writing of the result set to the output stream
      */
-    long writePlcReadResponse(PlcReadResponse response, Map<String, String> plcAddressMap, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, PLC4X_PROTOCOL protocol) throws Exception;
+    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback) throws Exception;
 
     /**
      * Returns a map of attribute key/value pairs to be added to any outgoing flow file(s). The default implementation is to return an empty map.

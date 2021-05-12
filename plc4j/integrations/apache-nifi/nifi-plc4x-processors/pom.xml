@@ -24,6 +24,7 @@
 
 	<name>PLC4J: Integrations: Apache Nifi: Processors</name>
 
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
@@ -36,13 +37,19 @@
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
 		
+<!-- This one is for test purpouses only, drivers are included in the nar -->
+<!-- 		<dependency>  -->
+<!-- 			<groupId>org.apache.plc4x</groupId> -->
+<!-- 			<artifactId>plc4j-driver-s7</artifactId> -->
+<!-- 			<version>${nifi-plc4x.version}</version> -->
+<!-- 		</dependency>  -->
+	
+
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
-			<artifactId>plc4j-driver-s7</artifactId>
+			<artifactId>plc4j-spi</artifactId>
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
-		
-		
 
 		<dependency>
 			<groupId>org.apache.nifi</groupId>

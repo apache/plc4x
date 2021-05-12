@@ -97,6 +97,11 @@
 			<artifactId>plc4j-driver-ads</artifactId>
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
+			<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-canopen</artifactId>
+			<version>${nifi-plc4x.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-eip</artifactId>

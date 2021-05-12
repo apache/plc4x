@@ -1,5 +1,7 @@
 package org.apache.plc4x.nifi.record;
 
+import org.apache.avro.Schema;
+import org.apache.nifi.avro.AvroTypeUtil;
 import org.apache.nifi.serialization.SimpleRecordSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +33,7 @@ import org.apache.nifi.serialization.record.RecordFieldType;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.nifi.util.PLC4X_DATA_TYPE;
 import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
 import org.apache.plc4x.nifi.util.Plc4xCommon;
@@ -39,22 +43,33 @@ import org.slf4j.LoggerFactory;
 public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private static final Logger logger = LoggerFactory.getLogger(Plc4xReadResponseRecordSet.class);
     private final PlcReadResponse readResponse;
-    private final RecordSchema schema;
     private final Set<String> rsColumnNames;
     private boolean moreRows;
 
+    //TODO review this AtomicReference?
+  	private AtomicReference<RecordSchema> recordSchema;
 
-    public Plc4xReadResponseRecordSet(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema, PLC4X_PROTOCOL PROTOCOL) throws IOException {
+    public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse) throws IOException {
         this.readResponse = readResponse;
         moreRows = true;
-        this.schema = createSchema(plcAddressMap, readerSchema, true, PROTOCOL);
-        rsColumnNames = plcAddressMap.keySet();
         
+        logger.debug("Creating record schema from PlcReadResponse");
+        Map<String, ? extends PlcValue> responseDataStructure = readResponse.getAsPlcValue().getStruct();
+        rsColumnNames = responseDataStructure.keySet();
+        
+        if (recordSchema == null) {
+        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure); //TODO review this method as it is the 'mapping' from PlcValues to avro datatypes        	
+        	recordSchema = new AtomicReference<RecordSchema>();
+        	recordSchema.set(AvroTypeUtil.createSchema(avroSchema));
+        }
+        logger.debug("Record schema from PlcReadResponse successfuly created.");
+
     }
 
+    
     @Override
     public RecordSchema getSchema() {
-        return schema;
+        return this.recordSchema.get();
     }
 
     // Protected methods for subclasses to access private member variables
@@ -87,25 +102,34 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     }
 
     protected Record createRecord(final PlcReadResponse readResponse) throws IOException{
-        final Map<String, Object> values = new HashMap<>(schema.getFieldCount());
+        final Map<String, Object> values = new HashMap<>(getSchema().getFieldCount());
 
-        for (final RecordField field : schema.getFields()) {
+        logger.debug("creating record.");
+
+        for (final RecordField field : getSchema().getFields()) {
             final String fieldName = field.getFieldName();
 
             final Object value;
+            
+            //TODO
             if (rsColumnNames.contains(fieldName)) {
-                value = normalizeValue(readResponse.getObject(fieldName));
+            	value = normalizeValue(readResponse.getObject(fieldName));
             } else {
                 value = null;
             }
-
+            //TODO we are asuming that record schema is always inferred from request, not writen by the user, so maybe previous lines could be changed by the following one
+           // value = normalizeValue(readResponse.getObject(fieldName));
+            
+            logger.debug(String.format("Adding %s field value to record.", fieldName));
             values.put(fieldName, value);
         }
 
-        //TODO add timestamp field to schema
+        //add timestamp field to schema
         values.put(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, System.currentTimeMillis());
+        logger.debug("added timestamp field to record.");
+
         	
-        return new MapRecord(schema, values);
+        return new MapRecord(getSchema(), values);
     }
 
     @SuppressWarnings("rawtypes")
@@ -119,54 +143,5 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         return value;
     }
 
-    private static RecordSchema createSchema(final Map<String, String> plcAddressMap, final RecordSchema readerSchema, boolean nullable, PLC4X_PROTOCOL PROTOCOL) {
-        final List<RecordField> fields = new ArrayList<>(plcAddressMap.size());
-        for (Map.Entry<String, String> entry : plcAddressMap.entrySet()) {
-            PLC4X_DATA_TYPE plc4xType = Plc4xCommon.inferTypeFromAddressString(entry.getValue(), PROTOCOL);
-            final DataType dataType = getDataType(plc4xType, readerSchema);
-            final String fieldName = entry.getKey();
-            final RecordField field = new RecordField(fieldName, dataType, nullable);
-            fields.add(field);
-        }
-        
-        //TODO add timestamp field to schema
-        final RecordField timestampField = new RecordField(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, RecordFieldType.LONG.getDataType(), false);
-        fields.add(timestampField);
-        
-        
-        return new SimpleRecordSchema(fields);
-    }
 
-    private static DataType getDataType(final PLC4X_DATA_TYPE plc4xType, final RecordSchema readerSchema){
-    	switch (plc4xType) {
-            case INT:
-                return RecordFieldType.INT.getDataType();
-            case BOOL:
-            case BIT:
-            	return RecordFieldType.BOOLEAN.getDataType();
-            case DECIMAL:
-            	return RecordFieldType.DOUBLE.getDataType();
-            case BYTE:
-            	return RecordFieldType.BYTE.getDataType();
-            case CHAR:
-            	return RecordFieldType.CHAR.getDataType();
-            case DOUBLE:
-            	return RecordFieldType.DOUBLE.getDataType();
-            case FLOAT:
-            	return RecordFieldType.FLOAT.getDataType();
-            case LONG:
-            	return RecordFieldType.LONG.getDataType();
-            case SMALLINT:
-            	return RecordFieldType.SHORT.getDataType();
-            case STRING:
-            	return RecordFieldType.STRING.getDataType(); 
-            case ARRAY:
-            	//TODO array type -> return RecordFieldType.ARRAY.getArrayDataType(RecordFieldType.BOOLEAN.getDataType());
-            	return RecordFieldType.STRING.getDataType(); 
-            case SHORT: 
-            	return RecordFieldType.SHORT.getDataType();
-            default:
-            	return RecordFieldType.STRING.getDataType();
-        }
-    }
 }
