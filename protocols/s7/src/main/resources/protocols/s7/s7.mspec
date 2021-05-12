@@ -390,16 +390,27 @@
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'lengthInBytes - 4']
     [typeSwitch 'cpuFunctionType', 'cpuSubfunction'
+
+        //PUSH message reception (ALARM, ALARM_S, ALARM_SQ, ...)
         ['0x00', '0x11' S7PayloadAlarmSQ
             [simple AlarmMessagePushType 'alarmMessage']
         ]
         ['0x00', '0x12' S7PayloadAlarmS
             [simple AlarmMessagePushType 'alarmMessage']
         ]
+
+        //Request for specific functions of the SZL system
         ['0x04', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlRequest
             [simple   SzlId                  'szlId']
             [simple   uint 16                'szlIndex']
         ]
+        ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
+            [const    uint 16 'szlItemLength' '28']
+            [implicit uint 16 'szlItemCount'  'COUNT(items)']
+            [array SzlDataTreeItem 'items' count 'szlItemCount']
+        ]
+
+        //Subscription to PUSH messages
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
             [simple   uint 8    'Subscription']
             [reserved uint 8    '0x00']
@@ -409,24 +420,21 @@
             [const    uint 16 'result' '0x02']
             [reserved uint 8    '0x00']
         ]
-        ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
-            [const    uint 16 'szlItemLength' '28']
-            [implicit uint 16 'szlItemCount'  'COUNT(items)']
-            [array SzlDataTreeItem 'items' count 'szlItemCount']
-        ]
-        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmAck
+
+        //ALARM_ACK Acknowledgment of alarms
+        ['0x04', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAck
             [simple uint 8 'functionId']
             [implicit uint 8 'numberOfObjects' 'COUNT(messageObjects)']
             [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]  
         ]
-        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+        ['0x08', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAckResponse
             [simple uint 8 'functionId']
             [implicit  uint 8 'numberOfObjects' 'COUNT(messageObjects)']
             [array uint 8 'messageObjects' count 'numberOfObjects' ]  
         ]
 
+        //ALARM_QUERY Request for alarms stored in the controller
         ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
-            //[simple S7DataAlarmMessage 'alarmMessage' ['CAST(CAST(cpuFunctionType, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
             [const    uint 8 'functionId' '0x00']
             [const    uint 8 'numberMessageObj' '0x01']
             [const  uint 8  'variableSpec'  '0x12']
@@ -438,7 +446,6 @@
             [enum   AlarmType    'alarmType']
         ]
         ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-            //[simple S7DataAlarmMessage 'alarmMessage' ['CAST(CAST(cpuFunctionType, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
             [const    uint 8 'functionId' '0x00']
             [const    uint 8 'numberMessageObj' '0x01']
             [enum     DataTransportErrorCode 'pudicfReturnCode']
