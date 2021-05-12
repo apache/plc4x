@@ -245,29 +245,37 @@
 ////////////////////////////////////////////////////////////////
 // Event 7 Alarms Types
 ////////////////////////////////////////////////////////////////
-[type AlarmMessageType
-    [simple DateAndTime Timestamp]
-    [const uint 8 'functionId' '0x40']  
+
+//Under test
+[discriminatedType  'S7DataAlarmMessage' [uint 4 'cpuFunctionType']
+    [const    uint 8 'functionId' '0x00']
+    [const    uint 8 'numberMessageObj' '0x01']
+    [typeSwitch 'cpuFunctionType'
+        ['0x04' S7MessageObjectRequest
+            [const  uint 8  'variableSpec'  '0x12']
+            [const  uint 8  'length'        '0x08']
+            [enum   SyntaxIdType    'syntaxId']
+            [reserved uint 8        '0x00']
+            [enum   QueryType    'queryType']
+            [reserved uint 8        '0x34']
+            [enum   AlarmType    'alarmType']
+        ]
+        ['0x08' S7MessageObjectResponse
+            [enum     DataTransportErrorCode 'returnCode']
+            [enum     DataTransportSize      'transportSize']
+            [reserved uint 8        '0x00']
+        ]        
+    ]
 ]
 
-[type AlarmMessageObjectType
-    [const uint 8 'variableSpec' '0x12']
-    [const uint 8 'length' '0x10']  
-    [const uint 8 'functionId' '0x40'] 
-    [const uint 8 'functionId' '0x40']
-    [simple uint 32 'eventId']
-    [simple State 'eventState']
-    [simple State 'localState']
-    [simple State 'ackStateGoing']
-    [simple State 'ackStateComing']
-
+[type 'AssociatedValueType'
+    [enum   DataTransportErrorCode 'returnCode']
+    [enum   DataTransportSize      'transportSize']
+    [simple uint 8 'valueLength']
+    [array uint 8 'data' count 'valueLength']
 ]
 
-[type AssociatedValue
-    [const uint 8 'variableSpec' '0x12']
-]
-
-[type DateAndTime
+[type 'DateAndTime'
     [simple uint 8 'year']
     [simple uint 8  'month']
     [simple uint 8  'day']
@@ -278,17 +286,80 @@
     [simple uint 4  'dow'] 
 ]
 
-[type State
+[type 'State'
     [simple bit 'SIG_1']
-    [simple bit 'SIG_1']  
-    [simple bit 'SIG_1']
-    [simple bit 'SIG_1'] 
-    [simple bit 'SIG_1']
-    [simple bit 'SIG_1']  
-    [simple bit 'SIG_1']
-    [simple bit 'SIG_1']   
+    [simple bit 'SIG_2']  
+    [simple bit 'SIG_3']
+    [simple bit 'SIG_4'] 
+    [simple bit 'SIG_5']
+    [simple bit 'SIG_6']  
+    [simple bit 'SIG_7']
+    [simple bit 'SIG_8']   
 ]
 
+[type 'AlarmMessageObjectPushType'
+    [const uint 8 'variableSpec' '0x12']
+    [const uint 8 'length' '0x10']  
+    [simple SyntaxIdType 'syntaxId'] 
+    [simple uint 8 'numberOfValues']
+    [simple uint 32 'eventId']
+    [simple State 'eventState']
+    [simple State 'localState']
+    [simple State 'ackStateGoing']
+    [simple State 'ackStateComing']
+    [array AssociatedValueType 'AssociatedValues' count 'numberOfValues' ]
+]
+
+[type 'AlarmMessagePushType'
+    [simple DateAndTime 'TimeStamp']
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [array AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]  
+]
+
+[type 'AlarmMessageObjectQueryType'
+    [simple uint 8 'lengthDataset'] 
+    [reserved uint 16 '0x0000']
+    [const uint 8 'variableSpec' '0x12']
+    [simple State 'eventState']
+    [simple State 'ackStateGoing']
+    [simple State 'ackStateComing']
+    [simple DateAndTime 'timeComing']
+    [simple AssociatedValueType 'valueComing'] 
+    [simple DateAndTime 'timeGoing']
+    [simple AssociatedValueType 'valueGoing'] 
+]
+
+[type 'AlarmMessageQueryType'
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [enum   DataTransportErrorCode 'returnCode']
+    [enum   DataTransportSize      'transportSize']
+    [const uint 16 'DataLength' '0xFFFF']
+    [array AlarmMessageObjectQueryType 'messageObjects' count 'numberOfObjects' ]  
+]
+
+[type 'AlarmMessageObjectAckType'
+    [const uint 8 'variableSpec' '0x12']
+    [const uint 8 'length' '0x08']  
+    [simple SyntaxIdType 'syntaxId'] 
+    [simple uint 8 'numberOfValues']
+    [simple uint 32 'eventId']
+    [simple State 'ackStateGoing']
+    [simple State 'ackStateComing']
+]
+
+[type 'AlarmMessageAckType'
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]  
+]
+
+[type 'AlarmMessageAckResponseType'
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [array uint 8 'messageObjects' count 'numberOfObjects' ]  
+]
 
 ////////////////////////////////////////////////////////////////
 // DataItem by Function Type:
@@ -314,35 +385,16 @@
 // 0x16 NOTIFY8_IND
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType  'S7DataAlarmMessage' [uint 4 'cpuFunctionType']
-    [const    uint 8 'functionId' '0x00']
-    [const    uint 8 'numberMessageObj' '0x01']
-    [typeSwitch 'cpuFunctionType'
-        ['0x04' S7MessageObjectRequest
-            [const  uint 8  'variableSpec'  '0x12']
-            [const  uint 8  'length'        '0x08']
-            [enum   SyntaxIdType    'syntaxId']
-            [reserved uint 8        '0x00']
-            [enum   QueryType    'queryType']
-            [reserved uint 8        '0x34']
-            [enum   AlarmType    'alarmType']
-        ]
-        ['0x08' S7MessageObjectResponse
-            [enum     DataTransportErrorCode 'returnCode']
-            [enum     DataTransportSize      'transportSize']
-            [reserved uint 8        '0x00']
-        ]        
-    ]
-]
-
-
 [discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'lengthInBytes - 4']
     [typeSwitch 'cpuFunctionType', 'cpuSubfunction'
-        ['0x00', '0x12' S7PayloadAlarmMessage
-
+        ['0x00', '0x11' S7PayloadAlarmSQ
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x12' S7PayloadAlarmS
+            [simple AlarmMessagePushType 'alarmMessage']
         ]
         ['0x04', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlRequest
             [simple   SzlId                  'szlId']
@@ -353,15 +405,26 @@
             [reserved uint 8    '0x00']
             [simple string '8' 'UTF-8' 'magicKey']
         ]
+	['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+            [const    uint 16 'result' '0x02']
+            [reserved uint 8    '0x00']
+        ]
         ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
             [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
         ]
-	['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-            [const    uint 16 'result' '0x02']
-            [reserved uint 8    '0x00']
+        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmAck
+            [simple uint 8 'functionId']
+            [implicit uint 8 'numberOfObjects' 'COUNT(messageObjects)']
+            [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]  
         ]
+        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+            [simple uint 8 'functionId']
+            [implicit  uint 8 'numberOfObjects' 'COUNT(messageObjects)']
+            [array uint 8 'messageObjects' count 'numberOfObjects' ]  
+        ]
+
         ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
             //[simple S7DataAlarmMessage 'alarmMessage' ['CAST(CAST(cpuFunctionType, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
             [const    uint 8 'functionId' '0x00']
