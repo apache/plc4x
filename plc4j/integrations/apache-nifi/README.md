@@ -1,7 +1,5 @@
 # PLC4X Apache NiFi Integration
 
-## Plc4xBase
-
 ## Plc4xSinkProcessor
 
 ## Plc4xSourceProcessor
