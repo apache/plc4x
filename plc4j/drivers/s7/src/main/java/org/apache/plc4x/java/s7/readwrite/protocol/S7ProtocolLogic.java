@@ -62,6 +62,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -290,11 +296,43 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return future;
     }
 
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
+        DefaultPlcSubscriptionRequest request = (DefaultPlcSubscriptionRequest) subscriptionRequest;
+        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfFields());
+        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
+        for (String fieldName : request.getFieldNames()) {
+            final S7Field field = (S7Field) request.getField(fieldName);
+            //final PlcValue plcValue = request.getPlcValue(fieldName);
+            //parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
+            //payloadItems.add(serializePlcValue(field, plcValue));
+        }
+        final int tpduId = tpduGenerator.getAndIncrement();
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if(tpduGenerator.get() == 0xFFFF) {
+            tpduGenerator.set(1);
+        }
+        
+        return future;
+    }
+    
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>(); 
+        DefaultPlcUnsubscriptionRequest request = (DefaultPlcUnsubscriptionRequest) unsubscriptionRequest;
+          
+        return future;
+    }
+
+
+    
     /**
      * This method is only called when there is no Response Handler.
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
+        System.out.println("This should not happen!? Really PUSH : \r\n" + msg.toString());
         throw new IllegalStateException("This should not happen!");
     }
 
