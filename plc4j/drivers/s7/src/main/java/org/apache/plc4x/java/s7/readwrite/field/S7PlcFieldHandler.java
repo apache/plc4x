@@ -28,6 +28,10 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
     public PlcField createField(String fieldQuery) {
         if (S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
+        } else if (S7SubscriptionField.matches(fieldQuery)){
+            return S7SubscriptionField.of(fieldQuery);
+        } else if (S7SslField.matches(fieldQuery)){
+            return S7SslField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }

@@ -72,6 +72,11 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+    
+    @Override
     protected BaseOptimizer getOptimizer() {
         return new S7Optimizer();
     }
