@@ -18,16 +18,20 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite.field;
 
+import java.time.Duration;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 
 /**
  *
  * @author cgarcia
  */
-public class S7SslField  implements PlcField  {
+public class S7SslField  implements PlcField {
     
    //SZL_ID=0xYYYY;INDEX=0xZZZZ
     private static final Pattern SSL_ADDRESS_PATTERN =
@@ -67,4 +71,5 @@ public class S7SslField  implements PlcField  {
         }  
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString); 
     }       
+
 }

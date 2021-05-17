@@ -149,6 +149,15 @@
             [implicit uint 8                  'numItems' 'COUNT(items)']
             [array    S7ParameterUserDataItem 'items' count 'numItems']
         ]
+        ['0x01','0x07' S7ParameterModeTransition
+            [reserved uint 16  '0x0010']
+            [implicit uint 8  'itemLength' 'lengthInBytes - 2']
+            [simple   uint 8  'method']
+            [simple   uint 4  'cpuFunctionType']
+            [simple   uint 4  'cpuFunctionGroup']
+            [simple   uint 8  'currentMode']
+            [simple   uint 8  'sequenceNumber']             
+        ]
     ]
 ]
 
@@ -275,6 +284,7 @@
     [array uint 8 'data' count 'valueLength']
 ]
 
+//TODO: Convert BCD to uint
 [type 'DateAndTime'
     [simple uint 8 'year']
     [simple uint 8  'month']
@@ -389,8 +399,18 @@
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'lengthInBytes - 4']
-    [typeSwitch 'cpuFunctionType', 'cpuSubfunction'
+    [typeSwitch 'cpuFunctionType', 'cpuSubfunction', 'dataLength'
 
+        //USER and SYSTEM Messages
+        ['0x00', '0x03' S7PayloadDiagnosticMessage
+            [simple uint 16 'EventId']
+            [simple uint 8  'PriorityClass']
+            [simple uint 8  'ObNumber']
+            [simple uint 16 'DatId']
+            [simple uint 16 'Info1']
+            [simple uint 32 'Info2']
+            [simple DateAndTime 'TimeStamp']
+        ]
         //PUSH message reception (ALARM, ALARM_S, ALARM_SQ, ...)
         ['0x00', '0x11' S7PayloadAlarmSQ
             [simple AlarmMessagePushType 'alarmMessage']
@@ -416,11 +436,22 @@
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
             [simple   uint 8    'Subscription']
             [reserved uint 8    '0x00']
-            [simple string '8' 'UTF-8' 'magicKey']
+            [simple string '64' 'UTF-8' 'magicKey']
+            [optional AlarmStateType 'Alarmtype' 'Subscription >= 128']
+            [optional uint 8 'Reserve' 'Subscription >= 128']
         ]
-	['0x08', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-            [const    uint 16 'result' '0x02']
-            [reserved uint 8    '0x00']
+	['0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+        ]
+	['0x08', '0x02', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+            [simple uint 8 'result']
+            [simple uint 8 'reserved01']
+        ]
+	['0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+            [simple uint 8 'result']
+            [simple uint 8 'reserved01']
+            [simple AlarmType 'alarmType']
+            [simple uint 8 'reserved02']
+            [simple uint 8 'reserved03']
         ]
 
         //ALARM_ACK Acknowledgment of alarms
@@ -765,5 +796,17 @@
     ['0x01' BYALARMTYPE]
     ['0x02' ALARM_8]
     ['0x04' ALARM_S]
+]
+
+[enum uint 8 'ModeTransitionType'
+    ['0x00' STOP]
+    ['0x01' WARM_RESTART]
+    ['0x02' RUN]
+    ['0x03' HOT_RESTART]
+    ['0x04' HOLD]
+    ['0x06' COLD_RESTART]
+    ['0x09' RUN_R]
+    ['0x11' LINK_UP]
+    ['0x12' UPDATE]
 ]
 

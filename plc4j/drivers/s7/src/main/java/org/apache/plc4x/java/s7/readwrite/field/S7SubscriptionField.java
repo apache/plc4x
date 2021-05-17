@@ -18,20 +18,25 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite.field;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.types.AlarmType;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionFieldType;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 
 /**
  *
  * @author cgarcia
  */
-public class S7SubscriptionField  implements PlcField {
+public class S7SubscriptionField implements PlcField {
 
     //Event Subscription 
     private static final Pattern EVENT_SUBSCRIPTION_TYPE_PATTERN = 
@@ -160,7 +165,6 @@ public class S7SubscriptionField  implements PlcField {
             }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);        
-    }
-    
+    }    
         
 }
