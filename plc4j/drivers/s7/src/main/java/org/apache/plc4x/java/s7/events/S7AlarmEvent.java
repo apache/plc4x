@@ -1,8 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
 package org.apache.plc4x.java.s7.events;
 
 import java.math.BigDecimal;
@@ -475,72 +487,5 @@ public class S7AlarmEvent implements S7Event {
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-  public enum Fields{
-        MAP,
-        
-        TYPE,
-        TIMESTAMP,
-        TIMESTAMP_GOING,
-        TIMESTAMP_COMING,        
-        
-        EVENT_ID,
-        EVENT_STATE,
-        STATE,
-        ACKSTATE_GOING,
-        ACKSTATE_COMING,
-        EVENT_GOING,
-        EVENT_COMING,
-        EVENT_LAST_CHANGE,
-    
-        SIG,
-        SIG_1,
-        SIG_2,
-        SIG_3,
-        SIG_4,    
-        SIG_5,
-        SIG_6,
-        SIG_7,
-        SIG_8,
-
-        SIG_STATE,
-        SIG_1_STATE,
-        SIG_2_STATE,
-        SIG_3_STATE,
-        SIG_4_STATE,    
-        SIG_5_STATE,
-        SIG_6_STATE,
-        SIG_7_STATE,
-        SIG_8_STATE,    
-
-        SIG_DATA,
-        SIG_1_DATA,
-        SIG_2_DATA,
-        SIG_3_DATA,
-        SIG_4_DATA,    
-        SIG_5_DATA,
-        SIG_6_DATA,
-        SIG_7_DATA,
-        SIG_8_DATA,
-        SIG_1_DATA_GOING,
-        SIG_2_DATA_GOING,
-        SIG_3_DATA_GOING,
-        SIG_4_DATA_GOING,    
-        SIG_5_DATA_GOING,
-        SIG_6_DATA_GOING,
-        SIG_7_DATA_GOING,
-        SIG_8_DATA_GOING,
-        SIG_1_DATA_COMING,
-        SIG_2_DATA_COMING,
-        SIG_3_DATA_COMING,
-        SIG_4_DATA_COMING,    
-        SIG_5_DATA_COMING,
-        SIG_6_DATA_COMING,
-        SIG_7_DATA_COMING,
-        SIG_8_DATA_COMING,
-        
-    }
-  
-  
     
 }
