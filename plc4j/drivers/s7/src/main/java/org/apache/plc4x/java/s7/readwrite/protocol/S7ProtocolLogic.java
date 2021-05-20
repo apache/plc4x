@@ -544,11 +544,26 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     
     /**
      * This method is only called when there is no Response Handler.
+     * 
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
         System.out.println("This should not happen!? Really PUSH : \r\n" + msg.toString());
-        //throw new IllegalStateException("This should not happen!");
+        S7Message s7msg = msg.getPayload().getPayload();
+        S7Parameter parameter = s7msg.getParameter();
+        if (parameter instanceof S7ParameterUserData) {
+            S7ParameterUserData parameterud = (S7ParameterUserData) parameter;
+            S7ParameterUserDataItem[] parameterudis = parameterud.getItems();
+            for (S7ParameterUserDataItem parameterudi:parameterudis){
+                if (parameterudi instanceof S7ParameterUserDataItemCPUFunctions) {
+                    S7ParameterUserDataItemCPUFunctions myparameter = (S7ParameterUserDataItemCPUFunctions) parameterudi;
+                    System.out.println("Function type: " + myparameter.getCpuFunctionType());
+                }
+            }
+        } else if (parameter instanceof S7ParameterModeTransition) {
+            S7ParameterModeTransition myparameter = (S7ParameterModeTransition) parameter;
+            System.out.println("Current Mode: " + myparameter.getCurrentMode());
+        }
     }
 
     @Override
