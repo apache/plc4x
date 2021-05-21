@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -56,6 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -85,6 +88,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    
+    /*
+     * Take into account that the size of this buffer depends on the final device.
+     * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000. 
+     * Depending on the configuration of the alarm system, a large number of 
+     * them should be expected when starting the connection. 
+     * (Examples of this are PCS7 and Braumat).
+     * Alarm filtering, ack, etc. must be performed by the client application.
+    */    
+    private final BlockingQueue eventqueue = new ArrayBlockingQueue<>(1024);
+    private final S7ProtocolEventLogic EventLogic = new S7ProtocolEventLogic(eventqueue);
+    private final S7PlcSubscriptionHandle modeHandle = new S7PlcSubscriptionHandle(EventType.MODE,EventLogic);
+    private final S7PlcSubscriptionHandle sysHandle = new S7PlcSubscriptionHandle(EventType.SYS,EventLogic);
+    private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR,EventLogic);
+    private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM,EventLogic);
 
     private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
@@ -504,7 +522,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 
         if (responseOk) {
             for (String fieldName : plcSubscriptionRequest.getFieldNames()) {
-                values.put(fieldName, null);
+                S7SubscriptionField field = (S7SubscriptionField) plcSubscriptionRequest.getField(fieldName);
+                switch(field.getEventtype()) {
+                    case MODE: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, modeHandle));
+                    break;
+                    case SYS: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, sysHandle));
+                    break;
+                    case USR: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, usrHandle));
+                    break;
+                    case ALM: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, almHandle));
+                    break;                    
+                }
+                
             }            
            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values); 
         }  
