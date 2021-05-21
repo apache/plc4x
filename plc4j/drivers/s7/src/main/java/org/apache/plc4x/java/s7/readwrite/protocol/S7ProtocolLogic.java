@@ -118,6 +118,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+        EventLogic.start();
     }
 
     @Override
@@ -522,7 +523,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 
         if (responseOk) {
             for (String fieldName : plcSubscriptionRequest.getFieldNames()) {
-                S7SubscriptionField field = (S7SubscriptionField) plcSubscriptionRequest.getField(fieldName);
+                DefaultPlcSubscriptionField dfield = (DefaultPlcSubscriptionField) plcSubscriptionRequest.getField(fieldName);
+                S7SubscriptionField field = (S7SubscriptionField) dfield.getPlcField();
                 switch(field.getEventtype()) {
                     case MODE: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, modeHandle));
                     break;
@@ -598,6 +600,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
         // TODO Implement Closing on Protocol Level
+        EventLogic.stop();
     }
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {

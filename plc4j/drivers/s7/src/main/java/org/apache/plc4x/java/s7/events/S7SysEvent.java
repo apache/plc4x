@@ -59,7 +59,7 @@ public class S7SysEvent  implements S7Event{
         map.put(Fields.DAT_ID.name(), payload.getDatId());
         map.put(Fields.INFO1.name(), payload.getInfo1());
         map.put(Fields.INFO2.name(), payload.getInfo2());
-        this.timeStamp = null;//payload.getTimeStamp();
+        this.timeStamp = Instant.now();;//payload.getTimeStamp();
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
     }    
     
