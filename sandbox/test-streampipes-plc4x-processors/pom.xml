@@ -30,7 +30,7 @@
   <name>Sandbox: StreamPipes Processors</name>
 
   <properties>
-    <streampipes.version>0.66.0</streampipes.version>
+    <streampipes.version>0.67.0</streampipes.version>
   </properties>
 
   <build>
