@@ -273,10 +273,10 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
   curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
   plc4c_s7_read_write_s7_message* payload = NULL;
   if((curPos) < (cotpLen)) {
-    payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
-    if(payload == NULL) {
-      return NO_MEMORY;
-    }
+    //payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+    //if(payload == NULL) {
+    //  return NO_MEMORY;
+    //}
     _res = plc4c_s7_read_write_s7_message_parse(readBuffer, &payload);
     if(_res != OK) {
       return _res;

@@ -131,10 +131,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
     // Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
     uint8_t* dataUnitReferenceNumber = NULL;
     if((cpuFunctionType) == (8)) {
-      dataUnitReferenceNumber = malloc(sizeof(uint8_t));
-      if(dataUnitReferenceNumber == NULL) {
-        return NO_MEMORY;
-      }
+      //dataUnitReferenceNumber = malloc(sizeof(uint8_t));
+      //if(dataUnitReferenceNumber == NULL) {
+      //  return NO_MEMORY;
+      //}
       *dataUnitReferenceNumber = 0;
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) dataUnitReferenceNumber);
       if(_res != OK) {
@@ -150,10 +150,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
     // Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
     uint8_t* lastDataUnit = NULL;
     if((cpuFunctionType) == (8)) {
-      lastDataUnit = malloc(sizeof(uint8_t));
-      if(lastDataUnit == NULL) {
-        return NO_MEMORY;
-      }
+      //lastDataUnit = malloc(sizeof(uint8_t));
+      //if(lastDataUnit == NULL) {
+      //  return NO_MEMORY;
+      //}
       *lastDataUnit = 0;
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) lastDataUnit);
       if(_res != OK) {
@@ -169,10 +169,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
     // Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
     uint16_t* errorCode = NULL;
     if((cpuFunctionType) == (8)) {
-      errorCode = malloc(sizeof(uint16_t));
-      if(errorCode == NULL) {
-        return NO_MEMORY;
-      }
+      //errorCode = malloc(sizeof(uint16_t));
+      //if(errorCode == NULL) {
+      //  return NO_MEMORY;
+      //}
       *errorCode = 0;
       _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) errorCode);
       if(_res != OK) {
