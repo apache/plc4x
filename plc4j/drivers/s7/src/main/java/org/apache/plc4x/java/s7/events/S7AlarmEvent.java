@@ -24,11 +24,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectPushType;
+import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
+import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
 
 /**
  *
@@ -83,6 +87,7 @@ public class S7AlarmEvent implements S7Event {
         SIG_6_DATA,
         SIG_7_DATA,
         SIG_8_DATA,
+        
         SIG_1_DATA_GOING,
         SIG_2_DATA_GOING,
         SIG_3_DATA_GOING,
@@ -99,13 +104,109 @@ public class S7AlarmEvent implements S7Event {
         SIG_6_DATA_COMING,
         SIG_7_DATA_COMING,
         SIG_8_DATA_COMING,
+        
+        SIG_1_DATA_STATUS,
+        SIG_2_DATA_STATUS,
+        SIG_3_DATA_STATUS,
+        SIG_4_DATA_STATUS,    
+        SIG_5_DATA_STATUS,
+        SIG_6_DATA_STATUS,
+        SIG_7_DATA_STATUS,
+        SIG_8_DATA_STATUS,   
+        
+        SIG_1_DATA_SIZE,
+        SIG_2_DATA_SIZE,
+        SIG_3_DATA_SIZE,
+        SIG_4_DATA_SIZE,    
+        SIG_5_DATA_SIZE,
+        SIG_6_DATA_SIZE,
+        SIG_7_DATA_SIZE,
+        SIG_8_DATA_SIZE,    
+        
+        SIG_1_DATA_LENGTH,
+        SIG_2_DATA_LENGTH,
+        SIG_3_DATA_LENGTH,
+        SIG_4_DATA_LENGTH,    
+        SIG_5_DATA_LENGTH,
+        SIG_6_DATA_LENGTH,
+        SIG_7_DATA_LENGTH,
+        SIG_8_DATA_LENGTH,            
+        
     };
   
-      
+    private final Instant timeStamp;
+    private Map<String, Object> map = new HashMap();   
+
+    public S7AlarmEvent(AlarmMessagePushType msg) {
+        
+        this.timeStamp = null;
+        
+        AlarmMessageObjectPushType[] items = msg.getMessageObjects();
+        for (AlarmMessageObjectPushType item:items){
+            map.put(Fields.EVENT_ID.name(), msg);
+            
+            map.put(Fields.EVENT_ID.name(), item.getAckStateComing().getSIG_1());
+            
+            map.put(Fields.EVENT_ID.name(), item.getAckStateComing().getSIG_1());
+            
+            
+            
+            map.put(Fields.SIG_1.name(), item.getEventState().getSIG_1());
+            map.put(Fields.SIG_2.name(), item.getEventState().getSIG_2());
+            map.put(Fields.SIG_3.name(), item.getEventState().getSIG_3());
+            map.put(Fields.SIG_4.name(), item.getEventState().getSIG_4());
+            map.put(Fields.SIG_5.name(), item.getEventState().getSIG_5());
+            map.put(Fields.SIG_6.name(), item.getEventState().getSIG_6());
+            map.put(Fields.SIG_7.name(), item.getEventState().getSIG_7());
+            map.put(Fields.SIG_8.name(), item.getEventState().getSIG_8());
+           
+            
+            map.put(Fields.SIG_1_STATE.name(), item.getLocalState().getSIG_1());
+            map.put(Fields.SIG_2_STATE.name(), item.getLocalState().getSIG_2());
+            map.put(Fields.SIG_3_STATE.name(), item.getLocalState().getSIG_3());
+            map.put(Fields.SIG_4_STATE.name(), item.getLocalState().getSIG_4()); 
+            map.put(Fields.SIG_5_STATE.name(), item.getLocalState().getSIG_5());
+            map.put(Fields.SIG_6_STATE.name(), item.getLocalState().getSIG_6());
+            map.put(Fields.SIG_7_STATE.name(), item.getLocalState().getSIG_7());
+            map.put(Fields.SIG_8_STATE.name(), item.getLocalState().getSIG_8());  
+            
+            map.put(Fields.SIG_1_DATA_GOING.name(), item.getAckStateGoing().getSIG_1());
+            map.put(Fields.SIG_2_DATA_GOING.name(), item.getAckStateGoing().getSIG_2());
+            map.put(Fields.SIG_3_DATA_GOING.name(), item.getAckStateGoing().getSIG_3());
+            map.put(Fields.SIG_4_DATA_GOING.name(), item.getAckStateGoing().getSIG_4());
+            map.put(Fields.SIG_5_DATA_GOING.name(), item.getAckStateGoing().getSIG_5());
+            map.put(Fields.SIG_6_DATA_GOING.name(), item.getAckStateGoing().getSIG_6());
+            map.put(Fields.SIG_7_DATA_GOING.name(), item.getAckStateGoing().getSIG_7());
+            map.put(Fields.SIG_8_DATA_GOING.name(), item.getAckStateGoing().getSIG_8()); 
+            
+            map.put(Fields.SIG_1_DATA_COMING.name(), item.getAckStateComing().getSIG_1());
+            map.put(Fields.SIG_2_DATA_COMING.name(), item.getAckStateComing().getSIG_2());
+            map.put(Fields.SIG_3_DATA_COMING.name(), item.getAckStateComing().getSIG_3());
+            map.put(Fields.SIG_4_DATA_COMING.name(), item.getAckStateComing().getSIG_4());            
+            map.put(Fields.SIG_5_DATA_COMING.name(), item.getAckStateComing().getSIG_5());
+            map.put(Fields.SIG_6_DATA_COMING.name(), item.getAckStateComing().getSIG_6());
+            map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
+            map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());             
+            
+            AssociatedValueType[] values = item.getAssociatedValues();
+            int i=1;
+            for (AssociatedValueType value:values) {
+                map.put("SIG_"+i+"_DATA_STATUS", value.getReturnCode().getValue());
+                map.put("SIG_"+i+"_DATA_SIZE", value.getTransportSize().getValue());
+                map.put("SIG_"+i+"_DATA_LENGTH", value.getValueLength());
+                map.put("SIG_"+i+"_DATA", value.getData());
+                i=+1;
+            }
+            
+        }
+
+    }
+    
+    
     
     @Override
     public Map<String, Object> getMap() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return map;
     }
 
     @Override

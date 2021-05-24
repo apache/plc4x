@@ -97,6 +97,7 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing DATE not implemented");
     }
 
+    //TODO: Call BCD converter
     public static LocalDateTime parseTiaDateTime(ReadBuffer io) {
         try {
             int year = io.readUnsignedInt(16);

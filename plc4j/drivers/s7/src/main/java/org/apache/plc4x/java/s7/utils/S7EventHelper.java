@@ -28,6 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 
 /**
@@ -1274,13 +1277,13 @@ public class S7EventHelper {
     */
     public static LocalDateTime S7DateTimeToLocalDateTime(ByteBuf data) {
         //from Plc4XS7Protocol
-        int year=   byteBCDToInt(data.readByte());       
-        int month=  byteBCDToInt(data.readByte());
-        int day =   byteBCDToInt(data.readByte());
-        int hour=   byteBCDToInt(data.readByte());
-        int minute= byteBCDToInt(data.readByte());
-        int second= byteBCDToInt(data.readByte());   
-        int millih= byteBCDToInt(data.readByte()) * 10;
+        int year=   BcdToInt(data.readByte());       
+        int month=  BcdToInt(data.readByte());
+        int day =   BcdToInt(data.readByte());
+        int hour=   BcdToInt(data.readByte());
+        int minute= BcdToInt(data.readByte());
+        int second= BcdToInt(data.readByte());   
+        int millih= BcdToInt(data.readByte()) * 10;
         
         int milll= (data.readByte() >> 4);
          
@@ -1296,17 +1299,31 @@ public class S7EventHelper {
         }
         
         return LocalDateTime.of(year,month,day,hour,minute,second, nanoseconds);
-    }    
+    }
+
+    public static LocalDateTime S7DateAndTimeToLocalDateTime(int year, int month, int day, 
+                                    int hour, int min, int sec, int msec) {
+        int nanoseconds = msec * 1000000;
+        //At this point a dont need the day of week
+        //data-type ranges from 1990 up to 2089
+        if(year>=90){
+            year+=1900;
+        }
+        else{
+            year+=2000;
+        } 
+        return LocalDateTime.of(year,month,day,hour,min,sec, nanoseconds);
+    }
   
     public static byte[] LocalDateTimeToS7DateTime(LocalDateTime data) {
         byte[] res = new byte[8];
         
-        res[0] = convertByteToBcd((data.getYear() % 100));
-        res[1] = convertByteToBcd(data.getMonthValue());
-        res[2] = convertByteToBcd(data.getDayOfMonth());
-        res[3] = convertByteToBcd(data.getHour());
-        res[4] = convertByteToBcd(data.getMinute());
-        res[5] = convertByteToBcd(data.getSecond());
+        res[0] = ByteToBcd((data.getYear() % 100));
+        res[1] = ByteToBcd(data.getMonthValue());
+        res[2] = ByteToBcd(data.getDayOfMonth());
+        res[3] = ByteToBcd(data.getHour());
+        res[4] = ByteToBcd(data.getMinute());
+        res[5] = ByteToBcd(data.getSecond());
         
         long ms = (long)(data.getNano() / 1_000_000);
         res[6] = (byte)((int)(((ms / 100) << 4) | ((ms / 10)%10))) ;
@@ -1325,15 +1342,53 @@ public class S7EventHelper {
      * @param incomingByte
      * @return converted BCD number
      */
-    private static byte convertByteToBcd(int incomingByte) {
+    private static byte ByteToBcd(int incomingByte) {
         byte dec = (byte)((incomingByte / 10) % 10);
         return (byte)((dec << 4) | (incomingByte % 10));
     } 
 
-    private static int byteBCDToInt(byte bcd){
+    private static int BcdToInt(byte bcd){
         int res=(bcd>>4)*10 + (bcd & 0x0f);
         return res;
     }
+    
+    public static void ByteToBcd(final WriteBuffer buffer, short _value) throws ParseException {
+        short incomingByte = _value;
+        byte outputByte = 0;
+        byte dec = (byte)((incomingByte / 10) % 10);
+        outputByte = (byte)((dec << 4) | (incomingByte % 10));
+        buffer.writeByte(outputByte);
+    } 
+
+    public static int BcdToInt(final ReadBuffer buffer) throws ParseException{
+        byte bcd = buffer.readByte();
+        int res=(bcd>>4)*10 + (bcd & 0x0f);
+        return res;
+    } 
+    
+    public static int S7msecToInt(final ReadBuffer buffer) throws ParseException{
+        int centenas = BcdToInt(buffer.readUnsignedByte(4));
+        int decenas = BcdToInt(buffer.readUnsignedByte(4));
+        int unidad = BcdToInt(buffer.readUnsignedByte(4));
+        int res=centenas*100 + decenas*10 + unidad;
+        return res;
+    } 
+    
+    public static void IntToS7msec(final WriteBuffer buffer, int _value) throws ParseException {
+        int local = 0;
+        if (_value > 999) {
+            local = 999;
+        } else local = _value;
+        
+        int centenas = local / 100;
+        int residual = (local - centenas * 100);
+        int decenas = (residual) / 10;
+        int unidad = residual - (decenas * 10);
+        
+        buffer.writeUnsignedByte(4, (byte) centenas);
+        buffer.writeUnsignedByte(4, (byte) decenas);
+        buffer.writeUnsignedByte(4, (byte) unidad);
+    }    
     
     public static PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
         if (dataTransportErrorCode == null) {

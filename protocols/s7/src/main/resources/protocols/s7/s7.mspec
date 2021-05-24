@@ -280,36 +280,36 @@
 [type 'AssociatedValueType'
     [enum   DataTransportErrorCode 'returnCode']
     [enum   DataTransportSize      'transportSize']
-    [simple uint 8 'valueLength']
+    [simple uint 16 'valueLength']
     [array uint 8 'data' count 'valueLength']
 ]
 
 //TODO: Convert BCD to uint
 [type 'DateAndTime'
-    [simple uint 8 'year']
-    [simple uint 8  'month']
-    [simple uint 8  'day']
-    [simple uint 8  'hour']
-    [simple uint 8  'minutes']
-    [simple uint 8  'seconds']
-    [simple uint 12 'msec']
+    [manual uint 8 'year' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)' '1']
+    [manual uint 8  'month' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.month)' '1']
+    [manual uint 8  'day' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.day)' '1']
+    [manual uint 8  'hour' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.hour)' '1']
+    [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
+    [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
+    [manual uint 12 'msec' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)' '2']
     [simple uint 4  'dow'] 
 ]
 
 [type 'State'
-    [simple bit 'SIG_1']
-    [simple bit 'SIG_2']  
-    [simple bit 'SIG_3']
-    [simple bit 'SIG_4'] 
-    [simple bit 'SIG_5']
-    [simple bit 'SIG_6']  
-    [simple bit 'SIG_7']
-    [simple bit 'SIG_8']   
+    [simple bit 'SIG_8']
+    [simple bit 'SIG_7']  
+    [simple bit 'SIG_6']
+    [simple bit 'SIG_5'] 
+    [simple bit 'SIG_4']
+    [simple bit 'SIG_3']  
+    [simple bit 'SIG_2']
+    [simple bit 'SIG_1']   
 ]
 
 [type 'AlarmMessageObjectPushType'
     [const uint 8 'variableSpec' '0x12']
-    [const uint 8 'length' '0x10']  
+    [const uint 8 'length' '0x0a']  
     [simple SyntaxIdType 'syntaxId'] 
     [simple uint 8 'numberOfValues']
     [simple uint 32 'eventId']
@@ -411,11 +411,14 @@
             [simple uint 32 'Info2']
             [simple DateAndTime 'TimeStamp']
         ]
-        //PUSH message reception (ALARM, ALARM_S, ALARM_SQ, ...)
+        //PUSH message reception S7300 (ALARM_SQ, ALARM_S, ALARM_SC, ...)
         ['0x00', '0x11' S7PayloadAlarmSQ
             [simple AlarmMessagePushType 'alarmMessage']
         ]
         ['0x00', '0x12' S7PayloadAlarmS
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x13' S7PayloadAlarmSC
             [simple AlarmMessagePushType 'alarmMessage']
         ]
 

@@ -40,22 +40,24 @@ public class S7ModeEvent  implements S7Event {
 
    
     public enum Fields{
+        TIMESTAMP,
         MAP,
         METHOD,
         TYPE,
         FUNCTION,
-        CURRENT_MODE
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        CURRENT_MODE
     }    
     
     private final Instant timeStamp;
     private Map<String, Object> map = new HashMap();
     
-    public S7ModeEvent(Instant timeStamp, S7ParameterModeTransition parameter) {
+    public S7ModeEvent(S7ParameterModeTransition parameter) {
       map.put(Fields.METHOD.name(), parameter.getMethod());
       map.put(Fields.TYPE.name(), parameter.getParameterType());
       map.put(Fields.FUNCTION.name(), parameter.getCpuFunctionType());
       map.put(Fields.CURRENT_MODE.name(), parameter.getCurrentMode());
-      this.timeStamp = timeStamp;
+      this.timeStamp = Instant.now();
+      map.put(Fields.TIMESTAMP .name(), this.timeStamp );
     }    
     
     

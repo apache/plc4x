@@ -428,13 +428,33 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         parameterItems.clear();
         parameterItems.add(parameter);
         
-        S7PayloadUserDataItemCpuFunctionMsgSubscription payload = new S7PayloadUserDataItemCpuFunctionMsgSubscription(
-                                                                DataTransportErrorCode.OK,
-                                                                DataTransportSize.OCTET_STRING,
-                                                                subsevent,
-                                                                "HmiRtm  ",
-                                                                null,
-                                                                null);
+        
+        S7PayloadUserDataItemCpuFunctionMsgSubscription payload = null;
+
+        if (subsevent > 0) {
+            payload = new S7PayloadUserDataItemCpuFunctionMsgSubscription(
+                            DataTransportErrorCode.OK,
+                            DataTransportSize.OCTET_STRING,
+                            subsevent,
+                            "HmiRtm  ",
+                            null,
+                            null);
+        } else {
+            //TODO: Check for ALARM_S (S7300) and ALARM_8 (S7400), maybe we need verify the CPU
+            AlarmStateType alarmtype;
+            if (s7DriverContext.getControllerType() == S7ControllerType.S7_400){
+                alarmtype =AlarmStateType.ALARM_INITIATE;
+            } else {
+                alarmtype =AlarmStateType.ALARM_S_INITIATE;
+            } 
+            payload = new S7PayloadUserDataItemCpuFunctionMsgSubscription(
+                            DataTransportErrorCode.OK,
+                            DataTransportSize.OCTET_STRING,
+                            subsevent,
+                            "HmiRtm  ",
+                            alarmtype,
+                            (short) 0x00);            
+        }
         payloadItems.clear();
         payloadItems.add(payload);
         
@@ -579,21 +599,42 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-        System.out.println("This should not happen!? Really PUSH : \r\n" + msg.toString());
+        System.out.println(msg);
         S7Message s7msg = msg.getPayload().getPayload();
         S7Parameter parameter = s7msg.getParameter();
+        if (parameter instanceof S7ParameterModeTransition){
+            eventqueue.add(parameter);
+        } else
         if (parameter instanceof S7ParameterUserData) {
             S7ParameterUserData parameterud = (S7ParameterUserData) parameter;
             S7ParameterUserDataItem[] parameterudis = parameterud.getItems();
             for (S7ParameterUserDataItem parameterudi:parameterudis){
                 if (parameterudi instanceof S7ParameterUserDataItemCPUFunctions) {
                     S7ParameterUserDataItemCPUFunctions myparameter = (S7ParameterUserDataItemCPUFunctions) parameterudi;
-                    System.out.println("Function type: " + myparameter.getCpuFunctionType());
+                    //TODO: Check from mspec. We can try using "instanceof"
+                    if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x03)) {
+                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
+                        S7PayloadUserDataItem[] items = payload.getItems();
+                        for (S7PayloadUserDataItem item:items){
+                            if (item instanceof S7PayloadDiagnosticMessage){
+                                eventqueue.add(item);
+                            }
+                        }
+                    } else if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x12)) {
+                        System.out.println("Procesando alarmas!.");
+                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
+                        S7PayloadUserDataItem[] items = payload.getItems();
+                        for (Object item:items){
+                            if (item instanceof S7PayloadAlarmS){
+                                AlarmMessagePushType alarm = ((S7PayloadAlarmS) item).getAlarmMessage();
+                                eventqueue.add(alarm);
+                            }
+                        }                        
+                    } else if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x13)) {
+                        
+                    }
                 }
             }
-        } else if (parameter instanceof S7ParameterModeTransition) {
-            S7ParameterModeTransition myparameter = (S7ParameterModeTransition) parameter;
-            System.out.println("Current Mode: " + myparameter.getCurrentMode());
         }
     }
 

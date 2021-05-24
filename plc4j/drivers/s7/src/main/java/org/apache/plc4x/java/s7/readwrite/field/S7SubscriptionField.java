@@ -40,8 +40,8 @@ public class S7SubscriptionField implements PlcField {
 
     //Event Subscription 
     private static final Pattern EVENT_SUBSCRIPTION_TYPE_PATTERN = 
-        Pattern.compile("(^MODE)|(^SYS)|(^USR)|(^ALM_S)|(^ALM_8)");
-    
+        //Pattern.compile("(^MODE)|(^SYS)|(^USR)|(^ALM_S)|(^ALM_8)");
+        Pattern.compile("(^MODE)|(^SYS)|(^USR)|(^ALM)");
     //Event ack
     private static final Pattern EVENT_ALARM_ACK_PATTERN = 
         Pattern.compile("(^ACK:)(((?:,{0,1})(16#[0-9a-fA-F]{8}))+)");

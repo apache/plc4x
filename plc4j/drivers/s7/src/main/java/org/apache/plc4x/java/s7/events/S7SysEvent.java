@@ -345,7 +345,7 @@ public class S7SysEvent  implements S7Event{
 
     @Override
     public String getString(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return map.get(name).toString();
     }
 
     @Override
