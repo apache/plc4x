@@ -30,8 +30,8 @@
   <artifactId>plc4x-code-generation</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4X: Build Utils</name>
-  <description>Some build related utilities.</description>
+  <name>PLC4X: Code-Generation</name>
+  <description>Home of the PLC4X code-generation framework.</description>
 
   <modules>
     <module>language-base-freemarker</module>
@@ -39,7 +39,6 @@
     <module>protocol-test</module>
 
     <module>language-java</module>
-
   </modules>
 
   <profiles>

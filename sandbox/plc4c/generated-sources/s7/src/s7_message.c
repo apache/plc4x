@@ -177,10 +177,6 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
   // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_parameter* parameter = NULL;
   if((parameterLength) > (0)) {
-    //parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-    //if(parameter == NULL) {
-    //  return NO_MEMORY;
-    //}
     _res = plc4c_s7_read_write_s7_parameter_parse(readBuffer, messageType, &parameter);
     if(_res != OK) {
       return _res;
@@ -193,10 +189,6 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* re
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
   if((payloadLength) > (0)) {
-    //payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
-    //if(payload == NULL) {
-    //  return NO_MEMORY;
-    //}
     _res = plc4c_s7_read_write_s7_payload_parse(readBuffer, messageType, parameter, &payload);
     if(_res != OK) {
       return _res;

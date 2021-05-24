@@ -331,11 +331,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             </#if>
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${optionalField.name} = NULL;
 <#if indentContent>  </#if>  if(${helper.toParseExpression(baseType, field, optionalField.conditionExpression, baseType.parserArguments)}) {
-<#if indentContent>  </#if>    //${optionalField.name} = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}));
-<#if indentContent>  </#if>    //if(${optionalField.name} == NULL) {
-<#if indentContent>  </#if>    //  return NO_MEMORY;
-<#if indentContent>  </#if>    //}
         <#if helper.isSimpleTypeReference(optionalField.type)>
+<#if indentContent>  </#if>    ${optionalField.name} = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}));
+<#if indentContent>  </#if>    if(${optionalField.name} == NULL) {
+<#if indentContent>  </#if>      return NO_MEMORY;
+<#if indentContent>  </#if>    }
 <#if indentContent>  </#if>    *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
 <#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name, field)};
         <#else>
