@@ -31,11 +31,11 @@ import (
 type WriteBufferByteBased interface {
 	WriteBuffer
 	GetPos() uint16
-	GetBytes() []uint8
+	GetBytes() []byte
 	GetTotalBytes() uint64
 }
 
-func NewWriteBuffer() WriteBufferByteBased {
+func NewWriteBufferByteBased() WriteBufferByteBased {
 	data := &bytes.Buffer{}
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{
@@ -45,7 +45,7 @@ func NewWriteBuffer() WriteBufferByteBased {
 	}
 }
 
-func NewLittleEndianWriteBuffer() WriteBufferByteBased {
+func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
 	data := &bytes.Buffer{}
 	writer := bitio.NewWriter(data)
 	return &byteWriteBuffer{
@@ -85,7 +85,7 @@ func (rb *byteWriteBuffer) GetPos() uint16 {
 	return 0
 }
 
-func (rb *byteWriteBuffer) GetBytes() []uint8 {
+func (rb *byteWriteBuffer) GetBytes() []byte {
 	return rb.data.Bytes()
 }
 

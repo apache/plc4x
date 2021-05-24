@@ -74,7 +74,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 
 		// Get the value from the request and serialize it to a byte array
 		value := writeRequest.GetValue(fieldName)
-		io := utils.NewWriteBuffer()
+		io := utils.NewWriteBufferByteBased()
 		if err := readWriteModel.DataItemSerialize(io, value, modbusField.Datatype, modbusField.Quantity); err != nil {
 			result <- model.PlcWriteRequestResult{
 				Request:  writeRequest,

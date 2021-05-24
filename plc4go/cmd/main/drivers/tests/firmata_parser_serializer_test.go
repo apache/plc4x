@@ -26,6 +26,5 @@ import (
 )
 
 func TestFirmataParserSerializer(t *testing.T) {
-	t.Skip("Still a WIP")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/firmata/ParserSerializerTestsuite.xml")
 }

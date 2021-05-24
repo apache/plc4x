@@ -56,7 +56,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	knxMessage := model.CastKnxNetIpMessage(message)
 	// Serialize the request
-	wb := utils.NewWriteBuffer()
+	wb := utils.NewWriteBufferByteBased()
 	err := knxMessage.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
@@ -93,7 +93,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBuffer(data)
+		rb := utils.NewReadBufferByteBased(data)
 		knxMessage, err := model.KnxNetIpMessageParse(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing message")

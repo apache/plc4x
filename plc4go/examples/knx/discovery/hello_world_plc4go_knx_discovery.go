@@ -140,7 +140,7 @@ func main() {
 			} else if readResponse.GetResponseCode("interfaceProgramVersion") == model.PlcResponseCode_OK {
 				programVersion = utils.PlcValueUint8ListToByteArray(readResponse.GetValue("interfaceProgramVersion"))
 			}
-			rb := utils.NewReadBuffer(utils.ByteArrayToUint8Array(programVersion))
+			rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(programVersion))
 			manufacturerId := uint16(0)
 			applicationId := uint16(0)
 			applicationVersionMajor := uint8(0)

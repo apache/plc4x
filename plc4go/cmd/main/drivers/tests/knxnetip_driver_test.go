@@ -22,11 +22,17 @@ package tests
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	knxIO "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"testing"
 )
 
 func TestKNXNetIPDriver(t *testing.T) {
-	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml")
+	t.Skip("No test yet")
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+		return knxModel.KnxNetIpMessageParse(readBufferByteBased)
+	})}
+	testutils.RunDriverTestsuiteWithOptions(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml", knxIO.KnxnetipXmlParserHelper{}, options)
 }

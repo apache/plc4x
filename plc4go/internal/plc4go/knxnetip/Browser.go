@@ -386,7 +386,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 			}
 			comObjectSettings := readResult.Response.GetValue(strconv.Itoa(int(comObjectNumber))).GetUint16()
 			data := []uint8{uint8((comObjectSettings >> 8) & 0xFF), uint8(comObjectSettings & 0xFF)}
-			rb := utils.NewReadBuffer(data)
+			rb := utils.NewReadBufferByteBased(data)
 			descriptor, err := driverModel.GroupObjectDescriptorRealisationTypeBParse(rb)
 			if err != nil {
 				log.Info().Err(err).Msg("error parsing com object descriptor")
@@ -478,7 +478,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 
 		for _, fieldName := range readResult.Response.GetFieldNames() {
 			array := utils.PlcValueUint8ListToByteArray(readResult.Response.GetValue(fieldName))
-			rb := utils.NewReadBuffer(array)
+			rb := utils.NewReadBufferByteBased(array)
 			descriptor, err := driverModel.GroupObjectDescriptorRealisationType7Parse(rb)
 			if err != nil {
 				return nil, errors.Wrap(err, "error creating read request")

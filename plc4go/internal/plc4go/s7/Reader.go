@@ -218,7 +218,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		responseCode := decodeResponseCode(payloadItem.ReturnCode)
 		// Decode the data according to the information from the request
 		log.Trace().Msg("decode data")
-		rb := utils.NewReadBuffer(utils.ByteArrayToUint8Array(payloadItem.Data))
+		rb := utils.NewReadBufferByteBased(utils.ByteArrayToUint8Array(payloadItem.Data))
 		responseCodes[fieldName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
 			plcValue, err := readWriteModel.DataItemParse(rb, field.GetDataType().DataProtocolId(), int32(field.GetNumElements()))

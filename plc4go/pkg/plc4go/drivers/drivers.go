@@ -21,6 +21,7 @@ package drivers
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/ads"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
@@ -29,6 +30,11 @@ import (
 
 func RegisterAdsDriver(driverManager plc4go.PlcDriverManager) {
 	driverManager.RegisterDriver(ads.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
+}
+
+func RegisterEipDriver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(eip.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
 }
 

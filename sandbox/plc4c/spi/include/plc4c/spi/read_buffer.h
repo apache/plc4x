@@ -51,6 +51,8 @@ plc4c_return_code plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t 
 
 plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value);
 
+plc4c_return_code plc4c_spi_read_char(plc4c_spi_read_buffer* buf, char* value);
+
 // Unsigned Integers ...
 
 plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint8_t* value);

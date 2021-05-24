@@ -26,6 +26,6 @@ import (
 )
 
 func TestDf1ParserSerializer(t *testing.T) {
-	t.Skip("Still a WIP")
+	//t.Skip("Still a WIP")
 	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/df1/ParserSerializerTestsuite.xml")
 }

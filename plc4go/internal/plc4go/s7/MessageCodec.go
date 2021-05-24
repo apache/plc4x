@@ -31,13 +31,10 @@ import (
 
 type MessageCodec struct {
 	_default.DefaultCodec
-	expectationCounter int32
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{
-		expectationCounter: 1,
-	}
+	codec := &MessageCodec{}
 	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
 	return codec
 }
@@ -51,7 +48,7 @@ func (m *MessageCodec) Send(message interface{}) error {
 	// Cast the message to the correct type of struct
 	tpktPacket := model.CastTPKTPacket(message)
 	// Serialize the request
-	wb := utils.NewWriteBuffer()
+	wb := utils.NewWriteBufferByteBased()
 	err := tpktPacket.Serialize(wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
@@ -88,7 +85,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewReadBuffer(data)
+		rb := utils.NewReadBufferByteBased(data)
 		tpktPacket, err := model.TPKTPacketParse(rb)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")

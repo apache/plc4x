@@ -17,7 +17,8 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,29 +30,6 @@
   <artifactId>test-java-df1-driver</artifactId>
 
   <name>Sandbox: Test Generated Df1 Driver</name>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>df1</protocolName>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -84,17 +62,23 @@
       <scope>provided</scope>
     </dependency-->
 
-  <!--  &lt;!&ndash; https://mvnrepository.com/artifact/org.rxtx/rxtx &ndash;&gt;
-    <dependency>
-      <groupId>org.rxtx</groupId>
-      <artifactId>rxtx</artifactId>
-      <version>2.1.7</version>
-    </dependency>-->
+    <!--  &lt;!&ndash; https://mvnrepository.com/artifact/org.rxtx/rxtx &ndash;&gt;
+      <dependency>
+        <groupId>org.rxtx</groupId>
+        <artifactId>rxtx</artifactId>
+        <version>2.1.7</version>
+      </dependency>-->
 
     <dependency>
       <groupId>com.github.purejavacomm</groupId>
       <artifactId>purejavacomm</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.github.snksoft</groupId>
+      <artifactId>crc</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
 
     <!-- Logging -->
     <dependency>
@@ -110,6 +94,7 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
+    <!-- Testing Dependencies -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
@@ -126,7 +111,6 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
-<!-- Testing Dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -145,7 +129,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-language-java</artifactId>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
       <version>0.9.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -168,5 +152,28 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>df1</protocolName>
+              <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

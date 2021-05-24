@@ -21,12 +21,17 @@ package tests
 
 import (
 	_ "github.com/apache/plc4x/plc4go/cmd/main/initializetest"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
+	eipIO "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
+	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"testing"
 )
 
 func TestEIPDriver(t *testing.T) {
-	t.Skip("Still a work in progress")
-	testutils.RunDriverTestsuite(t, knxnetip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml")
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+		return eipModel.EipPacketParse(readBufferByteBased)
+	})}
+	testutils.RunDriverTestsuiteWithOptions(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{}, options)
 }

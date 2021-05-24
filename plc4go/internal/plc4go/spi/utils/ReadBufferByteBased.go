@@ -31,12 +31,12 @@ import (
 type ReadBufferByteBased interface {
 	ReadBuffer
 	Reset()
-	GetBytes() []uint8
+	GetBytes() []byte
 	GetTotalBytes() uint64
-	PeekByte(offset uint8) uint8
+	PeekByte(offset byte) byte
 }
 
-func NewReadBuffer(data []uint8) ReadBufferByteBased {
+func NewReadBufferByteBased(data []byte) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{
@@ -47,7 +47,7 @@ func NewReadBuffer(data []uint8) ReadBufferByteBased {
 	}
 }
 
-func NewLittleEndianReadBuffer(data []uint8) ReadBufferByteBased {
+func NewLittleEndianReadBufferByteBased(data []byte) ReadBufferByteBased {
 	buffer := bytes.NewBuffer(data)
 	reader := bitio.NewReader(buffer)
 	return &byteReadBuffer{
@@ -65,7 +65,7 @@ func NewLittleEndianReadBuffer(data []uint8) ReadBufferByteBased {
 //
 
 type byteReadBuffer struct {
-	data      []uint8
+	data      []byte
 	reader    *bitio.Reader
 	pos       uint64
 	byteOrder binary.ByteOrder
@@ -86,7 +86,7 @@ func (rb *byteReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
 
-func (rb *byteReadBuffer) GetBytes() []uint8 {
+func (rb *byteReadBuffer) GetBytes() []byte {
 	return rb.data
 }
 
@@ -99,7 +99,7 @@ func (rb *byteReadBuffer) HasMore(bitLength uint8) bool {
 }
 
 func (rb *byteReadBuffer) PeekByte(offset uint8) uint8 {
-	return rb.data[rb.pos+uint64(offset)]
+	return rb.data[rb.GetPos()+uint16(offset)]
 }
 
 func (rb *byteReadBuffer) PullContext(_ string, _ ...WithReaderArgs) error {

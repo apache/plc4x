@@ -166,7 +166,7 @@
   </properties>
 
   <modules>
-    <module>build-utils</module>
+    <module>code-generation</module>
 
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>

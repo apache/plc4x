@@ -27,7 +27,7 @@
 
   <testcase>
     <name>Unprotected Read Address Request</name>
-    <raw>10020900010001001100021003546F</raw>
+    <raw>100209000100010011000210036F54</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
       <DF1Symbol>
@@ -49,7 +49,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">21615</checksum>
+          <checksum dataType="uint" bitLength="16">28500</checksum>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>
@@ -57,7 +57,7 @@
 
   <testcase>
     <name>Unprotected Read Address Response</name>
-    <raw>10020A0941000100FFFF1003DFB9</raw>
+    <raw>10020A0941000100FFFF1003CFE3</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
       <DF1Symbol>
@@ -81,7 +81,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">57273</checksum>
+          <checksum dataType="uint" bitLength="16">53219</checksum>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>
@@ -89,7 +89,7 @@
 
   <testcase>
     <name>Unprotected Read Address Response (Containing 0x10 in the data)</name>
-    <raw>10020A09410001001010FF1003BAAD</raw>
+    <raw>10020A09410001001010FF1003A98A</raw>
     <root-type>DF1Symbol</root-type>
     <xml>
       <DF1Symbol>
@@ -114,7 +114,7 @@
           </command>
           <messageEnd dataType="uint" bitLength="8">16</messageEnd>
           <endTransaction dataType="uint" bitLength="8">3</endTransaction>
-          <checksum dataType="uint" bitLength="16">47789</checksum>
+          <checksum dataType="uint" bitLength="16">43402</checksum>
         </DF1SymbolMessageFrame>
       </DF1Symbol>
     </xml>
