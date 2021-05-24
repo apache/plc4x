@@ -113,18 +113,21 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.apache.nifi</groupId> <artifactId>nifi-standard-nar</artifactId> 
-			<version>${nifi.version}</version> <type>nar</type> <scope>provided</scope> 
-			</dependency> -->
+		<dependency>
+			<groupId>org.apache.nifi</groupId>
+			<artifactId>nifi-standard-nar</artifactId>
+			<version>${nifi.version}</version>
+			<type>nar</type>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-record</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-record-serialization-service-api</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 
