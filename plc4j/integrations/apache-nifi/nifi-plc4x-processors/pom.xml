@@ -36,14 +36,15 @@
 			<artifactId>plc4j-connection-pool</artifactId>
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
-		
-<!-- This one is for test purpouses only, drivers are included in the nar -->
-<!-- 		<dependency>  -->
-<!-- 			<groupId>org.apache.plc4x</groupId> -->
-<!-- 			<artifactId>plc4j-driver-s7</artifactId> -->
-<!-- 			<version>${nifi-plc4x.version}</version> -->
-<!-- 		</dependency>  -->
-	
+
+		<!-- This one is for test purpouses only, drivers are included in the nar -->
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-s7</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
@@ -89,11 +90,11 @@
 			<version>${nifi.version}</version>
 			<scope>test</scope>
 		</dependency>
-		 <dependency>
-            <groupId>org.apache.nifi</groupId>
-            <artifactId>nifi-schema-registry-service-api</artifactId>
+		<dependency>
+			<groupId>org.apache.nifi</groupId>
+			<artifactId>nifi-schema-registry-service-api</artifactId>
 			<scope>test</scope>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-mock</artifactId>
