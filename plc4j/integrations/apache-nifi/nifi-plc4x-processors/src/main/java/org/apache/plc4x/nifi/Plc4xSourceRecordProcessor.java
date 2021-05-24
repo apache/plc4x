@@ -162,7 +162,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 			resultSetFlowFiles.add(resultSetFF);
 			if (resultSetFlowFiles.size() >= 0) {
-				session.transfer(resultSetFlowFiles, super.REL_SUCCESS);
+				session.transfer(resultSetFlowFiles, BasePlc4xProcessor.REL_SUCCESS);
 				// Need to remove the original input file if it exists
 				if (fileToProcess != null) {
 					session.remove(fileToProcess);

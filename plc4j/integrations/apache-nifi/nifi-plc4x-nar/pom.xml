@@ -74,12 +74,15 @@
 			<artifactId>plc4j-nifi-plc4x-processors</artifactId>
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
 			<artifactId>nifi-standard-nar</artifactId>
 			<version>${nifi.version}</version>
 			<type>nar</type>
+			<scope>compile</scope>
 		</dependency>
+		 -->
 		<!-- PLC4X -->
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
@@ -158,6 +161,7 @@
 			<artifactId>plc4j-transport-udp</artifactId>
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
+		
 	</dependencies>
 
 </project>

@@ -37,15 +37,6 @@
 			<version>${nifi-plc4x.version}</version>
 		</dependency>
 
-		<!-- This one is for test purpouses only, drivers are included in the nar -->
-		<dependency>
-			<groupId>org.apache.plc4x</groupId>
-			<artifactId>plc4j-driver-s7</artifactId>
-			<version>${nifi-plc4x.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-spi</artifactId>
@@ -105,6 +96,38 @@
 			<artifactId>nifi-mock-record-utils</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- This one is for test purpouses only, drivers are included in the nar -->
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-s7</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- mvn -Drat.skip=true verify -X -->
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>${nifi-plc4x-avro.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.apache.nifi</groupId> <artifactId>nifi-standard-nar</artifactId> 
+			<version>${nifi.version}</version> <type>nar</type> <scope>provided</scope> 
+			</dependency> -->
+		<dependency>
+			<groupId>org.apache.nifi</groupId>
+			<artifactId>nifi-record</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.nifi</groupId>
+			<artifactId>nifi-record-serialization-service-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
 	</dependencies>
 
 </project>
