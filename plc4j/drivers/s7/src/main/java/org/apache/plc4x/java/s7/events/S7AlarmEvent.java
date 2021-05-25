@@ -143,11 +143,8 @@ public class S7AlarmEvent implements S7Event {
         
         AlarmMessageObjectPushType[] items = msg.getMessageObjects();
         for (AlarmMessageObjectPushType item:items){
-            map.put(Fields.EVENT_ID.name(), msg);
-            
-            map.put(Fields.EVENT_ID.name(), item.getAckStateComing().getSIG_1());
-            
-            map.put(Fields.EVENT_ID.name(), item.getAckStateComing().getSIG_1());
+            map.put(Fields.EVENT_ID.name(), item.getEventId());
+
             
             
             
