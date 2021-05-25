@@ -22,13 +22,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.sandbox</groupId>
-    <artifactId>plc4x-sandbox</artifactId>
+    <groupId>org.apache.plc4x.examples</groupId>
+    <artifactId>plc4j-examples</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-influx-data-collection</artifactId>
-  <name>Sandbox: PLC4J: Examples: Hello InfluxDB Data Collection</name>
+  <name>PLC4J: Examples: Hello InfluxDB Data Collection</name>
   <description>Data Collection with PLC4X and InfluxDB.</description>
 
   <properties>
@@ -63,28 +63,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-bacnetip-driver</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-pcap-replay</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

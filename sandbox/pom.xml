@@ -41,9 +41,6 @@
 
     <module>test-java-bacnetip-driver</module>
     <module>test-java-df1-driver</module>
-
-    <!-- Examples -->
-    <module>hello-influx-data-collection</module>
   </modules>
 
   <build>
