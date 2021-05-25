@@ -93,9 +93,9 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
-                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-logstash,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-logstash,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-go ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
@@ -118,9 +118,9 @@ pipeline {
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
-                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash,with-go ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
-                sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-logstash,with-go ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-go ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-go ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -140,8 +140,8 @@ pipeline {
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies,with-sandbox,with-logstash sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
-                    sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox,with-logstash sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
+                    //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
+                    sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
                 }
             }
         }
@@ -184,8 +184,8 @@ pipeline {
             }
             steps {
                 echo 'Building Site'
-                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                sh 'mvn -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -X -pl .'
+                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site'
+                sh 'mvn -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl .'
             }
         }
 
@@ -196,8 +196,8 @@ pipeline {
             steps {
                 echo 'Staging Site'
                 // Build a directory containing the aggregated website.
-                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site:stage'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site:stage -pl .'
+                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies site:stage'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check site:stage -pl .'
                 // Make sure the script is executable.
                 sh 'chmod +x tools/clean-site.sh'
                 // Remove some redundant resources, which shouldn't be required.

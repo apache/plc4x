@@ -41,13 +41,4 @@
     <module>opcua-server</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>with-logstash</id>
-      <modules>
-        <module>logstash-plugin</module>
-      </modules>
-    </profile>
-  </profiles>
-
 </project>

@@ -250,7 +250,7 @@ mvn -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit 
 In order to build everything the following command should work:
 
 ```
-mvn -P with-go,with-boost,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
+mvn -P with-go,with-boost,with-dotnet,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community

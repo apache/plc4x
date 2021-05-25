@@ -39,12 +39,6 @@
         <module>boost</module>
       </modules>
     </profile>
-    <profile>
-      <id>with-logstash</id>
-      <modules>
-        <module>logstash</module>
-      </modules>
-    </profile>
   </profiles>
 
 </project>

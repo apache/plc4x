@@ -423,7 +423,6 @@ def cppEnabled = false
 def dockerEnabled = false
 def dotnetEnabled = false
 def javaEnabled = true
-def logstashEnabled = false
 def pythonEnabled = false
 def sandboxEnabled = false
 def apacheReleaseEnabled = false
@@ -444,9 +443,6 @@ for (def activeProfile : activeProfiles) {
     } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
-    } else if (activeProfile == "with-logstash") {
-        logstashEnabled = true
-        println "logstash"
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
         println "python"
@@ -479,11 +475,6 @@ if (os == "win") {
 
 if (dotnetEnabled) {
     checkDotnet()
-}
-
-if (logstashEnabled) {
-    // Logstash doesn't compile with java versions above 11 (currently)
-    checkJavaVersion(null, "11")
 }
 
 if (cppEnabled) {
