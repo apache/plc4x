@@ -412,6 +412,9 @@
             [simple DateAndTime 'TimeStamp']
         ]
         //PUSH message reception S7300 (ALARM_SQ, ALARM_S, ALARM_SC, ...)
+        ['0x00', '0x05' S7PayloadAlarm8
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
         ['0x00', '0x11' S7PayloadAlarmSQ
             [simple AlarmMessagePushType 'alarmMessage']
         ]
@@ -419,6 +422,9 @@
             [simple AlarmMessagePushType 'alarmMessage']
         ]
         ['0x00', '0x13' S7PayloadAlarmSC
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x16' S7PayloadNotify8
             [simple AlarmMessagePushType 'alarmMessage']
         ]
 
