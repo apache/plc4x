@@ -428,7 +428,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     List<MonitoredItemCreateRequest> requestList = new LinkedList<>();
                     requestList.add(request);
                     OpcuaSubsriptionHandle subsriptionHandle = new OpcuaSubsriptionHandle(fieldName, clientHandle);
-                    BiConsumer<UaMonitoredItem, Integer> onItemCreated =
+                    UaSubscription.ItemCreationCallback onItemCreated =
                         (item, id) -> item.setValueConsumer(subsriptionHandle::onSubscriptionValue);
 
                     List<UaMonitoredItem> items = subscription.createMonitoredItems(

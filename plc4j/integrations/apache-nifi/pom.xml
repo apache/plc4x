@@ -29,7 +29,7 @@
   <description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
   <properties>
-    <nifi.version>1.12.1</nifi.version>
+    <nifi.version>1.13.2</nifi.version>
   </properties>
 
   <modules>
@@ -102,6 +102,11 @@
         <version>${nifi.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>1.6.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
