@@ -17,12 +17,12 @@
   under the License.
 ]]
 
-include_directories("include" "../../../../../../../sandbox/plc4c/spi/include" "../../../../../../../sandbox/plc4c/api/include")
+include_directories("include" "../../../../../../../plc4c/spi/include" "../../../../../../../plc4c/api/include")
 
 # Add the sources
 file(GLOB sources "src/*.c")
-file(GLOB spi_sources "../../../../../../../../sandbox/plc4c/spi/src/*.c")
-file(GLOB spi_utils_sources "../../../../../../../../sandbox/plc4c/spi/src/utils/*.c")
+file(GLOB spi_sources "../../../../../../../../plc4c/spi/src/*.c")
+file(GLOB spi_utils_sources "../../../../../../../../plc4c/spi/src/utils/*.c")
 
 
 add_library(plc4c-driver-test ${sources} ${spi_sources} ${spi_utils_sources})
