@@ -188,7 +188,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Object obj = dispachqueue.poll(delay, TimeUnit.MILLISECONDS);
                     if (obj != null){
                         if (obj instanceof S7ModeEvent){
-                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.MODE);
+                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.MODE);                            
                             mapConsumers.forEach((x,y) -> y.accept(obj));
                         } else if (obj instanceof S7UserEvent) {
                             Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.USR);
