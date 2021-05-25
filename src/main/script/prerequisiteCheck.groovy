@@ -312,6 +312,27 @@ def checkPython() {
     }
 }
 
+def checkSetupTools() {
+    print "Detecting setuptools:      "
+    try {
+        def cmdArray = ["python", "-c", "import setuptools"]
+        def process = cmdArray.execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        if(stdErr.contains("No module named setuptools")) {
+            println "missing"
+            allConditionsMet = false
+        } else {
+            println "               OK"
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 /*
  * This check does an extremely simple check, if the boost library exists in the maven local repo.
  * We're not checking if it could be resolved.
@@ -500,6 +521,7 @@ if (cppEnabled) {
 
 if (pythonEnabled) {
     checkPython()
+    checkSetupTools()
 }
 
 // Boost needs the visual-studio `cl` compiler to compile the boostrap.
