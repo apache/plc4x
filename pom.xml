@@ -109,8 +109,8 @@
     <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.67</bouncycastle.version>
-    <boost.version>1.74.0</boost.version>
-    <boost.version.underline-short>1_74</boost.version.underline-short>
+    <boost.version>1.76.0</boost.version>
+    <boost.version.underline-short>1_76</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.10.18</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
@@ -144,11 +144,10 @@
     <jna.version>5.3.1</jna.version>
     <joda-time.version>2.10.8</joda-time.version>
     <jserialcom.version>2.6.2</jserialcom.version>
-    <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <junit.platform.version>1.7.0</junit.platform.version>
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
-    <logstash.version>7.10.0</logstash.version>
     <milo.version>0.5.4</milo.version>
     <mockito.version>3.6.28</mockito.version>
     <netty.version>4.1.54.Final</netty.version>
@@ -1438,7 +1437,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.url>https://boostorg.jfrog.io/artifactory/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
