@@ -285,18 +285,18 @@ func getRequestSize(tag string) int8 {
 }
 
 func toAnsi(tag string) ([]int8, error) {
-	arrayIndex := 0
+	arrayIndex := byte(0)
 	isArray := false
 	isStruct := false
 	tagFinal := tag
 	if strings.Contains(tag, "[") {
 		isArray = true
 		index := tag[strings.Index(tag, "[")+1 : strings.Index(tag, "]")]
-		atoi, err := strconv.Atoi(index)
+		parsedArrayIndex, err := strconv.ParseUint(index, 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		arrayIndex = atoi
+		arrayIndex = byte(parsedArrayIndex)
 		tagFinal = tag[0:strings.Index(tag, "[")]
 	}
 	if strings.Contains(tag, ".") {
@@ -347,7 +347,7 @@ func toAnsi(tag string) ([]int8, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = buffer.WriteByte("", byte(arrayIndex))
+		err = buffer.WriteByte("", arrayIndex)
 		if err != nil {
 			return nil, err
 		}

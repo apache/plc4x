@@ -569,11 +569,11 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 		for _, segment := range strings.Split(segment, ",") {
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
-				localMin, err := strconv.Atoi(split[0])
+				localMin, err := strconv.ParseUint(split[0], 10, 8)
 				if err != nil {
 					return nil, err
 				}
-				localMax, err := strconv.Atoi(split[1])
+				localMax, err := strconv.ParseUint(split[1], 10, 8)
 				if err != nil {
 					return nil, err
 				}

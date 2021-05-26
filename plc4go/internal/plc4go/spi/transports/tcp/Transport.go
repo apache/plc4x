@@ -76,11 +76,11 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	}
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
-		integerValue, err := strconv.Atoi(val[0])
+		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "error setting connect-timeout")
 		}
-		connectTimeout = uint32(integerValue)
+		connectTimeout = uint32(parsedConnectTimeout)
 	}
 
 	// Potentially resolve the ip address, if a hostname was provided

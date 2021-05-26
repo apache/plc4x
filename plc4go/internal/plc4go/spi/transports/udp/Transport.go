@@ -81,11 +81,11 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 	}
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
-		ival, err := strconv.Atoi(val[0])
+		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "error setting connect-timeout")
 		} else {
-			connectTimeout = uint32(ival)
+			connectTimeout = uint32(parsedConnectTimeout)
 		}
 	}
 
