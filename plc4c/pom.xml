@@ -36,8 +36,6 @@
 
   <properties>
     <unity.version>2.5.0</unity.version>
-    <!-- Tell Sonar where to find the c++ sources -->
-    <sonar.sources/>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
