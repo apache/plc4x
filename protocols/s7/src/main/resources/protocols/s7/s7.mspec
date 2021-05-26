@@ -281,7 +281,7 @@
     [enum   DataTransportErrorCode 'returnCode']
     [enum   DataTransportSize      'transportSize']
     [manual uint 16 'valueLength' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
-    [array uint 8 'data' count 'valueLength']
+    [array uint 8 'data' count 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.EventItemLength", readBuffer, valueLength)']
 ]
 
 //TODO: Convert BCD to uint
@@ -309,7 +309,7 @@
 
 [type 'AlarmMessageObjectPushType'
     [const uint 8 'variableSpec' '0x12']
-    [const uint 8 'length' '0x0a']  
+    [simple uint 8 'lengthspec']  
     [simple SyntaxIdType 'syntaxId'] 
     [simple uint 8 'numberOfValues']
     [simple uint 32 'eventId']
@@ -414,6 +414,9 @@
 
         //PUSH message reception S7300 (ALARM_SQ, ALARM_S, ALARM_SC, ...)
         ['0x00', '0x05' S7PayloadAlarm8
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x06' S7PayloadNotify
             [simple AlarmMessagePushType 'alarmMessage']
         ]
         ['0x00', '0x11' S7PayloadAlarmSQ

@@ -1397,7 +1397,13 @@ public class S7EventHelper {
     
     public static int RightShift3(final ReadBuffer buffer) throws ParseException {
         return buffer.readUnsignedInt(16) >> 3;    
-    }  
+    }
+    
+    //TODO: apply only if not the last item
+    public static int EventItemLength(final ReadBuffer buffer, int valueLength) {
+        int res = ((valueLength % 2 ==0) || (!buffer.hasMore((valueLength+1)*8))) ? valueLength : valueLength + 1;
+        return res;
+    }
 
     
     public static PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {

@@ -620,15 +620,25 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 eventqueue.add(item);
                             }
                         }
-                    } else if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x12)) {
+                    } else if ((myparameter.getCpuFunctionType() == 0x00) && 
+                              ((myparameter.getCpuSubfunction() == 0x05) || 
+                               (myparameter.getCpuSubfunction() == 0x06) ||
+                               (myparameter.getCpuSubfunction() == 0x11) ||
+                               (myparameter.getCpuSubfunction() == 0x12) ||
+                               (myparameter.getCpuSubfunction() == 0x13) ||
+                               (myparameter.getCpuSubfunction() == 0x16))) {
                         System.out.println("Procesando alarmas!.");
                         S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
                         S7PayloadUserDataItem[] items = payload.getItems();
                         for (Object item:items){
+                            eventqueue.add(item);
+                            /*
                             if (item instanceof S7PayloadAlarmS){
                                 AlarmMessagePushType alarm = ((S7PayloadAlarmS) item).getAlarmMessage();
                                 eventqueue.add(alarm);
                             }
+                            */
+                            
                         }                        
                     } else if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x13)) {
                         
