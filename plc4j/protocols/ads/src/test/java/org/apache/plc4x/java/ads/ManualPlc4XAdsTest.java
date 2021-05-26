@@ -44,7 +44,7 @@ public class ManualPlc4XAdsTest {
         // TODO: temporary workaround
         Thread.currentThread().setUncaughtExceptionHandler((t, e) -> {
             System.err.println(t + " - " + e.getMessage());
-            e.printStackTrace(System.err);
+            e.printStackTrace();
             System.exit(1);
         });
         try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {

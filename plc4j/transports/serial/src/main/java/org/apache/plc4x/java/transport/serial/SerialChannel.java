@@ -183,7 +183,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("exception caught", e);
             this.active = false;
             return false;
         }
@@ -386,14 +386,14 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
 
                         pipeline().fireChannelRegistered();
                     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        logger.warn("Exception caught", e);
                     }
                 });
 
                 // Return promise
                 promise.setSuccess();
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClosedChannelException | NoSuchFieldException e) {
-                e.printStackTrace();
+                logger.warn("Exception caught", e);
                 throw new NotImplementedException("Should register channel to event loop!!!");
             }
         }

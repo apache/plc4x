@@ -23,6 +23,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.junit.jupiter.api.Disabled;
@@ -185,7 +186,7 @@ public class ManualS7PlcDriverMT {
             PlcReadResponse response = future.get(10, TimeUnit.SECONDS);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
         long end = System.nanoTime();
         return (double) end - start;

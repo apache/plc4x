@@ -22,49 +22,45 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.support.DefaultConsumer;
-import org.apache.camel.spi.ExceptionHandler;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.scraper.ScrapeJob;
 import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Plc4XConsumer extends DefaultConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
-    private ExceptionHandler exceptionHandler;
-    private PlcConnection plcConnection;
-    private  Map<String,Object> tags;
-    private String trigger;
-    private PlcSubscriptionResponse subscriptionResponse;
-    private Plc4XEndpoint plc4XEndpoint;
+    private final PlcConnection plcConnection;
+    private final Map<String, Object> tags;
+    private final String trigger;
+    private final Plc4XEndpoint plc4XEndpoint;
 
-    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
 
-
-
-    public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
+    public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
-        plc4XEndpoint =endpoint;
+        this.plc4XEndpoint = endpoint;
         this.plcConnection = endpoint.getConnection();
         this.tags = endpoint.getTags();
-        this.trigger= endpoint.getTrigger();
-        plc4XEndpoint=endpoint;
+        this.trigger = endpoint.getTrigger();
     }
 
     @Override
@@ -77,103 +73,85 @@ public class Plc4XConsumer extends DefaultConsumer {
         return plc4XEndpoint;
     }
 
-    public ExceptionHandler getExceptionHandler() {
-        return exceptionHandler;
-    }
-
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
-    }
-
     @Override
-    protected void doStart() throws InterruptedException, ExecutionException {
-        if(trigger==null) {
-            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for( String tag : tags.keySet()){
-                try{
-                    String query = (String)tags.get(tag);
-                    builder.addItem(tag,query);
-                }
-                catch (PlcIncompatibleDatatypeException e){
-                    LOGGER.error("For consumer, please use Map<String,String>, currently using {}",tags.getClass().getSimpleName());
-                }
+    protected void doStart() throws ScraperException {
+        if (trigger == null) {
+            startUnTriggered();
+        } else {
+            startTriggered();
+        }
+    }
+
+    private void startUnTriggered() {
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+        for (Map.Entry<String, Object> tag : tags.entrySet()) {
+            try {
+                builder.addItem(tag.getKey(), (String) tag.getValue());
+            } catch (PlcIncompatibleDatatypeException e) {
+                LOGGER.error("For consumer, please use Map<String,String>, currently using {}", tags.getClass().getSimpleName());
             }
-            PlcReadRequest request = builder.build();
-            future = executorService.schedule(() -> {
+        }
+        PlcReadRequest request = builder.build();
+        future = executorService.schedule(() ->
                 request.execute().thenAccept(response -> {
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();
-                        Map<String,Object> rsp = new HashMap<>();
-                        for(String field : response.getFieldNames()){
-                            rsp.put(field,response.getObject(field));
+                        Map<String, Object> rsp = new HashMap<>();
+                        for (String field : response.getFieldNames()) {
+                            rsp.put(field, response.getObject(field));
                         }
                         exchange.getIn().setBody(rsp);
                         getProcessor().process(exchange);
                     } catch (Exception e) {
-                        exceptionHandler.handleException(e);
+                        getExceptionHandler().handleException(e);
                     }
-                });
-            }, 500, TimeUnit.MILLISECONDS);
-        }
-        else{
-            try {
-                ScraperConfiguration configuration =  getScraperConfig(validateTags());
-                TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
+                })
+            , 500, TimeUnit.MILLISECONDS);
+    }
 
-                TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
-                    try {
-                        Exchange exchange = plc4XEndpoint.createExchange();
-                        exchange.getIn().setBody(response);
-                        getProcessor().process(exchange);
-                    } catch (Exception e) {
-                        exceptionHandler.handleException(e);
-                    };
-                    },collector);
-                scraper.start();
-                collector.start();
-            } catch (ScraperException e) {
-                e.printStackTrace();
+    private void startTriggered() throws ScraperException {
+        ScraperConfiguration configuration = getScraperConfig(validateTags());
+        TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
+
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
+            try {
+                Exchange exchange = plc4XEndpoint.createExchange();
+                exchange.getIn().setBody(response);
+                getProcessor().process(exchange);
+            } catch (Exception e) {
+                getExceptionHandler().handleException(e);
             }
-        }
+        }, collector);
+        scraper.start();
+        collector.start();
     }
 
     private Map<String, String> validateTags() {
         Map<String, String> map = new HashMap<>();
-        for(Map.Entry<String,Object>tag: tags.entrySet()){
-            if(tag.getValue() instanceof String){
-                map.put(tag.getKey(),(String)tag.getValue());
+        for (Map.Entry<String, Object> tag : tags.entrySet()) {
+            if (tag.getValue() instanceof String) {
+                map.put(tag.getKey(), (String) tag.getValue());
             }
         }
-        if(map.size()!=tags.size()){
+        if (map.size() != tags.size()) {
             LOGGER.error("At least one entry does not match the format : Map.Entry<String,String> ");
             return null;
-        }
-        else return map;
+        } else return map;
     }
 
-    private ScraperConfigurationTriggeredImpl getScraperConfig(Map<String,String> tagList){
-        String config = "(TRIGGER_VAR,"+plc4XEndpoint.getPeriod()+",("+ plc4XEndpoint.getTrigger() +")==(true))";
-        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel",config,0,Collections.singletonList(Constants.PLC_NAME),tagList));
-        Map<String,String> source = Collections.singletonMap(Constants.PLC_NAME,plc4XEndpoint.getUri());
-        return new ScraperConfigurationTriggeredImpl(source,job);
+    private ScraperConfigurationTriggeredImpl getScraperConfig(Map<String, String> tagList) {
+        String config = "(TRIGGER_VAR," + plc4XEndpoint.getPeriod() + ",(" + plc4XEndpoint.getTrigger() + ")==(true))";
+        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel", config, 0, Collections.singletonList(Constants.PLC_NAME), tagList));
+        Map<String, String> source = Collections.singletonMap(Constants.PLC_NAME, plc4XEndpoint.getUri());
+        return new ScraperConfigurationTriggeredImpl(source, job);
     }
 
     @Override
-    protected void doStop() throws InterruptedException, ExecutionException, TimeoutException {
+    protected void doStop() {
         // First stop the polling process
         if (future != null) {
             future.cancel(true);
         }
-    }
-
-    private Object unwrapIfSingle(Collection collection) {
-        if (collection.isEmpty()) {
-            return null;
-        }
-        if (collection.size() == 1) {
-            return collection.iterator().next();
-        }
-        return collection;
     }
 
 }

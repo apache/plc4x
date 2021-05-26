@@ -20,6 +20,7 @@ package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -90,7 +91,7 @@ public class ManualPLC4XOpcua {
             testServer.startup().get();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
         OpcuaTcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
@@ -100,7 +101,7 @@ public class ManualPLC4XOpcua {
                 new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
         } catch (PlcConnectionException e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
         try {
             String[] array = new String[2];
@@ -182,7 +183,7 @@ public class ManualPLC4XOpcua {
             opcuaConnection.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
 
     }
@@ -216,14 +217,14 @@ public class ManualPLC4XOpcua {
                     opcuaConnection = (OpcuaTcpPlcConnection)
                         new PlcDriverManager().getConnection(connectionString);
                 } catch (PlcConnectionException e) {
-                    e.printStackTrace();
+                    throw new PlcRuntimeException(e);
                 }
                 result += System.currentTimeMillis() - milisStart;
                 try {
                     assert opcuaConnection != null;
                     opcuaConnection.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new PlcRuntimeException(e);
                 }
 
             }

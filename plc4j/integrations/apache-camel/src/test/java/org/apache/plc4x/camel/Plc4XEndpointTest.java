@@ -33,7 +33,7 @@ public class Plc4XEndpointTest {
     Plc4XEndpoint SUT;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception {
         SUT = new Plc4XEndpoint("plc4x:mock:10.10.10.1/1/1", mock(Component.class));
     }
 

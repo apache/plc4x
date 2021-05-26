@@ -20,6 +20,7 @@ package org.apache.plc4x.java.examples.helloplc4x;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -91,31 +92,29 @@ public class HelloPlc4x {
 
             // Give the async request a little time...
             TimeUnit.MILLISECONDS.sleep(1000);
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.exit(0);
         }
-        System.exit(0);
     }
 
     private static void printResponse(PlcReadResponse response) {
         for (String fieldName : response.getFieldNames()) {
-            if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
+            if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
                 int numValues = response.getNumberOfValues(fieldName);
                 // If it's just one element, output just one single line.
-                if(numValues == 1) {
-                    logger.info("Value[" + fieldName + "]: " + response.getObject(fieldName));
+                if (numValues == 1) {
+                    logger.info("Value[{}]: {}", fieldName, response.getObject(fieldName));
                 }
                 // If it's more than one element, output each in a single row.
                 else {
-                    logger.info("Value[" + fieldName + "]:");
-                    for(int i = 0; i < numValues; i++) {
-                        logger.info(" - " + response.getObject(fieldName, i));
+                    logger.info("Value[{}]:", fieldName);
+                    for (int i = 0; i < numValues; i++) {
+                        logger.info(" - {}", response.getObject(fieldName, i));
                     }
                 }
             }
             // Something went wrong, to output an error message instead.
             else {
-                logger.error("Error[" + fieldName + "]: " + response.getResponseCode(fieldName).name());
+                logger.error("Error[{}]: {}", fieldName, response.getResponseCode(fieldName).name());
             }
         }
     }

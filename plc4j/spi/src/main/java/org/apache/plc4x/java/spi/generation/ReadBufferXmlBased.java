@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.generation;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -38,6 +39,8 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
 
     public ReadBufferXmlBased(InputStream is) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         try {
             reader = xmlInputFactory.createXMLEventReader(is);
         } catch (XMLStreamException e) {

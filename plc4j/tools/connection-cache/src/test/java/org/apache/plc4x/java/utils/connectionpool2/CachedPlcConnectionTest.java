@@ -21,42 +21,36 @@ package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.awaitility.Duration;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CachedPlcConnectionTest {
 
     @Test
-    void whenReadFutureFails_handleGracefully() throws ExecutionException, InterruptedException, TimeoutException {
+    void whenReadFutureFails_handleGracefully() {
         final CachedDriverManager driverManager = Mockito.mock(CachedDriverManager.class);
         final PlcConnection mockConnection = Mockito.mock(PlcConnection.class, Mockito.RETURNS_DEEP_STUBS);
 
-        when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                final CompletableFuture<? extends PlcReadResponse> future = new CompletableFuture<>();
-                final Thread thread = new Thread(() -> {
-                    try {
-                        Thread.sleep(1_000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    future.completeExceptionally(new RuntimeException("abc"));
-                });
-                thread.setDaemon(true);
-                thread.start();
-                return future;
-            }
+        when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(invocation -> {
+            final CompletableFuture<? extends PlcReadResponse> future = new CompletableFuture<>();
+            await()
+                .atLeast(2, TimeUnit.SECONDS)
+                .until(() -> future.completeExceptionally(new RuntimeException("abc")));
+            return future;
         });
 
         final CachedPlcConnection connection = new CachedPlcConnection(driverManager, mockConnection);
@@ -75,17 +69,13 @@ class CachedPlcConnectionTest {
     }
 
     @Test
-    void whenReadFutureTimesOut_handleGracefully() throws ExecutionException, InterruptedException, TimeoutException {
+    void whenReadFutureTimesOut_handleGracefully() {
         final CachedDriverManager driverManager = Mockito.mock(CachedDriverManager.class);
         final PlcConnection mockConnection = Mockito.mock(PlcConnection.class, Mockito.RETURNS_DEEP_STUBS);
 
-        when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                final CompletableFuture<? extends PlcReadResponse> future = new CompletableFuture<>();
-                // Return a Future that will never end!
-                return future;
-            }
+        when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(invocation -> {
+            // Return a Future that will never end!
+            return new CompletableFuture<PlcReadResponse>();
         });
 
         final CachedPlcConnection connection = new CachedPlcConnection(driverManager, mockConnection);

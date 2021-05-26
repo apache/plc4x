@@ -20,6 +20,7 @@ package org.apache.plc4x.java.knxnetip.ets5;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
@@ -110,7 +111,7 @@ public class Ets5Parser {
                     topologyNames.put(curAreaAddress, areaNode.getAttribute("Name"));
 
                     final NodeList lines = areaNode.getElementsByTagName("Line");
-                    for(int l = 0; l < lines.getLength(); l++) {
+                    for (int l = 0; l < lines.getLength(); l++) {
                         final Element lineNode = (Element) lines.item(l);
                         final String curLineAddress = curAreaAddress + "/" + lineNode.getAttribute("Address");
                         topologyNames.put(curLineAddress, lineNode.getAttribute("Name"));
@@ -151,7 +152,7 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    if(addressType != null) {
+                    if (addressType != null) {
                         // Lookup the driver internal data-type.
                         final KnxDatapointType datapointType = knxDatapointTypeMap.get(
                             addressType.getMainType() + "#" + addressType.getSubType());
@@ -164,26 +165,25 @@ public class Ets5Parser {
             }
         } catch (IOException e) {
             // Zip and Xml Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         } catch (ParserConfigurationException e) {
             // XML Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         } catch (SAXException e) {
             // XML Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         } catch (XPathExpressionException e) {
             // XML Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
-        return null;
     }
 
     private byte getGroupAddressLevel(String knxprojValue) {
-        if("ThreeLevel".equals(knxprojValue)) {
+        if ("ThreeLevel".equals(knxprojValue)) {
             return (byte) 3;
-        } else if("TwoLevel".equals(knxprojValue)) {
+        } else if ("TwoLevel".equals(knxprojValue)) {
             return (byte) 2;
-        } else if("Free".equals(knxprojValue)) {
+        } else if ("Free".equals(knxprojValue)) {
             return (byte) 1;
         }
         throw new RuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);

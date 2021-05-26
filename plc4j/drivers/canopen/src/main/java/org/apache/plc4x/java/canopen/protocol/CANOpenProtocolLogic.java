@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.canopen.protocol;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -143,14 +144,14 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
                         try {
                             context.sendToWire(createFrame(new CANOpenHeartbeatPayload(NMTState.OPERATIONAL)));
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            throw new PlcRuntimeException(e);
                         }
                     }
                 }, 10000, 10000);
             }
             context.fireConnected();
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
     }
 

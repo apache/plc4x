@@ -20,7 +20,7 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
-import org.apache.camel.util.IntrospectionSupport;
+import org.apache.camel.util.PropertiesHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,23 +32,23 @@ public class Plc4XComponent extends DefaultComponent {
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        Endpoint endpoint = new Plc4XEndpoint(uri, this);
+        Plc4XEndpoint endpoint = new Plc4XEndpoint(uri, this);
         //Tags have a Name, a query and an optional value (for writing)
         //Reading --> Map<String,String>
         //Writing --> Map<String,Map.Entry<String,Object>>
         Map<String, Object> tags = getAndRemoveOrResolveReferenceParameter(parameters, "tags", Map.class);
-        if(tags!=null){
-            ((Plc4XEndpoint)endpoint).setTags(tags);
+        if (tags != null) {
+            endpoint.setTags(tags);
         }
-        String trigger = getAndRemoveOrResolveReferenceParameter(parameters,"trigger",String.class);
-        if(trigger!=null){
-            ((Plc4XEndpoint)endpoint).setTrigger(trigger);
+        String trigger = getAndRemoveOrResolveReferenceParameter(parameters, "trigger", String.class);
+        if (trigger != null) {
+            endpoint.setTrigger(trigger);
         }
-        Object period = getAndRemoveOrResolveReferenceParameter(parameters,"period",Integer.class);
-        if(period!=null && period instanceof Integer){
-            ((Plc4XEndpoint)endpoint).setPeriod((int)period);
+        Integer period = getAndRemoveOrResolveReferenceParameter(parameters, "period", Integer.class);
+        if (period != null) {
+            endpoint.setPeriod(period);
         }
-        setProperties(endpoint,parameters);
+        setProperties(endpoint, parameters);
         return endpoint;
     }
 
@@ -63,11 +63,11 @@ public class Plc4XComponent extends DefaultComponent {
         if (parameters != null && !parameters.isEmpty()) {
             Map<String, Object> param = parameters;
             if (optionPrefix != null) {
-                param = IntrospectionSupport.extractProperties(parameters, optionPrefix);
+                param = PropertiesHelper.extractProperties(parameters, optionPrefix);
             }
 
             if (parameters.size() > 0) {
-                LOGGER.info("{} parameters will be passed to the PLC Driver",param);
+                LOGGER.info("{} parameters will be passed to the PLC Driver", param);
             }
         }
     }

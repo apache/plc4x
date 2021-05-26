@@ -23,6 +23,8 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,6 +42,8 @@ import static org.mockito.Mockito.when;
  * Created by julian on 06.04.20
  */
 class CachedDriverManagerIT {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CachedDriverManagerIT.class);
 
     @Test
     void connectWithMultpleThreads() throws InterruptedException, PlcException {
@@ -60,7 +64,7 @@ class CachedDriverManagerIT {
                     driverManager.getConnection("").close();
                     successCounter.incrementAndGet();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.warn("error", e);
                     errorCounter.incrementAndGet();
                 }
             });
