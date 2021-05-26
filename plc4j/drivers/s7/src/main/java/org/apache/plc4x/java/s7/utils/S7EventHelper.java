@@ -1388,7 +1388,17 @@ public class S7EventHelper {
         buffer.writeUnsignedByte(4, (byte) centenas);
         buffer.writeUnsignedByte(4, (byte) decenas);
         buffer.writeUnsignedByte(4, (byte) unidad);
-    }    
+    }
+
+    public static void LeftShift3(final WriteBuffer buffer, int _value) throws ParseException {
+        int valor = _value << 3;
+        buffer.writeUnsignedInt(16, valor);
+    }
+    
+    public static int RightShift3(final ReadBuffer buffer) throws ParseException {
+        return buffer.readUnsignedInt(16) >> 3;    
+    }  
+
     
     public static PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
         if (dataTransportErrorCode == null) {

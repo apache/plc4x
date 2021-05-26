@@ -280,7 +280,7 @@
 [type 'AssociatedValueType'
     [enum   DataTransportErrorCode 'returnCode']
     [enum   DataTransportSize      'transportSize']
-    [simple uint 16 'valueLength']
+    [manual uint 16 'valueLength' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
     [array uint 8 'data' count 'valueLength']
 ]
 
