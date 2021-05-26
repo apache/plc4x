@@ -28,23 +28,33 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
-public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
+public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoCloseable {
 
-    ByteArrayOutputStream byteArrayOutputStream;
+    public static final String PLC4X_ATTRIBUTE_FORMAT = "%s__plc4x_%s";
 
-    JsonGenerator generator;
+    private final ByteArrayOutputStream byteArrayOutputStream;
 
-    int depth = 0;
+    private final JsonGenerator generator;
 
-    boolean doRenderAttr = true;
+    private int depth = 0;
+
+    private final boolean doRenderAttr;
 
     public WriteBufferJsonBased() {
+        this(true);
+    }
+
+    public WriteBufferJsonBased(boolean doRenderAttr) {
+        this.doRenderAttr = doRenderAttr;
         byteArrayOutputStream = new ByteArrayOutputStream();
         JsonFactory jsonFactory = new JsonFactoryBuilder()
             .build();
         try {
-            generator = jsonFactory.createGenerator(byteArrayOutputStream).useDefaultPrettyPrinter();
+            generator = jsonFactory.createGenerator(byteArrayOutputStream);
+            // Usually this is chained onto above creating of the generator but then sonar thinks this never gets closed
+            this.generator.useDefaultPrettyPrinter();
         } catch (IOException e) {
             throw new PlcRuntimeException(e);
         }
@@ -120,7 +130,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            writeAttr(logicalName, rwUintKey, bitLength, writerArgs);
+            writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
             generator.writeNumberField(logicalName, value);
         });
     }
@@ -231,14 +241,13 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwStringKey, bitLength, writerArgs);
-            generator.writeStringField(String.format("%s__plc4x_%s", sanitizedLogicalName, rwEncodingKey), encoding);
+            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, sanitizedLogicalName, rwEncodingKey), encoding);
             generator.writeStringField(sanitizedLogicalName, value);
         });
     }
 
     @Override
     public void popContext(String logicalName, WithWriterArgs... writerArgs) {
-        final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         try {
             if (isToBeRenderedAsList(writerArgs)) {
                 generator.writeEndArray();
@@ -251,6 +260,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
             depth--;
             if (depth == 0) {
                 generator.writeEndObject();
+                generator.flush();
             }
         } catch (IOException e) {
             throw new PlcRuntimeException(e);
@@ -280,15 +290,19 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+        generator.close();
+    }
+
     @FunctionalInterface
     private interface RunWrapped {
-        void run() throws IOException, ParseException;
+        void run() throws IOException;
     }
 
     public String getJsonString() {
         try {
-            generator.close();
-            return byteArrayOutputStream.toString("UTF-8");
+            return byteArrayOutputStream.toString(StandardCharsets.UTF_8.name());
         } catch (IOException e) {
             throw new PlcRuntimeException(e);
         }
@@ -298,11 +312,11 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons {
         if (!doRenderAttr) {
             return;
         }
-        generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwDataTypeKey), dataType);
-        generator.writeNumberField(String.format("%s__plc4x_%s", logicalName, rwBitLengthKey), bitLength);
+        generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwDataTypeKey), dataType);
+        generator.writeNumberField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwBitLengthKey), bitLength);
         String stringRepresentation = extractAdditionalStringRepresentation(writerArgs);
         if (stringRepresentation != null) {
-            generator.writeStringField(String.format("%s__plc4x_%s", logicalName, rwStringRepresentationKey), stringRepresentation);
+            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation);
         }
     }
 }
