@@ -78,7 +78,8 @@ type ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -98,19 +99,31 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
             ${parserArgument.name} := parserArguments[${i}] == "true"
                             <#break>
 						<#case "byte">
+			parsedUint, err := strconv.ParseUint(parserArguments[${i}], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedUint)
+							<#break>
                         <#case "uint8">
                         <#case "uint16">
                         <#case "uint32">
                         <#case "uint64">
+			parsedUint, err := strconv.ParseUint(parserArguments[${i}], 10, ${parserArgument.type.getSizeInBits()})
+			if err!=nil {
+				return nil, err
+			}
+			${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedUint)
+							<#break>
                         <#case "int8">
                         <#case "int16">
                         <#case "int32">
                         <#case "int64">
-            atoi, err := strconv.Atoi(parserArguments[${i}])
+            parsedInt, err := strconv.ParseInt(parserArguments[${i}], 10, ${parserArgument.type.getSizeInBits()})
             if err!=nil {
                 return nil, err
             }
-            ${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(atoi)
+            ${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedInt)
                             <#break>
                         <#default>
 			// TODO: find a way to parse the sub types

@@ -305,11 +305,11 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
 				if len(split) == 2 {
-					minValue, err := strconv.Atoi(split[0])
+					minValue, err := strconv.ParseUint(split[0], 10, 16)
 					if err != nil {
 						return []uint16{}, errors.New("invalid address")
 					}
-					maxValue, err := strconv.Atoi(split[1])
+					maxValue, err := strconv.ParseUint(split[1], 10, 16)
 					if err != nil {
 						return []uint16{}, errors.New("invalid address")
 					}
@@ -320,7 +320,7 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 					return []uint16{}, errors.New("invalid address")
 				}
 			} else {
-				value, err := strconv.Atoi(segment)
+				value, err := strconv.ParseUint(segment, 10, 16)
 				if err != nil {
 					return []uint16{}, errors.New("invalid address")
 				}
@@ -328,7 +328,7 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 			}
 		}
 	} else {
-		value, err := strconv.Atoi(pattern)
+		value, err := strconv.ParseUint(pattern, 10, 16)
 		if err != nil {
 			return []uint16{}, errors.New("invalid address")
 		}

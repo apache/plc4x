@@ -147,7 +147,7 @@ func (m *Connection) resetConnection() {
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {
 	if val, ok := m.options["group-address-num-levels"]; ok {
-		groupAddressNumLevels, err := strconv.Atoi(val[0])
+		groupAddressNumLevels, err := strconv.ParseUint(val[0], 10, 8)
 		if err == nil {
 			return uint8(groupAddressNumLevels)
 		}

@@ -93,20 +93,20 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		return NewDeviceQueryField(
 			match["mainGroup"], match["middleGroup"], match["subGroup"]), nil
 	} else if match := utils.GetSubgroupMatches(m.devicePropertyAddress, query); match != nil {
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
-		objectId, _ := strconv.Atoi(match["objectId"])
-		propertyId, _ := strconv.Atoi(match["propertyId"])
-		propertyIndex := 1
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
+		objectId, _ := strconv.ParseUint(match["objectId"], 10, 8)
+		propertyId, _ := strconv.ParseUint(match["propertyId"], 10, 8)
+		propertyIndex := uint64(1)
 		propertyInd, ok := match["propertyIndex"]
 		if ok && len(propertyInd) > 0 {
-			propertyIndex, _ = strconv.Atoi(propertyInd)
+			propertyIndex, _ = strconv.ParseUint(propertyInd, 10, 16)
 		}
-		numberOfElements := 1
+		numberOfElements := uint64(1)
 		numElements, ok := match["numElements"]
 		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.Atoi(numElements)
+			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
 		return NewDevicePropertyAddressPlcField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup), uint8(objectId), uint8(propertyId),
@@ -118,9 +118,9 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		if ok && len(fieldTypeName) > 0 {
 			fieldType = driverModel.KnxDatapointTypeByName(fieldTypeName)
 		}
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
 		addressData, _ := hex.DecodeString(match["address"])
 		var address uint16
 		if len(addressData) == 2 {
@@ -130,16 +130,16 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		} else {
 			return nil, errors.New("invalid address: " + match["address"])
 		}
-		numberOfElements := 1
+		numberOfElements := uint64(1)
 		numElements, ok := match["numElements"]
 		if ok && len(numElements) > 0 {
-			numberOfElements, _ = strconv.Atoi(numElements)
+			numberOfElements, _ = strconv.ParseUint(numElements, 10, 8)
 		}
 		return NewDeviceMemoryAddressPlcField(uint8(mainGroup), uint8(middleGroup), uint8(subGroup), address, uint8(numberOfElements), &fieldType), nil
 	} else if match := utils.GetSubgroupMatches(m.deviceCommunicationObjectQuery, query); match != nil {
-		mainGroup, _ := strconv.Atoi(match["mainGroup"])
-		middleGroup, _ := strconv.Atoi(match["middleGroup"])
-		subGroup, _ := strconv.Atoi(match["subGroup"])
+		mainGroup, _ := strconv.ParseUint(match["mainGroup"], 10, 8)
+		middleGroup, _ := strconv.ParseUint(match["middleGroup"], 10, 8)
+		subGroup, _ := strconv.ParseUint(match["subGroup"], 10, 8)
 		return NewCommunicationObjectQueryField(
 			uint8(mainGroup), uint8(middleGroup), uint8(subGroup)), nil
 	}

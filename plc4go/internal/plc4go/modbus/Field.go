@@ -50,7 +50,7 @@ func NewField(fieldType FieldType, address uint16, quantity uint16, datatype mod
 }
 
 func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, quantityString string, datatype model2.ModbusDataType) (model.PlcField, error) {
-	address, err := strconv.Atoi(addressString)
+	address, err := strconv.ParseUint(addressString, 10, 16)
 	if err != nil {
 		return nil, errors.Errorf("Couldn't parse address string '%s' into an int", addressString)
 	}
@@ -58,9 +58,9 @@ func NewModbusPlcFieldFromStrings(fieldType FieldType, addressString string, qua
 		log.Debug().Msg("No quantity supplied, assuming 1")
 		quantityString = "1"
 	}
-	quantity, err := strconv.Atoi(quantityString)
+	quantity, err := strconv.ParseUint(quantityString, 10, 16)
 	if err != nil {
-		log.Warn().Err(err).Msgf("Error during atoi for %s. Falling back to 1", quantityString)
+		log.Warn().Err(err).Msgf("Error during parsing for %s. Falling back to 1", quantityString)
 		quantity = 1
 	}
 	return NewField(fieldType, uint16(address), uint16(quantity), datatype), nil

@@ -48,8 +48,8 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
 		tag := match[TAG]
 		_type := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
-		atoi, _ := strconv.Atoi(match[ELEMENT_NB])
-		elementNb := uint16(atoi)
+		parsedUint, _ := strconv.ParseUint(match[ELEMENT_NB], 10, 16)
+		elementNb := uint16(parsedUint)
 		return NewField(tag, _type, elementNb), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)

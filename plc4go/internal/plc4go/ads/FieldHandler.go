@@ -71,7 +71,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexGroup = binary.BigEndian.Uint32(decodeString)
 		} else {
-			parsedIndexGroup, err := strconv.Atoi(match["indexGroup"])
+			parsedIndexGroup, err := strconv.ParseUint(match["indexGroup"], 10, 32)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
 			}
@@ -85,17 +85,17 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexOffset = binary.BigEndian.Uint32(decodeString)
 		} else {
-			parsedIndexOffset, err := strconv.Atoi(match["indexOffset"])
+			parsedIndexOffset, err := strconv.ParseUint(match["indexOffset"], 10, 32)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
 			}
 			indexOffset = uint32(parsedIndexOffset)
 		}
-		stringLength, err := strconv.Atoi(match["stringLength"])
+		stringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding string length")
 		}
-		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
+		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
 		if err != nil {
 			log.Trace().Msg("Falling back to number of elements 1")
 			numberOfElements = 1
@@ -111,7 +111,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexGroup = binary.BigEndian.Uint32(decodeString)
 		} else {
-			parsedIndexGroup, err := strconv.Atoi(match["indexGroup"])
+			parsedIndexGroup, err := strconv.ParseUint(match["indexGroup"], 10, 32)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
 			}
@@ -125,7 +125,7 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 			}
 			indexOffset = binary.BigEndian.Uint32(decodeString)
 		} else {
-			parsedIndexOffset, err := strconv.Atoi(match["indexOffset"])
+			parsedIndexOffset, err := strconv.ParseUint(match["indexOffset"], 10, 32)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error decoding index group")
 			}
@@ -133,24 +133,24 @@ func (m FieldHandler) ParseQuery(query string) (apiModel.PlcField, error) {
 		}
 
 		adsDataType := model2.AdsDataTypeByName(match["adsDataType"])
-		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
+		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
 		if err != nil {
 			log.Trace().Msg("Falling back to number of elements 1")
 			numberOfElements = 1
 		}
 		return newDirectAdsPlcField(indexGroup, indexOffset, adsDataType, int32(0), uint32(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsStringField, query); match != nil {
-		stringLength, err := strconv.Atoi(match["stringLength"])
+		stringLength, err := strconv.ParseInt(match["stringLength"], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding string length")
 		}
-		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
+		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error decoding number of elements")
 		}
 		return newAdsSymbolicPlcField(match["symbolicAddress"], model2.AdsDataTypeByName(match["adsDataType"]), int32(stringLength), uint32(numberOfElements))
 	} else if match := utils.GetSubgroupMatches(m.symbolicAdsField, query); match != nil {
-		numberOfElements, err := strconv.Atoi(match["numberOfElements"])
+		numberOfElements, err := strconv.ParseUint(match["numberOfElements"], 10, 32)
 		if err != nil {
 			log.Trace().Msg("Falling back to number of elements 1")
 			numberOfElements = 1

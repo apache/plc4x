@@ -34,7 +34,8 @@ type BacnetipXmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -42,11 +43,11 @@ func init() {
 func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "APDU":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		apduLength := uint16(atoi)
+		apduLength := uint16(parsedUint)
 		return model.APDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetTag":
 		return model.BACnetTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -55,40 +56,40 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "BACnetError":
 		return model.BACnetErrorParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NLM":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		apduLength := uint16(atoi)
+		apduLength := uint16(parsedUint)
 		return model.NLMParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetConfirmedServiceRequest":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		len := uint16(atoi)
+		len := uint16(parsedUint)
 		return model.BACnetConfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
 	case "BACnetAddress":
 		return model.BACnetAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetConfirmedServiceACK":
 		return model.BACnetConfirmedServiceACKParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetUnconfirmedServiceRequest":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		len := uint16(atoi)
+		len := uint16(parsedUint)
 		return model.BACnetUnconfirmedServiceRequestParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), len)
 	case "BACnetServiceAck":
 		return model.BACnetServiceAckParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BVLC":
 		return model.BVLCParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NPDU":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		npduLength := uint16(atoi)
+		npduLength := uint16(parsedUint)
 		return model.NPDUParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), npduLength)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

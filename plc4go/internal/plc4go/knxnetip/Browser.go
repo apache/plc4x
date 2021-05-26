@@ -485,7 +485,7 @@ func (m Browser) executeCommunicationObjectQuery(field CommunicationObjectQueryF
 			}
 
 			// We saved the com object number in the field name.
-			comObjectNumber, _ := strconv.Atoi(fieldName)
+			comObjectNumber, _ := strconv.ParseUint(fieldName, 10, 16)
 			groupAddresses := groupAddressMap[uint16(comObjectNumber)]
 			readable := descriptor.CommunicationEnable && descriptor.ReadEnable
 			writable := descriptor.CommunicationEnable && descriptor.WriteEnable
@@ -581,7 +581,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 					options = append(options, uint8(i))
 				}
 			} else {
-				option, err := strconv.Atoi(segment)
+				option, err := strconv.ParseUint(segment, 10, 8)
 				if err != nil {
 					return nil, err
 				}
@@ -589,7 +589,7 @@ func (m Browser) explodeSegment(segment string, min uint8, max uint8) ([]uint8, 
 			}
 		}
 	} else {
-		value, err := strconv.Atoi(segment)
+		value, err := strconv.ParseUint(segment, 10, 8)
 		if err != nil {
 			return nil, err
 		}

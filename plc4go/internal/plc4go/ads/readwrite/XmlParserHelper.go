@@ -34,7 +34,8 @@ type AdsXmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -42,11 +43,11 @@ func init() {
 func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "AdsMultiRequestItem":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		indexGroup := uint32(atoi)
+		indexGroup := uint32(parsedUint)
 		return model.AdsMultiRequestItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), indexGroup)
 	case "AmsTCPPacket":
 		return model.AmsTCPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

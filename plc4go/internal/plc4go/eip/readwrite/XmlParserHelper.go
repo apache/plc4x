@@ -34,7 +34,8 @@ type EipXmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -42,27 +43,27 @@ func init() {
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "CipService":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		serviceLen := uint16(atoi)
+		serviceLen := uint16(parsedUint)
 		return model.CipServiceParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
 	case "EipPacket":
 		return model.EipPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Services":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		servicesLen := uint16(atoi)
+		servicesLen := uint16(parsedUint)
 		return model.ServicesParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
 	case "CipExchange":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		exchangeLen := uint16(atoi)
+		exchangeLen := uint16(parsedUint)
 		return model.CipExchangeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

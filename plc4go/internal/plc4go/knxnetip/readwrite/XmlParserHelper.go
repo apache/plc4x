@@ -34,7 +34,8 @@ type KnxnetipXmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -54,11 +55,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "ConnectionRequestInformation":
 		return model.ConnectionRequestInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Apdu":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		dataLength := uint8(atoi)
+		dataLength := uint8(parsedUint)
 		return model.ApduParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "HPAIDiscoveryEndpoint":
 		return model.HPAIDiscoveryEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -71,11 +72,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMI":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		size := uint8(atoi)
+		size := uint8(parsedUint)
 		return model.CEMIParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
 	case "KnxNetIpMessage":
 		return model.KnxNetIpMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -105,20 +106,20 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "LDataFrame":
 		return model.LDataFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduDataExt":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		length := uint8(atoi)
+		length := uint8(parsedUint)
 		return model.ApduDataExtParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length)
 	case "ApduControl":
 		return model.ApduControlParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "KnxGroupAddress":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 2)
 		if err != nil {
 			return nil, err
 		}
-		numLevels := uint8(atoi)
+		numLevels := uint8(parsedUint)
 		return model.KnxGroupAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels)
 	case "GroupObjectDescriptorRealisationType6":
 		return model.GroupObjectDescriptorRealisationType6Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -129,11 +130,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationType2":
 		return model.GroupObjectDescriptorRealisationType2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduData":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		dataLength := uint8(atoi)
+		dataLength := uint8(parsedUint)
 		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

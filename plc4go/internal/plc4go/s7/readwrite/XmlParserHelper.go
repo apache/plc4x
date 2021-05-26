@@ -34,7 +34,8 @@ type S7XmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -48,43 +49,43 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	case "S7VarPayloadStatusItem":
 		return model.S7VarPayloadStatusItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Parameter":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		messageType := uint8(atoi)
+		messageType := uint8(parsedUint)
 		return model.S7ParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType)
 	case "SzlDataTreeItem":
 		return model.SzlDataTreeItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "COTPPacket":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		cotpLen := uint16(atoi)
+		cotpLen := uint16(parsedUint)
 		return model.COTPPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cotpLen)
 	case "S7PayloadUserDataItem":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 4)
 		if err != nil {
 			return nil, err
 		}
-		cpuFunctionType := uint8(atoi)
+		cpuFunctionType := uint8(parsedUint)
 		return model.S7PayloadUserDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), cpuFunctionType)
 	case "COTPParameter":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		rest := uint8(atoi)
+		rest := uint8(parsedUint)
 		return model.COTPParameterParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), rest)
 	case "TPKTPacket":
 		return model.TPKTPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7Payload":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		messageType := uint8(atoi)
+		messageType := uint8(parsedUint)
 		// TODO: find a way to parse the sub types
 		var parameter model.S7Parameter
 		return model.S7PayloadParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), messageType, &parameter)

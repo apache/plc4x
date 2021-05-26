@@ -42,27 +42,27 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		return Configuration{}, errors.New("Required parameter sourceAmsNetId missing")
 	}
 	split := strings.Split(sourceAmsNetId, ".")
-	octet1, err := strconv.Atoi(split[0])
+	octet1, err := strconv.ParseUint(split[0], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	octet2, err := strconv.Atoi(split[1])
+	octet2, err := strconv.ParseUint(split[1], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	octet3, err := strconv.Atoi(split[2])
+	octet3, err := strconv.ParseUint(split[2], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	octet4, err := strconv.Atoi(split[3])
+	octet4, err := strconv.ParseUint(split[3], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	octet5, err := strconv.Atoi(split[4])
+	octet5, err := strconv.ParseUint(split[4], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
-	octet6, err := strconv.Atoi(split[5])
+	octet6, err := strconv.ParseUint(split[5], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsNetId")
 	}
@@ -78,37 +78,37 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	if sourceAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter sourceAmsPort missing")
 	}
-	atoi, err := strconv.Atoi(sourceAmsPort)
+	parsedUint, err := strconv.ParseUint(sourceAmsPort, 10, 16)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing sourceAmsPort")
 	}
-	configuration.sourceAmsPort = uint16(atoi)
+	configuration.sourceAmsPort = uint16(parsedUint)
 	targetAmsNetId := getFromOptions(options, "targetAmsNetId")
 	if sourceAmsNetId == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsNetId missing")
 	}
 	split = strings.Split(targetAmsNetId, ".")
-	octet1, err = strconv.Atoi(split[0])
+	octet1, err = strconv.ParseUint(split[0], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	octet2, err = strconv.Atoi(split[1])
+	octet2, err = strconv.ParseUint(split[1], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	octet3, err = strconv.Atoi(split[2])
+	octet3, err = strconv.ParseUint(split[2], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	octet4, err = strconv.Atoi(split[3])
+	octet4, err = strconv.ParseUint(split[3], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	octet5, err = strconv.Atoi(split[4])
+	octet5, err = strconv.ParseUint(split[4], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
-	octet6, err = strconv.Atoi(split[5])
+	octet6, err = strconv.ParseUint(split[5], 10, 8)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsNetId")
 	}
@@ -124,11 +124,11 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	if targetAmsPort == "" {
 		return Configuration{}, errors.New("Required parameter targetAmsPort missing")
 	}
-	atoi, err = strconv.Atoi(targetAmsPort)
+	parsedUint, err = strconv.ParseUint(targetAmsPort, 10, 16)
 	if err != nil {
 		return Configuration{}, errors.Wrap(err, "error parsing targetAmsPort")
 	}
-	configuration.targetAmsPort = uint16(atoi)
+	configuration.targetAmsPort = uint16(parsedUint)
 
 	return configuration, nil
 }

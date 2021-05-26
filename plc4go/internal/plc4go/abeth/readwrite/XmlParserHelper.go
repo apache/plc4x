@@ -34,7 +34,8 @@ type AbethXmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -46,11 +47,11 @@ func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 	case "DF1RequestMessage":
 		return model.DF1RequestMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DF1ResponseMessage":
-		atoi, err := strconv.Atoi(parserArguments[0])
+		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		payloadLength := uint16(atoi)
+		payloadLength := uint16(parsedUint)
 		return model.DF1ResponseMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
 	case "CIPEncapsulationPacket":
 		return model.CIPEncapsulationPacketParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

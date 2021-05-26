@@ -105,8 +105,8 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
 	if value, ok := options["unit-identifier"]; ok {
-		var intValue int
-		intValue, err = strconv.Atoi(value[0])
+		var intValue uint64
+		intValue, err = strconv.ParseUint(value[0], 10, 8)
 		if err == nil {
 			unitIdentifier = uint8(intValue)
 		}

@@ -102,15 +102,15 @@ func (k GroupAddress3LevelPlcField) matches(knxGroupAddress *driverModel.KnxGrou
 }
 
 func (k GroupAddress3LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
-	mainGroup, err := strconv.Atoi(k.MainGroup)
+	mainGroup, err := strconv.ParseUint(k.MainGroup, 10, 8)
 	if err != nil {
 		return nil
 	}
-	middleGroup, err := strconv.Atoi(k.MiddleGroup)
+	middleGroup, err := strconv.ParseUint(k.MiddleGroup, 10, 8)
 	if err != nil {
 		return nil
 	}
-	subGroup, err := strconv.Atoi(k.SubGroup)
+	subGroup, err := strconv.ParseUint(k.SubGroup, 10, 8)
 	if err != nil {
 		return nil
 	}
@@ -177,11 +177,11 @@ func (k GroupAddress2LevelPlcField) matches(knxGroupAddress *driverModel.KnxGrou
 }
 
 func (k GroupAddress2LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
-	mainGroup, err := strconv.Atoi(k.MainGroup)
+	mainGroup, err := strconv.ParseUint(k.MainGroup, 10, 8)
 	if err != nil {
 		return nil
 	}
-	subGroup, err := strconv.Atoi(k.SubGroup)
+	subGroup, err := strconv.ParseUint(k.SubGroup, 10, 16)
 	if err != nil {
 		return nil
 	}
@@ -241,7 +241,7 @@ func (k GroupAddress1LevelPlcField) matches(knxGroupAddress *driverModel.KnxGrou
 }
 
 func (k GroupAddress1LevelPlcField) toGroupAddress() *driverModel.KnxGroupAddress {
-	mainGroup, err := strconv.Atoi(k.MainGroup)
+	mainGroup, err := strconv.ParseUint(k.MainGroup, 10, 16)
 	if err != nil {
 		return nil
 	}

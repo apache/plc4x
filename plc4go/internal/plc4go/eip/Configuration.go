@@ -36,18 +36,18 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		slot:      0,
 	}
 	if localRackString := getFromOptions(options, "backplane"); localRackString != "" {
-		atoi, err := strconv.Atoi(localRackString)
+		parsedBackplane, err := strconv.ParseInt(localRackString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing backplane")
 		}
-		configuration.backplane = int8(atoi)
+		configuration.backplane = int8(parsedBackplane)
 	}
 	if localSlotString := getFromOptions(options, "slot"); localSlotString != "" {
-		atoi, err := strconv.Atoi(localSlotString)
+		parsedSlot, err := strconv.ParseInt(localSlotString, 10, 8)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing slot")
 		}
-		configuration.slot = int8(atoi)
+		configuration.slot = int8(parsedSlot)
 	}
 	return configuration, nil
 }
