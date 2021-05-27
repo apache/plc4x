@@ -100,6 +100,8 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
     <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+    <sonar.cfamily.threads>1</sonar.cfamily.threads>
+    <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
     <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
 
