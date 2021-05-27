@@ -41,18 +41,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- *
- * @author julian
- * Created by julian on 2019-05-08
- */
-public class TriggeredScraperImplTest {
+class TriggeredScraperImplTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImplTest.class);
     private PlcDriverManager driverManager;
     private MockDevice mockDevice1;
     private MockDevice mockDevice2;
@@ -75,42 +71,37 @@ public class TriggeredScraperImplTest {
      * Test is added because we assume some strange behavior.
      */
     @Test
-    public void scrapeMultipleTargets() throws ScraperException, IOException, InterruptedException {
+    void scrapeMultipleTargets() throws ScraperException, IOException, InterruptedException {
         // Prepare the Mocking
         // Scrate Jobs 1 and 2
-        when(mockDevice1.read(eq("%DB810:DBB0:USINT"))).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(1L)));
-        when(mockDevice2.read(eq("%DB810:DBB0:USINT"))).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(2L)));
+        when(mockDevice1.read("%DB810:DBB0:USINT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(1L)));
+        when(mockDevice2.read("%DB810:DBB0:USINT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(2L)));
         // Trigger Jobs
         // Trigger var
         Random rand = new Random();
-        when(mockDevice1.read(eq("%M0.3:BOOL"))).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                boolean trigger = rand.nextBoolean();
-                System.out.println(trigger);
-                return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
-            }
+        when(mockDevice1.read(("%M0.3:BOOL"))).thenAnswer(invocationOnMock -> {
+            boolean trigger = rand.nextBoolean();
+            System.out.println(trigger);
+            return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
         });
-        when(mockDevice2.read(eq("%M0.3:BOOL"))).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                boolean trigger = rand.nextBoolean();
-                System.out.println("\t\t" + trigger);
-                return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
-            }
+        when(mockDevice2.read(("%M0.3:BOOL"))).thenAnswer(invocationOnMock -> {
+            boolean trigger = rand.nextBoolean();
+            System.out.println("\t\t" + trigger);
+            return new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(trigger));
         });
         // Read var
-        when(mockDevice1.read(eq("%DB810:DBW0:INT"))).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(3L)));
-        when(mockDevice2.read(eq("%DB810:DBW0:INT"))).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(4L)));
+        when(mockDevice1.read("%DB810:DBW0:INT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(3L)));
+        when(mockDevice2.read("%DB810:DBW0:INT")).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcLINT(4L)));
 
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("src/test/resources/mock-scraper-config.yml", ScraperConfigurationClassicImpl.class);
         TriggerCollector triggerCollector = new TriggerCollectorImpl(driverManager);
-        TriggeredScraperImpl scraper = new TriggeredScraperImpl((j, a, m) -> System.out.println(String.format("Results from %s/%s: %s", j, a, m)), driverManager, configuration.getJobs(),triggerCollector,1000);
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl((j, a, m) -> System.out.printf("Results from %s/%s: %s%n", j, a, m), driverManager, configuration.getJobs(), triggerCollector, 1000);
 
         scraper.start();
 
-        Thread.sleep(2_000);
-
-        scraper.stop();
+        await().atLeast(2, TimeUnit.SECONDS).until(() -> {
+            scraper.stop();
+            return true;
+        });
     }
 }

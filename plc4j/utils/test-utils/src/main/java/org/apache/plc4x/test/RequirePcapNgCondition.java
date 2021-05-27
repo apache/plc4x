@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 public class RequirePcapNgCondition implements ExecutionCondition {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequirePcapCondition.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequirePcapNgCondition.class);
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
@@ -42,7 +42,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
         // Windows: WinPcap version 4.1.3 (packet.dll version 4.1.0.2980), based on libpcap version 1.0 branch 1_0_rel0b (20091008)
         try {
             String libVersion = Pcaps.libVersion();
-            Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(\\.\\d+)?).*$");
+            Pattern pattern = Pattern.compile("^libpcap version (?<version>\\d+\\.\\d+(?:\\.\\d+)?)[^\\d]?.*$");
             Matcher matcher = pattern.matcher(libVersion);
             if (matcher.matches()) {
                 String versionString = matcher.group("version");
@@ -56,7 +56,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
                     return ConditionEvaluationResult.disabled("Test disabled due to too old libpcap version. Please install at least version 1.1.0 to support all features.");
                 }
             }
-        } catch(Throwable e) {
+        } catch(Exception e) {
             logger.info("Error detecting libpcap version.", e);
         }
         if(SystemUtils.IS_OS_WINDOWS) {

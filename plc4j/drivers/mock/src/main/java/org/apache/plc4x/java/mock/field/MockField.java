@@ -26,12 +26,12 @@ import java.util.regex.Pattern;
 
 public class MockField implements PlcField {
 
-    private String address;
+    private final String address;
     private MockPlcValue plcValue;
     private MockType type;
 
     private static final Pattern PATTERN =
-        Pattern.compile("%(?<name>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<type>[A-Z]*)");
+        Pattern.compile("%(?<name>[a-zA-Z_.0-9]+(?:\\[[0-9]*])?):?(?<type>[A-Z]*)");
 
     public static MockField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = PATTERN.matcher(addressString);
