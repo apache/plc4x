@@ -47,9 +47,10 @@ class CachedPlcConnectionTest {
 
         when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(invocation -> {
             final CompletableFuture<? extends PlcReadResponse> future = new CompletableFuture<>();
-            await()
-                .atLeast(2, TimeUnit.SECONDS)
-                .until(() -> future.completeExceptionally(new RuntimeException("abc")));
+            // TODO: use the await below
+            await().until(() -> true);
+            TimeUnit.SECONDS.sleep(2);
+            future.completeExceptionally(new RuntimeException("abc"));
             return future;
         });
 
