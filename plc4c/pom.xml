@@ -39,7 +39,6 @@
     <!-- Tell Sonar where to find the sources -->
     <!--sonar.sources></sonar.sources-->
     <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
-    <sonar.cfamily.build-wrapper-execution-prefix/>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
@@ -126,9 +125,6 @@
     <!-- When running on jenkins, download the sonar build-wrapper so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
-      <properties>
-        <sonar.cfamily.build-wrapper-execution-prefix>build-wrapper-linux-x86-64 --out-dir ${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-execution-prefix>
-      </properties>
       <build>
         <plugins>
           <plugin>
