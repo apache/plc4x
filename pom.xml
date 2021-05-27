@@ -99,6 +99,7 @@
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
 
     <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
 
