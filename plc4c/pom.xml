@@ -254,6 +254,7 @@
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
         <executions>
+          <!-- TODO: Commented out for now as when running in jenkins for code analysis, the second run would overwrite the results of the first -->
           <!-- Generate the configuration for the main compilation -->
           <!--execution>
             <id>cmake-generate-compile</id>
