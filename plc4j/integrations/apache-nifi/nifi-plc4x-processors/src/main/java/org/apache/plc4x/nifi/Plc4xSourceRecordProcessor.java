@@ -33,6 +33,7 @@ import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
+import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.flowfile.FlowFile;
@@ -73,7 +74,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			.build();
 
 	public Plc4xSourceRecordProcessor() {
-
 	}
 
 	@Override
@@ -89,9 +89,10 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
-	@Override 
+	@OnScheduled
+	@Override
 	public void onScheduled(final ProcessContext context) {
-        connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
+        super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
     }
 	
 	@Override
@@ -146,8 +147,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
-			getFields().forEach(field -> {
-				String address = getAddress(field);
+			addressMap.keySet().forEach(field -> {
+				String address = addressMap.get(field);
 				if (address != null) {
 					builder.addItem(field, address);
 				}
