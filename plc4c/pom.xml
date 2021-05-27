@@ -37,7 +37,10 @@
   <properties>
     <unity.version>2.5.0</unity.version>
     <!-- Tell Sonar where to find the sources -->
-    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <sonar.sources></sonar.sources>
+    <!--sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <sonar.cfamily.build-wrapper-execution-prefix/>
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output-->
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
@@ -114,6 +117,36 @@
                     <argument>+x</argument>
                     <argument>cmake</argument>
                   </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- When running on jenkins, download the sonar build-wrapper so we can do a code analysis -->
+    <profile>
+      <id>jenkins-build</id>
+      <properties>
+        <sonar.cfamily.build-wrapper-execution-prefix>build-wrapper-linux-x86-64 --out-dir ${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-execution-prefix>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <!-- Get the build-wrapper from our sonarcloud server -->
+              <execution>
+                <id>get-build-wrapper</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
+                  <unpack>true</unpack>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
                 </configuration>
               </execution>
             </executions>
