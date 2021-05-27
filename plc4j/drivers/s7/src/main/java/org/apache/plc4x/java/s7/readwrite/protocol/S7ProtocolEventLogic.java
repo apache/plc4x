@@ -44,8 +44,13 @@ import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmS;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSC;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSQ;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify8;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -154,9 +159,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 S7SysEvent sysevent = new S7SysEvent(msg);
                                 dispathqueue.add(sysevent);
                             }
-                        } else if (obj instanceof AlarmMessagePushType){
-                            AlarmMessagePushType msg = (AlarmMessagePushType) obj;
-                            S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
+                        } else {
+                            S7AlarmEvent alarmevent = new S7AlarmEvent(obj);
                             dispathqueue.add(alarmevent);
                         }
                     }                    

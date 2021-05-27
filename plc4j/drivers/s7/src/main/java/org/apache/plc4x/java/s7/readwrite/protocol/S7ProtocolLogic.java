@@ -599,7 +599,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-        System.out.println(msg);
+        //System.out.println(msg);
         S7Message s7msg = msg.getPayload().getPayload();
         S7Parameter parameter = s7msg.getParameter();
         if (parameter instanceof S7ParameterModeTransition){
@@ -627,18 +627,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                (myparameter.getCpuSubfunction() == 0x12) ||
                                (myparameter.getCpuSubfunction() == 0x13) ||
                                (myparameter.getCpuSubfunction() == 0x16))) {
-                        System.out.println("Procesando alarmas!.");
                         S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
                         S7PayloadUserDataItem[] items = payload.getItems();
                         for (Object item:items){
-                            eventqueue.add(item);
-                            /*
-                            if (item instanceof S7PayloadAlarmS){
-                                AlarmMessagePushType alarm = ((S7PayloadAlarmS) item).getAlarmMessage();
-                                eventqueue.add(alarm);
-                            }
-                            */
-                            
+                            eventqueue.add(item); 
                         }                        
                     } else if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x13)) {
                         

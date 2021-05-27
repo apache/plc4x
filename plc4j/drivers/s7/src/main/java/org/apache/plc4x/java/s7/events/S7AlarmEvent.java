@@ -33,6 +33,12 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectPushType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
 import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmS;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSC;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSQ;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify8;
 
 /**
  *
@@ -137,15 +143,39 @@ public class S7AlarmEvent implements S7Event {
     private final Instant timeStamp;
     private Map<String, Object> map = new HashMap();   
 
-    public S7AlarmEvent(AlarmMessagePushType msg) {
+    public S7AlarmEvent(Object obj) {
+             
+        AlarmMessagePushType msg = null;
+        
+        if (obj instanceof S7PayloadAlarm8)
+            msg = ((S7PayloadAlarm8) obj).getAlarmMessage();
+        if (obj instanceof S7PayloadNotify)
+            msg = ((S7PayloadNotify) obj).getAlarmMessage(); 
+        if (obj instanceof S7PayloadAlarmSQ)
+            msg = ((S7PayloadAlarmSQ) obj).getAlarmMessage(); 
+        if (obj instanceof S7PayloadAlarmS)
+            msg = ((S7PayloadAlarmS) obj).getAlarmMessage();                             
+        if (obj instanceof S7PayloadNotify8)
+            msg = ((S7PayloadNotify8) obj).getAlarmMessage();        
+        
         
         this.timeStamp = null;
+        if (msg == null) return;
         
         AlarmMessageObjectPushType[] items = msg.getMessageObjects();
         for (AlarmMessageObjectPushType item:items){
             map.put(Fields.EVENT_ID.name(), item.getEventId());
 
-            
+            if (obj instanceof S7PayloadAlarm8)
+                map.put(Fields.TYPE.name(), "ALARM8");
+            if (obj instanceof S7PayloadNotify)
+                map.put(Fields.TYPE.name(), "NOTIFY");
+            if (obj instanceof S7PayloadAlarmSQ)
+                map.put(Fields.TYPE.name(), "ALARMSQ");
+            if (obj instanceof S7PayloadAlarmS)
+                map.put(Fields.TYPE.name(), "ALARMS");                             
+            if (obj instanceof S7PayloadNotify8)
+                map.put(Fields.TYPE.name(), "NOTIFY8");                
             
             
             map.put(Fields.SIG_1.name(), item.getEventState().getSIG_1());
