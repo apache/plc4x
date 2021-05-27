@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -99,9 +100,10 @@ class TriggeredScraperImplTest {
 
         scraper.start();
 
-        await().atLeast(2, TimeUnit.SECONDS).until(() -> {
-            scraper.stop();
-            return true;
-        });
+        // TODO: use the await below
+        await().until(() -> true);
+        TimeUnit.SECONDS.sleep(2);
+
+        scraper.stop();
     }
 }
