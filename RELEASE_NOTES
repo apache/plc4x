@@ -11,6 +11,9 @@ Incompatible changes
 Bug Fixes
 ---------
 
+PLC4X-298   [S7] When writing REAL values the Write
+            operation fails with an internal error
+
 ==============================================================
 Apache PLC4X 0.8.0
 ==============================================================

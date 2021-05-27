@@ -20,7 +20,6 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -29,15 +28,11 @@ import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReferen
 import org.apache.plc4x.plugins.codegenerator.types.references.StringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class BaseFreemarkerLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
 
     private final TypeDefinition thisType;
     private final String protocolName;
@@ -127,7 +122,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public abstract String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
-        return getReadBufferReadMethodCall(simpleTypeReference,null, null);
+        return getReadBufferReadMethodCall(simpleTypeReference, null, null);
     }
 
     public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
@@ -150,6 +145,17 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     /**
      * @param typeReference type reference
+     * @return true if the given type reference is a byte based type reference.
+     */
+    public boolean isByteBased(TypeReference typeReference) {
+        if (!isSimpleTypeReference(typeReference)) {
+            return false;
+        }
+        return ((SimpleTypeReference) typeReference).getBaseType() == SimpleTypeReference.SimpleBaseType.BYTE;
+    }
+
+    /**
+     * @param typeReference type reference
      * @return true if the given type reference is a complex type reference.
      */
     public boolean isComplexTypeReference(TypeReference typeReference) {
@@ -157,6 +163,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumTypeReference(TypeReference typeReference) {
+        if (!isComplexTypeReference(typeReference)) {
+            return false;
+        }
         return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
     }
 
@@ -258,6 +267,14 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (implicitFieldOptional.isPresent()) {
             final ImplicitField implicitField = implicitFieldOptional.get();
             return Optional.of(implicitField.getType());
+        }
+        // Check if the expression is a VirtualField
+        final Optional<VirtualField> virtualFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof VirtualField).map(field -> (VirtualField) field).filter(
+            virtualField -> virtualField.getName().equals(propertyName)).findFirst();
+        if (virtualFieldOptional.isPresent()) {
+            final VirtualField virtualField = virtualFieldOptional.get();
+            return Optional.of(virtualField.getType());
         }
         // Check if the expression root is referencing an argument
         if (baseType.getParserArguments() != null) {
@@ -515,7 +532,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        if (!(typeReference instanceof ComplexTypeReference)) {
+        if (!isComplexTypeReference(typeReference)) {
             throw new RuntimeException("Type reference must be a complex type reference");
         }
         return getTypeDefinitions().get(((ComplexTypeReference) typeReference).getName());
@@ -895,7 +912,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public Collection<EnumValue> getEnumValuesForConstantValue(EnumValue[] enumValues, String constantName, String constantValue) {
         List<EnumValue> filteredEnumValues = new ArrayList<>();
         for (EnumValue enumValue : enumValues) {
-            if(enumValue.getConstant(constantName).equals(constantValue)) {
+            if (enumValue.getConstant(constantName).equals(constantValue)) {
                 filteredEnumValues.add(enumValue);
             }
         }
@@ -918,11 +935,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      *
      * @param vl The variable to search for.
      * @return boolean returns true if the variable's name is an implicit field
-    */
+     */
     protected boolean isVariableLiteralImplicitField(VariableLiteral vl) {
         List<Field> fields = null;
         if (thisType instanceof ComplexTypeDefinition) {
-            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            ComplexTypeDefinition complexType = (ComplexTypeDefinition) getThisTypeDefinition();
             fields = complexType.getFields();
         }
         if (fields == null) {
@@ -948,7 +965,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     protected ImplicitField getReferencedImplicitField(VariableLiteral vl) {
         List<Field> fields = null;
         if (thisType instanceof ComplexTypeDefinition) {
-            ComplexTypeDefinition complexType =  (ComplexTypeDefinition) getThisTypeDefinition();
+            ComplexTypeDefinition complexType = (ComplexTypeDefinition) getThisTypeDefinition();
             fields = complexType.getFields();
         }
         if (fields == null) {

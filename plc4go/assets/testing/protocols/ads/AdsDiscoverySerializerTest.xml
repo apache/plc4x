@@ -22,23 +22,39 @@
 
   <name>Beckhoff ADS/AMS Discovery</name>
 
+  <protocolName>ads.discovery</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <testcase>
     <name>ADS Discovery Request from 10.10.10.10.1.1</name>
     <raw>0366147100000000010000000a0a0a0a0101102700000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
-        <operation>DISCOVERY</operation>
-        <direction>REQUEST</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>10</octet1>
-          <octet2>10</octet2>
-          <octet3>10</octet3>
-          <octet4>10</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-      </DiscoveryRequest>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
+        </direction>
+        <DiscoveryRequest>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">10</octet1>
+              <octet2 dataType="uint" bitLength="8">10</octet2>
+              <octet3 dataType="uint" bitLength="8">10</octet3>
+              <octet4 dataType="uint" bitLength="8">10</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+        </DiscoveryRequest>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -51,21 +67,56 @@
     -->
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <DiscoveryResponse className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryResponse">
-        <operation>DISCOVERY</operation>
-        <direction>RESPONSE</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>2</octet3>
-          <octet4>221</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-        <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>4445534B544F502D54304E36554E42</text>
-        </name>
-      </DiscoveryResponse>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
+        </direction>
+        <DiscoveryResponse>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">2</octet3>
+              <octet4 dataType="uint" bitLength="8">221</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">1024</reserved>
+          <reserved dataType="uint" bitLength="24">5</reserved>
+          <name>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">16</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">68</value>
+                <value dataType="int" bitLength="8">69</value>
+                <value dataType="int" bitLength="8">83</value>
+                <value dataType="int" bitLength="8">75</value>
+                <value dataType="int" bitLength="8">84</value>
+                <value dataType="int" bitLength="8">79</value>
+                <value dataType="int" bitLength="8">80</value>
+                <value dataType="int" bitLength="8">45</value>
+                <value dataType="int" bitLength="8">84</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">78</value>
+                <value dataType="int" bitLength="8">54</value>
+                <value dataType="int" bitLength="8">85</value>
+                <value dataType="int" bitLength="8">78</value>
+                <value dataType="int" bitLength="8">66</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </name>
+        </DiscoveryResponse>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -74,38 +125,122 @@
     <raw>0366147100000000060000000a0a0a0a01011027050000000c000c0031302e31302e31302e313000070006000a0a0a0a01010d000900757365726e616d65000200090070617373776f72640005000c0031302e31302e31302e313000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <RouteRequest className="org.apache.plc4x.java.ads.discovery.readwrite.RouteRequest">
-        <operation>ROUTE</operation>
-        <direction>REQUEST</direction>
-        <sender className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>10</octet1>
-          <octet2>10</octet2>
-          <octet3>10</octet3>
-          <octet4>10</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </sender>
-        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>31302E31302E31302E3130</text>
-        </routeName>
-        <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>10</octet1>
-          <octet2>10</octet2>
-          <octet3>10</octet3>
-          <octet4>10</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </target>
-        <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>757365726E616D65</text>
-        </username>
-        <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>70617373776F7264</text>
-        </password>
-        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>31302E31302E31302E3130</text>
-        </address>
-      </RouteRequest>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
+        </direction>
+        <RouteRequest>
+          <sender>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">10</octet1>
+              <octet2 dataType="uint" bitLength="8">10</octet2>
+              <octet3 dataType="uint" bitLength="8">10</octet3>
+              <octet4 dataType="uint" bitLength="8">10</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </sender>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">1280</reserved>
+          <reserved dataType="uint" bitLength="24">12</reserved>
+          <routeName>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">12</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </routeName>
+          <reserved dataType="uint" bitLength="16">1792</reserved>
+          <amsSize dataType="uint" bitLength="8">6</amsSize>
+          <targetPrefix dataType="uint" bitLength="8">0</targetPrefix>
+          <target>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">10</octet1>
+              <octet2 dataType="uint" bitLength="8">10</octet2>
+              <octet3 dataType="uint" bitLength="8">10</octet3>
+              <octet4 dataType="uint" bitLength="8">10</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </target>
+          <usernamePrefix dataType="uint" bitLength="8">13</usernamePrefix>
+          <username>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">9</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">117</value>
+                <value dataType="int" bitLength="8">115</value>
+                <value dataType="int" bitLength="8">101</value>
+                <value dataType="int" bitLength="8">114</value>
+                <value dataType="int" bitLength="8">110</value>
+                <value dataType="int" bitLength="8">97</value>
+                <value dataType="int" bitLength="8">109</value>
+                <value dataType="int" bitLength="8">101</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </username>
+          <passwordPrefix dataType="uint" bitLength="8">2</passwordPrefix>
+          <password>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">9</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">112</value>
+                <value dataType="int" bitLength="8">97</value>
+                <value dataType="int" bitLength="8">115</value>
+                <value dataType="int" bitLength="8">115</value>
+                <value dataType="int" bitLength="8">119</value>
+                <value dataType="int" bitLength="8">111</value>
+                <value dataType="int" bitLength="8">114</value>
+                <value dataType="int" bitLength="8">100</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </password>
+          <routePrefix dataType="uint" bitLength="8">5</routePrefix>
+          <address>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">12</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+                <value dataType="int" bitLength="8">46</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">48</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </address>
+        </RouteRequest>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -114,19 +249,36 @@
     <raw>036614710000000006000080c0a802dd01011027010000000100040000000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
-        <operation>ROUTE</operation>
-        <direction>RESPONSE</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>2</octet3>
-          <octet4>221</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-        <status>SUCCESS</status>
-      </RouteResponse>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
+        </direction>
+        <RouteResponse>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">2</octet3>
+              <octet4 dataType="uint" bitLength="8">221</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">256</reserved>
+          <reserved dataType="uint" bitLength="32">256</reserved>
+          <status>
+            <RouteStatus dataType="uint" bitLength="24" stringRepresentation="SUCCESS">262144</RouteStatus>
+          </status>
+          <reserved dataType="uint" bitLength="24">0</reserved>
+        </RouteResponse>
+      </AdsDiscovery>
 
     </xml>
   </testcase>
@@ -136,19 +288,36 @@
     <raw>036614710000000006000080c0a802dd01011027010000000100000407000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
-        <operation>ROUTE</operation>
-        <direction>RESPONSE</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>2</octet3>
-          <octet4>221</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-        <status>FAILURE</status>
-      </RouteResponse>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
+        </direction>
+        <RouteResponse>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">2</octet3>
+              <octet4 dataType="uint" bitLength="8">221</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">256</reserved>
+          <reserved dataType="uint" bitLength="32">256</reserved>
+          <status>
+            <RouteStatus dataType="uint" bitLength="24" stringRepresentation="FAILURE">1031</RouteStatus>
+          </status>
+          <reserved dataType="uint" bitLength="24">0</reserved>
+        </RouteResponse>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -157,18 +326,31 @@
     <raw>036614710000000001000000c0a802e80101102700000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
-        <operation>DISCOVERY</operation>
-        <direction>REQUEST</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>2</octet3>
-          <octet4>232</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-      </DiscoveryRequest>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
+        </direction>
+        <DiscoveryRequest>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">2</octet3>
+              <octet4 dataType="uint" bitLength="8">232</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+        </DiscoveryRequest>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -177,18 +359,31 @@
     <raw>036614710000000001000000c0a800890101102700000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <DiscoveryRequest className="org.apache.plc4x.java.ads.discovery.readwrite.DiscoveryRequest">
-        <operation>DISCOVERY</operation>
-        <direction>REQUEST</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>0</octet3>
-          <octet4>137</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-      </DiscoveryRequest>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="DISCOVERY">1</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
+        </direction>
+        <DiscoveryRequest>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">0</octet3>
+              <octet4 dataType="uint" bitLength="8">137</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="32">0</reserved>
+        </DiscoveryRequest>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -210,7 +405,7 @@
           <octet6>1</octet6>
         </amsNetId>
         <name className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>UExDX0hPTUU=</text>
+          <text isList="true">UExDX0hPTUU=</text>
         </name>
       </DiscoveryResponse>
     </xml>
@@ -222,38 +417,127 @@
     <raw>036614710000000006000000c0a8008901011027050000000c0010004445534b544f502d33504a314135440007000600c0a8008901010d000e0041646d696e6973747261746f72000200010000050010004445534b544f502d33504a3141354400</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <RouteRequest className="org.apache.plc4x.java.ads.discovery.readwrite.RouteRequest">
-        <operation>ROUTE</operation>
-        <direction>REQUEST</direction>
-        <sender className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>0</octet3>
-          <octet4>137</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </sender>
-        <routeName className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>4445534B544F502D33504A31413544</text>
-        </routeName>
-        <target className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>192</octet1>
-          <octet2>168</octet2>
-          <octet3>0</octet3>
-          <octet4>137</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </target>
-        <username className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>41646D696E6973747261746F72</text>
-        </username>
-        <password className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text></text>
-        </password>
-        <address className="org.apache.plc4x.java.ads.discovery.readwrite.AmsMagicString">
-          <text>4445534B544F502D33504A31413544</text>
-        </address>
-      </RouteRequest>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="REQUEST">0</Direction>
+        </direction>
+        <RouteRequest>
+          <sender>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">0</octet3>
+              <octet4 dataType="uint" bitLength="8">137</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </sender>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">1280</reserved>
+          <reserved dataType="uint" bitLength="24">12</reserved>
+          <routeName>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">16</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">68</value>
+                <value dataType="int" bitLength="8">69</value>
+                <value dataType="int" bitLength="8">83</value>
+                <value dataType="int" bitLength="8">75</value>
+                <value dataType="int" bitLength="8">84</value>
+                <value dataType="int" bitLength="8">79</value>
+                <value dataType="int" bitLength="8">80</value>
+                <value dataType="int" bitLength="8">45</value>
+                <value dataType="int" bitLength="8">51</value>
+                <value dataType="int" bitLength="8">80</value>
+                <value dataType="int" bitLength="8">74</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">65</value>
+                <value dataType="int" bitLength="8">53</value>
+                <value dataType="int" bitLength="8">68</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </routeName>
+          <reserved dataType="uint" bitLength="16">1792</reserved>
+          <amsSize dataType="uint" bitLength="8">6</amsSize>
+          <targetPrefix dataType="uint" bitLength="8">0</targetPrefix>
+          <target>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">192</octet1>
+              <octet2 dataType="uint" bitLength="8">168</octet2>
+              <octet3 dataType="uint" bitLength="8">0</octet3>
+              <octet4 dataType="uint" bitLength="8">137</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </target>
+          <usernamePrefix dataType="uint" bitLength="8">13</usernamePrefix>
+          <username>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">14</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">65</value>
+                <value dataType="int" bitLength="8">100</value>
+                <value dataType="int" bitLength="8">109</value>
+                <value dataType="int" bitLength="8">105</value>
+                <value dataType="int" bitLength="8">110</value>
+                <value dataType="int" bitLength="8">105</value>
+                <value dataType="int" bitLength="8">115</value>
+                <value dataType="int" bitLength="8">116</value>
+                <value dataType="int" bitLength="8">114</value>
+                <value dataType="int" bitLength="8">97</value>
+                <value dataType="int" bitLength="8">116</value>
+                <value dataType="int" bitLength="8">111</value>
+                <value dataType="int" bitLength="8">114</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </username>
+          <passwordPrefix dataType="uint" bitLength="8">2</passwordPrefix>
+          <password>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">1</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </password>
+          <routePrefix dataType="uint" bitLength="8">5</routePrefix>
+          <address>
+            <AmsMagicString>
+              <len dataType="uint" bitLength="16">16</len>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+              <text isList="true">
+                <value dataType="int" bitLength="8">68</value>
+                <value dataType="int" bitLength="8">69</value>
+                <value dataType="int" bitLength="8">83</value>
+                <value dataType="int" bitLength="8">75</value>
+                <value dataType="int" bitLength="8">84</value>
+                <value dataType="int" bitLength="8">79</value>
+                <value dataType="int" bitLength="8">80</value>
+                <value dataType="int" bitLength="8">45</value>
+                <value dataType="int" bitLength="8">51</value>
+                <value dataType="int" bitLength="8">80</value>
+                <value dataType="int" bitLength="8">74</value>
+                <value dataType="int" bitLength="8">49</value>
+                <value dataType="int" bitLength="8">65</value>
+                <value dataType="int" bitLength="8">53</value>
+                <value dataType="int" bitLength="8">68</value>
+              </text>
+              <reserved dataType="uint" bitLength="8">0</reserved>
+            </AmsMagicString>
+          </address>
+        </RouteRequest>
+      </AdsDiscovery>
     </xml>
   </testcase>
 
@@ -262,19 +546,36 @@
     <raw>036614710000000006000080051c5b8c01011027010000000100040000000000</raw>
     <root-type>AdsDiscovery</root-type>
     <xml>
-      <RouteResponse className="org.apache.plc4x.java.ads.discovery.readwrite.RouteResponse">
-        <operation>ROUTE</operation>
-        <direction>RESPONSE</direction>
-        <amsNetId className="org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId">
-          <octet1>5</octet1>
-          <octet2>28</octet2>
-          <octet3>91</octet3>
-          <octet4>140</octet4>
-          <octet5>1</octet5>
-          <octet6>1</octet6>
-        </amsNetId>
-        <status>SUCCESS</status>
-      </RouteResponse>
+      <AdsDiscovery>
+        <header dataType="uint" bitLength="32">57021553</header>
+        <reserved dataType="uint" bitLength="32">0</reserved>
+        <operation>
+          <Operation dataType="uint" bitLength="8" stringRepresentation="ROUTE">6</Operation>
+        </operation>
+        <reserved dataType="uint" bitLength="16">0</reserved>
+        <direction>
+          <Direction dataType="uint" bitLength="8" stringRepresentation="RESPONSE">128</Direction>
+        </direction>
+        <RouteResponse>
+          <amsNetId>
+            <AmsNetId>
+              <octet1 dataType="uint" bitLength="8">5</octet1>
+              <octet2 dataType="uint" bitLength="8">28</octet2>
+              <octet3 dataType="uint" bitLength="8">91</octet3>
+              <octet4 dataType="uint" bitLength="8">140</octet4>
+              <octet5 dataType="uint" bitLength="8">1</octet5>
+              <octet6 dataType="uint" bitLength="8">1</octet6>
+            </AmsNetId>
+          </amsNetId>
+          <reserved dataType="uint" bitLength="16">4135</reserved>
+          <reserved dataType="uint" bitLength="16">256</reserved>
+          <reserved dataType="uint" bitLength="32">256</reserved>
+          <status>
+            <RouteStatus dataType="uint" bitLength="24" stringRepresentation="SUCCESS">262144</RouteStatus>
+          </status>
+          <reserved dataType="uint" bitLength="24">0</reserved>
+        </RouteResponse>
+      </AdsDiscovery>
     </xml>
   </testcase>
 

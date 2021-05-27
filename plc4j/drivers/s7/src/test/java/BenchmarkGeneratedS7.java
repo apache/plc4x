@@ -21,7 +21,9 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
 import java.util.Arrays;
 
@@ -36,7 +38,7 @@ public class BenchmarkGeneratedS7 {
         // Benchmark the parsing code
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
-            ReadBuffer rBuf = new ReadBuffer(rData);
+            ReadBuffer rBuf = new ReadBufferByteBased(rData);
             packet = TPKTPacketIO.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
@@ -48,7 +50,7 @@ public class BenchmarkGeneratedS7 {
         int numRunsSerialize = 2000000;
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
-            WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
+            WriteBufferByteBased wBuf = new WriteBufferByteBased(packet.getLengthInBytes());
             TPKTPacketIO.staticSerialize(wBuf, packet);
             oData = wBuf.getData();
         }

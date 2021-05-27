@@ -16,12 +16,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package main
 
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"strings"
@@ -29,6 +31,9 @@ import (
 )
 
 func main() {
+	// Set logging to INFO
+	logging.InfoLevel()
+
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 
@@ -47,68 +52,66 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a subscription-request
-	srb := connection.SubscriptionRequestBuilder()
-	// Intentionally catching all without datatype and the temperature values of the first floor with type
-	srb.AddChangeOfStateQuery("all", "*/*/*")
-	srb.AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
-	srb.AddItemHandler(func(event model.PlcSubscriptionEvent) {
-		// Iterate over all fields that were triggered in the current event.
-		for _, fieldName := range event.GetFieldNames() {
-			if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
-				address := event.GetAddress(fieldName)
-				value := event.GetValue(fieldName)
-				// If the plc-value was a raw-plcValue, we will try lazily decode the value
-				// In my installation all group addresses ending with "/10" are temperature values
-				// and ending on "/0" are light switch actions.
-				// So if I find a group address ending on that, decode it with a given type name,
-				// If not, simply output it as array of USINT values.
-				switch value.(type) {
-				case values.RawPlcValue:
-					rawValue := value.(values.RawPlcValue)
-					datatypeName := "USINT"
-					if strings.HasSuffix(address, "/10") {
-						datatypeName = "DPT_Value_Temp"
-					} else if strings.HasSuffix(address, "/0") {
-						datatypeName = "BOOL"
+	if subscriptionRequest, err := connection.SubscriptionRequestBuilder().
+		// Intentionally catching all without datatype and the temperature values of the first floor with type
+		AddChangeOfStateQuery("all", "*/*/*").
+		AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddItemHandler(func(event model.PlcSubscriptionEvent) {
+			// Iterate over all fields that were triggered in the current event.
+			for _, fieldName := range event.GetFieldNames() {
+				if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
+					address := event.GetAddress(fieldName)
+					value := event.GetValue(fieldName)
+					// If the plc-value was a raw-plcValue, we will try lazily decode the value
+					// In my installation all group addresses ending with "/10" are temperature values
+					// and ending on "/0" are light switch actions.
+					// So if I find a group address ending on that, decode it with a given type name,
+					// If not, simply output it as array of USINT values.
+					switch value.(type) {
+					case values.RawPlcValue:
+						rawValue := value.(values.RawPlcValue)
+						datatypeName := "USINT"
+						if strings.HasSuffix(address, "/10") {
+							datatypeName = "DPT_Value_Temp"
+						} else if strings.HasSuffix(address, "/0") {
+							datatypeName = "BOOL"
+						}
+						fmt.Printf("Got raw-value event for address %s: ", address)
+						if !rawValue.RawHasMore() {
+							fmt.Printf("nothing")
+						}
+						for rawValue.RawHasMore() {
+							value = rawValue.RawDecodeValue(datatypeName)
+							fmt.Printf(" '%s'", value.GetString())
+						}
+						fmt.Printf("\n")
+					default:
+						fmt.Printf("Got event for address %s: %s\n", address, value.GetString())
 					}
-					fmt.Printf("Got raw-value event for address %s: ", address)
-					if !rawValue.RawHasMore() {
-						fmt.Printf("nothing")
-					}
-					for rawValue.RawHasMore() {
-						value = rawValue.RawDecodeValue(datatypeName)
-						fmt.Printf(" '%s'", value.GetString())
-					}
-					fmt.Printf("\n")
-				default:
-					fmt.Printf("Got event for address %s: %s\n", address, value.GetString())
 				}
 			}
+		}).Build(); err == nil {
+		// Execute a subscription-request
+		rrc := subscriptionRequest.Execute()
+
+		// Wait for the response to finish
+		rrr := <-rrc
+		if rrr.Err != nil {
+			fmt.Printf("error executing subscription-request: %s", rrr.Err.Error())
+			return
 		}
-	})
-	subscriptionRequest, err := srb.Build()
-	if err != nil {
+
+		// Do something with the response
+		for _, fieldName := range rrr.Response.GetFieldNames() {
+			if rrr.Response.GetResponseCode(fieldName) != model.PlcResponseCode_OK {
+				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
+				continue
+			}
+		}
+
+		time.Sleep(time.Minute * 5)
+	} else {
 		fmt.Printf("error preparing subscription-request: %s", connectionResult.Err.Error())
 		return
 	}
-
-	// Execute a subscription-request
-	rrc := subscriptionRequest.Execute()
-
-	// Wait for the response to finish
-	rrr := <-rrc
-	if rrr.Err != nil {
-		fmt.Printf("error executing subscription-request: %s", rrr.Err.Error())
-		return
-	}
-
-	// Do something with the response
-	for _, fieldName := range rrr.Response.GetFieldNames() {
-		if rrr.Response.GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-			fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.Response.GetResponseCode(fieldName).GetName())
-			continue
-		}
-	}
-
-	time.Sleep(time.Minute * 5)
 }

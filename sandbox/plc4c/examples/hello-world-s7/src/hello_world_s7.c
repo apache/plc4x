@@ -22,7 +22,10 @@
 #include <stdio.h>
 #include <string.h>
 
+
 #include "../../../spi/include/plc4c/spi/types_private.h"
+
+#define DEFAULT_CONNECTION_TEST_STRING "s7:tcp://192.168.23.30:102"
 
 int numOpenConnections = 0;
 
@@ -58,12 +61,19 @@ typedef enum plc4c_connection_state_t plc4c_connection_state;
 //#pragma clang diagnostic push
 //#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
 
-int main() {
+int main(int argc, char** argv) {
+  
+  char* connection_test_string;
   bool loop = true;
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
   plc4c_read_request *read_request = NULL;
   plc4c_read_request_execution *read_request_execution = NULL;
+
+  if (argc == 1)
+    connection_test_string = DEFAULT_CONNECTION_TEST_STRING;
+  else
+    connection_test_string = argv[1];
 
   // Create a new uninitialized plc4c_system
   printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
@@ -74,7 +84,7 @@ int main() {
   }
   printf("SUCCESS\n");
 
-  // Manually register the "simulated" driver with the system.
+  // Manually register the "s7" driver with the system.
   printf("Registering driver for the 's7' protocol ... ");
   plc4c_driver *s7_driver = plc4c_driver_s7_create();
   result = plc4c_system_add_driver(system, s7_driver);
@@ -84,6 +94,7 @@ int main() {
   }
   printf("SUCCESS\n");
 
+  printf("Registering driver for 'tcp' transport ... ");
   plc4c_transport *tcp_transport = plc4c_transport_tcp_create();
   result = plc4c_system_add_transport(system, tcp_transport);
   if (result != OK) {
@@ -109,8 +120,9 @@ int main() {
 
   // Establish connections to remote devices
   // you may or may not care about the connection handle
-  printf("Connecting to 's7:tcp://192.168.23.30' ... ");
-  result = plc4c_system_connect(system, "s7:tcp://192.168.23.30", &connection);
+
+  printf("Connecting to '%s' ... ", connection_test_string);
+  result = plc4c_system_connect(system, connection_test_string, &connection);
   if (result != OK) {
     printf("FAILED\n");
     return -1;

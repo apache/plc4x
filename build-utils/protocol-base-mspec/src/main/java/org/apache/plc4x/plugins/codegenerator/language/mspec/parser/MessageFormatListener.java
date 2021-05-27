@@ -460,6 +460,8 @@ public class MessageFormatListener extends MSpecBaseListener {
             return new DefaultTemporalTypeReference(simpleBaseType);
         } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
             return new DefaultBooleanTypeReference();
+        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BYTE) {
+            return new DefaultByteTypeReference();
         }
         // In all other cases (bit) it's just assume it's length it 1.
         else {

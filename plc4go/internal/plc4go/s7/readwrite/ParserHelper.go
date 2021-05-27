@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package readwrite
 
 import (
@@ -29,7 +30,7 @@ import (
 type S7ParserHelper struct {
 }
 
-func (m S7ParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
+func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "SzlId":
 		return model.SzlIdParse(io)

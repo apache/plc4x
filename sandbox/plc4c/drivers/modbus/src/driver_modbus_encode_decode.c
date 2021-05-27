@@ -119,12 +119,14 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
     return INVALID_ADDRESS;
   }
   // Parse the current segment as number
-  char prev_value = *cur_pos;
-  *cur_pos = '\0';
-  modbus_item->address = (uint16_t)atol(last_pos);
+  int len = cur_pos - last_pos;
+  char* address_str = malloc(sizeof(char) * (len + 1));
+  strncpy(address_str, last_pos, len);
+  *(address_str + len) = '\0';
+  modbus_item->address = (uint16_t)atol(address_str);
 
   // If a datatype is provided, parse that now
-  if (prev_value == ':') {
+  if (*cur_pos == ':') {
     cur_pos++;
 
     // Inspect the substring, if this matches and of the supported datatypes
@@ -132,13 +134,15 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
     while ((*cur_pos != '\0') && (*cur_pos != '[')) {
       cur_pos++;
     }
-    prev_value = *cur_pos;
-    *cur_pos = '\0';
+    len = cur_pos - last_pos;
+    char* datatype_str = malloc(sizeof(char) * (len + 1));
+    strncpy(datatype_str, last_pos, len);
+    *(datatype_str + len) = '\0';
     modbus_item->datatype =
-        plc4c_modbus_read_write_modbus_data_type_value_of(last_pos);
+        plc4c_modbus_read_write_modbus_data_type_value_of(datatype_str);
 
     // If a number of elements is provided, parse that now.
-    if (prev_value == '[') {
+    if (*cur_pos == '[') {
       cur_pos++;
       last_pos = cur_pos;
       while (isdigit(*cur_pos)) {

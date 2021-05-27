@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package logging
 
 import (
@@ -28,27 +29,32 @@ var oldLogger zerolog.Logger
 // init is used for _ imports for easy log config
 func init() {
 	oldLogger = log.Logger
-	log.Logger.Level(zerolog.ErrorLevel)
+	log.Logger = log.Logger.Level(zerolog.ErrorLevel)
 }
 
 // ErrorLevel configures zerolog to WarnLevel
 func ErrorLevel() {
-	log.Logger.Level(zerolog.ErrorLevel)
+	log.Logger = log.Logger.Level(zerolog.ErrorLevel)
 }
 
 // WarnLevel configures zerolog to WarnLevel
 func WarnLevel() {
-	log.Logger.Level(zerolog.WarnLevel)
+	log.Logger = log.Logger.Level(zerolog.WarnLevel)
 }
 
 // InfoLevel configures zerolog to InfoLevel
 func InfoLevel() {
-	log.Logger.Level(zerolog.InfoLevel)
+	log.Logger = log.Logger.Level(zerolog.InfoLevel)
 }
 
-// DebugLevel configures zerolog to InfoLevel
+// DebugLevel configures zerolog to DebugLevel
 func DebugLevel() {
-	log.Logger.Level(zerolog.DebugLevel)
+	log.Logger = log.Logger.Level(zerolog.DebugLevel)
+}
+
+// TraceLevel configures zerolog to TraceLevel
+func TraceLevel() {
+	log.Logger = log.Logger.Level(zerolog.TraceLevel)
 }
 
 // ResetLogging can be used to reset to the old log settings

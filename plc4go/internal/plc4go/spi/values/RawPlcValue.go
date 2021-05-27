@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package values
 
 import (
@@ -29,12 +30,12 @@ type PlcValueDecoder interface {
 }
 
 type RawPlcValue struct {
-	readBuffer *utils.ReadBuffer
+	readBuffer utils.ReadBuffer
 	decoder    PlcValueDecoder
 	PlcValueAdapter
 }
 
-func NewRawPlcValue(readBuffer *utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
+func NewRawPlcValue(readBuffer utils.ReadBuffer, decoder PlcValueDecoder) RawPlcValue {
 	return RawPlcValue{
 		readBuffer: readBuffer,
 		decoder:    decoder,
@@ -42,7 +43,7 @@ func NewRawPlcValue(readBuffer *utils.ReadBuffer, decoder PlcValueDecoder) RawPl
 }
 
 func (m RawPlcValue) GetRaw() []byte {
-	return m.readBuffer.GetBytes()
+	return m.readBuffer.(utils.ReadBufferByteBased).GetBytes()
 }
 
 func (m RawPlcValue) IsList() bool {
@@ -50,16 +51,16 @@ func (m RawPlcValue) IsList() bool {
 }
 
 func (m RawPlcValue) GetLength() uint32 {
-	return uint32(m.readBuffer.GetTotalBytes())
+	return uint32(m.readBuffer.(utils.ReadBufferByteBased).GetTotalBytes())
 }
 
 func (m RawPlcValue) GetIndex(i uint32) api.PlcValue {
-	return NewPlcUSINT(m.readBuffer.GetBytes()[i])
+	return NewPlcUSINT(m.readBuffer.(utils.ReadBufferByteBased).GetBytes()[i])
 }
 
 func (m RawPlcValue) GetList() []api.PlcValue {
 	var plcValues []api.PlcValue
-	for _, value := range m.readBuffer.GetBytes() {
+	for _, value := range m.readBuffer.(utils.ReadBufferByteBased).GetBytes() {
 		plcValues = append(plcValues, NewPlcUSINT(value))
 	}
 	return plcValues
@@ -74,7 +75,7 @@ func (m RawPlcValue) RawHasMore() bool {
 }
 
 func (m RawPlcValue) RawReset() {
-	m.readBuffer.Reset()
+	m.readBuffer.(utils.ReadBufferByteBased).Reset()
 }
 
 func (m RawPlcValue) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

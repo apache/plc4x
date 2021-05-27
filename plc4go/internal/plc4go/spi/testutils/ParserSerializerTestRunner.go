@@ -16,13 +16,21 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package testutils
 
 import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	abethModel "github.com/apache/plc4x/plc4go/internal/plc4go/abeth/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	df1Model "github.com/apache/plc4x/plc4go/internal/plc4go/df1/readwrite"
+	eipModel "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite"
+	firmataModel "github.com/apache/plc4x/plc4go/internal/plc4go/firmata/readwrite"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
@@ -64,15 +72,23 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 	if node.Name != "testsuite" {
 		t.Error("Invalid document structure")
 	}
-	var testsuiteName string
+	littleEndian := node.GetAttributeValue("bigEndian") != "true"
+	var (
+		testsuiteName string
+		protocolName  string
+		outputFlavor  string
+	)
 	for _, childPtr := range node.Children {
-		curFailed := false
 		child := *childPtr
 		if child.Name == "name" {
 			testsuiteName = child.Text
+		} else if child.Name == "protocolName" {
+			protocolName = child.Text
+		} else if child.Name == "outputFlavor" {
+			outputFlavor = child.Text
 		} else if child.Name != "testcase" {
 			t.Error("Invalid document structure")
-			curFailed = true
+			return
 		} else {
 			testCaseName := child.FindOneByName("name").Text
 			t.Run(testCaseName, func(t *testing.T) {
@@ -99,73 +115,135 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 				rawInput, err := hex.DecodeString(rawInputText)
 				if err != nil {
 					t.Errorf("Error decoding test input")
-					t.Fail()
-					curFailed = true
+					return
 				}
-				readBuffer := utils.NewReadBuffer(rawInput)
+				var readBuffer utils.ReadBuffer
+				if littleEndian {
+					readBuffer = utils.NewLittleEndianReadBuffer(rawInput)
+				} else {
+					readBuffer = utils.NewReadBuffer(rawInput)
+				}
 
 				// Parse the input according to the settings of the testcase
-				helper := new(model2.ModbusParserHelper)
+				var helper interface {
+					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
+				}
+				switch protocolName {
+				case "abeth":
+					helper = new(abethModel.AbethParserHelper)
+				case "ads":
+					helper = new(adsModel.AdsParserHelper)
+				case "df1":
+					helper = new(df1Model.Df1ParserHelper)
+				case "eip":
+					helper = new(eipModel.EipParserHelper)
+				case "firmata":
+					helper = new(firmataModel.FirmataParserHelper)
+				case "modbus":
+					helper = new(modbusModel.ModbusParserHelper)
+				case "s7":
+					helper = new(s7Model.S7ParserHelper)
+				case "knxnetip":
+					helper = new(knxModel.KnxnetipParserHelper)
+				default:
+					t.Errorf("Testsuite %s has not mapped parser", testsuiteName)
+					return
+				}
+				_ = outputFlavor
 				msg, err := helper.Parse(rootType, parserArguments, readBuffer)
 				if err != nil {
 					t.Error("Error parsing input data: " + err.Error())
-					t.Fail()
-					curFailed = true
+					return
 				}
 
-				// Serialize the parsed object to XML
-				actualSerialized, err := xml.Marshal(msg)
-				if err != nil {
-					t.Error("Error serializing the actual message: " + err.Error())
-					t.Fail()
-					curFailed = true
-				}
+				{
+					// First try to use the native xml writer
+					var err error
+					serializable := msg.(utils.Serializable)
+					buffer := utils.NewXmlWriteBuffer()
+					useOldXmlCompare := false
+					if err = serializable.Serialize(buffer); err == nil {
+						actualXml := buffer.GetXmlString()
+						err = CompareResults([]byte(actualXml), []byte(referenceSerialized))
+						if err != nil {
+							border := strings.Repeat("=", 100)
+							fmt.Printf(
+								"\n"+
+									// Border
+									"%[1]s\n"+
+									// Testcase name
+									"%[4]s\n"+
+									// diff detected message
+									"Diff detected\n"+
+									// Border
+									"%[1]s\n"+
+									// xml
+									"%[2]s\n"+
+									// Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
+									// Diff
+									"%[3]s\n"+
+									// Double Border
+									"%[1]s\n%[1]s\n"+
+									// Text
+									"Falling back to old jackson based xml mapper\n",
+								border,
+								actualXml,
+								err,
+								testCaseName)
+							useOldXmlCompare = true
+						}
+					}
+					if useOldXmlCompare {
+						// Serialize the parsed object to XML
+						actualXml, err := xml.Marshal(msg)
+						if err != nil {
+							t.Error("Error serializing the actual message: " + err.Error())
+							return
+						}
 
-				// Compare the actual and the expected xml
-				err = CompareResults(actualSerialized, []byte(referenceSerialized))
-				if err != nil {
-					t.Error("Error comparing the results: " + err.Error())
-					t.Fail()
-					curFailed = true
+						// Compare the actual and the expected xml
+						err = CompareResults(actualXml, []byte(referenceSerialized))
+						if err != nil {
+							t.Error("Error comparing the results: " + err.Error())
+							return
+						}
+					}
 				}
 
 				// If all was ok, serialize the object again
 				s, ok := msg.(utils.Serializable)
 				if !ok {
 					t.Error("Couldn't cast message to Serializable")
-					t.Fail()
-					curFailed = true
+					return
 				}
-				writeBuffer := utils.NewWriteBuffer()
-				err = s.Serialize(*writeBuffer)
+				var writeBuffer utils.WriteBufferByteBased
+				if littleEndian {
+					writeBuffer = utils.NewLittleEndianWriteBuffer()
+				} else {
+					writeBuffer = utils.NewWriteBuffer()
+				}
+				err = s.Serialize(writeBuffer)
 				if !ok {
 					t.Error("Couldn't serialize message back to byte array")
-					t.Fail()
-					curFailed = true
+					return
 				}
 
 				// Check if the output matches in size and content
 				rawOutput := writeBuffer.GetBytes()
 				if len(rawInput) != len(rawOutput) {
-					t.Error("Couldn't serialize message back to byte array")
-					t.Fail()
-					curFailed = true
+					t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
+					t.Errorf("Hexdumps\nexpected:\n%s\nactual:\n%s\n", utils.Dump(rawInput), utils.Dump(rawOutput))
+					return
 				}
 				for i, val := range rawInput {
 					if rawOutput[i] != val {
 						t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
-						t.Fail()
-						curFailed = true
+						t.Errorf("Hexdumps\nexpected:\n%s\nactual:\n%s\n", utils.Dump(rawInput), utils.Dump(rawOutput))
+						return
 					}
-				}
-
-				if curFailed {
-					// All failed
-					t.Logf("FAILED")
-					t.Fail()
-				} else {
-					// All worked
-					t.Logf("SUCCESS")
 				}
 			})
 		}

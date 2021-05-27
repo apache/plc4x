@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package ads
 
 import (
@@ -337,6 +338,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		dummyRequest := plc4goModel.NewDefaultPlcReadRequest(map[string]model.PlcField{"dummy": DirectPlcField{PlcField: PlcField{Datatype: readWriteModel.AdsDataType_UINT32}}}, []string{"dummy"}, nil, nil)
 		m.sendOverTheWire(userdata, dummyRequest, result)
 	}()
+	// We wait synchronous for the resolution response before we can continue
 	response := <-result
 	if response.Err != nil {
 		log.Debug().Err(response.Err).Msg("Error during resolve")
@@ -363,7 +365,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 }
 
 func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, readRequest model.PlcReadRequest) (model.PlcReadResponse, error) {
-	var rb *utils.ReadBuffer
+	var rb utils.ReadBuffer
 	responseCodes := map[string]model.PlcResponseCode{}
 	switch amsTcpPaket.Userdata.Data.Child.(type) {
 	case *readWriteModel.AdsReadResponse:
@@ -384,7 +386,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 				// TODO: the comment above seems strange as there is no such spec for response codes per field so maybe this is a speciality
 				break
 			}
-			responseCode, err := rb.ReadUint32(32)
+			responseCode, err := rb.ReadUint32("responseCode", 32)
 			if err != nil {
 				log.Error().Err(err).Str("fieldName", fieldName).Msgf("Error parsing field %s", fieldName)
 				responseCodes[fieldName] = model.PlcResponseCode_INTERNAL_ERROR
@@ -406,7 +408,7 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	plcValues := map[string]values.PlcValue{}
 	// Get the field from the request
 	for _, fieldName := range readRequest.GetFieldNames() {
-		log.Trace().Msg("get a field from request")
+		log.Debug().Msgf("get a field from request with name %s", fieldName)
 		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 		if err != nil {
 			return nil, errors.Wrap(err, "error casting to ads-field")

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package bacnetip
 
 import "github.com/apache/plc4x/plc4go/pkg/plc4go"

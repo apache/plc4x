@@ -27,6 +27,7 @@ import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.wrapper.context.EventProcessorRuntimeContext;
 import org.apache.streampipes.wrapper.routing.SpOutputCollector;
@@ -62,7 +63,7 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
             String hexEncodedRawData = event.getFieldBySelector(this.payloadIdFieldName).getAsPrimitive().getAsString();
             // Convert the HEX-encoded data back to byte[]
             byte[] rawData = Hex.decodeHex(hexEncodedRawData);
-            ReadBuffer rawDataReader = new ReadBuffer(rawData);
+            ReadBuffer rawDataReader = new ReadBufferByteBased(rawData);
 
             if (groupAddress != null) {
                 // Decode the raw data.

@@ -134,6 +134,7 @@ caseStatement
 
 dataType
  : base='bit'
+ | base='byte'
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL

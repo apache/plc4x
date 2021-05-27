@@ -23,7 +23,7 @@ import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 public class FirmataParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
     public FirmataParserSerializerTest() {
-        super("/protocols/firmata/ParserSerializerTestsuite.xml");
+        super("/protocols/firmata/ParserSerializerTestsuite.xml", true);
     }
 
 }

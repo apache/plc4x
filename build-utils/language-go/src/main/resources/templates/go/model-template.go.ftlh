@@ -60,6 +60,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 <#macro importSectionWithContentBelow>
@@ -121,9 +122,7 @@ type I${type.name} interface {
 </#if>
 	LengthInBytes() uint16
 	LengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
-	xml.Marshaler<@emitImport import="encoding/xml" />
-	xml.Unmarshaler<@emitImport import="encoding/xml" />
+	Serialize(writeBuffer utils.WriteBuffer) error
 }
 <#if helper.isDiscriminatedChildTypeDefinition()>
 	<#assign discriminatedChildType = type>
@@ -144,12 +143,12 @@ func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageType
 <#if helper.isDiscriminatedParentTypeDefinition()>
 
 type I${type.name}Parent interface {
-	SerializeParent(io utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+	SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
 	GetTypeName() string
 }
 
 type I${type.name}Child interface {
-	Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+	Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
 	InitializeParent(parent *${type.name}<#if type.getPropertyFields()?has_content>, <#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list></#if>)
 	GetTypeName() string
 	I${type.name}
@@ -212,6 +211,175 @@ func (m *${type.name}) GetTypeName() string {
 }
 
 func (m *${type.name}) LengthInBits() uint16 {
+	return m.LengthInBitsConditional(false)
+}
+
+<#-- TODO: use serializer args instead of a fixed bool for one case -->
+func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
+	<#if helper.isDiscriminatedParentTypeDefinition()>
+	return m.Child.LengthInBits()
+	<#else>
+		<#if helper.isDiscriminatedChildTypeDefinition()>
+	lengthInBits := uint16(m.Parent.ParentLengthInBits())
+		<#else>
+	lengthInBits := uint16(0)
+		</#if>
+		<#list type.fields as field>
+			<#switch field.typeName>
+				<#case "array">
+					<#assign arrayField = field>
+
+	// Array field
+	if len(m.${arrayField.name?cap_first}) > 0 {
+				<#assign simpleTypeReference = arrayField.type>
+				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
+		lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#elseif helper.isSimpleTypeReference(arrayField.type)>
+		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
+				<#else>
+				<#if helper.isCountArrayField(arrayField)>
+		for i, element := range m.${arrayField.name?cap_first} {
+			last := i == len(m.${arrayField.name?cap_first}) -1
+			lengthInBits += element.LengthInBitsConditional(last)
+				<#else>
+		for _, element := range m.${arrayField.name?cap_first} {
+			lengthInBits += element.LengthInBits()
+				</#if>
+		}
+				</#if>
+	}
+					<#break>
+				<#case "checksum">
+					<#assign checksumField = field>
+					<#assign simpleTypeReference = checksumField.type>
+
+	// Checksum Field (checksum)
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "const">
+					<#assign constField = field>
+					<#assign simpleTypeReference = constField.type>
+
+	// Const Field (${constField.name})
+				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+				<#else>
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+				</#if>
+					<#break>
+				<#case "discriminator">
+					<#assign discriminatorField = field>
+					<#assign simpleTypeReference = discriminatorField.type>
+	// Discriminator Field (${discriminatorField.name})
+		<#if helper.isSimpleTypeReference(simpleTypeReference)>
+			<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+			lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+			<#else>
+			lengthInBits += ${simpleTypeReference.sizeInBits};
+			</#if>
+		<#elseif helper.isEnumField(discriminatorField)>
+		lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+		<#else>
+		lengthInBits += ${discriminatorField.name}.getLengthInBits();
+		</#if>
+					<#break>
+				<#case "enum">
+					<#assign enumField = field>
+
+	// Enum Field (${enumField.name})
+	lengthInBits += ${helper.getEnumBaseTypeReference(enumField.type).sizeInBits}
+					<#break>
+				<#case "implicit">
+					<#assign implicitField = field>
+					<#assign simpleTypeReference = implicitField.type>
+
+	// Implicit Field (${implicitField.name})
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "manualArray">
+					<#assign manualArrayField = field>
+
+	// Manual Array Field (${manualArrayField.name})
+	<#-- TODO: implement below-->
+	// TODO: below expression doesn't work yet
+	// lengthInBits += ${helper.toParseExpression(manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8
+					<#break>
+				<#case "manual">
+					<#assign manualField = field>
+
+	// Manual Field (${manualField.name})
+	lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8
+					<#break>
+				<#case "optional">
+					<#assign optionalField = field>
+
+	// Optional Field (${optionalField.name})
+	if m.${optionalField.name?cap_first} != nil {
+					<#if helper.isSimpleTypeReference(optionalField.type)>
+						<#assign simpleTypeReference = optionalField.type>
+		lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#elseif helper.isEnumField(field)>
+		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
+					<#else>
+		lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
+					</#if>
+	}
+					<#break>
+				<#case "padding">
+					<#assign paddingField = field>
+					<#assign simpleTypeReference = paddingField.type>
+
+	// Padding Field (padding)
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
+	for ;_timesPadding > 0; _timesPadding-- {
+		lengthInBits += ${simpleTypeReference.sizeInBits}
+	}
+					<#break>
+				<#case "reserved">
+					<#assign reservedField = field>
+					<#assign simpleTypeReference = reservedField.type>
+
+	// Reserved Field (reserved)
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+					<#break>
+				<#case "simple">
+					<#assign simpleField = field>
+
+	// Simple field (${simpleField.name})
+					<#if helper.isSimpleTypeReference(simpleField.type)>
+						<#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
+							<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+						<#else>
+							<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += ${simpleTypeReference.sizeInBits};
+						</#if>
+					<#elseif helper.isEnumField(field)>
+	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
+					<#else>
+	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
+					</#if>
+					<#break>
+				<#case "switch">
+					<#assign switchField = field>
+
+	// Length of sub-type elements will be added by sub-type...
+	lengthInBits += m.Child.LengthInBits()
+					<#break>
+				<#case "virtual">
+					<#assign virtualField = field>
+
+	// A virtual field doesn't have any in- or output.
+					<#break>
+			</#switch>
+		</#list>
+
+	return lengthInBits
+	</#if>
+}
+
+<#if helper.isDiscriminatedParentTypeDefinition()>
+func (m *${type.name}) ParentLengthInBits() uint16 {
 	lengthInBits := uint16(0)
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -220,17 +388,23 @@ func (m *${type.name}) LengthInBits() uint16 {
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-            <#assign simpleTypeReference = arrayField.type>
-            <#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
-        lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
-            <#elseif helper.isSimpleTypeReference(arrayField.type)>
-        lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
-            <#else>
+				<#assign simpleTypeReference = arrayField.type>
+				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
+		lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#elseif helper.isSimpleTypeReference(arrayField.type)>
+		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
+				<#else>
+					<#if helper.isCountArrayField(arrayField)>
+		for i, element := range m.${arrayField.name?cap_first} {
+			last := i >= len(m.${arrayField.name?cap_first}) -1
+			lengthInBits += element.LengthInBitsConditional(last)
+					<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
 			lengthInBits += element.LengthInBits()
+					</#if>
 		}
-            </#if>
-	}
+				</#if>
+				}
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field>
@@ -244,27 +418,27 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-            <#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
-    lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
-            <#else>
-    lengthInBits += ${simpleTypeReference.sizeInBits}
-            </#if>
+				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+				<#else>
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+				</#if>
 				<#break>
 			<#case "discriminator">
 				<#assign discriminatorField = field>
 				<#assign simpleTypeReference = discriminatorField.type>
-    // Discriminator Field (${discriminatorField.name})
-    <#if helper.isSimpleTypeReference(simpleTypeReference)>
-        <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-            lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
-        <#else>
-            lengthInBits += ${simpleTypeReference.sizeInBits};
-        </#if>
-    <#elseif helper.isEnumField(discriminatorField)>
-        lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
-    <#else>
-        lengthInBits += ${discriminatorField.name}.getLengthInBits();
-    </#if>
+	// Discriminator Field (${discriminatorField.name})
+				<#if helper.isSimpleTypeReference(simpleTypeReference)>
+					<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+					<#else>
+	lengthInBits += ${simpleTypeReference.sizeInBits};
+					</#if>
+				<#elseif helper.isEnumField(discriminatorField)>
+	lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
+				<#else>
+	lengthInBits += ${discriminatorField.name}.getLengthInBits();
+				</#if>
 				<#break>
 			<#case "enum">
 				<#assign enumField = field>
@@ -311,8 +485,7 @@ func (m *${type.name}) LengthInBits() uint16 {
 				<#assign simpleTypeReference = paddingField.type>
 
 	// Padding Field (padding)
-			<#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+	_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 	for ;_timesPadding > 0; _timesPadding-- {
 		lengthInBits += ${simpleTypeReference.sizeInBits}
 	}
@@ -329,24 +502,18 @@ func (m *${type.name}) LengthInBits() uint16 {
 
 	// Simple field (${simpleField.name})
 				<#if helper.isSimpleTypeReference(simpleField.type)>
-                    <#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
-                        <#assign simpleTypeReference = simpleField.type>
-    lengthInBits += uint16(${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
-                    <#else>
-                        <#assign simpleTypeReference = simpleField.type>
-    lengthInBits += ${simpleTypeReference.sizeInBits};
-                    </#if>
+					<#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
+						<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, simpleTypeReference.getLengthExpression(), type.parserArguments)})
+					<#else>
+						<#assign simpleTypeReference = simpleField.type>
+	lengthInBits += ${simpleTypeReference.sizeInBits};
+					</#if>
 				<#elseif helper.isEnumField(field)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
 				<#else>
 	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
 				</#if>
-				<#break>
-			<#case "switch">
-				<#assign switchField = field>
-
-	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.Child.LengthInBits()
 				<#break>
 			<#case "virtual">
 				<#assign virtualField = field>
@@ -358,73 +525,107 @@ func (m *${type.name}) LengthInBits() uint16 {
 
 	return lengthInBits
 }
+</#if>
 
 func (m *${type.name}) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (*<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if>, error) {
+func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>*</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (*<#if type.parentType?has_content>${type.parentType.name}<#else>${type.name}</#if>, error) {
+	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
+		return nil, pullErr
+	}
 	<#if helper.requiresStartPosAndCurPos()>
-	var startPos = io.GetPos()<@emitImport import="io" />
+	var startPos = readBuffer.GetPos()
 	var curPos uint16
 	</#if>
 	<#list type.fields as field>
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field>
+				<#if helper.isByteBased(arrayField.type)>
+	// Byte Array field (${arrayField.name})
+	<#assign numberOfBytesExpression>
+		<#compress>
+		<#if helper.isCountArrayField(field)>
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#elseif helper.isLengthArrayField(field)>
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#elseif helper.isTerminatedArrayField(field)>
+			<#-- TODO: we need to find out to implement this-->
+			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+		<#else>
+			<#-- TODO: we should throw a exception here-->
+			numberOfBytes := int(-1)
+		</#if>
+		</#compress>
+	</#assign>
+	${numberOfBytesExpression}
+	${arrayField.name}, _readArrayErr := readBuffer.ReadByteArray("${arrayField.name}", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+				<#else>
 
 	// Array field (${arrayField.name})
+	if pullErr := readBuffer.PullContext("${arrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 			<#-- Only update curPos if the length expression uses it -->
-				<#if arrayField.loopExpression.contains("curPos")>
-	curPos = io.GetPos() - startPos<@emitImport import="io" />
-				</#if>
+					<#if arrayField.loopExpression.contains("curPos")>
+	curPos = readBuffer.GetPos() - startPos
+					</#if>
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
-				<#if helper.isCountArrayField(field)>
+					<#if helper.isCountArrayField(field)>
 	// Count array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
 	for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)}); curItem++ {
 					<#if (!helper.isSimpleTypeReference(arrayField.type)) && helper.requiresVariable(arrayField, "lastItem")>
 		lastItem := curItem == uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} - 1)
 					</#if>
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type)}<#else>${arrayField.type.name}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${arrayField.name}[curItem] = _item
 	}
 				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
-				<#elseif helper.isLengthArrayField(field)>
+					<#elseif helper.isLengthArrayField(field)>
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	_${arrayField.name}Length := ${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)}
-	_${arrayField.name}EndPos := io.GetPos() + uint16(_${arrayField.name}Length)
-	for ;io.GetPos() < _${arrayField.name}EndPos; {<@emitImport import="io" />
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+	_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
+	for ;readBuffer.GetPos() < _${arrayField.name}EndPos; {
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type)}<#else>${arrayField.type.name}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${arrayField.name} = append(${arrayField.name}, _item)
 					<#-- After parsing, update the current position, but only if it's needed -->
-					<#if arrayField.loopExpression.contains("curPos")>
-		curPos = io.GetPos() - startPos<@emitImport import="io" />
-					</#if>
+						<#if arrayField.loopExpression.contains("curPos")>
+		curPos = readBuffer.GetPos() - startPos
+						</#if>
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-				<#elseif helper.isTerminatedArrayField(field)>
+					<#elseif helper.isTerminatedArrayField(field)>
 	// Terminated array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); {
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type)}<#else>${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type)}<#else>${arrayField.type.name}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${arrayField.name} = append(${arrayField.name}, _item)
 
 					<#-- After parsing, update the current position, but only if it's needed -->
-					<#if arrayField.loopExpression.contains("curPos")>
-		curPos = io.GetPos() - startPos<@emitImport import="io" />
+						<#if arrayField.loopExpression.contains("curPos")>
+		curPos = readBuffer.GetPos() - startPos
+						</#if>
+	}
 					</#if>
+	if closeErr := readBuffer.CloseContext("${arrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
 	}
 				</#if>
 				<#break>
@@ -432,21 +633,18 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign checksumField = field>
 				<#assign simpleTypeReference = checksumField.type>
 
-	// Checksum Field (checksum)
+			// Checksum Field (checksum)
 	{
-		checksum = ${helper.getNullValueForTypeReference(checksumField.type)}
-		// Create an array of all the bytes read in this message element so far.
-		checksumRawData := io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
-		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference)}
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
-		checksum, _checksumErr = ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
+		checksum, _checksumErr := ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
 		if _checksumErr != nil {
 			return nil, errors.Wrap(_checksumErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		if checksum != checksumRef {
-			return nil, errors.New("Checksum verification failed. Expected " + (checksumRef & 0xFFFF) + " but got " + (checksum & 0xFFFF)")<@emitImport import="github.com/pkg/errors" />
+			return nil, errors.Errorf("Checksum verification failed. Expected %d but got %d", (checksumRef & 0xFFFF), (checksum & 0xFFFF))<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -455,7 +653,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference)}
 	if _${constField.name}Err != nil {
 		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -467,24 +665,30 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign discriminatorField = field>
 				<#assign simpleTypeReference = discriminatorField.type>
 
-    // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-    <#if helper.isEnumField(field)>
-    ${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}Parse(io)
-    var ${helper.getVariableName(field)} *${helper.getLanguageTypeNameForField(discriminatorField)} = &${helper.getVariableName(field)}_temp
-    <#else>
-    ${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
-    </#if>
-    if _${discriminatorField.name}Err != nil {
-    return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
-    }
+	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+	<#if helper.isEnumField(field)>
+	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}Parse(readBuffer)
+	var ${helper.getVariableName(field)} *${helper.getLanguageTypeNameForField(discriminatorField)} = &${helper.getVariableName(field)}_temp
+	<#else>
+	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference)}
+	</#if>
+	if _${discriminatorField.name}Err != nil {
+	return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
 				<#break>
 			<#case "enum">
 				<#assign enumField = field>
 
+	if pullErr := readBuffer.PullContext("${enumField.name}"); pullErr != nil {
+		return nil, pullErr
+	}
 	// Enum field (${enumField.name})
-	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
+	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 	if _${enumField.name}Err != nil {
 		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+	if closeErr := readBuffer.CloseContext("${enumField.name}"); closeErr != nil {
+		return nil, closeErr
 	}
 				<#break>
 			<#case "implicit">
@@ -492,19 +696,21 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#assign simpleTypeReference = implicitField.type>
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    ${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
-    _ = ${implicitField.name}
+	${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference)}
+	_ = ${implicitField.name}
 	if _${implicitField.name}Err != nil {
 		return nil, errors.Wrap(_${implicitField.name}Err, "Error parsing '${implicitField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "manualArray">
 				<#assign manualArrayField = field>
-
+	if pullErr := readBuffer.PullContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, pullErr
+	}
 	// Manual Array Field (${manualArrayField.name})
 			<#-- Only update curPos if the length expression uses it -->
 				<#if manualArrayField.loopExpression.contains("curPos")>
-	curPos = io.GetPos() - startPos<@emitImport import="io" />
+	curPos = readBuffer.GetPos() - startPos
 				</#if>
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 				<#if helper.isCountArrayField(field)>
@@ -520,25 +726,25 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 					<#if helper.isLengthArrayField(field)>
 	// Length array
 	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(16, manualArrayField.loopExpression, type.parserArguments)}
-	List<${helper.getLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>()
-	${manualArrayField.name}EndPos := io.GetPos() + _${manualArrayField.name}Length<@emitImport import="io" />
-	for ;io.GetPos() < ${manualArrayField.name}EndPos; {<@emitImport import="io" />
-		_${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}))
+	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	${manualArrayField.name}EndPos := readBuffer.GetPos() + _${manualArrayField.name}Length
+	for ;readBuffer.GetPos() < ${manualArrayField.name}EndPos; {
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)})))
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
-		curPos = io.GetPos() - startPos<@emitImport import="io" />
+		curPos = readBuffer.GetPos() - startPos
 						</#if>
 	}
 					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 					<#elseif helper.isTerminatedArrayField(field)>
 	// Terminated array
-	List<${helper.getLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>()
-	for ;!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)})); {
-		_${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}))
+	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
+	for ;!((bool) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)})); {
+		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)})))
 
 					<#-- After parsing, update the current position, but only if it's needed -->
 						<#if manualArrayField.loopExpression.contains("curPos")>
-		curPos = io.GetPos() - startPos<@emitImport import="io" />
+		curPos = readBuffer.GetPos() - startPos
 						</#if>
 	}
 					</#if>
@@ -548,14 +754,17 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 					Otherwise a simple toArray call is fine.
 				-->
 					<#if helper.isSimpleTypeReference(field.type)>
-	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}List.size()]
-	for i := 0; i < _${manualArrayField.name}List.size(); i++ {
-		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${manualArrayField.name}List.get(i)
+	${manualArrayField.name} := make([]${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
+	for i := 0; i < len(_${manualArrayField.name}List); i++ {
+		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])
 	}
 					<#else>
 	${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = _${manualArrayField.name}List.toArray(new ${helper.getLanguageTypeNameForField(manualArrayField)}[0])
 					</#if>
 				</#if>
+	if closeErr := readBuffer.CloseContext("${manualArrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, closeErr
+	}
 				<#break>
 			<#case "manual">
 				<#assign manualField = field>
@@ -571,24 +780,24 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 
 	// Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
 				<#if optionalField.conditionExpression.contains("curPos")>
-	curPos = io.GetPos() - startPos<@emitImport import="io" />
+	curPos = readBuffer.GetPos() - startPos
 				</#if>
 	var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
 	if ${helper.toBooleanParseExpression(optionalField.conditionExpression, type.parserArguments)} {
 			<#if helper.isSimpleTypeReference(optionalField.type)>
-		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.type)}
+		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type)}
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = &_val
 			<#elseif helper.isEnumField(field)>
-		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io)
+		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = &_val
 			<#else>
-		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
+		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -602,13 +811,19 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 
 	// Padding Field (padding)
 	{
+		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
+			return nil, pullErr
+		}
 		_timesPadding := (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
-		for ;(io.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {<@emitImport import="io" />
+		for ;(readBuffer.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {
 			// Just read the padding data and ignore it
-			_, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+			_, _err := ${helper.getReadBufferReadMethodCall("", simpleTypeReference)}
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
+		}
+		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
+			return nil, closeErr
 		}
 	}
 				<#break>
@@ -618,7 +833,7 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+		reserved, _err := ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference)}
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -633,8 +848,15 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 			<#case "simple">
 				<#assign simpleField = field>
 
+				<#if !helper.isSimpleTypeReference(simpleField.type)>
+	if pullErr := readBuffer.PullContext("${simpleField.name}"); pullErr != nil {
+		return nil, pullErr
+	}
+				</#if>
+
 	// Simple Field (${simpleField.name})
-	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type, null, field)}<#else>${simpleField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+    <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
+	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type, null, field)}<#else>${simpleField.type.name}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 	if _${simpleField.name}Err != nil {
 			<#if helper.isEnumField(field)>
 		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -642,6 +864,11 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			</#if>
 	}
+				<#if !helper.isSimpleTypeReference(simpleField.type)>
+	if closeErr := readBuffer.CloseContext("${simpleField.name}"); closeErr != nil {
+		return nil, closeErr
+	}
+				</#if>
 				<#break>
 
 			<#case "switch">
@@ -652,9 +879,13 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 	var typeSwitchError error
 	switch {
 				<#list switchField.cases as case>
-    <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>*</#if></#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else><#assign defaultCaseOutput=true></#if>: // ${case.name}
-		_parent, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+					<#--TODO: refactor the line below into multiple assigns -->
+	<#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>*</#if></#if>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)])}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#sep></#list><#else><#assign defaultCaseOutput=true></#if>: // ${case.name}
+		_parent, typeSwitchError = ${case.name}Parse(readBuffer<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
+	default:
+		// TODO: return actual type
+		typeSwitchError = errors.New("Unmapped type")<@emitImport import="github.com/pkg/errors" />
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch.")<@emitImport import="github.com/pkg/errors" />
@@ -672,6 +903,10 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 				<#break>
 		</#switch>
 	</#list>
+
+	if closeErr := readBuffer.CloseContext("${type.name}"); closeErr != nil {
+		return nil, closeErr
+	}
 
 	<#if helper.isDiscriminatedParentTypeDefinition()>
 	// Finish initializing
@@ -694,14 +929,19 @@ func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content
 }
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
-func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
-	return m.Child.Serialize(io<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+	return m.Child.Serialize(writeBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 }
 
-func (m *${type.name}) SerializeParent(io utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func (m *${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 <#else>
-func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 </#if>
+	<#if !helper.isDiscriminatedChildTypeDefinition()>
+	if pushErr :=writeBuffer.PushContext("${type.name}"); pushErr != nil {
+		return pushErr
+	}
+	</#if>
 	<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
 	<#if arraySizeInBytesHelpers?has_content>
 		<#list arraySizeInBytesHelpers?keys as key>
@@ -717,6 +957,9 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#if>
 	<#if helper.isDiscriminatedChildTypeDefinition()>
 	ser := func() error {
+		if pushErr := writeBuffer.PushContext("${type.name}"); pushErr != nil {
+			return pushErr
+		}
 	</#if>
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -726,28 +969,42 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
-				<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
+				<#if helper.isByteBased(arrayField.type)>
+		// Byte Array field (${arrayField.name})
+		_writeArrayErr := writeBuffer.WriteByteArray("${arrayField.name}", m.${arrayField.name?cap_first})
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+		}
+				<#else>
+		if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
+					<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
 				</#if>
 		for _, _element := range m.${arrayField.name?cap_first} {
-				<#if helper.isSimpleTypeReference(arrayField.type)>
-					<#assign simpleTypeReference = arrayField.type>
-			_elementErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element", field)}
-				<#else>
+					<#if helper.isSimpleTypeReference(arrayField.type)>
+						<#assign simpleTypeReference = arrayField.type>
+			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", field)}
+					<#else>
 					<#assign complexTypeReference = arrayField.type>
 					<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
 					</#if>
-			_elementErr := _element.Serialize(io<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+			_elementErr := _element.Serialize(writeBuffer<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#if>
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
-				<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
+					<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
 			curItem++
 				</#if>
 		}
+		if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
+		}
+				</#if>
 	}
 				<#break>
 			<#case "checksum">
@@ -756,13 +1013,13 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Checksum Field (checksum) (Calculated)
 	{
-		_checksum := ${helper.getLanguageTypeNameForField(field)}(${helper.getNullValueForTypeReference(checksumField.type)})
-		// Create an array of all the bytes written in this message element so far.
-		checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())<@emitImport import="io" />
-		_checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
-		_checksumErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)", field)}
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
+		_checksum, _checksumErr := ${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
+		if _checksumErr != nil {
+			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
+		}
+		_checksumErr = ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", field)}
+		if _checksumErr != nil {
+			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
 				<#break>
@@ -771,7 +1028,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue, field)}
+	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField.name, simpleTypeReference, constField.referenceValue, field)}
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -780,26 +1037,41 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#assign discriminatorField = field>
 				<#assign simpleTypeReference = discriminatorField.type>
 
-    // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-    ${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
-    <#if helper.isEnumField(field)>
-    _${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(io)
-    <#else>
-    _${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")", field)}
-    </#if>
+	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
+	<#if helper.isEnumField(field)>
+	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
+	<#else>
+	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", field)}
+	</#if>
 
-    if _${discriminatorField.name}Err != nil {
-    return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
-    }
+	if _${discriminatorField.name}Err != nil {
+		return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
 				<#break>
 			<#case "enum">
 				<#assign enumField = field>
 
+	if pushErr := writeBuffer.PushContext("${enumField.name}"); pushErr != nil {
+		return pushErr
+	}
+					<#if enumField.fieldName?has_content>
+						<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
-	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
-	_${enumField.name}Err := ${enumField.name}.Serialize(io)
+	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.${enumField.name?cap_first}.name())")}
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+					<#else>
+	// Enum field (${enumField.name})
+	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
+	_${enumField.name}Err := ${enumField.name}.Serialize(writeBuffer)
+	if _${enumField.name}Err != nil {
+		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+			</#if>
+	if popErr := writeBuffer.PopContext("${enumField.name}"); popErr != nil {
+		return popErr
 	}
 				<#break>
 			<#case "implicit">
@@ -808,7 +1080,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
-	_${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")", field)}
+	_${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(implicitField.name, simpleTypeReference, "(" + implicitField.name + ")", field)}
 	if _${implicitField.name}Err != nil {
 		return errors.Wrap(_${implicitField.name}Err, "Error serializing '${implicitField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -818,8 +1090,15 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Manual Array Field (${manualArrayField.name})
 	if m.${manualArrayField.name?cap_first} != nil {
-		for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
-			${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
+		if pushErr := writeBuffer.PushContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
+		//for _, element := range m.${manualArrayField.name?cap_first} {
+			<#-- TODO at the moment the implementation below is broken as element get prefixed wrong -->
+			//${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
+		//}
+		if popErr := writeBuffer.PopContext("${manualArrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
 		}
 	}
 				<#break>
@@ -838,11 +1117,11 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 				<#if helper.isSimpleTypeReference(optionalField.type)>
 					<#assign simpleTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
-		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")", field)}
+		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "*(" + optionalField.name + ")", field)}
 				<#else>
 					<#assign complexTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
-		_${optionalField.name}Err := ${optionalField.name}.Serialize(io)
+		_${optionalField.name}Err := ${optionalField.name}.Serialize(writeBuffer)
 				</#if>
 		if _${optionalField.name}Err != nil {
 			return errors.Wrap(_${optionalField.name}Err, "Error serializing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -855,13 +1134,19 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Padding Field (padding)
 	{
+		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
+			return pushErr
+		}
 		_timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
 		for ;_timesPadding > 0; _timesPadding-- {
 			_paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
-			_paddingErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)", field)}
+			_paddingErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", field)}
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
+		}
+		if popErr := writeBuffer.PopContext("padding", utils.WithRenderAsList(true)); popErr != nil {
+			return popErr
 		}
 	}
 				<#break>
@@ -871,7 +1156,7 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 
 	// Reserved Field (reserved)
 	{
-		_err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field), field)}
+		_err := ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, helper.getReservedValue(field), field)}
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -883,11 +1168,22 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	// Simple Field (${simpleField.name})
 				<#if helper.isSimpleTypeReference(simpleField.type)>
 					<#assign simpleTypeReference = simpleField.type>
+					<#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
 	${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name?cap_first})
-	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
+				<#if helper.isEnumField(field)>
+	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "utils.WithAdditionalStringRepresentation(m.${simpleField.name?cap_first}.name())")}
+				<#else>
+	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
+				</#if>
 				<#else>
 					<#assign complexTypeReference = simpleField.type>
-	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(io)
+	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
+		return pushErr
+	}
+	_${simpleField.name}Err := m.${simpleField.name?cap_first}.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
+		return popErr
+	}
 				</#if>
 	if _${simpleField.name}Err != nil {
 		return errors.Wrap(_${simpleField.name}Err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -908,225 +1204,20 @@ func (m *${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerAr
 	</#list>
 
 	<#if helper.isDiscriminatedChildTypeDefinition()>
+		if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
+			return popErr
+		}
 		return nil
 	}
-	return m.Parent.SerializeParent(io, m, ser)
+	return m.Parent.SerializeParent(writeBuffer, m, ser)
 	<#else>
+	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
+		return popErr
+	}
 	return nil
 	</#if>
 }
 
-func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {<@emitImport import="encoding/xml" />
-	var token xml.Token<@emitImport import="encoding/xml" />
-	var err error
-	<#if helper.isDiscriminatedChildTypeDefinition()>
-	token = start
-	</#if>
-	for {
-	<#if !helper.isDiscriminatedChildTypeDefinition()>
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {<@emitImport import="io" />
-				return nil
-			}
-			return err
-		}
-	</#if>
-		switch token.(type) {
-		case xml.StartElement:<@emitImport import="encoding/xml" />
-			tok := token.(xml.StartElement)<@emitImport import="encoding/xml" />
-			switch tok.Name.Local {
-	<#if type.fields?has_content>
-		<#assign hasSwitch = false>
-		<#list type.fields as field>
-			<#if helper.isSwitchField(field)>
-				<#assign hasSwitch = true>
-			<#elseif helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
-			case "${field.name}":
-			<#-- int8 arrays are serialized in hex encoding -->
-				<#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
-				var _encoded string
-				if err := d.DecodeElement(&_encoded, &tok); err != nil {
-					return err
-				}
-                _decoded, err := hex.DecodeString(_encoded)${helper.emitRequiredImport("encoding/hex")}
-                _len := len(_decoded)
-				if err != nil {
-					return err
-				}
-				m.${field.name?cap_first} = utils.ByteArrayToInt8Array(_decoded[0:_len])
-				<#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
-					<#if helper.isArrayField(field)>
-				arrayLoop: for {
-					token, err = d.Token()
-					switch token.(type) {
-					case xml.StartElement:<@emitImport import="encoding/xml" />
-						tok := token.(xml.StartElement)<@emitImport import="encoding/xml" />
-						var dt *${helper.getLanguageTypeNameForField(field)}
-						if err := d.DecodeElement(&dt, &tok); err != nil {
-							return err
-						}
-						m.${field.name?cap_first} = append(m.${field.name?cap_first}, dt)
-					default:
-						break arrayLoop
-					}
-				}
-					<#else>
-				var dt *${helper.getLanguageTypeNameForField(field)}
-				if err := d.DecodeElement(&dt, &tok); err != nil {
-					return err
-				}
-				m.${field.name?cap_first} = dt
-					</#if>
-				<#elseif helper.isArrayField(field)>
-				var data []<#if helper.isComplexTypeReference(field.type)>*</#if>${helper.getLanguageTypeNameForField(field)}
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.${field.name?cap_first} = data
-				<#elseif helper.needsPointerAccess(field)>
-				var data ${helper.getLanguageTypeNameForField(field)}
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.${field.name?cap_first} = &data
-				<#else>
-				var data ${helper.getLanguageTypeNameForField(field)}
-				if err := d.DecodeElement(&data, &tok); err != nil {
-					return err
-				}
-				m.${field.name?cap_first} = data
-				</#if>
-			</#if>
-		</#list>
-		<#if hasSwitch>
-			default:
-				attr := start.Attr
-				if attr == nil || len(attr) <= 0 {
-					// TODO: workaround for bug with nested lists
-					attr = tok.Attr
-				}
-				if attr == nil || len(attr) <= 0 {
-					panic("Couldn't determine class type for childs of ${type.name}")
-				}
-				switch attr[0].Value {
-			<#list helper.getUniqueSwitchCases(helper.getSwitchField().cases) as subtype>
-				case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
-					var dt *${subtype.name}
-					if m.Child != nil {
-						dt = m.Child.(*${subtype.name})
-					}
-					if err := d.DecodeElement(&dt, &tok); err != nil {
-						return err
-					}
-				<#if helper.isArrayField(field)>
-					_values = append(_values, dt)
-				<#else>
-					if m.Child == nil {
-						dt.Parent = m
-						m.Child = dt
-					}
-				</#if>
-			</#list>
-				}
-		</#if>
-	</#if>
-			}
-		}
-	<#if helper.isDiscriminatedChildTypeDefinition()>
-		token, err = d.Token()
-		if err != nil {
-			if err == io.EOF {<@emitImport import="io" />
-				return nil
-			}
-			return err
-		}
-	</#if>
-	}
-}
-
-func (m *${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {<@emitImport import="encoding/xml" />
-	<#if helper.isDiscriminatedParentTypeDefinition()>
-	className := reflect.TypeOf(m.Child).String()<@emitImport import="reflect" />
-	className = "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}." + className[strings.LastIndex(className, ".") + 1:]${helper.emitRequiredImport("strings")}
-	<#elseif !helper.isDiscriminatedChildTypeDefinition()>
-	className := "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${type.name}"
-	</#if>
-	<#if !helper.isDiscriminatedChildTypeDefinition()>
-	if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{<@emitImport import="encoding/xml" />
-			{Name: xml.Name{Local: "className"}, Value: className},<@emitImport import="encoding/xml" />
-		}}); err != nil {
-		return err
-	}
-	</#if>
-	<#if type.fields?has_content>
-		<#list type.fields as field>
-			<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
-			<#-- int8 arrays are serialized in hex string encoding -->
-				<#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
-	_encoded${field.name?cap_first} := hex.EncodeToString(utils.Int8ArrayToByteArray(m.${field.name?cap_first}))${helper.emitRequiredImport("encoding/hex")}
-    _encoded${field.name?cap_first} = strings.ToUpper(_encoded${field.name?cap_first})${helper.emitRequiredImport("strings")}
-	if err := e.EncodeElement(_encoded${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-		return err
-	}
-				<#-- normal arrays have one element with the same name wrapping them -->
-				<#elseif helper.isArrayField(field) && helper.isComplexTypeReference(field.type)>
-	for _, arrayElement := range m.${field.name?cap_first} {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
-		if err := e.EncodeElement(arrayElement, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-			return err
-		}
-	}
-				<#else>
-	if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {<@emitImport import="encoding/xml" />
-		return err
-	}
-				</#if>
-			<#elseif helper.isSwitchField(field)>
-	marshaller, ok := m.Child.(xml.Marshaler)<@emitImport import="encoding/xml" />
-	if !ok {
-		return errors.Errorf("child is not castable to Marshaler. Actual type %T", m.Child)<@emitImport import="github.com/pkg/errors" />
-	}
-	if err := marshaller.MarshalXML(e, start); err != nil {
-		return err
-	}
-			</#if>
-		</#list>
-	</#if>
-	<#if !helper.isDiscriminatedChildTypeDefinition()>
-	if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {<@emitImport import="encoding/xml" />
-		return err
-	}
-	</#if>
-	return nil
-}
-
-func (m ${type.name}) String() string {
-	return string(m.Box("${type.name}", utils.DefaultWidth*2))
-}
-
-func (m ${type.name}) Box(name string, width int) utils.AsciiBox {
-	if name == "" {
-		name = "${type.name}"
-	}
-	boxes := make([]utils.AsciiBox, 0)
-	<#if type.fields?has_content>
-		<#list type.fields as field>
-			<#if helper.isPropertyField(field) && !helper.isConstField(field) && !helper.isVirtualField(field)>
-	boxes = append(boxes, utils.BoxAnything("${field.name?cap_first}", m.${field.name?cap_first}, width-2))
-			</#if>
-		</#list>
-	</#if>
-	<#if helper.isDiscriminatedParentTypeDefinition()>
-	boxes = append(boxes, utils.BoxAnything("", m.Child, width-2))
-	</#if>
-	return utils.BoxBox(name, utils.AlignBoxes(boxes, width-2), 0)
-}
 </@importSectionWithContentBelow>
 
 </#outputformat>

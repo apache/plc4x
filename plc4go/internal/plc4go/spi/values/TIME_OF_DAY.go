@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package values
 
 import (
@@ -56,6 +57,10 @@ func (m PlcTIME_OF_DAY) IsTime() bool {
 
 func (m PlcTIME_OF_DAY) GetTime() time.Time {
 	return m.value
+}
+
+func (m PlcTIME_OF_DAY) GetString() string {
+	return m.value.Format("15:04:05.000")
 }
 
 func (m PlcTIME_OF_DAY) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package main
 
 import (
@@ -44,9 +45,9 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a read-request
-	rrb := connection.ReadRequestBuilder()
-	rrb.AddQuery("field", "holding-register:26:REAL")
-	readRequest, err := rrb.Build()
+	readRequest, err := connection.ReadRequestBuilder().
+		AddQuery("field", "holding-register:26:REAL").
+		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return

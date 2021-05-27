@@ -29,7 +29,7 @@
 #include <arpa/inet.h>
 #else
 #include <winsock.h>
-# define strtok_r strtok_s
+#define strtok_r strtok_s
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0)
 #define MSG_DONTWAIT 0
 #endif
@@ -39,7 +39,7 @@ extern int errno;
 plc4c_return_code plc4c_transport_tcp_configure_function(
     char* transport_connect_information, plc4c_list* parameters, void** configuration) {
   plc4c_transport_tcp_config* tcp_configuration = malloc(sizeof(plc4c_transport_tcp_config));
-  if(tcp_configuration == NULL) {
+  if (tcp_configuration == NULL) {
     return NO_MEMORY;
   }
 
@@ -47,7 +47,7 @@ plc4c_return_code plc4c_transport_tcp_configure_function(
   char *host = strtok_r(transport_connect_information, ":", &port);
   tcp_configuration->address = host;
   // If no port was specified, generally use the default port for this driver
-  if(strlen(port) == 0) {
+  if (strlen(port) == 0) {
     // TODO: Currently return an error.
     return INTERNAL_ERROR;
   } else {
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_transport_tcp_open_function(void* config) {
                        sizeof(servaddr));
   if(result != 0) {
     char* error_msg = strerror(errno);
-    printf(error_msg);
+    printf("%s\n", error_msg);
     return CONNECTION_ERROR;
   }
   return OK;

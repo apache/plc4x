@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package model
 
 import (
@@ -24,14 +25,14 @@ import (
 )
 
 type DefaultPlcWriteResponse struct {
-	request       model.PlcWriteRequest
-	responseCodes map[string]model.PlcResponseCode
+	DefaultResponse
+	request model.PlcWriteRequest
 }
 
-func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) DefaultPlcWriteResponse {
+func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse {
 	return DefaultPlcWriteResponse{
-		request:       request,
-		responseCodes: responseCodes,
+		DefaultResponse: NewDefaultResponse(responseCodes),
+		request:         request,
 	}
 }
 
@@ -48,10 +49,6 @@ func (m DefaultPlcWriteResponse) GetFieldNames() []string {
 
 func (m DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
 	return m.request
-}
-
-func (m DefaultPlcWriteResponse) GetResponseCode(name string) model.PlcResponseCode {
-	return m.responseCodes[name]
 }
 
 func (m DefaultPlcWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

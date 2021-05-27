@@ -42,9 +42,7 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
@@ -288,7 +286,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
                 // Use the data in the ets5 model to correctly check and serialize the PlcValue
                 try {
-                    final WriteBuffer writeBuffer = KnxDatapointIO.staticSerialize(value,
+                    final WriteBufferByteBased writeBuffer = KnxDatapointIO.staticSerialize(value,
                         groupAddress.getType());
                     final byte[] serialized = writeBuffer.getData();
                     dataFirstByte = serialized[0];
@@ -453,7 +451,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         System.arraycopy(restBytes, 0, payload, 1, restBytes.length);
 
         // Decode the group address depending on the project settings.
-        ReadBuffer addressBuffer = new ReadBuffer(destinationGroupAddress);
+        ReadBuffer addressBuffer = new ReadBufferByteBased(destinationGroupAddress);
         final KnxGroupAddress knxGroupAddress =
             KnxGroupAddressIO.staticParse(addressBuffer, knxNetIpDriverContext.getGroupAddressType());
         final String destinationAddress = toString(knxGroupAddress);
@@ -472,7 +470,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     toString(sourceAddress), destinationAddress));
 
                 // Parse the payload depending on the type of the group-address.
-                ReadBuffer rawDataReader = new ReadBuffer(payload);
+                ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
                 final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
                     groupAddress.getType());
 
@@ -574,7 +572,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     }
 
     protected byte[] toKnxAddressData(KnxNetIpField field) {
-        WriteBuffer address = new WriteBuffer(2);
+        WriteBufferByteBased address = new WriteBufferByteBased(2);
         try {
             switch (knxNetIpDriverContext.getGroupAddressType()) {
                 case 3:

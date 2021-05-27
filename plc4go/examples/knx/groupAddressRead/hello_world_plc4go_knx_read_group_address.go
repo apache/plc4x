@@ -16,16 +16,21 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package main
 
 import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/drivers"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 func main() {
+	// Set logging to INFO
+	logging.InfoLevel()
+
 	driverManager := plc4go.NewPlcDriverManager()
 	drivers.RegisterKnxDriver(driverManager)
 
@@ -44,10 +49,10 @@ func main() {
 	defer connection.BlockingClose()
 
 	// Prepare a read-request
-	rrb := connection.ReadRequestBuilder()
-	rrb.AddQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp")
-	rrb.AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp")
-	readRequest, err := rrb.Build()
+	readRequest, err := connection.ReadRequestBuilder().
+		AddQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddQuery("secondFlorTemperatures", "3/[2,3,4,6]/10:DPT_Value_Temp").
+		Build()
 	if err != nil {
 		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
 		return

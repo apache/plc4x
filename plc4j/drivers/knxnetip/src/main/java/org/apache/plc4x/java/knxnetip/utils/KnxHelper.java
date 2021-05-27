@@ -22,6 +22,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class KnxHelper {
@@ -64,7 +65,7 @@ public class KnxHelper {
 
     public static void main(String[] args) throws Exception {
         final byte[] bytes = Hex.decodeHex("0C65");
-        ReadBuffer io = new ReadBuffer(bytes);
+        ReadBuffer io = new ReadBufferByteBased(bytes);
         final double v = bytesToF16(io);
         System.out.println(v);
     }

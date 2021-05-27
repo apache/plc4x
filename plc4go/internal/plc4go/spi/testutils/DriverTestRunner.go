@@ -16,15 +16,21 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package testutils
 
 import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
-	readWriteModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
-	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	adsIO "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite"
+	adsModel "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	knxIO "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite"
+	knxModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
+	modbusIO "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
+	modbusModel "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	s7IO "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite"
+	s7Model "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
@@ -44,6 +50,8 @@ import (
 
 type DriverTestsuite struct {
 	name             string
+	protocolName     string
+	outputFlavor     string
 	driverName       string
 	driverParameters map[string]string
 	setupSteps       []TestStep
@@ -68,9 +76,10 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		return errors.Wrap(connectionResult.Err, "error getting a connection")
 	}
 
-	log.Info().Msgf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
 
 	// Run the setup steps
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -79,6 +88,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the actual scenario steps
+	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -87,6 +97,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	}
 
 	// Run the teardown steps
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
@@ -94,7 +105,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		}
 	}
 
-	log.Info().Msgf("\n\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n\n")
+	log.Info().Msgf("\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
 	return nil
 }
 
@@ -108,7 +119,8 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		return errors.New("transport must be of type TestTransport")
 	}
 
-	log.Info().Msgf(" - Executing step: %s \n", step.name)
+	start := time.Now()
+	log.Info().Msgf("\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------\n", step.name)
 
 	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
 	switch step.stepType {
@@ -225,35 +237,26 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
-		var message interface{}
-		var err error
-		switch m.driverName {
-		case "modbus":
-			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "ads":
-			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		default:
-			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
-		}
+		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Write to bytes")
-		ser, ok := message.(utils.Serializable)
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
-		err = ser.Serialize(*wb)
-		if err != nil {
-			return errors.Wrap(err, "error serializing message")
+		var expectedWriteBuffer utils.WriteBufferByteBased
+		switch m.driverName {
+		case "ads":
+			expectedWriteBuffer = utils.NewLittleEndianWriteBuffer()
+		default:
+			expectedWriteBuffer = utils.NewWriteBuffer()
 		}
-		expectedRawOutput := wb.GetBytes()
+		err = expectedSerializable.Serialize(expectedWriteBuffer)
+		if err != nil {
+			return errors.Wrap(err, "error serializing expectedMessage")
+		}
+		expectedRawOutput := expectedWriteBuffer.GetBytes()
 		expectedRawOutputLength := uint32(len(expectedRawOutput))
 
 		now := time.Now()
@@ -265,7 +268,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			time.Sleep(10 * time.Millisecond)
 		}
-		rawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		if testTransportInstance.GetNumDrainableBytes() != 0 {
+			//panic(fmt.Sprintf("leftover drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes()))
+		}
 		if err != nil {
 			return errors.Wrap(err, "error getting bytes from transport")
 		}
@@ -273,19 +279,26 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
-			if expectedRawOutput[i] != rawOutput[i] {
+			if expectedRawOutput[i] != actualRawOutput[i] {
 				switch m.driverName {
 				case "modbus":
-					message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-					if err != nil {
-						return errors.Wrap(err, "error parsing xml")
-					}
+					expectation := expectedSerializable.(*modbusModel.ModbusTcpADU)
+					actual, err := modbusModel.ModbusTcpADUParse(utils.NewReadBuffer(actualRawOutput), false)
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				case "ads":
-					expectationAmsTCPPacket := ser.(*readWriteModel.AmsTCPPacket)
-					actualAmsTcpPacket, err := readWriteModel.AmsTCPPacketParse(utils.NewReadBuffer(rawOutput))
-					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectationAmsTCPPacket, actualAmsTcpPacket)
+					expectation := expectedSerializable.(*adsModel.AmsTCPPacket)
+					actual, err := adsModel.AmsTCPPacketParse(utils.NewLittleEndianReadBuffer(actualRawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				case "s7":
+					expectation := expectedSerializable.(*s7Model.TPKTPacket)
+					actual, err := s7Model.TPKTPacketParse(utils.NewReadBuffer(actualRawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
+				case "knx":
+					expectation := expectedSerializable.(*knxModel.KnxNetIpMessage)
+					actual, err := knxModel.KnxNetIpMessageParse(utils.NewReadBuffer(actualRawOutput))
+					log.Error().Err(err).Msgf("A readabled render of expectation:\n%v\nvs actual paket\n%v\n", expectation, actual)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawOutput, expectedRawOutput)
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", actualRawOutput, expectedRawOutput)
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
@@ -315,33 +328,27 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
-		var message interface{}
-		var err error
-		switch m.driverName {
-		case "modbus":
-			message, err = modbusModel.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		case "ads":
-			message, err = adsModel.AdsXmlParserHelper{}.Parse(typeName, payloadString)
-			if err != nil {
-				return errors.Wrap(err, "error parsing xml")
-			}
-		default:
-			return errors.Errorf("Driver name %s has not mapped parser", m.driverName)
+		expectedMessage, err := parseMessage(m.protocolName, typeName, payloadString, step)
+		if err != nil {
+			return errors.Wrap(err, "error parsing message")
 		}
 
 		// Serialize the model into bytes
 		log.Trace().Msg("Serializing bytes")
-		ser, ok := message.(utils.Serializable)
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
-		err = ser.Serialize(*wb)
+		var wb utils.WriteBufferByteBased
+		switch m.driverName {
+		case "ads":
+			wb = utils.NewLittleEndianWriteBuffer()
+		default:
+			wb = utils.NewWriteBuffer()
+		}
+		err = expectedSerializable.Serialize(wb)
 		if err != nil {
-			return errors.Wrap(err, "error serializing message")
+			return errors.Wrap(err, "error serializing expectedMessage")
 		}
 
 		// Send these bytes to the transport
@@ -382,7 +389,29 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Wrap(err, "error closing transport")
 		}
 	}
+	log.Info().Msgf("\n\n-------------------------------------------------------\n - Finished step: %s after %vms \n-------------------------------------------------------", step.name, time.Now().Sub(start).Milliseconds())
 	return nil
+}
+
+func parseMessage(protocolName string, typeName string, payloadString string, step TestStep) (interface{}, error) {
+	type Parser interface {
+		Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+	}
+	parserMap := map[string]Parser{
+		"modbus":   modbusIO.ModbusXmlParserHelper{},
+		"ads":      adsIO.AdsXmlParserHelper{},
+		"knxnetip": knxIO.KnxnetipXmlParserHelper{},
+		"s7":       s7IO.S7XmlParserHelper{},
+	}
+	if parser, ok := parserMap[protocolName]; ok {
+		expected, err := parser.Parse(typeName, payloadString, step.parserArguments...)
+		if err != nil {
+			return nil, errors.Wrap(err, "error parsing xml")
+		}
+		return expected, nil
+	} else {
+		return nil, errors.Errorf("Protocol name %s has no mapped parser", protocolName)
+	}
 }
 
 func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
@@ -445,6 +474,12 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		return
 	}
 
+	// We don't want to await completion of connection initalization
+	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
+		connectionConnectAwaiter.SetAwaitSetupComplete(false)
+		connectionConnectAwaiter.SetAwaitDisconnectComplete(false)
+	}
+
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterTransport(test.NewTransport())
@@ -454,7 +489,7 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		t.Run(testcase.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Error().Msgf("\n\n-------------------------------------------------------\nFatal Failure\n%+v\n%s\n-------------------------------------------------------\n", err, debug.Stack())
+					log.Error().Msgf("\n-------------------------------------------------------\nPanic Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
 					t.FailNow()
 				}
 			}()
@@ -465,13 +500,18 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 			}
 			log.Info().Msgf("Running testcase %s", testcase.name)
 			if err := testsuite.Run(driverManager, testcase); err != nil {
-				log.Error().Err(err).Msgf("\n\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n", err)
+				log.Error().Err(err).Msgf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
 				t.Fail()
 			}
 		})
 	}
 	// Execute the tests in the testsuite
 	log.Info().Msgf(testsuite.name)
+}
+
+type ConnectionConnectAwaiter interface {
+	SetAwaitSetupComplete(awaitComplete bool)
+	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 
 func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
@@ -506,6 +546,8 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		return nil, errors.New("invalid document structure")
 	}
 	var testsuiteName string
+	var protocolName string
+	var outputFlavor string
 	var driverName string
 	driverParameters := make(map[string]string)
 	var setupSteps []TestStep
@@ -515,6 +557,10 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		child := *childPtr
 		if child.Name == "name" {
 			testsuiteName = child.Text
+		} else if child.Name == "protocolName" {
+			protocolName = child.Text
+		} else if child.Name == "outputFlavor" {
+			outputFlavor = child.Text
 		} else if child.Name == "driver-name" {
 			driverName = child.Text
 		} else if child.Name == "driver-parameters" {
@@ -567,6 +613,8 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 
 	return &DriverTestsuite{
 		name:             testsuiteName,
+		protocolName:     protocolName,
+		outputFlavor:     outputFlavor,
 		driverName:       driverName,
 		driverParameters: driverParameters,
 		setupSteps:       setupSteps,

@@ -27,6 +27,45 @@
 
 #include "plc4c/driver_s7_encode_decode.h"
 
+// forward delcaration for helper function todo: move to header or reloacte
+    //plc4c_utils_list_insert_head_value(request_value->data, &parsed_value->data);
+void plc4c_add_data_to_request(plc4c_data* parsed_value, 
+    plc4c_s7_read_write_s7_var_payload_data_item* request_value) {
+
+  uint8_t* data_array;
+  plc4c_list_element* list_array;
+  plc4c_data* the_data;
+  int i, j;
+  int items;
+  int item_size;
+
+  // If its a list size donst really mean anything we care about list len
+  if (parsed_value->data_type == PLC4C_LIST) 
+    items = plc4c_utils_list_size(&parsed_value->data.list_value);
+  else
+    items = 1; 
+
+  for (i = 0 ; i < items ; i++) {
+    if (parsed_value->data_type == PLC4C_LIST) {
+      list_array = (i == 0) ? parsed_value->data.list_value.head : list_array->previous;
+      the_data = list_array->value;
+      item_size = the_data->size;
+      data_array = (int8_t*) &the_data->data;
+    } else {
+      item_size = parsed_value->size;
+      data_array = (int8_t*) &parsed_value->data;
+    }
+    // Now add the bytes to a list
+    for (j = 0 ; j < item_size ; j++) 
+      plc4c_utils_list_insert_tail_value(request_value->data, data_array + j);
+    
+  }
+}
+
+// forward declaration of helper function, TODO: move somewhere, or re-inline
+void plc4c_driver_s7_time_transport_size(
+    plc4c_s7_read_write_transport_size *transport_size);
+
 /**
  * Function used by the driver to tell the transport if there is a full
  * packet the driver can operate on available.
@@ -87,14 +126,16 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
 
 plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
                               plc4c_s7_read_write_tpkt_packet* packet) {
+  
+  uint16_t packet_size;
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_return_code return_code;
+  
   // Get the size required to contain the serialized form of this packet.
-  uint16_t packet_size =
-      plc4c_s7_read_write_tpkt_packet_length_in_bytes(packet);
+  packet_size = plc4c_s7_read_write_tpkt_packet_length_in_bytes(packet);
 
   // Serialize this message to a byte-array.
-  plc4c_spi_write_buffer* write_buffer;
-  plc4c_return_code return_code =
-      plc4c_spi_write_buffer_create(packet_size, &write_buffer);
+  return_code = plc4c_spi_write_buffer_create(packet_size, &write_buffer);
   if (return_code != OK) {
     return return_code;
   }
@@ -392,114 +433,79 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
 plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     plc4c_read_request* read_request,
     plc4c_s7_read_write_tpkt_packet** s7_read_request_packet) {
-  plc4c_driver_s7_config* configuration =
-      read_request->connection->configuration;
 
+  plc4c_driver_s7_config* configuration;
+  plc4c_s7_read_write_cotp_packet *payload;
+  plc4c_list_element* cur_item;
+
+  configuration = read_request->connection->configuration;
+  
   *s7_read_request_packet = malloc(sizeof(s7_read_request_packet));
   if (*s7_read_request_packet == NULL) {
     return NO_MEMORY;
   }
 
-  (*s7_read_request_packet)->payload =
-      malloc(sizeof(plc4c_s7_read_write_cotp_packet));
-  if((*s7_read_request_packet)->payload == NULL) {
-    return NO_MEMORY;
-  }
-  (*s7_read_request_packet)->payload->_type =
-      plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
-  (*s7_read_request_packet)->payload->cotp_packet_data_tpdu_ref =
-      configuration->pdu_id++;
-  (*s7_read_request_packet)->payload->cotp_packet_data_eot = true;
-  (*s7_read_request_packet)->payload->parameters = NULL;
-  (*s7_read_request_packet)->payload->payload =
-      malloc(sizeof(plc4c_s7_read_write_s7_message));
-  if((*s7_read_request_packet)->payload->payload == NULL) {
-    return NO_MEMORY;
-  }
-  (*s7_read_request_packet)->payload->payload->_type =
-      plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
-  (*s7_read_request_packet)->payload->payload->parameter =
-      malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-  if((*s7_read_request_packet)->payload->payload->parameter == NULL) {
-    return NO_MEMORY;
-  }
-  (*s7_read_request_packet)->payload->payload->parameter->_type =
-      plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
-  plc4c_utils_list_create(
-      &(*s7_read_request_packet)
-           ->payload->payload->parameter->s7_parameter_read_var_request_items);
+  (*s7_read_request_packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
+    
+  // Terse local variable for clarity
+  payload = (*s7_read_request_packet)->payload;
 
-  plc4c_list_element* cur_item = read_request->items->tail;
+  if (payload == NULL) {
+    return NO_MEMORY;
+  }
+  payload->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
+  payload->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
+  payload->cotp_packet_data_eot = true;
+  payload->parameters = NULL;
+  payload->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  if(payload->payload == NULL) {
+    return NO_MEMORY;
+  }
+  payload->payload->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
+  payload->payload->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  if(payload->payload->parameter == NULL) {
+    return NO_MEMORY;
+  }
+  payload->payload->parameter->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
+  plc4c_utils_list_create(&payload->payload->parameter->s7_parameter_read_var_request_items);
+
+  cur_item = read_request->items->tail;
+  
   while (cur_item != NULL) {
     plc4c_item* item = cur_item->value;
     // Get the item address from the API request.
     plc4c_s7_read_write_s7_var_request_parameter_item* parsed_item_address = item->address;
 
     // Create a copy of the request item...
-    plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address =
+    plc4c_s7_read_write_s7_var_request_parameter_item* updated_item_address = 
         malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
     if (updated_item_address == NULL) {
       return NO_MEMORY;
     }
     updated_item_address->_type = parsed_item_address->_type;
-    updated_item_address->s7_var_request_parameter_item_address_address = malloc(sizeof(plc4c_s7_read_write_s7_address));
+    updated_item_address->s7_var_request_parameter_item_address_address = 
+        malloc(sizeof(plc4c_s7_read_write_s7_address));
     if (updated_item_address->s7_var_request_parameter_item_address_address == NULL) {
       return NO_MEMORY;
     }
-    updated_item_address->s7_var_request_parameter_item_address_address->_type =
-        parsed_item_address->s7_var_request_parameter_item_address_address->_type;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_area =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_area;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_db_number =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_db_number;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_byte_address =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_byte_address;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_bit_address =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_bit_address;
-    updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
-        parsed_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
+    // Memcpy inplace of fields assignment, as all fields where assigned
+    memcpy(updated_item_address->s7_var_request_parameter_item_address_address,
+      parsed_item_address->s7_var_request_parameter_item_address_address, 
+      sizeof(plc4c_s7_read_write_s7_address));
 
-    // Update the data-types and sizes...
-    /*if (updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-        plc4c_s7_read_write_transport_size_STRING) {
-      if (string_length != NULL) {
-        updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
-            strtol(string_length, 0, 10) *
-                updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
-      } else if (updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-                 plc4c_s7_read_write_transport_size_STRING) {
-        updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements =
-            254 * updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
-      }
-    }*/
-      // In case of TIME values, we read 4 bytes for each value instead.
-    if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-            plc4c_s7_read_write_transport_size_TIME) {
-      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
-          plc4c_s7_read_write_transport_size_DINT;
-    } else if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-              plc4c_s7_read_write_transport_size_DATE) {
-      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
-          plc4c_s7_read_write_transport_size_UINT;
-    } else if(updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-                   plc4c_s7_read_write_transport_size_TIME_OF_DAY ||
-               updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size ==
-                   plc4c_s7_read_write_transport_size_TOD) {
-      updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size =
-          plc4c_s7_read_write_transport_size_UDINT;
-    }
+    // In case of TIME values, we read 4 bytes for each value instead.
+    plc4c_driver_s7_time_transport_size(
+      &updated_item_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size);
+    
     // Add the new item to the request.
     plc4c_utils_list_insert_head_value(
-        (*s7_read_request_packet)
-            ->payload->payload->parameter->s7_parameter_read_var_request_items,
+        payload->payload->parameter->s7_parameter_read_var_request_items,
         updated_item_address);
 
     cur_item = cur_item->next;
   }
 
-  (*s7_read_request_packet)->payload->payload->payload = NULL;
+  payload->payload->payload = NULL;
   return OK;
 }
 
@@ -511,69 +517,145 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
  * @return OK, if the packet was correctly prepared, otherwise not-OK.
  */
 plc4c_return_code plc4c_driver_s7_create_s7_write_request(
-    plc4c_write_request* write_request,
-    plc4c_s7_read_write_tpkt_packet** s7_write_request_packet) {
-  plc4c_driver_s7_config* configuration =
-      write_request->connection->configuration;
+    plc4c_write_request* request,
+    plc4c_s7_read_write_tpkt_packet** request_packet) {
 
-  *s7_write_request_packet = malloc(sizeof(s7_write_request_packet));
-  if (*s7_write_request_packet == NULL) {
+
+  plc4c_driver_s7_config* configuration;
+  plc4c_s7_read_write_cotp_packet *cotp_packet;
+  plc4c_s7_read_write_s7_message *s7_packet;
+  plc4c_list_element* list_item;
+  plc4c_s7_read_write_s7_parameter* s7_parameters;
+  plc4c_s7_read_write_s7_payload* s7_payload;
+
+  configuration = request->connection->configuration;
+
+  *request_packet = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+  if (*request_packet == NULL) 
     return NO_MEMORY;
-  }
+  
+  (*request_packet)->payload = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
+  if ((*request_packet)->payload == NULL) 
+    return NO_MEMORY;
+  
+  // Terse local variable for clarity
+  cotp_packet = (*request_packet)->payload;
 
-  (*s7_write_request_packet)->payload =
-      malloc(sizeof(plc4c_s7_read_write_cotp_packet));
-  (*s7_write_request_packet)->payload->_type =
-      plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
-  (*s7_write_request_packet)->payload->cotp_packet_data_tpdu_ref =
-      configuration->pdu_id++;
-  (*s7_write_request_packet)->payload->cotp_packet_data_eot = true;
-  (*s7_write_request_packet)->payload->payload =
-      malloc(sizeof(plc4c_s7_read_write_s7_message));
-  (*s7_write_request_packet)->payload->payload->_type =
-      plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
-  (*s7_write_request_packet)->payload->payload->parameter =
-      malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-  (*s7_write_request_packet)->payload->payload->parameter->_type =
-      plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
-  plc4c_utils_list_create(
-      &(*s7_write_request_packet)
-          ->payload->payload->parameter->s7_parameter_read_var_request_items);
+  cotp_packet->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
+  cotp_packet->cotp_packet_data_tpdu_ref = configuration->pdu_id++;
+  cotp_packet->cotp_packet_data_eot = true;
+  cotp_packet->parameters = NULL;
 
-  plc4c_list_element* item = write_request->items->tail;
-  while (item != NULL) {
+  // Allocate and initalise payload->payload 
+  cotp_packet->payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  s7_packet = cotp_packet->payload;
+  if (s7_packet == NULL)
+    return NO_MEMORY;
+  s7_packet->_type = plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
+
+  // Allocate and initalise payload->payload->parameter
+  s7_packet->parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  s7_parameters = s7_packet->parameter;
+  if (s7_parameters == NULL)
+    return NO_MEMORY;
+  s7_parameters->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
+  plc4c_utils_list_create(&s7_parameters->s7_parameter_write_var_request_items);
+  
+  //  Allocate and initalise payload->payload->payload
+  s7_packet->payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
+  s7_payload = s7_packet->payload;
+  if (s7_payload == NULL) 
+    return NO_MEMORY;
+  s7_payload->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request;
+  plc4c_utils_list_create(&s7_payload->s7_payload_write_var_request_items);
+  
+  list_item = request->items->tail;
+  
+  while (list_item != NULL) {
+
+    plc4c_request_value_item *item;
+    plc4c_item *parsed_item;
+    plc4c_s7_read_write_s7_var_request_parameter_item *parsed_param;
+    plc4c_s7_read_write_s7_var_request_parameter_item *request_param;
+    plc4c_data *parsed_value;
+    plc4c_s7_read_write_s7_var_payload_data_item *request_value;
+    plc4c_return_code return_code;
+    int8_t* data_array;
+    
+    // Set things off to a good start 
+    return_code = OK;
+
     // Get the item address from the API request.
-    char* itemAddress = item->value;
+    item = list_item->value; 
+    parsed_item = item->item;
+    parsed_param = parsed_item->address;
+    parsed_value = item->value;
 
-    // Create the item ...
-    plc4c_s7_read_write_s7_var_request_parameter_item* request_item;
-    plc4c_return_code return_code =
-        plc4c_driver_s7_encode_address(itemAddress, &request_item);
-    if (return_code != OK) {
+    // Make a copy of the param
+    request_param = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+    if (!request_param) 
+      return NO_MEMORY;
+    
+    request_param->_type = parsed_param->_type;
+    request_param->s7_var_request_parameter_item_address_address = 
+        malloc(sizeof(plc4c_s7_read_write_s7_address));
+    if (!request_param->s7_var_request_parameter_item_address_address)
+      return NO_MEMORY;
+    
+    memcpy(request_param->s7_var_request_parameter_item_address_address,
+      parsed_param->s7_var_request_parameter_item_address_address, 
+      sizeof(plc4c_s7_read_write_s7_address));
+
+    if (return_code != OK) 
       return return_code;
-    }
+    
+    // Make a copy of the value 
+    request_value = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
+    
+    // get transport data size (defined via transport size)
+    request_value->transport_size = 
+        plc4c_s7_read_write_transport_size_get_data_transport_size(
+          parsed_param->s7_var_request_parameter_item_address_address->s7_address_any_transport_size);
+    request_value->return_code = 0;
+    
+    plc4c_utils_list_create(&request_value->data);
+    
+    
+    plc4c_add_data_to_request( parsed_value, request_value);
 
-    // Add the new item to the request.
-    plc4c_utils_list_insert_head_value(
-        (*s7_write_request_packet)
-            ->payload->payload->parameter->s7_parameter_read_var_request_items,
-        request_item);
+    // Add the new parameter to the request
+    plc4c_utils_list_insert_head_value(s7_parameters->s7_parameter_write_var_request_items, request_param);
+    
+    // Add the new value to the request
+    plc4c_utils_list_insert_head_value(s7_payload->s7_payload_write_var_request_items, request_value);
 
-    item = item->next;
+    list_item = list_item->next;
   }
 
-  (*s7_write_request_packet)->payload->payload->payload =
-      malloc(sizeof(plc4c_s7_read_write_s7_payload));
-  if((*s7_write_request_packet)->payload->payload->payload == NULL) {
-    return NO_MEMORY;
-  }
-  (*s7_write_request_packet)->payload->payload->payload->_type =
-      plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request;
-  plc4c_utils_list_create(
-      &(*s7_write_request_packet)->payload->payload->payload->s7_payload_write_var_request_items);
 
   // TODO: Implement the value encoding ...
   // TODO: Add all the encoded item values ...
 
   return OK;
+}
+
+/**
+ * Adjust transport sizes for time values
+ *
+ * @param transport_size current transport size of item
+ */
+void plc4c_driver_s7_time_transport_size(plc4c_s7_read_write_transport_size *transport_size) {
+  // In case of TIME values, we read 4 bytes for each value instead.
+  switch (*transport_size) {
+    case plc4c_s7_read_write_transport_size_TIME:
+      *transport_size = plc4c_s7_read_write_transport_size_DINT;
+      break;
+    case plc4c_s7_read_write_transport_size_DATE:
+      *transport_size = plc4c_s7_read_write_transport_size_UINT;
+      break;
+    case plc4c_s7_read_write_transport_size_TIME_OF_DAY:
+    case plc4c_s7_read_write_transport_size_TOD:
+      *transport_size = plc4c_s7_read_write_transport_size_UDINT;
+      break;
+  }
 }

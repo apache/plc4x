@@ -43,6 +43,7 @@ elseif (BUILD_PHASE STREQUAL test-compile)
     include(CTest)
 
     # Make the Unity sources available to the build as "Unity" library
+    # TODO: We should make this optional and enabled by some variable passed in from maven. If we comment it out it won't build on systems that don't have unity installed.
     add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
 
     #add_library(Unity STATIC

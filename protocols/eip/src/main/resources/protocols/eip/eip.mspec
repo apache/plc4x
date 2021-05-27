@@ -123,7 +123,8 @@
     ['0X02A0'   STRUCTURED      ['88']]
     ['0X02A0'   STRING          ['88']]
     ['0X02A0'   STRING36        ['40']]
-    ['-1'       UNKNOWN         ['-1']]
+    //TODO: -1 is not a valid value for uint
+    //['-1'       UNKNOWN         ['-1']]
 ]
 
 [enum   uint    16  'EiPCommand'

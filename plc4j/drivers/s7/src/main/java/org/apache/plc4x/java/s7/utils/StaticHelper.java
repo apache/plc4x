@@ -30,8 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StaticHelper {
 
@@ -105,13 +103,13 @@ public class StaticHelper {
             int month = io.readUnsignedInt(8);
             int day = io.readUnsignedInt(8);
             // Skip day-of-week
-            io.readByte(8);
-            int hour = io.readByte(8);
-            int minute = io.readByte(8);
-            int second = io.readByte(8);
+            io.readByte();
+            int hour = io.readByte();
+            int minute = io.readByte();
+            int second = io.readByte();
             int nanosecond = io.readUnsignedInt(24);
             // Skip day-of-week
-            io.readByte(8);
+            io.readByte();
 
             return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
         } catch (Exception e) {
@@ -124,9 +122,9 @@ public class StaticHelper {
     }
 
     public static String parseS7Char(ReadBuffer io, String encoding) {
-        if("UTF-8".equalsIgnoreCase(encoding)) {
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
             return io.readString(8, encoding);
-        } else if("UTF-16".equalsIgnoreCase(encoding)) {
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
             return io.readString(16, encoding);
         } else {
             throw new PlcRuntimeException("Unsupported encoding");
@@ -142,15 +140,15 @@ public class StaticHelper {
                 short totalStringLength = io.readUnsignedShort(8);
 
                 final byte[] byteArray = new byte[totalStringLength];
-                for(int i = 0; (i < stringLength) && io.hasMore(8); i++) {
-                    final byte curByte = io.readByte(8);
+                for (int i = 0; (i < stringLength) && io.hasMore(8); i++) {
+                    final byte curByte = io.readByte();
                     if (i < totalStringLength) {
                         byteArray[i] = curByte;
                     } else {
                         // Gobble up the remaining data, which is not added to the string.
                         i++;
-                        for(; (i < stringLength) && io.hasMore(8); i++) {
-                            io.readByte(8);
+                        for (; (i < stringLength) && io.hasMore(8); i++) {
+                            io.readByte();
                         }
                         break;
                     }
@@ -163,15 +161,15 @@ public class StaticHelper {
                 int totalStringLength = io.readUnsignedInt(16);
 
                 final byte[] byteArray = new byte[totalStringLength * 2];
-                for(int i = 0; (i < stringLength) && io.hasMore(16); i++) {
+                for (int i = 0; (i < stringLength) && io.hasMore(16); i++) {
                     final short curShort = io.readShort(16);
                     if (i < totalStringLength) {
-                        byteArray[i*2] = (byte) (curShort >>> 8);
-                        byteArray[(i*2) + 1] = (byte) (curShort & 0xFF);
+                        byteArray[i * 2] = (byte) (curShort >>> 8);
+                        byteArray[(i * 2) + 1] = (byte) (curShort & 0xFF);
                     } else {
                         // Gobble up the remaining data, which is not added to the string.
                         i++;
-                        for(; (i < stringLength) && io.hasMore(16); i++) {
+                        for (; (i < stringLength) && io.hasMore(16); i++) {
                             io.readShort(16);
                         }
                         break;

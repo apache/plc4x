@@ -16,10 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package values
 
 import (
 	"encoding/xml"
+	"fmt"
 	"time"
 )
 
@@ -34,12 +36,15 @@ func NewPlcDATE_AND_TIME(value time.Time) PlcDATE_AND_TIME {
 	}
 }
 
-func (m PlcDATE_AND_TIME) IsTime() bool {
+func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }
+func (m PlcDATE_AND_TIME) GetDateTime() time.Time {
+	return time.Time{}.Add(m.GetDuration())
+}
 
-func (m PlcDATE_AND_TIME) GetTime() time.Time {
-	return m.value
+func (m PlcDATE_AND_TIME) GetString() string {
+	return fmt.Sprintf("%v", m.GetDateTime())
 }
 
 func (m PlcDATE_AND_TIME) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

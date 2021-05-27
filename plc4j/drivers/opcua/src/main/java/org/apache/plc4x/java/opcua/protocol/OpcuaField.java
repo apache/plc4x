@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.opcua.protocol;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -79,11 +80,11 @@ public class OpcuaField implements PlcSubscriptionField {
         String namespaceString = matcher.group("namespace");
         Integer namespace = namespaceString != null ? Integer.valueOf(namespaceString) : 0;
 
-        String dataTypeString = matcher.group("datatype") != null ? "IEC61131_" + matcher.group("datatype").toUpperCase() : "IEC61131_NULL";
-        if (!OpcuaDataType.isDefined(dataTypeString)) {
+        String dataTypeString = matcher.group("datatype") != null ? matcher.group("datatype").toUpperCase() : "NULL";
+        if (!EnumUtils.isValidEnum(OpcuaDataType.class, dataTypeString)) {
             throw new PlcUnsupportedDataTypeException("Datatype " + dataTypeString + " is unsupported by this protocol");
         }
-        OpcuaDataType dataType = OpcuaDataType.enumForValue(dataTypeString);
+        OpcuaDataType dataType = OpcuaDataType.valueOf(dataTypeString);
 
         return new OpcuaField(namespace, identifier, identifierType, dataType);
     }
@@ -105,13 +106,13 @@ public class OpcuaField implements PlcSubscriptionField {
         return identifierType;
     }
 
-    public String getDataType() {
-        return dataType.getValue();
+    public OpcuaDataType getDataType() {
+        return dataType;
     }
 
     @Override
     public String getPlcDataType() {
-        return dataType.getValue();
+        return dataType.name();
     }
 
     @Override

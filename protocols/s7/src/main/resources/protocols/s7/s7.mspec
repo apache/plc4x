@@ -85,7 +85,7 @@
             [simple uint 8 'crc']
         ]
         ['0xE0' COTPParameterDisconnectAdditionalInformation [uint 8 'rest']
-            [array  uint 8 'data' count 'rest']
+            [array byte 'data' count 'rest']
         ]
     ]
 ]
@@ -202,7 +202,7 @@
 
 [type 'SzlDataTreeItem'
     [simple uint 16 'itemIndex']
-    [array  int 8   'mlfb' count '20']
+    [array  byte    'mlfb' count '20']
     [simple uint 16 'moduleTypeId']
     [simple uint 16 'ausbg']
     [simple uint 16 'ausbe']
@@ -233,7 +233,7 @@
     [enum     DataTransportErrorCode 'returnCode']
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
-    [array    int  8                 'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
+    [array    byte                   'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
     [padding  uint 8                 'pad'        '0x00' 'lastItem ? 0 : COUNT(data) % 2']
 ]
 
@@ -334,16 +334,16 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' CHAR
-            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '1']
+            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
         ]
         ['IEC61131_WCHAR' CHAR
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2']
         ]
         ['IEC61131_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.string.length + 2']
+            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '_value.string.length + 2']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '(_value.string.length * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(_value.string.length * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -437,7 +437,7 @@
     ['0x0D' ULINT            ['0x00'       , 'X'               , '16'                , 'INT'                   , 'null'             , 'IEC61131_ULINT'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
 
     // Floating point values
-    ['0x0E' REAL             ['0x08'       , 'D'               , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_REAL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x0E' REAL             ['0x08'       , 'D'               , '4'                 , 'null'                  , 'REAL'             , 'IEC61131_REAL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x0F' LREAL            ['0x30'       , 'X'               , '8'                 , 'REAL'                  , 'null'             , 'IEC61131_LREAL'        , 'false'               , 'false'               , 'true'                 , 'true'                 , 'false'             ]]
 
     // Characters and Strings

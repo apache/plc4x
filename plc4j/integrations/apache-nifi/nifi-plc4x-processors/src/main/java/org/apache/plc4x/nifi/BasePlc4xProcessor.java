@@ -20,11 +20,13 @@ package org.apache.plc4x.nifi;
 
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.*;
+import org.apache.nifi.expression.ExpressionLanguageScope;
 import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.*;
 
@@ -36,7 +38,10 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
         .addValidator(new Plc4xConnectionStringValidator())
+        //.expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
+        //TODO this could be better implemented on a service
         .build();
+    
     public static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
         .Builder().name("PLC_ADDRESS_STRING")
         .displayName("PLC resource address String")
@@ -44,6 +49,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             "(Multiple values supported). The expected format is: {name}={address}(;{name}={address})*")
         .required(true)
         .addValidator(new Plc4xAddressStringValidator())
+        .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
         .build();
 
     public static final Relationship REL_SUCCESS = new Relationship.Builder()
@@ -55,17 +61,30 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .description("An error occurred processing")
         .build();
 
-    protected List<PropertyDescriptor> descriptors;
-
-    Set<Relationship> relationships;
-
-    private String connectionString;
+    //TODO protected could be changed by private with getters
+    protected List<PropertyDescriptor> properties;
+    protected Set<Relationship> relationships;
+  
+    protected String connectionString;
     private Map<String, String> addressMap;
+
+    private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
 
     @Override
     protected void init(final ProcessorInitializationContext context) {
-        this.descriptors = Arrays.asList(PLC_CONNECTION_STRING, PLC_ADDRESS_STRING);
-        this.relationships = new HashSet<>(Arrays.asList(REL_SUCCESS, REL_FAILURE));
+    	
+    	//mio
+    	final List<PropertyDescriptor> properties = new ArrayList<>();
+    	properties.add(PLC_CONNECTION_STRING);
+    	properties.add(PLC_ADDRESS_STRING);
+        this.properties = Collections.unmodifiableList(properties);
+
+    	
+    	final Set<Relationship> relationships = new HashSet<>();
+        relationships.add(REL_SUCCESS);
+        relationships.add(REL_FAILURE);
+        this.relationships = Collections.unmodifiableSet(relationships);
+
     }
 
     
@@ -91,13 +110,13 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @Override
     public final List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-        return descriptors;
+        return properties;
     }
 
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
-        PropertyValue property = context.getProperty(PLC_CONNECTION_STRING.getName());
-        connectionString = property.getValue();
+    	//TODO add .evaluateAttributeExpressions()
+        connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         addressMap = new HashMap<>();
         PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
         for (String segment : addresses.getValue().split(";")) {
@@ -121,7 +140,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
             return false;
         }
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
-        return Objects.equals(descriptors, that.descriptors) &&
+        return Objects.equals(properties, that.properties) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
             Objects.equals(getConnectionString(), that.getConnectionString()) &&
             Objects.equals(addressMap, that.addressMap);
@@ -129,7 +148,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnectionString(), addressMap);
+        return Objects.hash(super.hashCode(), properties, getRelationships(), getConnectionString(), addressMap);
     }
 
     public static class Plc4xConnectionStringValidator implements Validator {
@@ -144,8 +163,13 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         @Override
         public ValidationResult validate(String subject, String input, ValidationContext context) {
             // TODO: Add validation here ...
+        	// TODO: add validation for both Nifi Expression language and the Address Map string is well built
             return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
         }
+    }
+
+    protected PooledPlcDriverManager getDriverManager() {
+        return driverManager;
     }
 
 }

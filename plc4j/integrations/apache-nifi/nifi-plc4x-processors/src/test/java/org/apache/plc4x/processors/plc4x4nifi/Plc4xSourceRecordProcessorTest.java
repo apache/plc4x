@@ -23,6 +23,7 @@ import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;
 import org.apache.plc4x.nifi.Plc4xSourceRecordProcessor;
 import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Test;
 
 
@@ -33,14 +34,15 @@ public class Plc4xSourceRecordProcessorTest {
     
         @BeforeEach
     public void init() throws InitializationException {
-    	
+    	        	
     	testRunner = TestRunners.newTestRunner(Plc4xSourceRecordProcessor.class);
     	//forzar que no tenga conexiones de entrada
     	testRunner.setIncomingConnection(false);
     	//fijo las propiedades
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "s7://10.105.143.1:102?remote-rack=0&remote-slot=0&controller-type=S7_300");
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_ADDRESS_STRING, "miboolean=%DB20:DBX6.0:BOOL;miint=%DB20:DBW06:INT");
-    	testRunner.setProperty(Plc4xSourceRecordProcessor.FORCE_RECONNECT, "false");
+    	testRunner.setValidateExpressionUsage(false);
+    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_CONNECTION_STRING, "s7://10.105.143.7:102?remote-rack=0&remote-slot=1&controller-type=S7_1200");
+    	testRunner.setProperty(Plc4xSourceRecordProcessor.PLC_ADDRESS_STRING, "var1=%DB1:DBX0.0:BOOL;var2=%DB1:DBX0.1:BOOL;var3=%DB1:DBB01:BYTE;var4=%DB1:DBW02:WORD;var5=%DB1:DBW04:INT");
+    	
     	//filo los servicios
     	final MockRecordWriter writerService = new MockRecordWriter("header", false);
     	testRunner.addControllerService("writer", writerService);

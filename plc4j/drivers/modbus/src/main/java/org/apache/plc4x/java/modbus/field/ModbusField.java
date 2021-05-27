@@ -87,7 +87,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
 
     @JsonIgnore
     public int getLengthWords() {
-        return (int) (quantity * ((float) dataType.getDataTypeSize())/2.0f);
+        return (int) ((quantity * (float) dataType.getDataTypeSize())/2.0f);
     }
 
     public ModbusDataType getDataType() {

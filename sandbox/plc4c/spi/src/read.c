@@ -33,17 +33,26 @@ void plc4c_read_request_set_connection(plc4c_read_request *read_request,
 }
 
 plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
-                                              char* field_name, char *address) {
-  plc4c_item *item = malloc(sizeof(plc4c_item));
-  if(item == NULL) {
+    char* field_name, char *address) {
+  
+  // Parse an address string and get a driver-dependent data-structure
+  // representing the address back.
+  plc4c_item *item;
+  plc4c_return_code result;
+
+  item = malloc(sizeof(plc4c_item));
+  if(item == NULL) 
     return NO_MEMORY;
-  }
-  item->name = field_name;
-  plc4c_return_code result =
-      read_request->connection->driver->parse_address_function(address, &(item->address));
-  if(result != OK) {
+  
+  result = read_request->connection->driver->parse_address_function(
+          address, &item->address );
+  
+  if(result != OK) 
     return result;
-  }
+  
+  // Bind name to the plc_item
+  item->name = field_name;
+
   plc4c_utils_list_insert_head_value(read_request->items, item);
   return OK;
 }

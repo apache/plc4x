@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 package readwrite
 
 import (
@@ -29,7 +30,7 @@ import (
 type BacnetipParserHelper struct {
 }
 
-func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io *utils.ReadBuffer) (interface{}, error) {
+func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
 	case "APDU":
 		apduLength, err := utils.StrToUint16(arguments[0])
