@@ -387,10 +387,10 @@ void plc4c_data_printf(plc4c_data *data) {
       printf("%u", data->data.uint_value);
       break;
     case PLC4C_LINT:
-      printf("%I64ld", data->data.lint_value);
+      printf("%ll", data->data.lint_value);
       break;
     case PLC4C_ULINT:
-      printf("%I64lu", data->data.ulint_value);
+      printf("%llu", data->data.ulint_value);
       break;
     case PLC4C_FLOAT:
       printf("%f", data->data.float_value);
