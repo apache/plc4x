@@ -37,10 +37,10 @@
   <properties>
     <unity.version>2.5.0</unity.version>
     <!-- Tell Sonar where to find the sources -->
-    <sonar.sources></sonar.sources>
-    <!--sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <!--sonar.sources></sonar.sources-->
+    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
     <sonar.cfamily.build-wrapper-execution-prefix/>
-    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output-->
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
@@ -150,6 +150,30 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+              <execution>
+                <id>modify-cmake</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
