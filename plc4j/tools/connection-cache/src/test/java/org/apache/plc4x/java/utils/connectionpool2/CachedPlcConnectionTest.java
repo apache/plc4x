@@ -21,20 +21,14 @@ package org.apache.plc4x.java.utils.connectionpool2;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.awaitility.Duration;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,10 +41,12 @@ class CachedPlcConnectionTest {
 
         when(mockConnection.readRequestBuilder().build().execute()).thenAnswer(invocation -> {
             final CompletableFuture<? extends PlcReadResponse> future = new CompletableFuture<>();
-            // TODO: use the await below
-            await().until(() -> true);
-            TimeUnit.SECONDS.sleep(2);
-            future.completeExceptionally(new RuntimeException("abc"));
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    future.completeExceptionally(new RuntimeException("abc"));
+                }
+            }, TimeUnit.SECONDS.toMillis(2));
             return future;
         });
 

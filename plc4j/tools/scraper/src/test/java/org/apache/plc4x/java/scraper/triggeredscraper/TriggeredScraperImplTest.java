@@ -21,8 +21,6 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.values.PlcBOOL;
-import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
@@ -31,21 +29,18 @@ import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 class TriggeredScraperImplTest {
@@ -100,10 +95,11 @@ class TriggeredScraperImplTest {
 
         scraper.start();
 
-        // TODO: use the await below
-        await().until(() -> true);
-        TimeUnit.SECONDS.sleep(2);
-
-        scraper.stop();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                scraper.stop();
+            }
+        }, TimeUnit.SECONDS.toMillis(2));
     }
 }
