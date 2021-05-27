@@ -56,6 +56,7 @@ field
  | reservedField
  | simpleField
  | typeSwitchField
+ | unknownField
  | virtualField
  ;
 
@@ -113,6 +114,10 @@ simpleField
 
 typeSwitchField
  : 'typeSwitch' discriminators=multipleExpressions caseStatement*
+ ;
+
+unknownField
+ : 'unknown' type=dataType
  ;
 
 virtualField

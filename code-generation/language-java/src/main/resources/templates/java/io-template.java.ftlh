@@ -39,6 +39,7 @@
 <#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
 <#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
 <#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="unknownField" type="org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField" -->
 <#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
@@ -439,6 +440,14 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         }
         <#break>
 
+    <#case "unknown">
+        <#assign unknownField = field>
+        <#assign simpleTypeReference = unknownField.type>
+
+        // Unknown Field
+        ${helper.getReadBufferReadMethodCall("unknown" , simpleTypeReference, "", unknownField)};
+        <#break>
+
     <#case "virtual">
         <#assign virtualField = field>
 
@@ -465,6 +474,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
 <#if outputFlavor != "passive">
     public static void staticSerialize(WriteBuffer writeBuffer, ${type.name} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    <#if helper.hasFieldOfType("unknown")>
+        throw new ParseException("Unknown field not serializable");
+    <#else>
         int startPos = writeBuffer.getPos();
         writeBuffer.pushContext("${type.name}");
 <#list type.fields as field>
@@ -656,6 +668,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 </#switch>
 </#list>
         writeBuffer.popContext("${type.name}");
+    </#if>
     }
 </#if>
 

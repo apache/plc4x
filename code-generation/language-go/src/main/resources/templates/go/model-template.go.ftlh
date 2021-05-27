@@ -38,6 +38,7 @@
 <#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
 <#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
 <#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="unknownField" type="org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField" -->
 <#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
@@ -365,6 +366,14 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 	// Length of sub-type elements will be added by sub-type...
 	lengthInBits += m.Child.LengthInBits()
 					<#break>
+				<#case "unknown">
+					<#assign unknownField = field>
+					<#assign simpleTypeReference = unknownField.type>
+
+	// Unknown field
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+
+					<#break>
 				<#case "virtual">
 					<#assign virtualField = field>
 
@@ -513,6 +522,14 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#else>
 	lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
 				</#if>
+				<#break>
+			<#case "unknown">
+				<#assign unknownField = field>
+			<#assign simpleTypeReference = unknownField.type>
+
+	// Unknown field
+	lengthInBits += ${simpleTypeReference.sizeInBits}
+
 				<#break>
 			<#case "virtual">
 				<#assign virtualField = field>
@@ -903,6 +920,16 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_
 	}
 				<#break>
 
+			<#case "unknown">
+				<#assign unknownField = field>
+
+	// Unknown field
+	_, _UnknownErr := ${helper.getReadBufferReadMethodCall("unknown", unknownField.type, null, field)}
+	if _UnknownErr != nil {
+		return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field")<@emitImport import="github.com/pkg/errors" />
+	}
+				<#break>
+
 			<#case "virtual">
 				<#assign virtualField = field>
 
@@ -948,15 +975,18 @@ func (m *${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child I${t
 <#else>
 func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 </#if>
-	<#if !helper.isDiscriminatedChildTypeDefinition()>
+	<#if helper.hasFieldOfType("unknown")>
+	return errors.New("Unknown field not serializable")
+	<#else>
+		<#if !helper.isDiscriminatedChildTypeDefinition()>
 	if pushErr :=writeBuffer.PushContext("${type.name}"); pushErr != nil {
 		return pushErr
 	}
-	</#if>
-	<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
-	<#if arraySizeInBytesHelpers?has_content>
-		<#list arraySizeInBytesHelpers?keys as key>
-			<#assign typeName=arraySizeInBytesHelpers[key]>
+		</#if>
+		<#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
+		<#if arraySizeInBytesHelpers?has_content>
+			<#list arraySizeInBytesHelpers?keys as key>
+				<#assign typeName=arraySizeInBytesHelpers[key]>
 	${key}ArraySizeInBytes := func(items []*${typeName}) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
@@ -964,63 +994,63 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 		}
 		return sizeInBytes
 	}
-		</#list>
-	</#if>
-	<#if helper.isDiscriminatedChildTypeDefinition()>
+			</#list>
+		</#if>
+		<#if helper.isDiscriminatedChildTypeDefinition()>
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("${type.name}"); pushErr != nil {
 			return pushErr
 		}
-	</#if>
-	<#list type.fields as field>
-		<#switch field.typeName>
-			<#case "array">
-				<#assign arrayField = field>
-				<#assign simpleTypeReference = arrayField.type>
+		</#if>
+		<#list type.fields as field>
+			<#switch field.typeName>
+				<#case "array">
+					<#assign arrayField = field>
+					<#assign simpleTypeReference = arrayField.type>
 
 	// Array Field (${arrayField.name})
 	if m.${arrayField.name?cap_first} != nil {
-				<#if helper.isByteBased(arrayField.type)>
+					<#if helper.isByteBased(arrayField.type)>
 		// Byte Array field (${arrayField.name})
 		_writeArrayErr := writeBuffer.WriteByteArray("${arrayField.name}", m.${arrayField.name?cap_first})
 		if _writeArrayErr != nil {
 			return errors.Wrap(_writeArrayErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
-				<#else>
+					<#else>
 		if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-					<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
+						<#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
 		itemCount := uint16(len(m.${arrayField.name?cap_first}))
 		var curItem uint16 = 0
-				</#if>
-		for _, _element := range m.${arrayField.name?cap_first} {
-					<#if helper.isSimpleTypeReference(arrayField.type)>
-						<#assign simpleTypeReference = arrayField.type>
-			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", field)}
-					<#else>
-					<#assign complexTypeReference = arrayField.type>
-					<#if helper.needsVariable(arrayField, "lastItem", true)>
-			var lastItem bool = curItem == (itemCount - 1)
 					</#if>
+		for _, _element := range m.${arrayField.name?cap_first} {
+						<#if helper.isSimpleTypeReference(arrayField.type)>
+							<#assign simpleTypeReference = arrayField.type>
+			_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", field)}
+						<#else>
+						<#assign complexTypeReference = arrayField.type>
+						<#if helper.needsVariable(arrayField, "lastItem", true)>
+			var lastItem bool = curItem == (itemCount - 1)
+						</#if>
 			_elementErr := _element.Serialize(writeBuffer<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
-				</#if>
+					</#if>
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
-					<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
+						<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
 			curItem++
-				</#if>
+					</#if>
 		}
 		if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
 			return popErr
 		}
-				</#if>
+					</#if>
 	}
-				<#break>
-			<#case "checksum">
-				<#assign checksumField = field>
-				<#assign simpleTypeReference = checksumField.type>
+					<#break>
+				<#case "checksum">
+					<#assign checksumField = field>
+					<#assign simpleTypeReference = checksumField.type>
 
 	// Checksum Field (checksum) (Calculated)
 	{
@@ -1033,61 +1063,61 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 			return errors.Wrap(_checksumErr, "Error serializing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
-				<#break>
-			<#case "const">
-				<#assign constField = field>
-				<#assign simpleTypeReference = constField.type>
+					<#break>
+				<#case "const">
+					<#assign constField = field>
+					<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
 	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField.name, simpleTypeReference, constField.referenceValue, field)}
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#break>
-			<#case "discriminator">
-				<#assign discriminatorField = field>
-				<#assign simpleTypeReference = discriminatorField.type>
+					<#break>
+				<#case "discriminator">
+					<#assign discriminatorField = field>
+					<#assign simpleTypeReference = discriminatorField.type>
 
 	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
 	${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(child.${discriminatorField.name?cap_first}())
-	<#if helper.isEnumField(field)>
+					<#if helper.isEnumField(field)>
 	_${discriminatorField.name}Err := ${discriminatorField.name}.Serialize(writeBuffer)
-	<#else>
+					<#else>
 	_${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", field)}
-	</#if>
+					</#if>
 
 	if _${discriminatorField.name}Err != nil {
 		return errors.Wrap(_${discriminatorField.name}Err, "Error serializing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#break>
-			<#case "enum">
-				<#assign enumField = field>
+					<#break>
+				<#case "enum">
+					<#assign enumField = field>
 
 	if pushErr := writeBuffer.PushContext("${enumField.name}"); pushErr != nil {
 		return pushErr
 	}
-					<#if enumField.fieldName?has_content>
-						<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
+						<#if enumField.fieldName?has_content>
+							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
 	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.${enumField.name?cap_first}.name())")}
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-					<#else>
+						<#else>
 	// Enum field (${enumField.name})
 	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
 	_${enumField.name}Err := ${enumField.name}.Serialize(writeBuffer)
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-			</#if>
+				</#if>
 	if popErr := writeBuffer.PopContext("${enumField.name}"); popErr != nil {
 		return popErr
 	}
-				<#break>
-			<#case "implicit">
-				<#assign implicitField = field>
-				<#assign simpleTypeReference = implicitField.type>
+					<#break>
+				<#case "implicit">
+					<#assign implicitField = field>
+					<#assign simpleTypeReference = implicitField.type>
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
@@ -1095,9 +1125,9 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 	if _${implicitField.name}Err != nil {
 		return errors.Wrap(_${implicitField.name}Err, "Error serializing '${implicitField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#break>
-			<#case "manualArray">
-				<#assign manualArrayField = field>
+					<#break>
+				<#case "manualArray">
+					<#assign manualArrayField = field>
 
 	// Manual Array Field (${manualArrayField.name})
 	if m.${manualArrayField.name?cap_first} != nil {
@@ -1112,36 +1142,36 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 			return popErr
 		}
 	}
-				<#break>
-			<#case "manual">
-				<#assign manualField = field>
+					<#break>
+				<#case "manual">
+					<#assign manualField = field>
 
 	// Manual Field (${manualField.name})
 	${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)}
-				<#break>
-			<#case "optional">
-				<#assign optionalField = field>
+					<#break>
+				<#case "optional">
+					<#assign optionalField = field>
 
 	// Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
 	var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
 	if m.${optionalField.name?cap_first} != nil {
-				<#if helper.isSimpleTypeReference(optionalField.type)>
-					<#assign simpleTypeReference = optionalField.type>
+					<#if helper.isSimpleTypeReference(optionalField.type)>
+						<#assign simpleTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
 		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "*(" + optionalField.name + ")", field)}
-				<#else>
-					<#assign complexTypeReference = optionalField.type>
+					<#else>
+						<#assign complexTypeReference = optionalField.type>
 		${optionalField.name} = m.${optionalField.name?cap_first}
 		_${optionalField.name}Err := ${optionalField.name}.Serialize(writeBuffer)
-				</#if>
+					</#if>
 		if _${optionalField.name}Err != nil {
 			return errors.Wrap(_${optionalField.name}Err, "Error serializing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
-				<#break>
-			<#case "padding">
-				<#assign paddingField = field>
-				<#assign simpleTypeReference = paddingField.type>
+					<#break>
+				<#case "padding">
+					<#assign paddingField = field>
+					<#assign simpleTypeReference = paddingField.type>
 
 	// Padding Field (padding)
 	{
@@ -1160,10 +1190,10 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 			return popErr
 		}
 	}
-				<#break>
-			<#case "reserved">
-				<#assign reservedField = field>
-				<#assign simpleTypeReference = reservedField.type>
+					<#break>
+				<#case "reserved">
+					<#assign reservedField = field>
+					<#assign simpleTypeReference = reservedField.type>
 
 	// Reserved Field (reserved)
 	{
@@ -1172,22 +1202,22 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 			return errors.Wrap(_err, "Error serializing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}
 	}
-				<#break>
-			<#case "simple">
-				<#assign simpleField = field>
+					<#break>
+				<#case "simple">
+					<#assign simpleField = field>
 
 	// Simple Field (${simpleField.name})
-				<#if helper.isSimpleTypeReference(simpleField.type)>
-					<#assign simpleTypeReference = simpleField.type>
-					<#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
+					<#if helper.isSimpleTypeReference(simpleField.type)>
+						<#assign simpleTypeReference = simpleField.type>
+						<#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
 	${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name?cap_first})
-				<#if helper.isEnumField(field)>
+						<#if helper.isEnumField(field)>
 	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "utils.WithAdditionalStringRepresentation(m.${simpleField.name?cap_first}.name())")}
-				<#else>
+						<#else>
 	_${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleFieldLogicalName, simpleTypeReference, "(" + simpleField.name + ")", simpleField)}
-				</#if>
-				<#else>
-					<#assign complexTypeReference = simpleField.type>
+						</#if>
+					<#else>
+						<#assign complexTypeReference = simpleField.type>
 	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
 		return pushErr
 	}
@@ -1195,37 +1225,38 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
 		return popErr
 	}
-				</#if>
+					</#if>
 	if _${simpleField.name}Err != nil {
 		return errors.Wrap(_${simpleField.name}Err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#break>
-			<#case "switch">
-				<#assign switchField = field>
+					<#break>
+				<#case "switch">
+					<#assign switchField = field>
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
 	_typeSwitchErr := serializeChildFunction()
 	if _typeSwitchErr != nil {
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#break>
-			<#case "virtual">
-				<#break>
-		</#switch>
-	</#list>
+					<#break>
+				<#case "virtual">
+					<#break>
+			</#switch>
+		</#list>
 
-	<#if helper.isDiscriminatedChildTypeDefinition()>
+		<#if helper.isDiscriminatedChildTypeDefinition()>
 		if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
 			return popErr
 		}
 		return nil
 	}
 	return m.Parent.SerializeParent(writeBuffer, m, ser)
-	<#else>
+		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
 		return popErr
 	}
 	return nil
+		</#if>
 	</#if>
 }
 

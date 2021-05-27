@@ -38,17 +38,35 @@
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
     [const          uint 8  'constField'        '5']
-
-    //TODO: Discriminated Field can't be used in simple type
+    // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  'discriminatorField']
-
     [enum           EnumType  'enumField']
     [implicit       uint 8  'implicitField' 'simpleField']
     [optional       uint 8  'optionalField' 'simpleField == 5']
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
     [reserved       uint 8  '0x00']
+    // TypeSwitch field can't be used in non discriminatedTypes
+    //[typeSwitch 'simpleField' ]
+]
 
-    //TODO: TypeSwitch field can't be used in non disriminatedTypes
+// If a type has an unknown field, the entire serializer is reduced to firing an exception
+[type 'FieldTypeTestWithUnknownField'
+    [simple         uint 8 'simpleField']
+    //Abstract fields can only be used within discriminated base types.
+    //[abstract       unit 8  'abstractField']
+    [array          uint 8  'arrayField'        count      '5']
+    //TODO: Checksums fields are not supported in C
+    //[checksum       uint 8  'checksumField'     '100']
+    [const          uint 8  'constField'        '5']
+    // Discriminated Field can't be used in simple type
+    //[discriminator  uint 8  'discriminatorField']
+    [enum           EnumType  'enumField']
+    [implicit       uint 8  'implicitField' 'simpleField']
+    [optional       uint 8  'optionalField' 'simpleField == 5']
+    [padding        uint 8  'paddingField'  '0x00'  'simpleField']
+    [reserved       uint 8  '0x00']
+    [unknown        uint 16]
+    // TypeSwitch field can't be used in non discriminatedTypes
     //[typeSwitch 'simpleField' ]
 ]
 

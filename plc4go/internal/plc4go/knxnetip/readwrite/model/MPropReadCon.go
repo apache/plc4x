@@ -33,7 +33,7 @@ type MPropReadCon struct {
 	PropertyId          uint8
 	NumberOfElements    uint8
 	StartIndex          uint16
-	Unknown             uint16
+	Data                uint16
 	Parent              *CEMI
 }
 
@@ -54,14 +54,14 @@ func (m *MPropReadCon) MessageCode() uint8 {
 func (m *MPropReadCon) InitializeParent(parent *CEMI) {
 }
 
-func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, unknown uint16) *CEMI {
+func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) *CEMI {
 	child := &MPropReadCon{
 		InterfaceObjectType: interfaceObjectType,
 		ObjectInstance:      objectInstance,
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Unknown:             unknown,
+		Data:                data,
 		Parent:              NewCEMI(),
 	}
 	child.Parent.Child = child
@@ -113,7 +113,7 @@ func (m *MPropReadCon) LengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (startIndex)
 	lengthInBits += 12
 
-	// Simple field (unknown)
+	// Simple field (data)
 	lengthInBits += 16
 
 	return lengthInBits
@@ -158,10 +158,10 @@ func MPropReadConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field")
 	}
 
-	// Simple Field (unknown)
-	unknown, _unknownErr := readBuffer.ReadUint16("unknown", 16)
-	if _unknownErr != nil {
-		return nil, errors.Wrap(_unknownErr, "Error parsing 'unknown' field")
+	// Simple Field (data)
+	data, _dataErr := readBuffer.ReadUint16("data", 16)
+	if _dataErr != nil {
+		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("MPropReadCon"); closeErr != nil {
@@ -175,7 +175,7 @@ func MPropReadConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 		PropertyId:          propertyId,
 		NumberOfElements:    numberOfElements,
 		StartIndex:          startIndex,
-		Unknown:             unknown,
+		Data:                data,
 		Parent:              &CEMI{},
 	}
 	_child.Parent.Child = _child
@@ -223,11 +223,11 @@ func (m *MPropReadCon) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
-		// Simple Field (unknown)
-		unknown := uint16(m.Unknown)
-		_unknownErr := writeBuffer.WriteUint16("unknown", 16, (unknown))
-		if _unknownErr != nil {
-			return errors.Wrap(_unknownErr, "Error serializing 'unknown' field")
+		// Simple Field (data)
+		data := uint16(m.Data)
+		_dataErr := writeBuffer.WriteUint16("data", 16, (data))
+		if _dataErr != nil {
+			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("MPropReadCon"); popErr != nil {

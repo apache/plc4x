@@ -38,6 +38,7 @@
 <#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
 <#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
 <#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="unknownField" type="org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField" -->
 <#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
@@ -320,6 +321,12 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Length of sub-type elements will be added by sub-type...
         <#break>
+    <#case "unknown">
+        <#assign unknownField = field>
+        <#assign simpleTypeReference = unknownField.type>
+
+        // Unknown field
+        lengthInBits += ${simpleTypeReference.sizeInBits};
     <#case "virtual">
         <#assign virtualField = field>
 

@@ -303,7 +303,8 @@
             [simple uint  8 'propertyId']
             [simple uint  4 'numberOfElements']
             [simple uint 12 'startIndex']
-            [simple uint 16 'unknown']
+            // TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements ('numberOfElements') with the type specified by 'interfaceObjectType'.
+            [simple uint 16 'data']
         ]
 
         ['0xF6' MPropWriteReq

@@ -325,6 +325,15 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterUnknownField(MSpecParser.UnknownFieldContext ctx) {
+        SimpleTypeReference type = getSimpleTypeReference(ctx.type);
+        Field field = new DefaultUnknownField(null, type);
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterVirtualField(MSpecParser.VirtualFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
