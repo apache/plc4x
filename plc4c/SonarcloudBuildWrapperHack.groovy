@@ -32,7 +32,12 @@ var cmakeRenamedExecutable = new File(cmakeRoot, "cmakeOrig")
 cmakeExecutable.renameTo(cmakeRenamedExecutable)
 
 // Create a little bash-script that calls the build-wrapper and then calls the original cmake file
-cmakeExecutable.write("#/bin/bash\n")
-cmakeExecutable.append(cmakeRoot.absolutePath + "/../../build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir " + project.properties["sonar.cfamily.build-wrapper-output"] + " " + cmakeRoot.absolutePath + "/cmakeOrig \"\$@\"\n")
+cmakeExecutable.write("#!/bin/bash\n")
+cmakeExecutable.append("echo \"Arguments: \$@\"\n")
+cmakeExecutable.append("if [[ \"\$1\" == \"--build\" ]]; then\n")
+cmakeExecutable.append("  " + cmakeRoot.absolutePath + "/../../build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir " + project.properties["sonar.cfamily.build-wrapper-output"] + " " + cmakeRoot.absolutePath + "/cmakeOrig \"\$@\"\n")
+cmakeExecutable.append("else\n")
+cmakeExecutable.append("  " + cmakeRoot.absolutePath + "/cmakeOrig \"\$@\"\n")
+cmakeExecutable.append("fi\n")
 // Make the script executable
 ("chmod +x " + cmakeExecutable.absolutePath).execute()

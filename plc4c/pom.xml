@@ -259,21 +259,21 @@
         <artifactId>cmake-maven-plugin</artifactId>
         <executions>
           <!-- Generate the configuration for the main compilation -->
-          <execution>
+          <!--execution>
             <id>cmake-generate-compile</id>
             <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
           </execution>
-          <!-- Compile the main code -->
+          <!- Compile the main code ->
           <execution>
             <id>cmake-execute-compile</id>
             <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
-          </execution>
+          </execution-->
           <!-- Generate the configuration for the test compilation -->
           <execution>
             <id>cmake-generate-test-compile</id>
