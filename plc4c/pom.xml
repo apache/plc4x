@@ -36,6 +36,8 @@
 
   <properties>
     <unity.version>2.5.0</unity.version>
+    <!-- Tell Sonar where to find the sources -->
+    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 

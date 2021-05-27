@@ -34,6 +34,11 @@
   <name>PLC4Go</name>
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
+  <properties>
+    <!-- Tell Sonar where to find the sources -->
+    <sonar.sources>cmd,examples,internal,pkg</sonar.sources>
+  </properties>
+
   <build>
     <sourceDirectory>cmd</sourceDirectory>
     <plugins>
