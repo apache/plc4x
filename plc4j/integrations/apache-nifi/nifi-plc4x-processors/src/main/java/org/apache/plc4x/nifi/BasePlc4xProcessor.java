@@ -65,7 +65,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     protected List<PropertyDescriptor> properties;
     protected Set<Relationship> relationships;
   
-    private String connectionString;
+    protected String connectionString;
     private Map<String, String> addressMap;
 
     private final PooledPlcDriverManager driverManager = new PooledPlcDriverManager();
@@ -163,6 +163,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         @Override
         public ValidationResult validate(String subject, String input, ValidationContext context) {
             // TODO: Add validation here ...
+        	// TODO: add validation for both Nifi Expression language and the Address Map string is well built
             return new ValidationResult.Builder().subject(subject).explanation("").valid(true).build();
         }
     }

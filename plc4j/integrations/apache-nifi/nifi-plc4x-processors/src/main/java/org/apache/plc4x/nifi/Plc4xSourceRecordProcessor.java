@@ -34,6 +34,7 @@ import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.components.PropertyDescriptor;
+import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.logging.ComponentLog;
@@ -45,6 +46,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.util.StopWatch;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
@@ -87,6 +89,11 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
+	@Override 
+	public void onScheduled(final ProcessContext context) {
+        connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
+    }
+	
 	@Override
 	public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
 		FlowFile fileToProcess = null;
@@ -103,6 +110,18 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			}
 		}
 
+		// TODO: this could be enhanced checking if address map should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
+		Map<String, String> addressMap = new HashMap<>();
+        PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
+        for (String segment : addresses.evaluateAttributeExpressions(fileToProcess).getValue().split(";")) {
+            String[] parts = segment.split("=");
+            if(parts.length != 2) {
+                throw new ProcessException("Invalid address format");
+            }
+            addressMap.put(parts[0], parts[1]);
+        }
+		
+		
 		final List<FlowFile> resultSetFlowFiles = new ArrayList<>();
 
 		Plc4xWriter plc4xWriter = new RecordPlc4xWriter(context.getProperty(RECORD_WRITER_FACTORY).asControllerService(RecordSetWriterFactory.class), fileToProcess == null ? Collections.emptyMap() : fileToProcess.getAttributes());

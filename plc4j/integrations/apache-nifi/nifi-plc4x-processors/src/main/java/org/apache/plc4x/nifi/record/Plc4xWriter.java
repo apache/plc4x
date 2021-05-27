@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
 
 public interface Plc4xWriter {
 	/**

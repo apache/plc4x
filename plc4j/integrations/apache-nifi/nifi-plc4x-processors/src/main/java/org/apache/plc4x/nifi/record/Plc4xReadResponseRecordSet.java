@@ -1,42 +1,24 @@
 package org.apache.plc4x.nifi.record;
 
-import org.apache.avro.Schema;
-import org.apache.nifi.avro.AvroTypeUtil;
-import org.apache.nifi.serialization.SimpleRecordSchema;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Closeable;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Array;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.apache.nifi.serialization.record.DataType;
+import org.apache.avro.Schema;
+import org.apache.nifi.avro.AvroTypeUtil;
 import org.apache.nifi.serialization.record.MapRecord;
 import org.apache.nifi.serialization.record.Record;
 import org.apache.nifi.serialization.record.RecordField;
-import org.apache.nifi.serialization.record.RecordFieldType;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.nifi.util.PLC4X_DATA_TYPE;
-import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
 import org.apache.plc4x.nifi.util.Plc4xCommon;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
@@ -46,7 +28,8 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private final Set<String> rsColumnNames;
     private boolean moreRows;
 
-    //TODO review this AtomicReference?
+    // TODO: review this AtomicReference?
+	// TODO: this could be enhanced checking if record schema should be updated (via a cache boolean, checking property values is a nifi expression language, etc)
   	private AtomicReference<RecordSchema> recordSchema;
 
     public Plc4xReadResponseRecordSet(final PlcReadResponse readResponse) throws IOException {

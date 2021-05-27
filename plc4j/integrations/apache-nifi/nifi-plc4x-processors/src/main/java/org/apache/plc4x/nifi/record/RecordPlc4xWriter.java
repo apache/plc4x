@@ -2,12 +2,10 @@ package org.apache.plc4x.nifi.record;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.nifi.avro.AvroTypeUtil;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessSession;
@@ -18,10 +16,6 @@ import org.apache.nifi.serialization.record.Record;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
-import org.apache.plc4x.nifi.util.Plc4xCommon;
-import org.apache.avro.Schema;
 
 //https://github.com/apache/nifi/blob/main/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/sql/RecordSqlWriter.java
 public class RecordPlc4xWriter implements Plc4xWriter {
