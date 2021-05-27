@@ -39,6 +39,7 @@
     <!-- Tell Sonar where to find the sources -->
     <!--sonar.sources></sonar.sources-->
     <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
