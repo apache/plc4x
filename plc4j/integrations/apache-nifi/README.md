@@ -39,7 +39,7 @@ For the **Record Writer** property, any writer included in NiFi could be used, s
 - *Encoder Pool Size:* 32
 
 
-The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using an **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one field will be included for each of the variables defined in the Processor's  *PLC resource address String:* property, taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
+The output flowfile will contain the PLC read values. This information is included in the flowfile content, following the Record Oriented presentation using a **schema** and the configuration specified in the Record Writer (format, schema inclusion, etc). In the schema, one field will be included for each of the variables defined in the Processor's  *PLC resource address String:* property, taking into account the specified datatype. Also, a *ts* (timestamp) field is additionally included containing the read date. An example of the content of a flowfile for the previously defined properties:
 
 ```
 [ {
