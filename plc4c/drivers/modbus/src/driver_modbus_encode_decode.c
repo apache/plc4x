@@ -105,6 +105,7 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
       modbus_item->datatype = plc4c_modbus_read_write_modbus_data_type_UINT;
       cur_pos += 18;
     } else {
+      free(modbus_item);
       return INVALID_ADDRESS;
     }
   }
@@ -115,6 +116,7 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
     cur_pos++;
   }
   if (last_pos == cur_pos) {
+    free(modbus_item);
     return INVALID_ADDRESS;
   }
   // Parse the current segment as number
@@ -150,6 +152,7 @@ plc4c_return_code plc4c_driver_modbus_encode_address(char* address,
         cur_pos++;
       }
       if (*cur_pos != ']') {
+        free(modbus_item);
         return INVALID_ADDRESS;
       }
       *cur_pos = '\0';
