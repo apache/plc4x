@@ -98,12 +98,24 @@
 ]
 
 [type 'AbstractTypeTest'
-    [abstract bit 'bitField']
-    [abstract int 8 'intField']
-    [abstract uint 8 'uintField']
-    [abstract float 8.23 'floatField']
-    [abstract float 11.52 'doubleField']
-    [abstract string '8' 'UTF-8' 'stringField']
+    //Abstract fields can only be used within discriminated base types.
+    [simple         uint 8 'simpleField']
+    [abstract bit 'abstractBitField']
+    [abstract int 8 'abstractIntField']
+    [abstract uint 8 'abstractUintField']
+    [abstract float 8.23 'abstractFloatField']
+    [abstract float 11.52 'abstractDoubleField']
+    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [typeSwitch 'simpleField'
+        ['0' AbstractedType
+            [simple bit 'abstractBitField']
+            [simple int 8 'abstractIntField']
+            [simple uint 8 'abstractUintField']
+            [simple float 8.23 'abstractFloatField']
+            [simple float 11.52 'abstractDoubleField']
+            [simple string '8' 'UTF-8' 'abstractStringField']
+        ]
+    ]
 ]
 
 [type 'AbstractTypeTest'
@@ -332,6 +344,26 @@
         ]
     ]
 ]
+
+
+//Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
+//[discriminatedType 'SimpleDiscriminatedType'
+//    [discriminator uint 8 'discr']
+//    [typeSwitch 'discr'
+//        ['0x00' SimpleDiscriminatedTypeA
+//            [simple        AnotherSimpleDiscriminatedTypeA 'simpA']
+//        ]
+//    ]
+//]
+
+//[discriminatedType 'AnotherSimpleDiscriminatedType'
+//    [discriminator uint 8 'discr']
+//    [typeSwitch 'discr'
+//        ['0x00' AnotherSimpleDiscriminatedTypeA
+//            [simple        uint 8 'simpA']
+//        ]
+//    ]
+//]
 
 ////////////////////////////////////////////////////////////////
 // Enumerated Type Tests

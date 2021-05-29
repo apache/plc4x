@@ -193,7 +193,28 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             for(int curItem = 0; curItem < itemCount; curItem++) {
                 <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
                 <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-                ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)<#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>.build()</#if></#if>;
+            <@compress single_line=true>
+                ${arrayField.name}[curItem] =
+                <#if helper.isSimpleTypeReference(arrayField.type)>
+                    <#assign simpleTypeReference = arrayField.type>
+                    ${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}
+                <#else>
+                    ${arrayField.type.name}IO.staticParse(readBuffer
+                    <#if field.params?has_content>
+                        ,
+                        <#list field.params as parserArgument>
+                            <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true) = 'String'>
+                                ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}.valueOf(${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                            <#else>
+                                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                            </#if>
+                        </#list>
+                    </#if>)
+                    <#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>
+                        .build()
+                    </#if>
+                </#if>;
+            </@compress>
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -267,7 +288,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         <#if helper.isEnumField(field)>
@@ -419,7 +439,26 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(simpleField.type.name, helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
         <#else>
         <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleTypeReference, "", simpleField)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        <@compress single_line=true>
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} =
+            <#if helper.isSimpleTypeReference(simpleField.type)>
+                <#assign simpleTypeReference = simpleField.type>
+                ${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleTypeReference, "", simpleField)}
+            <#else>
+                <#assign complexTypeReference = simpleField.type>
+                ${complexTypeReference.name}IO.staticParse(readBuffer
+                <#if field.params?has_content>
+                    ,
+                    <#list field.params as parserArgument>
+                        <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true) = 'String'>
+                            ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}.valueOf(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                        <#else>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                        </#if>
+                    </#list>
+                </#if>)
+            </#if>;
+        </@compress>
         </#if>
         <#if !helper.isSimpleTypeReference(simpleField.type)>
         readBuffer.closeContext("${simpleField.name}");
@@ -531,7 +570,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();

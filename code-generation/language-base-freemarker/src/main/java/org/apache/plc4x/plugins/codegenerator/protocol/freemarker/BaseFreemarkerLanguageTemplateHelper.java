@@ -28,6 +28,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReferen
 import org.apache.plc4x.plugins.codegenerator.types.references.StringTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import org.w3c.dom.Node;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -656,8 +657,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         final SwitchField switchField = getSwitchField(baseType);
         List<String> discriminatorNames = new ArrayList<>();
-        for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
-            discriminatorNames.add(getDiscriminatorName(discriminatorExpression));
+        if (switchField != null) {
+            for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
+                discriminatorNames.add(getDiscriminatorName(discriminatorExpression));
+            }
         }
         return discriminatorNames;
     }
@@ -673,6 +676,23 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public boolean isNonDiscriminatorField(String discriminatorName) {
         return ((ComplexTypeDefinition) thisType).getAllPropertyFields().stream().anyMatch(
             field -> !(field instanceof DiscriminatorField) && field.getName().equals(discriminatorName));
+    }
+
+    /**
+     * Check if there's any field with the given name.
+     * This is required to suppress the generation of a virtual field
+     * in case a discriminated field is providing the information.
+     *
+     * @param discriminatorName name of the virtual name
+     * @return true if a field with the given name already exists in the same type.
+     */
+    public boolean isDiscriminatorField(String discriminatorName) {
+        List<String> names = getDiscriminatorNames();
+        if (names != null) {
+            return getDiscriminatorNames().stream().anyMatch(
+                field -> field.equals(discriminatorName));
+        }
+        return false;
     }
 
     /**

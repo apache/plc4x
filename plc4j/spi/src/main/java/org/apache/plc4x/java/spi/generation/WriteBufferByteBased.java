@@ -46,6 +46,10 @@ public class WriteBufferByteBased implements WriteBuffer {
         this.littleEndian = littleEndian;
     }
 
+    public void setPos(int position) {
+        bb.position(position);
+    }
+
     public byte[] getData() {
         return bb.array();
     }

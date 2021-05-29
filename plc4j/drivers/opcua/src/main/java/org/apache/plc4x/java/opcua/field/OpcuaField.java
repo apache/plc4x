@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.opcua.protocol;
+package org.apache.plc4x.java.opcua.field;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
@@ -46,16 +46,6 @@ public class OpcuaField implements PlcSubscriptionField {
     private final String identifier;
 
     private final OpcuaDataType dataType;
-
-    protected OpcuaField(int namespace, OpcuaIdentifierType identifierType, String identifier, OpcuaDataType dataType) {
-        this.namespace = namespace;
-        this.identifier = identifier;
-        this.identifierType = identifierType;
-        if (this.identifier == null || this.namespace < 0) {
-            throw new IllegalArgumentException("Identifier can not be null or Namespace can not be lower then 0.");
-        }
-        this.dataType = dataType;
-    }
 
     private OpcuaField(Integer namespace, String identifier, OpcuaIdentifierType identifierType, OpcuaDataType dataType) {
         this.identifier = Objects.requireNonNull(identifier);
@@ -88,7 +78,6 @@ public class OpcuaField implements PlcSubscriptionField {
 
         return new OpcuaField(namespace, identifier, identifierType, dataType);
     }
-
 
     public static boolean matches(String address) {
         return ADDRESS_PATTERN.matcher(address).matches();
