@@ -217,11 +217,18 @@ public class S7AlarmEvent implements S7Event {
             
             AssociatedValueType[] values = item.getAssociatedValues();
             int i=1;
+            int j = 0;
             for (AssociatedValueType value:values) {
                 map.put("SIG_"+i+"_DATA_STATUS", value.getReturnCode().getValue());
                 map.put("SIG_"+i+"_DATA_SIZE", value.getTransportSize().getValue());
                 map.put("SIG_"+i+"_DATA_LENGTH", value.getValueLength());
-                map.put("SIG_"+i+"_DATA", value.getData());
+                byte[] data = new byte[value.getData().length];
+                j = 0;
+                for (short s:value.getData()) {
+                    data[j] = (byte) s;
+                    j++;
+                }
+                map.put("SIG_"+i+"_DATA",  data);
                 i=+1;
             }
             
