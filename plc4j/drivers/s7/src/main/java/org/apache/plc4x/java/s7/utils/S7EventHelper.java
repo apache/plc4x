@@ -19,6 +19,7 @@ package org.apache.plc4x.java.s7.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +27,10 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -1425,5 +1429,201 @@ public class S7EventHelper {
                 return PlcResponseCode.INTERNAL_ERROR;
         }
     }    
+    
+    /**
+     * Symbol       Meaning
+     * ======       =======
+     * @            Beginning of format string
+     * Pv           Process value number (optional)
+     * Typ          Type of process value (optional)
+     * % width      Width of the signaling field on the OP
+     * .precision   Number of decimal places (optional with format = "f")
+     * format       Process value representation mode
+     * @            End of format string
+     * 
+     * Type		Meaning
+     * ====             =======
+     * B		BOOL
+     * Y		BYTE
+     * C		CHARACTER
+     * W		WORD
+     * I		INTEGER
+     * X		DWORD
+     * D		DINT
+     * R		REAL
+     * 
+     * Representation       Format
+     * ==============       ======
+     * %[i]d                Decimal signed
+     * %[i]u                Decimal without sign
+     * %[i]x                Hexadecimal
+     * %[i].[y]f            Signed fixed point
+     * %[i]b                Binary
+     * %[i]s                Character string (STRING ANSI)
+     * %t#<Library name>    Access to text library
+     * 
+     * General representation:
+     * @@<Associated Value><Type><Format><Library name>@
+     * 
+     * @param alarm Alarm type from PLC.
+     * @param alarmtext The text string to be processed.
+     * @param textlists List of texts for indexed replacement.
+     * @return The text string with the replacement values.
+     */
+    public static String AlarmProcessing(final S7AlarmEvent alarm, String alarmtext, HashMap<String, HashMap<String, String>> textlists){
+        final Pattern ALARM_SIG =
+            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR](%([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@)");
+
+        final Pattern FIELDS =
+            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])(?<format>%([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@");   
+        
+        Map<String, Object> map = alarm.getMap();
+        Matcher matcher = ALARM_SIG.matcher(alarmtext);        
+        Matcher fields = null;
+        
+        String strSig = null;
+        ByteBuf bytebuf = null;
+        int sig = 0;
+        long value = 0;
+        String strOut = new String(alarmtext);
+        String strField = null;
+        
+        while (matcher.find()) {
+            fields = FIELDS.matcher(matcher.group(0));
+            if (!fields.find()) break;
+            System.out.println(matcher.group(0) + " : " + fields.group(0));
+            sig = fields.group(1)==""?1:Integer.parseInt(fields.group(1));
+            strSig = "SIG_" + sig + "_DATA";
+            if (((short) map.get("ASSOCIATED_VALUES")) == 0) break;
+            bytebuf = Unpooled.wrappedBuffer((byte[]) map.get(strSig));
+            switch(fields.group(2).toUpperCase()){
+                case "B":
+                    if (bytebuf.capacity() < Byte.BYTES) break;
+                    strField = String.valueOf(bytebuf.getBoolean(0));
+                    strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
+                    break;
+                case "Y":
+                    if (bytebuf.capacity() < Byte.BYTES) break;
+                    if (fields.group(3).contains("u")) {                    
+                        value = bytebuf.getUnsignedByte(0);
+                        String strReplace = fields.group(3).replace("u", "d");
+                        strField = String.format(strReplace, value);
+                    } else if (fields.group(3).contains("d")){
+                        value = bytebuf.getByte(0);
+                        strField = String.format(fields.group(3), value);                        
+                    } else if (fields.group(3).contains("b")) {
+                        value =  bytebuf.getUnsignedByte(0);
+                        strField = Integer.toBinaryString((byte) value);
+                    } else {
+                        value = bytebuf.getByte(0);                        
+                        strField = String.format(fields.group(3), value);
+                    }
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                    
+                    ; 
+                    break;                
+                case "C":
+                    if (fields.group(3).contains("%t#")) {
+                        
+                    } else {
+                        if (bytebuf.capacity() < Byte.BYTES) break;                    
+                        strField = String.valueOf((char) bytebuf.getByte(0));
+                    }
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                     
+                    ;
+                    break;                
+                case "W":
+                    if (bytebuf.capacity() < Short.BYTES) break;
+                    if (fields.group(3).contains("u")) {                    
+                        value = bytebuf.getUnsignedShort(0);
+                        String strReplace = fields.group(3).replace("u", "d");
+                        strField = String.format(strReplace, value);
+                    } else if (fields.group(3).contains("d")){
+                        value = bytebuf.getShort(0);
+                        strField = String.format(fields.group(3), value);                        
+                    } else if (fields.group(3).contains("b")) {
+                        value =   bytebuf.getUnsignedShort(0);
+                        strField = Integer.toBinaryString((int) value);
+                    } else {
+                        value = bytebuf.getShort(0);                        
+                        strField = String.format(fields.group(3), value);
+                    }
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                      
+                    ;  
+                    break;                
+                case "I":
+                    if (bytebuf.capacity() < Integer.BYTES) break;
+                    if (fields.group(3).contains("u")) {                    
+                        value = bytebuf.getUnsignedInt(0);
+                        String strReplace = fields.group(3).replace("u", "d");
+                        strField = String.format(strReplace, value);
+                    } else if (fields.group(3).contains("d")){
+                        value = bytebuf.getInt(0);
+                        strField = String.format(fields.group(3), value);                        
+                    } else if (fields.group(3).contains("b")) {
+                        value =   bytebuf.getUnsignedInt(0);
+                        strField = Long.toBinaryString(value);
+                    } else {
+                        value = bytebuf.getInt(0);                        
+                        strField = String.format(fields.group(3), value);
+                    };
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                       
+                    ;
+                    break;                
+                case "X":
+                    if (bytebuf.capacity() < Long.BYTES) break;
+                    if (fields.group(3).contains("u")) {                    
+                        value = bytebuf.getUnsignedInt(0);
+                        String strReplace = fields.group(3).replace("u", "d");
+                        strField = String.format(strReplace, value);
+                    } else if (fields.group(3).contains("d")){
+                        value = bytebuf.getLong(0);
+                        strField = String.format(fields.group(3), value);                        
+                    } else if (fields.group(3).contains("b")) {
+                        value =   bytebuf.getUnsignedInt(0);
+                        strField = Long.toBinaryString(value);
+                    } else {
+                        value = bytebuf.getLong(0);                        
+                        strField = String.format(fields.group(3), value);
+                    };
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                      
+                    ;  
+                    break;                
+                case "D":
+                    if (bytebuf.capacity() < Double.BYTES) break;                    
+                    if (fields.group(3).contains("u")) {                    
+                        value = bytebuf.getUnsignedInt(0);
+                        String strReplace = fields.group(3).replace("u", "d");
+                        strField = String.format(strReplace, value);
+                    } else if (fields.group(3).contains("d")){
+                        value = bytebuf.getLong(0);
+                        strField = String.format(fields.group(3), value);                        
+                    } else if (fields.group(3).contains("b")) {
+                        value =   bytebuf.getUnsignedInt(0);
+                        strField = Long.toBinaryString(value);
+                    } else {
+                        value = bytebuf.getLong(0);                        
+                        strField = String.format(fields.group(3), value);
+                    };
+                    strOut = strOut.replaceAll(matcher.group(0), strField);                     
+                    ;
+                    break;                
+                case "R":
+                    if (bytebuf.capacity() < Float.BYTES) break; 
+                    if (fields.group(3).contains("f")) { 
+                        strField = String.format(fields.group(3), value); 
+                        strOut = strOut.replaceAll(matcher.group(0), strField);                         
+                    }                     
+                    ;
+                    break;
+                 
+            }
+        }
+
+        return strOut;
+    }    
+    
+     
+    
     
 }

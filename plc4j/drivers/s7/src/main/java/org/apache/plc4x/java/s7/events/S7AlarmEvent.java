@@ -55,6 +55,7 @@ public class S7AlarmEvent implements S7Event {
         MAP,
         
         TYPE,
+        ASSOCIATED_VALUES,
         TIMESTAMP,
         TIMESTAMP_GOING,
         TIMESTAMP_COMING,        
@@ -179,7 +180,9 @@ public class S7AlarmEvent implements S7Event {
             if (obj instanceof S7PayloadAlarmS)
                 map.put(Fields.TYPE.name(), "ALARMS");                             
             if (obj instanceof S7PayloadNotify8)
-                map.put(Fields.TYPE.name(), "NOTIFY8");                
+                map.put(Fields.TYPE.name(), "NOTIFY8");
+            
+            map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues());
             
             
             map.put(Fields.SIG_1.name(), item.getEventState().getSIG_1());
@@ -627,72 +630,5 @@ public class S7AlarmEvent implements S7Event {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public static String AlarmProcessing(S7AlarmEvent alarm, String alarmtext, HashMap<String, String> textlists){
-        final Pattern ALARM_SIG =
-            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR]%(([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@)");
-
-        final Pattern FIELDS =
-            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])%(?<format>([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@");        
-        Map<String, Object> map = alarm.getMap();
-        Matcher matcher = ALARM_SIG.matcher(alarmtext);        
-        Matcher fields = null;
-        
-        String strSig = null;
-        ByteBuf bytebuf = null;
-        int sig = 0;
-        String strOut = new String(alarmtext);
-        String strField = null;
-        
-        while (matcher.find()) {
-            fields = FIELDS.matcher(matcher.group(0));
-            sig = fields.group(1)==""?1:Integer.parseInt(fields.group(1));
-            strSig = "SIG_" + sig + "_DATA";
-            bytebuf = Unpooled.wrappedBuffer((byte[]) map.get(strSig));
-            switch(fields.group(2)){
-                case "B":
-                    strField = String.valueOf(bytebuf.getBoolean(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
-                    break;
-                case "Y":
-                    strField = String.valueOf(bytebuf.getByte(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                    
-                    ; 
-                    break;                
-                case "C":
-                    strField = String.valueOf((char) bytebuf.getByte(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                     
-                    ;
-                    break;                
-                case "W":
-                    strField = String.valueOf(bytebuf.getShort(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                      
-                    ;  
-                    break;                
-                case "I":
-                    strField = String.valueOf(bytebuf.getInt(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                       
-                    ;
-                    break;                
-                case "X":
-                    strField = String.valueOf(bytebuf.getLong(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                      
-                    ;  
-                    break;                
-                case "D":
-                    strField = String.valueOf(bytebuf.getDouble(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                     
-                    ;
-                    break;                
-                case "R":
-                    strField = String.valueOf(bytebuf.getFloat(0));
-                    strOut = strOut.replaceAll(matcher.group(0), strField);                     
-                    ;   
-            
-            }
-        }
-
-        return strOut;
-    }
     
 }
