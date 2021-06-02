@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.*;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcList extends PlcValueAdapter {
 
-    private List<PlcValue> listItems;
+    private final List<PlcValue> listItems;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcList() {
@@ -42,20 +43,20 @@ public class PlcList extends PlcValueAdapter {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcList(@JsonProperty("listItems") List<PlcValue> listItems) {
-        List<PlcValue> safelist = listItems.stream().map(plcValue -> {
+        List<PlcValue> safelist = listItems.stream().map(plcValue ->
             // to avoid unwrapped list cause of type erasure
-            return plcValue;
-        }).collect(Collectors.toList());
+            plcValue
+        ).collect(Collectors.toList());
         this.listItems = Collections.unmodifiableList(safelist);
     }
 
     public void add(PlcValue value) {
-        listItems.add(value);        
+        listItems.add(value);
     }
 
     @Override
     public Object getObject() {
-        return listItems;
+        return getList();
     }
 
     @Override
@@ -94,8 +95,8 @@ public class PlcList extends PlcValueAdapter {
         Element plcValueElement = doc.createElement("PlcList");
         parent.appendChild(plcValueElement);
         for (PlcValue listItem : listItems) {
-            if(!(listItem instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. List item doesn't implement XmlSerializable");
+            if (!(listItem instanceof XmlSerializable)) {
+                throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
             ((XmlSerializable) listItem).xmlSerialize(plcValueElement);
         }

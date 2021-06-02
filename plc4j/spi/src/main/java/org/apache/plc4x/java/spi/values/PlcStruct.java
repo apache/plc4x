@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
@@ -95,8 +96,8 @@ public class PlcStruct extends PlcValueAdapter {
             Element fieldElement = doc.createElement(fieldName);
             plcValueElement.appendChild(fieldElement);
             PlcValue fieldValue = entry.getValue();
-            if(!(fieldValue instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. List item doesn't implement XmlSerializable");
+            if (!(fieldValue instanceof XmlSerializable)) {
+                throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
             ((XmlSerializable) fieldValue).xmlSerialize(fieldElement);
         }

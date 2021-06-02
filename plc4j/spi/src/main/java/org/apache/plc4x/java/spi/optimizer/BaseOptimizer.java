@@ -180,7 +180,7 @@ public abstract class BaseOptimizer {
             });
             return parentFuture;
         } else {
-            return CompletableFuture.completedFuture(responseProcessor.apply(Collections.EMPTY_MAP));
+            return CompletableFuture.completedFuture(responseProcessor.apply(Collections.emptyMap()));
         }
     }
 

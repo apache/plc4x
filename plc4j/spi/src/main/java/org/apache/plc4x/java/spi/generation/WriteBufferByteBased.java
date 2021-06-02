@@ -31,7 +31,6 @@ import java.nio.charset.Charset;
 public class WriteBufferByteBased implements WriteBuffer {
 
     private final ByteBuffer bb;
-    private final BufferByteOutput<?> bbo;
     private final MyDefaultBitOutput bo;
     private final boolean littleEndian;
 
@@ -41,7 +40,7 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     public WriteBufferByteBased(int size, boolean littleEndian) {
         bb = ByteBuffer.allocate(size);
-        bbo = new BufferByteOutput<>(bb);
+        BufferByteOutput<?> bbo = new BufferByteOutput<>(bb);
         bo = new MyDefaultBitOutput(bbo);
         this.littleEndian = littleEndian;
     }
@@ -64,7 +63,7 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     @Override
     public void pushContext(String logicalName, WithWriterArgs... writerArgs) {
-
+        // byte buffer need no context handling
     }
 
     @Override
@@ -72,7 +71,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         try {
             bo.writeBoolean(value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing bit", e);
         }
     }
 
@@ -99,7 +98,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         try {
             bo.writeByte(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing unsigned byte", e);
         }
     }
 
@@ -114,7 +113,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         try {
             bo.writeShort(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing unsigned short", e);
         }
     }
 
@@ -132,7 +131,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeInt(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing unsigned int", e);
         }
     }
 
@@ -150,7 +149,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeLong(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing unsigned long", e);
         }
     }
 
@@ -179,7 +178,7 @@ public class WriteBufferByteBased implements WriteBuffer {
                 throw new ParseException("Unsigned Big Integer can only contain max 64 bits");
             }
         } catch (ArithmeticException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing unsigned big integer", e);
         }
     }
 
@@ -194,7 +193,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         try {
             bo.writeByte(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing signed byte", e);
         }
     }
 
@@ -212,7 +211,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeShort(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing signed short", e);
         }
     }
 
@@ -230,7 +229,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeInt(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing signed int", e);
         }
     }
 
@@ -248,7 +247,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeLong(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing signed long", e);
         }
     }
 
@@ -260,14 +259,14 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             writeLong(logicalName, bitLength, value.longValue());
         } catch (ArithmeticException e) {
-            throw new ParseException("Error reading", e);
+            throw new ParseException("Error writing big integer", e);
         }
     }
 
     @Override
     public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         if (bitsExponent != 8 || bitsMantissa != 23) {
-            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
+            throw new UnsupportedOperationException("Error writing float: Exponent and/or Mantissa non standard size");
         }
         writeInt(logicalName, 1 + bitsExponent + bitsMantissa, Float.floatToRawIntBits(value));
     }
@@ -275,7 +274,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     @Override
     public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
         if (bitsExponent != 11 || bitsMantissa != 52) {
-            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
+            throw new UnsupportedOperationException("Error writing double: Exponent and/or Mantissa non standard size");
         }
         writeLong(logicalName, 1 + bitsExponent + bitsMantissa, Double.doubleToRawLongBits(value));
     }
@@ -309,7 +308,7 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     @Override
     public void popContext(String logicalName, WithWriterArgs... writerArgs) {
-
+        // byte buffer need no context handling
     }
 
 }

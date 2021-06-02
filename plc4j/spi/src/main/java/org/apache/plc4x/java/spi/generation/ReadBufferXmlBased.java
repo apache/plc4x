@@ -248,17 +248,15 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         return data.trim();
     }
 
-    private boolean validateStartElement(StartElement startElement, String logicalName, String dataType, int bitLength) {
+    private void validateStartElement(StartElement startElement, String logicalName, String dataType, int bitLength) {
         logicalName = sanitizeLogicalName(logicalName);
         if (!startElement.getName().getLocalPart().equals(logicalName)) {
             throw new PlcRuntimeException(String.format("unexpected element '%s'. Expected '%s'", startElement.getName().getLocalPart(), logicalName));
-        } else if (!validateAttr(logicalName, startElement.getAttributes(), dataType, bitLength)) {
-            throw new PlcRuntimeException("Error validating Attributes");
         }
-        return true;
+        validateAttr(logicalName, startElement.getAttributes(), dataType, bitLength);
     }
 
-    private boolean validateAttr(String logicalName, Iterator<Attribute> attr, String dataType, int bitLength) {
+    private void validateAttr(String logicalName, Iterator<Attribute> attr, String dataType, int bitLength) {
         boolean dataTypeValidated = false;
         boolean bitLengthValidate = false;
         while (attr.hasNext()) {
@@ -269,7 +267,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
                 }
                 dataTypeValidated = true;
             } else if (attribute.getName().getLocalPart().equals(rwBitLengthKey)) {
-                if (!attribute.getValue().equals(Integer.valueOf(bitLength).toString())) {
+                if (!attribute.getValue().equals(Integer.toString(bitLength))) {
                     throw new PlcRuntimeException(String.format("%s: Unexpected bitLength '%s'. Want '%d'", logicalName, attribute.getValue(), bitLength));
                 }
                 bitLengthValidate = true;
@@ -281,7 +279,6 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         if (!bitLengthValidate) {
             throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwBitLengthKey));
         }
-        return true;
     }
 
 }

@@ -31,6 +31,7 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcUDINT extends PlcIECValue<Long> {
 
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
     static Long minValue = (long) 0;
     static Long maxValue = (long) Integer.MAX_VALUE * 2 + 1;
 
@@ -59,138 +60,97 @@ public class PlcUDINT extends PlcIECValue<Long> {
     }
 
     public PlcUDINT(Boolean value) {
-        super();
         this.value = value ? (long) 1 : (long) 0;
         this.isNullable = false;
     }
 
     public PlcUDINT(Byte value) {
-        super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = value.longValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if (value < minValue || value > maxValue) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = false;
     }
 
     public PlcUDINT(Short value) {
-        super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = value.longValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if (value < minValue || value > maxValue) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = false;
     }
 
     public PlcUDINT(Integer value) {
-        super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = value.longValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if (value < minValue || value > maxValue) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = false;
     }
 
     public PlcUDINT(Long value) {
-        super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = value;
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if (value < minValue || value > maxValue) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcUDINT(Float value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value.longValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = false;
     }
 
     public PlcUDINT(Double value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value.longValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = false;
     }
 
     public PlcUDINT(BigInteger value) {
-        super();
-        if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = value.longValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
+            throw new PlcInvalidFieldException("Value of type " + value +
+                " is out of range " + minValue + " - " + maxValue + " for a " +
+                this.getClass().getSimpleName() + " Value");
         }
+        this.value = value.longValue();
+        this.isNullable = true;
     }
 
     public PlcUDINT(BigDecimal value) {
-        super();
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = value.longValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.longValue();
+        this.isNullable = true;
     }
 
     public PlcUDINT(String value) {
-        super();
         try {
             long val = Long.parseLong(value.trim());
             if (val >= minValue && val <= maxValue) {
                 this.value = val;
                 this.isNullable = false;
             } else {
-                throw new PlcInvalidFieldException("Value of type " + value +
-                  " is out of range " + minValue + " - " + maxValue + " for a " +
-                  this.getClass().getSimpleName() + " Value");
+                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
-        }
-        catch(Exception e) {
-            throw new IllegalArgumentException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        } catch (Exception e) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcUDINT(@JsonProperty("value") long value) {
-      super();
-      if (value >= minValue && value <= maxValue) {
-          this.value = value;
-          this.isNullable = false;
-      } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
-      }
+        if (value < minValue || value > maxValue) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+        }
+        this.value = value;
+        this.isNullable = false;
     }
 
 
@@ -203,7 +163,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
     @Override
     @JsonIgnore
     public boolean getBoolean() {
-        return (value != null) && !value.equals(0);
+        return (value != null) && !value.equals(0L);
     }
 
     @Override
@@ -323,10 +283,10 @@ public class PlcUDINT extends PlcIECValue<Long> {
     @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[4];
-        bytes[0] = (byte)((value >> 24) & 0xff);
-        bytes[1] = (byte)((value >> 16) & 0xff);
-        bytes[2] = (byte)((value >> 8) & 0xff);
-        bytes[3] = (byte)(value & 0xff);
+        bytes[0] = (byte) ((value >> 24) & 0xff);
+        bytes[1] = (byte) ((value >> 16) & 0xff);
+        bytes[2] = (byte) ((value >> 8) & 0xff);
+        bytes[3] = (byte) (value & 0xff);
         return bytes;
     }
 

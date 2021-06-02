@@ -36,9 +36,8 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     public static PlcSTRING of(Object value) {
         if (value instanceof String) {
             return new PlcSTRING((String) value);
-        } else {
-            return new PlcSTRING((String) value);
         }
+        return new PlcSTRING(String.valueOf(value));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -46,7 +45,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
         super(value, true);
         if (value.length() > maxLength) {
             throw new IllegalArgumentException(
-                "String length " + value.length() + " exceeds allowed maximum for type String (max " + maxLength + ")");
+                String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
         }
     }
 
