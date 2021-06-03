@@ -192,17 +192,25 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Object obj = dispachqueue.poll(delay, TimeUnit.MILLISECONDS);
                     if (obj != null){
                         if (obj instanceof S7ModeEvent){
-                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.MODE);                            
-                            mapConsumers.forEach((x,y) -> y.accept(obj));
+                            if (mapIndex.containsKey(EventType.MODE)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.MODE);
+                                mapConsumers.forEach((x,y) -> y.accept(obj));
+                            }
                         } else if (obj instanceof S7UserEvent) {
-                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.USR);
-                            mapConsumers.forEach((x,y) -> y.accept(obj));                            
+                            if (mapIndex.containsKey(EventType.USR)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.USR);
+                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                            }
                         } else if (obj instanceof S7SysEvent) {
-                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.SYS);
-                            mapConsumers.forEach((x,y) -> y.accept(obj));                            
+                            if (mapIndex.containsKey(EventType.SYS)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.SYS);
+                                mapConsumers.forEach((x,y) -> y.accept(obj));  
+                            }
                         }else if (obj instanceof S7AlarmEvent) {
-                            Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
-                            mapConsumers.forEach((x,y) -> y.accept(obj));                           
+                            if (mapIndex.containsKey(EventType.ALM)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
+                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                            }
                         }                         
                     }
                 } catch (Exception ex) {

@@ -236,7 +236,7 @@ public class S7AlarmEvent implements S7Event {
                     j++;
                 }
                 map.put("SIG_"+i+"_DATA",  data);
-                i=+1;
+                i++;
             }
             
         }

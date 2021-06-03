@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1472,17 +1473,22 @@ public class S7EventHelper {
      */
     public static String AlarmProcessing(final S7AlarmEvent alarm, String alarmtext, HashMap<String, HashMap<String, String>> textlists){
         final Pattern ALARM_SIG =
-            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR](%([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@)");
+            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR](%([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@)");
 
         final Pattern FIELDS =
-            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])(?<format>%([\\d][duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@");   
+            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])(?<format>%([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@");
+        
+        final Pattern FIELD_FORMAT =
+            Pattern.compile("%([\\d]{0,2})([duxbsDUXBS]{1})");
         
         Map<String, Object> map = alarm.getMap();
         Matcher matcher = ALARM_SIG.matcher(alarmtext);        
         Matcher fields = null;
+        Matcher fieldformat = null;
         
         String strSig = null;
         ByteBuf bytebuf = null;
+        int length = 0;
         int sig = 0;
         long value = 0;
         String strOut = new String(alarmtext);
@@ -1491,11 +1497,12 @@ public class S7EventHelper {
         while (matcher.find()) {
             fields = FIELDS.matcher(matcher.group(0));
             if (!fields.find()) break;
-            System.out.println(matcher.group(0) + " : " + fields.group(0));
             sig = fields.group(1)==""?1:Integer.parseInt(fields.group(1));
             strSig = "SIG_" + sig + "_DATA";
-            if (((short) map.get("ASSOCIATED_VALUES")) == 0) break;
+            if ((((short) map.get("ASSOCIATED_VALUES")) == 0) ||
+                (sig > ((short) map.get("ASSOCIATED_VALUES")))) break;
             bytebuf = Unpooled.wrappedBuffer((byte[]) map.get(strSig));
+            String format = fields.group(3).toUpperCase();
             switch(fields.group(2).toUpperCase()){
                 case "B":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -1505,113 +1512,119 @@ public class S7EventHelper {
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
-                    if (fields.group(3).contains("u")) {                    
+                    if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedByte(0);
-                        String strReplace = fields.group(3).replace("u", "d");
+                        String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
-                    } else if (fields.group(3).contains("d")){
+                    } else if (format.contains("D")){
                         value = bytebuf.getByte(0);
-                        strField = String.format(fields.group(3), value);                        
-                    } else if (fields.group(3).contains("b")) {
+                        strField = String.format(format, value);                        
+                    } else if (format.contains("B")) {
                         value =  bytebuf.getUnsignedByte(0);
                         strField = Integer.toBinaryString((byte) value);
                     } else {
                         value = bytebuf.getByte(0);                        
-                        strField = String.format(fields.group(3), value);
+                        strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);                    
                     ; 
                     break;                
                 case "C":
-                    if (fields.group(3).contains("%t#")) {
+                    if (format.contains("%T#")) {
                         
                     } else {
-                        if (bytebuf.capacity() < Byte.BYTES) break;                    
-                        strField = String.valueOf((char) bytebuf.getByte(0));
+                        if (bytebuf.capacity() < Byte.BYTES) break;
+                        fieldformat = FIELD_FORMAT.matcher(format);
+                        if (fieldformat.find()) {
+                            length = Integer.parseInt(fieldformat.group(1));
+                            length = (length>bytebuf.capacity())?bytebuf.capacity():length;
+                            strField = 
+                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
+                        }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);                     
                     ;
                     break;                
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
-                    if (fields.group(3).contains("u")) {                    
+                    if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedShort(0);
-                        String strReplace = fields.group(3).replace("u", "d");
+                        String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
-                    } else if (fields.group(3).contains("d")){
+                    } else if (format.contains("D")){
                         value = bytebuf.getShort(0);
-                        strField = String.format(fields.group(3), value);                        
-                    } else if (fields.group(3).contains("b")) {
+                        strField = String.format(format, value);                        
+                    } else if (format.contains("B")) {
                         value =   bytebuf.getUnsignedShort(0);
-                        strField = Integer.toBinaryString((int) value);
+                        strField = Integer.toBinaryString((short) value);
                     } else {
                         value = bytebuf.getShort(0);                        
-                        strField = String.format(fields.group(3), value);
+                        strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);                      
                     ;  
                     break;                
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
-                    if (fields.group(3).contains("u")) {                    
+                    if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedInt(0);
-                        String strReplace = fields.group(3).replace("u", "d");
+                        String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
-                    } else if (fields.group(3).contains("d")){
+                    } else if (format.contains("D")){
                         value = bytebuf.getInt(0);
-                        strField = String.format(fields.group(3), value);                        
-                    } else if (fields.group(3).contains("b")) {
+                        strField = String.format(format, value);                        
+                    } else if (format.contains("B")) {
                         value =   bytebuf.getUnsignedInt(0);
                         strField = Long.toBinaryString(value);
                     } else {
                         value = bytebuf.getInt(0);                        
-                        strField = String.format(fields.group(3), value);
+                        strField = String.format(format, value);
                     };
                     strOut = strOut.replaceAll(matcher.group(0), strField);                       
                     ;
                     break;                
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
-                    if (fields.group(3).contains("u")) {                    
+                    if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedInt(0);
-                        String strReplace = fields.group(3).replace("u", "d");
+                        String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
-                    } else if (fields.group(3).contains("d")){
+                    } else if (format.contains("D")){
                         value = bytebuf.getLong(0);
-                        strField = String.format(fields.group(3), value);                        
-                    } else if (fields.group(3).contains("b")) {
+                        strField = String.format(format, value);                        
+                    } else if (format.contains("B")) {
                         value =   bytebuf.getUnsignedInt(0);
                         strField = Long.toBinaryString(value);
                     } else {
                         value = bytebuf.getLong(0);                        
-                        strField = String.format(fields.group(3), value);
+                        strField = String.format(format, value);
                     };
                     strOut = strOut.replaceAll(matcher.group(0), strField);                      
                     ;  
                     break;                
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;                    
-                    if (fields.group(3).contains("u")) {                    
+                    if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedInt(0);
-                        String strReplace = fields.group(3).replace("u", "d");
+                        String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
-                    } else if (fields.group(3).contains("d")){
+                    } else if (format.contains("D")){
                         value = bytebuf.getLong(0);
-                        strField = String.format(fields.group(3), value);                        
-                    } else if (fields.group(3).contains("b")) {
+                        strField = String.format(format, value);                        
+                    } else if (format.contains("B")) {
                         value =   bytebuf.getUnsignedInt(0);
                         strField = Long.toBinaryString(value);
                     } else {
                         value = bytebuf.getLong(0);                        
-                        strField = String.format(fields.group(3), value);
+                        strField = String.format(format, value);
                     };
                     strOut = strOut.replaceAll(matcher.group(0), strField);                     
                     ;
                     break;                
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break; 
-                    if (fields.group(3).contains("f")) { 
-                        strField = String.format(fields.group(3), value); 
+                    if (format.contains("F")) { 
+                        strField = String.format(format, value); 
                         strOut = strOut.replaceAll(matcher.group(0), strField);                         
                     }                     
                     ;
