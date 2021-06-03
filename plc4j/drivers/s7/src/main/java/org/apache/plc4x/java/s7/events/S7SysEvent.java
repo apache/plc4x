@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 
 /**
@@ -59,7 +61,17 @@ public class S7SysEvent  implements S7Event{
         map.put(Fields.DAT_ID.name(), payload.getDatId());
         map.put(Fields.INFO1.name(), payload.getInfo1());
         map.put(Fields.INFO2.name(), payload.getInfo2());
-        this.timeStamp = Instant.now();;//payload.getTimeStamp();
+        
+        DateAndTime dt = payload.getTimeStamp();
+        int year = (dt.getYear()>=90)?dt.getYear()+1900:dt.getYear()+2000;
+        LocalDateTime ldt = LocalDateTime.of(year,
+                dt.getMonth(),
+                dt.getDay(),
+                dt.getHour(),
+                dt.getMinutes(), 
+                dt.getSeconds(), 
+                dt.getMsec()*1000000);
+        this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
         map.put(Fields.TIMESTAMP.name(),this.timeStamp);
     }    
     

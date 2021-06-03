@@ -18,7 +18,7 @@
 :icons: font
 
 == S7 (Step7)
-
+image::s7_banner.png[]
 === Connection String Options
 
 [cols="2,2a,5a"]

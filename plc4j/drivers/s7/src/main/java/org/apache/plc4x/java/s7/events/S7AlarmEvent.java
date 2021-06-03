@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectPushType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
 import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
+import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmS;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSC;
@@ -162,10 +164,18 @@ public class S7AlarmEvent implements S7Event {
             msg = ((S7PayloadAlarmS) obj).getAlarmMessage();                             
         if (obj instanceof S7PayloadNotify8)
             msg = ((S7PayloadNotify8) obj).getAlarmMessage();        
-        
-        
-        this.timeStamp = null;
-        if (msg == null) return;
+                
+        DateAndTime dt = msg.getTimeStamp();
+        int year = (dt.getYear()>=90)?dt.getYear()+1900:dt.getYear()+2000;        
+         LocalDateTime ldt = LocalDateTime.of(year,
+                dt.getMonth(),
+                dt.getDay(),
+                dt.getHour(),
+                dt.getMinutes(), 
+                dt.getSeconds(), 
+                dt.getMsec()*1000000);
+        this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
+        map.put(S7SysEvent.Fields.TIMESTAMP.name(),this.timeStamp);
         
         AlarmMessageObjectPushType[] items = msg.getMessageObjects();
         for (AlarmMessageObjectPushType item:items){
