@@ -69,7 +69,7 @@ public class SourceTaskTest {
         assertEquals("simulated://127.0.0.1", config.get(0).get(Constants.CONNECTION_STRING_CONFIG));
         assertEquals("1000", config.get(0).get(Constants.BUFFER_SIZE_CONFIG));
         assertEquals("5000", config.get(0).get(Constants.KAFKA_POLL_RETURN_CONFIG));
-        assertEquals("simulateddashboard|machineData|1000|running#RANDOM/Temporary:Boolean|conveyorEntry#RANDOM/Temporary:Boolean|load#RANDOM/Temporary:Boolean|unload#RANDOM/Temporary:Boolean|transferLeft#RANDOM/Temporary:Boolean|transferRight#RANDOM/Temporary:Boolean|conveyorLeft#RANDOM/Temporary:Boolean|conveyorRight#RANDOM/Temporary:Boolean|numLargeBoxes#RANDOM/Temporary:Integer|numSmallBoxes#RANDOM/Temporary:Integer,simulatedheartbeat|simulatedheartbeat|500|active#RANDOM/Temporary:Integer", config.get(0).get(Constants.QUERIES_CONFIG));
+        assertEquals("simulateddashboard|machineData|1000|running#RANDOM/Temporary:Boolean|conveyorEntry#RANDOM/Temporary:Boolean|load#RANDOM/Temporary:Boolean|unload#RANDOM/Temporary:Boolean|transferLeft#RANDOM/Temporary:Boolean|transferRight#RANDOM/Temporary:Boolean|conveyorLeft#RANDOM/Temporary:Boolean|conveyorRight#RANDOM/Temporary:Boolean|numLargeBoxes#RANDOM/Temporary:Integer|numSmallBoxes#RANDOM/Temporary:Integer[2],simulatedheartbeat|simulatedheartbeat|500|active#RANDOM/Temporary:Integer", config.get(0).get(Constants.QUERIES_CONFIG));
     }
 
     @Test
