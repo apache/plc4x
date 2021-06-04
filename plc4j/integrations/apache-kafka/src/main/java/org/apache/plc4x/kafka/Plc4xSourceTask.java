@@ -22,10 +22,12 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
+import org.apache.kafka.connect.data.Schema.Type;
 import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
@@ -41,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -152,70 +155,80 @@ public class Plc4xSourceTask extends SourceTask {
             PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
-                Long timestamp = System.currentTimeMillis();
+                try {
+                    Long timestamp = System.currentTimeMillis();
 
-                Map<String, String> sourcePartition = new HashMap<>();
-                sourcePartition.put("sourceName", sourceName);
-                sourcePartition.put("jobName", jobName);
+                    Map<String, String> sourcePartition = new HashMap<>();
+                    sourcePartition.put("sourceName", sourceName);
+                    sourcePartition.put("jobName", jobName);
 
-                Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
+                    Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
 
-                String topic = topics.get(jobName);
+                    String topic = topics.get(jobName);
 
-                // Prepare the key structure.
-                Struct key = new Struct(KEY_SCHEMA)
-                    .put(Constants.SOURCE_NAME_FIELD, sourceName)
-                    .put(Constants.JOB_NAME_FIELD, jobName);
+                    // Prepare the key structure.
+                    Struct key = new Struct(KEY_SCHEMA)
+                        .put(Constants.SOURCE_NAME_FIELD, sourceName)
+                        .put(Constants.JOB_NAME_FIELD, jobName);
 
-                // Build the Schema for the result struct.
-                SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
-                    .name("org.apache.plc4x.kafka.schema.Field");
+                    // Build the Schema for the result struct.
+                    SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
+                        .name("org.apache.plc4x.kafka.schema.Field");
 
 
-                for (Map.Entry<String, Object> result : results.entrySet()) {
-                    // Get field-name and -value from the results.
-                    String fieldName = result.getKey();
-                    Object fieldValue = result.getValue();
+                    for (Map.Entry<String, Object> result : results.entrySet()) {
+                        // Get field-name and -value from the results.
+                        String fieldName = result.getKey();
+                        Object fieldValue = result.getValue();
 
-                    // Get the schema for the given value type.
-                    Schema valueSchema = getSchema(fieldValue);
+                        // Get the schema for the given value type.
+                        Schema valueSchema = getSchema(fieldValue);
 
-                    // Add the schema description for the current field.
-                    fieldSchemaBuilder.field(fieldName, valueSchema);
-                }
-                Schema fieldSchema = fieldSchemaBuilder.build();
+                        // Add the schema description for the current field.
+                        fieldSchemaBuilder.field(fieldName, valueSchema);
+                    }
+                    Schema fieldSchema = fieldSchemaBuilder.build();
 
-                Schema recordSchema = SchemaBuilder.struct()
-                    .name("org.apache.plc4x.kafka.schema.JobResult")
-                    .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
-                    .field(Constants.FIELDS_CONFIG, fieldSchema)
-                    .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
-                    .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
-                    .build();
+                    Schema recordSchema = SchemaBuilder.struct()
+                        .name("org.apache.plc4x.kafka.schema.JobResult")
+                        .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
+                        .field(Constants.FIELDS_CONFIG, fieldSchema)
+                        .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
+                        .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
+                        .build();
 
-                // Build the struct itself.
-                Struct fieldStruct = new Struct(fieldSchema);
-                for (Map.Entry<String, Object> result : results.entrySet()) {
-                    // Get field-name and -value from the results.
-                    String fieldName = result.getKey();
-                    Object fieldValue = result.getValue();
-                    fieldStruct.put(fieldName, fieldValue);
-                }
+                    // Build the struct itself.
+                    Struct fieldStruct = new Struct(fieldSchema);
+                    for (Map.Entry<String, Object> result : results.entrySet()) {
+                        // Get field-name and -value from the results.
+                        String fieldName = result.getKey();
+                        Object fieldValue = result.getValue();
 
-                Struct recordStruct = new Struct(recordSchema)
-                    .put(Constants.FIELDS_CONFIG, fieldStruct)
-                    .put(Constants.TIMESTAMP_CONFIG, timestamp);
+                        if (fieldSchema.field(fieldName).schema().type() == Schema.Type.ARRAY) {
+                            fieldStruct.put(fieldName, ((List) fieldValue).stream().map(p -> ((PlcValue) p).getObject()).collect(Collectors.toList()));
+                        } else {
+                            fieldStruct.put(fieldName, fieldValue);
+                        }
+                    }
 
-                // Prepare the source-record element.
-                SourceRecord record = new SourceRecord(
-                    sourcePartition, sourceOffset,
-                    topic,
-                    KEY_SCHEMA, key,
-                    recordSchema, recordStruct
+                    Struct recordStruct = new Struct(recordSchema)
+                        .put(Constants.FIELDS_CONFIG, fieldStruct)
+                        .put(Constants.TIMESTAMP_CONFIG, timestamp);
+
+                    // Prepare the source-record element.
+                    SourceRecord record = new SourceRecord(
+                        sourcePartition, sourceOffset,
+                        topic,
+                        KEY_SCHEMA, key,
+                        recordSchema, recordStruct
                     );
 
-                // Add the new source-record to the buffer.
-                buffer.add(record);
+                    // Add the new source-record to the buffer.
+                    buffer.add(record);
+                } catch (Exception e) {
+                    log.error("Error while parsing returned values");
+                    e.printStackTrace();
+                }
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
@@ -256,6 +269,10 @@ public class Plc4xSourceTask extends SourceTask {
 
     private Schema getSchema(Object value) {
         Objects.requireNonNull(value);
+
+        if (value instanceof PlcValue) {
+            value = ((PlcValue) value).getObject();
+        }
 
         if(value instanceof List) {
             List list = (List) value;
