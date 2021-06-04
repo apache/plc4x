@@ -22,10 +22,12 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
+import org.apache.kafka.connect.data.Schema.Type;
 import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
@@ -41,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -200,7 +203,12 @@ public class Plc4xSourceTask extends SourceTask {
                         // Get field-name and -value from the results.
                         String fieldName = result.getKey();
                         Object fieldValue = result.getValue();
-                        fieldStruct.put(fieldName, fieldValue);
+
+                        if (fieldSchema.field(fieldName).schema().type() == Schema.Type.ARRAY) {
+                            fieldStruct.put(fieldName, ((List) fieldValue).stream().map(p -> ((PlcValue) p).getObject()).collect(Collectors.toList()));
+                        } else {
+                            fieldStruct.put(fieldName, fieldValue);
+                        }
                     }
 
                     Struct recordStruct = new Struct(recordSchema)
@@ -220,7 +228,6 @@ public class Plc4xSourceTask extends SourceTask {
                 } catch (Exception e) {
                     log.error("Error while parsing returned values");
                     e.printStackTrace();
-                    this.stop();
                 }
             }, triggerCollector);
             scraper.start();
@@ -262,6 +269,10 @@ public class Plc4xSourceTask extends SourceTask {
 
     private Schema getSchema(Object value) {
         Objects.requireNonNull(value);
+
+        if (value instanceof PlcValue) {
+            value = ((PlcValue) value).getObject();
+        }
 
         if(value instanceof List) {
             List list = (List) value;
