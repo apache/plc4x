@@ -22,7 +22,6 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
