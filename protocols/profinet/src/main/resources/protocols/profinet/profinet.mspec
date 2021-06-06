@@ -18,6 +18,7 @@
 //
 
 [type 'EthernetFrame'
+    // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress          'destination']
     [simple MacAddress          'source']
     [simple EthernetFamePayload 'payload']
@@ -33,7 +34,6 @@
             [simple EthernetFamePayload 'payload']
         ]
         ['0x8892' ProfinetEthernetFramePayload
-            [simple ProfinetFrameId 'frameId']
             [simple DCP_PDU         'pdu']
         ]
     ]
@@ -41,22 +41,34 @@
 
 // Page 90
 [discriminatedType 'DCP_PDU'
-    [discriminator ServiceId   'serviceId']
-    [discriminator ServiceType 'serviceType']
+    [discriminator ProfinetFrameId  'frameId']
+    [discriminator ServiceId        'serviceId']
+    [discriminator ServiceType      'serviceType']
     // 4.3.1.3.4 (Page 95)
-    [simple        uint 32     'xid']
+    [simple        uint 32          'xid']
     // 4.3.1.3.5 (Page 95ff)
-    [simple        uint 16     'responseDelayFactorOrPadding']
+    [simple        uint 16          'responseDelayFactorOrPadding']
     // 4.3.1.3.4 (Page 95)
-    [implicit      uint 16     'dcpDataLength' 'lengthInBytes - 10']
-    [typeSwitch 'serviceId','serviceType.response'
-        // Multicast
-        ['ServiceId.IDENTIFY','false' DCP_Identify_ReqPDU
-            // For a DCP-IdentifyFilter-ReqPDU this can contain an optional NameOfStationBlock or AliasNameBlock and an optional IdentifyReqBlock (in total max 2)
-            // For a DCP-IdentifyAll_ReqPDU this must contain an AllSelectorBlock (in total 1)
+    [implicit      uint 16          'dcpDataLength' 'lengthInBytes - 10']
+    [typeSwitch 'frameId','serviceId','serviceType.response'
+        ////////////////////////////////////////////////////////////////////////////
+        // Multicast (Well theoretically)
+        ////////////////////////////////////////////////////////////////////////////
+        // The Identify request is valid in two options:
+        // 1) One containing only an AllSelectorBlock
+        // 2) One containing optionally either NameOfStationBlock or AliasNameBlock and another optional IdentifyReqBlock
+        // (I assume, that if in case 2 both optionally aren't used, this might not be valid and option 1 should be sent instead)
+        ['DCP_Identify_ReqPDU','IDENTIFY','false' DCP_Identify_ReqPDU [uint 16 'dcpDataLength']
             [array DCP_Block 'blocks' length 'dcpDataLength']
         ]
-        ['ServiceId.HELLO','false' DCP_Hello_ReqPDU
+
+        // Response to a Identify request
+        ['DCP_Identify_ResPDU','IDENTIFY','true' DCP_Identify_ResPDU [uint 16 'dcpDataLength']
+            [array DCP_Block 'blocks' length 'dcpDataLength']
+        ]
+
+        // Packet a Profinet station might emit once it is turned on
+        ['DCP_Hello_ReqPDU','HELLO','false' DCP_Hello_ReqPDU
             [simple NameOfStationBlockRes    'nameOfStationBlockRes']
             [simple IPParameterBlockRes      'iPParameterBlockRes']
             [simple DeviceIdBlockRes         'deviceIdBlockRes']
@@ -65,110 +77,204 @@
             [simple DeviceRoleBlockRes       'deviceRoleBlockRes']
             [simple DeviceInitiativeBlockRes 'deviceInitiativeBlockRes']
         ]
+
+        ////////////////////////////////////////////////////////////////////////////
         // Unicast
-        /*['','' DCP_Get_ReqPDU]
+        ////////////////////////////////////////////////////////////////////////////
+
+        ['DCP_GetSet_PDU','GET','false' DCP_Get_ReqPDU
             [simple GetReqBlock              'getReqBlock']
-        ['','' DCP_Set_ReqPDU]
+        ]
+        ['DCP_GetSet_PDU','GET','true' DCP_Get_ResPDU
+            [simple GetResBlock              'getResBlock']
+            [simple GetNegResBlock           'getNegResBlock']
+        ]
+
+        ['DCP_GetSet_PDU','SET','false' DCP_Set_ReqPDU
             [simple StartTransactionBlock    'startTransactionBlock']
                 [simple BlockQualifier           'blockQualifier']
             [simple SetResetReqBlock         'setResetReqBlock']
             [simple SetReqBlock              'setReqBlock']
             [simple StopTransactionBlock     'stopTransactionBlock']
                 [simple BlockQualifier           'blockQualifier']
-        ['','' DCP_Get_ResPDU]
-            [simple GetResBlock              'getResBlock']
-            [simple GetNegResBlock           'getNegResBlock']
-        ['','' DCP_Set_ResPDU]
+        ]
+        ['DCP_GetSet_PDU','SET','true' DCP_Set_ResPDU
             [simple SetResBlock              'setResBlock']
             [simple SetNegResBlock           'setNegResBlock']
-        ['','' DCP_Identify_ResPDU
-            [simple IdentifyResBlock         'identifyRes']
-            [simple NameOfStationBlockRes    'nameOfStationBlockRes']
-            [simple IPParameterBlockRes      'iPParameterBlockRes']
-            [simple DeviceIdBlockRes         'deviceIdBlockRes']
-            [simple DeviceVendorBlockRes     'deviceVendorBlockRes']
-            [simple DeviceOptionsBlockRes    'deviceOptionsBlockRes']
-            [simple DeviceRoleBlockRes       'deviceRoleBlockRes']
-            [simple DeviceInitiativeBlockRes 'deviceInitiativeBlockRes']
-            [simple DeviceInstanceBlockRes   'deviceInstanceBlockRes']
-            [simple OemDeviceIdBlockRes      'oemDeviceIdBlockRes']
-        ]*/
+        ]
     ]
 ]
 
 [discriminatedType 'DCP_Block'
-    [discriminator BlockOptions 'option']
-    [discriminator uint 8       'suboption']
-    [implicit      uint 16      'blockLength' 'lengthInBytes']
+    [discriminator BlockOptions 'option'                                                ]
+    [discriminator uint 8       'suboption'                                             ]
+    [implicit      uint 16      'blockLength' 'lengthInBytes'                           ]
     [typeSwitch 'option','suboption'
 
+        ////////////////////////////////////////////////////////////////////////////
+        // IP_OPTION
+        ////////////////////////////////////////////////////////////////////////////
+
         // 4.3.1.4.1 (Page 97)
-        ['BlockOptions.IP_OPTION','1' DCP_BlockIpMacAddress
+        ['IP_OPTION','1' DCP_BlockIpMacAddress
+            [reserved uint 16  '0x0000'                                                 ]
+            [simple MacAddress 'macAddress'                                             ]
         ]
-        ['BlockOptions.IP_OPTION','2' DCP_BlockIpIpParameter
+        ['IP_OPTION','2' DCP_BlockIpIpParameter
             // 4.3.1.4.12 (Page 105ff)
-            [reserved uint 8 '0x00']
-            [simple   bit    'ipConflictDetected']
-            [reserved uint 5 '0x00']
-            [simple   bit    'setViaDhcp']
-            [simple   bit    'setManually']
-            [array    uint 8 'ipAddress'       count '4']
-            [array    uint 8 'subnetMask'      count '4']
-            [array    uint 8 'standardGateway' count '4']
+            [reserved uint 8 '0x00'                                                     ]
+            [simple   bit    'ipConflictDetected'                                       ]
+            [reserved uint 5 '0x00'                                                     ]
+            [simple   bit    'setViaDhcp'                                               ]
+            [simple   bit    'setManually'                                              ]
+            [array    uint 8 'ipAddress'       count '4'                                ]
+            [array    uint 8 'subnetMask'      count '4'                                ]
+            [array    uint 8 'standardGateway' count '4'                                ]
         ]
-        ['BlockOptions.IP_OPTION','3' DCP_BlockIpFullIpSuite
+        ['IP_OPTION','3' DCP_BlockIpFullIpSuite
+            // TODO: Implement this ...
         ]
 
-        ['BlockOptions.ALL_SELECTOR_OPTION','0xFF' DCP_BlockALLSelector
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','1' DCP_BlockDevicePropertiesDeviceVendor
-            [reserved uint 16 '0x0000']
-            // TODO: Put a correct number here
-            [simple   string 'length - 42' 'deviceVendorValue']
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','2' DCP_BlockDevicePropertiesNameOfStation
-            [reserved uint 16 '0x0000']
-            // TODO: Put a correct number here
-            [simple   string 'length - 42' 'nameOfStation']
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','3' DCP_BlockDevicePropertiesDeviceId
-            [reserved uint 16 '0x0000']
-            [simple   uint 16 'vendorId']
-            [simple   uint 16 'deviceId']
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','4' DCP_BlockDevicePropertiesDeviceRole
-            [reserved uint 16 '0x0000']
-            [simple   uint 8  'deviceRoleDetails']
-            [reserved uint 8  '0x00']
-        ]
-        // TODO: Investigate why this has an option and suboption inside again ...
-        // TODO: Seems to be an array of tuples of option+suboptions
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','5' DCP_BlockDevicePropertiesDeviceOptions
-            [reserved uint 16      '0x0000']
-            [simple   BlockOptions 'option']
-            [simple   uint 8       'suboption']
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','6' DCP_BlockDevicePropertiesAliasName
-        ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','7' DCP_BlockDevicePropertiesStandardGateway
-            [reserved uint 16 '0x0000']
-            [simple   uint 8  'deviceInstanceHigh']
-            [simple   uint 8  'deviceInstanceLow']
+        ////////////////////////////////////////////////////////////////////////////
+        // DEVICE_PROPERTIES_OPTION
+        ////////////////////////////////////////////////////////////////////////////
 
+        ['DEVICE_PROPERTIES_OPTION','1' DCP_BlockDevicePropertiesDeviceVendor
+            [reserved uint 16     '0x0000'                                              ]
+            // TODO: Figure out how to do this correctly.
+            [simple   string '-1' 'deviceVendorValue'                                   ]
+            [padding  uint 8      'pad' '0x00' 'LENGTH(deviceVendorValue) % 2 == 1'     ]
         ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','8' DCP_BlockDevicePropertiesOemDeviceId
+        ['DEVICE_PROPERTIES_OPTION','2' DCP_BlockDevicePropertiesNameOfStation
+            [reserved uint 16     '0x0000'                                              ]
+            // TODO: Figure out how to do this correctly.
+            [simple   string '-1' 'nameOfStation'                                       ]
+            [padding  uint 8      'pad' '0x00' 'LENGTH(nameOfStation) % 2 == 1'         ]
         ]
-        ['BlockOptions.DEVICE_PROPERTIES_OPTION','9' DCP_BlockDevicePropertiesOemDeviceId
+        ['DEVICE_PROPERTIES_OPTION','3' DCP_BlockDevicePropertiesDeviceId
+            [reserved uint 16 '0x0000'                                                  ]
+            [simple   uint 16 'vendorId'                                                ]
+            [simple   uint 16 'deviceId'                                                ]
         ]
-    ]
+        ['DEVICE_PROPERTIES_OPTION','4' DCP_BlockDevicePropertiesDeviceRole
+            [reserved uint 20 '0x000000'                                                ]
+            [simple   bit     'pnioSupervisor'                                          ]
+            [simple   bit     'pnioMultidevive'                                         ]
+            [simple   bit     'pnioController'                                          ]
+            [simple   bit     'pnioDevice'                                              ]
+        ]
+        // Contains a list of option combinations the device supports.
+        ['DEVICE_PROPERTIES_OPTION','5' DCP_BlockDevicePropertiesDeviceOptions [uint 16 'blockLength']
+            [reserved uint 16               '0x0000'                                    ]
+            [array    SupportedDeviceOption 'supportedOptions' length 'blockLength - 2' ]
+        ]
+        ['DEVICE_PROPERTIES_OPTION','6' DCP_BlockDevicePropertiesAliasName
+            [reserved uint 16     '0x0000'                                              ]
+            [simple   string '-1' 'aliasNameValue'                                      ]
+            [padding  uint 8      'pad' '0x00' 'LENGTH(nameOfStation) % 2 == 1'         ]
+        ]
+        ['DEVICE_PROPERTIES_OPTION','7' DCP_BlockDevicePropertiesDeviceInstance
+            [reserved uint 16 '0x0000'                                                  ]
+            [simple   uint 8  'deviceInstanceHigh'                                      ]
+            [simple   uint 8  'deviceInstanceLow'                                       ]
+        ]
+        ['DEVICE_PROPERTIES_OPTION','8' DCP_BlockDevicePropertiesOemDeviceId
+            // TODO: Implement this ...
+        ]
+        ['DEVICE_PROPERTIES_OPTION','9' DCP_BlockDevicePropertiesStandardGateway
+            // TODO: Implement this ...
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////
+        // DCP_OPTION
+        ////////////////////////////////////////////////////////////////////////////
+        // 4.3.1.4.1 (Page 98 & 100)
+
+        // TODO: Check if these are really all DCP_OPTION
+        ['DCP_OPTION','12' DCP_BlockDhcpOptionHostName
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','43' DCP_BlockDhcpOptionVendorSpecificInformation
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','54' DCP_BlockDhcpOptionServerIdentifier
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','55' DCP_BlockDhcpOptionParameterRequestList
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','60' DCP_BlockDhcpOptionClassIdentifier
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','61' DCP_BlockDhcpOptionDhcpClientIdentifier
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','81' DCP_BlockDhcpOptionFullyQualifiedDomainName
+            // TODO: Implement this ...
+        ]
+        ['DCP_OPTION','97' DCP_BlockDhcpOptionUuidBasedClient
+            // TODO: Implement this ...
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////
+        // CONTROL_OPTION
+        ////////////////////////////////////////////////////////////////////////////
+        // 4.3.1.4.1 (Page 98)
+
+        ['CONTROL_OPTION','1' DCP_BlockControlOptionStart
+            // TODO: Implement this ...
+        ]
+        ['CONTROL_OPTION','2' DCP_BlockControlOptionStop
+            // TODO: Implement this ...
+        ]
+        ['CONTROL_OPTION','3' DCP_BlockControlOptionSignal
+            // TODO: Implement this ...
+        ]
+        ['CONTROL_OPTION','4' DCP_BlockControlOptionResponse
+            // TODO: Implement this ...
+        ]
+        ['CONTROL_OPTION','5' DCP_BlockControlOptionFactoryReset
+            // TODO: Implement this ...
+        ]
+        ['CONTROL_OPTION','6' DCP_BlockControlOptionResetToFactory
+            // TODO: Implement this ...
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////
+        // DEVICE_INITIATIVE_OPTION
+        ////////////////////////////////////////////////////////////////////////////
+        // 4.3.1.4.1 (Page 98)
+
+        ['DEVICE_INITIATIVE_OPTION','1' DCP_BlockDeviceInitiativeOption
+            // TODO: Implement this ...
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////
+        // ALL_SELECTOR_OPTION
+        ////////////////////////////////////////////////////////////////////////////
+        // 4.3.1.4.1 (Page 99)
+
+        ['ALL_SELECTOR_OPTION','0xFF' DCP_BlockALLSelector
+            // This type of block is empty
+        ]
+
+        ////////////////////////////////////////////////////////////////////////////
+        // Device manufacturer specific options 0x00-0xFF
+        ////////////////////////////////////////////////////////////////////////////
+   ]
+]
+
+[type 'SupportedDeviceOption'
+    [simple   BlockOptions 'option'                                             ]
+    [simple   uint 8       'suboption'                                          ]
 ]
 
 // 4.3.1.3.2 (Page 94ff)
 [type 'ServiceType'
-    [simple   bit 'response']
-    [reserved bit '0x00']
-    [simple   bit 'notSupported']
     [reserved uint 5 '0x00']
+    [simple   bit 'notSupported']
+    [reserved bit '0x00']
+    [simple   bit 'response']
 ]
 
 // Page 86ff: Coding of the field FrameID
@@ -218,50 +324,8 @@
     ['0x02' DEVICE_PROPERTIES_OPTION]
     ['0x03' DCP_OPTION]
     ['0x05' CONTROL_OPTION]
-    ['0x06' DEVICE_INITIALIVE_OPTION]
+    ['0x06' DEVICE_INITIATIVE_OPTION]
     ['0xFF' ALL_SELECTOR_OPTION]
-    //[RESERVED]
-]
-
-
-// 4.3.1.4.1 (Page 98 & 100)
-// All other values are "Reserved"
-[enum uint 8 'BlockOptionsDhcpSuboptions' [bit 'read', bit 'write', bit 'opt']
-    ['12' HOST_NAME                   ['true', 'true', 'true']]
-    ['43' VENDOR_SPECIFIC_INFORMATION ['true', 'true', 'true']]
-    ['54' SERVER_IDENTIFIER           ['true', 'true', 'true']]
-    ['55' PARAMETER_REQUEST_LIST      ['true', 'true', 'true']]
-    ['60' CLASS_IDENTIFIER            ['true', 'true', 'true']]
-    ['61' DHCP_CLIENT_IDENTIFIER      ['true', 'true', 'true']]
-    ['81' FULLY_QUALIFIED_DOMAIN_NAME ['true', 'true', 'true']]
-    ['97' UUID_BASED_CLIENT           ['true', 'true', 'true']]
-    //[RESERVED]
-]
-
-// 4.3.1.4.1 (Page 98)
-// All other values are "Reserved"
-[enum uint 8 'BlockOptionsControlSuboptions' [bit 'read', bit 'write', bit 'opt']
-    ['0x01' START            ['false', 'true',  'false']]
-    ['0x02' STOP             ['false', 'true',  'false']]
-    ['0x03' SIGNAL           ['false', 'true',  'false']]
-    ['0x04' RESPONSE         ['false', 'false', 'false']]
-    ['0x05' FACTORY_RESET    ['false', 'true',  'true' ]]
-    ['0x06' RESET_TO_FACTORY ['false', 'true',  'false']]
-    //[RESERVED]
-]
-
-// 4.3.1.4.1 (Page 98)
-// All other values are "Reserved"
-[enum uint 8 'BlockOptionsDeviceInitiativeSuboptions' [bit 'read', bit 'write', bit 'opt']
-    ['0x01' DEVICE_INITIATIVE ['true', 'false',  'false']]
-    //[RESERVED]
-]
-
-// 4.3.1.4.1 (Page 99)
-// All other values are "Reserved"
-[enum uint 8 'BlockOptionsDeviceInitiativeSuboptions' [bit 'read', bit 'write', bit 'opt']
-    ['0xFF' ALL_SELECTOR ['false', 'false',  'false']]
-    //[RESERVED]
 ]
 
 // There are some special MAC addresses reserved:
