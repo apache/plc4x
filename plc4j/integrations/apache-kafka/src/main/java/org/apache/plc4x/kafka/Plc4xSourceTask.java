@@ -21,7 +21,6 @@ package org.apache.plc4x.kafka;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
-import org.apache.kafka.connect.data.Schema.Type;
 import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
@@ -42,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
