@@ -221,13 +221,12 @@ public class Plc4xSourceTask extends SourceTask {
                         topic,
                         KEY_SCHEMA, key,
                         recordSchema, recordStruct
-                );
+                    );
 
                     // Add the new source-record to the buffer.
                     buffer.add(sourceRecord);
                 } catch (Exception e) {
-                    log.error("Error while parsing returned values");
-                    e.printStackTrace();
+                    log.error("Error while parsing returned values", e);
                 }
             }, triggerCollector);
             scraper.start();
