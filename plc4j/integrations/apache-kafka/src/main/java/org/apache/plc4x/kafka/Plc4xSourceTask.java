@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.kafka;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
@@ -43,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,28 +63,27 @@ public class Plc4xSourceTask extends SourceTask {
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(Constants.CONNECTION_NAME_CONFIG,
-                ConfigDef.Type.STRING,
-                ConfigDef.Importance.HIGH,
-                Constants.CONNECTION_NAME_STRING_DOC)
+            ConfigDef.Type.STRING,
+            ConfigDef.Importance.HIGH,
+            Constants.CONNECTION_NAME_STRING_DOC)
         .define(Constants.CONNECTION_STRING_CONFIG,
-                ConfigDef.Type.STRING,
-                ConfigDef.Importance.HIGH,
-                Constants.CONNECTION_STRING_DOC)
+            ConfigDef.Type.STRING,
+            ConfigDef.Importance.HIGH,
+            Constants.CONNECTION_STRING_DOC)
         .define(Constants.KAFKA_POLL_RETURN_CONFIG,
-                ConfigDef.Type.INT,
-                Constants.KAFKA_POLL_RETURN_DEFAULT,
-                ConfigDef.Importance.HIGH,
-                Constants.KAFKA_POLL_RETURN_DOC)
+            ConfigDef.Type.INT,
+            Constants.KAFKA_POLL_RETURN_DEFAULT,
+            ConfigDef.Importance.HIGH,
+            Constants.KAFKA_POLL_RETURN_DOC)
         .define(Constants.BUFFER_SIZE_CONFIG,
-                ConfigDef.Type.INT,
-                Constants.BUFFER_SIZE_DEFAULT,
-                ConfigDef.Importance.HIGH,
-                Constants.BUFFER_SIZE_DOC)
+            ConfigDef.Type.INT,
+            Constants.BUFFER_SIZE_DEFAULT,
+            ConfigDef.Importance.HIGH,
+            Constants.BUFFER_SIZE_DOC)
         .define(Constants.QUERIES_CONFIG,
-                ConfigDef.Type.LIST,
-                ConfigDef.Importance.HIGH,
-                Constants.QUERIES_DOC);
-
+            ConfigDef.Type.LIST,
+            ConfigDef.Importance.HIGH,
+            Constants.QUERIES_DOC);
 
 
     private static final Schema KEY_SCHEMA =
@@ -97,6 +96,7 @@ public class Plc4xSourceTask extends SourceTask {
     private ArrayBlockingQueue<SourceRecord> buffer;
     private Integer pollReturnInterval;
     private TriggeredScraperImpl scraper;
+    private final SecureRandom random = new SecureRandom();
 
     @Override
     public String version() {
@@ -121,10 +121,10 @@ public class Plc4xSourceTask extends SourceTask {
         List<String> jobConfigs = config.getList(Constants.QUERIES_CONFIG);
         for (String jobConfig : jobConfigs) {
             String[] jobConfigSegments = jobConfig.split("\\|");
-            if(jobConfigSegments.length < 4) {
-                log.warn(String.format("Error in job configuration '%s'. " +
+            if (jobConfigSegments.length < 4) {
+                log.warn("Error in job configuration '{}'. " +
                     "The configuration expects at least 4 segments: " +
-                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig));
+                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig);
                 continue;
             }
 
@@ -133,12 +133,12 @@ public class Plc4xSourceTask extends SourceTask {
             Integer rate = Integer.valueOf(jobConfigSegments[2]);
             JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
                 jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
-            for(int i = 3; i < jobConfigSegments.length; i++) {
+            for (int i = 3; i < jobConfigSegments.length; i++) {
                 String[] fieldSegments = jobConfigSegments[i].split("#");
-                if(fieldSegments.length != 2) {
-                    log.warn(String.format("Error in job configuration '%s'. " +
+                if (fieldSegments.length != 2) {
+                    log.warn("Error in job configuration '{}'. " +
                             "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
-                        jobName, jobConfigSegments[i]));
+                        jobName, jobConfigSegments[i]);
                     continue;
                 }
                 String fieldAlias = fieldSegments[0];
@@ -216,15 +216,15 @@ public class Plc4xSourceTask extends SourceTask {
                         .put(Constants.TIMESTAMP_CONFIG, timestamp);
 
                     // Prepare the source-record element.
-                    SourceRecord record = new SourceRecord(
+                    SourceRecord sourceRecord = new SourceRecord(
                         sourcePartition, sourceOffset,
                         topic,
                         KEY_SCHEMA, key,
                         recordSchema, recordStruct
-                    );
+                );
 
                     // Add the new source-record to the buffer.
-                    buffer.add(record);
+                    buffer.add(sourceRecord);
                 } catch (Exception e) {
                     log.error("Error while parsing returned values");
                     e.printStackTrace();
@@ -239,7 +239,7 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void stop() {
-        synchronized (this) {            
+        synchronized (this) {
             scraper.stop();
             notifyAll(); // wake up thread waiting in awaitFetch
         }
@@ -247,23 +247,23 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public List<SourceRecord> poll() {
-        if(!buffer.isEmpty()) {
+        if (!buffer.isEmpty()) {
             int numElements = buffer.size();
             List<SourceRecord> result = new ArrayList<>(numElements);
             buffer.drainTo(result, numElements);
             return result;
-        } else {
-            try {
-                List<SourceRecord> result = new ArrayList<>(1);
-                SourceRecord temp = buffer.poll(pollReturnInterval + RandomUtils.nextInt(0, (int) Math.round(pollReturnInterval*0.05)), TimeUnit.MILLISECONDS);
-                if (temp == null) {
-                    return null;
-                }
-                result.add(temp);
-                return result;
-            } catch (InterruptedException e) {
-                return null;
+        }
+        try {
+            List<SourceRecord> result = new ArrayList<>(1);
+            SourceRecord temp = buffer.poll(pollReturnInterval + (long) random.nextInt((int) Math.round(pollReturnInterval * 0.05)), TimeUnit.MILLISECONDS);
+            if (temp == null) {
+                return Collections.emptyList();
             }
+            result.add(temp);
+            return result;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Collections.emptyList();
         }
     }
 
@@ -274,9 +274,9 @@ public class Plc4xSourceTask extends SourceTask {
             value = ((PlcValue) value).getObject();
         }
 
-        if(value instanceof List) {
+        if (value instanceof List) {
             List list = (List) value;
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new ConnectException("Unsupported empty lists.");
             }
             // In PLC4X list elements all contain the same type.
@@ -284,8 +284,11 @@ public class Plc4xSourceTask extends SourceTask {
             Schema elementSchema = getSchema(firstElement);
             return SchemaBuilder.array(elementSchema).build();
         }
+        if (value instanceof BigInteger) {
+            // no support yet
+        }
         if (value instanceof BigDecimal) {
-
+            // no support yet
         }
         if (value instanceof Boolean) {
             return Schema.OPTIONAL_BOOLEAN_SCHEMA;

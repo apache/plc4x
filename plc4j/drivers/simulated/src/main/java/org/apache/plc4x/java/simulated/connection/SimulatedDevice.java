@@ -24,19 +24,16 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.apache.plc4x.java.simulated.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.simulated.field.SimulatedField;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
@@ -50,7 +47,7 @@ public class SimulatedDevice {
 
     private static final Logger logger = LoggerFactory.getLogger(SimulatedDevice.class);
 
-    private final Random random = new Random();
+    private final Random random = new SecureRandom();
 
     private final String name;
 
@@ -76,7 +73,7 @@ public class SimulatedDevice {
             case STATE:
                 return Optional.ofNullable(state.get(field));
             case RANDOM:
-                return Optional.of(randomValue(field));
+                return Optional.ofNullable(randomValue(field));
             case STDOUT:
                 return Optional.empty();
         }
@@ -108,7 +105,7 @@ public class SimulatedDevice {
                             logger.info("Write failed");
                         }
                 }
-                logger.info("TEST PLC RANDOM [{}]: {}", field.getName(), value.toString());
+                logger.info("TEST PLC RANDOM [{}]: {}", field.getName(), value);
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
@@ -116,12 +113,10 @@ public class SimulatedDevice {
 
     @SuppressWarnings("unchecked")
     private PlcValue randomValue(SimulatedField field) {
-        Object result = null;
-
-        Short fieldDataTypeSize = field.getDataType().getDataTypeSize();
+        short fieldDataTypeSize = field.getDataType().getDataTypeSize();
 
         byte[] b = new byte[fieldDataTypeSize * field.getNumberOfElements()];
-        new Random().nextBytes(b);
+        random.nextBytes(b);
 
         ReadBuffer io = new ReadBufferByteBased(b);
         try {
@@ -161,7 +156,7 @@ public class SimulatedDevice {
                 }
                 consumer.accept(baseDefaultPlcValue);
                 try {
-                    TimeUnit.SECONDS.sleep((long) (Math.random() * 10));
+                    TimeUnit.NANOSECONDS.sleep((long)random.nextInt() * 10);
                 } catch (InterruptedException ignore) {
                     Thread.currentThread().interrupt();
                     return;
