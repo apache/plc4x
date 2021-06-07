@@ -27,5 +27,6 @@ public class S7UserEvent extends S7SysEvent {
   
     public S7UserEvent(S7PayloadDiagnosticMessage payload) {
         super(payload);
+        map.put(Fields.TYPE.name(), "USER");
     }
 }
