@@ -43,6 +43,7 @@ public class S7SysEvent  implements S7Event{
 
     public enum Fields{
         TIMESTAMP,
+        TYPE,
         EVENT_ID,
         PRIORITY_CLASS,
         OB_NUMBER,
@@ -52,9 +53,10 @@ public class S7SysEvent  implements S7Event{
     }
         
     private final Instant timeStamp;
-    private Map<String, Object> map = new HashMap();    
+    protected Map<String, Object> map = new HashMap();    
     
-   public S7SysEvent(S7PayloadDiagnosticMessage payload) {
+    public S7SysEvent(S7PayloadDiagnosticMessage payload) {
+        map.put(Fields.TYPE.name(), "SYS");
         map.put(Fields.EVENT_ID.name(), payload.getEventId());
         map.put(Fields.PRIORITY_CLASS.name(), payload.getPriorityClass());
         map.put(Fields.OB_NUMBER.name(), payload.getObNumber());
