@@ -103,9 +103,12 @@
           <instructions>
             <Import-Package>
               com.fasterxml.jackson.annotation;resolution:=optional,
-              *
+              com.github.jinahya.bit.io;resolution:=optional,               
+              *;resolution:=optional
             </Import-Package>
+            <Embed-Dependency>bit-io;scope=compile|runtime</Embed-Dependency>
             <Export-package>io.netty.bootstrap,*</Export-package>
+            <SPI-consumer>*</SPI-consumer>
           </instructions>
         </configuration>
       </plugin>
