@@ -267,6 +267,7 @@
                 <ignoredDependency>org.codehaus.groovy:groovy-test-junit5</ignoredDependency>
                 <ignoredDependency>org.codehaus.groovy:groovy</ignoredDependency>
                 <ignoredDependency>com.athaydes:spock-reports</ignoredDependency>
+                <ignoredDependency>org.apache.nifi:nifi-standard-nar</ignoredDependency>
               </ignoredDependencies>
             </configuration>
           </execution>

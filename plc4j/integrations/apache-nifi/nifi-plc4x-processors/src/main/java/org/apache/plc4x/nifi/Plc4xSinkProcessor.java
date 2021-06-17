@@ -69,10 +69,10 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             try {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
                 // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
-                session.transfer(flowFile, SUCCESS);
+                session.transfer(flowFile, REL_SUCCESS);
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
-                session.transfer(flowFile, FAILURE);
+                session.transfer(flowFile, REL_FAILURE);
             }
         } catch (ProcessException e) {
             throw e;
