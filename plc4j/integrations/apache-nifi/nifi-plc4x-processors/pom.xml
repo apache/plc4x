@@ -98,12 +98,93 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- This one is for test purpouses only, drivers are included in the nar -->
+		<!-- Bundle Drivers -->
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-ab-eth</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-ads</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-canopen</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-eip</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-knxnetip</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-modbus</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-opcua</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-s7</artifactId>
 			<version>${nifi-plc4x.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-driver-simulated</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-transport-pcap-replay</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-transport-raw-socket</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-transport-serial</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-transport-tcp</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.plc4x</groupId>
+			<artifactId>plc4j-transport-udp</artifactId>
+			<version>${nifi-plc4x.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		
 
 
 		<!-- mvn -Drat.skip=true verify -X -->
