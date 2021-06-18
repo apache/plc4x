@@ -52,7 +52,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 			err:      err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in ReadGroupAddress")
+			log.Info().Msgf("No receiver for response in ReadGroupAddress")
 		}
 	}
 
@@ -102,7 +102,7 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 			err:        err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceConnect")
+			log.Info().Msgf("No receiver for response in DeviceConnect")
 		}
 	}
 
@@ -189,7 +189,7 @@ func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-ch
 			err:        err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceDisconnect")
+			log.Info().Msgf("No receiver for response in DeviceDisconnect")
 		}
 	}
 
@@ -218,7 +218,7 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 			err: err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceAuthenticate")
+			log.Info().Msgf("No receiver for response in DeviceAuthenticate")
 		}
 	}
 
@@ -269,7 +269,7 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			err:      err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceReadProperty")
+			log.Info().Msgf("No receiver for response in DeviceReadProperty")
 		}
 	}
 
@@ -345,7 +345,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 			err:      err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceReadPropertyDescriptor")
+			log.Info().Msgf("No receiver for response in DeviceReadPropertyDescriptor")
 		}
 	}
 
@@ -401,7 +401,7 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 			err:      err,
 		}:
 		default:
-			log.Debug().Msgf("No receiver for response in DeviceReadMemory")
+			log.Info().Msgf("No receiver for response in DeviceReadMemory")
 		}
 	}
 
