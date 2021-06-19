@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,6 +47,8 @@ public class Ets5Parser {
     public Ets5Model parse(File knxprojFile) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             DocumentBuilder builder = factory.newDocumentBuilder();
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
@@ -57,7 +60,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry projectHeaderFile = zipFile.getEntry("P-05CD/project.xml");
                 if (projectHeaderFile == null) {
-                    throw new RuntimeException("Error accessing project header file.");
+                    throw new PlcRuntimeException("Error accessing project header file.");
                 }
                 Document projectHeaderDoc = builder.parse(zipFile.getInputStream(projectHeaderFile));
                 final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
@@ -69,7 +72,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry knxMasterDataFile = zipFile.getEntry("knx_master.xml");
                 if (knxMasterDataFile == null) {
-                    throw new RuntimeException("Error accessing KNX master file.");
+                    throw new PlcRuntimeException("Error accessing KNX master file.");
                 }
                 Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
@@ -97,7 +100,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry projectFile = zipFile.getEntry("P-05CD/0.xml");
                 if (projectFile == null) {
-                    throw new RuntimeException("Error accessing project file.");
+                    throw new PlcRuntimeException("Error accessing project file.");
                 }
                 Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
 
@@ -163,17 +166,8 @@ public class Ets5Parser {
                 }
                 return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }
-        } catch (IOException e) {
+        } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
-            throw new PlcRuntimeException(e);
-        } catch (ParserConfigurationException e) {
-            // XML Stuff
-            throw new PlcRuntimeException(e);
-        } catch (SAXException e) {
-            // XML Stuff
-            throw new PlcRuntimeException(e);
-        } catch (XPathExpressionException e) {
-            // XML Stuff
             throw new PlcRuntimeException(e);
         }
     }
@@ -186,7 +180,7 @@ public class Ets5Parser {
         } else if ("Free".equals(knxprojValue)) {
             return (byte) 1;
         }
-        throw new RuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
+        throw new PlcRuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
     }
 
 }

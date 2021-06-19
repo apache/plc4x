@@ -26,10 +26,10 @@ import java.util.Map;
 
 public class PcapReplayChannelConfig extends PcapChannelConfig {
 
-    public static float SPEED_SLOW_HALF = 0.5f;
-    public static float SPEED_REALTIME = 1f;
-    public static float SPEED_FAST_DOUBLE = 2f;
-    public static float SPEED_FAST_FULL = 0f;
+    public static final float SPEED_SLOW_HALF = 0.5f;
+    public static final float SPEED_REALTIME = 1f;
+    public static final float SPEED_FAST_DOUBLE = 2f;
+    public static final float SPEED_FAST_FULL = 0f;
 
     private float speedFactor = SPEED_REALTIME;
     private boolean loop = false;
