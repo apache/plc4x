@@ -34,6 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -263,10 +264,15 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// Create a go routine to handle incoming tunneling-requests which haven't been
 				// handled by any other handler. This is where usually the GroupValueWrite messages
 				// are being handled.
+				log.Debug().Msg("Starting tunneling handler")
+				log.Trace().Int("Num Goroutines before starting tunneling handler", runtime.NumGoroutine())
 				go func() {
+					log.Debug().Msg("Tunneling handler started")
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
+					// This is actually a while-true construct in go.
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
+						log.Trace().Msgf("Got incoming tunneling message %s", incomingMessage)
 						tunnelingRequest := driverModel.CastTunnelingRequest(incomingMessage)
 						if tunnelingRequest == nil {
 							tunnelingResponse := driverModel.CastTunnelingResponse(incomingMessage)
@@ -312,8 +318,9 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							m.handleIncomingTunnelingRequest(tunnelingRequest)
 						}
 					}
-					log.Warn().Msg("Tunneling handler shat down")
+					log.Warn().Msg("Tunneling handler has been shut down")
 				}()
+				log.Trace().Int("Num Goroutines after starting tunneling handler", runtime.NumGoroutine())
 
 				// Fire the "connected" event
 				sendResult(m, nil)
