@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.test.driver.internal.handlers;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
@@ -25,6 +26,7 @@ import org.apache.plc4x.test.driver.internal.utils.Synchronizer;
 import org.apache.plc4x.test.driver.internal.validator.ApiValidator;
 import org.dom4j.Element;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,8 +58,11 @@ public class ApiResponseHandler {
         PlcResponse plcResponse;
         try {
             plcResponse = synchronizer.responseFuture.get(5000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DriverTestsuiteException("Got no response within 5000ms.", e);
         } catch (Exception e) {
-            throw new DriverTestsuiteException("Got no response within 5000ms.");
+            throw new DriverTestsuiteException("Got no response within 5000ms.", e);
         }
 
         // Reset the future.
@@ -79,6 +84,8 @@ public class ApiResponseHandler {
             StringWriter writer = new StringWriter();
             StreamResult result = new StreamResult(writer);
             TransformerFactory tf = TransformerFactory.newInstance();
+            tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
+            tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // Compliant
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -86,7 +93,7 @@ public class ApiResponseHandler {
             transformer.transform(domSource, result);
             return writer.toString();
         } catch (ParserConfigurationException | TransformerException e) {
-            throw new RuntimeException(e);
+            throw new PlcRuntimeException(e);
         }
     }
 
