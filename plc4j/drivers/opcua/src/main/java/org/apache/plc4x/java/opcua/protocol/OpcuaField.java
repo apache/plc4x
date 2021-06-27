@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class OpcuaField implements PlcSubscriptionField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[^:]+))?(:(?<datatype>[a-zA-Z_]+))?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?");
 
     private final OpcuaIdentifierType identifierType;
 
