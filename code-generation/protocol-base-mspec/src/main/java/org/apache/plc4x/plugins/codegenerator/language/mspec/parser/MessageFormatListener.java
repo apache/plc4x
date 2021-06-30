@@ -43,7 +43,6 @@ import java.util.*;
 public class MessageFormatListener extends MSpecBaseListener {
 
 
-
     private Deque<List<Field>> parserContexts;
 
     private Deque<List<EnumValue>> enumContexts;
@@ -96,10 +95,7 @@ public class MessageFormatListener extends MSpecBaseListener {
                 parserArguments, null);
             types.put(typeName, enumType);
             enumContexts.pop();
-        }
-
-        // Handle data-io types.
-        else if (ctx.dataIoTypeSwitch != null) {
+        } else if (ctx.dataIoTypeSwitch != null) {  // Handle data-io types.
             SwitchField switchField = getSwitchField();
             DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(
                 typeName, parserArguments, null, switchField);
@@ -114,10 +110,7 @@ public class MessageFormatListener extends MSpecBaseListener {
                 }
             }
             parserContexts.pop();
-        }
-
-        // Handle all other types.
-        else {
+        } else { // Handle all other types.
             // If the type has sub-types it's an abstract type.
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
@@ -356,11 +349,10 @@ public class MessageFormatListener extends MSpecBaseListener {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
         // For DataIO types, add all the arguments from the parent type.
-        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)) {
-            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
-                parserArguments.addAll(Arrays.asList(getParserArguments(
-                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
-            }
+        if (!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)
+            && ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
+            parserArguments.addAll(Arrays.asList(getParserArguments(
+                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
         }
         // Add all eventually existing local arguments.
         if (ctx.argumentList() != null) {
@@ -416,7 +408,7 @@ public class MessageFormatListener extends MSpecBaseListener {
                 MSpecParser.ExpressionContext expression = ctx.constantValueExpressions.expression(i);
                 String constant = unquoteString(expression.getText());
                 // String expressions are double escaped
-                if (constant.startsWith("\"")) {
+                if (constant != null && constant.startsWith("\"")) {
                     constant = unquoteString(constant);
                 }
                 constants.put(constantName, constant);
@@ -448,7 +440,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional "encoding" field and length expression.
-        if(simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
+        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
             String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
             Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
             return new DefaultStringTypeReference(simpleBaseType, lengthExpression, encoding);

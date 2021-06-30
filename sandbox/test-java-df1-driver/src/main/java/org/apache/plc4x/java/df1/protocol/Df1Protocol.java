@@ -76,37 +76,37 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
 //        do {
 
-            in.markReaderIndex();
+        in.markReaderIndex();
 
-            short size = 0x00;
+        short size = 0x00;
 
-            // Yes, it's a little complicated, but we need to find out if we've got enough data.
-            if (in.readableBytes() > 1) {
-                if (in.getUnsignedByte(0) != (short) 0x10) {
-                    logger.warn("Expecting DF1 magic number: {}", 0x10);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
-                    }
-                    exceptionCaught(ctx, new PlcProtocolException(
-                        String.format("Expecting DF1 magic number: %02X", 0x10)));
-                    return;
+        // Yes, it's a little complicated, but we need to find out if we've got enough data.
+        if (in.readableBytes() > 1) {
+            if (in.getUnsignedByte(0) != (short) 0x10) {
+                logger.warn("Expecting DF1 magic number: {}", 0x10);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
                 }
+                exceptionCaught(ctx, new PlcProtocolException(
+                    String.format("Expecting DF1 magic number: %02X", 0x10)));
+                return;
+            }
 
-                short symbolType = in.getUnsignedByte(1);
-                switch (symbolType) {
-                    case (short) 0x02: {
-                        if (in.readableBytes() < 5) {
-                            return;
-                        }
-                        short commandType = in.getUnsignedByte(4);
-                        switch (commandType) {
-                            case (short) 0x01: {
-                                if (in.readableBytes() < 11) {
-                                    return;
-                                }
-                                break;
+            short symbolType = in.getUnsignedByte(1);
+            switch (symbolType) {
+                case (short) 0x02: {
+                    if (in.readableBytes() < 5) {
+                        return;
+                    }
+                    short commandType = in.getUnsignedByte(4);
+                    switch (commandType) {
+                        case (short) 0x01: {
+                            if (in.readableBytes() < 11) {
+                                return;
                             }
-                            case (short) 0x41: {
+                            break;
+                        }
+                        case (short) 0x41: {
                             /*int transactionCounter = in.getUnsignedShort(6);
                             if(!readRequestSizes.containsKey(transactionCounter)) {
                                 logger.warn("Unknown transaction counter: {}", transactionCounter);
@@ -121,25 +121,25 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
                             if(in.readableBytes() < 8 + size) {
                                 return;
                             }*/
-                                // TODO: Let's just assume all is good for now ...
-                                break;
-                            }
+                            // TODO: Let's just assume all is good for now ...
+                            break;
                         }
-                        break;
                     }
-                    case (short) 0x03: {
-                        if (in.readableBytes() < 4) {
-                            return;
-                        }
-                        break;
+                    break;
+                }
+                case (short) 0x03: {
+                    if (in.readableBytes() < 4) {
+                        return;
                     }
+                    break;
                 }
             }
+        }
 
-            // Parse the message received from the DF1 device
-            byte[] data = new byte[in.readableBytes()];
-            in.readBytes(data);
-            ReadBuffer readBuffer = new ReadBufferByteBased(data, false);
+        // Parse the message received from the DF1 device
+        byte[] data = new byte[in.readableBytes()];
+        in.readBytes(data);
+        ReadBuffer readBuffer = new ReadBufferByteBased(data, false);
 
         resp = DF1SymbolIO.staticParse(readBuffer);
 
@@ -153,7 +153,7 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        logger.warn("exception caught", cause);
         ctx.close();
         //super.exceptionCaught(ctx, cause);
     }

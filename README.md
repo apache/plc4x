@@ -77,7 +77,7 @@ NOTE: Currently the Java version which supports building of all parts of Apache 
 (Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
-[https://plc4x.apache.org/users/plc4j/gettingstarted.html](https://plc4x.apache.org/users/plc4j/gettingstarted.html)
+[https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
 
 ## Developers
 
@@ -88,7 +88,7 @@ Currently the project is configured to require the following software:
 1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
  point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
-3. (Optional) [https://www.graphviz.org/](Graphviz): For generating the graphs in the documentation
+3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
 
 With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
