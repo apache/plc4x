@@ -195,6 +195,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 					returnCodes[stringAddress] = apiModel.PlcResponseCode_NOT_FOUND
 					values[stringAddress] = nil
 				}
+				// TODO: Do we need a "default" case here?
 			}
 		} else {
 			// If we don't have any field-type information, add the raw data

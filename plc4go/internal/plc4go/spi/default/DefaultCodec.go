@@ -139,7 +139,7 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan interface{} {
 }
 
 func (m *defaultCodec) Connect() error {
-	log.Info().Msg("Connecting")
+	log.Trace().Msg("Connecting")
 	err := m.transportInstance.Connect()
 	if err == nil {
 		if !m.running {
@@ -250,7 +250,7 @@ mainLoop:
 		now := time.Now()
 
 		// Guard against empty expectations
-		if len(m.expectations) <= 0 {
+		if len(m.expectations) <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
 			time.Sleep(time.Millisecond * 10)
@@ -288,11 +288,10 @@ mainLoop:
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
-			// TODO: how do we prevent endless blocking if there is no reader on this channel?
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-			default:
-				workerLog.Warn().Msg("Message discarded")
+			case <-time.After(time.Millisecond * 40):
+				workerLog.Warn().Msgf("Message discarded %s", message)
 			}
 		}
 	}

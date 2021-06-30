@@ -27,18 +27,22 @@ import (
 
 func Int8ArrayToUint8Array(input []int8) []uint8 {
 	output := make([]uint8, len(input))
-	for i, _val := range input {
-		output[i] = uint8(_val)
+	if input != nil {
+		for i, _val := range input {
+			output[i] = uint8(_val)
+		}
 	}
 	return output
 }
 
 func Int8ArrayToString(data []int8, separator string) string {
 	var sb strings.Builder
-	for i, element := range data {
-		sb.WriteString(strconv.Itoa(int(uint8(element))))
-		if i < (len(data) - 1) {
-			sb.WriteString(separator)
+	if data != nil {
+		for i, element := range data {
+			sb.WriteString(strconv.Itoa(int(uint8(element))))
+			if i < (len(data) - 1) {
+				sb.WriteString(separator)
+			}
 		}
 	}
 	return sb.String()
@@ -46,40 +50,50 @@ func Int8ArrayToString(data []int8, separator string) string {
 
 func Uint8ArrayToInt8Array(input []uint8) []int8 {
 	output := make([]int8, len(input))
-	for i, _val := range input {
-		output[i] = int8(_val)
+	if input != nil {
+		for i, _val := range input {
+			output[i] = int8(_val)
+		}
 	}
 	return output
 }
 
 func Int8ArrayToByteArray(input []int8) []byte {
 	output := make([]byte, len(input))
-	for i, _val := range input {
-		output[i] = byte(_val)
+	if input != nil {
+		for i, _val := range input {
+			output[i] = byte(_val)
+		}
 	}
 	return output
 }
 
 func ByteArrayToInt8Array(input []byte) []int8 {
 	output := make([]int8, len(input))
-	for i, _val := range input {
-		output[i] = int8(_val)
+	if input != nil {
+		for i, _val := range input {
+			output[i] = int8(_val)
+		}
 	}
 	return output
 }
 
 func ByteArrayToUint8Array(input []byte) []uint8 {
 	output := make([]uint8, len(input))
-	for i, _val := range input {
-		output[i] = _val
+	if input != nil {
+		for i, _val := range input {
+			output[i] = _val
+		}
 	}
 	return output
 }
 
 func PlcValueUint8ListToByteArray(value values.PlcValue) []byte {
 	var result []byte
-	for _, valueItem := range value.GetList() {
-		result = append(result, valueItem.GetUint8())
+	if value != nil {
+		for _, valueItem := range value.GetList() {
+			result = append(result, valueItem.GetUint8())
+		}
 	}
 	return result
 }

@@ -28,6 +28,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"math"
 	"strconv"
+	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +52,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -100,7 +101,7 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 			connection: connection,
 			err:        err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -186,7 +187,7 @@ func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-ch
 			connection: connection,
 			err:        err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -214,7 +215,7 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -264,7 +265,7 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -339,7 +340,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -394,7 +395,7 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
