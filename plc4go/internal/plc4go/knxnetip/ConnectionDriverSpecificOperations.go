@@ -28,6 +28,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"math"
 	"strconv"
+	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,8 +52,7 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in ReadGroupAddress")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -101,8 +101,7 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 			connection: connection,
 			err:        err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceConnect")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -188,8 +187,7 @@ func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-ch
 			connection: connection,
 			err:        err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceDisconnect")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -217,8 +215,7 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceAuthenticate")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -268,8 +265,7 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceReadProperty")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -344,8 +340,7 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceReadPropertyDescriptor")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 
@@ -400,8 +395,7 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
-			log.Info().Msgf("No receiver for response in DeviceReadMemory")
+		case <-time.After(time.Millisecond * 10):
 		}
 	}
 

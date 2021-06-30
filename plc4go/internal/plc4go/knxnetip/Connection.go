@@ -34,7 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -199,12 +198,14 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	}
 
 	go func() {
+		// Open the UDP Connection
 		err := m.messageCodec.Connect()
 		if err != nil {
 			sendResult(nil, errors.Wrap(err, "error opening connection"))
 			return
 		}
 
+		// Send a search request before connecting to the device.
 		searchResponse, err := m.sendGatewaySearchRequest()
 		if err != nil {
 			sendResult(nil, errors.Wrap(err, "error discovering device capabilities"))
@@ -265,14 +266,10 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// handled by any other handler. This is where usually the GroupValueWrite messages
 				// are being handled.
 				log.Debug().Msg("Starting tunneling handler")
-				log.Trace().Int("Num Goroutines before starting tunneling handler", runtime.NumGoroutine())
 				go func() {
-					log.Debug().Msg("Tunneling handler started")
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
-					// This is actually a while-true construct in go.
 					for m.handleTunnelingRequests {
 						incomingMessage := <-defaultIncomingMessageChannel
-						log.Trace().Msgf("Got incoming tunneling message %s", incomingMessage)
 						tunnelingRequest := driverModel.CastTunnelingRequest(incomingMessage)
 						if tunnelingRequest == nil {
 							tunnelingResponse := driverModel.CastTunnelingResponse(incomingMessage)
@@ -318,15 +315,18 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 							m.handleIncomingTunnelingRequest(tunnelingRequest)
 						}
 					}
-					log.Warn().Msg("Tunneling handler has been shut down")
+					log.Warn().Msg("Tunneling handler shat down")
 				}()
-				log.Trace().Int("Num Goroutines after starting tunneling handler", runtime.NumGoroutine())
 
 				// Fire the "connected" event
 				sendResult(m, nil)
 			case driverModel.Status_NO_MORE_CONNECTIONS:
 				sendResult(nil, errors.New("no more connections"))
+			default:
+				sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.Status))
 			}
+		} else {
+			sendResult(nil, errors.New("this device doesn't support tunneling"))
 		}
 	}()
 

@@ -140,6 +140,7 @@
                   <goal>wget</goal>
                 </goals>
                 <configuration>
+                  <skipCache>true</skipCache>
                   <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
                   <unpack>true</unpack>
                   <outputDirectory>${project.build.directory}</outputDirectory>
