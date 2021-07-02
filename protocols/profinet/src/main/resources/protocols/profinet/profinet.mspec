@@ -43,7 +43,7 @@
 [discriminatedType 'DCP_PDU'
     [discriminator ProfinetFrameId  'frameId']
     [discriminator ServiceId        'serviceId']
-    [discriminator ServiceType      'serviceType']
+    [simple        ServiceType      'serviceType']
     // 4.3.1.3.4 (Page 95)
     [simple        uint 32          'xid']
     // 4.3.1.3.5 (Page 95ff)
@@ -69,13 +69,13 @@
 
         // Packet a Profinet station might emit once it is turned on
         ['DCP_Hello_ReqPDU','HELLO','false' DCP_Hello_ReqPDU
-            [simple NameOfStationBlockRes    'nameOfStationBlockRes']
-            [simple IPParameterBlockRes      'iPParameterBlockRes']
-            [simple DeviceIdBlockRes         'deviceIdBlockRes']
-            [simple DeviceVendorBlockRes     'deviceVendorBlockRes']
-            [simple DeviceOptionsBlockRes    'deviceOptionsBlockRes']
-            [simple DeviceRoleBlockRes       'deviceRoleBlockRes']
-            [simple DeviceInitiativeBlockRes 'deviceInitiativeBlockRes']
+//            [simple NameOfStationBlockRes    'nameOfStationBlockRes']
+//            [simple IPParameterBlockRes      'iPParameterBlockRes']
+//            [simple DeviceIdBlockRes         'deviceIdBlockRes']
+//            [simple DeviceVendorBlockRes     'deviceVendorBlockRes']
+//            [simple DeviceOptionsBlockRes    'deviceOptionsBlockRes']
+//            [simple DeviceRoleBlockRes       'deviceRoleBlockRes']
+//            [simple DeviceInitiativeBlockRes 'deviceInitiativeBlockRes']
         ]
 
         ////////////////////////////////////////////////////////////////////////////
@@ -83,24 +83,24 @@
         ////////////////////////////////////////////////////////////////////////////
 
         ['DCP_GetSet_PDU','GET','false' DCP_Get_ReqPDU
-            [simple GetReqBlock              'getReqBlock']
+//            [simple GetReqBlock              'getReqBlock']
         ]
         ['DCP_GetSet_PDU','GET','true' DCP_Get_ResPDU
-            [simple GetResBlock              'getResBlock']
-            [simple GetNegResBlock           'getNegResBlock']
+//            [simple GetResBlock              'getResBlock']
+//            [simple GetNegResBlock           'getNegResBlock']
         ]
 
         ['DCP_GetSet_PDU','SET','false' DCP_Set_ReqPDU
-            [simple StartTransactionBlock    'startTransactionBlock']
-                [simple BlockQualifier           'blockQualifier']
-            [simple SetResetReqBlock         'setResetReqBlock']
-            [simple SetReqBlock              'setReqBlock']
-            [simple StopTransactionBlock     'stopTransactionBlock']
-                [simple BlockQualifier           'blockQualifier']
+//            [simple StartTransactionBlock    'startTransactionBlock']
+//            [simple BlockQualifier           'blockQualifier']
+//            [simple SetResetReqBlock         'setResetReqBlock']
+//            [simple SetReqBlock              'setReqBlock']
+//            [simple StopTransactionBlock     'stopTransactionBlock']
+//            [simple BlockQualifier           'blockQualifier']
         ]
         ['DCP_GetSet_PDU','SET','true' DCP_Set_ResPDU
-            [simple SetResBlock              'setResBlock']
-            [simple SetNegResBlock           'setNegResBlock']
+//            [simple SetResBlock              'setResBlock']
+//            [simple SetNegResBlock           'setNegResBlock']
         ]
     ]
 ]
@@ -143,13 +143,13 @@
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [simple   string '-1' 'deviceVendorValue'                                   ]
-            [padding  uint 8      'pad' '0x00' 'LENGTH(deviceVendorValue) % 2 == 1'     ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", deviceVendorValue) % 2'     ]
         ]
         ['DEVICE_PROPERTIES_OPTION','2' DCP_BlockDevicePropertiesNameOfStation
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [simple   string '-1' 'nameOfStation'                                       ]
-            [padding  uint 8      'pad' '0x00' 'LENGTH(nameOfStation) % 2 == 1'         ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", nameOfStation) % 2'         ]
         ]
         ['DEVICE_PROPERTIES_OPTION','3' DCP_BlockDevicePropertiesDeviceId
             [reserved uint 16 '0x0000'                                                  ]
@@ -171,7 +171,7 @@
         ['DEVICE_PROPERTIES_OPTION','6' DCP_BlockDevicePropertiesAliasName
             [reserved uint 16     '0x0000'                                              ]
             [simple   string '-1' 'aliasNameValue'                                      ]
-            [padding  uint 8      'pad' '0x00' 'LENGTH(nameOfStation) % 2 == 1'         ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", aliasNameValue) % 2'       ]
         ]
         ['DEVICE_PROPERTIES_OPTION','7' DCP_BlockDevicePropertiesDeviceInstance
             [reserved uint 16 '0x0000'                                                  ]
@@ -273,7 +273,7 @@
 [type 'ServiceType'
     [reserved uint 5 '0x00']
     [simple   bit 'notSupported']
-    [reserved bit '0x00']
+    [reserved uint 1 '0x00']
     [simple   bit 'response']
 ]
 
@@ -326,6 +326,17 @@
     ['0x05' CONTROL_OPTION]
     ['0x06' DEVICE_INITIATIVE_OPTION]
     ['0xFF' ALL_SELECTOR_OPTION]
+]
+
+[enum uint 3 'VirtualLanPriority'   [string '2' 'acronym']
+    ['0x0' BACKGROUND               ['BK'                ]]
+    ['0x1' BEST_EFFORT              ['BE'                ]]
+    ['0x2' EXCELLENT_EFFORT         ['EE'                ]]
+    ['0x3' CRITICAL_APPLICATIONS    ['CA'                ]]
+    ['0x4' VIDEO                    ['VI'                ]]
+    ['0x5' VOICE                    ['VO'                ]]
+    ['0x6' INTERNETWORK_CONTROL     ['IC'                ]]
+    ['0x7' NETWORK_CONTROL          ['NC'                ]]
 ]
 
 // There are some special MAC addresses reserved:

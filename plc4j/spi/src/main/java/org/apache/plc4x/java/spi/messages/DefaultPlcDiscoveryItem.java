@@ -22,11 +22,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -92,6 +95,30 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, XmlSerializabl
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        writeBuffer.writeString("protocolCode", protocolCode.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), protocolCode);
+        writeBuffer.writeString("transportCode", transportCode.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), transportCode);
+        writeBuffer.writeString("transportUrl", transportUrl.toString().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), transportUrl.toString());
+        if(options != null && !options.isEmpty()) {
+            writeBuffer.pushContext("options");
+            for (Map.Entry<String, String> optionEntry : options.entrySet()) {
+                writeBuffer.pushContext("option");
+                writeBuffer.writeString("name", optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getKey());
+                writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
+                writeBuffer.popContext("option");
+            }
+            writeBuffer.popContext("options");
+        }
+        if(name != null && !name.isEmpty()) {
+            writeBuffer.writeString("name", name.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), name);
+        }
+
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

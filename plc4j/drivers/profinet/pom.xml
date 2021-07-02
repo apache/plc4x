@@ -102,7 +102,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-profinet</usedDependency>
           </usedDependencies>
@@ -128,14 +127,15 @@
       <artifactId>plc4j-transport-raw-socket</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-pcap-shared</artifactId>
+      <version>0.9.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

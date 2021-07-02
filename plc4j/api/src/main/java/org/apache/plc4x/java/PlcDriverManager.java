@@ -70,7 +70,7 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        PlcDriver driver = getDriver(url);
+        PlcDriver driver = getDriverForUrl(url);
         PlcConnection connection = driver.getConnection(url);
         connection.connect();
         return connection;
@@ -85,7 +85,7 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        PlcDriver driver = getDriver(url);
+        PlcDriver driver = getDriverForUrl(url);
         PlcConnection connection = driver.getConnection(url, authentication);
         connection.connect();
         return connection;

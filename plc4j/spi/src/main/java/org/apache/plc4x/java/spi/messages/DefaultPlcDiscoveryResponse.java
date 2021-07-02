@@ -20,6 +20,8 @@ package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,6 +48,11 @@ public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, XmlSer
 
     public List<PlcDiscoveryItem> getValues() {
         return values;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        // TODO: Implement
     }
 
     @Override

@@ -20,6 +20,8 @@ package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,6 +41,11 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, XmlSeria
     @Override
     public CompletableFuture<? extends PlcDiscoveryResponse> execute() {
         return discoverer.discover(this);
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        // TODO: Implement
     }
 
     @Override
