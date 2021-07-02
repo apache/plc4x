@@ -513,12 +513,11 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for (int counter = 0; counter < readValueIds.size(); counter++) {
                 PlcResponseCode resultCode = PlcResponseCode.OK;
                 PlcValue stringItem = null;
-                if (readValues == null || readValues.size() <= counter ||
-                    !readValues.get(counter).getStatusCode().equals(StatusCode.GOOD)) {
+                if (readValues == null || readValues.size() <= counter || readValues.get(counter) == null) {
                     resultCode = PlcResponseCode.NOT_FOUND;
                 } else {
+                    resultCode = mapStatusCode(readValues.get(counter).getStatusCode());
                     stringItem = encodePlcValue(readValues.get(counter));
-
                 }
                 ResponseItem<PlcValue> newPair = new ResponseItem<>(resultCode, stringItem);
                 fields.put((String) readRequest.getFieldNames().toArray()[counter], newPair);
@@ -531,6 +530,15 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         return future;
     }
 
+    private PlcResponseCode mapStatusCode(StatusCode statusCode) {
+        if (statusCode == null || statusCode.getValue() == StatusCodes.Bad_BoundNotFound || statusCode.getValue() == StatusCodes.Bad_NotFound) {
+            return PlcResponseCode.NOT_FOUND;
+        }
+        if (statusCode.isSecurityError()) {
+            return PlcResponseCode.ACCESS_DENIED;
+        }
+        return statusCode.isGood() ? PlcResponseCode.OK : PlcResponseCode.REMOTE_ERROR;
+    }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
