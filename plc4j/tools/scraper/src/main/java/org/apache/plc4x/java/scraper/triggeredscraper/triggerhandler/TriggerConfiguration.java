@@ -561,7 +561,7 @@ public class TriggerConfiguration{
         //So I need to create the field using the connection string here
         private PlcField prepareField(String fieldQuery) throws PlcConnectionException {
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcDriver driver = driverManager.getDriver(plcConnectionString);
+            PlcDriver driver = driverManager.getDriverForUrl(plcConnectionString);
             return driver.prepareField(fieldQuery);
         }
 

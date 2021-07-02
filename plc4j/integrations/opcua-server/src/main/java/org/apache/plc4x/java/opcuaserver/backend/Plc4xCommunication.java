@@ -94,7 +94,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriver(connectionString).prepareField(tag);
+        return driverManager.getDriverForUrl(connectionString).prepareField(tag);
     }
 
     public void addField(DataItem item) {

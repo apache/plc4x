@@ -19,6 +19,9 @@ under the License.
 package org.apache.plc4x.java.profinet;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
@@ -27,6 +30,9 @@ import org.apache.plc4x.java.profinet.readwrite.EthernetFrame;
 import org.apache.plc4x.java.profinet.readwrite.io.EthernetFrameIO;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -34,9 +40,10 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
+public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> implements PlcDiscoverer {
 
     @Override
     public String getProtocolCode() {
@@ -46,6 +53,21 @@ public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
     @Override
     public String getProtocolName() {
         return "Profinet";
+    }
+
+    @Override
+    public PlcDriverMetadata getMetadata() {
+        return new PlcDriverMetadata() {
+            @Override
+            public boolean canDiscover() {
+                return true;
+            }
+        };
+    }
+
+    @Override
+    public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
+        return new DefaultPlcDiscoveryRequest.Builder(this);
     }
 
     @Override
@@ -125,6 +147,11 @@ public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
     @Override
     public ProfinetField prepareField(String query){
         return ProfinetField.of(query);
+    }
+
+    @Override
+    public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
+        return null;
     }
 
 }

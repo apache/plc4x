@@ -58,7 +58,7 @@ public class Sink extends AbstractConfig{
                 String.format("Connection string shouldn't be null for source %s ", this.name));
         }
         try {
-            new PlcDriverManager().getDriver(connectionString);
+            new PlcDriverManager().getDriverForUrl(connectionString);
         } catch (Exception e) {
             throw new ConfigException(
                 String.format("Connection String format is incorrect %s ", Constants.SINKS_CONFIG + "." + this.name + "." + Constants.CONNECTION_STRING_CONFIG + "=" + connectionString));
