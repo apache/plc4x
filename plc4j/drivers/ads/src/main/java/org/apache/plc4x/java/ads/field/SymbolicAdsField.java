@@ -20,9 +20,12 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,6 +114,20 @@ public class SymbolicAdsField implements AdsField {
         return "SymbolicAdsField{" +
             "symbolicAddress='" + symbolicAddress + '\'' +
             '}';
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        String symbolicAddress = getSymbolicAddress();
+        writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
+
+        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
+
+        String dataType = getPlcDataType();
+        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

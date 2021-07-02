@@ -22,10 +22,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.modbus.readwrite.types.*;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -43,19 +46,19 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
     private final ModbusDataType dataType;
 
     public static ModbusField of(String addressString) {
-        if(ModbusFieldCoil.matches(addressString)) {
+        if (ModbusFieldCoil.matches(addressString)) {
             return ModbusFieldCoil.of(addressString);
         }
-        if(ModbusFieldDiscreteInput.matches(addressString)) {
+        if (ModbusFieldDiscreteInput.matches(addressString)) {
             return ModbusFieldDiscreteInput.of(addressString);
         }
-        if(ModbusFieldHoldingRegister.matches(addressString)) {
+        if (ModbusFieldHoldingRegister.matches(addressString)) {
             return ModbusFieldHoldingRegister.of(addressString);
         }
-        if(ModbusFieldInputRegister.matches(addressString)) {
+        if (ModbusFieldInputRegister.matches(addressString)) {
             return ModbusFieldInputRegister.of(addressString);
         }
-        if(ModbusExtendedRegister.matches(addressString)) {
+        if (ModbusExtendedRegister.matches(addressString)) {
             return ModbusExtendedRegister.of(addressString);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
@@ -87,7 +90,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
 
     @JsonIgnore
     public int getLengthWords() {
-        return (int) ((quantity * (float) dataType.getDataTypeSize())/2.0f);
+        return (int) ((quantity * (float) dataType.getDataTypeSize()) / 2.0f);
     }
 
     public ModbusDataType getDataType() {
@@ -123,6 +126,18 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
             "datatype=" + dataType +
             "quantity=" + quantity +
             '}';
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        writeBuffer.writeInt("address", 64, address);
+        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
+        String dataType = getPlcDataType();
+        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
+
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

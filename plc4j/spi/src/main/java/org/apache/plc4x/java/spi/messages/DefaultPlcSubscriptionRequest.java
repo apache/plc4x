@@ -29,8 +29,13 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Element;
 
@@ -93,6 +98,26 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Xm
 
     public PlcSubscriber getSubscriber() {
         return subscriber;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcSubscriptionRequest");
+
+        writeBuffer.pushContext("fields");
+        for (Map.Entry<String, PlcSubscriptionField> fieldEntry : fields.entrySet()) {
+            String fieldName = fieldEntry.getKey();
+            writeBuffer.pushContext(fieldName);
+            PlcField field = fieldEntry.getValue();
+            if(!(field instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
+            }
+            ((Serializable) field).serialize(writeBuffer);
+            writeBuffer.popContext(fieldName);
+        }
+        writeBuffer.popContext("fields");
+
+        writeBuffer.popContext("PlcSubscriptionRequest");
     }
 
     @Override

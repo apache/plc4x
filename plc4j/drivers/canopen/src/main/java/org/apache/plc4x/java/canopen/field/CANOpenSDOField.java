@@ -20,9 +20,12 @@ package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,6 +105,19 @@ public class CANOpenSDOField extends CANOpenField {
             return Short.parseShort(hex, 16);
         }
         return Short.parseShort(dec);
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        writeBuffer.writeInt("node",64, getNodeId());
+        writeBuffer.writeInt("index",64, getIndex());
+        writeBuffer.writeInt("subIndex",64, getSubIndex());
+        String dataTypeName = getCanOpenDataType().name();
+        writeBuffer.writeString("dataType", dataTypeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataTypeName);
+
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

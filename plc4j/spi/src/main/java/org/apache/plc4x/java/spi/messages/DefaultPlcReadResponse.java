@@ -25,6 +25,9 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -719,6 +722,25 @@ public class DefaultPlcReadResponse implements PlcReadResponse, XmlSerializable 
         return field;
     }
 
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcReadResponse");
+
+        if(request instanceof Serializable) {
+            ((Serializable) request).serialize(writeBuffer);
+        }
+        writeBuffer.pushContext("values");
+        for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
+            String fieldName = valueEntry.getKey();
+            writeBuffer.pushContext(fieldName);
+            ResponseItem<PlcValue> valueResponse = valueEntry.getValue();
+            valueResponse.serialize(writeBuffer);
+            writeBuffer.pushContext(fieldName);
+        }
+        writeBuffer.popContext("values");
+
+        writeBuffer.popContext("PlcReadResponse");
+    }
 
     @Override
     public void xmlSerialize(Element parent) {
