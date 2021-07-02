@@ -77,19 +77,4 @@ public class CANOpenNMTField extends CANOpenField implements CANOpenSubscription
 
         writeBuffer.popContext(getClass().getSimpleName());
     }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-
-        Element serviceElement = doc.createElement("service");
-        serviceElement.appendChild(doc.createTextNode(getService().name()));
-        messageElement.appendChild(serviceElement);
-
-        Element nodeElement = doc.createElement("node");
-        nodeElement.appendChild(doc.createTextNode(Integer.toString(getNodeId())));
-        messageElement.appendChild(nodeElement);
-    }
 }

@@ -215,7 +215,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
         String context = stack.pop();
         if (!context.equals(logicalName)) {
-            throw new PlcRuntimeException("Unexpected pop context '" + context + '\'');
+            throw new PlcRuntimeException("Unexpected pop context '" + context + '\''+ ". Expected '"+logicalName+ '\'');
         }
         if (stack.isEmpty()) {
             try {

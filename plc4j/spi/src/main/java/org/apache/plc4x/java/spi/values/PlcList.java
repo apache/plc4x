@@ -25,9 +25,6 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.Collections;
 import java.util.List;
@@ -102,19 +99,6 @@ public class PlcList extends PlcValueAdapter {
             ((Serializable) listItem).serialize(writeBuffer);
         }
         writeBuffer.popContext("PlcList");
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element plcValueElement = doc.createElement("PlcList");
-        parent.appendChild(plcValueElement);
-        for (PlcValue listItem : listItems) {
-            if (!(listItem instanceof XmlSerializable)) {
-                throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
-            }
-            ((XmlSerializable) listItem).xmlSerialize(plcValueElement);
-        }
     }
 
 }

@@ -29,14 +29,11 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Element;
 
 import java.time.Duration;
@@ -45,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, XmlSerializable {
+public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
 
     private final PlcSubscriber subscriber;
 
@@ -118,11 +115,6 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Xm
         writeBuffer.popContext("fields");
 
         writeBuffer.popContext("PlcSubscriptionRequest");
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
     }
 
     public static class Builder implements PlcSubscriptionRequest.Builder {

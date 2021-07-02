@@ -113,9 +113,4 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

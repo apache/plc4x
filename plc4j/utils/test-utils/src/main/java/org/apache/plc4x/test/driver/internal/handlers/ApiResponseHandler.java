@@ -20,23 +20,14 @@ package org.apache.plc4x.test.driver.internal.handlers;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.internal.utils.Synchronizer;
 import org.apache.plc4x.test.driver.internal.validator.ApiValidator;
 import org.dom4j.Element;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
 import java.util.concurrent.TimeUnit;
 
 public class ApiResponseHandler {
@@ -67,34 +58,18 @@ public class ApiResponseHandler {
 
         // Reset the future.
         synchronizer.responseFuture = null;
-        final String serializedResponse = serializeToXmlString((XmlSerializable) plcResponse);
+        final String serializedResponse = serializeToXmlString((Serializable) plcResponse);
         ApiValidator.validateApiMessage(payload, serializedResponse);
     }
 
-    private String serializeToXmlString(XmlSerializable value) {
+    private String serializeToXmlString(Serializable value) {
+        WriteBufferXmlBased writeBuffer = new WriteBufferXmlBased();
         try {
-            // TODO: replace with language agnostic lookup
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            org.w3c.dom.Document doc = builder.newDocument();
-            org.w3c.dom.Element root = doc.createElement("root");
-            doc.appendChild(root);
-            value.xmlSerialize(root);
-            DOMSource domSource = new DOMSource(doc.getDocumentElement().getFirstChild());
-            StringWriter writer = new StringWriter();
-            StreamResult result = new StreamResult(writer);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
-            tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // Compliant
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            transformer.setOutputProperty("omit-xml-declaration", "yes");
-            transformer.transform(domSource, result);
-            return writer.toString();
-        } catch (ParserConfigurationException | TransformerException e) {
+            value.serialize(writeBuffer);
+        } catch (ParseException e) {
             throw new PlcRuntimeException(e);
         }
+        return writeBuffer.getXmlString();
     }
 
 }

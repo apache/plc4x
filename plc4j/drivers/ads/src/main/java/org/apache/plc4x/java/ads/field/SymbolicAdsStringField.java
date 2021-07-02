@@ -95,13 +95,4 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
         writeBuffer.writeInt("stringLength", 64, getStringLength());
         writeBuffer.popContext(getClass().getSimpleName());
     }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        super.xmlSerialize(parent);
-        Document doc = parent.getOwnerDocument();
-        Element byteOffsetElement = doc.createElement("stringLength");
-        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getStringLength())));
-        parent.getFirstChild().appendChild(byteOffsetElement);
-    }
 }

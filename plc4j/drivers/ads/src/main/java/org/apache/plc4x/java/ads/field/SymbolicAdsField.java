@@ -129,23 +129,4 @@ public class SymbolicAdsField implements AdsField {
         writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         writeBuffer.popContext(getClass().getSimpleName());
     }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-
-        Element symbolicAddressElement = doc.createElement("symbolicAddress");
-        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicAddress()));
-        messageElement.appendChild(symbolicAddressElement);
-
-        Element numberOfElementsElement = doc.createElement("numberOfElements");
-        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(numberOfElementsElement);
-
-        Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
-        messageElement.appendChild(datatypeElement);
-    }
 }

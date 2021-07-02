@@ -87,9 +87,4 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

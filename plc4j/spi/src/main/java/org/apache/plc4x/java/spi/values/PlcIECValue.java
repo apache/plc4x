@@ -88,12 +88,4 @@ public abstract class PlcIECValue<T> extends PlcValueAdapter {
         writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element plcValueElement = doc.createElement(getClass().getSimpleName());
-        plcValueElement.appendChild(doc.createTextNode(this.value.toString()));
-        parent.appendChild(plcValueElement);
-    }
-
 }

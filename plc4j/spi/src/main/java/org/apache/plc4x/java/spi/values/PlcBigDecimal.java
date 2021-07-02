@@ -169,9 +169,4 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

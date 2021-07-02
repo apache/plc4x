@@ -29,22 +29,18 @@ import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, XmlSerializable {
+public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, Serializable {
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
@@ -129,25 +125,6 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcFieldRequest, X
         writeBuffer.popContext("fields");
 
         writeBuffer.popContext("PlcReadRequest");
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcReadRequest");
-        Element fieldsElement = doc.createElement("fields");
-        messageElement.appendChild(fieldsElement);
-        for (Map.Entry<String, PlcField> fieldEntry : fields.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            Element fieldNameElement = doc.createElement(fieldName);
-            fieldsElement.appendChild(fieldNameElement);
-            PlcField field = fieldEntry.getValue();
-            if(!(field instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
-            }
-            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
-        }
-        parent.appendChild(messageElement);
     }
 
     public static class Builder implements PlcReadRequest.Builder {

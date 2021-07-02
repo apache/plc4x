@@ -169,9 +169,4 @@ public class PlcBigInteger extends PlcSimpleValue<BigInteger> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }
