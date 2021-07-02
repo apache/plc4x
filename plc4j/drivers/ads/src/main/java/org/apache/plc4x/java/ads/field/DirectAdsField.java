@@ -20,9 +20,12 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -145,6 +148,19 @@ public class DirectAdsField implements AdsField {
             "indexGroup=" + indexGroup +
             ", indexOffset=" + indexOffset +
             '}';
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        writeBuffer.writeLong("indexGroup", 64, getIndexGroup());
+        writeBuffer.writeLong("indexOffset", 64, getIndexOffset());
+        writeBuffer.writeLong("numberOfElements", 64, getNumberOfElements());
+        String plcDataType = getPlcDataType();
+        writeBuffer.writeString("dataType", plcDataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcDataType);
+
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

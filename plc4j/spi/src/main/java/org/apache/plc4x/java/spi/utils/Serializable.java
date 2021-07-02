@@ -18,15 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.spi.utils;
 
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-/**
- * @deprecated use the {@link Serializable} interface in combination with the {@link org.apache.plc4x.java.spi.generation.WriteBufferXmlBased} to produce xml.
- */
-@Deprecated
-public interface XmlSerializable extends Serializable {
-
-    @Deprecated
-    void xmlSerialize(Element parent);
-
+public interface Serializable {
+    void serialize(WriteBuffer writeBuffer) throws ParseException;
 }

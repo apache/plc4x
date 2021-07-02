@@ -20,9 +20,12 @@ package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +64,17 @@ public class CANOpenHeartbeatField extends CANOpenField implements CANOpenSubscr
         int nodeId = matcher.group("nodeId") == null ? 0 : Integer.parseInt(matcher.group("nodeId"));
 
         return new CANOpenHeartbeatField(nodeId);
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        String serviceName = getService().name();
+        writeBuffer.writeString("service", serviceName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), serviceName);
+        writeBuffer.writeInt("node", 64, getNodeId());
+        
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

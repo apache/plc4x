@@ -21,8 +21,12 @@ package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class PlcIECValue<T> extends PlcValueAdapter {
 
@@ -76,6 +80,12 @@ public abstract class PlcIECValue<T> extends PlcValueAdapter {
             return this;
         }
         return super.getIndex(i);
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
     @Override

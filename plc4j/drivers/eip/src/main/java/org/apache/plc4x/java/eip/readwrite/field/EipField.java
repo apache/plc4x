@@ -20,10 +20,13 @@ package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,14 +35,14 @@ public class EipField implements PlcField, XmlSerializable {
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("^%(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
-    private static final String TAG="tag";
-    private static final String ELEMENTS="elementNb";
-    private static final String TYPE="dataType";
+    private static final String TAG = "tag";
+    private static final String ELEMENTS = "elementNb";
+    private static final String TYPE = "dataType";
 
 
     private final String tag;
     private CIPDataTypeCode type;
-    private int  elementNb;
+    private int elementNb;
 
     public CIPDataTypeCode getType() {
         return type;
@@ -81,31 +84,30 @@ public class EipField implements PlcField, XmlSerializable {
         this.type = type;
     }
 
-    public static boolean matches(String fieldQuery){
+    public static boolean matches(String fieldQuery) {
         return ADDRESS_PATTERN.matcher(fieldQuery).matches();
     }
 
-    public static EipField of(String fieldString){
+    public static EipField of(String fieldString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
-        if(matcher.matches()){
+        if (matcher.matches()) {
             String tag = matcher.group(TAG);
-            int nb=0;
-            CIPDataTypeCode type=null;
-            if(!matcher.group(ELEMENTS).isEmpty()) {
+            int nb = 0;
+            CIPDataTypeCode type = null;
+            if (!matcher.group(ELEMENTS).isEmpty()) {
                 nb = Integer.parseInt(matcher.group(ELEMENTS));
             }
-            if(!matcher.group(TYPE).isEmpty()) {
+            if (!matcher.group(TYPE).isEmpty()) {
                 type = CIPDataTypeCode.valueOf(matcher.group(TYPE));
             }
-            if(nb!=0){
-                if(type!=null){
-                    return  new EipField(tag,type,nb);
+            if (nb != 0) {
+                if (type != null) {
+                    return new EipField(tag, type, nb);
                 }
                 return new EipField(tag, nb);
-            }
-            else{
-                if(type!=null){
-                    return  new EipField(tag,type);
+            } else {
+                if (type != null) {
+                    return new EipField(tag, type);
                 }
                 return new EipField(tag);
             }
@@ -120,7 +122,7 @@ public class EipField implements PlcField, XmlSerializable {
 
     @Override
     public Class<?> getDefaultJavaType() {
-        switch (type){
+        switch (type) {
             //ToDo differenciate Short, Integer and Long
             case INT:
             case DINT:
@@ -137,6 +139,20 @@ public class EipField implements PlcField, XmlSerializable {
             default:
                 return Object.class;
         }
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
+
+        writeBuffer.writeString("node", tag.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), tag);
+        writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), type.name());
+        writeBuffer.writeInt("elementNb", 64, elementNb);
+        // TODO: remove this (not language agnostic)
+        String defaultJavaType= (type == null ? Object.class : getDefaultJavaType()).getName();
+        writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), defaultJavaType);
+
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
     @Override

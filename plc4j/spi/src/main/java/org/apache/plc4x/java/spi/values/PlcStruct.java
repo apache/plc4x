@@ -25,6 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -84,6 +87,22 @@ public class PlcStruct extends PlcValueAdapter {
     @JsonIgnore
     public String toString() {
         return "{" + map.entrySet().stream().map(entry -> String.format("\"%s\": %s", entry.getKey(), entry.getValue())).collect(Collectors.joining(",")) + "}";
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcStruct");
+        for (Map.Entry<String, PlcValue> entry : map.entrySet()) {
+            String fieldName = entry.getKey();
+            writeBuffer.pushContext(fieldName);
+            PlcValue fieldValue = entry.getValue();
+            if (!(fieldValue instanceof Serializable)) {
+                throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
+            }
+            ((Serializable) fieldValue).serialize(writeBuffer);
+            writeBuffer.pushContext(fieldName);
+        }
+        writeBuffer.popContext("PlcStruct");
     }
 
     @Override

@@ -30,7 +30,11 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.w3c.dom.Element;
 
@@ -100,6 +104,26 @@ public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, 
 
     public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
         return values;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcSubscriptionResponse");
+
+        if(request instanceof Serializable) {
+            ((Serializable) request).serialize(writeBuffer);
+        }
+        writeBuffer.pushContext("values");
+        for (Map.Entry<String, ResponseItem<PlcSubscriptionHandle>> valueEntry : values.entrySet()) {
+            String fieldName = valueEntry.getKey();
+            writeBuffer.pushContext(fieldName);
+            ResponseItem<PlcSubscriptionHandle> valueResponse = valueEntry.getValue();
+            valueResponse.serialize(writeBuffer);
+            writeBuffer.pushContext(fieldName);
+        }
+        writeBuffer.popContext("values");
+
+        writeBuffer.popContext("PlcSubscriptionResponse");
     }
 
     @Override
