@@ -22,6 +22,7 @@ package model
 import (
 	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"strconv"
 )
 
 type DefaultPlcWriteResponse struct {
@@ -64,10 +65,13 @@ func (m DefaultPlcWriteResponse) MarshalXML(e *xml.Encoder, start xml.StartEleme
 		return err
 	}
 	for _, fieldName := range m.GetFieldNames() {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName},
-			Attr: []xml.Attr{
-				{Name: xml.Name{Local: "result"}, Value: m.GetResponseCode(fieldName).GetName()},
-			}}); err != nil {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}, Attr: []xml.Attr{
+			{Name: xml.Name{Local: "dataType"}, Value: "string"},
+			{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.GetResponseCode(fieldName).GetName()) * 8)},
+		}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.CharData(m.GetResponseCode(fieldName).GetName())); err != nil {
 			return err
 		}
 		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {

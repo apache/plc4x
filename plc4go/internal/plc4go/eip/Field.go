@@ -23,6 +23,7 @@ import (
 	"encoding/xml"
 	readWrite "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
 	"github.com/rs/zerolog/log"
+	"strconv"
 )
 
 type EIPPlcField interface {
@@ -75,19 +76,31 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	if err := e.EncodeElement(m.Tag, xml.StartElement{Name: xml.Name{Local: "node"}}); err != nil {
+	if err := e.EncodeElement(m.Tag, xml.StartElement{Name: xml.Name{Local: "node"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Tag) * 8)},
+	}}); err != nil {
 		return err
 	}
 	if m.Type != 0 {
-		if err := e.EncodeElement(m.Type, xml.StartElement{Name: xml.Name{Local: "type"}}); err != nil {
+		if err := e.EncodeElement(m.Type, xml.StartElement{Name: xml.Name{Local: "type"}, Attr: []xml.Attr{
+			{Name: xml.Name{Local: "dataType"}, Value: "string"},
+			{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(int(m.Type.LengthInBits()))},
+		}}); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.ElementNb, xml.StartElement{Name: xml.Name{Local: "elementNb"}}); err != nil {
+	if err := e.EncodeElement(m.ElementNb, xml.StartElement{Name: xml.Name{Local: "elementNb"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
 	// TODO: remove this from the spec
-	if err := e.EncodeElement("java.lang.Object", xml.StartElement{Name: xml.Name{Local: "defaultJavaType"}}); err != nil {
+	if err := e.EncodeElement("java.lang.Object", xml.StartElement{Name: xml.Name{Local: "defaultJavaType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len("java.lang.Object") * 8)},
+	}}); err != nil {
 		return err
 	}
 

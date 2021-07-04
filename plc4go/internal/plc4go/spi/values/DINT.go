@@ -131,8 +131,11 @@ func (m PlcDINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
 
-func (m PlcDINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDINT"}}); err != nil {
+func (m PlcDINT) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDINT"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(strconv.Itoa(int(m.value))) * 8)},
+	}}); err != nil {
 		return err
 	}
 	return nil

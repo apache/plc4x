@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"strconv"
 )
 
 type S7PlcField interface {
@@ -129,22 +130,40 @@ func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	if err := e.EncodeElement(m.MemoryArea.String(), xml.StartElement{Name: xml.Name{Local: "memoryArea"}}); err != nil {
+	if err := e.EncodeElement(m.MemoryArea.String(), xml.StartElement{Name: xml.Name{Local: "memoryArea"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.MemoryArea.String()) * 8)},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.BlockNumber, xml.StartElement{Name: xml.Name{Local: "blockNumber"}}); err != nil {
+	if err := e.EncodeElement(m.BlockNumber, xml.StartElement{Name: xml.Name{Local: "blockNumber"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.ByteOffset, xml.StartElement{Name: xml.Name{Local: "byteOffset"}}); err != nil {
+	if err := e.EncodeElement(m.ByteOffset, xml.StartElement{Name: xml.Name{Local: "byteOffset"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.BitOffset, xml.StartElement{Name: xml.Name{Local: "bitOffset"}}); err != nil {
+	if err := e.EncodeElement(m.BitOffset, xml.StartElement{Name: xml.Name{Local: "bitOffset"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.NumElements, xml.StartElement{Name: xml.Name{Local: "numElements"}}); err != nil {
+	if err := e.EncodeElement(m.NumElements, xml.StartElement{Name: xml.Name{Local: "numElements"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
+	}}); err != nil {
 		return err
 	}
 

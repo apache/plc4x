@@ -586,8 +586,15 @@ const (
 	KnxManufacturer_M_ARMITI_TRADING                                     KnxManufacturer = 548
 	KnxManufacturer_M_ELEK                                               KnxManufacturer = 549
 	KnxManufacturer_M_ACCORDIA_SA                                        KnxManufacturer = 550
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 551
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 552
+	KnxManufacturer_M_OURICAN                                            KnxManufacturer = 551
+	KnxManufacturer_M_INLIWOSE                                           KnxManufacturer = 552
+	KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_          KnxManufacturer = 553
+	KnxManufacturer_M_SHK_KNX                                            KnxManufacturer = 554
+	KnxManufacturer_M_AMPIO                                              KnxManufacturer = 555
+	KnxManufacturer_M_MINGXING_WISDOM                                    KnxManufacturer = 556
+	KnxManufacturer_M_ALTEN_SW_GMBH                                      KnxManufacturer = 557
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 558
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 559
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1146,6 +1153,13 @@ func init() {
 		KnxManufacturer_M_ARMITI_TRADING,
 		KnxManufacturer_M_ELEK,
 		KnxManufacturer_M_ACCORDIA_SA,
+		KnxManufacturer_M_OURICAN,
+		KnxManufacturer_M_INLIWOSE,
+		KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_,
+		KnxManufacturer_M_SHK_KNX,
+		KnxManufacturer_M_AMPIO,
+		KnxManufacturer_M_MINGXING_WISDOM,
+		KnxManufacturer_M_ALTEN_SW_GMBH,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3167,10 +3181,38 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 551:
 		{ /* '551' */
-			return 43954
+			return 608
 		}
 	case 552:
 		{ /* '552' */
+			return 609
+		}
+	case 553:
+		{ /* '553' */
+			return 610
+		}
+	case 554:
+		{ /* '554' */
+			return 611
+		}
+	case 555:
+		{ /* '555' */
+			return 612
+		}
+	case 556:
+		{ /* '556' */
+			return 613
+		}
+	case 557:
+		{ /* '557' */
+			return 614
+		}
+	case 558:
+		{ /* '558' */
+			return 43954
+		}
+	case 559:
+		{ /* '559' */
 			return 43959
 		}
 	case 56:
@@ -5397,10 +5439,38 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 551:
 		{ /* '551' */
-			return "ABB - reserved"
+			return "OURICAN"
 		}
 	case 552:
 		{ /* '552' */
+			return "INLIWOSE"
+		}
+	case 553:
+		{ /* '553' */
+			return "Bosch (Shanghai) Smart Life Technology Ltd."
+		}
+	case 554:
+		{ /* '554' */
+			return "SHK KNX"
+		}
+	case 555:
+		{ /* '555' */
+			return "Ampio"
+		}
+	case 556:
+		{ /* '556' */
+			return "Mingxing Wisdom"
+		}
+	case 557:
+		{ /* '557' */
+			return "ALTEN SW GmbH"
+		}
+	case 558:
+		{ /* '558' */
+			return "ABB - reserved"
+		}
+	case 559:
+		{ /* '559' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 56:
@@ -6619,8 +6689,22 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 550:
 		return KnxManufacturer_M_ACCORDIA_SA
 	case 551:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_OURICAN
 	case 552:
+		return KnxManufacturer_M_INLIWOSE
+	case 553:
+		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
+	case 554:
+		return KnxManufacturer_M_SHK_KNX
+	case 555:
+		return KnxManufacturer_M_AMPIO
+	case 556:
+		return KnxManufacturer_M_MINGXING_WISDOM
+	case 557:
+		return KnxManufacturer_M_ALTEN_SW_GMBH
+	case 558:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 559:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 56:
 		return KnxManufacturer_M_WALTHER_WERKE
@@ -7730,6 +7814,20 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_WINDOWMASTER_AS
 	case "M_ACCORDIA_SA":
 		return KnxManufacturer_M_ACCORDIA_SA
+	case "M_OURICAN":
+		return KnxManufacturer_M_OURICAN
+	case "M_INLIWOSE":
+		return KnxManufacturer_M_INLIWOSE
+	case "M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_":
+		return KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_
+	case "M_SHK_KNX":
+		return KnxManufacturer_M_SHK_KNX
+	case "M_AMPIO":
+		return KnxManufacturer_M_AMPIO
+	case "M_MINGXING_WISDOM":
+		return KnxManufacturer_M_MINGXING_WISDOM
+	case "M_ALTEN_SW_GMBH":
+		return KnxManufacturer_M_ALTEN_SW_GMBH
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -8872,6 +8970,20 @@ func (e KnxManufacturer) name() string {
 		return "M_WINDOWMASTER_AS"
 	case KnxManufacturer_M_ACCORDIA_SA:
 		return "M_ACCORDIA_SA"
+	case KnxManufacturer_M_OURICAN:
+		return "M_OURICAN"
+	case KnxManufacturer_M_INLIWOSE:
+		return "M_INLIWOSE"
+	case KnxManufacturer_M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_:
+		return "M_BOSCH_SHANGHAI_SMART_LIFE_TECHNOLOGY_LTD_"
+	case KnxManufacturer_M_SHK_KNX:
+		return "M_SHK_KNX"
+	case KnxManufacturer_M_AMPIO:
+		return "M_AMPIO"
+	case KnxManufacturer_M_MINGXING_WISDOM:
+		return "M_MINGXING_WISDOM"
+	case KnxManufacturer_M_ALTEN_SW_GMBH:
+		return "M_ALTEN_SW_GMBH"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

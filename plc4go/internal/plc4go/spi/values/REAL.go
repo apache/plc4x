@@ -23,6 +23,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"math"
+	"strconv"
 )
 
 type PlcREAL struct {
@@ -149,7 +150,10 @@ func (m PlcREAL) GetString() string {
 }
 
 func (m PlcREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcREAL"}}); err != nil {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcREAL"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.GetString()) * 8)},
+	}}); err != nil {
 		return err
 	}
 	return nil

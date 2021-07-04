@@ -89,19 +89,28 @@ func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
 	return PlcField{}, errors.New("couldn't cast to ModbusPlcField")
 }
 
-func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m PlcField) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
 	log.Trace().Msg("MarshalXML")
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
+	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+	if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
+	}}); err != nil {
 		return err
 	}
 
