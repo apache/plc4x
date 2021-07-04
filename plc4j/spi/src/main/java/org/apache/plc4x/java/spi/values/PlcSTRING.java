@@ -236,9 +236,4 @@ public class PlcSTRING extends PlcSimpleValue<String> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

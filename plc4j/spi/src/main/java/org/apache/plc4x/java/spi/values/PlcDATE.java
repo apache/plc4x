@@ -100,9 +100,4 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

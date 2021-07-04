@@ -120,27 +120,4 @@ public class CANOpenSDOField extends CANOpenField {
         writeBuffer.popContext(getClass().getSimpleName());
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-
-        Element blockNumberElement = doc.createElement("node");
-        blockNumberElement.appendChild(doc.createTextNode(Integer.toString(getNodeId())));
-        messageElement.appendChild(blockNumberElement);
-
-        Element indexElement = doc.createElement("index");
-        indexElement.appendChild(doc.createTextNode(Integer.toString(getIndex())));
-        messageElement.appendChild(indexElement);
-
-        Element subIndexElement = doc.createElement("subIndex");
-        subIndexElement.appendChild(doc.createTextNode(Integer.toString(getSubIndex())));
-        messageElement.appendChild(subIndexElement);
-
-        Element dataType = doc.createElement("dataType");
-        dataType.appendChild(doc.createTextNode(getCanOpenDataType().name()));
-        messageElement.appendChild(dataType);
-    }
-
 }

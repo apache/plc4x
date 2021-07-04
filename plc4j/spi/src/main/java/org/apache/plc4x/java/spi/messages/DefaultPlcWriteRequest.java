@@ -24,21 +24,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -51,7 +47,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable {
+public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
     private final LinkedHashMap<String, FieldValueItem> fields;
@@ -175,39 +171,6 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable 
         writeBuffer.popContext("fields");
 
         writeBuffer.popContext("PlcWriteRequest");
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcWriteRequest");
-        Element fieldsElement = doc.createElement("fields");
-        messageElement.appendChild(fieldsElement);
-        for (Map.Entry<String, FieldValueItem> fieldEntry : fields.entrySet()) {
-            FieldValueItem fieldValueItem = fieldEntry.getValue();
-            String fieldName = fieldEntry.getKey();
-            Element fieldNameElement = doc.createElement(fieldName);
-            fieldsElement.appendChild(fieldNameElement);
-            PlcField field = fieldValueItem.getField();
-            if (!(field instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. Field doesn't implement XmlSerializable");
-            }
-            ((XmlSerializable) field).xmlSerialize(fieldNameElement);
-            final PlcValue value = fieldValueItem.getValue();
-            if (value instanceof PlcList) {
-                PlcList list = (PlcList) value;
-                for (PlcValue plcValue : list.getList()) {
-                    Element fieldValueElement = doc.createElement("value");
-                    fieldValueElement.setTextContent(plcValue.getString());
-                    fieldNameElement.appendChild(fieldValueElement);
-                }
-            } else {
-                Element fieldValueElement = doc.createElement("value");
-                fieldValueElement.setTextContent(value.getString());
-                fieldNameElement.appendChild(fieldValueElement);
-            }
-        }
-        parent.appendChild(messageElement);
     }
 
     public static class Builder implements PlcWriteRequest.Builder {

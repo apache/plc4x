@@ -65,14 +65,4 @@ public class S7StringField extends S7Field {
         writeBuffer.popContext(getClass().getSimpleName());
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        super.xmlSerialize(parent);
-
-        Document doc = parent.getOwnerDocument();
-        Element byteOffsetElement = doc.createElement("stringLength");
-        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getStringLength())));
-        parent.getFirstChild().appendChild(byteOffsetElement);
-    }
-
 }

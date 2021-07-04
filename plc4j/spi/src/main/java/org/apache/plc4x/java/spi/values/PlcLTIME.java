@@ -95,9 +95,4 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
         // TODO: Implement
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        // TODO: Implement
-    }
-
 }

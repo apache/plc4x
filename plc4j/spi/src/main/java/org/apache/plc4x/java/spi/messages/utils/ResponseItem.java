@@ -22,12 +22,10 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 
-public class ResponseItem<T> implements XmlSerializable {
+public class ResponseItem<T> implements Serializable {
 
     private final PlcResponseCode code;
     private final T value;
@@ -57,17 +55,6 @@ public class ResponseItem<T> implements XmlSerializable {
             ((Serializable) value).serialize(writeBuffer);
         }
         writeBuffer.popContext("ResponseItem");
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        parent.setAttribute("result", code.name());
-        if (value != null) {
-            if (!(value instanceof XmlSerializable)) {
-                throw new RuntimeException("Error serializing. Field value doesn't implement XmlSerializable");
-            }
-            ((XmlSerializable) value).xmlSerialize(parent);
-        }
     }
 
 }

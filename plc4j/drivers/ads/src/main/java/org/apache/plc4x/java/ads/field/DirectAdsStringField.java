@@ -117,26 +117,4 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
         writeBuffer.popContext(getClass().getSimpleName());
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-        Element indexGroupElement = doc.createElement("indexGroup");
-        indexGroupElement.appendChild(doc.createTextNode(Long.toString(getIndexGroup())));
-        messageElement.appendChild(indexGroupElement);
-
-        Element indexOffsetElement = doc.createElement("indexOffset");
-        indexOffsetElement.appendChild(doc.createTextNode(Long.toString(getIndexOffset())));
-        messageElement.appendChild(indexOffsetElement);
-
-        Element numberOfElementsElement = doc.createElement("numberOfElements");
-        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(numberOfElementsElement);
-
-        Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
-        messageElement.appendChild(datatypeElement);
-    }
-
 }

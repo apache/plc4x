@@ -42,9 +42,4 @@ public class MockPlcValue extends PlcValueAdapter {
         throw new PlcNotImplementedException("Not implemented");
     }
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        throw new PlcNotImplementedException("Not implemented");
-    }
-
 }
