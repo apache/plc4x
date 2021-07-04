@@ -16,19 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.profinet.utils;
+package org.apache.plc4x.java.profinet.context;
 
-public class StaticHelper {
+import org.apache.plc4x.java.spi.context.DriverContext;
 
-    public static int stringLength(String str) {
-        if (str == null) {
-            return 0;
-        }
-        return str.length();
-    }
-
-    public static int arrayLength(byte[] arr) {
-        return arr.length;
-    }
+public class ProfinetDiscoveryContext implements DriverContext {
 
 }

@@ -49,7 +49,7 @@
     // 4.3.1.3.5 (Page 95ff)
     [simple        uint 16          'responseDelayFactorOrPadding']
     // 4.3.1.3.4 (Page 95)
-    [implicit      uint 16          'dcpDataLength' 'lengthInBytes - 10']
+    [implicit      uint 16          'dcpDataLength' 'lengthInBytes - 12']
     [typeSwitch 'frameId','serviceId','serviceType.response'
         ////////////////////////////////////////////////////////////////////////////
         // Multicast (Well theoretically)
@@ -108,7 +108,7 @@
 [discriminatedType 'DCP_Block'
     [discriminator BlockOptions 'option'                                                ]
     [discriminator uint 8       'suboption'                                             ]
-    [implicit      uint 16      'blockLength' 'lengthInBytes'                           ]
+    [implicit      uint 16      'blockLength' 'lengthInBytes - 4'                       ]
     [typeSwitch 'option','suboption'
 
         ////////////////////////////////////////////////////////////////////////////
@@ -139,17 +139,17 @@
         // DEVICE_PROPERTIES_OPTION
         ////////////////////////////////////////////////////////////////////////////
 
-        ['DEVICE_PROPERTIES_OPTION','1' DCP_BlockDevicePropertiesDeviceVendor
+        ['DEVICE_PROPERTIES_OPTION','1' DCP_BlockDevicePropertiesDeviceVendor [uint 16 'blockLength']
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
-            [simple   string '-1' 'deviceVendorValue'                                   ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", deviceVendorValue) % 2'     ]
+            [array    byte        'deviceVendorValue' count 'blockLength-2'             ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", deviceVendorValue) % 2']
         ]
-        ['DEVICE_PROPERTIES_OPTION','2' DCP_BlockDevicePropertiesNameOfStation
+        ['DEVICE_PROPERTIES_OPTION','2' DCP_BlockDevicePropertiesNameOfStation [uint 16 'blockLength']
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
-            [simple   string '-1' 'nameOfStation'                                       ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", nameOfStation) % 2'         ]
+            [array    byte        'nameOfStation' count 'blockLength-2'                 ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", nameOfStation) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','3' DCP_BlockDevicePropertiesDeviceId
             [reserved uint 16 '0x0000'                                                  ]
@@ -162,16 +162,17 @@
             [simple   bit     'pnioMultidevive'                                         ]
             [simple   bit     'pnioController'                                          ]
             [simple   bit     'pnioDevice'                                              ]
+            [reserved uint 8  '0x00'                                                    ]
         ]
         // Contains a list of option combinations the device supports.
         ['DEVICE_PROPERTIES_OPTION','5' DCP_BlockDevicePropertiesDeviceOptions [uint 16 'blockLength']
             [reserved uint 16               '0x0000'                                    ]
             [array    SupportedDeviceOption 'supportedOptions' length 'blockLength - 2' ]
         ]
-        ['DEVICE_PROPERTIES_OPTION','6' DCP_BlockDevicePropertiesAliasName
+        ['DEVICE_PROPERTIES_OPTION','6' DCP_BlockDevicePropertiesAliasName [uint 16 'blockLength']
             [reserved uint 16     '0x0000'                                              ]
-            [simple   string '-1' 'aliasNameValue'                                      ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.stringLength", aliasNameValue) % 2'       ]
+            [array    byte        'aliasNameValue' count 'blockLength-2'                ]
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", aliasNameValue) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','7' DCP_BlockDevicePropertiesDeviceInstance
             [reserved uint 16 '0x0000'                                                  ]
@@ -328,9 +329,10 @@
     ['0xFF' ALL_SELECTOR_OPTION]
 ]
 
+// https://de.wikipedia.org/wiki/IEEE_802.1p
 [enum uint 3 'VirtualLanPriority'   [string '2' 'acronym']
-    ['0x0' BACKGROUND               ['BK'                ]]
-    ['0x1' BEST_EFFORT              ['BE'                ]]
+    ['0x0' BEST_EFFORT              ['BE'                ]]
+    ['0x1' BACKGROUND               ['BK'                ]]
     ['0x2' EXCELLENT_EFFORT         ['EE'                ]]
     ['0x3' CRITICAL_APPLICATIONS    ['CA'                ]]
     ['0x4' VIDEO                    ['VI'                ]]

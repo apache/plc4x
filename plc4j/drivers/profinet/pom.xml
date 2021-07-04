@@ -132,6 +132,12 @@
       <artifactId>plc4j-utils-pcap-shared</artifactId>
       <version>0.9.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+      <!-- Override the "provided" scope -->
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
@@ -153,7 +159,20 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
+      <!-- TODO: Just for now -->
+      <scope>compile</scope>
+    </dependency>
+    <!-- TODO: Just for now -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- TODO: Just for now -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>

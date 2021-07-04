@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
@@ -43,7 +44,7 @@ import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> implements PlcDiscoverer {
+public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
 
     @Override
     public String getProtocolCode() {
@@ -67,7 +68,7 @@ public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> implement
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
-        return new DefaultPlcDiscoveryRequest.Builder(this);
+        return new DefaultPlcDiscoveryRequest.Builder(new ProfinetPlcDiscoverer());
     }
 
     @Override
@@ -147,11 +148,6 @@ public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> implement
     @Override
     public ProfinetField prepareField(String query){
         return ProfinetField.of(query);
-    }
-
-    @Override
-    public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
-        return null;
     }
 
 }

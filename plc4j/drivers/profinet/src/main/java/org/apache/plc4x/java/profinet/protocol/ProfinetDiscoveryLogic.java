@@ -16,19 +16,17 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.profinet.utils;
+package org.apache.plc4x.java.profinet.protocol;
 
-public class StaticHelper {
+import org.apache.plc4x.java.profinet.readwrite.EthernetFrame;
+import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 
-    public static int stringLength(String str) {
-        if (str == null) {
-            return 0;
-        }
-        return str.length();
-    }
+public class ProfinetDiscoveryLogic extends Plc4xProtocolBase<EthernetFrame> {
 
-    public static int arrayLength(byte[] arr) {
-        return arr.length;
+    @Override
+    public void close(ConversationContext<EthernetFrame> context) {
+
     }
 
 }

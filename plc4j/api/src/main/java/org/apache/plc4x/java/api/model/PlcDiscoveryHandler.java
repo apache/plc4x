@@ -16,30 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.api.exceptions;
+package org.apache.plc4x.java.api.model;
 
-import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 
-/**
- * Can be thrown when something times out.
- */
-public class PlcTimeoutException extends PlcRuntimeException {
-    private final long timeout;
+public interface PlcDiscoveryHandler {
 
     /**
-     * Indicates something timed out.
-     *
-     * @param timeout in nanoseconds.
+     * Callback that gets called as soon as we found a new PlcDiscoveryItem
+     * @param item a PlcDiscoveryItem identifying a newly found resource
      */
-    public PlcTimeoutException(long timeout) {
-        super("Timeout reached after " + TimeUnit.NANOSECONDS.toMillis(timeout) + "ms");
-        this.timeout = timeout;
-    }
+    void handle(PlcDiscoveryItem item);
 
-    /**
-     * @return the timeout in nanoseconds.
-     */
-    public long getTimeout() {
-        return timeout;
-    }
 }
