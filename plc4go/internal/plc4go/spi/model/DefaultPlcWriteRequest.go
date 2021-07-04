@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
+	"strconv"
 	"time"
 )
 
@@ -193,11 +194,14 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 				return errors.New("couldn't cast PlcValue to PlcList")
 			}
 			for _, subValue := range listValue.Values {
-				if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
-					return err
-				}
 				if !subValue.IsString() {
 					return errors.New("value not serializable to string")
+				}
+				if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}, Attr: []xml.Attr{
+					{Name: xml.Name{Local: "dataType"}, Value: "string"},
+					{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(subValue.GetString()) * 8)},
+				}}); err != nil {
+					return err
 				}
 				if err := e.EncodeToken(xml.CharData(subValue.GetString())); err != nil {
 					return err
@@ -207,7 +211,10 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 				}
 			}
 		default:
-			if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+			if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}, Attr: []xml.Attr{
+				{Name: xml.Name{Local: "dataType"}, Value: "string"},
+				{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(value.GetString()) * 8)},
+			}}); err != nil {
 				return err
 			}
 			if !value.IsString() {

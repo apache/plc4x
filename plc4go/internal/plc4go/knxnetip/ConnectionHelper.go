@@ -125,7 +125,7 @@ func (m *Connection) handleValueCacheUpdate(destinationAddress []int8, payload [
 
 func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
-/*	if m.connectionTimeoutTimer == nil {
+	/*	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
 		go func() {
 			<-m.connectionTimeoutTimer.C

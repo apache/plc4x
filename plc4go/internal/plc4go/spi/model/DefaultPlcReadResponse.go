@@ -23,6 +23,7 @@ import (
 	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"strconv"
 )
 
 type DefaultPlcReadResponse struct {
@@ -58,7 +59,7 @@ func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
 	return m.values[name]
 }
 
-func (m DefaultPlcReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+func (m DefaultPlcReadResponse) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
 	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcReadResponse"}}); err != nil {
 		return err
 	}
@@ -71,13 +72,26 @@ func (m DefaultPlcReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElemen
 		return err
 	}
 	for _, fieldName := range m.GetFieldNames() {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName},
-			Attr: []xml.Attr{
-				{Name: xml.Name{Local: "result"}, Value: m.GetResponseCode(fieldName).GetName()},
-			}}); err != nil {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.StartElement{
+			Name: xml.Name{Local: "ResponseItem"},
+		}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(m.GetResponseCode(fieldName).GetName(), xml.StartElement{Name: xml.Name{Local: "result"}, Attr: []xml.Attr{
+			{Name: xml.Name{Local: "dataType"}, Value: "string"},
+			{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.GetResponseCode(fieldName).GetName()) * 8)},
+		}}); err != nil {
 			return err
 		}
 		if err := e.EncodeElement(m.GetValue(fieldName), xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{
+			Name: xml.Name{Local: "ResponseItem"},
+		}); err != nil {
 			return err
 		}
 		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
