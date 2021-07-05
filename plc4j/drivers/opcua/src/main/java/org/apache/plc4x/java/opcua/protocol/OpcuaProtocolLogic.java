@@ -175,10 +175,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
-            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+            Consumer<byte []> consumer = opcuaResponse -> {
                 PlcReadResponse response = null;
                 try {
-                    response = new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody()).getResults()));
+                    response = new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody()).getResults()));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 };
@@ -699,10 +699,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
-            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+            Consumer<byte[]> consumer = opcuaResponse -> {
                 WriteResponse responseMessage = null;
                 try {
-                    responseMessage = (WriteResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody();
+                    responseMessage = (WriteResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -824,10 +824,10 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
-            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+            Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateSubscriptionResponse responseMessage = null;
                 try {
-                    responseMessage = (CreateSubscriptionResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody();
+                    responseMessage = (CreateSubscriptionResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

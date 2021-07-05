@@ -163,16 +163,16 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
-            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+            Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateMonitoredItemsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
                     if (unknownExtensionObject instanceof CreateMonitoredItemsResponse) {
                         responseMessage = (CreateMonitoredItemsResponse) unknownExtensionObject;
                     } else {
                         ServiceFault serviceFault = (ServiceFault) unknownExtensionObject;
                         ResponseHeader header = (ResponseHeader) serviceFault.getResponseHeader();
-                        LOGGER.error("Subscription ServiceFault return from server with error code,  '{}'", header.getServiceResult().toString());
+                        LOGGER.error("Subscription ServiceFault returned from server with error code,  '{}'", header.getServiceResult().toString());
                         plcSubscriber.onDisconnect(context);
                     }
                 } catch (ParseException e) {
@@ -275,11 +275,11 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
                             /*  Create Consumer for the response message, error and timeout to be sent to the Secure Channel */
-                            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+                            Consumer<byte[]> consumer = opcuaResponse -> {
                                 PublishResponse responseMessage = null;
                                 ServiceFault serviceFault = null;
                                 try {
-                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody();
+                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
                                     if (unknownExtensionObject instanceof PublishResponse) {
                                         responseMessage = (PublishResponse) unknownExtensionObject;
                                     } else {
@@ -389,10 +389,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
-            Consumer<OpcuaMessageResponse> consumer = opcuaResponse -> {
+            Consumer<byte[]> consumer = opcuaResponse -> {
                 DeleteSubscriptionsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse.getMessage(), true), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
                     if (unknownExtensionObject instanceof DeleteSubscriptionsResponse) {
                         responseMessage = (DeleteSubscriptionsResponse) unknownExtensionObject;
                     } else {
