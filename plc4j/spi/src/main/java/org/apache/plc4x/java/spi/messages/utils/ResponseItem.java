@@ -19,10 +19,13 @@ under the License.
 package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class ResponseItem<T> implements XmlSerializable {
+import java.nio.charset.StandardCharsets;
+
+public class ResponseItem<T> implements Serializable {
 
     private final PlcResponseCode code;
     private final T value;
@@ -41,14 +44,17 @@ public class ResponseItem<T> implements XmlSerializable {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        parent.setAttribute("result", code.name());
-        if(value != null) {
-            if (!(value instanceof XmlSerializable)) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("ResponseItem");
+        String codeName = code.name();
+        writeBuffer.writeString("result", codeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), codeName);
+        if (value != null) {
+            if (!(value instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. Field value doesn't implement XmlSerializable");
             }
-            ((XmlSerializable) value).xmlSerialize(parent);
+            ((Serializable) value).serialize(writeBuffer);
         }
+        writeBuffer.popContext("ResponseItem");
     }
 
 }

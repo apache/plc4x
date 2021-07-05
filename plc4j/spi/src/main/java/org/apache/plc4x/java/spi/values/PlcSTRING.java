@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
@@ -230,7 +232,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

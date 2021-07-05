@@ -115,7 +115,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 
 	// Create the new connection
 	connection := NewConnection(unitIdentifier, codec, options, m.fieldHandler)
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 

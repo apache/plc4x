@@ -99,7 +99,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		}()
 		return ch
 	}
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 

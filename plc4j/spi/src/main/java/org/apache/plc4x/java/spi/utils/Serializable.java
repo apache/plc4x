@@ -18,10 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.spi.utils;
 
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public interface XmlSerializable {
-
-    void xmlSerialize(Element parent);
-
+public interface Serializable {
+    void serialize(WriteBuffer writeBuffer) throws ParseException;
 }

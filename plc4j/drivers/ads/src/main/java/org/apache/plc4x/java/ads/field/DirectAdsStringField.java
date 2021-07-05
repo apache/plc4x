@@ -20,9 +20,12 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,25 +105,16 @@ public class DirectAdsStringField extends DirectAdsField implements AdsStringFie
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-        Element indexGroupElement = doc.createElement("indexGroup");
-        indexGroupElement.appendChild(doc.createTextNode(Long.toString(getIndexGroup())));
-        messageElement.appendChild(indexGroupElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element indexOffsetElement = doc.createElement("indexOffset");
-        indexOffsetElement.appendChild(doc.createTextNode(Long.toString(getIndexOffset())));
-        messageElement.appendChild(indexOffsetElement);
+        writeBuffer.writeLong("indexGroup", 64, getIndexGroup());
+        writeBuffer.writeLong("indexOffset", 64, getIndexOffset());
+        writeBuffer.writeLong("numberOfElements", 64, getNumberOfElements());
+        String plcDataType = getPlcDataType();
+        writeBuffer.writeString("dataType", plcDataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcDataType);
 
-        Element numberOfElementsElement = doc.createElement("numberOfElements");
-        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(numberOfElementsElement);
-
-        Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
-        messageElement.appendChild(datatypeElement);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
 }

@@ -25,6 +25,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"reflect"
+	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +83,9 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 		return response, nil
 	case errorResponse := <-errorResult:
 		return nil, errorResponse
+		// For search requests there is no timeout handler running, so we have to do it manually.
+	case <-time.After(m.defaultTtl):
+		return nil, errors.New("timeout")
 	}
 }
 

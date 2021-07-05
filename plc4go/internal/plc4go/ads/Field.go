@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"strconv"
 )
 
 type PlcField struct {
@@ -113,21 +114,36 @@ func (m DirectPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 
-	if err := e.EncodeElement(m.IndexGroup, xml.StartElement{Name: xml.Name{Local: "indexGroup"}}); err != nil {
+	if err := e.EncodeElement(m.IndexGroup, xml.StartElement{Name: xml.Name{Local: "indexGroup"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}}); err != nil {
+	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
 	if m.StringLength > 0 {
-		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
+		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}, Attr: []xml.Attr{
+			{Name: xml.Name{Local: "dataType"}, Value: "int"},
+			{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+		}}); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
+	}}); err != nil {
 		return err
 	}
 
@@ -135,6 +151,10 @@ func (m DirectPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error
 		return err
 	}
 	return nil
+}
+
+func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	panic(name)
 }
 
 type SymbolicPlcField struct {
@@ -186,7 +206,10 @@ func (m SymbolicPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 		return err
 	}
 
-	if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
+	if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.SymbolicAddress) * 8)},
+	}}); err != nil {
 		return err
 	}
 	if m.StringLength > 0 {
@@ -194,10 +217,61 @@ func (m SymbolicPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
+	}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m DirectPlcField) banana(e *xml.Encoder, start xml.StartElement) error {
+	log.Trace().Msg("MarshalXML")
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeElement(m.IndexGroup, xml.StartElement{Name: xml.Name{Local: "indexGroup"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
+		return err
+	}
+	if m.StringLength > 0 {
+		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}, Attr: []xml.Attr{
+			{Name: xml.Name{Local: "dataType"}, Value: "int"},
+			{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+		}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "int"},
+		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
+	}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
+	}}); err != nil {
 		return err
 	}
 

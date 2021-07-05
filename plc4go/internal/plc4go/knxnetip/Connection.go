@@ -198,12 +198,14 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	}
 
 	go func() {
+		// Open the UDP Connection
 		err := m.messageCodec.Connect()
 		if err != nil {
 			sendResult(nil, errors.Wrap(err, "error opening connection"))
 			return
 		}
 
+		// Send a search request before connecting to the device.
 		searchResponse, err := m.sendGatewaySearchRequest()
 		if err != nil {
 			sendResult(nil, errors.Wrap(err, "error discovering device capabilities"))
@@ -263,6 +265,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				// Create a go routine to handle incoming tunneling-requests which haven't been
 				// handled by any other handler. This is where usually the GroupValueWrite messages
 				// are being handled.
+				log.Debug().Msg("Starting tunneling handler")
 				go func() {
 					defaultIncomingMessageChannel := m.messageCodec.GetDefaultIncomingMessageChannel()
 					for m.handleTunnelingRequests {
@@ -319,7 +322,11 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 				sendResult(m, nil)
 			case driverModel.Status_NO_MORE_CONNECTIONS:
 				sendResult(nil, errors.New("no more connections"))
+			default:
+				sendResult(nil, errors.Errorf("got a return status of: %s", connectionResponse.Status))
 			}
+		} else {
+			sendResult(nil, errors.New("this device doesn't support tunneling"))
 		}
 	}()
 

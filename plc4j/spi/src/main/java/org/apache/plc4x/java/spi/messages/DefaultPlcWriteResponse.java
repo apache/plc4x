@@ -26,17 +26,16 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcWriteResponse implements PlcWriteResponse, XmlSerializable {
+public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
     private final Map<String, PlcResponseCode> values;
@@ -72,22 +71,22 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, XmlSerializabl
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcWriteResponse");
-        if(request instanceof XmlSerializable) {
-            ((XmlSerializable) request).xmlSerialize(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcWriteResponse");
+
+        if (request instanceof Serializable) {
+            ((Serializable) request).serialize(writeBuffer);
         }
-        Element fieldsElement = doc.createElement("fields");
-        messageElement.appendChild(fieldsElement);
+        writeBuffer.pushContext("fields");
         for (Map.Entry<String, PlcResponseCode> fieldEntry : values.entrySet()) {
             String fieldName = fieldEntry.getKey();
             final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
-            Element fieldNameElement = doc.createElement(fieldName);
-            fieldNameElement.setAttribute("result", fieldResponseCode.name());
-            fieldsElement.appendChild(fieldNameElement);
+            String result = fieldResponseCode.name();
+            writeBuffer.writeString(fieldName, result.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), result);
         }
-        parent.appendChild(messageElement);
+        writeBuffer.popContext("fields");
+
+        writeBuffer.popContext("PlcWriteResponse");
     }
 
 }

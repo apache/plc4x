@@ -125,13 +125,13 @@ func (m *Connection) handleValueCacheUpdate(destinationAddress []int8, payload [
 
 func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
-	if m.connectionTimeoutTimer == nil {
+	/*	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
 		go func() {
 			<-m.connectionTimeoutTimer.C
 			m.resetConnection()
 		}()
-	}
+	}*/
 }
 
 func (m *Connection) resetTimeout() {
@@ -142,7 +142,7 @@ func (m *Connection) resetTimeout() {
 }
 
 func (m *Connection) resetConnection() {
-	log.Warn().Msg("Bad connection detected")
+	log.Warn().Msg("Reset connection")
 }
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {

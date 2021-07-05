@@ -84,7 +84,7 @@ func (m *MessageCodec) Receive() (interface{}, error) {
 		// Get the size of the entire packet
 		packetSize := (uint32(data[4]) << 8) + uint32(data[5])
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			log.Trace().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
 			return nil, nil
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)
