@@ -31,6 +31,7 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcBOOL extends PlcIECValue<Boolean> {
 
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
     static int minValue = 0;
     static int maxValue = 1;
 
@@ -59,128 +60,94 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Boolean value) {
-        super();
         this.value = value;
         this.isNullable = true;
     }
 
     public PlcBOOL(Byte value) {
-        super();
-        if ((value != null) && (value >= minValue && value <= maxValue)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue || value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(Short value) {
-        super();
-        if ((value != null) && (value >= minValue && value <= maxValue)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue || value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(Integer value) {
-        super();
-        if ((value != null) && (value >= minValue && value <= maxValue)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue || value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(Long value) {
-        super();
-        if ((value != null) && (value >= minValue && value <= maxValue)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue || value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(Float value) {
-        super();
-        if ((value != null) && (value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(Double value) {
-        super();
-        if ((value != null) && (value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value >= 1;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value >= 1;
+        this.isNullable = true;
     }
 
     public PlcBOOL(BigInteger value) {
-        super();
-        if ((value != null) && (value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
+        this.isNullable = true;
     }
 
     public PlcBOOL(BigDecimal value) {
-        super();
-        if ((value != null) && (value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
+        this.isNullable = true;
     }
 
     public PlcBOOL(String value) {
-        super();
         try {
-            try {
-                this.value = Integer.parseInt(value.trim()) > 0;
-            } catch(NumberFormatException e) {
-                //parseBoolean expects a string "true" or "false"
-                this.value = Boolean.parseBoolean(value.trim());
-            }
+            this.value = parseValue(value);
             this.isNullable = false;
+        } catch (RuntimeException e) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
-        catch(Exception e) {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+    }
+
+    private boolean parseValue(String value) {
+        try {
+            return Integer.parseInt(value.trim()) > 0;
+        } catch (NumberFormatException ignore) {
+            //parseBoolean expects a string "true" or "false"
+            return Boolean.parseBoolean(value.trim());
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcBOOL(@JsonProperty("value") boolean value) {
-        super();
         this.value = value;
         this.isNullable = true;
     }
@@ -307,7 +274,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     @JsonIgnore
     public byte[] getBytes() {
-        return ((value != null) && value) ? new byte[] {0x01} : new byte[] {0x00};
+        return ((value != null) && value) ? new byte[]{0x01} : new byte[]{0x00};
     }
 
     @Override

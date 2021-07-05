@@ -21,9 +21,12 @@ package org.apache.plc4x.java.canopen.field;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,21 +85,15 @@ public class CANOpenPDOField extends CANOpenField implements CANOpenSubscription
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element serviceElement = doc.createElement("service");
-        serviceElement.appendChild(doc.createTextNode(service.name()));
-        messageElement.appendChild(serviceElement);
+        String serviceName = getService().name();
+        writeBuffer.writeString("service", serviceName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), serviceName);
+        writeBuffer.writeInt("node",64, getNodeId());
+        String dataTypeName = getCanOpenDataType().name();
+        writeBuffer.writeString("dataType", dataTypeName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataTypeName);
 
-        Element nodeElement = doc.createElement("node");
-        nodeElement.appendChild(doc.createTextNode(Integer.toString(getNodeId())));
-        messageElement.appendChild(nodeElement);
-
-        Element dataType = doc.createElement("dataType");
-        dataType.appendChild(doc.createTextNode(getCanOpenDataType().name()));
-        messageElement.appendChild(dataType);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 }

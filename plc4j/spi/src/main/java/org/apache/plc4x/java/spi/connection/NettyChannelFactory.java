@@ -46,7 +46,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      */
     private SocketAddress address;
 
-    public NettyChannelFactory(SocketAddress address) {
+    protected NettyChannelFactory(SocketAddress address) {
         this.address = address;
     }
 
@@ -57,6 +57,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     /**
      * We need to be able to override this in the TestChanelFactory
+     *
      * @return the Bootstrap instance we will be using to initialize the channel.
      */
     protected Bootstrap createBootstrap() {
@@ -92,7 +93,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             Bootstrap bootstrap = createBootstrap();
 
             final EventLoopGroup workerGroup = getEventLoopGroup();
-            if(workerGroup != null) {
+            if (workerGroup != null) {
                 bootstrap.group(workerGroup);
             }
 
@@ -115,7 +116,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             // It seems the embedded channel operates differently.
             // Intentionally using the class name as we don't want to require a
             // hard dependency on the test-channel.
-            if(!"Plc4xEmbeddedChannel".equals(channel.getClass().getSimpleName())) {
+            if (!"Plc4xEmbeddedChannel".equals(channel.getClass().getSimpleName())) {
                 // Wait for sync
                 f.sync();
                 // Wait till the session is finished initializing.
@@ -123,6 +124,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             }
 
             return channel;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Error creating channel.", e);
         } catch (Exception e) {
             throw new PlcConnectionException("Error creating channel.", e);
         }

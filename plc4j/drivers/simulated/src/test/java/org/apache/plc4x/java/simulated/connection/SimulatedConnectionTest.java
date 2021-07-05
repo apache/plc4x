@@ -186,7 +186,7 @@ class SimulatedConnectionTest implements WithAssertions {
                 .addItem("state", "STATE/state:STRING", "changedstate")
                 .addItem("event", "STATE/event:STRING", "changedevent")
                 .build();
-            SUT.write(plcWriteRequest2).get(1, TimeUnit.SECONDS);
+            SUT.write(plcWriteRequest2).get(10, TimeUnit.SECONDS);
 
             // Unregister all consumers
             cyclicRegistration.unregister();

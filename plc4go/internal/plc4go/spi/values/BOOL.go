@@ -21,6 +21,7 @@ package values
 
 import (
 	"encoding/xml"
+	"strconv"
 )
 
 type PlcBOOL struct {
@@ -57,8 +58,15 @@ func (m PlcBOOL) GetBoolArray() []bool {
 	return []bool{m.value}
 }
 
-func (m PlcBOOL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBOOL"}}); err != nil {
+func (m PlcBOOL) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
+	size := 40
+	if m.value {
+		size = 32
+	}
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBOOL"}, Attr: []xml.Attr{
+		{Name: xml.Name{Local: "dataType"}, Value: "string"},
+		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(size)},
+	}}); err != nil {
 		return err
 	}
 	return nil

@@ -26,13 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +34,10 @@ import java.util.Map;
 public class PlcValues {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcValues.class);
-    
+
+    private PlcValues() {
+    }
+
     public static PlcValue of(List<PlcValue> list) {
         return new PlcList(list);
     }
@@ -58,23 +55,23 @@ public class PlcValues {
     }
 
     public static PlcValue of(Object o) {
-        if(o == null) {
+        if (o == null) {
             return new PlcNull();
         }
         try {
             String simpleName = o.getClass().getSimpleName();
             Class<?> clazz = o.getClass();
-            if (o instanceof  List) {
+            if (o instanceof List) {
                 simpleName = "List";
                 clazz = List.class;
-            } else if(clazz.isArray()) {
+            } else if (clazz.isArray()) {
                 simpleName = "List";
                 clazz = List.class;
                 Object[] objectArray = (Object[]) o;
                 o = Arrays.asList(objectArray);
             }
             // If it's one of the LocalDate, LocalTime or LocalDateTime, cut off the "Local".
-            if(simpleName.startsWith("Local")) {
+            if (simpleName.startsWith("Local")) {
                 simpleName = simpleName.substring(5);
             }
             Constructor<?> constructor = Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + simpleName).getDeclaredConstructor(clazz);

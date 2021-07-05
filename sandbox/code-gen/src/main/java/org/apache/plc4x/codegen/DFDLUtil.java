@@ -22,8 +22,11 @@ import org.apache.plc4x.codegen.ast.*;
 import org.apache.plc4x.codegen.util.PojoFactory;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
+import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -32,14 +35,18 @@ import java.util.Iterator;
  */
 public class DFDLUtil {
 
-    private static final Namespace xsNamespace = new Namespace("xs", "http://www.w3.org/2001/XMLSchema");
-    private static final QName complexType = new QName("complexType", xsNamespace);
-    private static final QName sequence = new QName("sequence", xsNamespace);
-    private static final QName ELEMENT = new QName("element", xsNamespace);
+    private static final Namespace XS_NAMESPACE = new Namespace("xs", "http://www.w3.org/2001/XMLSchema");
+    private static final QName COMPLEX_TYPE = new QName("complexType", XS_NAMESPACE);
+    private static final QName SEQUENCE = new QName("sequence", XS_NAMESPACE);
+    private static final QName ELEMENT = new QName("element", XS_NAMESPACE);
 
-    public void transform(File dfdlSchemaFile, File outputDir) {
-        assert outputDir.exists();
-        assert outputDir.isDirectory();
+    public void transform(File dfdlSchemaFile, File outputDir) throws IOException {
+        if (!outputDir.exists()) {
+            throw new FileNotFoundException(outputDir.getAbsolutePath() + " does not exist");
+        }
+        if (!outputDir.isDirectory()) {
+            throw new FileNotFoundException(outputDir.getAbsolutePath() + " is not a directory");
+        }
 
         final Document schema = parseDFDLSchema(dfdlSchemaFile);
 
@@ -48,7 +55,7 @@ public class DFDLUtil {
         final PojoFactory factory = new PojoFactory();
         while (iterator.hasNext()) {
             final Element element = iterator.next();
-            final Iterator<Element> sequenceIterator = element.elementIterator(sequence);
+            final Iterator<Element> sequenceIterator = element.elementIterator(SEQUENCE);
             final Element sequence = getSequence(sequenceIterator);
 
             // Now make a POJO with all "elements" as fields
@@ -75,22 +82,23 @@ public class DFDLUtil {
     private Element getSequence(Iterator<Element> sequenceIterator) {
         assert sequenceIterator.hasNext();
         final Element sequence = sequenceIterator.next();
-        assert sequenceIterator.hasNext() == false;
+        assert !sequenceIterator.hasNext();
         return sequence;
     }
 
-    private Document parseDFDLSchema(File schemaFile) {
+    private Document parseDFDLSchema(File schemaFile) throws IOException {
         try {
             SAXReader reader = new SAXReader();
+            reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             return reader.read(schemaFile);
-        } catch (DocumentException e) {
+        } catch (DocumentException | SAXException e) {
             // Do something
-            throw new RuntimeException("Unable to read DFDL Schema File", e);
+            throw new IOException("Unable to read DFDL Schema File", e);
         }
     }
 
     private Iterator<Element> getMainTypes(Document dfdlSchema) {
         Element rootElement = dfdlSchema.getRootElement();
-        return rootElement.elementIterator(complexType);
+        return rootElement.elementIterator(COMPLEX_TYPE);
     }
 }

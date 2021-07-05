@@ -20,14 +20,14 @@ package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.regex.Pattern;
 
 /**
  * Generic field type which defines node address and address pattern (index/subindex).
  */
-public abstract class CANOpenField implements PlcField, XmlSerializable {
+public abstract class CANOpenField implements PlcField, Serializable {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?:(0[xX](?<indexHex>[0-9a-fA-F]+))|(?<index>\\d+))/(?:(0[xX](?<subIndexHex>[0-9a-fA-F]+))|(?<subIndex>\\d+)):(?<canDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
     public static final Pattern NODE_PATTERN = Pattern.compile("(?<nodeId>\\d+)");

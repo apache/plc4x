@@ -24,9 +24,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Element;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     public static PlcDATE of(Object value) {
         if (value instanceof LocalDate) {
             return new PlcDATE((LocalDate) value);
-        } else if(value instanceof Long) {
+        } else if (value instanceof Long) {
             return new PlcDATE(LocalDateTime.ofInstant(
                 Instant.ofEpochSecond((long) value), ZoneId.systemDefault()).toLocalDate());
         }
@@ -55,7 +56,7 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
         // In this case the date is the number of days since 1990-01-01
         // So we gotta add 7305 days to the value to have it relative to epoch
         // Then we also need to transform it from days to seconds by multiplying by 86400
-        super(LocalDateTime.ofInstant(Instant.ofEpochSecond((value + 7305) * 86400),
+        super(LocalDateTime.ofInstant(Instant.ofEpochSecond((value + 7305L) * 86400L),
             ZoneId.systemDefault()).toLocalDate(), true);
     }
 
@@ -95,7 +96,7 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

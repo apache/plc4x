@@ -20,9 +20,12 @@ package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,17 +67,13 @@ public class CANOpenHeartbeatField extends CANOpenField implements CANOpenSubscr
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element serviceElement = doc.createElement("service");
-        serviceElement.appendChild(doc.createTextNode(getService().name()));
-        messageElement.appendChild(serviceElement);
-
-        Element nodeElement = doc.createElement("node");
-        nodeElement.appendChild(doc.createTextNode(Integer.toString(getNodeId())));
-        messageElement.appendChild(nodeElement);
+        String serviceName = getService().name();
+        writeBuffer.writeString("service", serviceName.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), serviceName);
+        writeBuffer.writeInt("node", 64, getNodeId());
+        
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 }

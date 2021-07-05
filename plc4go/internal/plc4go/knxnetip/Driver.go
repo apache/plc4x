@@ -80,7 +80,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 
 	// Create the new connection
 	connection := NewConnection(transportInstance, options, m.fieldHandler)
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.Connect()
 }
 

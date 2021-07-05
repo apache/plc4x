@@ -28,6 +28,7 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcREAL extends PlcIECValue<Float> {
 
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %f - %f for a %s Value";
     static Float minValue = -Float.MAX_VALUE;
     static Float maxValue = Float.MAX_VALUE;
 
@@ -56,88 +57,66 @@ public class PlcREAL extends PlcIECValue<Float> {
     }
 
     public PlcREAL(Boolean value) {
-        super();
         this.value = value ? (Float) 1.0f : (Float) 0.0f;
         this.isNullable = false;
     }
 
     public PlcREAL(Byte value) {
-        super();
         this.value = value.floatValue();
         this.isNullable = false;
     }
 
     public PlcREAL(Short value) {
-        super();
         this.value = value.floatValue();
         this.isNullable = false;
     }
 
     public PlcREAL(Integer value) {
-        super();
         this.value = value.floatValue();
         this.isNullable = false;
     }
 
     public PlcREAL(Float value) {
-        super();
         this.value = value;
         this.isNullable = false;
     }
 
     public PlcREAL(Double value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = value.floatValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.floatValue();
+        this.isNullable = false;
     }
 
     public PlcREAL(BigInteger value) {
-        super();
         BigDecimal val = new BigDecimal(value);
-        if ((val.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (val.compareTo(BigDecimal.valueOf(maxValue)) <= 0)) {
-            this.value = val.floatValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((val.compareTo(BigDecimal.valueOf(minValue)) < 0) || (val.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = val.floatValue();
+        this.isNullable = true;
     }
 
     public PlcREAL(BigDecimal value) {
-        super();
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = value.floatValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.floatValue();
+        this.isNullable = true;
     }
 
     public PlcREAL(String value) {
-        super();
         try {
             this.value = Float.parseFloat(value.trim());
             this.isNullable = false;
-        }
-        catch(Exception e) {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        } catch (Exception e) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcREAL(@JsonProperty("value") float value) {
-        super();
         this.value = value;
         this.isNullable = false;
     }
@@ -151,7 +130,7 @@ public class PlcREAL extends PlcIECValue<Float> {
     @Override
     @JsonIgnore
     public boolean getBoolean() {
-        return (value != null) && !value.equals(0);
+        return (value != null) && !value.equals(0.0f);
     }
 
     @Override
@@ -270,8 +249,8 @@ public class PlcREAL extends PlcIECValue<Float> {
 
     @JsonIgnore
     public byte[] getBytes() {
-        int intBits =  Float.floatToIntBits(value);
-	      return new byte[] { (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };
+        int intBits = Float.floatToIntBits(value);
+        return new byte[]{(byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits)};
     }
 
 }

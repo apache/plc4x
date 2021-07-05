@@ -22,14 +22,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.modbus.readwrite.types.*;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public abstract class ModbusField implements PlcField, XmlSerializable {
+public abstract class ModbusField implements PlcField, Serializable {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
     public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
@@ -43,19 +46,19 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
     private final ModbusDataType dataType;
 
     public static ModbusField of(String addressString) {
-        if(ModbusFieldCoil.matches(addressString)) {
+        if (ModbusFieldCoil.matches(addressString)) {
             return ModbusFieldCoil.of(addressString);
         }
-        if(ModbusFieldDiscreteInput.matches(addressString)) {
+        if (ModbusFieldDiscreteInput.matches(addressString)) {
             return ModbusFieldDiscreteInput.of(addressString);
         }
-        if(ModbusFieldHoldingRegister.matches(addressString)) {
+        if (ModbusFieldHoldingRegister.matches(addressString)) {
             return ModbusFieldHoldingRegister.of(addressString);
         }
-        if(ModbusFieldInputRegister.matches(addressString)) {
+        if (ModbusFieldInputRegister.matches(addressString)) {
             return ModbusFieldInputRegister.of(addressString);
         }
-        if(ModbusExtendedRegister.matches(addressString)) {
+        if (ModbusExtendedRegister.matches(addressString)) {
             return ModbusExtendedRegister.of(addressString);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
@@ -87,7 +90,7 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
 
     @JsonIgnore
     public int getLengthWords() {
-        return (int) ((quantity * (float) dataType.getDataTypeSize())/2.0f);
+        return (int) ((quantity * (float) dataType.getDataTypeSize()) / 2.0f);
     }
 
     public ModbusDataType getDataType() {
@@ -126,21 +129,15 @@ public abstract class ModbusField implements PlcField, XmlSerializable {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
-        Element addressElement = doc.createElement("address");
-        addressElement.appendChild(doc.createTextNode(Integer.toString(getAddress())));
-        messageElement.appendChild(addressElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element quantityElement = doc.createElement("numberOfElements");
-        quantityElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(quantityElement);
+        writeBuffer.writeInt("address", 64, address);
+        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
+        String dataType = getPlcDataType();
+        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
 
-        Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
-        messageElement.appendChild(datatypeElement);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
 }

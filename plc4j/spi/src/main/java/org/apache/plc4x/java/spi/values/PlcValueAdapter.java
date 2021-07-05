@@ -21,7 +21,7 @@ package org.apache.plc4x.java.spi.values;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class PlcValueAdapter implements PlcValue, XmlSerializable {
+public abstract class PlcValueAdapter implements PlcValue, Serializable {
 
     @Override
     public Object getObject() {

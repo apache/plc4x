@@ -99,11 +99,10 @@ public class WaterTankSimulationModule implements SimulationModule {
             // Update the state of the emergency valve.
             context.getDigitalOutputs().set(EMERGENCY_VALVE_OUTPUT, emergencyValveOpen);
 
-            // Sleep for a little while (Should probably be handled by the simulator)
+            // Should probably be handled by the simulator
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            e.printStackTrace();
         }
     }
 

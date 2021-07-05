@@ -23,13 +23,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Element;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
@@ -37,9 +36,9 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     public static PlcTIME of(Object value) {
         if (value instanceof Duration) {
             return new PlcTIME((Duration) value);
-        } else if(value instanceof Integer) {
+        } else if (value instanceof Integer) {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
-        } else if(value instanceof Long) {
+        } else if (value instanceof Long) {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         }
         throw new PlcRuntimeException("Invalid value type");
@@ -87,7 +86,7 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

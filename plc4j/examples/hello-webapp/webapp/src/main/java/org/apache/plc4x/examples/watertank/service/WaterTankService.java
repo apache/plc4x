@@ -27,6 +27,7 @@ import flex.messaging.util.UUIDUtils;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -56,6 +58,7 @@ import java.util.function.Consumer;
 @RemotingDestination
 public class WaterTankService {
 
+    public static final String WATER_LEVEL = "waterLevel";
     @Autowired
     private MessageBroker messageBroker;
 
@@ -70,13 +73,15 @@ public class WaterTankService {
     @Value("${plc4x.watertank.simulation}")
     private boolean simulation;
 
+    private final Random random = new SecureRandom();
+
     @PostConstruct
     protected void connectAndSubscribe() {
         // Create the BlazeDS destinations the clients can subscribe to.
         createDestinations();
 
         // Connect to the remote and subscribe to the values.
-        if(simulation) {
+        if (simulation) {
             connectToFakeDevice();
         } else {
             connectToDevice();
@@ -85,11 +90,11 @@ public class WaterTankService {
 
     @PreDestroy
     protected void disconnect() {
-        if((connection != null) && connection.isConnected()) {
+        if ((connection != null) && connection.isConnected()) {
             try {
                 connection.close();
             } catch (Exception e) {
-                throw new RuntimeException("Error stopping");
+                throw new PlcRuntimeException("Error stopping");
             }
         }
     }
@@ -100,14 +105,14 @@ public class WaterTankService {
             connection = new PlcDriverManager().getConnection(connectionString);
 
             // Check if subscriptions are supported by this connection.
-            if(!connection.getMetadata().canSubscribe()) {
-                throw new RuntimeException("This driver doesn't support subscribing");
+            if (!connection.getMetadata().canSubscribe()) {
+                throw new PlcRuntimeException("This driver doesn't support subscribing");
             }
 
             // Prepare a subscription request.
             final PlcSubscriptionRequest subscriptionRequest =
                 connection.subscriptionRequestBuilder().addChangeOfStateField(
-                    "waterLevel", addressStringWaterLevel).build();
+                    WATER_LEVEL, addressStringWaterLevel).build();
 
             // Execute the request.
             PlcSubscriptionResponse syncResponse = subscriptionRequest.execute().get();
@@ -118,12 +123,12 @@ public class WaterTankService {
                 subscriptionHandle.register(new WaterLevelHandler());
             }
         } catch (PlcConnectionException e) {
-            throw new RuntimeException("Error connecting to device", e);
+            throw new PlcRuntimeException("Error connecting to device", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Error subscribing for data", e);
+            throw new PlcRuntimeException("Error subscribing for data", e);
         } catch (ExecutionException e) {
-            throw new RuntimeException("Error subscribing for data", e);
+            throw new PlcRuntimeException("Error subscribing for data", e);
         }
     }
 
@@ -131,12 +136,12 @@ public class WaterTankService {
         WaterLevelHandler handler = new WaterLevelHandler();
         Thread thread = new Thread(() -> {
             try {
-                while(true) {
+                while (true) {
                     TimeUnit.MILLISECONDS.sleep(100);
 
-                    short value = (short) new Random().nextInt(1024);
+                    short value = (short) random.nextInt(1024);
                     Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-                    values.put("waterLevel", new ResponseItem<>(PlcResponseCode.OK, new PlcINT(value)));
+                    values.put(WATER_LEVEL, new ResponseItem<>(PlcResponseCode.OK, new PlcINT(value)));
                     DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), values);
 
                     handler.accept(event);
@@ -153,7 +158,7 @@ public class WaterTankService {
         final MessageService service = (MessageService) messageBroker.getService("message-service");
 
         // Create our new destination which we want to post to.
-        final MessageDestination destination = (MessageDestination) service.createDestination("waterLevel");
+        final MessageDestination destination = (MessageDestination) service.createDestination(WATER_LEVEL);
 
         // Attach the channels to it.
         destination.setChannels(messageBroker.getChannelIds());
@@ -170,20 +175,20 @@ public class WaterTankService {
     private class WaterLevelHandler implements Consumer<PlcSubscriptionEvent> {
         @Override
         public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
-            if(!messageBroker.isStarted()) {
+            if (!messageBroker.isStarted()) {
                 return;
             }
             // Get the data from the event.
-            final Short waterLevel = plcSubscriptionEvent.getShort("waterLevel");
-            if(waterLevel == null) {
+            final Short waterLevel = plcSubscriptionEvent.getShort(WATER_LEVEL);
+            if (waterLevel == null) {
                 return;
             }
 
             // Create a new message that will be broadcasted to the clients.
             final AsyncMessage message = new AsyncMessage();
-            message.setMessageId( UUIDUtils.createUUID(false) );
+            message.setMessageId(UUIDUtils.createUUID(false));
             message.setTimestamp(Calendar.getInstance().getTimeInMillis());
-            message.setDestination("waterLevel");
+            message.setDestination(WATER_LEVEL);
             message.setBody(waterLevel);
 
             // Actually send the message.

@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
@@ -36,9 +38,8 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     public static PlcSTRING of(Object value) {
         if (value instanceof String) {
             return new PlcSTRING((String) value);
-        } else {
-            return new PlcSTRING((String) value);
         }
+        return new PlcSTRING(String.valueOf(value));
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -46,7 +47,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
         super(value, true);
         if (value.length() > maxLength) {
             throw new IllegalArgumentException(
-                "String length " + value.length() + " exceeds allowed maximum for type String (max " + maxLength + ")");
+                String.format("String length %d exceeds allowed maximum for type String (max %d)", value.length(), maxLength));
         }
     }
 
@@ -231,7 +232,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

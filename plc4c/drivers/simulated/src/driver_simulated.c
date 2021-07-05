@@ -251,8 +251,10 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       } else if (strcmp(type_str, "STDOUT") == 0) {
         type = STDOUT;
       } else {
+        free(type_str);
         return NULL;
       }
+      free(type_str);
       start_segment = address_string + i + 1;
       start_segment_index = i + 1;
     }
@@ -276,8 +278,11 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       } else if (strcmp(datatype_name, "STRING") == 0) {
         data_type = PLC4C_CONSTANT_STRING;
       } else {
+        free(datatype_name);
+        free(name);
         return NULL;
       }
+      free(datatype_name);
 
       start_segment = address_string + i + 1;
       start_segment_index = i + 1;
@@ -293,6 +298,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       strncpy(num_elements_str, start_segment, (i - start_segment_index));
       char *success = NULL;
       num_elements = (int)strtol(num_elements_str, &success, 10);
+      free(num_elements_str);
       break;
     }
   }

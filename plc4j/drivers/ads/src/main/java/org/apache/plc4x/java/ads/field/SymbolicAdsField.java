@@ -20,9 +20,12 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,21 +117,16 @@ public class SymbolicAdsField implements AdsField {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element symbolicAddressElement = doc.createElement("symbolicAddress");
-        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicAddress()));
-        messageElement.appendChild(symbolicAddressElement);
+        String symbolicAddress = getSymbolicAddress();
+        writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
 
-        Element numberOfElementsElement = doc.createElement("numberOfElements");
-        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(numberOfElementsElement);
+        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
 
-        Element datatypeElement = doc.createElement("dataType");
-        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
-        messageElement.appendChild(datatypeElement);
+        String dataType = getPlcDataType();
+        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 }
