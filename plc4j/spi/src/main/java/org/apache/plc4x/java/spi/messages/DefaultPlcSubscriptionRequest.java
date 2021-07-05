@@ -46,7 +46,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     private final PlcSubscriber subscriber;
 
-    private LinkedHashMap<String, PlcSubscriptionField> fields;
+    private final LinkedHashMap<String, PlcSubscriptionField> fields;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcSubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
@@ -180,4 +180,11 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     }
 
+    @Override
+    public String toString() {
+        return "DefaultPlcSubscriptionRequest{" +
+            "subscriber=" + subscriber +
+            ", fields=" + fields +
+            '}';
+    }
 }

@@ -50,7 +50,10 @@ import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -69,15 +72,18 @@ import java.util.function.Consumer;
  */
 public class SimulatedConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimulatedConnection.class);
+
     private final SimulatedDevice device;
 
     private boolean connected = false;
 
-    private Map<PlcSubscriptionHandle, PlcConsumerRegistration> registrations = new ConcurrentHashMap<>();
+    private final Map<PlcSubscriptionHandle, PlcConsumerRegistration> registrations = new ConcurrentHashMap<>();
 
-    private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     public SimulatedConnection(SimulatedDevice device) {
+        super(true, true, true, new SimulatedFieldHandler(), new IEC61131ValueHandler(), null);
         this.device = device;
     }
 
@@ -94,41 +100,6 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     @Override
     public void close() {
         connected = false;
-    }
-
-    @Override
-    public boolean canRead() {
-        return true;
-    }
-
-    @Override
-    public boolean canWrite() {
-        return true;
-    }
-
-    @Override
-    public boolean canSubscribe() {
-        return true;
-    }
-
-    @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new SimulatedFieldHandler());
-    }
-
-    @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new SimulatedFieldHandler(), new IEC61131ValueHandler());
-    }
-
-    @Override
-    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new SimulatedFieldHandler());
-    }
-
-    @Override
-    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        return new DefaultPlcUnsubscriptionRequest.Builder(this);
     }
 
     @Override
@@ -166,20 +137,31 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
         return String.format("simulated:%s", device);
     }
 
+    /**
+     * Blocking subscribe call
+     *
+     * @param subscriptionRequest subscription request containing at least one subscription request item.
+     * @return the {@code PlcSubscriptionResponse}
+     */
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        LOGGER.info("subscribing {}", subscriptionRequest);
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         subscriptionRequest.getFieldNames().forEach(name -> {
+            LOGGER.info("creating handle for field name {}", name);
             PlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
             final PlcSubscriptionField subscriptionPlcField = subscriptionRequest.getField(name);
             switch (subscriptionPlcField.getPlcSubscriptionType()) {
                 case CYCLIC:
+                    LOGGER.info("Adding cyclic subscription for field name {}", name);
                     device.addCyclicSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField, subscriptionPlcField.getDuration().orElseThrow(RuntimeException::new));
                     break;
                 case CHANGE_OF_STATE:
+                    LOGGER.info("Adding change of state subscription for field name {}", name);
                     device.addChangeOfStateSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
                     break;
                 case EVENT:
+                    LOGGER.info("Adding event subscription for field name {}", name);
                     device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, subscriptionPlcField);
                     break;
             }
@@ -192,22 +174,30 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     private Consumer<PlcValue> dispatchSubscriptionEvent(String name, PlcSubscriptionHandle handle) {
         return plcValue -> {
+            LOGGER.info("handling plc value {}", plcValue);
             PlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
             if (plcConsumerRegistration == null) {
+                LOGGER.warn("no registration for handle {}", handle);
                 return;
             }
-            int consumerId = ((DefaultPlcConsumerRegistration) plcConsumerRegistration).getConsumerId();
+            int consumerId = plcConsumerRegistration.getConsumerId();
             Consumer<PlcSubscriptionEvent> consumer = consumerIdMap.get(consumerId);
             if (consumer == null) {
+                LOGGER.warn("no consumer for id {}", consumerId);
                 return;
             }
-            consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(name, new ResponseItem<>(PlcResponseCode.OK, plcValue))));
+            consumer.accept(
+                new DefaultPlcSubscriptionEvent(
+                    Instant.now(),
+                    Collections.singletonMap(name, new ResponseItem<>(PlcResponseCode.OK, plcValue))
+                )
+            );
         };
     }
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        LOGGER.info("unsubscribing {}", unsubscriptionRequest);
         device.removeHandles(unsubscriptionRequest.getSubscriptionHandles());
 
         PlcUnsubscriptionResponse response = new DefaultPlcUnsubscriptionResponse(unsubscriptionRequest);
@@ -216,6 +206,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        LOGGER.info("Registering consumer {} with handles {}", consumer, handles);
         PlcConsumerRegistration plcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
         handles.stream()
             .map(PlcSubscriptionHandle.class::cast)
@@ -226,15 +217,19 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
 
     @Override
     public void unregister(PlcConsumerRegistration registration) {
+        LOGGER.info("Unregistering {}", registration);
         Iterator<Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration>> entryIterator = registrations.entrySet().iterator();
         while (entryIterator.hasNext()) {
             Map.Entry<PlcSubscriptionHandle, PlcConsumerRegistration> entry = entryIterator.next();
             if (!entry.getValue().equals(registration)) {
+                LOGGER.debug("not the value we looking for {}. We are looking for {}", entry.getValue(), registration);
                 continue;
             }
             PlcConsumerRegistration consumerRegistration = entry.getValue();
             int consumerId = consumerRegistration.getConsumerId();
+            LOGGER.info("Removing consumer {}", consumerId);
             consumerIdMap.remove(consumerId);
+            LOGGER.info("Removing handles {}", consumerRegistration.getSubscriptionHandles());
             device.removeHandles(consumerRegistration.getSubscriptionHandles());
             entryIterator.remove();
         }
