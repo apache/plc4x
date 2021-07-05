@@ -24,16 +24,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, XmlSerializable {
+public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     private final String protocolCode;
     private final String transportCode;
@@ -119,42 +117,6 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, XmlSerializabl
         }
 
         writeBuffer.popContext(getClass().getSimpleName());
-    }
-
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcDiscoveryItem");
-
-        Element protocolCodeElement = doc.createElement("protocolCode");
-        protocolCodeElement.appendChild(doc.createTextNode(protocolCode));
-        messageElement.appendChild(protocolCodeElement);
-
-        Element transportCodeElement = doc.createElement("transportCode");
-        transportCodeElement.appendChild(doc.createTextNode(transportCode));
-        messageElement.appendChild(transportCodeElement);
-
-        Element transportUrlElement = doc.createElement("transportUrl");
-        transportUrlElement.appendChild(doc.createTextNode(transportUrl.toString()));
-        messageElement.appendChild(transportUrlElement);
-
-        if(options != null && !options.isEmpty()) {
-            Element optionsElement = doc.createElement("options");
-            for (Map.Entry<String, String> optionEntry : options.entrySet()) {
-                Element optionElement = doc.createElement(optionEntry.getKey());
-                optionElement.appendChild(doc.createTextNode(optionEntry.getValue()));
-                optionsElement.appendChild(optionElement);
-            }
-            messageElement.appendChild(optionsElement);
-        }
-
-        if(name != null && !name.isEmpty()) {
-            Element nameElement = doc.createElement("name");
-            nameElement.appendChild(doc.createTextNode(name));
-            messageElement.appendChild(nameElement);
-        }
-
-        parent.appendChild(messageElement);
     }
 
 }

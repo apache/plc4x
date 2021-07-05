@@ -22,14 +22,12 @@ import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, XmlSerializable {
+public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, Serializable {
 
     private final PlcDiscoveryRequest request;
     private final List<PlcDiscoveryItem> values;
@@ -52,24 +50,11 @@ public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, XmlSer
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
-    }
+        writeBuffer.pushContext("PlcDiscoveryResponse");
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcDiscoveryResponse");
-        if(request instanceof XmlSerializable) {
-            ((XmlSerializable) request).xmlSerialize(messageElement);
-        }
-        Element valuesElement = doc.createElement("values");
-        messageElement.appendChild(valuesElement);
-        for (PlcDiscoveryItem value : values) {
-            if(value instanceof XmlSerializable) {
-                ((XmlSerializable) value).xmlSerialize(messageElement);
-            }
-        }
-        parent.appendChild(messageElement);
+        // TODO: Implement
+
+        writeBuffer.popContext("PlcDiscoveryResponse");
     }
 
 }

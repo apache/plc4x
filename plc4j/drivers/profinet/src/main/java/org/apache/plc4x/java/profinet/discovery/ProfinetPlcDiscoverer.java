@@ -72,7 +72,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         // Only react on PROFINET DCP packets targeted at our current MAC address.
                         // TODO: Find out how to filter based on the ether frame type ...
                         handle.setFilter(
-                            "ether dst " + Pcaps.toBpfString(macAddress),
+                            "((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")",
                             BpfProgram.BpfCompileMode.OPTIMIZE);
 
                         PacketListener listener =

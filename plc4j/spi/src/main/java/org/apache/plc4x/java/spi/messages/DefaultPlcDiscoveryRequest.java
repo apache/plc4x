@@ -22,14 +22,12 @@ import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.concurrent.CompletableFuture;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, XmlSerializable {
+public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializable {
 
     private final PlcDiscoverer discoverer;
 
@@ -45,15 +43,11 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, XmlSeria
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
-    }
+        writeBuffer.pushContext("PlcDiscoveryRequest");
 
-    @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement("PlcDiscoveryRequest");
-        parent.appendChild(messageElement);
         // TODO: Implement
+
+        writeBuffer.popContext("PlcDiscoveryRequest");
     }
 
     public static class Builder implements PlcDiscoveryRequest.Builder {
