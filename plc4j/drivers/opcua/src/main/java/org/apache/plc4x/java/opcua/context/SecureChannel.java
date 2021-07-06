@@ -64,12 +64,12 @@ public class SecureChannel {
     private static final String ABORT_CHUNK = "F";
     private static final int VERSION = 0;
     private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
-    //private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
-    private static final int DEFAULT_MAX_MESSAGE_SIZE = 8196;
-    //private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
-    //private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 8192;
-    private static final int DEFAULT_SEND_BUFFER_SIZE = 8192;
+    private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
+    //private static final int DEFAULT_MAX_MESSAGE_SIZE = 8196;
+    private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
+    private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
+    //private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 8192;
+    //private static final int DEFAULT_SEND_BUFFER_SIZE = 8192;
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000000);
     public static final long REQUEST_TIMEOUT_LONG = 10000L;
     private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
@@ -194,20 +194,24 @@ public class SecureChannel {
                         LOGGER.info("{}", p.getRequestId());
                         LOGGER.info("{}", transactionId);
                         if (p.getRequestId() == transactionId) {
-                            LOGGER.info("{}", p.getRequestId());
-                            LOGGER.info("{}", transactionId);
-                            return true;
+                            try {
+                                messageBuffer.write(p.getMessage());
+                                LOGGER.debug("Reading Message into buffer");
+                                LOGGER.debug("{}", p.getMessage());
+                            } catch (IOException e) {
+                                LOGGER.debug("Failed to store incoming message in buffer {}");
+                                throw new PlcRuntimeException("Error while sending message");
+                            }
+                            if (p.getChunk().equals("F")) {
+                                return true;
+                            } else {
+                                return false;
+                            }
                         } else {
                             return false;
                         }
                     })
                     .handle(opcuaResponse -> {
-                        try {
-                            messageBuffer.write(opcuaResponse.getMessage());
-                        } catch (IOException e) {
-                            LOGGER.debug("Failed to store incoming message in buffer {}");
-                            throw new PlcRuntimeException("Error while sending message");
-                        }
                         LOGGER.debug("Message Chunk {}", opcuaResponse.getChunk());
                         if (opcuaResponse.getChunk().equals("F")) {
                             tokenId.set(opcuaResponse.getSecureTokenId());
@@ -219,8 +223,6 @@ public class SecureChannel {
                             //if (!(transactionId == nextSequenceNumber)) {
                                 //throw new PlcConnectionException("Sequence number isn't as expected, we might have missed a packet. - " +  transactionId + " != " + nextSequenceNumber);
                             //}
-
-
                             consumer.accept(messageBuffer.toByteArray());
                         }
                     });
@@ -430,6 +432,8 @@ public class SecureChannel {
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                         try {
+                            LOGGER.debug("Reading All of Message");
+                            LOGGER.debug("{}", opcuaResponse);
                             ExtensionObject message = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false);
                             if (message.getBody() instanceof ServiceFault) {
                                 ServiceFault fault = (ServiceFault) message.getBody();

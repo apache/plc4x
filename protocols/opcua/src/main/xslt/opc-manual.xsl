@@ -357,7 +357,7 @@
         ]
         ['nodeIdTypeGuid' NodeIdGuid
             [simple uint 16 'namespaceIndex']
-            [simple string '-1' 'id']
+            [simple string '128' 'utf8' 'id']
             [virtual string '-1' 'identifier' 'id']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
