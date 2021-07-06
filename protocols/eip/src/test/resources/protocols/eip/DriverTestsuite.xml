@@ -214,7 +214,7 @@
               <hurz>
                 <EipField>
                   <node dataType="string" bitLength="32" encoding="UTF-8">rate</node>
-                  <elementNb dataType="int" bitLength="64">0</elementNb>
+                  <elementNb dataType="uint" bitLength="16">0</elementNb>
                   <defaultJavaType dataType="string" bitLength="128" encoding="UTF-8">java.lang.Object</defaultJavaType>
                 </EipField>
               </hurz>

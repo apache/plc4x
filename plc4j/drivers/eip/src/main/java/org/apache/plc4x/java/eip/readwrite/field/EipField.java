@@ -147,8 +147,7 @@ public class EipField implements PlcField, Serializable {
         if (type != null) {
             writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), type.name());
         }
-        // TODO: fix types to uint16
-        writeBuffer.writeInt("elementNb", 64, elementNb);
+        writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
         // TODO: remove this (not language agnostic)
         String defaultJavaType = (type == null ? Object.class : getDefaultJavaType()).getName();
         writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), defaultJavaType);

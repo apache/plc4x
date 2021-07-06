@@ -194,9 +194,9 @@
             <fields>
               <hurz>
                 <DirectAdsField>
-                  <indexGroup dataType="int" bitLength="64">4040</indexGroup>
-                  <indexOffset dataType="int" bitLength="64">8</indexOffset>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">8</indexOffset>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz>
@@ -398,17 +398,17 @@
             <fields>
               <hurz1>
                 <DirectAdsField>
-                  <indexGroup dataType="int" bitLength="64">4040</indexGroup>
-                  <indexOffset dataType="int" bitLength="64">8</indexOffset>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">8</indexOffset>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz1>
               <hurz2>
                 <DirectAdsField>
-                  <indexGroup dataType="int" bitLength="64">4040</indexGroup>
-                  <indexOffset dataType="int" bitLength="64">12</indexOffset>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                  <indexOffset dataType="uint" bitLength="32">12</indexOffset>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </DirectAdsField>
               </hurz2>
@@ -754,7 +754,7 @@
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
@@ -1095,7 +1095,7 @@
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>
@@ -1264,7 +1264,7 @@
               <hurz1>
                 <SymbolicAdsField>
                   <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </SymbolicAdsField>
               </hurz1>

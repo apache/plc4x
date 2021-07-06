@@ -83,8 +83,7 @@ func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 	}
 
-	// TODO: fix types to uint16
-	if err := writeBuffer.WriteInt64("elementNb", 64, int64(m.ElementNb)); err != nil {
+	if err := writeBuffer.WriteUint16("elementNb", 16, m.ElementNb); err != nil {
 		return err
 	}
 
