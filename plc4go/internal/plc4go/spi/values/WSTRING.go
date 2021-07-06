@@ -20,7 +20,7 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"unicode/utf16"
 )
 
@@ -43,9 +43,6 @@ func (m PlcWSTRING) GetString() string {
 	return string(m.value)
 }
 
-func (m PlcWSTRING) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcWSTRING"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcWSTRING) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcSTRING", uint8(len([]rune(m.value))*8), "UTF-8", string(m.value))
 }

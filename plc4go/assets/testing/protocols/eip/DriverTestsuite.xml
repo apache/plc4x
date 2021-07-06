@@ -213,9 +213,9 @@
             <fields>
               <hurz>
                 <EipField>
-                  <node dataType="string" bitLength="32">rate</node>
+                  <node dataType="string" bitLength="32" encoding="UTF-8">rate</node>
                   <elementNb dataType="int" bitLength="64">0</elementNb>
-                  <defaultJavaType dataType="string" bitLength="128">java.lang.Object</defaultJavaType>
+                  <defaultJavaType dataType="string" bitLength="128" encoding="UTF-8">java.lang.Object</defaultJavaType>
                 </EipField>
               </hurz>
             </fields>
@@ -223,8 +223,8 @@
           <values>
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16">OK</result>
-                <PlcDINT dataType="string" bitLength="72">369229824</PlcDINT>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcDINT dataType="int" bitLength="64">369229824</PlcDINT>
               </ResponseItem>
             </hurz>
           </values>

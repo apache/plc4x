@@ -20,9 +20,9 @@
 package model
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"time"
@@ -140,31 +140,34 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	return resultChannel
 }
 
-func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
+func (m DefaultPlcReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcReadRequest"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PushContext("fields"); err != nil {
 		return err
 	}
-	for _, fieldName := range m.fieldNames {
-		field := m.fields[fieldName]
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
-			return err
+		field := m.GetField(fieldName)
+		if serializableField, ok := field.(utils.Serializable); ok {
+			if err := serializableField.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.Errorf("Error serializing. Field %T doesn't implement Serializable", field)
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PopContext("fields"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcReadRequest"); err != nil {
 		return err
 	}
 	return nil
