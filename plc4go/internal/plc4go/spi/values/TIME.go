@@ -20,8 +20,8 @@
 package values
 
 import (
-	"encoding/xml"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"time"
 )
 
@@ -52,9 +52,6 @@ func (m PlcTIME) GetString() string {
 	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
 }
 
-func (m PlcTIME) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcTIME"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcTIME) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcTIME", byte(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }

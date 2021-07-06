@@ -132,6 +132,7 @@ public abstract class ModbusField implements PlcField, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
+        // TODO: fix types to uint16
         writeBuffer.writeInt("address", 64, address);
         writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
         String dataType = getPlcDataType();

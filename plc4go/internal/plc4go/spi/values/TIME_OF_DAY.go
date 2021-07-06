@@ -20,7 +20,7 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"time"
 )
 
@@ -63,9 +63,6 @@ func (m PlcTIME_OF_DAY) GetString() string {
 	return m.value.Format("15:04:05.000")
 }
 
-func (m PlcTIME_OF_DAY) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcTIME_OF_DAY"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcTIME_OF_DAY) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcTIME_OF_DAY", byte(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
 }

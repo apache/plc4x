@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"os"
+	"strings"
 )
 
 func CompareResults(actualString []byte, referenceString []byte) error {
@@ -49,6 +50,17 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 			if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
 				log.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
 				continue
+			}
+			// Workaround for different precisions on float
+			if delta.Operation == xdiff.Update &&
+				string(delta.Subject.Parent.FirstChild.Name) == "dataType" &&
+				string(delta.Subject.Parent.FirstChild.Value) == "float" &&
+				string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
+				string(delta.Object.Parent.FirstChild.Value) == "float" {
+				if strings.Contains(string(delta.Subject.Value), string(delta.Object.Value)) || strings.Contains(string(delta.Object.Value), string(delta.Subject.Value)) {
+					log.Info().Msgf("We ignore precision diffs %v", delta)
+					continue
+				}
 			}
 			cleanDiff = append(cleanDiff, delta)
 		}

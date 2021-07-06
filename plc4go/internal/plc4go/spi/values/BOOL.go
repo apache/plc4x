@@ -19,10 +19,7 @@
 
 package values
 
-import (
-	"encoding/xml"
-	"strconv"
-)
+import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 
 type PlcBOOL struct {
 	value bool
@@ -58,20 +55,6 @@ func (m PlcBOOL) GetBoolArray() []bool {
 	return []bool{m.value}
 }
 
-func (m PlcBOOL) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
-	size := 40
-	if m.value {
-		size = 32
-	}
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBOOL"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "string"},
-		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(size)},
-	}}); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m PlcBOOL) IsString() bool {
 	return true
 }
@@ -82,4 +65,8 @@ func (m PlcBOOL) GetString() string {
 	} else {
 		return "false"
 	}
+}
+
+func (m PlcBOOL) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteBit("PlcBOOL", m.value)
 }

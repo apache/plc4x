@@ -19,7 +19,9 @@
 
 package values
 
-import "encoding/xml"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+)
 
 type PlcBYTE struct {
 	value uint8
@@ -77,9 +79,6 @@ func (m PlcBYTE) GetString() string {
 	return strVal
 }
 
-func (m PlcBYTE) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBYTE"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcBYTE) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByte("PlcBYTE", m.value)
 }

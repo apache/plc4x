@@ -20,7 +20,7 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"math"
 	"math/big"
 	"strconv"
@@ -121,14 +121,6 @@ func (m PlcBINT) GetFloat64() float64 {
 func (m PlcBINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
-
-func (m PlcBINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBINT"}}); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m PlcBINT) isZero() bool {
 	return m.value.Cmp(big.NewInt(0)) == 0
 }
@@ -143,4 +135,8 @@ func (m PlcBINT) isGreaterOrEqual(other int64) bool {
 
 func (m PlcBINT) isLowerOrEqual(other int64) bool {
 	return m.value.Cmp(big.NewInt(other)) <= 0
+}
+
+func (m PlcBINT) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteBigInt("PlcBINT", uint8(m.value.BitLen()), m.value)
 }

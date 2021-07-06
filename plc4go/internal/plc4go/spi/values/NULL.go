@@ -19,22 +19,10 @@
 
 package values
 
-import "encoding/xml"
-
 type PlcNULL struct {
 	PlcValueAdapter
 }
 
 func NewPlcNULL() PlcNULL {
 	return PlcNULL{}
-}
-
-func (m PlcNULL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
-		return err
-	}
-	return nil
 }
