@@ -20,10 +20,8 @@
 package eip
 
 import (
-	"encoding/xml"
 	readWrite "github.com/apache/plc4x/plc4go/internal/plc4go/eip/readwrite/model"
-	"github.com/rs/zerolog/log"
-	"strconv"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 )
 
 type EIPPlcField interface {
@@ -70,41 +68,31 @@ func (m PlcField) GetElementNb() uint16 {
 	return m.ElementNb
 }
 
-func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "EipField"}}); err != nil {
+func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("EipField"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.Tag, xml.StartElement{Name: xml.Name{Local: "node"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "string"},
-		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Tag) * 8)},
-	}}); err != nil {
+	if err := writeBuffer.WriteString("node", uint8(len([]rune(m.Tag))*8), "UTF-8", m.Tag); err != nil {
 		return err
 	}
+
 	if m.Type != 0 {
-		if err := e.EncodeElement(m.Type, xml.StartElement{Name: xml.Name{Local: "type"}, Attr: []xml.Attr{
-			{Name: xml.Name{Local: "dataType"}, Value: "string"},
-			{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(int(m.Type.LengthInBits()))},
-		}}); err != nil {
+		if err := writeBuffer.WriteString("type", uint8(len([]rune(m.Type.String()))*8), "UTF-8", m.Type.String()); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.ElementNb, xml.StartElement{Name: xml.Name{Local: "elementNb"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "int"},
-		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
-	}}); err != nil {
-		return err
-	}
-	// TODO: remove this from the spec
-	if err := e.EncodeElement("java.lang.Object", xml.StartElement{Name: xml.Name{Local: "defaultJavaType"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "string"},
-		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len("java.lang.Object") * 8)},
-	}}); err != nil {
+
+	if err := writeBuffer.WriteUint16("elementNb", 16, m.ElementNb); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "EipField"}}); err != nil {
+	// TODO: remove this from the spec
+	if err := writeBuffer.WriteString("defaultJavaType", uint8(len([]rune("java.lang.Object"))*8), "UTF-8", "java.lang.Object"); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext("EipField"); err != nil {
 		return err
 	}
 	return nil

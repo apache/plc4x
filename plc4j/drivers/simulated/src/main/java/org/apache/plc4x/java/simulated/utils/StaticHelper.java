@@ -33,8 +33,9 @@ public class StaticHelper {
             // This is the maximum number of bytes a string can be long.
             short stringLength = io.readUnsignedShort(8);
             // Read the full size of the string.
-            String str = io.readString(stringLength * 8, (String) encoding);
+            String str = io.readString(stringLength * 8, encoding);
             // Cut off the parts that don't belong to it.
+            // TODO: shouldn't the above comment indicate that some code should appear here
             return str;
         } catch (ParseException e) {
             return null;

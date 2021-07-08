@@ -20,9 +20,9 @@
 package modbus
 
 import (
-	"encoding/xml"
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -89,32 +89,23 @@ func CastToModbusFieldFromPlcField(plcField model.PlcField) (PlcField, error) {
 	return PlcField{}, errors.New("couldn't cast to ModbusPlcField")
 }
 
-func (m PlcField) MarshalXML(e *xml.Encoder, _ xml.StartElement) error {
-	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "int"},
-		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
-	}}); err != nil {
+	if err := writeBuffer.WriteUint16("address", 16, m.Address); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "int"},
-		{Name: xml.Name{Local: "bitLength"}, Value: "64"},
-	}}); err != nil {
+	if err := writeBuffer.WriteUint16("numberOfElements", 16, m.GetQuantity()); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}, Attr: []xml.Attr{
-		{Name: xml.Name{Local: "dataType"}, Value: "string"},
-		{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(m.Datatype.String()) * 8)},
-	}}); err != nil {
+	dataType := m.GetDataType().String()
+	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(dataType))*8), "UTF-8", dataType); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 	return nil

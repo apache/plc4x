@@ -20,9 +20,7 @@
 package org.apache.plc4x.java.simulated.types;
 
 public enum SimulatedFieldType {
-
     RANDOM,
     STATE,
     STDOUT
-
 }

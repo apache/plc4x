@@ -20,7 +20,6 @@
 package values
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
@@ -76,17 +75,4 @@ func (m RawPlcValue) RawHasMore() bool {
 
 func (m RawPlcValue) RawReset() {
 	m.readBuffer.(utils.ReadBufferByteBased).Reset()
-}
-
-func (m RawPlcValue) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcByteArray"}}); err != nil {
-		return err
-	}
-
-	// TODO: Implement this ...
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcByteArray"}}); err != nil {
-		return err
-	}
-	return nil
 }

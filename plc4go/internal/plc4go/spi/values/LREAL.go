@@ -20,8 +20,8 @@
 package values
 
 import (
-	"encoding/xml"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"math"
 )
 
@@ -154,9 +154,6 @@ func (m PlcLREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
-func (m PlcLREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcLREAL"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcLREAL) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteFloat64("PlcLREAL", 64, m.value)
 }

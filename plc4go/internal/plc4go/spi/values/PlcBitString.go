@@ -20,13 +20,11 @@
 package values
 
 import (
-	"encoding/xml"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type PlcBitString struct {
-	Values []api.PlcValue
-	PlcValueAdapter
+	PlcList
 }
 
 func NewPlcBitString(value interface{}) PlcBitString {
@@ -55,7 +53,7 @@ func NewPlcBitString(value interface{}) PlcBitString {
 	}
 
 	return PlcBitString{
-		Values: bools,
+		PlcList{Values: bools},
 	}
 }
 
@@ -73,21 +71,4 @@ func (m PlcBitString) GetIndex(i uint32) api.PlcValue {
 
 func (m PlcBitString) GetList() []api.PlcValue {
 	return m.Values
-}
-
-func (m PlcBitString) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
-		return err
-	}
-
-	for _, value := range m.Values {
-		if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
-			return err
-		}
-	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcBitString"}}); err != nil {
-		return err
-	}
-	return nil
 }

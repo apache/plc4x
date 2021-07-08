@@ -19,7 +19,9 @@
 
 package values
 
-import "encoding/xml"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+)
 
 type PlcLWORD struct {
 	value uint64
@@ -105,9 +107,6 @@ func (m PlcLWORD) GetString() string {
 	return strVal
 }
 
-func (m PlcLWORD) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcLWORD"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcLWORD) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteUint64("PlcLWORD", 64, m.value)
 }

@@ -20,8 +20,8 @@
 package values
 
 import (
-	"encoding/xml"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"math"
 	"math/big"
 )
@@ -150,13 +150,6 @@ func (m PlcBREAL) GetString() string {
 	return fmt.Sprintf("%g", m.GetFloat64())
 }
 
-func (m PlcBREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBREAL"}}); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m PlcBREAL) isZero() bool {
 	return m.value.Cmp(big.NewFloat(0.0)) == 0.0
 }
@@ -171,4 +164,9 @@ func (m PlcBREAL) isGreaterOrEqual(other float64) bool {
 
 func (m PlcBREAL) isLowerOrEqual(other float64) bool {
 	return m.value.Cmp(big.NewFloat(other)) <= 0
+}
+
+func (m PlcBREAL) Serialize(writeBuffer utils.WriteBuffer) error {
+	// TODO: fix this a insert a valid bit length calculation
+	return writeBuffer.WriteBigFloat("PlcBREAL", uint8(m.value.MinPrec()), m.value)
 }

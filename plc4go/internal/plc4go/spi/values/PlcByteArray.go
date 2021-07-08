@@ -20,7 +20,7 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
@@ -59,14 +59,16 @@ func (m PlcByteArray) GetList() []api.PlcValue {
 	return plcValues
 }
 
-func (m PlcByteArray) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcByteArray"}}); err != nil {
+func (m PlcByteArray) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcByteArray"); err != nil {
 		return err
 	}
-
-	// TODO: Implement this ...
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcByteArray"}}); err != nil {
+	for _, value := range m.Values {
+		if err := writeBuffer.WriteByte("value", value); err != nil {
+			return err
+		}
+	}
+	if err := writeBuffer.PopContext("PlcByteArray"); err != nil {
 		return err
 	}
 	return nil

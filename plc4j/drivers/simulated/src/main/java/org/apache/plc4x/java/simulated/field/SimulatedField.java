@@ -36,14 +36,12 @@ import java.util.regex.Pattern;
  */
 public class SimulatedField implements PlcField {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimulatedField.class);
-
     /**
      * Examples:
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;

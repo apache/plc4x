@@ -87,12 +87,12 @@ public class SymbolicAdsStringField extends SymbolicAdsField implements AdsStrin
         String symbolicAddress = getSymbolicAddress();
         writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
 
-        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
+        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
 
         String dataType = getPlcDataType();
         writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
 
-        writeBuffer.writeInt("stringLength", 64, getStringLength());
+        writeBuffer.writeInt("stringLength", 32, getStringLength());
         writeBuffer.popContext(getClass().getSimpleName());
     }
 }

@@ -24,9 +24,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcWCHAR extends PlcIECValue<Integer> {
@@ -299,6 +302,12 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
             (byte) ((value >> 8) & 0xff),
             (byte) (value & 0xff)
         };
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), 16, StandardCharsets.UTF_8.name(), valueString);
     }
 
 }

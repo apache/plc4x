@@ -20,8 +20,8 @@
 package model
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"time"
@@ -151,31 +151,34 @@ func (m DefaultPlcSubscriptionRequest) GetInterval(name string) time.Duration {
 	return m.intervals[name]
 }
 
-func (m DefaultPlcSubscriptionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+func (m DefaultPlcSubscriptionRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PushContext("fields"); err != nil {
 		return err
 	}
-	for _, fieldName := range m.fieldNames {
-		field := m.fields[fieldName]
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
-			return err
+		field := m.GetField(fieldName)
+		if serializableField, ok := field.(utils.Serializable); ok {
+			if err := serializableField.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.New("Error serializing. Field doesn't implement Serializable")
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PopContext("fields"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcSubscriptionRequest"); err != nil {
 		return err
 	}
 	return nil
