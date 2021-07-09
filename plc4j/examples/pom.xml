@@ -42,6 +42,7 @@
     <!--module>dummy-driver</module-->
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
+    <module>hello-cloud-aws</module>
     <module>hello-connectivity-kafka</module>
     <module>hello-connectivity-mqtt</module>
     <module>hello-influx-data-collection</module>
