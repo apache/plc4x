@@ -217,7 +217,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.valueOf(field.getIdentifier())));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdGuid((short) field.getNamespace(), field.getIdentifier()));
+            UUID guid = UUID.fromString(field.getIdentifier());
+            byte[] guidBytes = new byte[16];
+            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
+            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
+            nodeId = new NodeId(new NodeIdGuid((short) field.getNamespace(), guidBytes));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdString((short) field.getNamespace(), new PascalString(field.getIdentifier())));
         }

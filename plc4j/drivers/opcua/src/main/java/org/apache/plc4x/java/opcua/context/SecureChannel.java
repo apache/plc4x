@@ -449,7 +449,6 @@ public class SecureChannel {
 
                                         authenticationToken = responseMessage.getAuthenticationToken().getNodeId();
 
-
                                         onConnectActivateSessionRequest(context, responseMessage, (CreateSessionResponse) message.getBody());
                                     } else {
                                         ServiceFault serviceFault = (ServiceFault) unknownExtensionObject;
@@ -491,27 +490,27 @@ public class SecureChannel {
 
         senderCertificate = sessionResponse.getServerCertificate().getStringValue();
         senderNonce = sessionResponse.getServerNonce().getStringValue();
+        UserTokenType tokenType = UserTokenType.userTokenTypeAnonymous;
 
         for (ExtensionObjectDefinition extensionObject: sessionResponse.getServerEndpoints()) {
             EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-            LOGGER.trace("{} - {}", endpointDescription.getEndpointUrl().getStringValue(), this.endpoint.getStringValue());
             if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue())) {
                 for (ExtensionObjectDefinition userTokenCast :  endpointDescription.getUserIdentityTokens()) {
                     UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                    if (identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) {
-                        if (this.username == null) {
-                            policyId = identityToken.getPolicyId();
-                        }
-                    } else if (identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) {
-                        if (this.username != null) {
-                            policyId = identityToken.getPolicyId();
-                        }
+                    if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
+                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId());
+                        policyId = identityToken.getPolicyId();
+                        tokenType = identityToken.getTokenType();
+                    } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
+                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId());
+                        policyId = identityToken.getPolicyId();
+                        tokenType = identityToken.getTokenType();
                     }
                 }
             }
         }
 
-        //int transactionId = channelTransactionManager.getTransactionIdentifier();
+        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
 
         int requestHandle = getRequestHandle();
 
@@ -528,13 +527,6 @@ public class SecureChannel {
         SignedSoftwareCertificate[] signedSoftwareCertificate = new SignedSoftwareCertificate[1];
 
         signedSoftwareCertificate[0] = new SignedSoftwareCertificate(NULL_BYTE_STRING, NULL_BYTE_STRING);
-
-        ExtensionObject userIdentityToken = null;
-        if (this.username == null) {
-            userIdentityToken = getIdentityToken("anonymous");
-        } else {
-            userIdentityToken = getIdentityToken("username");
-        }
 
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
             requestHeader,
@@ -618,6 +610,7 @@ public class SecureChannel {
     }
 
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
+        LOGGER.info("Disconnecting");
         int requestHandle = getRequestHandle();
 
         if (keepAlive != null) {
@@ -1187,11 +1180,11 @@ public class SecureChannel {
      * @param securityPolicy
      * @return returns an ExtensionObject with an IdentityToken.
      */
-    private ExtensionObject getIdentityToken(String securityPolicy) {
+    private ExtensionObject getIdentityToken(UserTokenType tokenType, String securityPolicy) {
         ExpandedNodeId extExpandedNodeId = null;
         ExtensionObject userIdentityToken = null;
-        switch (securityPolicy) {
-            case "anonymous":
+        switch (tokenType) {
+            case userTokenTypeAnonymous:
                 //If we aren't using authentication tell the server we would like to login anonymously
                 AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken();
 
@@ -1204,8 +1197,8 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString("anonymous"), anonymousIdentityToken));
-            case "username":
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
+            case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] passwordBytes = this.password.getBytes();
                 ByteBuffer encodeableBuffer = ByteBuffer.allocate(4 + passwordBytes.length + this.senderNonce.length);
@@ -1233,7 +1226,7 @@ public class SecureChannel {
                 return new ExtensionObject(
                     extExpandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString("username"), userNameIdentityToken));
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
         }
         return null;
     }
