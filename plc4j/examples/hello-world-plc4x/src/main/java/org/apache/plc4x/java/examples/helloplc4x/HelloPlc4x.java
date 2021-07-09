@@ -92,6 +92,7 @@ public class HelloPlc4x {
 
             // Give the async request a little time...
             TimeUnit.MILLISECONDS.sleep(1000);
+            plcConnection.close();
             System.exit(0);
         }
     }

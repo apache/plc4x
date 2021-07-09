@@ -498,11 +498,11 @@ public class SecureChannel {
                 for (ExtensionObjectDefinition userTokenCast :  endpointDescription.getUserIdentityTokens()) {
                     UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
                     if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId());
+                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
                         policyId = identityToken.getPolicyId();
                         tokenType = identityToken.getTokenType();
                     } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId());
+                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
                         policyId = identityToken.getPolicyId();
                         tokenType = identityToken.getTokenType();
                     }
