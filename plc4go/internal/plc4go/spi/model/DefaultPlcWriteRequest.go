@@ -20,14 +20,13 @@
 package model
 
 import (
-	"encoding/xml"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
-	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	spiValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
-	"strconv"
 	"time"
 )
 
@@ -170,26 +169,30 @@ func (m DefaultPlcWriteRequest) GetValue(name string) values.PlcValue {
 	return m.values[name]
 }
 
-func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcWriteRequest"}}); err != nil {
+func (m DefaultPlcWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcWriteRequest"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PushContext("fields"); err != nil {
 		return err
 	}
-	for _, fieldName := range m.fieldNames {
-		field := m.fields[fieldName]
-		value := m.values[fieldName]
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
-			return err
+		field := m.GetField(fieldName)
+		if serializableField, ok := field.(utils.Serializable); ok {
+			if err := serializableField.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.New("Error serializing. Field doesn't implement Serializable")
 		}
+		value := m.GetValue(fieldName)
 		switch value.(type) {
-		case values2.PlcList:
-			listValue, ok := value.(values2.PlcList)
+		case spiValues.PlcList:
+			listValue, ok := value.(spiValues.PlcList)
 			if !ok {
 				return errors.New("couldn't cast PlcValue to PlcList")
 			}
@@ -197,45 +200,24 @@ func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElemen
 				if !subValue.IsString() {
 					return errors.New("value not serializable to string")
 				}
-				if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}, Attr: []xml.Attr{
-					{Name: xml.Name{Local: "dataType"}, Value: "string"},
-					{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(subValue.GetString()) * 8)},
-				}}); err != nil {
-					return err
-				}
-				if err := e.EncodeToken(xml.CharData(subValue.GetString())); err != nil {
-					return err
-				}
-				if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
+				subValue.GetString()
+				if err := writeBuffer.WriteString("value", uint8(len([]rune(subValue.GetString()))*8), "UTF-8", subValue.GetString()); err != nil {
 					return err
 				}
 			}
 		default:
-			if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "value"}, Attr: []xml.Attr{
-				{Name: xml.Name{Local: "dataType"}, Value: "string"},
-				{Name: xml.Name{Local: "bitLength"}, Value: strconv.Itoa(len(value.GetString()) * 8)},
-			}}); err != nil {
-				return err
-			}
-			if !value.IsString() {
-				return errors.New("value not serializable to string")
-			}
-			if err := e.EncodeToken(xml.CharData(value.GetString())); err != nil {
-				return err
-			}
-			if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "value"}}); err != nil {
+			if err := writeBuffer.WriteString("value", uint8(len([]rune(value.GetString()))*8), "UTF-8", value.GetString()); err != nil {
 				return err
 			}
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PopContext("fields"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcWriteRequest"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcWriteRequest"); err != nil {
 		return err
 	}
 	return nil

@@ -535,12 +535,12 @@
             <fields>
               <hurz>
                 <S7Field>
-                  <memoryArea dataType="string" bitLength="56">OUTPUTS</memoryArea>
-                  <blockNumber dataType="int" bitLength="64">0</blockNumber>
-                  <byteOffset dataType="int" bitLength="64">0</byteOffset>
-                  <bitOffset dataType="int" bitLength="64">0</bitOffset>
-                  <numElements dataType="int" bitLength="64">1</numElements>
-                  <dataType dataType="string" bitLength="32">BOOL</dataType>
+                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                  <numElements dataType="uint" bitLength="16">1</numElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </S7Field>
               </hurz>
             </fields>
@@ -548,8 +548,8 @@
           <values>
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16">OK</result>
-                <PlcBOOL dataType="string" bitLength="32">true</PlcBOOL>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
               </ResponseItem>
             </hurz>
           </values>
@@ -671,12 +671,12 @@
             <fields>
               <hurz>
                 <S7Field>
-                  <memoryArea dataType="string" bitLength="56">OUTPUTS</memoryArea>
-                  <blockNumber dataType="int" bitLength="64">0</blockNumber>
-                  <byteOffset dataType="int" bitLength="64">0</byteOffset>
-                  <bitOffset dataType="int" bitLength="64">0</bitOffset>
-                  <numElements dataType="int" bitLength="64">1</numElements>
-                  <dataType dataType="string" bitLength="32">BOOL</dataType>
+                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                  <numElements dataType="uint" bitLength="16">1</numElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </S7Field>
               </hurz>
             </fields>
@@ -684,7 +684,7 @@
           <values>
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="104">ACCESS_DENIED</result>
+                <result dataType="string" bitLength="104" encoding="UTF-8">ACCESS_DENIED</result>
               </ResponseItem>
             </hurz>
           </values>

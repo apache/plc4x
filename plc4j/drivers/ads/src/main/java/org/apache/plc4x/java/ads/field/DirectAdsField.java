@@ -154,9 +154,9 @@ public class DirectAdsField implements AdsField {
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
-        writeBuffer.writeLong("indexGroup", 64, getIndexGroup());
-        writeBuffer.writeLong("indexOffset", 64, getIndexOffset());
-        writeBuffer.writeLong("numberOfElements", 64, getNumberOfElements());
+        writeBuffer.writeUnsignedLong("indexGroup", 32, getIndexGroup());
+        writeBuffer.writeUnsignedLong("indexOffset", 32, getIndexOffset());
+        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
         String plcDataType = getPlcDataType();
         writeBuffer.writeString("dataType", plcDataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), plcDataType);
 

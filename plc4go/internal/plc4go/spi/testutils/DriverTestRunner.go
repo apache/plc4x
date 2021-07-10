@@ -21,7 +21,6 @@ package testutils
 
 import (
 	"encoding/hex"
-	"encoding/xml"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -216,14 +215,16 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				return errors.Wrap(readRequestResult.Err, "error sending response")
 			}
 			// Serialize the response to XML
-			actualResponse, err := xml.Marshal(readRequestResult.Response)
+			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			err := readRequestResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
+			actualResponse := xmlWriteBuffer.GetXmlString()
 			// Get the reference XML
-			referenceSerialized := step.payload.XML()
+			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults(actualResponse, []byte(referenceSerialized))
+			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -239,14 +240,16 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				return errors.Wrap(writeResponseResult.Err, "error sending response")
 			}
 			// Serialize the response to XML
-			actualResponse, err := xml.Marshal(writeResponseResult.Response)
+			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			err := writeResponseResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
+			actualResponse := xmlWriteBuffer.GetXmlString()
 			// Get the reference XML
-			referenceSerialized := step.payload.XML()
+			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults(actualResponse, []byte(referenceSerialized))
+			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -255,7 +258,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 	case StepTypeOutgoingPlcMessage:
 		typeName := step.payload.Name
-		payloadString := step.payload.XML()
+		payloadString := step.payload.XMLPretty()
 
 		// Parse the xml into a real model
 		log.Trace().Msg("parsing xml")
@@ -341,7 +344,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// If there's a difference, parse the input and display it to simplify debugging
 	case StepTypeIncomingPlcMessage:
 		typeName := step.payload.Name
-		payloadString := step.payload.XML()
+		payloadString := step.payload.XMLPretty()
 
 		// Parse the xml into a real model
 		log.Trace().Msg("Parsing model")
@@ -422,7 +425,7 @@ func (m DriverTestsuite) parseMessage(typeName string, payloadString string, ste
 
 func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
 	normalizeXml(referenceXml)
-	//referenceSerialized := referenceXml.FirstChild().XML()
+	//referenceSerialized := referenceXml.FirstChild().XMLPretty()
 }
 
 type Testcase struct {

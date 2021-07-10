@@ -19,7 +19,9 @@
 
 package values
 
-import "encoding/xml"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+)
 
 type PlcCHAR struct {
 	value []byte
@@ -40,9 +42,6 @@ func (m PlcCHAR) GetString() string {
 	return string(m.value)
 }
 
-func (m PlcCHAR) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcCHAR"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcCHAR) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcBYTE", 16, "UTF-8", string(m.value))
 }

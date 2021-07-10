@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcBigInteger extends PlcSimpleValue<BigInteger> {
@@ -166,7 +167,7 @@ public class PlcBigInteger extends PlcSimpleValue<BigInteger> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
+        writeBuffer.writeBigInteger(getClass().getSimpleName(), value.bitLength(), value);
     }
 
 }

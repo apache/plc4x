@@ -17,41 +17,16 @@
 // under the License.
 //
 
-package values
+package bacnetip
 
 import (
-	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"time"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 )
 
-type PlcTIME struct {
-	value uint32
-	PlcSimpleValueAdapter
+type ValueHandler struct {
+	values.IEC61131ValueHandler
 }
 
-func NewPlcTIME(value uint32) PlcTIME {
-	return PlcTIME{
-		value: value,
-	}
-}
-
-func (m PlcTIME) IsDuration() bool {
-	return true
-}
-
-func (m PlcTIME) GetDuration() time.Duration {
-	return time.Duration(m.value)
-}
-
-func (m PlcTIME) IsString() bool {
-	return true
-}
-
-func (m PlcTIME) GetString() string {
-	return fmt.Sprintf("PT%0.fS", m.GetDuration().Seconds())
-}
-
-func (m PlcTIME) Serialize(writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteString("PlcTIME", byte(len([]rune(m.GetString()))*8), "UTF-8", m.GetString())
+func NewValueHandler() ValueHandler {
+	return ValueHandler{}
 }

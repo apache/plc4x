@@ -19,7 +19,9 @@
 
 package values
 
-import "encoding/xml"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+)
 
 type PlcSTRING struct {
 	value string
@@ -40,9 +42,6 @@ func (m PlcSTRING) GetString() string {
 	return m.value
 }
 
-func (m PlcSTRING) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcSTRING"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcSTRING) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteString("PlcSTRING", uint8(len([]rune(m.value))*8), "UTF-8", m.value)
 }

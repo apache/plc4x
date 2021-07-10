@@ -20,7 +20,7 @@
 package model
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"time"
@@ -74,30 +74,30 @@ func (m DefaultPlcSubscriptionEvent) GetValue(name string) values.PlcValue {
 	return m.values[name]
 }
 
-func (m DefaultPlcSubscriptionEvent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+func (m DefaultPlcSubscriptionEvent) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcReadResponse"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PushContext("fields"); err != nil {
 		return err
 	}
-	for fieldName, field := range m.fields {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+	for _, fieldName := range m.GetFieldNames() {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+		valueResponse := m.GetValue(fieldName)
+		if err := valueResponse.(utils.Serializable).Serialize(writeBuffer); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := writeBuffer.PopContext("fields"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcSubscriptionRequest"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcReadResponse"); err != nil {
 		return err
 	}
 	return nil

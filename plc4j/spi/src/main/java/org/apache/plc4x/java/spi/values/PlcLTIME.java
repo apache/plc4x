@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.w3c.dom.Element;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -92,7 +93,8 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        // TODO: Implement
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
     }
 
 }

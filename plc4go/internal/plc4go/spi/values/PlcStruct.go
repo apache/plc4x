@@ -20,8 +20,9 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 	"strings"
 )
 
@@ -80,19 +81,26 @@ func (m PlcStruct) GetString() string {
 	return sb.String()
 }
 
-func (m PlcStruct) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
+func (m PlcStruct) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcStruct"); err != nil {
 		return err
 	}
+	for fieldName, plcValue := range m.values {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
+			return err
+		}
 
-	for fieldName, fieldValue := range m.values {
-		if err := e.EncodeElement(fieldValue, xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if serializablePlcValue, ok := plcValue.(utils.Serializable); ok {
+			if err := serializablePlcValue.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.Errorf("Error serializing. %T doesn't implement Serializable", plcValue)
+		}
+
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
-		return err
-	}
-	return nil
+	return writeBuffer.PopContext("PlcStruct")
 }

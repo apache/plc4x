@@ -53,10 +53,10 @@ public class S7StringField extends S7Field {
         String memoryArea = getMemoryArea().name();
         writeBuffer.writeString("memoryArea", memoryArea.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), memoryArea);
 
-        writeBuffer.writeInt("blockNumber", 64, getBlockNumber());
-        writeBuffer.writeInt("byteOffset", 64, getByteOffset());
-        writeBuffer.writeInt("bitOffset", 64, getBitOffset());
-        writeBuffer.writeInt("numElements", 64, getNumberOfElements());
+        writeBuffer.writeUnsignedInt("blockNumber", 16, getBlockNumber());
+        writeBuffer.writeUnsignedInt("byteOffset", 16, getByteOffset());
+        writeBuffer.writeUnsignedInt("bitOffset", 8, getBitOffset());
+        writeBuffer.writeUnsignedInt("numElements", 16, getNumberOfElements());
         writeBuffer.writeInt("stringLength", 64, getStringLength());
 
         String dataType = getDataType().name();

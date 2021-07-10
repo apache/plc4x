@@ -20,8 +20,9 @@
 package model
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 )
 
 type DefaultPlcSubscriptionResponse struct {
@@ -51,41 +52,39 @@ func (m DefaultPlcSubscriptionResponse) GetFieldNames() []string {
 	return fieldNames
 }
 
-func (m DefaultPlcSubscriptionResponse) GetValue(name string) interface{} {
+func (m DefaultPlcSubscriptionResponse) GetValue(name string) values.PlcValue {
 	panic("not implemented: implement me")
 }
 
-func (m DefaultPlcSubscriptionResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcReadResponse"}}); err != nil {
+func (m DefaultPlcSubscriptionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcSubscriptionResponse"); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.request, xml.StartElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
-		return err
+	if request, ok := m.request.(utils.Serializable); ok {
+		if err := request.Serialize(writeBuffer); err != nil {
+			return err
+		}
 	}
-
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "values"}}); err != nil {
+	if err := writeBuffer.PushContext("values"); err != nil {
 		return err
 	}
 	for _, fieldName := range m.GetFieldNames() {
-		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName},
-			Attr: []xml.Attr{
-				{Name: xml.Name{Local: "result"}, Value: m.GetResponseCode(fieldName).GetName()},
-			}}); err != nil {
+		if err := writeBuffer.PushContext(fieldName); err != nil {
 			return err
 		}
-		if err := e.EncodeElement(m.GetValue(fieldName), xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+		valueResponse := m.GetValue(fieldName)
+		if err := valueResponse.(utils.Serializable).Serialize(writeBuffer); err != nil {
 			return err
 		}
-		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+		if err := writeBuffer.PopContext(fieldName); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "values"}}); err != nil {
+	if err := writeBuffer.PopContext("values"); err != nil {
 		return err
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcReadResponse"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcSubscriptionResponse"); err != nil {
 		return err
 	}
 	return nil

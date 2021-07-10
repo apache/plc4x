@@ -123,7 +123,7 @@ public class SymbolicAdsField implements AdsField {
         String symbolicAddress = getSymbolicAddress();
         writeBuffer.writeString("symbolicAddress", symbolicAddress.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), symbolicAddress);
 
-        writeBuffer.writeInt("numberOfElements", 64, getNumberOfElements());
+        writeBuffer.writeUnsignedLong("numberOfElements", 32, getNumberOfElements());
 
         String dataType = getPlcDataType();
         writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);

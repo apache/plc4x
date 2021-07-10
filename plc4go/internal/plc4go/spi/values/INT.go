@@ -20,7 +20,7 @@
 package values
 
 import (
-	"encoding/xml"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"math"
 	"strconv"
 )
@@ -124,9 +124,6 @@ func (m PlcINT) GetString() string {
 	return strconv.Itoa(int(m.GetInt64()))
 }
 
-func (m PlcINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcINT"}}); err != nil {
-		return err
-	}
-	return nil
+func (m PlcINT) Serialize(writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteInt16("PlcINT", 32, m.value)
 }

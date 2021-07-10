@@ -20,16 +20,17 @@
 package values
 
 import (
-	"encoding/xml"
-	api "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
+	"github.com/pkg/errors"
 )
 
 type PlcList struct {
-	Values []api.PlcValue
+	Values []values.PlcValue
 	PlcValueAdapter
 }
 
-func NewPlcList(values []api.PlcValue) api.PlcValue {
+func NewPlcList(values []values.PlcValue) values.PlcValue {
 	return PlcList{
 		Values: values,
 	}
@@ -43,26 +44,28 @@ func (m PlcList) GetLength() uint32 {
 	return uint32(len(m.Values))
 }
 
-func (m PlcList) GetIndex(i uint32) api.PlcValue {
+func (m PlcList) GetIndex(i uint32) values.PlcValue {
 	return m.Values[i]
 }
 
-func (m PlcList) GetList() []api.PlcValue {
+func (m PlcList) GetList() []values.PlcValue {
 	return m.Values
 }
 
-func (m PlcList) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcList"}}); err != nil {
+func (m PlcList) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcList"); err != nil {
 		return err
 	}
-
-	for _, value := range m.Values {
-		if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
-			return err
+	for _, listItem := range m.GetList() {
+		if listItemSerializable, ok := listItem.(utils.Serializable); ok {
+			if err := listItemSerializable.Serialize(writeBuffer); err != nil {
+				return err
+			}
+		} else {
+			return errors.New("Error serializing. List item doesn't implement Serializable")
 		}
 	}
-
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcList"}}); err != nil {
+	if err := writeBuffer.PopContext("PlcList"); err != nil {
 		return err
 	}
 	return nil
