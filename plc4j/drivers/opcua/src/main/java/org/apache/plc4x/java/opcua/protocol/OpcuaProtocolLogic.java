@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -52,7 +50,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -107,8 +104,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onConnect(ConversationContext<OpcuaAPU> context) {
-        // Only the TCP transport supports login.
-        LOGGER.info("Opcua Driver running in ACTIVE mode.");
+        LOGGER.debug("Opcua Driver running in ACTIVE mode.");
 
         if (this.channel == null) {
             this.channel = new SecureChannel(driverContext, this.configuration);
@@ -119,7 +115,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     @Override
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
         // Only the TCP transport supports login.
-        LOGGER.info("Opcua Driver running in ACTIVE mode, discovering endpoints");
+        LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         channel.onDiscover(context);
     }
 
@@ -792,7 +788,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
         CompletableFuture<CreateSubscriptionResponse> future = new CompletableFuture<>();
-        LOGGER.trace("Enetering creating subscription request");
+        LOGGER.trace("Entering creating subscription request");
 
         RequestHeader requestHeader = new RequestHeader(channel.getAuthenticationToken(),
             SecureChannel.getCurrentDateTime(),
@@ -884,7 +880,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         List<PlcConsumerRegistration> registrations = new LinkedList<>();
         // Register the current consumer for each of the given subscription handles
         for (PlcSubscriptionHandle subscriptionHandle : handles) {
-            LOGGER.info("Registering Consumer");
+            LOGGER.debug("Registering Consumer");
             final PlcConsumerRegistration consumerRegistration = subscriptionHandle.register(consumer);
             registrations.add(consumerRegistration);
         }
