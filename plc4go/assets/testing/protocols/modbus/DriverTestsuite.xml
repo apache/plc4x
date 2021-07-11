@@ -95,8 +95,8 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">0</address>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
@@ -185,8 +185,8 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">0</address>
-                  <numberOfElements dataType="int" bitLength="64">2</numberOfElements>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
@@ -325,15 +325,15 @@
             <fields>
               <hurz1>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">0</address>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz1>
               <hurz2>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">2</address>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <address dataType="uint" bitLength="16">2</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz2>
@@ -427,8 +427,8 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">0</address>
-                  <numberOfElements dataType="int" bitLength="64">1</numberOfElements>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
@@ -517,8 +517,8 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address dataType="int" bitLength="64">0</address>
-                  <numberOfElements dataType="int" bitLength="64">2</numberOfElements>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
                 <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>

@@ -112,16 +112,14 @@ func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	// TODO: fix types to uint32
-	if err := writeBuffer.WriteInt64("indexGroup", 64, int64(m.IndexGroup)); err != nil {
+	if err := writeBuffer.WriteUint32("indexGroup", 32, m.IndexGroup); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteInt64("indexOffset", 64, int64(m.IndexOffset)); err != nil {
+	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
 		return err
 	}
 
-	// TODO: fix types to uint32
-	if err := writeBuffer.WriteInt64("numberOfElements", 64, int64(m.NumberOfElements)); err != nil {
+	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
 		return err
 	}
 
@@ -130,8 +128,7 @@ func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if m.StringLength != 0 {
-		// TODO: fix types to int32
-		if err := writeBuffer.WriteInt64("stringLength", 64, int64(m.StringLength)); err != nil {
+		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}
 	}
@@ -198,8 +195,7 @@ func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	// TODO: fix types to uint32
-	if err := writeBuffer.WriteInt64("numberOfElements", 64, int64(m.NumberOfElements)); err != nil {
+	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
 		return err
 	}
 
@@ -208,8 +204,7 @@ func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if m.StringLength > 0 {
-		// TODO: fix types to int32
-		if err := writeBuffer.WriteInt64("stringLength", 64, int64(m.StringLength)); err != nil {
+		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}
 	}

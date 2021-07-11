@@ -61,36 +61,32 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
     private EdeModel edeModel;
 
-    private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     @Override
     public void setConfiguration(BacNetIpConfiguration configuration) {
         if (configuration.getEdeFilePath() != null) {
             File edeFile = new File(configuration.getEdeFilePath());
-            if (edeFile.exists() && edeFile.isFile()) {
-                edeModel = new EdeParser().parseFile(edeFile);
-            } else {
+            if (!edeFile.exists() || !edeFile.isFile()) {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'ede-file-path' does not exist or is not a file: '%s'",
                     configuration.getEdeFilePath()));
             }
-        }
-        else if (configuration.getEdeDirectoryPath() != null) {
+            edeModel = new EdeParser().parseFile(edeFile);
+        } else if (configuration.getEdeDirectoryPath() != null) {
             File edeDirectory = new File(configuration.getEdeDirectoryPath());
-            if (edeDirectory.exists() && edeDirectory.isDirectory()) {
-                edeModel = new EdeParser().parseDirectory(edeDirectory);
-            } else {
+            if (!edeDirectory.exists() || !edeDirectory.isDirectory()) {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'ede-directory-path' does not exist or is not a directory: '%s'",
                     configuration.getEdeDirectoryPath()));
             }
-
+            edeModel = new EdeParser().parseDirectory(edeDirectory);
         }
     }
 
     @Override
     public void onConnect(ConversationContext<BVLC> context) {
-        if(context.isPassive()) {
+        if (context.isPassive()) {
             context.fireConnected();
         } else {
             throw new PlcRuntimeException("Active connections not yet supported");
@@ -105,7 +101,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
     @Override
     protected void decode(ConversationContext<BVLC> context, BVLC msg) throws Exception {
         NPDU npdu = null;
-        if(msg instanceof BVLCOriginalUnicastNPDU) {
+        if (msg instanceof BVLCOriginalUnicastNPDU) {
             BVLCOriginalUnicastNPDU bvlcOriginalUnicastNPDU = (BVLCOriginalUnicastNPDU) msg;
             npdu = bvlcOriginalUnicastNPDU.getNpdu();
         } else if (msg instanceof BVLCForwardedNPDU) {
@@ -116,98 +112,109 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             npdu = bvlcOriginalBroadcastNPDU.getNpdu();
         }
 
-        if(npdu != null) {
-            if(npdu.getApdu() instanceof APDUConfirmedRequest) {
-                APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) npdu.getApdu();
-                final BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
-                // A value change subscription event.
-                if(serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) {
-                    BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
-                        (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
+        if (npdu == null) {
+            LOGGER.warn("Ummapped BVLC {}", msg);
+            return;
+        }
 
-                    long deviceIdentifier = valueChange.getMonitoredObjectInstanceNumber();
-                    int objectType = valueChange.getIssueConfirmedNotificationsType();
-                    long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
-                    BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
+        if (npdu.getApdu() instanceof APDUConfirmedRequest) {
+            APDUConfirmedRequest apduConfirmedRequest = (APDUConfirmedRequest) npdu.getApdu();
+            decodeConfirmedRequest(apduConfirmedRequest);
+        } else if (npdu.getApdu() instanceof APDUUnconfirmedRequest) {
+            APDUUnconfirmedRequest unconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
+            decodeUnconfirmedRequest(unconfirmedRequest);
+        } else if (npdu.getApdu() instanceof APDUError) {
+            APDUError apduError = (APDUError) npdu.getApdu();
+        } else if (npdu.getApdu() instanceof APDUSimpleAck) {
+            // Ignore this ...
+        } else if (npdu.getApdu() instanceof APDUComplexAck) {
+            // Ignore this ...
+        } else if ((npdu.getApdu() == null) && (npdu.getNlm() != null)) {
+            // "Who is router?" & "I am router" messages.
+            // Ignore this ...
+        } else {
+            LOGGER.debug(String.format("Unexpected NPDU type: %s", npdu.getClass().getName()));
+        }
+    }
 
-                    // The actual value change is in the notifications ... iterate throught them to get it.
-                    for (BACnetTagWithContent notification : valueChange.getNotifications()) {
-                        // These are value change notifications. Ignore the rest.
-                        if(notification.getPropertyIdentifier()[0] == (short) 0x55) {
-                            final BACnetTag baCnetTag = notification.getValue();
+    private void decodeConfirmedRequest(APDUConfirmedRequest apduConfirmedRequest) {
+        final BACnetConfirmedServiceRequest serviceRequest = apduConfirmedRequest.getServiceRequest();
+        // A value change subscription event.
+        if (serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) {
+            BACnetConfirmedServiceRequestConfirmedCOVNotification valueChange =
+                (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
 
-                            // Initialize an enriched version of the PlcStruct.
-                            final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
-                            enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
-                            enrichedPlcValue.put("objectType", new PlcDINT(objectType));
-                            enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
-                            enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
+            long deviceIdentifier = valueChange.getMonitoredObjectInstanceNumber();
+            int objectType = valueChange.getIssueConfirmedNotificationsType();
+            long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
+            BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
-                            // From the original BACNet tag
-                            enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.of(baCnetTag.getTypeOrTagNumber()));
-                            enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getLengthValueType()));
-                            if(baCnetTag.getExtTagNumber() != null) {
-                                enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.of(baCnetTag.getExtTagNumber()));
-                            } else {
-                                enrichedPlcValue.put("extTagNumber", new PlcNull());
-                            }
-                            if(baCnetTag.getExtLength() != null) {
-                                enrichedPlcValue.put("extLength", IEC61131ValueHandler.of(baCnetTag.getExtLength()));
-                            } else {
-                                enrichedPlcValue.put("extLength", new PlcNull());
-                            }
+            // The actual value change is in the notifications ... iterate throught them to get it.
+            for (BACnetTagWithContent notification : valueChange.getNotifications()) {
+                // These are value change notifications. Ignore the rest.
+                if (notification.getPropertyIdentifier()[0] == (short) 0x55) {
+                    final BACnetTag baCnetTag = notification.getValue();
 
-                            // Use the information in the edeModel to enrich the information.
-                            if(edeModel != null) {
-                                final Datapoint datapoint = edeModel.getDatapoint(curField);
-                                if(datapoint != null) {
-                                    // Add all the attributes from the ede file.
-                                    enrichedPlcValue.putAll(datapoint.toPlcValues());
-                                }
-                            }
-                            // Send out the enriched event.
-                            publishEvent(curField, new PlcStruct(enrichedPlcValue));
+                    // Initialize an enriched version of the PlcStruct.
+                    final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
+                    enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
+                    enrichedPlcValue.put("objectType", new PlcDINT(objectType));
+                    enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
+                    enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
+
+                    // From the original BACNet tag
+                    enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.of(baCnetTag.getTypeOrTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getLengthValueType()));
+                    if (baCnetTag.getExtTagNumber() != null) {
+                        enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.of(baCnetTag.getExtTagNumber()));
+                    } else {
+                        enrichedPlcValue.put("extTagNumber", new PlcNull());
+                    }
+                    if (baCnetTag.getExtLength() != null) {
+                        enrichedPlcValue.put("extLength", IEC61131ValueHandler.of(baCnetTag.getExtLength()));
+                    } else {
+                        enrichedPlcValue.put("extLength", new PlcNull());
+                    }
+
+                    // Use the information in the edeModel to enrich the information.
+                    if (edeModel != null) {
+                        final Datapoint datapoint = edeModel.getDatapoint(curField);
+                        if (datapoint != null) {
+                            // Add all the attributes from the ede file.
+                            enrichedPlcValue.putAll(datapoint.toPlcValues());
                         }
                     }
+                    // Send out the enriched event.
+                    publishEvent(curField, new PlcStruct(enrichedPlcValue));
                 }
-                // Someone read a value.
-                else if(serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) {
-                    // Ignore this ...
-                }
-                // Someone wrote a value.
-                else if(serviceRequest instanceof BACnetConfirmedServiceRequestWriteProperty) {
-                    // Ignore this ...
-                } else if(serviceRequest instanceof BACnetConfirmedServiceRequestSubscribeCOV) {
-                    // Ignore this ...
-                } else {
-                    LOGGER.debug(String.format("Unexpected ConfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
-                }
-            } else if(npdu.getApdu() instanceof APDUUnconfirmedRequest) {
-                APDUUnconfirmedRequest unconfirmedRequest = (APDUUnconfirmedRequest) npdu.getApdu();
-                final BACnetUnconfirmedServiceRequest serviceRequest = unconfirmedRequest.getServiceRequest();
-                if(serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoHas) {
-                    // Ignore this ...
-                } else if(serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoIs){
-                    // Ignore this ...
-                } else if(serviceRequest instanceof BACnetUnconfirmedServiceRequestIAm){
-                    // Ignore this ...
-                } else if(serviceRequest instanceof BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer){
-                    // Ignore this ...
-                } else {
-                    LOGGER.debug(String.format("Unexpected UnconfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
-                }
-            } else if(npdu.getApdu() instanceof APDUError) {
-                APDUError apduError = (APDUError) npdu.getApdu();
-            } else if(npdu.getApdu() instanceof APDUSimpleAck) {
-                // Ignore this ...
-            } else if(npdu.getApdu() instanceof APDUComplexAck) {
-                // Ignore this ...
-            } else if((npdu.getApdu() == null) && (npdu.getNlm() != null)){
-                // "Who is router?" & "I am router" messages.
-                // Ignore this ...
-            } else {
-                LOGGER.debug(String.format("Unexpected NPDU type: %s", npdu.getClass().getName()));
             }
+        }
+        // Someone read a value.
+        else if (serviceRequest instanceof BACnetConfirmedServiceRequestReadProperty) {
+            // Ignore this ...
+        }
+        // Someone wrote a value.
+        else if (serviceRequest instanceof BACnetConfirmedServiceRequestWriteProperty) {
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetConfirmedServiceRequestSubscribeCOV) {
+            // Ignore this ...
+        } else {
+            LOGGER.debug(String.format("Unexpected ConfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
+        }
+    }
+
+    private void decodeUnconfirmedRequest(APDUUnconfirmedRequest unconfirmedRequest) {
+        final BACnetUnconfirmedServiceRequest serviceRequest = unconfirmedRequest.getServiceRequest();
+        if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoHas) {
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestWhoIs) {
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestIAm) {
+            // Ignore this ...
+        } else if (serviceRequest instanceof BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) {
+            // Ignore this ...
+        } else {
+            LOGGER.debug(String.format("Unexpected UnconfirmedServiceRequest type: %s", serviceRequest.getClass().getName()));
         }
     }
 

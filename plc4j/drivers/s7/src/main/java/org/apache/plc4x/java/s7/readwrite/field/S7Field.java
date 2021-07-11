@@ -364,13 +364,10 @@ public class S7Field implements PlcField, Serializable {
         String memoryArea = getMemoryArea().name();
         writeBuffer.writeString("memoryArea", memoryArea.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), memoryArea);
 
-        // TODO: change to uint16
-        writeBuffer.writeInt("blockNumber", 64, getBlockNumber());
-        // TODO: change to uint16
-        writeBuffer.writeInt("byteOffset", 64, getByteOffset());
-        // TODO: change to uint8
-        writeBuffer.writeInt("bitOffset", 64, getBitOffset());
-        writeBuffer.writeInt("numElements", 64, getNumberOfElements());
+        writeBuffer.writeUnsignedInt("blockNumber", 16, getBlockNumber());
+        writeBuffer.writeUnsignedInt("byteOffset", 16, getByteOffset());
+        writeBuffer.writeUnsignedInt("bitOffset", 8, getBitOffset());
+        writeBuffer.writeUnsignedInt("numElements", 16, getNumberOfElements());
 
         String dataType = getDataType().name();
         writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
