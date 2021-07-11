@@ -354,7 +354,8 @@
         <groupId>org.pcap4j</groupId>
         <artifactId>pcap4j-core</artifactId>
         <version>${pcap4j.version}</version>
-        <scope>provided</scope>
+        <!-- Commented out, if there are problems occurring to this, we need to comment it back in. -->
+        <!--scope>provided</scope-->
       </dependency>
       <dependency>
         <groupId>org.pcap4j</groupId>
