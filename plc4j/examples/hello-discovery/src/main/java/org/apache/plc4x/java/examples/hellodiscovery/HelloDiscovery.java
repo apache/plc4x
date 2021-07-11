@@ -19,19 +19,13 @@ under the License.
 package org.apache.plc4x.java.examples.hellodiscovery;
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class HelloDiscovery {
 
@@ -53,18 +47,26 @@ public class HelloDiscovery {
         PlcDriverManager plcDriverManager = new PlcDriverManager();
         Set<String> driverCodes = plcDriverManager.listDrivers();
         for (String driverCode : driverCodes) {
-            logger.info(String.format("Executing Discovery for Driver: %s", driverCode));
+            logger.info("Executing Discovery for Driver: {}", driverCode);
             PlcDriver driver = plcDriverManager.getDriver(driverCode);
 
             // Check if this driver supports discovery.
             if(driver.getMetadata().canDiscover()) {
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
-                discoveryRequest.execute();
+                PlcDiscoveryResponse discoveryResponse = discoveryRequest.executeWithHandler(
+                    discoveryItem -> logger.info("Intercepted discovery of device with name: {} with connection url: {}",
+                        discoveryItem.getName(), discoveryItem.getConnectionUrl())).get();
+                if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
+                    logger.info("Discovery finished successfully:");
+                    for (PlcDiscoveryItem discoveryItem : discoveryResponse.getValues()) {
+                        logger.info("Found device with name: {} with connection url: {}",
+                            discoveryItem.getName(), discoveryItem.getConnectionUrl());
+                    }
+                }
             } else {
                 logger.info("This driver doesn't support discovery");
             }
         }
-
     }
 
 }

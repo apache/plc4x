@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 
@@ -35,5 +36,7 @@ public interface PlcDiscoverer {
      * @return a {@link CompletableFuture} giving async access to the returned value.
      */
     CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest);
+
+    CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler);
 
 }

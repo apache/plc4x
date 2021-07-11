@@ -18,8 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.profinet.discovery;
 
+import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
+import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.readwrite.io.EthernetFrameIO;
 import org.apache.plc4x.java.profinet.readwrite.types.VirtualLanPriority;
@@ -27,7 +32,10 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
+import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
+import org.apache.plc4x.java.transport.rawsocket.RawSocketTransport;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 import org.pcap4j.packet.EthernetPacket;
@@ -35,9 +43,10 @@ import org.pcap4j.packet.IllegalRawDataException;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.util.LinkLayerAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +55,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
     private static final EtherType PN_EtherType = EtherType.getInstance((short) 0x8892);
 
+    // The constants for the different block names and their actual meaning.
     private static final String DEVICE_TYPE_NAME = "DEVICE_PROPERTIES_OPTION-1";
     private static final String DEVICE_NAME_OF_STATION = "DEVICE_PROPERTIES_OPTION-2";
     private static final String DEVICE_ID = "DEVICE_PROPERTIES_OPTION-3";
@@ -54,62 +64,110 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
     private static final String DEVICE_INSTANCE = "DEVICE_PROPERTIES_OPTION-7";
     private static final String IP_OPTION_IP = "IP_OPTION-2";
 
-    public ProfinetPlcDiscoverer() {
-    }
+    private final Logger logger = LoggerFactory.getLogger(ProfinetPlcDiscoverer.class);
 
     @Override
     public CompletableFuture<PlcDiscoveryResponse> discover(PlcDiscoveryRequest discoveryRequest) {
-        Map<String, DCP_Identify_ResPDU> pnDevices = new HashMap<>();
+        return discoverWithHandler(discoveryRequest, null);
+    }
+
+    public CompletableFuture<PlcDiscoveryResponse> discoverWithHandler(PlcDiscoveryRequest discoveryRequest, PlcDiscoveryItemHandler handler) {
+        CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
+        Set<PcapHandle> openHandles = new HashSet<>();
+        List<PlcDiscoveryItem> values = new ArrayList<>();
         try {
             for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
-                if(!dev.isLoopBack() && dev.isRunning()) {
+                if (!dev.isLoopBack() && dev.isRunning()) {
                     for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
                         org.pcap4j.util.MacAddress macAddress = (org.pcap4j.util.MacAddress) linkLayerAddress;
                         PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
-                        PcapHandle sendHandle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
+                        openHandles.add(handle);
+
                         ExecutorService pool = Executors.newSingleThreadExecutor();
 
                         // Only react on PROFINET DCP packets targeted at our current MAC address.
-                        // TODO: Find out how to filter based on the ether frame type ...
                         handle.setFilter(
                             "((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")",
                             BpfProgram.BpfCompileMode.OPTIMIZE);
 
                         PacketListener listener =
                             packet -> {
-                                if(packet instanceof EthernetPacket) {
+                                // EthernetPacket is the highest level of abstraction we can be expecting.
+                                // Everything inside this we will have to decode ourselves.
+                                if (packet instanceof EthernetPacket) {
                                     EthernetPacket ethernetPacket = (EthernetPacket) packet;
                                     boolean isPnPacket = false;
-                                    if(ethernetPacket.getPayload() instanceof Dot1qVlanTagPacket) {
+                                    // I have observed some times the ethernet packets being wrapped inside a VLAN
+                                    // Packet, in this case we simply unpack the content.
+                                    if (ethernetPacket.getPayload() instanceof Dot1qVlanTagPacket) {
                                         Dot1qVlanTagPacket vlanPacket = (Dot1qVlanTagPacket) ethernetPacket.getPayload();
-                                        if(PN_EtherType.equals(vlanPacket.getHeader().getType())) {
+                                        if (PN_EtherType.equals(vlanPacket.getHeader().getType())) {
                                             isPnPacket = true;
                                         }
-                                    } else if(PN_EtherType.equals(ethernetPacket.getHeader().getType())) {
+                                    } else if (PN_EtherType.equals(ethernetPacket.getHeader().getType())) {
                                         isPnPacket = true;
                                     }
 
                                     // It's a PROFINET packet.
-                                    if(isPnPacket) {
+                                    if (isPnPacket) {
                                         ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                                         try {
                                             EthernetFrame ethernetFrame = EthernetFrameIO.staticParse(reader);
-                                            String sourceMacAddress = toMacAddressString(ethernetFrame.getSource());
                                             DCP_PDU pdu;
-                                            if(ethernetFrame.getPayload() instanceof VirtualLanEthernetFramePayload) {
+                                            // Access the pdu data (either directly or by
+                                            // unpacking the content of the VLAN packet.
+                                            if (ethernetFrame.getPayload() instanceof VirtualLanEthernetFramePayload) {
                                                 VirtualLanEthernetFramePayload vlefpl = (VirtualLanEthernetFramePayload) ethernetFrame.getPayload();
                                                 pdu = ((ProfinetEthernetFramePayload) vlefpl.getPayload()).getPdu();
                                             } else {
                                                 pdu = ((ProfinetEthernetFramePayload) ethernetFrame.getPayload()).getPdu();
                                             }
-                                            if(pdu instanceof DCP_Identify_ResPDU) {
-                                                DCP_Identify_ResPDU identify_resPDU = (DCP_Identify_ResPDU) pdu;
-                                                if(!pnDevices.containsKey(sourceMacAddress)) {
-                                                    pnDevices.put(sourceMacAddress, identify_resPDU);
+                                            // Inspect the PDU itself
+                                            // (in this case we only process identify response packets)
+                                            if (pdu instanceof DCP_Identify_ResPDU) {
+                                                DCP_Identify_ResPDU identifyResPDU = (DCP_Identify_ResPDU) pdu;
+
+                                                Map<String, DCP_Block> blocks = new HashMap<>();
+                                                for (DCP_Block block : identifyResPDU.getBlocks()) {
+                                                    String blockName = block.getOption().name() + "-" + block.getSuboption().toString();
+                                                    blocks.put(blockName, block);
                                                 }
+
+                                                // The mac address of the device we found
+                                                org.pcap4j.util.MacAddress srcAddr = ethernetPacket.getHeader().getSrcAddr();
+                                                // The mac address of the local network device
+                                                org.pcap4j.util.MacAddress dstAddr = ethernetPacket.getHeader().getDstAddr();
+
+                                                String deviceTypeName = "unknown";
+                                                if (blocks.containsKey(DEVICE_TYPE_NAME)) {
+                                                    DCP_BlockDevicePropertiesDeviceVendor block = (DCP_BlockDevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
+                                                    deviceTypeName = new String(block.getDeviceVendorValue());
+                                                }
+                                                String deviceName = "unknown";
+                                                if (blocks.containsKey(DEVICE_NAME_OF_STATION)) {
+                                                    DCP_BlockDevicePropertiesNameOfStation block = (DCP_BlockDevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
+                                                    deviceName = new String(block.getNameOfStation());
+                                                }
+
+                                                String transportUrl = srcAddr.toString();
+                                                Map<String, String> options =
+                                                    Collections.singletonMap("localMacAddress", dstAddr.toString());
+                                                String name = deviceTypeName + " - " + deviceName;
+                                                PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
+                                                    ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
+                                                    transportUrl, options, name);
+                                                values.add(value);
+
+                                                // If we have a discovery handler, pass it to the handler callback
+                                                if (handler != null) {
+                                                    handler.handle(value);
+                                                }
+
+                                                logger.debug("Found new device: '{}' with connection-url '{}'",
+                                                    value.getName(), value.getConnectionUrl());
                                             }
                                         } catch (ParseException e) {
-                                            e.printStackTrace();
+                                            logger.error("Got error decoding packet", e);
                                         }
                                     }
                                 }
@@ -134,70 +192,46 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
                         EthernetFrameIO.staticSerialize(buffer, identificationRequest);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
-                        sendHandle.sendPacket(packet);
+                        handle.sendPacket(packet);
                     }
                 }
             }
-        } catch (PcapNativeException | ParseException e) {
-            e.printStackTrace();
-        } catch (NotOpenException e) {
-            e.printStackTrace();
-        } catch (IllegalRawDataException e) {
-            e.printStackTrace();
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | ParseException e) {
+            logger.error("Got an exception while processing raw socket data", e);
+            future.completeExceptionally(new PlcException("Got an internal error while performing discovery"));
+            for (PcapHandle openHandle : openHandles) {
+                openHandle.close();
+            }
+            return future;
         }
 
-        System.out.println(String.format("Found %d PROFINET devices:", pnDevices.size()));
-        for (DCP_Identify_ResPDU pnDevice : pnDevices.values()) {
-            outputPnDevice(pnDevice);
-        }
+        // Create a timer that completes the future after a given time with all the responses it found till then.
+        Timer timer = new Timer("Discovery Timeout");
+        timer.schedule(new TimerTask() {
+            public void run() {
+                PlcDiscoveryResponse response =
+                    new DefaultPlcDiscoveryResponse(discoveryRequest, PlcResponseCode.OK, values);
+                future.complete(response);
+                for (PcapHandle openHandle : openHandles) {
+                    openHandle.close();
+                }
+            }
+        }, 5000L);
 
-        return null;
+        return future;
     }
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
         byte[] address = pcap4jMacAddress.getAddress();
-        return new MacAddress(new short[]{ (short) address[0], (short) address[1], (short) address[2], (short) address[3], (short) address[4], (short) address[5]});
-    }
-
-    private static String toMacAddressString(MacAddress macAddress) {
-        return String.format("%x2:%x2:%x2:%x2:%x2:%x2", macAddress.getAddress()[0], macAddress.getAddress()[1],
-            macAddress.getAddress()[2], macAddress.getAddress()[3], macAddress.getAddress()[4], macAddress.getAddress()[5]);
-    }
-
-    private static void outputPnDevice(DCP_Identify_ResPDU pnDevice) {
-        Map<String, DCP_Block> blocks = new HashMap<>();
-        for (DCP_Block block : pnDevice.getBlocks()) {
-            String blockName = block.getOption().name() + "-" + block.getSuboption().toString();
-            blocks.put(blockName, block);
-        }
-
-        String deviceTypeName = "unknown";
-        if(blocks.containsKey(DEVICE_TYPE_NAME)) {
-            DCP_BlockDevicePropertiesDeviceVendor block = (DCP_BlockDevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
-            deviceTypeName = new String(block.getDeviceVendorValue());
-        }
-        String deviceName = "unknown";
-        if(blocks.containsKey(DEVICE_NAME_OF_STATION)) {
-            DCP_BlockDevicePropertiesNameOfStation block = (DCP_BlockDevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
-            deviceName = new String(block.getNameOfStation());
-        }
-        String ipAddress = "unknown";
-        if(blocks.containsKey(IP_OPTION_IP)) {
-            DCP_BlockIpIpParameter block = (DCP_BlockIpIpParameter) blocks.get(IP_OPTION_IP);
-            ipAddress = String.format("%d.%d.%d.%d", block.getIpAddress()[0], block.getIpAddress()[1], block.getIpAddress()[2], block.getIpAddress()[3]);
-        }
-        System.out.println(String.format("Found '%s' with name '%s' on IP: %s%n\t%s", deviceTypeName, deviceName, ipAddress, pnDevice));
+        return new MacAddress(new short[]{address[0], address[1], address[2], address[3], address[4], address[5]});
     }
 
     private static class Task implements Runnable {
 
-        private PcapHandle handle;
-        private PacketListener listener;
+        private final Logger logger = LoggerFactory.getLogger(Task.class);
+
+        private final PcapHandle handle;
+        private final PacketListener listener;
 
         public Task(PcapHandle handle, PacketListener listener) {
             this.handle = handle;
@@ -208,12 +242,11 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
         public void run() {
             try {
                 handle.loop(10, listener);
-            } catch (PcapNativeException e) {
-                e.printStackTrace();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (NotOpenException e) {
-                e.printStackTrace();
+                logger.error("Got error handling raw socket", e);
+                Thread.currentThread().interrupt();
+            } catch (PcapNativeException | NotOpenException e) {
+                logger.error("Got error handling raw socket", e);
             }
         }
     }

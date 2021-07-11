@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import java.net.URL;
 import java.util.Map;
 
 public interface PlcDiscoveryItem {
@@ -36,7 +35,7 @@ public interface PlcDiscoveryItem {
     /**
      * @return returns the part of the url, the given transport needs in order to connect (plc.mycompany.de, 192.168.42.23, /dev/serial, COM1)
      */
-    URL getTransportUrl();
+    String getTransportUrl();
 
     /**
      * @return returns a map of all configuration options (usually encoded after the transport url's "?" character (rack=1&slot=1, little-endian=true, ...)

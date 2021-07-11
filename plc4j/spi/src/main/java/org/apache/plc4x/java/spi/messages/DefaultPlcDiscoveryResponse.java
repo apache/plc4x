@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.messages;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -30,18 +31,25 @@ import java.util.*;
 public class DefaultPlcDiscoveryResponse implements PlcDiscoveryResponse, Serializable {
 
     private final PlcDiscoveryRequest request;
+    private final PlcResponseCode responseCode;
     private final List<PlcDiscoveryItem> values;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public DefaultPlcDiscoveryResponse(@JsonProperty("request") PlcDiscoveryRequest request,
+                                       @JsonProperty("responseCode") PlcResponseCode responseCode,
                                        @JsonProperty("values") List<PlcDiscoveryItem> values) {
         this.request = request;
+        this.responseCode = responseCode;
         this.values = values;
     }
 
     @Override
     public PlcDiscoveryRequest getRequest() {
         return request;
+    }
+
+    public PlcResponseCode getResponseCode() {
+        return responseCode;
     }
 
     public List<PlcDiscoveryItem> getValues() {

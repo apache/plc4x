@@ -42,6 +42,11 @@ public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializ
     }
 
     @Override
+    public CompletableFuture<? extends PlcDiscoveryResponse> executeWithHandler(PlcDiscoveryItemHandler handler) {
+        return discoverer.discoverWithHandler(this, handler);
+    }
+
+    @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
         writeBuffer.pushContext("PlcDiscoveryRequest");
 

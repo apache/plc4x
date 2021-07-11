@@ -24,9 +24,11 @@ import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 
 public class RawSocketTransport implements Transport {
 
+    public static final String TRANSPORT_CODE = "raw";
+
     @Override
     public String getTransportCode() {
-        return "raw";
+        return TRANSPORT_CODE;
     }
 
     @Override
