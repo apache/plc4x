@@ -40,6 +40,7 @@
 
   <modules>
     <!--module>dummy-driver</module-->
+    <module>hello-cloud-aws</module>
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-connectivity-kafka</module>
@@ -54,6 +55,7 @@
     <module>hello-world-plc4x-subscription</module>
     <module>hello-world-plc4x-write</module>
     <module>poll-loop</module>
+    <module>hello-cloud-aws</module>
   </modules>
 
   <build>
