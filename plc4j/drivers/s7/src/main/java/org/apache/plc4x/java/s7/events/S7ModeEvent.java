@@ -49,10 +49,10 @@ public class S7ModeEvent  implements S7Event {
     }    
     
     private final Instant timeStamp;
-    private Map<String, Object> map = new HashMap();
+    private final Map<String, Object> map;
     
     public S7ModeEvent(S7ParameterModeTransition parameter) {
-      //map.put(Fields.TYPE.name(), parameter.getParameterType()); 
+      this.map = new HashMap();
       map.put(Fields.TYPE.name(), "MODE");
       map.put(Fields.METHOD.name(), parameter.getMethod());
       map.put(Fields.FUNCTION.name(), parameter.getCpuFunctionType());

@@ -185,14 +185,57 @@ public class StaticHelper {
         }
     }
 
-    public static void serializeS7Char(WriteBuffer io, PlcValue value, Object encoding) {
+    /*
+    * A variable of data type CHAR (character) occupies one byte.
+    */
+    
+    public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding) {
         // TODO: Need to implement the serialization or we can't write strings
-        throw new NotImplementedException("Serializing STRING not implemented");
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            //return io.readString(8, encoding);
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            //return io.readString(16, encoding);
+        } else {
+            throw new PlcRuntimeException("Unsupported encoding");
+        }
     }
 
-    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {
-        // TODO: Need to implement the serialization or we can't write strings
-        throw new NotImplementedException("Serializing STRING not implemented");
+    /*           +-------------------+
+    * Byte n     | Maximum length    | (k)
+    *            +-------------------+   
+    * Byte n+1   | Current Length    | (m)
+    *            +-------------------+   
+    * Byte n+2   | 1st character     | \         \
+    *            +-------------------+  |         |
+    * Byte n+3   | 2st character     |  | Current |
+    *            +-------------------+   >        |
+    * Byte ...   | ...               |  | length  |  Maximum
+    *            +-------------------+  |          >
+    * Byte n+m+1 | mth character     | /          |  length
+    *            +-------------------+            |
+    * Byte ...   | ...               |            |
+    *            +-------------------+            |
+    * Byte ...   | ...               |           /
+    *            +-------------------+    
+    * For this version, the user must read the maximum acceptable length in
+    * the string in a first instance.
+    * Then the user application should avoid the envelope of the adjacent 
+    * fields passing the maximum length in "stringLength".
+    * If your application does not handle S7string, you can handle 
+    * the String as char arrays from your application.
+    */
+    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
+        if ("UTF-8".equalsIgnoreCase(encoding)) {
+            byte k = (byte) stringLength;
+            int intM = value.getString().length();
+            
+            io.writeByte((byte) stringLength);
+            
+        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
+            //return io.readString(16, encoding);
+        } else {
+            throw new PlcRuntimeException("Unsupported encoding");
+        }
     }
 
 }

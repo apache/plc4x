@@ -623,6 +623,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     } else if ((myparameter.getCpuFunctionType() == 0x00) && 
                               ((myparameter.getCpuSubfunction() == 0x05) || 
                                (myparameter.getCpuSubfunction() == 0x06) ||
+                               (myparameter.getCpuSubfunction() == 0x0c) ||                            
                                (myparameter.getCpuSubfunction() == 0x11) ||
                                (myparameter.getCpuSubfunction() == 0x12) ||
                                (myparameter.getCpuSubfunction() == 0x13) ||

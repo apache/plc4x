@@ -320,11 +320,28 @@
     [array AssociatedValueType 'AssociatedValues' count 'numberOfValues' ]
 ]
 
+[type 'AlarmMessageAckObjectPushType'
+    [const uint 8 'variableSpec' '0x12']
+    [simple uint 8 'lengthspec']  
+    [simple SyntaxIdType 'syntaxId'] 
+    [simple uint 8 'numberOfValues']
+    [simple uint 32 'eventId']
+    [simple State 'ackStateGoing']
+    [simple State 'ackStateComing']
+]
+
 [type 'AlarmMessagePushType'
     [simple DateAndTime 'TimeStamp']
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
     [array AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]  
+]
+
+[type 'AlarmMessageAckPushType'
+    [simple DateAndTime 'TimeStamp']
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [array AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]  
 ]
 
 [type 'AlarmMessageObjectQueryType'
@@ -418,6 +435,9 @@
         ]
         ['0x00', '0x06' S7PayloadNotify
             [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x0c' S7PayloadAlarmAckInd
+            [simple AlarmMessageAckPushType 'alarmMessage']
         ]
         ['0x00', '0x11' S7PayloadAlarmSQ
             [simple AlarmMessagePushType 'alarmMessage']

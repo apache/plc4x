@@ -53,9 +53,10 @@ public class S7SysEvent  implements S7Event{
     }
         
     private final Instant timeStamp;
-    protected Map<String, Object> map = new HashMap();    
+    protected final Map<String, Object> map;    
     
     public S7SysEvent(S7PayloadDiagnosticMessage payload) {
+        this.map = new HashMap();
         map.put(Fields.TYPE.name(), "SYS");
         map.put(Fields.EVENT_ID.name(), payload.getEventId());
         map.put(Fields.PRIORITY_CLASS.name(), payload.getPriorityClass());
