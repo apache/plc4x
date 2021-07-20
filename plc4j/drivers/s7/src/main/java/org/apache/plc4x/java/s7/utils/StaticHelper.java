@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.utils;
 
+import java.nio.charset.Charset;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -30,6 +31,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class StaticHelper {
 
@@ -225,11 +228,19 @@ public class StaticHelper {
     * the String as char arrays from your application.
     */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        if ("UTF-8".equalsIgnoreCase(encoding)) {
-            byte k = (byte) stringLength;
-            int intM = value.getString().length();
-            
-            io.writeByte((byte) stringLength);
+        byte k = (byte) ((stringLength > 250)?250:stringLength);
+        byte m = (byte) value.getString().length();
+        m = (m > k)?k:m;        
+        if ("UTF-8".equalsIgnoreCase(encoding)) {          
+            String subStr = value.getString().substring(0, m);
+            try {
+                io.writeByte(k);
+                io.writeByte(m); 
+                io.writeByteArray(subStr.getBytes(Charset.forName("UTF-8")));
+            } catch (ParseException ex) {
+                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             
         } else if ("UTF-16".equalsIgnoreCase(encoding)) {
             //return io.readString(16, encoding);
