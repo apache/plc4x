@@ -36,6 +36,7 @@
   <modules>
     <module>ab-eth</module>
     <module>ads</module>
+    <module>can</module>
     <module>canopen</module>
     <module>eip</module>
     <module>firmata</module>

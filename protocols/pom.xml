@@ -48,6 +48,7 @@
     <module>profinet</module>
     <module>s7</module>
     <module>simulated</module>
+    <module>socketcan</module>
   </modules>
 
   <build>

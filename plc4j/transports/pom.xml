@@ -34,6 +34,7 @@
   <description>Collection of base-types for implementing different types of drivers.</description>
 
   <modules>
+    <module>can</module>
     <module>pcap-replay</module>
     <module>pcap-shared</module>
     <module>raw-socket</module>

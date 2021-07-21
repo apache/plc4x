@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.api.segmentation.accumulator.ByteStorage;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -38,7 +38,7 @@ public class SDOUploadConversation extends CANOpenConversationBase {
     private final IndexAddress address;
     private final CANOpenDataType type;
 
-    public SDOUploadConversation(CANConversation<CANOpenFrame> delegate, int nodeId, int answerNodeId, IndexAddress address, CANOpenDataType type) {
+    public SDOUploadConversation(CANConversation delegate, int nodeId, int answerNodeId, IndexAddress address, CANOpenDataType type) {
         super(delegate, nodeId, answerNodeId);
         this.address = address;
         this.type = type;

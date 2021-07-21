@@ -50,8 +50,8 @@
     ['0x7f' PRE_OPERATIONAL]
 ]
 
-[discriminatedType 'CANOpenPayload' [CANOpenService 'function']
-    [typeSwitch 'function'
+[discriminatedType 'CANOpenPayload' [CANOpenService 'service']
+    [typeSwitch 'service'
         ['NMT' CANOpenNetworkPayload
             [enum NMTStateRequest 'request']
             [reserved uint 1 '0x00']
@@ -351,4 +351,13 @@
     [simple uint 8 'node']
     [simple IndexAddress 'address']
     [array int 8 'data' count '4']
+]
+
+// A compact, byte aligned structure for test and embedding purposes
+[type 'CANOpenFrame'
+    [simple uint 8 'nodeId']
+    [simple CANOpenService 'service']
+    [const uint 4 'alignment' '0x00']
+    [simple CANOpenPayload 'payload' ['service']]
+    [padding uint 8 'alignment' '0x00' '8 - (payload.lengthInBytes)']
 ]

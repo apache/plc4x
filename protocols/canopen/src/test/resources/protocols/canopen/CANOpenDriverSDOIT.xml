@@ -55,60 +55,138 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>INITIATE_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1000</index>
-                <subindex>22</subindex>
-              </address>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
-        <!-- one unwanted frame -->
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>true</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1001</index>
-                <subindex>22</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>61736466</data>
-              </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1001</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data isList="true">
+                              <value dataType="int" bitLength="8">97</value>
+                              <value dataType="int" bitLength="8">115</value>
+                              <value dataType="int" bitLength="8">100</value>
+                              <value dataType="int" bitLength="8">102</value>
+                            </data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for from requested node">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>true</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1000</index>
-                <subindex>22</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>61736466</data>
-              </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data isList="true">
+                              <value dataType="int" bitLength="8">97</value>
+                              <value dataType="int" bitLength="8">115</value>
+                              <value dataType="int" bitLength="8">100</value>
+                              <value dataType="int" bitLength="8">102</value>
+                            </data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <api-response name="Report Read Response to application (expedited)">
         <PlcReadResponse>
@@ -116,17 +194,20 @@
             <fields>
               <expeditedSdo>
                 <CANOpenSDOField>
-                  <node>1</node>
-                  <index>1000</index>
-                  <subIndex>22</subIndex>
-                  <dataType>UNSIGNED32</dataType>
+                  <node dataType="int" bitLength="64">1</node>
+                  <index dataType="int" bitLength="64">1000</index>
+                  <subIndex dataType="int" bitLength="64">22</subIndex>
+                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
                 </CANOpenSDOField>
               </expeditedSdo>
             </fields>
           </PlcReadRequest>
           <values>
-            <expeditedSdo result="OK">
-              <PlcUDINT>1717859169</PlcUDINT>
+            <expeditedSdo>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+              </ResponseItem>
             </expeditedSdo>
           </values>
         </PlcReadResponse>
@@ -152,40 +233,88 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>INITIATE_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>9186</index>
-                <subindex>1</subindex>
-              </address>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">9186</index>
+                          <subindex dataType="uint" bitLength="8">1</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
-        <!-- one unwanted frame -->
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>true</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>9186</index>
-                <subindex>1</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>61736466</data>
-                as its timed out </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">9186</index>
+                          <subindex dataType="uint" bitLength="8">1</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data isList="true">
+                              <value dataType="int" bitLength="8">97</value>
+                              <value dataType="int" bitLength="8">115</value>
+                              <value dataType="int" bitLength="8">100</value>
+                              <value dataType="int" bitLength="8">102</value>
+                            </data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <api-response name="Report Read Response to application (expedited short)">
         <PlcReadResponse>
@@ -193,17 +322,20 @@
             <fields>
               <expeditedShort>
                 <CANOpenSDOField>
-                  <node>1</node>
-                  <index>9186</index>
-                  <subIndex>1</subIndex>
-                  <dataType>UNSIGNED8</dataType>
+                  <node dataType="int" bitLength="64">1</node>
+                  <index dataType="int" bitLength="64">9186</index>
+                  <subIndex dataType="int" bitLength="64">1</subIndex>
+                  <dataType dataType="string" bitLength="72" encoding="UTF-8">UNSIGNED8</dataType>
                 </CANOpenSDOField>
               </expeditedShort>
             </fields>
           </PlcReadRequest>
           <values>
-            <expeditedShort result="OK">
-              <PlcUSINT>97</PlcUSINT>
+            <expeditedShort>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcUSINT dataType="int" bitLength="8">97</PlcUSINT>
+              </ResponseItem>
             </expeditedShort>
           </values>
         </PlcReadResponse>
@@ -229,60 +361,139 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>INITIATE_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1000</index>
-                <subindex>22</subindex>
-              </address>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
         <!-- one unwanted frame -->
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>true</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1001</index>
-                <subindex>22</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>61736466</data>
-              </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1001</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data isList="true">
+                              <value dataType="int" bitLength="8">97</value>
+                              <value dataType="int" bitLength="8">115</value>
+                              <value dataType="int" bitLength="8">100</value>
+                              <value dataType="int" bitLength="8">102</value>
+                            </data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for from requested node">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>true</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1000</index>
-                <subindex>22</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
-                <data>61736466</data>
-              </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">true</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateExpeditedUploadResponse>
+                            <data isList="true">
+                              <value dataType="int" bitLength="8">97</value>
+                              <value dataType="int" bitLength="8">115</value>
+                              <value dataType="int" bitLength="8">100</value>
+                              <value dataType="int" bitLength="8">102</value>
+                            </data>
+                            <padding isList="true">
+                            </padding>
+                          </SDOInitiateExpeditedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <api-response name="Report Read Response to application (custom answer id)">
         <PlcReadResponse>
@@ -290,17 +501,20 @@
             <fields>
               <expeditedSdoCustomAnswer>
                 <CANOpenSDOField>
-                  <node>1</node>
-                  <index>1000</index>
-                  <subIndex>22</subIndex>
-                  <dataType>UNSIGNED32</dataType>
+                  <node dataType="int" bitLength="64">1</node>
+                  <index dataType="int" bitLength="64">1000</index>
+                  <subIndex dataType="int" bitLength="64">22</subIndex>
+                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
                 </CANOpenSDOField>
               </expeditedSdoCustomAnswer>
             </fields>
           </PlcReadRequest>
           <values>
-            <expeditedSdoCustomAnswer result="OK">
-              <PlcUDINT>1717859169</PlcUDINT>
+            <expeditedSdoCustomAnswer>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcUDINT dataType="int" bitLength="32">1717859169</PlcUDINT>
+              </ResponseItem>
             </expeditedSdoCustomAnswer>
           </values>
         </PlcReadResponse>
@@ -327,120 +541,292 @@
       </api-request>
 
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>INITIATE_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>2000</index>
-                <subindex>44</subindex>
-              </address>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">2000</index>
+                          <subindex dataType="uint" bitLength="8">44</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response with segment information">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>INITIATE_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
-              <expedited>false</expedited>
-              <indicated>true</indicated>
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>2000</index>
-                <subindex>44</subindex>
-              </address>
-              <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateSegmentedUploadResponse">
-                <bytes>8</bytes>
-              </payload>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOInitiateUploadResponse>
+                      <reserved dataType="uint" bitLength="1">0</reserved>
+                      <size dataType="uint" bitLength="2">0</size>
+                      <expedited dataType="bit" bitLength="1">false</expedited>
+                      <indicated dataType="bit" bitLength="1">true</indicated>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">2000</index>
+                          <subindex dataType="uint" bitLength="8">44</subindex>
+                        </IndexAddress>
+                      </address>
+                      <payload>
+                        <SDOInitiateUploadResponsePayload>
+                          <SDOInitiateSegmentedUploadResponse>
+                            <bytes dataType="uint" bitLength="32">8</bytes>
+                          </SDOInitiateSegmentedUploadResponse>
+                        </SDOInitiateUploadResponsePayload>
+                      </payload>
+                    </SDOInitiateUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
 
       <outgoing-plc-message name="Send first SDO Segment Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>SEGMENT_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
-              <toggle>false</toggle>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for first segment">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>SEGMENT_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
-              <toggle>false</toggle>
-              <last>false</last>
-              <data>61736466</data>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">false</last>
+                      <data isList="true">
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">115</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">102</value>
+                      </data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
 
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>SEGMENT_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
-              <toggle>true</toggle>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">true</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response with segment information">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>SEGMENT_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
-              <toggle>true</toggle>
-              <last>false</last>
-              <data>61736466</data>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">true</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">false</last>
+                      <data isList="true">
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">115</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">102</value>
+                      </data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
+
       </incoming-plc-message>
 
       <outgoing-plc-message name="Send second SDO Segment Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>SEGMENT_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadRequest">
-              <toggle>false</toggle>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">3</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOSegmentUploadRequest>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <reserved dataType="uint" bitLength="4">0</reserved>
+                      <reserved dataType="int" bitLength="56">0</reserved>
+                    </SDOSegmentUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for second segment">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>2</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>SEGMENT_UPLOAD</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
-              <toggle>false</toggle>
-              <last>true</last>
-              <data>61736466</data>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">2</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="SEGMENT_UPLOAD">0</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOSegmentUploadResponse>
+                      <toggle dataType="bit" bitLength="1">false</toggle>
+                      <size dataType="uint" bitLength="3">3</size>
+                      <last dataType="bit" bitLength="1">true</last>
+                      <data isList="true">
+                        <value dataType="int" bitLength="8">97</value>
+                        <value dataType="int" bitLength="8">115</value>
+                        <value dataType="int" bitLength="8">100</value>
+                        <value dataType="int" bitLength="8">102</value>
+                      </data>
+                      <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                        <value dataType="uint" bitLength="8">0</value>
+                      </padding>
+                    </SDOSegmentUploadResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
 
       <api-response name="Report Read Response to application (segmented)">
@@ -449,26 +835,29 @@
             <fields>
               <segmentedSdo>
                 <CANOpenSDOField>
-                  <node>2</node>
-                  <index>2000</index>
-                  <subIndex>44</subIndex>
-                  <dataType>RECORD</dataType>
+                  <node dataType="int" bitLength="64">2</node>
+                  <index dataType="int" bitLength="64">2000</index>
+                  <subIndex dataType="int" bitLength="64">44</subIndex>
+                  <dataType dataType="string" bitLength="48" encoding="UTF-8">RECORD</dataType>
                 </CANOpenSDOField>
               </segmentedSdo>
             </fields>
           </PlcReadRequest>
           <values>
-            <segmentedSdo result="OK">
-              <PlcList>
-                <PlcSINT>97</PlcSINT>
-                <PlcSINT>115</PlcSINT>
-                <PlcSINT>100</PlcSINT>
-                <PlcSINT>102</PlcSINT>
-                <PlcSINT>97</PlcSINT>
-                <PlcSINT>115</PlcSINT>
-                <PlcSINT>100</PlcSINT>
-                <PlcSINT>102</PlcSINT>
-              </PlcList>
+            <segmentedSdo>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcList>
+                  <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x61</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x73</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x64</PlcSINT>
+                  <PlcSINT dataType="byte" bitLength="8">0x66</PlcSINT>
+                </PlcList>
+              </ResponseItem>
             </segmentedSdo>
           </values>
         </PlcReadResponse>
@@ -494,37 +883,76 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send SDO Initialize Upload Request">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>RECEIVE_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
-            <command>INITIATE_UPLOAD</command>
-            <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadRequest">
-              <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                <index>1000</index>
-                <subindex>22</subindex>
-              </address>
-            </request>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="RECEIVE_SDO">12</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDORequest>
+                <command>
+                  <SDORequestCommand dataType="uint" bitLength="3" stringRepresentation="INITIATE_UPLOAD">2</SDORequestCommand>
+                </command>
+                <request>
+                  <SDORequest>
+                    <SDOInitiateUploadRequest>
+                      <reserved dataType="uint" bitLength="5">0</reserved>
+                      <address>
+                        <IndexAddress>
+                          <index dataType="uint" bitLength="16">1000</index>
+                          <subindex dataType="uint" bitLength="8">22</subindex>
+                        </IndexAddress>
+                      </address>
+                      <reserved dataType="int" bitLength="32">0</reserved>
+                    </SDOInitiateUploadRequest>
+                  </SDORequest>
+                </request>
+              </CANOpenSDORequest>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive SDO Initialize Upload Response for other node">
-        <CANOpenSocketCANFrame className="org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrame">
-          <nodeId>1</nodeId>
-          <service>TRANSMIT_SDO</service>
-          <payload className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
-            <command>ABORT</command>
-            <response className="org.apache.plc4x.java.canopen.readwrite.SDOAbortResponse">
-              <abort className="org.apache.plc4x.java.canopen.readwrite.SDOAbort">
-                <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
-                  <index>1001</index>
-                  <subindex>22</subindex>
-                </address>
-                <code>84082688</code>
-              </abort>
-            </response>
+        <CANOpenFrame>
+          <nodeId dataType="uint" bitLength="8">1</nodeId>
+          <service>
+            <CANOpenService dataType="uint" bitLength="4" stringRepresentation="TRANSMIT_SDO">11</CANOpenService>
+          </service>
+          <alignment dataType="uint" bitLength="4">0</alignment>
+          <payload>
+            <CANOpenPayload>
+              <CANOpenSDOResponse>
+                <command>
+                  <SDOResponseCommand dataType="uint" bitLength="3" stringRepresentation="ABORT">4</SDOResponseCommand>
+                </command>
+                <response>
+                  <SDOResponse>
+                    <SDOAbortResponse>
+                      <abort>
+                        <SDOAbort>
+                          <reserved dataType="uint" bitLength="5">0</reserved>
+                          <address>
+                            <IndexAddress>
+                              <index dataType="uint" bitLength="16">1001</index>
+                              <subindex dataType="uint" bitLength="8">22</subindex>
+                            </IndexAddress>
+                          </address>
+                          <code dataType="uint" bitLength="32">84082688</code>
+                        </SDOAbort>
+                      </abort>
+                    </SDOAbortResponse>
+                  </SDOResponse>
+                </response>
+              </CANOpenSDOResponse>
+            </CANOpenPayload>
           </payload>
-        </CANOpenSocketCANFrame>
+          <padding isList="true">
+          </padding>
+        </CANOpenFrame>
       </incoming-plc-message>
       <api-response name="Report Read Response to application (abort)">
         <PlcReadResponse>
@@ -532,17 +960,20 @@
             <fields>
               <TheFailingField>
                 <CANOpenSDOField>
-                  <node>1</node>
-                  <index>1000</index>
-                  <subIndex>22</subIndex>
-                  <dataType>UNSIGNED32</dataType>
+                  <node dataType="int" bitLength="64">1</node>
+                  <index dataType="int" bitLength="64">1000</index>
+                  <subIndex dataType="int" bitLength="64">22</subIndex>
+                  <dataType dataType="string" bitLength="80" encoding="UTF-8">UNSIGNED32</dataType>
                 </CANOpenSDOField>
               </TheFailingField>
             </fields>
           </PlcReadRequest>
           <values>
-            <TheFailingField result="REMOTE_ERROR">
-              <PlcLINT>84082688</PlcLINT>
+            <TheFailingField>
+              <ResponseItem>
+                <result dataType="string" bitLength="96" encoding="UTF-8">REMOTE_ERROR</result>
+                <PlcLINT dataType="int" bitLength="64">84082688</PlcLINT>
+              </ResponseItem>
             </TheFailingField>
           </values>
         </PlcReadResponse>

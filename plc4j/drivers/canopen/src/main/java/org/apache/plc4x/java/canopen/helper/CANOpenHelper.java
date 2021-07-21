@@ -31,7 +31,7 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.COUNT;
 
 public class CANOpenHelper {
 
-    public static CANOpenService readFunction(short identifier) {
+    public static CANOpenService serviceId(short identifier) {
         return CANOpenService.enumForValue((byte) (identifier >> 7));
     }
 

@@ -16,18 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.canopen.transport;
+package org.apache.plc4x.java.transport.can;
 
-import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
-import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
-public interface CANOpenFrame extends Message {
-
-    int getNodeId();
-
-    CANOpenService getService();
-
-    CANOpenPayload getPayload();
+public interface CANTransportConfiguration extends TransportConfiguration {
 
 }

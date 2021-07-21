@@ -18,22 +18,46 @@
  */
 package org.apache.plc4x.java.canopen;
 
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
-import org.apache.plc4x.java.canopen.transport.CANTransport;
-import org.apache.plc4x.java.canopen.transport.socketcan.io.CANOpenSocketCANFrameIO;
+import io.netty.buffer.ByteBuf;
+
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.io.CANOpenFrameIO;
+import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataAdapter;
+import org.apache.plc4x.java.canopen.transport.IdentityCANOpenFrameBuilder;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.transport.can.CANFrameBuilder;
+import org.apache.plc4x.java.transport.can.CANTransport;
+import org.apache.plc4x.java.transport.can.FrameData;
 import org.apache.plc4x.java.transport.test.TestTransport;
 
-public class CANTestTransport extends TestTransport implements CANTransport {
-
+public class CANTestTransport extends TestTransport implements CANTransport<CANOpenFrame> {
     @Override
-    public MessageIO<CANOpenFrame, CANOpenFrame> getMessageIO(Configuration cfg) {
-        return new CANOpenSocketCANFrameIO();
+    public ToIntFunction<ByteBuf> getEstimator() {
+        // id (1 byte), service (1 byte), data (up to 8 bytes, padded)
+        return (buffer) -> 10;
     }
 
     @Override
     public Class<CANOpenFrame> getMessageType() {
         return CANOpenFrame.class;
+    }
+
+    @Override
+    public <X extends MessageIO<CANOpenFrame, CANOpenFrame>> X getMessageIO(Configuration configuration) {
+        return (X) new CANOpenFrameIO();
+    }
+
+    @Override
+    public CANFrameBuilder<CANOpenFrame> getTransportFrameBuilder() {
+        return new IdentityCANOpenFrameBuilder();
+    }
+
+    @Override
+    public Function<CANOpenFrame, FrameData> adapter() {
+        return new CANOpenFrameDataAdapter();
     }
 }

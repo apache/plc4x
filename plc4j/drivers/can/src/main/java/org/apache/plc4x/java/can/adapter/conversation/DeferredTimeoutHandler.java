@@ -16,12 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.canopen.transport;
+package org.apache.plc4x.java.can.adapter.conversation;
 
-import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
-import org.apache.plc4x.java.spi.generation.Message;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
-public interface CANFrame extends CANOpenFrame {
+public class DeferredTimeoutHandler<T> implements Consumer<TimeoutException> {
 
+    private Consumer<TimeoutException> delegate;
+
+    public DeferredTimeoutHandler(Consumer<TimeoutException> delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    public void accept(TimeoutException e) {
+        if (delegate != null) {
+            delegate.accept(e);
+        }
+    }
+
+    public void setHandler(Consumer<TimeoutException> delegate) {
+        this.delegate = delegate;
+    }
 }

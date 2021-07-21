@@ -16,39 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.canopen.socketcan;
+package org.apache.plc4x.java.canopen.conversation;
 
 import org.apache.plc4x.java.canopen.api.conversation.canopen.CANConversation;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrameBuilder;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrameBuilderFactory;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 
 import java.time.Duration;
 
-public class SocketCANConversation implements CANConversation<CANOpenFrame> {
+public class CANTransportConversation implements CANConversation {
 
     private final int nodeId;
     private final ConversationContext<CANOpenFrame> context;
     private final int timeout;
-    private final CANOpenFrameBuilderFactory factory;
 
-    public SocketCANConversation(int nodeId, ConversationContext<CANOpenFrame> context, int timeout, CANOpenFrameBuilderFactory factory) {
+    public CANTransportConversation(int nodeId, ConversationContext<CANOpenFrame> context, int timeout) {
         this.nodeId = nodeId;
         this.context = context;
         this.timeout = timeout;
-        this.factory = factory;
     }
 
     @Override
     public int getNodeId() {
         return nodeId;
-    }
-
-    @Override
-    public CANOpenFrameBuilder createBuilder() {
-        return factory.createBuilder();
     }
 
     public SendRequestContext<CANOpenFrame> send(CANOpenFrame frame) {

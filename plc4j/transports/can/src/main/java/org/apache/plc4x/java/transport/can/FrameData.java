@@ -16,10 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.canopen.transport;
+package org.apache.plc4x.java.transport.can;
 
-public interface CANOpenFrameBuilderFactory {
+import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.generation.MessageIO;
 
-    CANOpenFrameBuilder createBuilder();
+public interface FrameData {
 
+    int getNodeId();
+
+    <T extends Message> T read(MessageIO<T, T> serializer, Object ... args);
+
+    int getDataLength();
+    byte[] getData();
 }
