@@ -230,22 +230,19 @@ public class StaticHelper {
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
         byte k = (byte) ((stringLength > 250)?250:stringLength);
         byte m = (byte) value.getString().length();
-        m = (m > k)?k:m;        
-        if ("UTF-8".equalsIgnoreCase(encoding)) {          
-            String subStr = value.getString().substring(0, m);
-            try {
-                io.writeByte(k);
-                io.writeByte(m); 
-                io.writeByteArray(subStr.getBytes(Charset.forName("UTF-8")));
-            } catch (ParseException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            
-        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            //return io.readString(16, encoding);
-        } else {
-            throw new PlcRuntimeException("Unsupported encoding");
+        m = (m > k)?k:m;    
+        byte[] chars = new byte[m];
+        for (int i = 0; i < m; ++i) {
+             char c = value.getString().charAt(i);
+             chars[i]= (byte) c;
+          }   
+        
+        try {
+            io.writeByte(k);
+            io.writeByte(m); 
+            io.writeByteArray(chars); 
+        } catch (ParseException ex) {
+            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
