@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-== Current sanguage support for protocols
+== Current language support for protocols
 |===
 |Protocol | Java | Golang | C 
 
@@ -91,10 +91,10 @@ The following table contains a list of operations and the protocols that support
 
 |AB-Ethernet
 |icon:check[role="green"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-|icon:question[role="red"]
+|icon:check[role="red"]
+|icon:check[role="red"]
+|icon:check[role="red"]
+|icon:check[role="red"]
 |icon:question[role="red"]
 
 |ADS
@@ -122,7 +122,7 @@ The following table contains a list of operations and the protocols that support
 |icon:question[role="red"]
 
 |Modbus
-|icon:question[role="green"]
+|icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
@@ -130,7 +130,7 @@ The following table contains a list of operations and the protocols that support
 |icon:question[role="red"]
 
 |OPC-UA
-|icon:question[role="green"]
+|icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
 |icon:question[role="red"]
@@ -144,15 +144,6 @@ The following table contains a list of operations and the protocols that support
 |icon:exclamation[role="yellow"]
 |icon:question[role="red"]
 |icon:question[role="red"]
-
-|KNXnet/IP
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:check[role="green"]
-|icon:exclamation[role="yellow"]
-|icon:question[role="red"]
-|icon:question[role="red"]
-
 |===
 
 Legend:
