@@ -41,6 +41,7 @@
     <module>df1</module>
     <module>eip</module>
     <module>firmata</module>
+    <module>genericcan</module>
     <module>knxnetip</module>
     <module>modbus</module>
     <module>opcua</module>

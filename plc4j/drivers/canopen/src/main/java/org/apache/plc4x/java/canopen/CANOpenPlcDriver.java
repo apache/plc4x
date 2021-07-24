@@ -130,7 +130,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
                 ConfigurationFactory.configure(cfg, protocolLogic);
                 return new CANDriverAdapter<>(protocolLogic,
                     canTransport.getMessageType(), canTransport.adapter(),
-                    new CANOpenFrameDataHandler(canTransport.getTransportFrameBuilder())
+                    new CANOpenFrameDataHandler(canTransport::getTransportFrameBuilder)
                 );
             })
             .withDriverContext(cfg -> new CANOpenDriverContext())

@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.canopen.transport;
 
+import java.util.function.Supplier;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.canopen.helper.CANOpenHelper;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
@@ -37,9 +38,9 @@ import org.apache.plc4x.java.transport.can.FrameData;
  */
 public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFrame> {
 
-    private final CANFrameBuilder<Message> builder;
+    private final Supplier<CANFrameBuilder<Message>> builder;
 
-    public CANOpenFrameDataHandler(CANFrameBuilder<Message> builder) {
+    public CANOpenFrameDataHandler(Supplier<CANFrameBuilder<Message>> builder) {
         this.builder = builder;
     }
 
@@ -56,7 +57,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
             CANOpenPayload payload = frame.getPayload();
             WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), true);
             CANOpenPayloadIO.staticSerialize(buffer, payload);
-            return builder.withId(frame.getService().getMin() + frame.getNodeId())
+            return builder.get().withId(frame.getService().getMin() + frame.getNodeId())
                 .withData(buffer.getData())
                 .create();
         } catch (ParseException e) {
