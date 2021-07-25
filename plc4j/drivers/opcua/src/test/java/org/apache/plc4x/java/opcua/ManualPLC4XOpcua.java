@@ -19,15 +19,19 @@
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
-import org.apache.plc4x.java.opcua.protocol.OpcuaField;
-import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.field.OpcuaField;
+import org.apache.plc4x.java.opcua.field.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
+import org.apache.plc4x.java.opcua.protocol.OpcuaSubscriptionHandle;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.eclipse.milo.examples.server.ExampleServer;
@@ -93,21 +97,16 @@ public class ManualPLC4XOpcua {
         } catch (Exception e) {
             throw new PlcRuntimeException(e);
         }
-        OpcuaTcpPlcConnection opcuaConnection = null;
+        PlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField(BOOL_IDENTIFIER);
         try {
-            opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
+            opcuaConnection = new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
         } catch (PlcConnectionException e) {
             throw new PlcRuntimeException(e);
         }
         try {
-            String[] array = new String[2];
-            System.out.printf("%s:%s", array);
-
-
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
             builder.addItem("Bool", BOOL_IDENTIFIER);
             builder.addItem("ByteString", BYTE_STRING_IDENTIFIER);
@@ -144,7 +143,9 @@ public class ManualPLC4XOpcua {
             builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
-            PlcReadResponse response = opcuaConnection.read(request).get();
+
+
+            PlcReadResponse response = request.execute().get();
 
             //Collection coll = response.getAllStrings("String");
 
@@ -165,20 +166,59 @@ public class ManualPLC4XOpcua {
             wBuilder.addItem("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152"));
             wBuilder.addItem("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
             PlcWriteRequest writeRequest = wBuilder.build();
-            PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
+            PlcWriteResponse wResponse = writeRequest.execute().get();
 
-            PlcSubscriptionResponse subResp = opcuaConnection.subscribe(new DefaultPlcSubscriptionRequest(
-                opcuaConnection,
-                new LinkedHashMap<>(
-                    Collections.singletonMap("field1",
-                        new DefaultPlcSubscriptionField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
-                )
-            )).get();
+            // Create Subscription
+            PlcSubscriptionRequest.Builder sBuilder = opcuaConnection.subscriptionRequestBuilder();
+            sBuilder.addChangeOfStateField("Bool", BOOL_IDENTIFIER);
+            sBuilder.addChangeOfStateField("ByteString", BYTE_STRING_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Byte", BYTE_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Double", DOUBLE_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Float", FLOAT_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int16", INT16_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int32", INT32_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int64", INT64_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Integer", INTEGER_IDENTIFIER);
+            sBuilder.addChangeOfStateField("SByte", SBYTE_IDENTIFIER);
+            sBuilder.addChangeOfStateField("String", STRING_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt16", UINT16_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt32", UINT32_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt64", UINT64_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInteger", UINTEGER_IDENTIFIER);
 
-            Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent.toString() + "########################################################################################################################################################################");
-            PlcConsumerRegistration registration = opcuaConnection.register(consumer, subResp.getSubscriptionHandles());
-            Thread.sleep(7000);
-            registration.unregister();
+            sBuilder.addChangeOfStateField("BoolArray", BOOL_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("ByteArray", BYTE_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("FloatArray", FLOAT_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int16Array", INT16_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int32Array", INT32_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("Int64Array", INT64_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("IntegerArray", INTEGER_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("SByteArray", SBYTE_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("StringArray", STRING_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt16Array", UINT16_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt32Array", UINT32_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UInt64Array", UINT64_ARRAY_IDENTIFIER);
+            sBuilder.addChangeOfStateField("UIntegerArray", UINTEGER_ARRAY_IDENTIFIER);
+
+            sBuilder.addChangeOfStateField("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
+            PlcSubscriptionRequest subscriptionRequest = sBuilder.build();
+
+            // Get result of creating subscription
+            PlcSubscriptionResponse sResponse = subscriptionRequest.execute().get();
+            final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) sResponse.getSubscriptionHandle("Bool");
+
+            // Create handler for returned value
+            subscriptionHandle.register(plcSubscriptionEvent -> {
+                assert plcSubscriptionEvent.getResponseCode("Bool").equals(PlcResponseCode.OK);
+            });
+
+            //Wait for value to be returned from server
+            Thread.sleep(1200);
+
+            subscriptionHandle.stopSubscriber();
+
             Thread.sleep(20000);
             opcuaConnection.close();
 
@@ -186,50 +226,5 @@ public class ManualPLC4XOpcua {
             throw new PlcRuntimeException(e);
         }
 
-    }
-
-    private static long GetConnectionTime(String ConnectionString) throws Exception {
-
-        OpcuaTcpPlcConnection opcuaConnection = null;
-        OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
-        PlcField field = fieldH.createField("ns=2;i=10855");
-
-        long milisStart = System.currentTimeMillis();
-        opcuaConnection = (OpcuaTcpPlcConnection)
-            new PlcDriverManager().getConnection(ConnectionString);
-        long result = System.currentTimeMillis() - milisStart;
-        opcuaConnection.close();
-        return result;
-    }
-
-    static class Encapsulater {
-        public String connectionString = "";
-
-        private long GetConnectionTime() {
-            long result = 0;
-            for (int counter = 0; counter < 1; counter++) {
-                OpcuaTcpPlcConnection opcuaConnection = null;
-                OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
-                PlcField field = fieldH.createField("ns=2;i=10855");
-
-                long milisStart = System.currentTimeMillis();
-                try {
-                    opcuaConnection = (OpcuaTcpPlcConnection)
-                        new PlcDriverManager().getConnection(connectionString);
-                } catch (PlcConnectionException e) {
-                    throw new PlcRuntimeException(e);
-                }
-                result += System.currentTimeMillis() - milisStart;
-                try {
-                    assert opcuaConnection != null;
-                    opcuaConnection.close();
-                } catch (Exception e) {
-                    throw new PlcRuntimeException(e);
-                }
-
-            }
-            return result;
-
-        }
     }
 }
