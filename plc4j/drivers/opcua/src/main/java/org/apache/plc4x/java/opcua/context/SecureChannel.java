@@ -45,6 +45,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -113,7 +114,7 @@ public class SecureChannel {
     private CompletableFuture<Void> keepAlive;
     private int sendBufferSize;
     private int maxMessageSize;
-    private long senderSequenceNumber;
+    private AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
         this.driverContext = driverContext;
@@ -181,6 +182,10 @@ public class SecureChannel {
                         if (p.getRequestId() == transactionId) {
                             try {
                                 messageBuffer.write(p.getMessage());
+                                if (!(senderSequenceNumber.incrementAndGet() == (p.getSequenceNumber()))) {
+                                    LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSequenceNumber.incrementAndGet(), p.getSequenceNumber());
+                                    context.fireDisconnected();
+                                }
                             } catch (IOException e) {
                                 LOGGER.debug("Failed to store incoming message in buffer {}");
                                 throw new PlcRuntimeException("Error while sending message");
@@ -199,10 +204,7 @@ public class SecureChannel {
                             tokenId.set(opcuaResponse.getSecureTokenId());
                             channelId.set(opcuaResponse.getSecureChannelId());
 
-                            if (!(transactionId == (opcuaResponse.getSequenceNumber() + 1))) {
-                                LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", transactionId, opcuaResponse.getSequenceNumber() + 1);
-                                context.fireDisconnected();
-                            }
+
                             consumer.accept(messageBuffer.toByteArray());
                         }
                     });
@@ -322,7 +324,7 @@ public class SecureChannel {
                             ReadBuffer readBuffer = new ReadBufferByteBased(opcuaOpenResponse.getMessage(), true);
                             ExtensionObject message = ExtensionObjectIO.staticParse(readBuffer, false);
                             //Store the initial sequence number from the server. there's no requirement for the server and client to use the same starting number.
-                            senderSequenceNumber = opcuaOpenResponse.getSequenceNumber();
+                            senderSequenceNumber.set(opcuaOpenResponse.getSequenceNumber());
                             certificateThumbprint = opcuaOpenResponse.getReceiverCertificateThumbprint();
 
                             if (message.getBody() instanceof ServiceFault) {
