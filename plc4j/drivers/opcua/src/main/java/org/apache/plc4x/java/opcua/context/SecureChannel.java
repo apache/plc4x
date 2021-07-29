@@ -467,7 +467,8 @@ public class SecureChannel {
     private void onConnectActivateSessionRequest(ConversationContext<OpcuaAPU> context, CreateSessionResponse opcuaMessageResponse, CreateSessionResponse sessionResponse) throws PlcConnectionException {
 
         senderCertificate = sessionResponse.getServerCertificate().getStringValue();
-        senderNonce = sessionResponse.getServerNonce().getStringValue();
+        encryptionHandler.setServerCertificate(EncryptionHandler.getCertificateX509(senderCertificate));
+        this.senderNonce = sessionResponse.getServerNonce().getStringValue();
         UserTokenType tokenType = UserTokenType.userTokenTypeAnonymous;
 
         for (ExtensionObjectDefinition extensionObject: sessionResponse.getServerEndpoints()) {
@@ -1184,8 +1185,8 @@ public class SecureChannel {
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
                     new NodeIdFourByte((short) 0, OpcuaNodeIdServices.UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
-                    NULL_STRING,
-                    1L);
+                    null,
+                    null);
 
                 return new ExtensionObject(
                     extExpandedNodeId,

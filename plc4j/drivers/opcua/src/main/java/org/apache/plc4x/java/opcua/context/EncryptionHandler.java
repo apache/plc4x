@@ -66,6 +66,10 @@ public class EncryptionHandler {
         this.securitypolicy = securityPolicy;
     }
 
+    public void setServerCertificate(X509Certificate serverCertificate) {
+        this.serverCertificate = serverCertificate;
+    }
+
     public ReadBuffer encodeMessage(MessagePDU pdu, byte[] message) {
         int PREENCRYPTED_BLOCK_LENGTH = 190;
         int unencryptedLength = pdu.getLengthInBytes();
@@ -218,7 +222,7 @@ public class EncryptionHandler {
         return null;
     }
 
-    public X509Certificate getCertificateX509(byte[] senderCertificate) {
+    public static X509Certificate getCertificateX509(byte[] senderCertificate) {
         try {
             CertificateFactory factory =  CertificateFactory.getInstance("X.509");
             LOGGER.info("Public Key Length {}", senderCertificate.length);

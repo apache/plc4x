@@ -195,7 +195,7 @@
         ]
 
         ['316' UserIdentityToken
-            [implicit int 32 'policyLength' 'policyId.lengthInBytes']
+            [implicit int 32 'policyLength' 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
             [simple PascalString 'policyId']
             [simple UserIdentityTokenDefinition 'userIdentityTokenDefinition' ['policyId.stringValue']]
         ]
