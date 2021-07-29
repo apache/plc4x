@@ -56,7 +56,7 @@ public class IncomingPlcMessageHandler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public byte[] getBytesFromXml(Element referenceXml, boolean bigEndian) throws DriverTestsuiteException {
         final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, !bigEndian);
-        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getProtocolName(), driverTestsuiteConfiguration.getOutputFlavor(), referenceXml.getName());
+        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
         // Get Message and Validate
         Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
 

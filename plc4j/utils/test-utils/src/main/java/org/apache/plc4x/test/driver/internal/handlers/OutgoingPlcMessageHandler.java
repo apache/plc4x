@@ -47,6 +47,6 @@ public class OutgoingPlcMessageHandler {
         // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
         final byte[] data = ChannelUtil.getOutboundBytes(embeddedChannel);
         // Validate the data actually matches the expected message.
-        MessageValidatorAndMigrator.validateOutboundMessageAndMigrate("TODO: insert testcase name here",driverTestsuiteConfiguration.getProtocolName(), driverTestsuiteConfiguration.getOutputFlavor(), payload, parserArguments, data, bigEndian, driverTestsuiteConfiguration.isAutoMigrate(), driverTestsuiteConfiguration.getSuiteUri());
+        MessageValidatorAndMigrator.validateOutboundMessageAndMigrate("TODO: insert testcase name here", driverTestsuiteConfiguration.getOptions(), payload, parserArguments, data, bigEndian, driverTestsuiteConfiguration.isAutoMigrate(), driverTestsuiteConfiguration.getSuiteUri());
     }
 }

@@ -35,6 +35,11 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
+    public Set<String> supportedOptions() {
+        return Collections.singleton("package");
+    }
+
+    @Override
     public List<String> supportedOutputFlavors() {
         return Arrays.asList("read-write", "read-only", "passive");
     }
@@ -65,8 +70,9 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
-        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types);
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options) {
+        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
 }

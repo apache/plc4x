@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.language.java;
 
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
@@ -34,14 +35,19 @@ import java.util.function.Function;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+    private final Map<String, String> options;
+
+    public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
+        this.options = options;
     }
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
-        return "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
-            String.join("", protocolName.split("\\-")) + "." +
-            String.join("", languageFlavorName.split("\\-"));
+        return Optional.ofNullable(options.get("package")).orElseGet(() ->
+            "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
+                String.join("", protocolName.split("\\-")) + "." +
+                String.join("", languageFlavorName.split("\\-")));
     }
 
     @Override

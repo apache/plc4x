@@ -41,7 +41,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types)
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+        Map<String, String> options)
         throws GenerationException {
 
         // Configure the Freemarker template engine
@@ -70,7 +71,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
-            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types));
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.putAll(options);
 
             for (Template template : specTemplates) {
                 try {
@@ -90,7 +92,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("outputFlavor", outputFlavor);
             typeContext.put("typeName", typeEntry.getKey());
             typeContext.put("type", typeEntry.getValue());
-            typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types));
+            typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types, options));
 
             // Depending on the type, get the corresponding list of templates.
             List<Template> templateList;
@@ -179,6 +181,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types);
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options);
 
 }
