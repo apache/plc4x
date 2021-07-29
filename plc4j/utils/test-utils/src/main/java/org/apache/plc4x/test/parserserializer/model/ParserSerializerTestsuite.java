@@ -20,17 +20,20 @@
 package org.apache.plc4x.test.parserserializer.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class ParserSerializerTestsuite {
 
     private final String name;
     private final List<Testcase> testcases;
     private final boolean littleEndian;
+    private final Map<String, String> options;
 
-    public ParserSerializerTestsuite(String name, List<Testcase> testcases, boolean littleEndian) {
+    public ParserSerializerTestsuite(String name, List<Testcase> testcases, boolean littleEndian, Map<String, String> options) {
         this.name = name;
         this.testcases = testcases;
         this.littleEndian = littleEndian;
+        this.options = options;
     }
 
     public String getName() {
@@ -43,6 +46,10 @@ public class ParserSerializerTestsuite {
 
     public boolean isLittleEndian() {
         return littleEndian;
+    }
+
+    public Map<String, String> getOptions() {
+        return options;
     }
 
 }

@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.test.migration;
 
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
@@ -43,11 +44,14 @@ public class MessageValidatorAndMigrator {
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageValidatorAndMigrator.class);
 
     /**
-     * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
+     * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true.
+     *
+     * Passed options should contain a single 'package' option or 'protocolName' and 'outputFlavor'.
+     * In case if package is not specified then protocol name and output flavor (e.g read-write) are
+     * used to construct lookup package.
      *
      * @param testCaseName    name of the testcase
-     * @param protocolName    name of the protocol
-     * @param outputFlavor    flavor of the output (e.g read-write)
+     * @param options         map with specific test/lookup options.
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
@@ -57,8 +61,8 @@ public class MessageValidatorAndMigrator {
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, String protocolName, String outputFlavor, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        MessageIO messageIO = MessageResolver.getMessageIO(protocolName, outputFlavor, referenceXml.getName());
+    public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
         validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, bigEndian, autoMigrate, siteURI);
     }
 
@@ -157,15 +161,16 @@ public class MessageValidatorAndMigrator {
     /**
      * Validates a inbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
      *
-     * @param protocolName    name of the protocol
-     * @param outputFlavor    flavor of the output (e.g read-write)
-     * @param referenceXml    the xml we expect the outbound messag
+     * @param options         Options which contain custom 'package' name or keys 'protocolName' (name of the protocol)
+     *                        and 'outputFlavor' (flavor of the output e.g read-write) which are used to construct
+     *                        class lookup root package.
+     * @param referenceXml    the xml we expect the outbound message
      * @param parserArguments the parser arguments to create an instance of the message
      * @return the message if all went well
      */
     @SuppressWarnings("rawtypes")
-    public static Message validateInboundMessageAndGet(String protocolName, String outputFlavor, Element referenceXml, List<String> parserArguments) {
-        MessageIO messageIO = MessageResolver.getMessageIO(protocolName, outputFlavor, referenceXml.getName());
+    public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml, List<String> parserArguments) {
+        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
         return validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
     }
 

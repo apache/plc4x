@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.test.driver.internal;
 
+import static org.apache.plc4x.test.xml.XmlHelper.*;
+
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.test.dom4j.LocationAwareDocumentFactory;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
@@ -126,6 +128,8 @@ public class DriverTestsuite {
 
         private final String driverName;
 
+        private final Element optionsElement;
+
         private final Element driverParametersElement;
 
         private final boolean bigEndian;
@@ -140,6 +144,7 @@ public class DriverTestsuite {
             this.protocolName = extractText(testsuiteXml, "protocolName");
             this.outputFlavor = extractText(testsuiteXml, "outputFlavor");
             this.driverName = extractText(testsuiteXml, "driver-name");
+            this.optionsElement = testsuiteXml.element("options");
             this.driverParametersElement = testsuiteXml.element(new QName("driver-parameters"));
             this.bigEndian = !"false".equals(testsuiteXml.attributeValue("bigEndian"));
             this.autoMigrate = autoMigrate;
@@ -152,7 +157,8 @@ public class DriverTestsuite {
                 protocolName,
                 outputFlavor,
                 driverName,
-                parseDriverParameters(driverParametersElement),
+                parseParameters(optionsElement),
+                parseParameters(driverParametersElement),
                 autoMigrate,
                 bigEndian
             );
@@ -161,14 +167,6 @@ public class DriverTestsuite {
             driverTestsuite.setSetupSteps(parseSetupSteps(driverTestsuiteConfiguration));
             driverTestsuite.setTeardownSteps(parseTearDownSteps(driverTestsuiteConfiguration));
             return driverTestsuite;
-        }
-
-        private String extractText(Element testsuiteXml, String name) {
-            Element element = testsuiteXml.element(new QName(name));
-            if (element == null) {
-                throw new RuntimeException("Required element " + name + " not present");
-            }
-            return element.getTextTrim();
         }
 
         private List<Testcase> parseTestCases(DriverTestsuite driverTestsuite) {
@@ -219,18 +217,6 @@ public class DriverTestsuite {
                 .collect(Collectors.toCollection(LinkedList::new));
         }
 
-        private Map<String, String> parseDriverParameters(Element driverParametersElement) {
-            if (driverParametersElement == null) {
-                return Collections.emptyMap();
-            }
-            Map<String, String> driverParameters = new HashMap<>();
-            for (Element parameter : driverParametersElement.elements(new QName("parameter"))) {
-                String parameterName = extractText(parameter, "name");
-                String parameterValue = extractText(parameter, "value");
-                driverParameters.put(parameterName, parameterValue);
-            }
-            return driverParameters;
-        }
     }
 
 }
