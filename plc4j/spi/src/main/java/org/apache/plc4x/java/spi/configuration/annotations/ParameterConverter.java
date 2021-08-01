@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.configuration.annotations;
 
 import java.lang.annotation.ElementType;

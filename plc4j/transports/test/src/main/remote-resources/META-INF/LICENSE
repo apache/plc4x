@@ -1,0 +1,7 @@
+
+----------------------------------------------
+
+The Files:
+src/main/java/io/netty/channel/embedded/Plc4xEmbeddedChannel.java
+src/main/java/io/netty/channel/embedded/Plc4xEmbeddedEventLoop.java
+Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
