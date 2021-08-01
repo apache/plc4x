@@ -181,13 +181,13 @@ func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	peekChan := make (chan bool)
+	peekChan := make(chan bool)
 	go func() {
 		_, _ = m.reader.Peek(1)
 		peekChan <- true
 	}()
 	select {
-	case <- peekChan:
+	case <-peekChan:
 		return uint32(m.reader.Buffered()), nil
 	case <-time.After(10 * time.Millisecond):
 		return 0, nil

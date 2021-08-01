@@ -57,7 +57,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 type TransportInstance struct {
 	readBuffer  []byte
 	writeBuffer []byte
-	connected	bool
+	connected   bool
 	transport   *Transport
 }
 
