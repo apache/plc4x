@@ -18,7 +18,7 @@
 */
 package org.apache.plc4x.java.opcua.connection;
 
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
+import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
 
@@ -61,43 +61,21 @@ public class OpcuaTcpPlcConnectionTest {
     }
 
     @Test
-    public void discoveryParamTest() {
-        for (String address : validTCPOPC) {
-            for (int port : validPorts) {
-                for (String discoveryParam : nDiscoveryParams) {
-                    String param = "";
-                    param += discoveryParam;
-
-                    OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
-
-                    try {
-                        OpcuaTcpPlcConnection tcpPlcConnection = opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(address), port, param, 5000);
-                        assertTrue(tcpPlcConnection.isSkipDiscovery());
-                    } catch (UnknownHostException e) {
-                        fail("Testadress is no valid InetAddress: " + e);
-                    }
-                }
-            }
-        }
-
-    }
-
-    @Test
     public void testConectionStringPattern() {
 
         for (String address : validTCPOPC) {
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=true");
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=True");
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=TRUE");
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:555?Discovery=True");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=true");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=True");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?discovery=TRUE");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:555?Discovery=True");
             //No Port Specified
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=True");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=True");
             //No Transport Specified
-            assertMatching(OPCUA_URI_PATTERN, "opcua://127.0.0.1:647?discovery=True");
+            assertMatching(URI_PATTERN, "opcua://127.0.0.1:647?discovery=True");
             //No Params Specified
-            assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:111");
+            assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:111");
             //No Transport and Params Specified
-            assertMatching(OPCUA_URI_PATTERN, "opcua://127.0.0.1:754");
+            assertMatching(URI_PATTERN, "opcua://127.0.0.1:754");
         }
     }
 }

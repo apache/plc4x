@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.test.parserserializer.model;
 
+import java.util.Map;
 import org.apache.plc4x.test.model.Location;
 import org.apache.plc4x.test.model.LocationAware;
 import org.dom4j.Element;

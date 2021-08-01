@@ -20,6 +20,7 @@ package org.apache.plc4x.language.c;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import java.util.Set;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -35,6 +36,11 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     @Override
     public String getName() {
         return "C";
+    }
+
+    @Override
+    public Set<String> supportedOptions() {
+        return Collections.emptySet();
     }
 
     @Override
@@ -69,7 +75,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options) {
         return new CLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
 

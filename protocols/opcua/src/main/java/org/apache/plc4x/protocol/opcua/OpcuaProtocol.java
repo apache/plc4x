@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class OpcuaProtocol implements Protocol {
@@ -36,11 +37,37 @@ public class OpcuaProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-        InputStream schemaInputStream = OpcuaProtocol.class.getResourceAsStream("/protocols/opcua/opcua.mspec");
-        if(schemaInputStream == null) {
+
+        InputStream manualInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opc-manual.mspec");
+        if(manualInputStream == null) {
             throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
         }
-        return new MessageFormatParser().parse(schemaInputStream);
-    }
+        Map<String, TypeDefinition> typeDefinitionMap =
+            new LinkedHashMap<>(new MessageFormatParser().parse(manualInputStream));
 
+        InputStream servicesInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opc-services.mspec");
+        if(servicesInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(servicesInputStream));
+
+
+        InputStream statusInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opc-status.mspec");
+        if(statusInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(statusInputStream));
+
+
+        InputStream typesInputStream = OpcuaProtocol.class.getResourceAsStream(
+            "/protocols/opcua/opc-types.mspec");
+        if(typesInputStream == null) {
+            throw new GenerationException("Error loading message-format schema for protocol '" + getName() + "'");
+        }
+        typeDefinitionMap.putAll(new MessageFormatParser().parse(typesInputStream));
+        return typeDefinitionMap;
+    }
 }

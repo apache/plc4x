@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -16,25 +16,21 @@
  specific language governing permissions and limitations
  under the License.
 */
-package org.apache.plc4x.java.opcuaserver;
+package org.apache.plc4x.java.opcua.field;
 
-
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.fail;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 /**
  */
-public class UtilsTest {
-    public static void assertMatching(Pattern pattern, String match) {
-        if (!pattern.matcher(match).matches()) {
-            fail(pattern + "doesn't match " + match);
+public class OpcuaPlcFieldHandler implements PlcFieldHandler {
+
+    @Override
+    public OpcuaField createField(String fieldQuery) {
+        if (OpcuaField.matches(fieldQuery)) {
+            return OpcuaField.of(fieldQuery);
         }
+        throw new PlcInvalidFieldException(fieldQuery);
     }
 
-    public static void assertNoMatching(Pattern pattern, String match) {
-        if (pattern.matcher(match).matches()) {
-            fail(pattern + "does match " + match + " but should not");
-        }
-    }
 }

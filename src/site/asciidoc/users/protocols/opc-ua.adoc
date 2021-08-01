@@ -62,8 +62,10 @@
 || `discovery`  |   Controls the feature of the discovery endpoint of an OPC UA server which every server
 will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
 configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
-configuring it with a `false` value. |
+configuring it with a `false` value.
 
+|| `username`  |   A username to authenticate to the OPCUA server with.
+|| `password`  |   A password to authenticate to the OPCUA server with. |
 
 |===
 
@@ -81,7 +83,7 @@ An example of this connection string would be:-
 
 ----
 
-opcua:tcp://127.0.0.1:12686?discovery=true
+opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
 
 ----
 
@@ -165,11 +167,5 @@ This multi-layered approach accomplishes the original design specification goals
 * Secure: encryption, authentication, and auditing
 * Extensible: ability to add new features without affecting existing applications
 * Comprehensive information modeling: for defining complex information
-
-=== More details
-
-
-The client SDK within the https://projects.eclipse.org/projects/iot.milo[Eclipse Milo] project is used as the basis for the PLC4X OPC UA driver.
-
 
 |===

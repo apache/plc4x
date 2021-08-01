@@ -35,6 +35,11 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
+    public Set<String> supportedOptions() {
+        return Collections.emptySet();
+    }
+
+    @Override
     public List<String> supportedOutputFlavors() {
         return Arrays.asList("read-write", "read-only", "passive");
     }
@@ -65,7 +70,8 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options) {
         return new GoLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
 

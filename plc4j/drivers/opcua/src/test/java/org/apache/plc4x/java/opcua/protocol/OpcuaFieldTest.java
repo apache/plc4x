@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
-import static org.apache.plc4x.java.opcua.protocol.OpcuaField.ADDRESS_PATTERN;
+import static org.apache.plc4x.java.opcua.field.OpcuaField.ADDRESS_PATTERN;
 
 /**
  */

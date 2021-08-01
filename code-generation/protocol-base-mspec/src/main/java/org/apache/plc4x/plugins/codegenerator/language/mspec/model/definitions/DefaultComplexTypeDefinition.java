@@ -71,6 +71,11 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
             field -> (AbstractField) field).collect(Collectors.toList());
     }
 
+    public List<ImplicitField> getImplicitFields() {
+        return fields.stream().filter(field -> field instanceof ImplicitField).map(
+            field -> (ImplicitField) field).collect(Collectors.toList());
+    }
+
     @Override
     public List<VirtualField> getVirtualFields() {
         return fields.stream().filter(field -> (field instanceof VirtualField)).map(field -> (VirtualField) field)
