@@ -158,7 +158,8 @@ Some tools need to be installed before being able to build on Windows:
 * OpenSSL
 
 We have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
-Run the installer as "Administrator" or you won't be able to install it to "C:\Program Files" or the 32 Bit counterpart.
+Run the installer as "Administrator" or you won't be able to install it to every location.
+Please install it to a location, for which the path doesn't contain any whitespaces.
 When running the installer, make sure to select the options:
 * Native Windows
 * x86_64

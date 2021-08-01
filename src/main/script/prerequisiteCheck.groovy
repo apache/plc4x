@@ -183,6 +183,7 @@ def checkFlex() {
 
 def checkGcc() {
     print "Detecting Gcc version:     "
+    // TODO: For windows, check that mingw32-make is on the PATH
     def output
     try {
         output = "gcc --version".execute().text
@@ -286,7 +287,6 @@ def checkCmake() {
     }
 }
 
-
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -331,6 +331,10 @@ def checkSetupTools() {
         println "missing"
         allConditionsMet = false
     }
+}
+
+def checkGo() {
+    //TODO: (On windows) ensure the "go" executable is in the path, or there are failures when running the tests.
 }
 
 /*
@@ -437,12 +441,13 @@ println "Detected Arch: " + arch
 // Find out which profiles are enabled.
 /////////////////////////////////////////////////////
 
-println "Enabled profiles:"
 def boostEnabled = false
 def cEnabled = false
 def cppEnabled = false
 def dockerEnabled = false
 def dotnetEnabled = false
+def goEnabled = false
+// Java is always enabled ...
 def javaEnabled = true
 def pythonEnabled = false
 def sandboxEnabled = false
@@ -451,28 +456,22 @@ def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
     if (activeProfile == "with-boost") {
         boostEnabled = true
-        println "boost"
     } else if (activeProfile == "with-c") {
         cEnabled = true
-        println "c"
     } else if (activeProfile == "with-cpp") {
         cppEnabled = true
-        println "cpp"
     } else if (activeProfile == "with-docker") {
         dockerEnabled = true
-        println "docker"
     } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
-        println "dotnet"
+    } else if (activeProfile == "with-go") {
+        goEnabled = true
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
-        println "python"
     } else if (activeProfile == "with-sandbox") {
         sandboxEnabled = true
-        println "sandbox"
     } else if (activeProfile == "apache-release") {
         apacheReleaseEnabled = true
-        println "apache-release"
     }
 }
 println ""
@@ -541,6 +540,10 @@ if (sandboxEnabled && dockerEnabled) {
 if (cppEnabled || cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
+}
+
+if (goEnabled) {
+    checkGo()
 }
 
 if (apacheReleaseEnabled) {
