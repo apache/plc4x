@@ -38,8 +38,19 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
+    <xsl:param name="osType"></xsl:param>
+
     <xsl:param name="services"></xsl:param>
-    <xsl:param name="file" select="document($services)"/>
+
+    <!-- Intermediate, to reformat the url on windows systems -->
+    <xsl:param name="servicesUrl">
+        <xsl:choose>
+            <xsl:when test="$osType = 'win'">file:///<xsl:value-of select="replace($services, '\\', '/')"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$services"/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:param>
+
+    <xsl:param name="file" select="document($servicesUrl)"/>
 
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.

@@ -37,9 +37,19 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
+    <xsl:param name="osType"></xsl:param>
+
     <xsl:param name="statusCodes"></xsl:param>
 
-    <xsl:param name="statusCodeFile" select="unparsed-text($statusCodes)"/>
+    <!-- Intermediate, to reformat the url on windows systems -->
+    <xsl:param name="statusCodesUrl">
+        <xsl:choose>
+            <xsl:when test="$osType = 'win'">file:///<xsl:value-of select="replace($statusCodes, '\\', '/')"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$statusCodes"/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:param>
+
+    <xsl:param name="statusCodeFile" select="unparsed-text($statusCodesUrl)"/>
 
     <xsl:template match="/">
         <xsl:call-template name="statusCodeParsing"/>

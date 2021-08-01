@@ -37,9 +37,19 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
+    <xsl:param name="osType"></xsl:param>
+
     <xsl:param name="servicesEnum"></xsl:param>
 
-    <xsl:param name="servicesEnumFile" select="unparsed-text($servicesEnum)"/>
+    <!-- Intermediate, to reformat the url on windows systems -->
+    <xsl:param name="servicesEnumUrl">
+        <xsl:choose>
+            <xsl:when test="$osType = 'win'">file:///<xsl:value-of select="replace($servicesEnum, '\\', '/')"/></xsl:when>
+            <xsl:otherwise><xsl:value-of select="$servicesEnum"/></xsl:otherwise>
+        </xsl:choose>
+    </xsl:param>
+
+    <xsl:param name="servicesEnumFile" select="unparsed-text($servicesEnumUrl)"/>
 
     <xsl:template match="/">
         <xsl:call-template name="servicesEnumParsing"/>
