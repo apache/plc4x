@@ -593,8 +593,10 @@ const (
 	KnxManufacturer_M_AMPIO                                              KnxManufacturer = 555
 	KnxManufacturer_M_MINGXING_WISDOM                                    KnxManufacturer = 556
 	KnxManufacturer_M_ALTEN_SW_GMBH                                      KnxManufacturer = 557
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 558
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 559
+	KnxManufacturer_M_V_Y_C_SRL                                          KnxManufacturer = 558
+	KnxManufacturer_M_TERMINUS_GROUP                                     KnxManufacturer = 559
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 560
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 561
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1160,6 +1162,8 @@ func init() {
 		KnxManufacturer_M_AMPIO,
 		KnxManufacturer_M_MINGXING_WISDOM,
 		KnxManufacturer_M_ALTEN_SW_GMBH,
+		KnxManufacturer_M_V_Y_C_SRL,
+		KnxManufacturer_M_TERMINUS_GROUP,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3209,15 +3213,23 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 558:
 		{ /* '558' */
-			return 43954
+			return 615
 		}
 	case 559:
 		{ /* '559' */
-			return 43959
+			return 616
 		}
 	case 56:
 		{ /* '56' */
 			return 94
+		}
+	case 560:
+		{ /* '560' */
+			return 43954
+		}
+	case 561:
+		{ /* '561' */
+			return 43959
 		}
 	case 57:
 		{ /* '57' */
@@ -5467,15 +5479,23 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 558:
 		{ /* '558' */
-			return "ABB - reserved"
+			return "V.Y.C.srl"
 		}
 	case 559:
 		{ /* '559' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "TERMINUS GROUP"
 		}
 	case 56:
 		{ /* '56' */
 			return "Walther Werke"
+		}
+	case 560:
+		{ /* '560' */
+			return "ABB - reserved"
+		}
+	case 561:
+		{ /* '561' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 57:
 		{ /* '57' */
@@ -6703,11 +6723,15 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 557:
 		return KnxManufacturer_M_ALTEN_SW_GMBH
 	case 558:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_V_Y_C_SRL
 	case 559:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
+		return KnxManufacturer_M_TERMINUS_GROUP
 	case 56:
 		return KnxManufacturer_M_WALTHER_WERKE
+	case 560:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 561:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 57:
 		return KnxManufacturer_M_ORAS
 	case 58:
@@ -7828,12 +7852,16 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_MINGXING_WISDOM
 	case "M_ALTEN_SW_GMBH":
 		return KnxManufacturer_M_ALTEN_SW_GMBH
+	case "M_V_Y_C_SRL":
+		return KnxManufacturer_M_V_Y_C_SRL
+	case "M_TERMINUS_GROUP":
+		return KnxManufacturer_M_TERMINUS_GROUP
+	case "M_WALTHER_WERKE":
+		return KnxManufacturer_M_WALTHER_WERKE
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
-	case "M_WALTHER_WERKE":
-		return KnxManufacturer_M_WALTHER_WERKE
 	case "M_ORAS":
 		return KnxManufacturer_M_ORAS
 	case "M_DAETWYLER":
@@ -8984,12 +9012,16 @@ func (e KnxManufacturer) name() string {
 		return "M_MINGXING_WISDOM"
 	case KnxManufacturer_M_ALTEN_SW_GMBH:
 		return "M_ALTEN_SW_GMBH"
+	case KnxManufacturer_M_V_Y_C_SRL:
+		return "M_V_Y_C_SRL"
+	case KnxManufacturer_M_TERMINUS_GROUP:
+		return "M_TERMINUS_GROUP"
+	case KnxManufacturer_M_WALTHER_WERKE:
+		return "M_WALTHER_WERKE"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_WALTHER_WERKE:
-		return "M_WALTHER_WERKE"
 	case KnxManufacturer_M_ORAS:
 		return "M_ORAS"
 	case KnxManufacturer_M_DAETWYLER:
