@@ -26,7 +26,6 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
