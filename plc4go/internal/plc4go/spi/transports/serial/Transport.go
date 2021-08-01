@@ -17,16 +17,17 @@
 // under the License.
 //
 
-package udp
+package serial
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
+	"io"
 	"net"
 	"net/url"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -39,11 +40,11 @@ func NewTransport() *Transport {
 }
 
 func (m Transport) GetTransportCode() string {
-	return "udp"
+	return "serial"
 }
 
 func (m Transport) GetTransportName() string {
-	return "UDP Datagram Transport"
+	return "Serial Transport"
 }
 
 func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
@@ -51,34 +52,18 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 }
 
 func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr) (transports.TransportInstance, error) {
-	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
-	var remoteAddressString string
-	var remotePort int
-	if match := utils.GetSubgroupMatches(connectionStringRegexp, transportUrl.Host); match != nil {
-		if val, ok := match["ip"]; ok && len(val) > 0 {
-			remoteAddressString = val
-		} else if val, ok := match["hostname"]; ok && len(val) > 0 {
-			remoteAddressString = val
-		} else {
-			return nil, errors.New("missing hostname or ip to connect")
-		}
+	var serialPortName = transportUrl.Path
 
-		if val, ok := match["port"]; ok && len(val) > 0 {
-			portVal, err := strconv.Atoi(val)
-			if err != nil {
-				return nil, errors.Wrap(err, "error setting port")
-			}
-			remotePort = portVal
-		} else if val, ok := options["defaultUdpPort"]; ok && len(val) > 0 {
-			portVal, err := strconv.Atoi(val[0])
-			if err != nil {
-				return nil, errors.Wrap(err, "error setting default udp port")
-			}
-			remotePort = portVal
+	var baudRate = uint(115200)
+	if val, ok := options["baud-rate"]; ok {
+		parsedBaudRate, err := strconv.ParseUint(val[0], 10, 32)
+		if err != nil {
+			return nil, errors.Wrap(err, "error setting connect-timeout")
 		} else {
-			return nil, errors.New("error setting port. No explicit or default port provided")
+			baudRate = uint(parsedBaudRate)
 		}
 	}
+
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
 		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
@@ -89,13 +74,7 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
-	// Potentially resolve the ip address, if a hostname was provided
-	remoteAddress, err := net.ResolveUDPAddr("udp", remoteAddressString+":"+strconv.Itoa(remotePort))
-	if err != nil {
-		return nil, errors.Wrap(err, "error resolving typ address")
-	}
-
-	transportInstance := NewTransportInstance(localAddress, remoteAddress, connectTimeout, &m)
+	transportInstance := NewTransportInstance(serialPortName, baudRate, connectTimeout, &m)
 
 	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
 		if transportInstance, ok := typ.(transports.TransportInstance); ok {
@@ -107,87 +86,64 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 }
 
 type TransportInstance struct {
-	LocalAddress   *net.UDPAddr
-	RemoteAddress  *net.UDPAddr
+	SerialPortName string
+	BaudRate       uint
 	ConnectTimeout uint32
 	transport      *Transport
-	udpConn        *net.UDPConn
+	serialPort     io.ReadWriteCloser
 	reader         *bufio.Reader
 }
 
-func NewTransportInstance(localAddress *net.UDPAddr, remoteAddress *net.UDPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
+func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport) *TransportInstance {
 	return &TransportInstance{
-		LocalAddress:   localAddress,
-		RemoteAddress:  remoteAddress,
+		SerialPortName: serialPortName,
+		BaudRate:       baudRate,
 		ConnectTimeout: connectTimeout,
 		transport:      transport,
 	}
 }
 
 func (m *TransportInstance) Connect() error {
-	// If we haven't provided a local address, have the system figure it out by dialing
-	// the remote address and then using that connections local address as local address.
-	if m.LocalAddress == nil {
-		udpTest, err := net.Dial("udp", m.RemoteAddress.String())
-		if err != nil {
-			return errors.Wrap(err, "error connecting to remote address")
-		}
-		m.LocalAddress = udpTest.LocalAddr().(*net.UDPAddr)
-		err = udpTest.Close()
-		if err != nil {
-			return errors.Wrap(err, "error closing test-connection")
-		}
-	}
-
-	// "connect" to the remote
 	var err error
-	m.udpConn, err = net.ListenUDP("udp", m.LocalAddress)
+	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 1}
+	fmt.Printf("%v", config)
+	m.serialPort, err = serial.Open(config)
 	if err != nil {
-		return errors.Wrap(err, "error connecting to remote address")
+		return errors.Wrap(err, "error connecting to serial port")
 	}
 
-	// TODO: Start a worker that uses m.udpConn.ReadFromUDP() to fill a buffer
-	/*go func() {
-	    buf := make([]byte, 1024)
-	    for {
-	        rsize, raddr, err := m.udpConn.ReadFromUDP(buf)
-	        if err != nil {
-	            fmt.Printf("Got %d bytes from %v: %v", rsize, raddr, buf)
-	        }
-	    }
-	}()*/
-	m.reader = bufio.NewReader(m.udpConn)
+	m.reader = bufio.NewReader(m.serialPort)
 
 	return nil
 }
 
 func (m *TransportInstance) Close() error {
-	if m.udpConn == nil {
+	if m.serialPort == nil {
 		return nil
 	}
-	err := m.udpConn.Close()
+	err := m.serialPort.Close()
 	if err != nil {
-		return errors.Wrap(err, "error closing connection")
+		return errors.Wrap(err, "error closing serial port")
 	}
-	m.udpConn = nil
+	m.serialPort = nil
 	return nil
 }
 
 func (m *TransportInstance) IsConnected() bool {
-	return m.udpConn != nil
+	return m.serialPort != nil
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	peekChan := make (chan bool)
+	peekChan := make(chan bool)
 	go func() {
 		_, _ = m.reader.Peek(1)
 		peekChan <- true
 	}()
 	select {
-	case <- peekChan:
+	case <-peekChan:
 		return uint32(m.reader.Buffered()), nil
 	case <-time.After(10 * time.Millisecond):
 		return 0, nil
@@ -217,10 +173,10 @@ func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 }
 
 func (m *TransportInstance) Write(data []uint8) error {
-	if m.udpConn == nil {
+	if m.serialPort == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
-	num, err := m.udpConn.WriteToUDP(data, m.RemoteAddress)
+	num, err := m.serialPort.Write(data)
 	if err != nil {
 		return errors.Wrap(err, "error writing")
 	}

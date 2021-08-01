@@ -23,6 +23,8 @@ type TransportInstance interface {
 	Connect() error
 	Close() error
 
+	IsConnected() bool
+
 	GetNumReadableBytes() (uint32, error)
 	PeekReadableBytes(numBytes uint32) ([]uint8, error)
 	Read(numBytes uint32) ([]uint8, error)

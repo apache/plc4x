@@ -28,6 +28,7 @@ import (
 	"net/url"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type Transport struct {
@@ -139,15 +140,29 @@ func (m *TransportInstance) Close() error {
 	if err != nil {
 		return errors.Wrap(err, "error closing connection")
 	}
+	m.tcpConn = nil
 	return nil
+}
+
+func (m *TransportInstance) IsConnected() bool {
+	return m.tcpConn != nil
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	_, _ = m.reader.Peek(1)
-	return uint32(m.reader.Buffered()), nil
+	peekChan := make (chan bool)
+	go func() {
+		_, _ = m.reader.Peek(1)
+		peekChan <- true
+	}()
+	select {
+	case <- peekChan:
+		return uint32(m.reader.Buffered()), nil
+	case <-time.After(10 * time.Millisecond):
+		return 0, nil
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

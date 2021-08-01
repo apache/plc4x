@@ -27,7 +27,6 @@ import (
 )
 
 type Transport struct {
-	transports.Transport
 }
 
 func NewTransport() *Transport {
@@ -58,6 +57,7 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 type TransportInstance struct {
 	readBuffer  []byte
 	writeBuffer []byte
+	connected	bool
 	transport   *Transport
 }
 
@@ -65,20 +65,26 @@ func NewTransportInstance(transport *Transport) *TransportInstance {
 	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
+		connected:   false,
 		transport:   transport,
 	}
 }
 
 func (m *TransportInstance) Connect() error {
 	log.Trace().Msg("Connect")
+	m.connected = true
 	return nil
 }
 
 func (m *TransportInstance) Close() error {
 	log.Trace().Msg("Close")
+	m.connected = false
 	return nil
 }
 
+func (m *TransportInstance) IsConnected() bool {
+	return m.connected
+}
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	readableBytes := len(m.readBuffer)
 	log.Trace().Msgf("return number of readable bytes %d", readableBytes)
