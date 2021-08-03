@@ -150,6 +150,9 @@ public class SecureChannel {
     public void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
+        //TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
+        //      This value is negotiated when opening a channel
+
         OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
             channelId.get(),
             tokenId.get(),
