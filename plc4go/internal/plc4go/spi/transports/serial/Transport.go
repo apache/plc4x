@@ -21,7 +21,6 @@ package serial
 
 import (
 	"bufio"
-	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
@@ -29,7 +28,6 @@ import (
 	"net"
 	"net/url"
 	"strconv"
-	"time"
 )
 
 type Transport struct {
@@ -105,13 +103,20 @@ func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout u
 
 func (m *TransportInstance) Connect() error {
 	var err error
-	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 1}
-	fmt.Printf("%v", config)
+	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 0, InterCharacterTimeout: 100 /*, RTSCTSFlowControl: true*/}
 	m.serialPort, err = serial.Open(config)
 	if err != nil {
 		return errors.Wrap(err, "error connecting to serial port")
 	}
-
+	// Add a logging layer ...
+	/*logFile, err := ioutil.TempFile(os.TempDir(), "transport-logger")
+	if err != nil {
+		log.Error().Msg("Error creating file for logging transport requests")
+	} else {
+		fileLogger := zerolog.New(logFile).With().Logger()
+		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
+		log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
+	}*/
 	m.reader = bufio.NewReader(m.serialPort)
 
 	return nil
@@ -137,17 +142,8 @@ func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	peekChan := make(chan bool)
-	go func() {
-		_, _ = m.reader.Peek(1)
-		peekChan <- true
-	}()
-	select {
-	case <-peekChan:
-		return uint32(m.reader.Buffered()), nil
-	case <-time.After(10 * time.Millisecond):
-		return 0, nil
-	}
+	_, _ = m.reader.Peek(1)
+	return uint32(m.reader.Buffered()), nil
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
@@ -162,12 +158,12 @@ func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
 	data := make([]uint8, numBytes)
-	for i := uint32(0); i < numBytes; i++ {
-		val, err := m.reader.ReadByte()
-		if err != nil {
-			return nil, errors.Wrap(err, "error reading")
-		}
-		data[i] = val
+	numBytesRead, err := m.reader.Read(data)
+	if err != nil {
+		return nil, errors.Wrap(err, "error reading")
+	}
+	if uint32(numBytesRead) != numBytes {
+		return nil, errors.Wrapf(err, "could only read %d of %d bytes", numBytesRead, numBytes)
 	}
 	return data, nil
 }
