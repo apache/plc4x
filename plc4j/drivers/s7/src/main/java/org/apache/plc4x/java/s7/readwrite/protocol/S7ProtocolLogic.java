@@ -51,6 +51,7 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -512,10 +513,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         try {
             DataTransportSize transportSize = field.getDataType().getDataTransportSize();
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
-            WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue, field.getDataType().getDataProtocolId(),
-                stringLength);
-            if(writeBuffer != null) {
-                byte[] data = writeBuffer.getData();
+            ByteBuffer byteBuffer = null;
+            for(int i = 0; i < field.getNumberOfElements(); i++) {
+                WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue.getIndex(i),
+                    field.getDataType().getDataProtocolId(), stringLength);
+                if(writeBuffer != null) {
+                    // Allocate enough space for all items.
+                    if(byteBuffer == null) {
+                        byteBuffer = ByteBuffer.allocate(writeBuffer.getData().length * field.getNumberOfElements());
+                    }
+                    byteBuffer.put(writeBuffer.getData());
+                }
+            }
+            if(byteBuffer != null) {
+                byte[] data = byteBuffer.array();
                 return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
             }
         } catch (ParseException e) {
