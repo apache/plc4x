@@ -86,6 +86,13 @@ public class StaticHelper {
         throw new PlcRuntimeException("Unable to count object of type " + obj.getClass().getName());
     }
 
+    public static int STR_LEN(String str) {
+        if (str == null) {
+            return 0;
+        }
+        return str.length();
+    }
+
     public static <T> T CAST(Object obj, Class<T> clazz) {
         try {
             return clazz.cast(obj);

@@ -221,9 +221,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                 <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+        long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        int ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
+        long ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
         while(readBuffer.getPos() < ${arrayField.name}EndPos) {
             _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
@@ -337,9 +337,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        long _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
-        int ${manualArrayField.name}EndPos = readBuffer.getPos() + _${manualArrayField.name}Length;
+        long ${manualArrayField.name}EndPos = readBuffer.getPos() + _${manualArrayField.name}Length;
         while(readBuffer.getPos() < ${manualArrayField.name}EndPos) {
             _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
             <#-- After parsing, update the current position, but only if it's needed -->

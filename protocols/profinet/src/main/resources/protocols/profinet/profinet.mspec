@@ -27,6 +27,25 @@
 [discriminatedType 'EthernetFamePayload'
     [discriminator uint 16 'packetType']
     [typeSwitch 'packetType'
+        ['0x0800' IPv4
+            [const    uint 4    'version'                         '0x4'                      ]
+            [const    uint 4    'headerLength'                    '0x5'                      ]
+            [const    uint 6    'differentiatedServicesCodepoint' '0x00'                     ]
+            [const    uint 2    'explicitCongestionNotification'  '0x0'                      ]
+            [implicit uint 16   'totalLength'                     '20 + packet.lengthInBytes']
+            [simple   uint 15   'identification'                                             ]
+            [const    uint 3    'flags'                           '0x00'                     ]
+            [const    uint 13   'fragmentOffset'                  '0x00'                     ]
+            // Time to live: 64
+            [const    uint 8    'timeToLive'                      '0x40'                     ]
+            // Protocol: UDP
+            [const    uint 8    'protocol'                        '0x11'                     ]
+            // TODO: Implement
+            //[checksum uint 16   'headerChecksum'                                             ]
+            [simple   IpAddress 'sourceAddress'                                              ]
+            [simple   IpAddress 'destinationAddress'                                         ]
+            [simple   UdpPacket 'packet'                                                     ]
+        ]
         ['0x8100' VirtualLanEthernetFramePayload
             [simple VirtualLanPriority  'priority']
             [simple bit                 'ineligible']
@@ -38,6 +57,93 @@
         ]
     ]
 ]
+
+[type 'UdpPacket'
+    [simple   uint 16      'sourcePort'                                        ]
+    [simple   uint 16      'destinationPort'                                   ]
+    [implicit uint 16      'packetLength'    'lengthInBytes'                   ]
+    // TODO: Implement
+    //[checksum uint 16      'headerChecksum'                                    ]
+    [array    byte         'payload'         count           'packetLength - 8']
+]
+
+[discriminatedType 'DceRpcPacket'
+    [const         uint 8           'version'      '0x04'                 ]
+    [discriminator DceRpcPacketType 'packetType'                          ]
+    [typeSwitch 'packetType'
+        ['REQUEST'  DceRpcPacketRequest
+            // Flags: Idempotent
+            [const    uint 8           'flags1'            '0x20'         ]
+        ]
+
+        ['RESPONSE' DceRpcPacketResponse
+            [const    uint 8           'flags1'            '0x0A'         ]
+        ]
+    ]
+    [const    uint 8           'flags2'            '0x00'                 ]
+    // Byte Order: Little-Endian
+    [const    uint 4           'byteOder'          '0x1'                  ]
+    // Character Type: Ascii
+    [const    uint 4           'characterType'     '0x0'                  ]
+    // Floating Point Type: IEEE
+    [const    uint 8           'floatingPointType' '0x00'                 ]
+    [const    uint 8           'serialHigh'        '0x00'                 ]
+    // Some constants probably related to selecting the DCE/RPC objects
+    [const    uint 32          'uuid1'             '0xDEA00000'           ]
+    [const    uint 16          'uuid2'             '0x6C97'               ]
+    [const    uint 16          'uuid3'             '0x11D1'               ]
+    [const    uint 16          'uuid4'             '0x7182'               ]
+    [simple   uint 48          'uuid'                                     ]
+    [const    uint 32          'interface1'        '0xDEA00001'           ]
+    [const    uint 16          'interface2'        '0x6C97'               ]
+    [const    uint 16          'interface3'        '0x11D1'               ]
+    [const    uint 16          'interface4'        '0x7182'               ]
+    [const    uint 32          'interface5'        '0x7DDF4224 '          ]
+    [const    uint 16          'interface6'        '0xA000'               ]
+    [simple   uint 32          'activity'                                 ]
+    [const    uint 16          'activity2'         '0x0000'               ]
+    [const    uint 16          'activity3'         '0x1010'               ]
+    [const    uint 16          'activity4'         '0x8098'               ]
+    [const    uint 32          'activity5'         '0xA3A93D3C'           ]
+    [const    uint 16          'activity6'         '0x6D60'               ]
+    [simple   uint 32          'serverBootTime'                           ]
+    [const    uint 32          'interfaceVar'      '0x00000001'           ]
+    [simple   uint 32          'sequenceNumber'                           ]
+    [simple   Operation        'operation'                                ]
+    [const    uint 16          'interfaceHint'     '0xFFFF'               ]
+    [const    uint 16          'activityHint'      '0xFFFF'               ]
+    [implicit uint 16          'fragmentLength'    'payload.lengthInBytes']
+    [const    uint 16          'fragmentNum'       '0x0000'               ]
+    [const    uint 8           'authProto'         '0x00'                 ]
+    [const    uint 8           'serialLow'         '0x00'                 ]
+    [simple   ProfinetIoPacket 'payload'                                  ]
+]
+
+[type 'Uuid'
+    [array byte 'data' count '16']
+]
+
+[type 'IpAddress'
+    [array uint 8 'data' count '4']
+]
+
+[enum uint 8 'DceRpcPacketType'
+    ['0x00' REQUEST ]
+    ['0x02' RESPONSE]
+]
+
+[enum uint 16 'Operation'
+    ['0x0000' CONNECT]
+    ['0x0003' WRITE  ]
+]
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//   PROFINET DCP
+//
+// Discovery and basic configuration
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 
 // Page 90
 [discriminatedType 'DCP_PDU'
@@ -352,4 +458,85 @@
 
 [type 'MacAddress'
     [array uint 8 'address' count '6']
+]
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//   PROFINET IO
+//
+// CM: Context Manager
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// Little Endian
+[type 'ProfinetIoPacket'
+    [simple uint 32        'argsMaximum']
+    [simple uint 32        'argsLength']
+    [simple uint 32        'arrayMaximumCount']
+    [simple uint 32        'arrayOffset']
+    [simple uint 32        'arrayActualCount']
+    [array ProfinetIoBlock 'blocks' length 'argsLength']
+]
+
+// Big Endian
+[type 'ProfinetIoBlock'
+    [discriminator PNBlockType 'blockType'                           ]
+    [implicit      uint 16     'blockLength'      'lengthInBytes - 4']
+    [simple        uint 8      'blockVersionHigh'                    ]
+    [simple        uint 8      'blockVersionLow'                     ]
+    [typeSwitch 'blockType'
+        ['AR_BLOCK_REQ' ProfinetIoBlockArBlockReq
+            [simple   PNArType          'arType'                                                 ]
+            [simple   Uuid              'arUuid'                                                 ]
+            [simple   uint 16           'sessionKey'                                             ]
+            [simple   MacAddress        'cmInitiatorMacAddr'                                     ]
+            [simple   Uuid              'cmInitiatorObjectUuid'                                  ]
+            // Begin ARProperties
+            [simple   bit               'pullModuleAlarmAllowed'                                 ]
+            [simple   bit               'nonLegacyStartupMode'                                   ]
+            [simple   bit               'combinedObjectContainerUsed'                            ]
+            [reserved uint 17           '0x00000'                                                ]
+            [simple   bit               'acknowledgeCompanionAr'                                 ]
+            [simple   PNCompanionArType 'companionArType'                                        ]
+            [simple   bit               'deviceAccess'                                           ]
+            [reserved uint 3            '0x0'                                                    ]
+            [simple   bit               'cmInitiator'                                            ]
+            [simple   bit               'supervisorTakeoverAllowed'                              ]
+            [simple   PNState           'state'                                                  ]
+            // End ARProperties
+            [simple   uint 16           'cmInitiatorActivityTimeoutFactor'                       ]
+            [simple   uint 16           'cmInitiatorUdpRtPort'                                   ]
+            [implicit uint 16           'stationNameLength'     'STR_LEN(cmInitiatorStationName)']
+            [simple   string            'stationNameLength * 8' 'cmInitiatorStationName'         ]
+        ]
+        ['IO_CR_BLOCK_REQ' ProfinetIoBlockIoCrBlockReq
+            [simple PNIoCrType          'ioCrType'     ]
+            [simple uint 16             'ioCrReference']
+            [simple uint 16             'lt'           ]
+            // Begin IOCRProperties
+            // TODO: To Be Continued ...
+            // End IOCRProperties
+        ]
+    ]
+]
+
+[enum uint 16 'PNBlockType'
+    ['0x0101' AR_BLOCK_REQ   ]
+    ['0x0102' IO_CR_BLOCK_REQ]
+]
+
+[enum uint 16 'PNArType'
+    ['0x0001' IO_CONTROLLER]
+]
+
+[enum uint 2 'PNCompanionArType'
+    ['0x0' SINGLE_AR]
+]
+
+[enum uint 3 'PNState'
+    ['0x1' ACTIVE]
+]
+
+[enum uint 16 'PNIoCrType'
+    ['0x0001' INPUT_CR]
 ]

@@ -121,8 +121,8 @@ public class ${type.name}IO {
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                             <#if helper.isLengthArrayField(field)>
             // Length array
-            int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-            int ${field.name}EndPos = readBuffer.getPos() + _${field.name}Length;
+            long _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
+            long ${field.name}EndPos = readBuffer.getPos() + _${field.name}Length;
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${field.name}EndPos) {
                 value.add(
