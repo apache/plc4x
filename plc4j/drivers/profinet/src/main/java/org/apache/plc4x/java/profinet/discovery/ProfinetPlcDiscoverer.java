@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.io.EthernetFrameIO;
+import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
 import org.apache.plc4x.java.profinet.readwrite.types.VirtualLanPriority;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -112,23 +112,23 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                     if (isPnPacket) {
                                         ReadBuffer reader = new ReadBufferByteBased(ethernetPacket.getRawData());
                                         try {
-                                            EthernetFrame ethernetFrame = EthernetFrameIO.staticParse(reader);
-                                            DCP_PDU pdu;
+                                            Ethernet_Frame ethernetFrame = Ethernet_FrameIO.staticParse(reader);
+                                            PnDcp_Pdu pdu;
                                             // Access the pdu data (either directly or by
                                             // unpacking the content of the VLAN packet.
-                                            if (ethernetFrame.getPayload() instanceof VirtualLanEthernetFramePayload) {
-                                                VirtualLanEthernetFramePayload vlefpl = (VirtualLanEthernetFramePayload) ethernetFrame.getPayload();
-                                                pdu = ((ProfinetEthernetFramePayload) vlefpl.getPayload()).getPdu();
+                                            if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                                                Ethernet_FramePayload_VirtualLan vlefpl = (Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload();
+                                                pdu = ((Ethernet_FramePayload_PnDcp) vlefpl.getPayload()).getPdu();
                                             } else {
-                                                pdu = ((ProfinetEthernetFramePayload) ethernetFrame.getPayload()).getPdu();
+                                                pdu = ((Ethernet_FramePayload_PnDcp) ethernetFrame.getPayload()).getPdu();
                                             }
                                             // Inspect the PDU itself
                                             // (in this case we only process identify response packets)
-                                            if (pdu instanceof DCP_Identify_ResPDU) {
-                                                DCP_Identify_ResPDU identifyResPDU = (DCP_Identify_ResPDU) pdu;
+                                            if (pdu instanceof PnDcp_Pdu_IdentifyRes) {
+                                                PnDcp_Pdu_IdentifyRes identifyResPDU = (PnDcp_Pdu_IdentifyRes) pdu;
 
-                                                Map<String, DCP_Block> blocks = new HashMap<>();
-                                                for (DCP_Block block : identifyResPDU.getBlocks()) {
+                                                Map<String, PnDcp_Block> blocks = new HashMap<>();
+                                                for (PnDcp_Block block : identifyResPDU.getBlocks()) {
                                                     String blockName = block.getOption().name() + "-" + block.getSuboption().toString();
                                                     blocks.put(blockName, block);
                                                 }
@@ -140,12 +140,12 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
                                                 String deviceTypeName = "unknown";
                                                 if (blocks.containsKey(DEVICE_TYPE_NAME)) {
-                                                    DCP_BlockDevicePropertiesDeviceVendor block = (DCP_BlockDevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
+                                                    PnDcp_Block_DevicePropertiesDeviceVendor block = (PnDcp_Block_DevicePropertiesDeviceVendor) blocks.get(DEVICE_TYPE_NAME);
                                                     deviceTypeName = new String(block.getDeviceVendorValue());
                                                 }
                                                 String deviceName = "unknown";
                                                 if (blocks.containsKey(DEVICE_NAME_OF_STATION)) {
-                                                    DCP_BlockDevicePropertiesNameOfStation block = (DCP_BlockDevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
+                                                    PnDcp_Block_DevicePropertiesNameOfStation block = (PnDcp_Block_DevicePropertiesNameOfStation) blocks.get(DEVICE_NAME_OF_STATION);
                                                     deviceName = new String(block.getNameOfStation());
                                                 }
 
@@ -176,21 +176,21 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         pool.execute(t);
 
                         // Construct and send the search request.
-                        EthernetFrame identificationRequest = new EthernetFrame(
+                        Ethernet_Frame identificationRequest = new Ethernet_Frame(
                             // Pre-Defined PROFINET discovery MAC address
                             new MacAddress(new short[]{0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00}),
                             toPlc4xMacAddress(macAddress),
-                            new VirtualLanEthernetFramePayload(VirtualLanPriority.BEST_EFFORT, false, 0,
-                                new ProfinetEthernetFramePayload(
-                                    new DCP_Identify_ReqPDU(
-                                        new ServiceType(false, false),
+                            new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
+                                new Ethernet_FramePayload_PnDcp(
+                                    new PnDcp_Pdu_IdentifyReq(
+                                        new PnDcp_ServiceType(false, false),
                                         1,
                                         256,
-                                        new DCP_Block[]{
-                                            new DCP_BlockALLSelector()
+                                        new PnDcp_Block[]{
+                                            new PnDcp_Block_ALLSelector()
                                         }))));
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
-                        EthernetFrameIO.staticSerialize(buffer, identificationRequest);
+                        Ethernet_FrameIO.staticSerialize(buffer, identificationRequest);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
                         handle.sendPacket(packet);
                     }

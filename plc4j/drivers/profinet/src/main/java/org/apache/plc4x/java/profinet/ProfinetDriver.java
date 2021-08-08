@@ -26,8 +26,8 @@ import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
 import org.apache.plc4x.java.profinet.field.ProfinetField;
 import org.apache.plc4x.java.profinet.field.ProfinetFieldHandler;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
-import org.apache.plc4x.java.profinet.readwrite.EthernetFrame;
-import org.apache.plc4x.java.profinet.readwrite.io.EthernetFrameIO;
+import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
+import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -40,7 +40,7 @@ import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 
 import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
+public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -123,8 +123,8 @@ public class ProfinetDriver extends GeneratedDriverBase<EthernetFrame> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<EthernetFrame> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EthernetFrame.class, EthernetFrameIO.class)
+    protected ProtocolStackConfigurer<Ethernet_Frame> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(Ethernet_Frame.class, Ethernet_FrameIO.class)
             .withProtocol(ProfinetProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             // Every incoming message is to be treated as a response.

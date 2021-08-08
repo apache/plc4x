@@ -21,7 +21,7 @@ package org.apache.plc4x.java.profinet.protocol;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.readwrite.EthernetFrame;
+import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -30,7 +30,7 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ProfinetProtocolLogic extends Plc4xProtocolBase<EthernetFrame> implements HasConfiguration<ProfinetConfiguration> {
+public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
     private RequestTransactionManager tm;
     private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
@@ -41,7 +41,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<EthernetFrame> impl
     }
 
     @Override
-    public void close(ConversationContext<EthernetFrame> context) {
+    public void close(ConversationContext<Ethernet_Frame> context) {
         // Nothing to do here ...
     }
 

@@ -18,14 +18,14 @@
  */
 package org.apache.plc4x.java.profinet.protocol;
 
-import org.apache.plc4x.java.profinet.readwrite.EthernetFrame;
+import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 
-public class ProfinetDiscoveryLogic extends Plc4xProtocolBase<EthernetFrame> {
+public class ProfinetDiscoveryLogic extends Plc4xProtocolBase<Ethernet_Frame> {
 
     @Override
-    public void close(ConversationContext<EthernetFrame> context) {
+    public void close(ConversationContext<Ethernet_Frame> context) {
 
     }
 
