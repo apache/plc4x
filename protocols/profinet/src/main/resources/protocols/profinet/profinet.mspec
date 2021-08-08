@@ -17,6 +17,25 @@
  * under the License.
  */
 
+ /*
+ Overview of the Protocols involved in this driver:
+
+ Ethernet
+ Udp                                                        (Based on Ethernet)
+ DceRpc                                                     (Based on Udp and Ethernet)
+
+ ARP		Address Resolution Protocol                     (Based on Ethernet)
+ LLDP		Link Layer Discovery Protocol                   (Based on Ethernet)
+
+ PN-DCP		PROFINET Discovery and Configuration Protocol   (Based on Ethernet)
+ PNIO-CM 	PROFINET IO Context Manager                     (Based on DCP/RPC, UDP and Ethernet)
+ PNIO		PROFINET IO                                     (Based on Ethernet)
+ PNIO_PS 	PROFIsafe protocol                              (Based on Ethernet)
+ PNIO-AL	PROFINET Alarm Events                           (Based on Ethernet)
+
+ PN-PTCP	PROFINET Precision Transparent Clock Protocol
+*/
+
 [type 'EthernetFrame'
     // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress          'destination']
@@ -116,7 +135,7 @@
     [const    uint 16          'fragmentNum'       '0x0000'               ]
     [const    uint 8           'authProto'         '0x00'                 ]
     [const    uint 8           'serialLow'         '0x00'                 ]
-    [simple   ProfinetIoPacket 'payload'                                  ]
+    [simple   PnIoCmPacket     'payload'                                  ]
 ]
 
 [type 'Uuid'
@@ -468,75 +487,177 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// Little Endian
-[type 'ProfinetIoPacket'
+// Little Endian !!!!!
+[type 'PnIoCmPacket'
     [simple uint 32        'argsMaximum']
     [simple uint 32        'argsLength']
     [simple uint 32        'arrayMaximumCount']
     [simple uint 32        'arrayOffset']
     [simple uint 32        'arrayActualCount']
-    [array ProfinetIoBlock 'blocks' length 'argsLength']
+    [array PnIoCmBlock 'blocks' length 'argsLength']
 ]
 
 // Big Endian
-[type 'ProfinetIoBlock'
-    [discriminator PNBlockType 'blockType'                           ]
+[type 'PnIoCmBlock'
+    [discriminator PnIoCmBlockType 'blockType'                       ]
     [implicit      uint 16     'blockLength'      'lengthInBytes - 4']
     [simple        uint 8      'blockVersionHigh'                    ]
     [simple        uint 8      'blockVersionLow'                     ]
     [typeSwitch 'blockType'
-        ['AR_BLOCK_REQ' ProfinetIoBlockArBlockReq
-            [simple   PNArType          'arType'                                                 ]
-            [simple   Uuid              'arUuid'                                                 ]
-            [simple   uint 16           'sessionKey'                                             ]
-            [simple   MacAddress        'cmInitiatorMacAddr'                                     ]
-            [simple   Uuid              'cmInitiatorObjectUuid'                                  ]
+        ['AR_BLOCK_REQ' PnIoCmBlockArBlockReq
+            [simple   PnIoCmArType          'arType'                                                 ]
+            [simple   Uuid                  'arUuid'                                                 ]
+            [simple   uint 16               'sessionKey'                                             ]
+            [simple   MacAddress            'cmInitiatorMacAddr'                                     ]
+            [simple   Uuid                  'cmInitiatorObjectUuid'                                  ]
             // Begin ARProperties
-            [simple   bit               'pullModuleAlarmAllowed'                                 ]
-            [simple   bit               'nonLegacyStartupMode'                                   ]
-            [simple   bit               'combinedObjectContainerUsed'                            ]
-            [reserved uint 17           '0x00000'                                                ]
-            [simple   bit               'acknowledgeCompanionAr'                                 ]
-            [simple   PNCompanionArType 'companionArType'                                        ]
-            [simple   bit               'deviceAccess'                                           ]
-            [reserved uint 3            '0x0'                                                    ]
-            [simple   bit               'cmInitiator'                                            ]
-            [simple   bit               'supervisorTakeoverAllowed'                              ]
-            [simple   PNState           'state'                                                  ]
+            [simple   bit                   'pullModuleAlarmAllowed'                                 ]
+            [simple   bit                   'nonLegacyStartupMode'                                   ]
+            [simple   bit                   'combinedObjectContainerUsed'                            ]
+            [reserved uint 17               '0x00000'                                                ]
+            [simple   bit                   'acknowledgeCompanionAr'                                 ]
+            [simple   PnIoCmCompanionArType 'companionArType'                                        ]
+            [simple   bit                   'deviceAccess'                                           ]
+            [reserved uint 3                '0x0'                                                    ]
+            [simple   bit                   'cmInitiator'                                            ]
+            [simple   bit                   'supervisorTakeoverAllowed'                              ]
+            [simple   PnIoCmState           'state'                                                  ]
             // End ARProperties
-            [simple   uint 16           'cmInitiatorActivityTimeoutFactor'                       ]
-            [simple   uint 16           'cmInitiatorUdpRtPort'                                   ]
-            [implicit uint 16           'stationNameLength'     'STR_LEN(cmInitiatorStationName)']
-            [simple   string            'stationNameLength * 8' 'cmInitiatorStationName'         ]
+            [simple   uint 16               'cmInitiatorActivityTimeoutFactor'                       ]
+            [simple   uint 16               'cmInitiatorUdpRtPort'                                   ]
+            [implicit uint 16               'stationNameLength'     'STR_LEN(cmInitiatorStationName)']
+            [simple   string                'stationNameLength * 8' 'cmInitiatorStationName'         ]
         ]
-        ['IO_CR_BLOCK_REQ' ProfinetIoBlockIoCrBlockReq
-            [simple PNIoCrType          'ioCrType'     ]
-            [simple uint 16             'ioCrReference']
-            [simple uint 16             'lt'           ]
+        ['IO_CR_BLOCK_REQ' PnIoCmBlockIoCrBlockReq
+            [simple PnIoCmIoCrType          'ioCrType'                                               ]
+            [simple uint 16                 'ioCrReference'                                          ]
+            [simple uint 16                 'lt'                                                     ]
             // Begin IOCRProperties
-            // TODO: To Be Continued ...
+            [simple   bit                   'fullSubFrameStructure'                                  ]
+            [simple   bit                   'distributedSubFrameWatchDog'                            ]
+            [simple   bit                   'fastForwardingMacAdr'                                   ]
+            [reserved uint 16               '0x0000'                                                 ]
+            [simple   bit                   'mediaRedundancy'                                        ]
+            [reserved uint 7                '0x00'                                                   ]
+            [simple   PnIoCmRtClass         'rtClass'                                                ]
             // End IOCRProperties
+            [simple   uint 16               'dataLength'                                             ]
+            [simple   uint 16               'frameId'                                                ]
+            [simple   uint 16               'sendClockFactor'                                        ]
+            [simple   uint 16               'reductionRatio'                                         ]
+            [simple   uint 16               'phase'                                                  ]
+            [simple   uint 16               'sequence'                                               ]
+            [simple   uint 32               'frameSendOffset'                                        ]
+            [simple   uint 16               'watchDogFactor'                                         ]
+            [simple   uint 16               'dataHoldFactor'                                         ]
+            [simple   uint 16               'ioCrTagHeader'                                          ]
+            [simple   MacAddress            'ioCrMulticastMacAdr'                                    ]
+            [implicit uint 16               'numberOfApis'        'COUNT(apis)'                      ]
+            [array    PnIoCmIoCrBlockReqApi 'apis'                count         'numberOfApis'       ]
+        ]
+        ['ALARM_CR_BLOCK_REQ' PnIoCmBlockAlarmCrBlockReq
+            [simple   PnIoCmAlarmCrType     'alarmType'                                              ]
+            [simple   uint 16               'lt'                                                     ]
+            // Begin AlarmCrProperties
+            [reserved uint 30               '0x00000000'                                             ]
+            [simple   bit                   'transport'                                              ]
+            [simple   bit                   'priority'                                               ]
+            // End AlarmCrProperties
+            [simple   uint 16               'rtaTimeoutFactor'                                       ]
+            [simple   uint 16               'rtaRetries'                                             ]
+            [simple   uint 16               'localAlarmReference'                                    ]
+            [simple   uint 16               'maxAlarmDataLength'                                     ]
+            [simple   uint 16               'alarmCtrTagHeaderHigh'                                  ]
+            [simple   uint 16               'alarmCtrTagHeaderLow'                                   ]
+        ]
+        ['EXPECTED_SUBMODULE_BLOCK_REQ' PnIoCmBlockExpectedSubmoduleBlockReq
+            [implicit uint 16                      'numberOfApis'    'COUNT(apis)'               ]
+            [array    PnIoCmExpectedSubmoduleBlockReqApi 'apis'            count         'numberOfApis']
         ]
     ]
 ]
 
-[enum uint 16 'PNBlockType'
-    ['0x0101' AR_BLOCK_REQ   ]
-    ['0x0102' IO_CR_BLOCK_REQ]
+[type 'PnIoCmIoCrBlockReqApi'
+    [const    uint 32            'api'              '0x00000000'            ]
+    [implicit uint 16            'numIoDataObjects' 'COUNT(ioDataObjects)'  ]
+    [array    PnIoCmIoDataObject 'ioDataObjects'    count 'numIoDataObjects']
+    [implicit uint 16            'numIoCss'         'COUNT(ioCss)'          ]
+    [array    PnIoCmIoCs         'ioCss'            count 'numIoCss'        ]
 ]
 
-[enum uint 16 'PNArType'
+[type 'PnIoCmIoDataObject'
+    [simple   uint 16 'slotNumber'             ]
+    [simple   uint 16 'subSlotNumber'          ]
+    [simple   uint 16 'ioDataObjectFrameOffset']
+]
+
+[type 'PnIoCmIoCs'
+    [simple   uint 16 'slotNumber'   ]
+    [simple   uint 16 'subSlotNumber']
+    [simple   uint 16 'ioFrameOffset']
+]
+
+[type 'PnIoCmExpectedSubmoduleBlockReqApi'
+    [const    uint 32         'api'               '0x00000000'                       ]
+    [simple   uint 16         'slotNumber'                                           ]
+    [simple   uint 32         'moduleIdentNumber'                                    ]
+    [simple   uint 16         'moduleProperties'                                     ]
+    [implicit uint 16         'numSubmodules'     'COUNT(submodules)'                ]
+    [array    PnIoCmSubmodule 'submodules'        count               'numSubmodules']
+]
+
+[type 'PnIoCmSubmodule'
+    [simple   uint 16               'slotNumber'                  ]
+    [simple   uint 32               'submoduleIdentNumber'        ]
+    // Begin SubmoduleProperties
+    [reserved uint 10 '0x000']
+    [simple   bit                   'discardIoxs'                 ]
+    [simple   bit                   'reduceOutputModuleDataLength']
+    [simple   bit                   'reduceInputModuleDataLength' ]
+    [simple   bit                   'sharedInput'                 ]
+    [simple   PnIoCmSubmoduleType   'submoduleType'               ]
+    // End SubmoduleProperties
+    [simple   PnIoCmDescriptionType 'descriptionType'             ]
+    [simple   uint 16               'submoduleDataLength'         ]
+    [simple   uint 8                'lengthIoCs'                  ]
+    [simple   uint 8                'lengthIoPs'                  ]
+]
+
+[enum uint 16 'PnIoCmBlockType'
+    ['0x0101' AR_BLOCK_REQ                ]
+    ['0x0102' IO_CR_BLOCK_REQ             ]
+    ['0x0103' ALARM_CR_BLOCK_REQ          ]
+    ['0x0104' EXPECTED_SUBMODULE_BLOCK_REQ]
+]
+
+[enum uint 16 'PnIoCmArType'
     ['0x0001' IO_CONTROLLER]
 ]
 
-[enum uint 2 'PNCompanionArType'
+[enum uint 2 'PnIoCmCompanionArType'
     ['0x0' SINGLE_AR]
 ]
 
-[enum uint 3 'PNState'
+[enum uint 3 'PnIoCmState'
     ['0x1' ACTIVE]
 ]
 
-[enum uint 16 'PNIoCrType'
+[enum uint 16 'PnIoCmIoCrType'
     ['0x0001' INPUT_CR]
+]
+
+[enum uint 4 'PnIoCmRtClass'
+    ['0x0010' RT_CLASS_2]
+]
+
+[enum uint 16 'PnIoCmAlarmCrType'
+    ['0x0001' ALARM_CR]
+]
+
+[enum uint 2 'PnIoCmSubmoduleType'
+    ['0x0' NO_INPUT_NO_OUTPUT_DATA]
+]
+
+[enum uint 16 'PnIoCmDescriptionType'
+    ['0x0001' INPUT]
 ]
