@@ -79,67 +79,95 @@
 ]
 
 [type 'Udp_Packet'
-    [simple   uint 16      'sourcePort'                                        ]
-    [simple   uint 16      'destinationPort'                                   ]
-    [implicit uint 16      'packetLength'    'lengthInBytes'                   ]
+    [simple   uint 16       'sourcePort'                                        ]
+    [simple   uint 16       'destinationPort'                                   ]
+    [implicit uint 16       'packetLength'    'lengthInBytes'                   ]
     // TODO: Implement
-    //[checksum uint 16      'headerChecksum'                                    ]
-    [array    byte         'payload'         count           'packetLength - 8']
+    //[checksum uint 16       'headerChecksum'                                    ]
+    [simple   DceRpc_Packet 'payload'                                           ]
 ]
 
-// Little-Endian
-// This type is explicitly not directly linked to the Udp_Packet.payload as it has a different endianess
-// TODO: As only this type and the first layer of PnIo seem to be little-endian, perhaps a workaround to avoid endianes switching would be good.
+// 4.10.3.2
 [discriminatedType 'DceRpc_Packet'
-    [const         uint 8           'version'      '0x04'                 ]
-    [discriminator DceRpc_PacketType 'packetType'                         ]
+    [const         uint 8            'version'           '0x04'                 ]
+    [discriminator DceRpc_PacketType 'packetType'                               ]
     [typeSwitch 'packetType'
         ['REQUEST'  DceRpc_Packet_Req
-            // Flags: Idempotent
-            [const    uint 8           'flags1'            '0x20'         ]
+            [reserved uint 1         '0x0'                                      ]
+            [const    uint 1         'broadcast'                        '0'     ]
+            [const    uint 1         'idempotent'                       '1'     ]
+            [const    uint 1         'maybe'                            '0'     ]
+            [const    uint 1         'noFragmentAcknowledgeRequested'   '0'     ]
+            [const    uint 1         'fragment'                         '0'     ]
+            [const    uint 1         'lastFragment'                     '0'     ]
+            [reserved uint 1         '0x0'                                      ]
         ]
 
         ['RESPONSE' DceRpc_Packet_Res
-            [const    uint 8           'flags1'            '0x0A'         ]
+            [reserved uint 1         '0x0'                                      ]
+            [const    uint 1         'broadcast'                        '0'     ]
+            [const    uint 1         'idempotent'                       '0'     ]
+            [const    uint 1         'maybe'                            '0'     ]
+            [const    uint 1         'noFragmentAcknowledgeRequested'   '1'     ]
+            [const    uint 1         'fragment'                         '0'     ]
+            [const    uint 1         'lastFragment'                     '1'     ]
+            [reserved uint 1         '0x0'                                      ]
         ]
     ]
-    [const    uint 8           'flags2'            '0x00'                 ]
-    // Byte Order: Little-Endian
-    [const    uint 4           'byteOder'          '0x1'                  ]
+    [reserved      uint 6            '0x00'                                     ]
+    [const         uint 1            'cancelWasPending'                 '0'     ]
+    [reserved      uint 1            '0x0'                                      ]
+    // Byte Order:
+    // 0x0 = Big-Endian
+    // 0x1 = Little-Endian
+    [const         uint 4            'integerEncoding'   '0x0'                  ]
     // Character Type: Ascii
-    [const    uint 4           'characterType'     '0x0'                  ]
+    [const         uint 4            'characterEncoding' '0x0'                  ]
     // Floating Point Type: IEEE
-    [const    uint 8           'floatingPointType' '0x00'                 ]
-    [const    uint 8           'serialHigh'        '0x00'                 ]
-    // Some constants probably related to selecting the DCE/RPC objects
-    [const    uint 32          'uuid1'             '0xDEA00000'           ]
-    [const    uint 16          'uuid2'             '0x6C97'               ]
-    [const    uint 16          'uuid3'             '0x11D1'               ]
-    [const    uint 16          'uuid4'             '0x7182'               ]
-    [simple   uint 48          'uuid'                                     ]
-    [const    uint 32          'interface1'        '0xDEA00001'           ]
-    [const    uint 16          'interface2'        '0x6C97'               ]
-    [const    uint 16          'interface3'        '0x11D1'               ]
-    [const    uint 16          'interface4'        '0x7182'               ]
-    [const    uint 32          'interface5'        '0x7DDF4224 '          ]
-    [const    uint 16          'interface6'        '0xA000'               ]
-    [simple   uint 32          'activity'                                 ]
-    [const    uint 16          'activity2'         '0x0000'               ]
-    [const    uint 16          'activity3'         '0x1010'               ]
-    [const    uint 16          'activity4'         '0x8098'               ]
-    [const    uint 32          'activity5'         '0xA3A93D3C'           ]
-    [const    uint 16          'activity6'         '0x6D60'               ]
-    [simple   uint 32          'serverBootTime'                           ]
-    [const    uint 32          'interfaceVar'      '0x00000001'           ]
-    [simple   uint 32          'sequenceNumber'                           ]
-    [simple   DceRpc_Operation 'operation'                                ]
-    [const    uint 16          'interfaceHint'     '0xFFFF'               ]
-    [const    uint 16          'activityHint'      '0xFFFF'               ]
-    [implicit uint 16          'fragmentLength'    'payload.lengthInBytes']
-    [const    uint 16          'fragmentNum'       '0x0000'               ]
-    [const    uint 8           'authProto'         '0x00'                 ]
-    [const    uint 8           'serialLow'         '0x00'                 ]
-    [simple   PnIoCm_Packet    'payload'                                  ]
+    [const         uint 8            'floatingPointRepresentation' '0x00'       ]
+    [const         uint 8            'serialHigh'        '0x00'                 ]
+    // FIXME: Strangely the spec seems to also be referencing a 'serialLow' but I can't see that in communictaion
+    // 4.10.3.2.8 Coding of the field RPCObjectUUID DEA00000-6C97-11D1-8271-{instanceOrNodeNumber}{deviceId}{vendorId}
+    // Apache Vendor Id: 0x060B
+    // PLC4X Profinet Driver Device ID (can be chosen freely): 0xCAFE
+    // NOTE: We can get the Device-Id and Vendor-Id from the PN-DCP search result of the browser.
+    [const         uint 32           'uuid1'             '0xDEA00000'           ]
+    [const         uint 16           'uuid2'             '0x6C97'               ]
+    [const         uint 16           'uuid3'             '0x11D1'               ]
+    [const         uint 16           'uuid4'             '0x8271'               ]
+    [simple        uint 16           'instanceOrNodeNumber'                     ]
+    [simple        uint 16           'deviceId'                                 ]
+    [simple        uint 16           'vendorId'                                 ]
+    // 4.10.3.2.9
+    // Device Interface:            DEA00001-6C97-11D1-8271-00A02442DF7D
+    // Controller Interface:        DEA00002-6C97-11D1-8271-00A02442DF7D
+    // Supervisor Interface:        DEA00003-6C97-11D1-8271-00A02442DF7D
+    // Parameter Server Interface:  DEA00004-6C97-11D1-8271-00A02442DF7D
+    [const         uint 32           'interface1'        '0xDEA00001'           ]
+    [const         uint 16           'interface2'        '0x6C97'               ]
+    [const         uint 16           'interface3'        '0x11D1'               ]
+    [const         uint 16           'interface4'        '0x8271'               ]
+    [const         uint 16           'interface5'        '0x00A0'               ]
+    [const         uint 32           'interface6'        '0x2442DF7D'           ]
+    // 4.10.3.2.10
+    // The Controller and the Device generate the uuid for each AR (Application Relationship) and use them as long as the AR exists
+    [simple        uint 32           'activity'                                 ]
+    [const         uint 16           'activity2'         '0x0000'               ]
+    [const         uint 16           'activity3'         '0x1010'               ]
+    [const         uint 16           'activity4'         '0x77BE'               ]
+    [const         uint 32           'activity5'         '0x3D3C6D60'           ]
+    [const         uint 16           'activity6'         '0xA3A9'               ]
+    [simple        uint 32           'serverBootTime'                           ]
+    [const         uint 32           'interfaceVer'      '0x00000001'           ]
+    [simple        uint 32           'sequenceNumber'                           ]
+    [simple        DceRpc_Operation  'operation'                                ]
+    [const         uint 16           'interfaceHint'     '0xFFFF'               ]
+    [const         uint 16           'activityHint'      '0xFFFF'               ]
+    [implicit      uint 16           'fragmentLength'    'payload.lengthInBytes']
+    [const         uint 16           'fragmentNum'       '0x0000'               ]
+    [const         uint 8            'authProto'         '0x00'                 ]
+    [const         uint 8            'serialLow'         '0x00'                 ]
+    [simple        PnIoCm_Packet     'payload'           ['packetType']         ]
 ]
 
 [type 'Uuid'
@@ -163,9 +191,20 @@
     [array uint 8 'data' count '4']
 ]
 
+// 4.10.3.2.2
 [enum uint 8 'DceRpc_PacketType'
-    ['0x00' REQUEST ]
-    ['0x02' RESPONSE]
+    ['0x00' REQUEST              ]
+    ['0x01' PING                 ]
+    ['0x02' RESPONSE             ]
+    ['0x03' FAULT                ]
+    ['0x04' WORKING              ]
+    // Response to PING
+    ['0x05' NO_CALL              ]
+    ['0x06' REJECT               ]
+    ['0x07' ACKNOWLEDGE          ]
+    ['0x08' CONNECTIONLESS_CANCEL]
+    ['0x09' FRAGMENT_ACKNOWLEDGE ]
+    ['0x0A' CANCEL_ACKNOWLEDGE   ]
 ]
 
 [enum uint 16 'DceRpc_Operation'
@@ -491,9 +530,21 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// Little Endian !!!!!
-[type 'PnIoCm_Packet'
-    [simple uint 32      'argsMaximum'                          ]
+// TODO: Check if it's really Little Endian
+// 5.1.2
+// 5.5.2.2
+[discriminatedType 'PnIoCm_Packet' [DceRpc_PacketType 'packetType']
+    [typeSwitch 'packetType'
+        ['REQUEST' PnIoCm_Packet_Req
+            [simple uint 32            'argsMaximum'            ]
+        ]
+        ['RESPONSE' PnIoCm_Packet_Res
+            [simple uint 8  'errorCode2'             ]
+            [simple uint 8  'errorCode1'             ]
+            [simple uint 8  'errorDecode'            ]
+            [simple uint 8  'errorCode'              ]
+        ]
+    ]
     [simple uint 32      'argsLength'                           ]
     [simple uint 32      'arrayMaximumCount'                    ]
     [simple uint 32      'arrayOffset'                          ]
@@ -503,80 +554,106 @@
 
 // Big Endian
 [type 'PnIoCm_Block'
-    [discriminator PnIoCm_BlockType 'blockType'                      ]
-    [implicit      uint 16     'blockLength'      'lengthInBytes - 4']
-    [simple        uint 8      'blockVersionHigh'                    ]
-    [simple        uint 8      'blockVersionLow'                     ]
+    [discriminator PnIoCm_BlockType 'blockType'                           ]
+    [implicit      uint 16          'blockLength'      'lengthInBytes - 4']
+    [simple        uint 8           'blockVersionHigh'                    ]
+    [simple        uint 8           'blockVersionLow'                     ]
     [typeSwitch 'blockType'
-        ['AR_BLOCK_REQ' PnIoCm_Block_ArBlockReq
-            [simple   PnIoCm_ArType          'arType'                                                ]
-            [simple   Uuid                   'arUuid'                                                ]
-            [simple   uint 16                'sessionKey'                                            ]
-            [simple   MacAddress             'cmInitiatorMacAddr'                                    ]
-            [simple   Uuid                   'cmInitiatorObjectUuid'                                 ]
+        ['AR_BLOCK_REQ' PnIoCm_Block_ArReq
+            [simple   PnIoCm_ArType          'arType'                                                 ]
+            [simple   Uuid                   'arUuid'                                                 ]
+            [simple   uint 16                'sessionKey'                                             ]
+            [simple   MacAddress             'cmInitiatorMacAddr'                                     ]
+            [simple   Uuid                   'cmInitiatorObjectUuid'                                  ]
             // Begin ARProperties
-            [simple   bit                    'pullModuleAlarmAllowed'                                ]
-            [simple   bit                    'nonLegacyStartupMode'                                  ]
-            [simple   bit                    'combinedObjectContainerUsed'                           ]
-            [reserved uint 17                '0x00000'                                               ]
-            [simple   bit                    'acknowledgeCompanionAr'                                ]
-            [simple   PnIoCm_CompanionArType 'companionArType'                                       ]
-            [simple   bit                    'deviceAccess'                                          ]
-            [reserved uint 3                 '0x0'                                                   ]
-            [simple   bit                    'cmInitiator'                                           ]
-            [simple   bit                    'supervisorTakeoverAllowed'                             ]
-            [simple   PnIoCm_State           'state'                                                 ]
+            [simple   bit                    'pullModuleAlarmAllowed'                                 ]
+            [simple   bit                    'nonLegacyStartupMode'                                   ]
+            [simple   bit                    'combinedObjectContainerUsed'                            ]
+            [reserved uint 17                '0x00000'                                                ]
+            [simple   bit                    'acknowledgeCompanionAr'                                 ]
+            [simple   PnIoCm_CompanionArType 'companionArType'                                        ]
+            [simple   bit                    'deviceAccess'                                           ]
+            [reserved uint 3                 '0x0'                                                    ]
+            [simple   bit                    'cmInitiator'                                            ]
+            [simple   bit                    'supervisorTakeoverAllowed'                              ]
+            [simple   PnIoCm_State           'state'                                                  ]
             // End ARProperties
-            [simple   uint 16                'cmInitiatorActivityTimeoutFactor'                      ]
-            [simple   uint 16                'cmInitiatorUdpRtPort'                                  ]
-            [implicit uint 16                'stationNameLength'    'STR_LEN(cmInitiatorStationName)']
-            [simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'        ]
+            [simple   uint 16                'cmInitiatorActivityTimeoutFactor'                       ]
+            [simple   uint 16                'cmInitiatorUdpRtPort'                                   ]
+            //[implicit uint 16                'stationNameLength'    'STR_LEN(cmInitiatorStationName)' ]
+            //[simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'         ]
         ]
-        ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrBlockReq
-            [simple PnIoCm_IoCrType          'ioCrType'                                              ]
-            [simple uint 16                  'ioCrReference'                                         ]
-            [simple uint 16                  'lt'                                                    ]
+        ['AR_BLOCK_RES' PnIoCm_Block_ArRes
+            [simple   PnIoCm_ArType          'arType'                                                 ]
+            [simple   Uuid                   'arUuid'                                                 ]
+            [simple   uint 16                'sessionKey'                                             ]
+            [simple   MacAddress             'cmResponderMacAddr'                                     ]
+            [simple   Uuid                   'cmResponderObjectUuid'                                  ]
+        ]
+        ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
+            [simple PnIoCm_IoCrType          'ioCrType'                                               ]
+            [simple uint 16                  'ioCrReference'                                          ]
+            [simple uint 16                  'lt'                                                     ]
             // Begin IOCRProperties
-            [simple   bit                    'fullSubFrameStructure'                                 ]
-            [simple   bit                    'distributedSubFrameWatchDog'                           ]
-            [simple   bit                    'fastForwardingMacAdr'                                  ]
-            [reserved uint 16                '0x0000'                                                ]
-            [simple   bit                    'mediaRedundancy'                                       ]
-            [reserved uint 7                 '0x00'                                                  ]
-            [simple   PnIoCm_RtClass         'rtClass'                                               ]
+            [simple   bit                    'fullSubFrameStructure'                                  ]
+            [simple   bit                    'distributedSubFrameWatchDog'                            ]
+            [simple   bit                    'fastForwardingMacAdr'                                   ]
+            [reserved uint 16                '0x0000'                                                 ]
+            [simple   bit                    'mediaRedundancy'                                        ]
+            [reserved uint 7                 '0x00'                                                   ]
+            [simple   PnIoCm_RtClass         'rtClass'                                                ]
             // End IOCRProperties
-            [simple   uint 16                'dataLength'                                            ]
-            [simple   uint 16                'frameId'                                               ]
-            [simple   uint 16                'sendClockFactor'                                       ]
-            [simple   uint 16                'reductionRatio'                                        ]
-            [simple   uint 16                'phase'                                                 ]
-            [simple   uint 16                'sequence'                                              ]
-            [simple   uint 32                'frameSendOffset'                                       ]
-            [simple   uint 16                'watchDogFactor'                                        ]
-            [simple   uint 16                'dataHoldFactor'                                        ]
-            [simple   uint 16                'ioCrTagHeader'                                         ]
-            [simple   MacAddress             'ioCrMulticastMacAdr'                                   ]
-            [implicit uint 16                'numberOfApis'        'COUNT(apis)'                     ]
-            [array    PnIoCm_IoCrBlockReqApi 'apis'                count         'numberOfApis'      ]
+            [simple   uint 16                'dataLength'                                             ]
+            [simple   uint 16                'frameId'                                                ]
+            [simple   uint 16                'sendClockFactor'                                        ]
+            [simple   uint 16                'reductionRatio'                                         ]
+            [simple   uint 16                'phase'                                                  ]
+            [simple   uint 16                'sequence'                                               ]
+            [simple   uint 32                'frameSendOffset'                                        ]
+            [simple   uint 16                'watchDogFactor'                                         ]
+            [simple   uint 16                'dataHoldFactor'                                         ]
+            [simple   uint 16                'ioCrTagHeader'                                          ]
+            [simple   MacAddress             'ioCrMulticastMacAdr'                                    ]
+            [implicit uint 16                'numberOfApis'        'COUNT(apis)'                      ]
+            [array    PnIoCm_IoCrBlockReqApi 'apis'                count         'numberOfApis'       ]
         ]
-        ['ALARM_CR_BLOCK_REQ' PnIoCm_Block_AlarmCrBlockReq
-            [simple   PnIoCm_AlarmCrType     'alarmType'                                             ]
-            [simple   uint 16               'lt'                                                     ]
+        ['IO_CR_BLOCK_RES' PnIoCm_Block_IoCrRes
+            [simple PnIoCm_IoCrType          'ioCrType'                                               ]
+            [simple uint 16                  'ioCrReference'                                          ]
+            [simple   uint 16                'frameId'                                                ]
+        ]
+        ['ALARM_CR_BLOCK_REQ' PnIoCm_Block_AlarmCrReq
+            [simple   PnIoCm_AlarmCrType     'alarmType'                                              ]
+            [simple   uint 16                'lt'                                                     ]
             // Begin AlarmCrProperties
-            [reserved uint 30               '0x00000000'                                             ]
-            [simple   bit                   'transport'                                              ]
-            [simple   bit                   'priority'                                               ]
+            [reserved uint 30                '0x00000000'                                             ]
+            [simple   bit                    'transport'                                              ]
+            [simple   bit                    'priority'                                               ]
             // End AlarmCrProperties
-            [simple   uint 16               'rtaTimeoutFactor'                                       ]
-            [simple   uint 16               'rtaRetries'                                             ]
-            [simple   uint 16               'localAlarmReference'                                    ]
-            [simple   uint 16               'maxAlarmDataLength'                                     ]
-            [simple   uint 16               'alarmCtrTagHeaderHigh'                                  ]
-            [simple   uint 16               'alarmCtrTagHeaderLow'                                   ]
+            [simple   uint 16                'rtaTimeoutFactor'                                       ]
+            [simple   uint 16                'rtaRetries'                                             ]
+            [simple   uint 16                'localAlarmReference'                                    ]
+            [simple   uint 16                'maxAlarmDataLength'                                     ]
+            [simple   uint 16                'alarmCtrTagHeaderHigh'                                  ]
+            [simple   uint 16                'alarmCtrTagHeaderLow'                                   ]
         ]
-        ['EXPECTED_SUBMODULE_BLOCK_REQ' PnIoCm_Block_ExpectedSubmoduleBlockReq
-            [implicit uint 16               'numberOfApis'         'COUNT(apis)'                     ]
-            [array    PnIoCm_ExpectedSubmoduleBlockReqApi 'apis'   count         'numberOfApis'      ]
+        ['ALARM_CR_BLOCK_RES' PnIoCm_Block_AlarmCrRes
+            [simple   PnIoCm_AlarmCrType     'alarmType'                                              ]
+            [simple   uint 16                'localAlarmReference'                                    ]
+            [simple   uint 16                'maxAlarmDataLength'                                     ]
+        ]
+        ['EXPECTED_SUBMODULE_BLOCK_REQ' PnIoCm_Block_ExpectedSubmoduleReq
+            [implicit uint 16                'numberOfApis'         'COUNT(apis)'                     ]
+            [array    PnIoCm_ExpectedSubmoduleBlockReqApi 'apis'   count         'numberOfApis'       ]
+        ]
+        ['MODULE_DIFF_BLOCK' PnIoCm_Block_ModuleDiff
+            [implicit uint 16                'numberOfApis'         'COUNT(apis)'                     ]
+            [array    PnIoCm_ModuleDiffBlockApi 'apis'              count         'numberOfApis'      ]
+        ]
+        ['AR_SERVER_BLOCK' PnIoCm_Block_ArServer
+            //[implicit uint 16                'stationNameLength'     'STR_LEN(cmInitiatorStationName)']
+            //[simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'         ]
+            //[padding  byte '0x00'                                                                     ]
         ]
     ]
 ]
@@ -602,36 +679,68 @@
 ]
 
 [type 'PnIoCm_ExpectedSubmoduleBlockReqApi'
-    [const    uint 32         'api'               '0x00000000'                        ]
-    [simple   uint 16         'slotNumber'                                            ]
-    [simple   uint 32         'moduleIdentNumber'                                     ]
-    [simple   uint 16         'moduleProperties'                                      ]
-    [implicit uint 16         'numSubmodules'     'COUNT(submodules)'                 ]
+    [const    uint 32          'api'               '0x00000000'                       ]
+    [simple   uint 16          'slotNumber'                                           ]
+    [simple   uint 32          'moduleIdentNumber'                                    ]
+    [simple   uint 16          'moduleProperties'                                     ]
+    [implicit uint 16          'numSubmodules'     'COUNT(submodules)'                ]
     [array    PnIoCm_Submodule 'submodules'        count               'numSubmodules']
 ]
 
+[type 'PnIoCm_ModuleDiffBlockApi'
+    [const    uint 32                          'api'        '0x00000000'                    ]
+    [implicit uint 16                          'numModules' 'COUNT(modules)'                ]
+    [array    PnIoCm_ModuleDiffBlockApi_Module 'modules'    count               'numModules']
+]
+
+[type 'PnIoCm_ModuleDiffBlockApi_Module'
+    [simple   uint 16                             'slotNumber'                                           ]
+    [simple   uint 32                             'moduleIdentNumber'                                    ]
+    [simple   PnIoCm_ModuleState                  'moduleState'                                          ]
+    [implicit uint 16                             'numSubmodules'     'COUNT(submodules)'                ]
+    [array    PnIoCm_ModuleDiffBlockApi_Submodule 'submodules'        count               'numSubmodules']
+]
+
+[type 'PnIoCm_ModuleDiffBlockApi_Submodule'
+    [simple uint 16          'subslotNumber'       ]
+    [simple uint 32          'submoduleIdentNumber']
+    [simple bit              'codingUsesIdentInfo' ]
+    [simple PnIoCm_IdentInfo 'identInfo'           ]
+    [simple PnIoCm_ArInfo    'arInfo'              ]
+    [simple bit              'diagInfoAvailable'   ]
+    [simple bit              'maintenanceDemanded' ]
+    [simple bit              'maintenanceRequired' ]
+    [simple bit              'qualifiedInfo'       ]
+    [simple PnIoCm_AddInfo   'addInfo'             ]
+]
+
 [type 'PnIoCm_Submodule'
-    [simple   uint 16               'slotNumber'                  ]
-    [simple   uint 32               'submoduleIdentNumber'        ]
+    [simple   uint 16                'slotNumber'                  ]
+    [simple   uint 32                'submoduleIdentNumber'        ]
     // Begin SubmoduleProperties
     [reserved uint 10 '0x000']
-    [simple   bit                   'discardIoxs'                 ]
-    [simple   bit                   'reduceOutputModuleDataLength']
-    [simple   bit                   'reduceInputModuleDataLength' ]
-    [simple   bit                   'sharedInput'                 ]
-    [simple   PnIoCm_SubmoduleType   'submoduleType'              ]
+    [simple   bit                    'discardIoxs'                 ]
+    [simple   bit                    'reduceOutputModuleDataLength']
+    [simple   bit                    'reduceInputModuleDataLength' ]
+    [simple   bit                    'sharedInput'                 ]
+    [simple   PnIoCm_SubmoduleType   'submoduleType'               ]
     // End SubmoduleProperties
-    [simple   PnIoCm_DescriptionType 'descriptionType'            ]
-    [simple   uint 16               'submoduleDataLength'         ]
-    [simple   uint 8                'lengthIoCs'                  ]
-    [simple   uint 8                'lengthIoPs'                  ]
+    [simple   PnIoCm_DescriptionType 'descriptionType'             ]
+    [simple   uint 16                'submoduleDataLength'         ]
+    [simple   uint 8                 'lengthIoCs'                  ]
+    [simple   uint 8                 'lengthIoPs'                  ]
 ]
 
 [enum uint 16 'PnIoCm_BlockType'
     ['0x0101' AR_BLOCK_REQ                ]
+    ['0x8101' AR_BLOCK_RES                ]
     ['0x0102' IO_CR_BLOCK_REQ             ]
+    ['0x8102' IO_CR_BLOCK_RES             ]
     ['0x0103' ALARM_CR_BLOCK_REQ          ]
+    ['0x8103' ALARM_CR_BLOCK_RES          ]
     ['0x0104' EXPECTED_SUBMODULE_BLOCK_REQ]
+    ['0x8104' MODULE_DIFF_BLOCK           ]
+    ['0x8106' AR_SERVER_BLOCK             ]
 ]
 
 [enum uint 16 'PnIoCm_ArType'
@@ -658,10 +767,26 @@
     ['0x0001' ALARM_CR]
 ]
 
+[enum uint 16 'PnIoCm_ModuleState'
+    ['0x0002' PROPER_MODULE]
+]
+
 [enum uint 2 'PnIoCm_SubmoduleType'
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
 ]
 
 [enum uint 16 'PnIoCm_DescriptionType'
     ['0x0001' INPUT]
+]
+
+[enum uint 4 'PnIoCm_IdentInfo'
+    ['0x0' OK]
+]
+
+[enum uint 4 'PnIoCm_ArInfo'
+    ['0x0' OWN]
+]
+
+[enum uint 3 'PnIoCm_AddInfo'
+    ['0x0' NONE]
 ]
