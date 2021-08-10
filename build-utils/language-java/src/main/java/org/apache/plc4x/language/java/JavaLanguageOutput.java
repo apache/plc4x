@@ -26,6 +26,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
 import java.io.*;
 import java.util.*;
+import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
@@ -68,5 +69,6 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
+
 
 }
