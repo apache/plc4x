@@ -43,14 +43,48 @@ The output flowfile will contain the PLC read values. This information is includ
 
 ```
 [ {
-  "var5" : 1992,
-  "var4" : "[false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true]",
-  "var3" : "[false, false, false, false, false, false, true, true]",
-  "var2" : false,
-  "var1" : true,
-  "ts" : 1617890967142
+  "var1_boolean" : true,
+  "var2_boolean" : false,
+  "var3_byte" : [ false, false, false, false, false, false, true, true ],
+  "var5_int" : 1992,
+  "var4_word" : [ false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, true ],
+  "ts" : 1628783058433
 } ]
 ```
 
 Also, it is important to keep in mind the Processor Scheduling Configuration. Using the parameter **Run Schedule** (for example to *1 sec*), the reading frequency can be set. Note that by default, this value is defined to 0 sec (as fast as possible).
 
+Table of data mapping between plc data and avro
+
+| PLC type | Avro Type |
+|----------|-----------|
+| PlcBigDecimal | floatType |
+| PlcBigInteger | longType |
+| PlcBitString | stringType |
+| PlcBOOL | booleanType |
+| PlcBYTE | stringType |
+| PlcCHAR | stringType |
+| PlcDATE_AND_TIME | stringType |
+| PlcDATE | stringType |
+| PlcDINT | stringType |
+| PlcDWORD | stringType |
+| PlcINT | intType |
+| PlcLINT | stringType |
+| PlcList | stringType |
+| PlcLREAL | stringType |
+| PlcLTIME | stringType |
+| PlcLWORD | stringType |
+| PlcNull | stringType |
+| PlcREAL | doubleType |
+| PlcSINT | intType |
+| PlcSTRING | stringType |
+| PlcStruct | stringType |
+| PlcTIME_OF_DAY | stringType |
+| PlcTIME | stringType |
+| PlcUDINT | stringType |
+| PlcUINT | stringType |
+| PlcULINT | stringType |
+| PlcUSINT | stringType |
+| PlcWCHAR | stringType |
+| PlcWORD | stringType |
+| ELSE | stringType |

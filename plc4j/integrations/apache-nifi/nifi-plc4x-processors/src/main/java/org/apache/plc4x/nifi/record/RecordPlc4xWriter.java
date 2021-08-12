@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessSession;
@@ -37,12 +38,32 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 
 	@Override
 	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
+		logger.info("Por aqui 0");
+		if (fullRecordSet == null) {
+			logger.info("Por aqui 1");
+            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
+            writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
+        }
+		Map<String, String> empty = new HashMap<>();
+        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
+        	logger.info("Por aqui 2");
+            writeResultRef.set(resultSetWriter.write(fullRecordSet));
+            if (mimeType == null) {
+                mimeType = resultSetWriter.getMimeType();
+            }
+            return writeResultRef.get().getRecordCount();
+        } catch (final Exception e) {
+            throw new IOException(e);
+        }
+	}
+	
+	@Override
+	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, FlowFile originalFlowFile) throws Exception {
 		if (fullRecordSet == null) {	
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
          }
-        
-        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream)) {
+        try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
             writeResultRef.set(resultSetWriter.write(fullRecordSet));
             if (mimeType == null) {
                 mimeType = resultSetWriter.getMimeType();
@@ -53,9 +74,22 @@ public class RecordPlc4xWriter implements Plc4xWriter {
         }
 	}
 
+	
 	@Override
 	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException {
-		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream)) {
+		Map<String, String> empty = new HashMap<>();
+		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
+            mimeType = resultSetWriter.getMimeType();
+            resultSetWriter.beginRecordSet();
+            resultSetWriter.finishRecordSet();
+        } catch (final Exception e) {
+            throw new IOException(e);
+        }
+	}
+	
+	@Override
+	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger, FlowFile originalFlowFile) throws IOException {
+		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, originalFlowFile)) {
             mimeType = resultSetWriter.getMimeType();
             resultSetWriter.beginRecordSet();
             resultSetWriter.finishRecordSet();

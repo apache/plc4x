@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -20,6 +21,7 @@ public interface Plc4xWriter {
      * @throws Exception if any errors occur during the writing of the result set to the output stream
      */
     long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback) throws Exception;
+    long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger,  Plc4xReadResponseRowCallback callback, FlowFile originalFlowFile) throws Exception;
 
     /**
      * Returns a map of attribute key/value pairs to be added to any outgoing flow file(s). The default implementation is to return an empty map.
@@ -45,6 +47,7 @@ public interface Plc4xWriter {
      * @throws IOException if any errors occur during the writing of an empty result set to the output stream
      */
     void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException;
+    void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger, FlowFile originalFlowFile) throws IOException;
 
     /**
      * Returns the MIME type of the output format. This can be used in FlowFile attributes or to perform format-specific processing as necessary.

@@ -41,7 +41,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         rsColumnNames = responseDataStructure.keySet();
         
         if (recordSchema == null) {
-        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure); //TODO review this method as it is the 'mapping' from PlcValues to avro datatypes        	
+        	Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure); //TODO: review this method as it is the 'mapping' from PlcValues to avro datatypes        	
         	recordSchema = new AtomicReference<RecordSchema>();
         	recordSchema.set(AvroTypeUtil.createSchema(avroSchema));
         }
@@ -96,14 +96,14 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
             
             //TODO
             if (rsColumnNames.contains(fieldName)) {
-            	value = normalizeValue(readResponse.getObject(fieldName));
+            	value = normalizeValue(readResponse.getAsPlcValue().getValue(fieldName));
             } else {
                 value = null;
             }
             //TODO we are asuming that record schema is always inferred from request, not writen by the user, so maybe previous lines could be changed by the following one
            // value = normalizeValue(readResponse.getObject(fieldName));
             
-            logger.debug(String.format("Adding %s field value to record.", fieldName));
+            logger.trace(String.format("Adding %s field value to record.", fieldName));
             values.put(fieldName, value);
         }
 
@@ -116,14 +116,11 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     }
 
     @SuppressWarnings("rawtypes")
-    private Object normalizeValue(final Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof List) {
-            return ((List) value).toArray();
-        }
-        return value;
+    private Object normalizeValue(final PlcValue value) {
+        Object r = Plc4xCommon.normalizeValue(value);
+        logger.trace("Value data type: "+r.getClass());
+        return r;
+        
     }
 
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.plc4x.processors.plc4x4nifi;
+package org.apache.plc4x.nifi;
 
 import org.apache.nifi.util.TestRunner;
 import org.apache.nifi.util.TestRunners;

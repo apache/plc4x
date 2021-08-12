@@ -1,4 +1,5 @@
 package org.apache.plc4x.nifi.util;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
@@ -74,7 +75,7 @@ public class Plc4xCommon {
 			}else if (entry.getValue() instanceof PlcBOOL) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().booleanType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcBYTE) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
+				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().bytesType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcCHAR) {	
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcDATE_AND_TIME) {
@@ -89,8 +90,8 @@ public class Plc4xCommon {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().intType().endUnion().noDefault();				
 			}else if (entry.getValue() instanceof PlcLINT) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
-			}else if (entry.getValue() instanceof PlcList) {
-				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
+//			}else if (entry.getValue() instanceof PlcList) {
+//				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcLREAL) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();
 			}else if (entry.getValue() instanceof PlcLTIME) {
@@ -130,7 +131,16 @@ public class Plc4xCommon {
 			//}else if (entry.getValue() instanceof PlcIECValue<T>) {
 			//}else if (entry.getValue() instanceof PlcSimpleValue<T>) {
 			
-			
+			else if(entry.getValue() instanceof PlcList) {
+				if(!entry.getValue().getList().isEmpty()) {
+					if(entry.getValue().getList().get(0) instanceof PlcBOOL) {
+						//builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().bytesType().endUnion().noDefault();
+						builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().array().items().booleanType().endUnion().noDefault();
+					}
+				} else {
+					builder.name(fieldName).type().nullBuilder().endNull();
+				}
+			}
 			else { //TODO try forcing any other datatype to string...
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().stringType().endUnion().noDefault();	
 			}
@@ -145,5 +155,100 @@ public class Plc4xCommon {
 
 	}
 	
-
+	
+	private static Object normalizeBasicTypes(final Object valueOriginal) {
+		if (valueOriginal == null) {
+			return null;
+		} else if (valueOriginal instanceof PlcValue) {
+			PlcValue value = (PlcValue) valueOriginal;
+			if (value.isBoolean() && value instanceof PlcBOOL)
+				return value.getBoolean();
+			else if (value.isBigInteger() && value instanceof PlcBigInteger)
+				return value.getBigInteger();
+			else if (value.isBigDecimal() && value instanceof PlcBigDecimal)
+				return value.getBigDecimal();
+			else if (value.isByte() && value instanceof PlcBYTE)
+				return value.getByte();
+			else if (value.isDate() && value instanceof PlcDATE)
+				return value.getDate();
+			else if (value.isDateTime() && value instanceof PlcDATE_AND_TIME)
+				return value.getDateTime();
+			else if (value.isFloat() && value instanceof PlcLREAL)
+				return value.getFloat();
+			else if (value.isInteger() && value instanceof PlcINT)
+				return value.getInteger();
+			else if (value.isList() && value instanceof PlcList) // TODO
+				return value.getList().toArray();
+			else if (value.isDouble())
+				return value.getDouble();
+			else if (value.isDuration())
+				return value.getDuration();
+			else if (value.isLong())
+				return value.getLong();
+			else if (value.isShort())
+				return value.getShort();
+			else if (value.isString())
+				return value.getString();
+			else if (value.isTime())
+				return value.getTime();
+			else
+				return value.getString();
+		} else {
+			return valueOriginal;
+		}
+    
+	}
+	
+	public static Object normalizeValue(final Object valueOriginal) {
+        if (valueOriginal == null) {
+            return null;
+        }
+        if (valueOriginal instanceof List) {
+            return ((List) valueOriginal).toArray();
+        } else  if (valueOriginal instanceof PlcValue) {
+        	PlcValue value = (PlcValue) valueOriginal;
+	        if(value.isBoolean() && value instanceof PlcBOOL)
+	        	return value.getBoolean();
+	        else if (value.isBigInteger() && value instanceof PlcBigInteger)
+	        	return value.getBigInteger();
+	        else if (value.isBigDecimal() && value instanceof PlcBigDecimal)
+	        	return value.getBigDecimal();
+	        else if (value.isByte() && value instanceof PlcBYTE)
+	        	return value.getByte();
+	        else if (value.isDate() && value instanceof PlcDATE)
+	        	return value.getDate();
+	        else if (value.isDateTime() && value instanceof PlcDATE_AND_TIME)
+	        	return value.getDateTime();
+	        else if (value.isFloat() && value instanceof PlcLREAL)
+	           	return value.getFloat();
+	        else if (value.isInteger() && value instanceof PlcINT)
+	           	return value.getInteger();
+	        else if (value.isList() && value instanceof PlcList) { //TODO
+	        	Object[] r = new Object[value.getList().size()];
+	        	int i = 0;
+	        	for (Object element : value.getList()) {
+	        		r[i] =  normalizeBasicTypes(element);
+	        		i++;
+				}
+	        	return r;
+	        }   	
+	        else if (value.isDouble())
+	        	return value.getDouble();
+	        else if (value.isDuration())
+	        	return value.getDuration();
+	        else if (value.isLong())
+	           	return value.getLong();
+	        else if (value.isShort())
+	           	return value.getShort();
+	        else if (value.isString())
+	          	return value.getString();
+	        else if (value.isTime())
+	          	return value.getTime();
+	        else 
+	        	return value.getString();
+        } else {
+        	return valueOriginal;
+        }
+    }
 }
+

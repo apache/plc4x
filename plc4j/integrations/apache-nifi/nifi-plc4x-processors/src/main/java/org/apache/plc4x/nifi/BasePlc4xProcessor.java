@@ -30,9 +30,9 @@ import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.*;
 
-public abstract class BasePlc4xProcessor extends AbstractProcessor {
+abstract class BasePlc4xProcessor extends AbstractProcessor {
 
-    public static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
+    protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
@@ -42,7 +42,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         //TODO this could be better implemented on a service
         .build();
     
-    public static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
+    protected static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
         .Builder().name("PLC_ADDRESS_STRING")
         .displayName("PLC resource address String")
         .description("PLC4X address string used identify the resource to read/write on a given PLC device " +
@@ -52,11 +52,11 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
         .build();
 
-    public static final Relationship REL_SUCCESS = new Relationship.Builder()
+    protected static final Relationship REL_SUCCESS = new Relationship.Builder()
         .name("success")
         .description("Successfully processed")
         .build();
-    public static final Relationship REL_FAILURE = new Relationship.Builder()
+    protected static final Relationship REL_FAILURE = new Relationship.Builder()
         .name("failure")
         .description("An error occurred processing")
         .build();
@@ -73,7 +73,6 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @Override
     protected void init(final ProcessorInitializationContext context) {
     	
-    	//mio
     	final List<PropertyDescriptor> properties = new ArrayList<>();
     	properties.add(PLC_CONNECTION_STRING);
     	properties.add(PLC_ADDRESS_STRING);
