@@ -281,7 +281,8 @@
             // 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
             [simple uint 32 'cycleTime']
             // 16bytes	Must be set to 0
-            [reserved   uint       128       '0x0000' ]
+            [reserved   uint       64       '0x0000' ]
+            [reserved   uint       64       '0x0000' ]
         ]
         ['ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
