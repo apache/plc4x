@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.plc4x.examples</groupId>
+        <artifactId>plc4j-examples</artifactId>
+        <version>0.9.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>plc4j-s7event</artifactId>
+    <packaging>jar</packaging>
+    <name>PLC4J: Examples: S7Event example</name>
+    <description>Parent of all java based application example modules.
+S7Event capture, MODE, SYS, USR &amp; ALARM events from S7-300 &amp; S7-400</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-spi</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-transport-tcp</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-s7</artifactId>
+            <version>0.9.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+    </dependencies>
+</project>
