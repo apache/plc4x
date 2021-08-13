@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/eip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/s7"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/transports"
 )
@@ -45,5 +46,10 @@ func RegisterKnxDriver(driverManager plc4go.PlcDriverManager) {
 
 func RegisterModbusDriver(driverManager plc4go.PlcDriverManager) {
 	driverManager.RegisterDriver(modbus.NewDriver())
+	transports.RegisterTcpTransport(driverManager)
+}
+
+func RegisterS7Driver(driverManager plc4go.PlcDriverManager) {
+	driverManager.RegisterDriver(s7.NewDriver())
 	transports.RegisterTcpTransport(driverManager)
 }
