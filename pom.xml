@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
--->
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
@@ -99,6 +99,9 @@
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
+    <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+    <sonar.cfamily.threads>1</sonar.cfamily.threads>
+    <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
     <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
 
@@ -109,8 +112,8 @@
     <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.67</bouncycastle.version>
-    <boost.version>1.74.0</boost.version>
-    <boost.version.underline-short>1_74</boost.version.underline-short>
+    <boost.version>1.76.0</boost.version>
+    <boost.version.underline-short>1_76</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.10.18</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
@@ -148,7 +151,6 @@
     <junit.platform.version>1.7.0</junit.platform.version>
     <log4j.version>2.11.1</log4j.version>
     <logback.version>1.2.3</logback.version>
-    <logstash.version>7.10.0</logstash.version>
     <milo.version>0.5.4</milo.version>
     <mockito.version>3.6.28</mockito.version>
     <netty.version>4.1.54.Final</netty.version>
@@ -166,7 +168,7 @@
   </properties>
 
   <modules>
-    <module>build-utils</module>
+    <module>code-generation</module>
 
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
@@ -352,7 +354,8 @@
         <groupId>org.pcap4j</groupId>
         <artifactId>pcap4j-core</artifactId>
         <version>${pcap4j.version}</version>
-        <scope>provided</scope>
+        <!-- Commented out, if there are problems occurring to this, we need to comment it back in. -->
+        <!--scope>provided</scope-->
       </dependency>
       <dependency>
         <groupId>org.pcap4j</groupId>
@@ -1400,6 +1403,14 @@
       </build>
     </profile>
 
+    <!-- Build PLC4X including the C modules -->
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>plc4c</module>
+      </modules>
+    </profile>
+
     <!-- Build PLC4X including the Go modules -->
     <profile>
       <id>with-go</id>
@@ -1430,7 +1441,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.url>https://boostorg.jfrog.io/artifactory/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>

@@ -26,18 +26,16 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest, PlcRequest, XmlSerializable {
+public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest, PlcRequest, Serializable {
 
     private final PlcSubscriber subscriber;
 
@@ -70,7 +68,7 @@ public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+
 import java.util.Collection;
 
 public class StaticHelper {
@@ -81,14 +83,21 @@ public class StaticHelper {
             Collection col = (Collection) obj;
             return col.size();
         }
-        throw new RuntimeException("Unable to count object of type " + obj.getClass().getName());
+        throw new PlcRuntimeException("Unable to count object of type " + obj.getClass().getName());
+    }
+
+    public static int STR_LEN(String str) {
+        if (str == null) {
+            return 0;
+        }
+        return str.length();
     }
 
     public static <T> T CAST(Object obj, Class<T> clazz) {
         try {
             return clazz.cast(obj);
         } catch (ClassCastException e) {
-            throw new RuntimeException("Unable to cast object of type " + obj.getClass().getName() + " to " + clazz.getName());
+            throw new PlcRuntimeException("Unable to cast object of type " + obj.getClass().getName() + " to " + clazz.getName());
         }
     }
 

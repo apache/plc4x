@@ -1,26 +1,26 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
-import org.apache.camel.util.IntrospectionSupport;
+import org.apache.camel.util.PropertiesHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,23 +32,23 @@ public class Plc4XComponent extends DefaultComponent {
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        Endpoint endpoint = new Plc4XEndpoint(uri, this);
+        Plc4XEndpoint endpoint = new Plc4XEndpoint(uri, this);
         //Tags have a Name, a query and an optional value (for writing)
         //Reading --> Map<String,String>
         //Writing --> Map<String,Map.Entry<String,Object>>
         Map<String, Object> tags = getAndRemoveOrResolveReferenceParameter(parameters, "tags", Map.class);
-        if(tags!=null){
-            ((Plc4XEndpoint)endpoint).setTags(tags);
+        if (tags != null) {
+            endpoint.setTags(tags);
         }
-        String trigger = getAndRemoveOrResolveReferenceParameter(parameters,"trigger",String.class);
-        if(trigger!=null){
-            ((Plc4XEndpoint)endpoint).setTrigger(trigger);
+        String trigger = getAndRemoveOrResolveReferenceParameter(parameters, "trigger", String.class);
+        if (trigger != null) {
+            endpoint.setTrigger(trigger);
         }
-        Object period = getAndRemoveOrResolveReferenceParameter(parameters,"period",Integer.class);
-        if(period!=null && period instanceof Integer){
-            ((Plc4XEndpoint)endpoint).setPeriod((int)period);
+        Integer period = getAndRemoveOrResolveReferenceParameter(parameters, "period", Integer.class);
+        if (period != null) {
+            endpoint.setPeriod(period);
         }
-        setProperties(endpoint,parameters);
+        setProperties(endpoint, parameters);
         return endpoint;
     }
 
@@ -63,11 +63,11 @@ public class Plc4XComponent extends DefaultComponent {
         if (parameters != null && !parameters.isEmpty()) {
             Map<String, Object> param = parameters;
             if (optionPrefix != null) {
-                param = IntrospectionSupport.extractProperties(parameters, optionPrefix);
+                param = PropertiesHelper.extractProperties(parameters, optionPrefix);
             }
 
             if (parameters.size() > 0) {
-                LOGGER.info("{} parameters will be passed to the PLC Driver",param);
+                LOGGER.info("{} parameters will be passed to the PLC Driver", param);
             }
         }
     }

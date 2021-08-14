@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.configuration;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -127,16 +126,16 @@ public class ConfigurationFactory {
             // compatible with the given configuration type.
             Optional<ParameterizedType> typeOptional = Arrays.stream(obj.getClass().getGenericInterfaces())
                 // Check if the interface has a type parameter
-                .filter(type -> type instanceof ParameterizedType)
-                .map(type -> ((ParameterizedType) type))
+                .filter(ParameterizedType.class::isInstance)
+                .map(ParameterizedType.class::cast)
                 .filter(type -> type.getRawType().equals(HasConfiguration.class))
                 .findAny();
             if (typeOptional.isPresent()) {
                 final ParameterizedType parameterizedType = typeOptional.get();
                 final Type configType = parameterizedType.getActualTypeArguments()[0];
-                if(configType instanceof Class) {
+                if (configType instanceof Class) {
                     Class<?> configClass = (Class<?>) configType;
-                    if(configClass.isAssignableFrom(configuration.getClass())) {
+                    if (configClass.isAssignableFrom(configuration.getClass())) {
                         ((HasConfiguration) obj).setConfiguration(configuration);
                     }
                 }
@@ -149,6 +148,7 @@ public class ConfigurationFactory {
     /**
      * Get the configuration parameter name for configuration parameters.
      * If an explicit name is provided in the annotation, use that else use the name of the field itself.
+     *
      * @param field name of the field.
      * @return name of the configuration (either from the annotation or from the field itself)
      */
@@ -162,7 +162,8 @@ public class ConfigurationFactory {
 
     /**
      * Convert the string value from the parameter string into the type the field requires.
-     * @param field field that should be set
+     *
+     * @param field       field that should be set
      * @param valueString string representation of the value
      * @return parsed value of the field in the type the field requires
      */
@@ -251,7 +252,7 @@ public class ConfigurationFactory {
             // Build a map of "key & List<value>" where the values of elements with equal "key" are
             // added to a list of values.
             .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, LinkedHashMap::new,
-                    mapping(Map.Entry::getValue, toList())));
+                mapping(Map.Entry::getValue, toList())));
     }
 
     private static AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) {

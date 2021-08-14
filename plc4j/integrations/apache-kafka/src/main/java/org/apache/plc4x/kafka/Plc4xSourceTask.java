@@ -1,24 +1,23 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.kafka;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.data.*;
@@ -26,6 +25,7 @@ import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
@@ -41,6 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,28 +63,27 @@ public class Plc4xSourceTask extends SourceTask {
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
         .define(Constants.CONNECTION_NAME_CONFIG,
-                ConfigDef.Type.STRING,
-                ConfigDef.Importance.HIGH,
-                Constants.CONNECTION_NAME_STRING_DOC)
+            ConfigDef.Type.STRING,
+            ConfigDef.Importance.HIGH,
+            Constants.CONNECTION_NAME_STRING_DOC)
         .define(Constants.CONNECTION_STRING_CONFIG,
-                ConfigDef.Type.STRING,
-                ConfigDef.Importance.HIGH,
-                Constants.CONNECTION_STRING_DOC)
+            ConfigDef.Type.STRING,
+            ConfigDef.Importance.HIGH,
+            Constants.CONNECTION_STRING_DOC)
         .define(Constants.KAFKA_POLL_RETURN_CONFIG,
-                ConfigDef.Type.INT,
-                Constants.KAFKA_POLL_RETURN_DEFAULT,
-                ConfigDef.Importance.HIGH,
-                Constants.KAFKA_POLL_RETURN_DOC)
+            ConfigDef.Type.INT,
+            Constants.KAFKA_POLL_RETURN_DEFAULT,
+            ConfigDef.Importance.HIGH,
+            Constants.KAFKA_POLL_RETURN_DOC)
         .define(Constants.BUFFER_SIZE_CONFIG,
-                ConfigDef.Type.INT,
-                Constants.BUFFER_SIZE_DEFAULT,
-                ConfigDef.Importance.HIGH,
-                Constants.BUFFER_SIZE_DOC)
+            ConfigDef.Type.INT,
+            Constants.BUFFER_SIZE_DEFAULT,
+            ConfigDef.Importance.HIGH,
+            Constants.BUFFER_SIZE_DOC)
         .define(Constants.QUERIES_CONFIG,
-                ConfigDef.Type.LIST,
-                ConfigDef.Importance.HIGH,
-                Constants.QUERIES_DOC);
-
+            ConfigDef.Type.LIST,
+            ConfigDef.Importance.HIGH,
+            Constants.QUERIES_DOC);
 
 
     private static final Schema KEY_SCHEMA =
@@ -94,6 +96,7 @@ public class Plc4xSourceTask extends SourceTask {
     private ArrayBlockingQueue<SourceRecord> buffer;
     private Integer pollReturnInterval;
     private TriggeredScraperImpl scraper;
+    private final SecureRandom random = new SecureRandom();
 
     @Override
     public String version() {
@@ -118,10 +121,10 @@ public class Plc4xSourceTask extends SourceTask {
         List<String> jobConfigs = config.getList(Constants.QUERIES_CONFIG);
         for (String jobConfig : jobConfigs) {
             String[] jobConfigSegments = jobConfig.split("\\|");
-            if(jobConfigSegments.length < 4) {
-                log.warn(String.format("Error in job configuration '%s'. " +
+            if (jobConfigSegments.length < 4) {
+                log.warn("Error in job configuration '{}'. " +
                     "The configuration expects at least 4 segments: " +
-                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig));
+                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig);
                 continue;
             }
 
@@ -130,12 +133,12 @@ public class Plc4xSourceTask extends SourceTask {
             Integer rate = Integer.valueOf(jobConfigSegments[2]);
             JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
                 jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
-            for(int i = 3; i < jobConfigSegments.length; i++) {
+            for (int i = 3; i < jobConfigSegments.length; i++) {
                 String[] fieldSegments = jobConfigSegments[i].split("#");
-                if(fieldSegments.length != 2) {
-                    log.warn(String.format("Error in job configuration '%s'. " +
+                if (fieldSegments.length != 2) {
+                    log.warn("Error in job configuration '{}'. " +
                             "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
-                        jobName, jobConfigSegments[i]));
+                        jobName, jobConfigSegments[i]);
                     continue;
                 }
                 String fieldAlias = fieldSegments[0];
@@ -152,70 +155,79 @@ public class Plc4xSourceTask extends SourceTask {
             PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
             TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
             scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
-                Long timestamp = System.currentTimeMillis();
+                try {
+                    Long timestamp = System.currentTimeMillis();
 
-                Map<String, String> sourcePartition = new HashMap<>();
-                sourcePartition.put("sourceName", sourceName);
-                sourcePartition.put("jobName", jobName);
+                    Map<String, String> sourcePartition = new HashMap<>();
+                    sourcePartition.put("sourceName", sourceName);
+                    sourcePartition.put("jobName", jobName);
 
-                Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
+                    Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
 
-                String topic = topics.get(jobName);
+                    String topic = topics.get(jobName);
 
-                // Prepare the key structure.
-                Struct key = new Struct(KEY_SCHEMA)
-                    .put(Constants.SOURCE_NAME_FIELD, sourceName)
-                    .put(Constants.JOB_NAME_FIELD, jobName);
+                    // Prepare the key structure.
+                    Struct key = new Struct(KEY_SCHEMA)
+                        .put(Constants.SOURCE_NAME_FIELD, sourceName)
+                        .put(Constants.JOB_NAME_FIELD, jobName);
 
-                // Build the Schema for the result struct.
-                SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
-                    .name("org.apache.plc4x.kafka.schema.Field");
+                    // Build the Schema for the result struct.
+                    SchemaBuilder fieldSchemaBuilder = SchemaBuilder.struct()
+                        .name("org.apache.plc4x.kafka.schema.Field");
 
 
-                for (Map.Entry<String, Object> result : results.entrySet()) {
-                    // Get field-name and -value from the results.
-                    String fieldName = result.getKey();
-                    Object fieldValue = result.getValue();
+                    for (Map.Entry<String, Object> result : results.entrySet()) {
+                        // Get field-name and -value from the results.
+                        String fieldName = result.getKey();
+                        Object fieldValue = result.getValue();
 
-                    // Get the schema for the given value type.
-                    Schema valueSchema = getSchema(fieldValue);
+                        // Get the schema for the given value type.
+                        Schema valueSchema = getSchema(fieldValue);
 
-                    // Add the schema description for the current field.
-                    fieldSchemaBuilder.field(fieldName, valueSchema);
-                }
-                Schema fieldSchema = fieldSchemaBuilder.build();
+                        // Add the schema description for the current field.
+                        fieldSchemaBuilder.field(fieldName, valueSchema);
+                    }
+                    Schema fieldSchema = fieldSchemaBuilder.build();
 
-                Schema recordSchema = SchemaBuilder.struct()
-                    .name("org.apache.plc4x.kafka.schema.JobResult")
-                    .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
-                    .field(Constants.FIELDS_CONFIG, fieldSchema)
-                    .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
-                    .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
-                    .build();
+                    Schema recordSchema = SchemaBuilder.struct()
+                        .name("org.apache.plc4x.kafka.schema.JobResult")
+                        .doc("PLC Job result. This contains all of the received PLCValues as well as a recieved timestamp")
+                        .field(Constants.FIELDS_CONFIG, fieldSchema)
+                        .field(Constants.TIMESTAMP_CONFIG, Schema.INT64_SCHEMA)
+                        .field(Constants.EXPIRES_CONFIG, Schema.OPTIONAL_INT64_SCHEMA)
+                        .build();
 
-                // Build the struct itself.
-                Struct fieldStruct = new Struct(fieldSchema);
-                for (Map.Entry<String, Object> result : results.entrySet()) {
-                    // Get field-name and -value from the results.
-                    String fieldName = result.getKey();
-                    Object fieldValue = result.getValue();
-                    fieldStruct.put(fieldName, fieldValue);
-                }
+                    // Build the struct itself.
+                    Struct fieldStruct = new Struct(fieldSchema);
+                    for (Map.Entry<String, Object> result : results.entrySet()) {
+                        // Get field-name and -value from the results.
+                        String fieldName = result.getKey();
+                        Object fieldValue = result.getValue();
 
-                Struct recordStruct = new Struct(recordSchema)
-                    .put(Constants.FIELDS_CONFIG, fieldStruct)
-                    .put(Constants.TIMESTAMP_CONFIG, timestamp);
+                        if (fieldSchema.field(fieldName).schema().type() == Schema.Type.ARRAY) {
+                            fieldStruct.put(fieldName, ((List) fieldValue).stream().map(p -> ((PlcValue) p).getObject()).collect(Collectors.toList()));
+                        } else {
+                            fieldStruct.put(fieldName, fieldValue);
+                        }
+                    }
 
-                // Prepare the source-record element.
-                SourceRecord record = new SourceRecord(
-                    sourcePartition, sourceOffset,
-                    topic,
-                    KEY_SCHEMA, key,
-                    recordSchema, recordStruct
+                    Struct recordStruct = new Struct(recordSchema)
+                        .put(Constants.FIELDS_CONFIG, fieldStruct)
+                        .put(Constants.TIMESTAMP_CONFIG, timestamp);
+
+                    // Prepare the source-record element.
+                    SourceRecord sourceRecord = new SourceRecord(
+                        sourcePartition, sourceOffset,
+                        topic,
+                        KEY_SCHEMA, key,
+                        recordSchema, recordStruct
                     );
 
-                // Add the new source-record to the buffer.
-                buffer.add(record);
+                    // Add the new source-record to the buffer.
+                    buffer.add(sourceRecord);
+                } catch (Exception e) {
+                    log.error("Error while parsing returned values", e);
+                }
             }, triggerCollector);
             scraper.start();
             triggerCollector.start();
@@ -226,7 +238,7 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public void stop() {
-        synchronized (this) {            
+        synchronized (this) {
             scraper.stop();
             notifyAll(); // wake up thread waiting in awaitFetch
         }
@@ -234,32 +246,36 @@ public class Plc4xSourceTask extends SourceTask {
 
     @Override
     public List<SourceRecord> poll() {
-        if(!buffer.isEmpty()) {
+        if (!buffer.isEmpty()) {
             int numElements = buffer.size();
             List<SourceRecord> result = new ArrayList<>(numElements);
             buffer.drainTo(result, numElements);
             return result;
-        } else {
-            try {
-                List<SourceRecord> result = new ArrayList<>(1);
-                SourceRecord temp = buffer.poll(pollReturnInterval + RandomUtils.nextInt(0, (int) Math.round(pollReturnInterval*0.05)), TimeUnit.MILLISECONDS);
-                if (temp == null) {
-                    return null;
-                }
-                result.add(temp);
-                return result;
-            } catch (InterruptedException e) {
-                return null;
+        }
+        try {
+            List<SourceRecord> result = new ArrayList<>(1);
+            SourceRecord temp = buffer.poll(pollReturnInterval + (long) random.nextInt((int) Math.round(pollReturnInterval * 0.05)), TimeUnit.MILLISECONDS);
+            if (temp == null) {
+                return Collections.emptyList();
             }
+            result.add(temp);
+            return result;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return Collections.emptyList();
         }
     }
 
     private Schema getSchema(Object value) {
         Objects.requireNonNull(value);
 
-        if(value instanceof List) {
+        if (value instanceof PlcValue) {
+            value = ((PlcValue) value).getObject();
+        }
+
+        if (value instanceof List) {
             List list = (List) value;
-            if(list.isEmpty()) {
+            if (list.isEmpty()) {
                 throw new ConnectException("Unsupported empty lists.");
             }
             // In PLC4X list elements all contain the same type.
@@ -267,8 +283,11 @@ public class Plc4xSourceTask extends SourceTask {
             Schema elementSchema = getSchema(firstElement);
             return SchemaBuilder.array(elementSchema).build();
         }
+        if (value instanceof BigInteger) {
+            // no support yet
+        }
         if (value instanceof BigDecimal) {
-
+            // no support yet
         }
         if (value instanceof Boolean) {
             return Schema.OPTIONAL_BOOLEAN_SCHEMA;

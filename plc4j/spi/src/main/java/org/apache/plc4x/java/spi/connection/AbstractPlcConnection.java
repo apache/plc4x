@@ -61,10 +61,10 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
      * @deprecated only for compatibility reasons.
      */
     @Deprecated
-    public AbstractPlcConnection() {
+    protected AbstractPlcConnection() {
     }
 
-    public AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
+    protected AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
                                  BaseOptimizer optimizer) {
         this.canRead = canRead;
         this.canWrite = canWrite;

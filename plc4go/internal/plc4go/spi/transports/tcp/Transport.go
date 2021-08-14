@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package tcp
 
@@ -28,6 +28,7 @@ import (
 	"net/url"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type Transport struct {
@@ -76,11 +77,11 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	}
 	var connectTimeout uint32 = 1000
 	if val, ok := options["connect-timeout"]; ok {
-		integerValue, err := strconv.Atoi(val[0])
+		parsedConnectTimeout, err := strconv.ParseUint(val[0], 10, 32)
 		if err != nil {
 			return nil, errors.Wrap(err, "error setting connect-timeout")
 		}
-		connectTimeout = uint32(integerValue)
+		connectTimeout = uint32(parsedConnectTimeout)
 	}
 
 	// Potentially resolve the ip address, if a hostname was provided
@@ -139,15 +140,29 @@ func (m *TransportInstance) Close() error {
 	if err != nil {
 		return errors.Wrap(err, "error closing connection")
 	}
+	m.tcpConn = nil
 	return nil
+}
+
+func (m *TransportInstance) IsConnected() bool {
+	return m.tcpConn != nil
 }
 
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	_, _ = m.reader.Peek(1)
-	return uint32(m.reader.Buffered()), nil
+	peekChan := make(chan bool)
+	go func() {
+		_, _ = m.reader.Peek(1)
+		peekChan <- true
+	}()
+	select {
+	case <-peekChan:
+		return uint32(m.reader.Buffered()), nil
+	case <-time.After(10 * time.Millisecond):
+		return 0, nil
+	}
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {

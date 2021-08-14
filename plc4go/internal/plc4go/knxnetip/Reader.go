@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
@@ -195,6 +195,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 					returnCodes[stringAddress] = apiModel.PlcResponseCode_NOT_FOUND
 					values[stringAddress] = nil
 				}
+				// TODO: Do we need a "default" case here?
 			}
 		} else {
 			// If we don't have any field-type information, add the raw data
@@ -305,11 +306,11 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 			if strings.Contains(segment, "-") {
 				split := strings.Split(segment, "-")
 				if len(split) == 2 {
-					minValue, err := strconv.Atoi(split[0])
+					minValue, err := strconv.ParseUint(split[0], 10, 16)
 					if err != nil {
 						return []uint16{}, errors.New("invalid address")
 					}
-					maxValue, err := strconv.Atoi(split[1])
+					maxValue, err := strconv.ParseUint(split[1], 10, 16)
 					if err != nil {
 						return []uint16{}, errors.New("invalid address")
 					}
@@ -320,7 +321,7 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 					return []uint16{}, errors.New("invalid address")
 				}
 			} else {
-				value, err := strconv.Atoi(segment)
+				value, err := strconv.ParseUint(segment, 10, 16)
 				if err != nil {
 					return []uint16{}, errors.New("invalid address")
 				}
@@ -328,7 +329,7 @@ func (m Reader) resoleSegment(pattern string, minValue uint16, maxValue uint16) 
 			}
 		}
 	} else {
-		value, err := strconv.Atoi(pattern)
+		value, err := strconv.ParseUint(pattern, 10, 16)
 		if err != nil {
 			return []uint16{}, errors.New("invalid address")
 		}

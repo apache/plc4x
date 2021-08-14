@@ -1,22 +1,22 @@
 import java.util.regex.Matcher
 
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 allConditionsMet = true
@@ -183,6 +183,7 @@ def checkFlex() {
 
 def checkGcc() {
     print "Detecting Gcc version:     "
+    // TODO: For windows, check that mingw32-make is on the PATH
     def output
     try {
         output = "gcc --version".execute().text
@@ -286,7 +287,6 @@ def checkCmake() {
     }
 }
 
-
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -310,6 +310,31 @@ def checkPython() {
         println "missing"
         allConditionsMet = false
     }
+}
+
+def checkSetupTools() {
+    print "Detecting setuptools:      "
+    try {
+        def cmdArray = ["python", "-c", "import setuptools"]
+        def process = cmdArray.execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        if(stdErr.contains("No module named setuptools")) {
+            println "missing"
+            allConditionsMet = false
+        } else {
+            println "               OK"
+        }
+    } catch (Exception e) {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+def checkGo() {
+    //TODO: (On windows) ensure the "go" executable is in the path, or there are failures when running the tests.
 }
 
 /*
@@ -416,14 +441,14 @@ println "Detected Arch: " + arch
 // Find out which profiles are enabled.
 /////////////////////////////////////////////////////
 
-println "Enabled profiles:"
 def boostEnabled = false
 def cEnabled = false
 def cppEnabled = false
 def dockerEnabled = false
 def dotnetEnabled = false
+def goEnabled = false
+// Java is always enabled ...
 def javaEnabled = true
-def logstashEnabled = false
 def pythonEnabled = false
 def sandboxEnabled = false
 def apacheReleaseEnabled = false
@@ -431,31 +456,22 @@ def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
     if (activeProfile == "with-boost") {
         boostEnabled = true
-        println "boost"
     } else if (activeProfile == "with-c") {
         cEnabled = true
-        println "c"
     } else if (activeProfile == "with-cpp") {
         cppEnabled = true
-        println "cpp"
     } else if (activeProfile == "with-docker") {
         dockerEnabled = true
-        println "docker"
     } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
-        println "dotnet"
-    } else if (activeProfile == "with-logstash") {
-        logstashEnabled = true
-        println "logstash"
+    } else if (activeProfile == "with-go") {
+        goEnabled = true
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
-        println "python"
     } else if (activeProfile == "with-sandbox") {
         sandboxEnabled = true
-        println "sandbox"
     } else if (activeProfile == "apache-release") {
         apacheReleaseEnabled = true
-        println "apache-release"
     }
 }
 println ""
@@ -481,11 +497,6 @@ if (dotnetEnabled) {
     checkDotnet()
 }
 
-if (logstashEnabled) {
-    // Logstash doesn't compile with java versions above 11 (currently)
-    checkJavaVersion(null, "11")
-}
-
 if (cppEnabled) {
     checkClang()
     // The cmake-maven-plugin requires at least java 11
@@ -509,6 +520,7 @@ if (cppEnabled) {
 
 if (pythonEnabled) {
     checkPython()
+    checkSetupTools()
 }
 
 // Boost needs the visual-studio `cl` compiler to compile the boostrap.
@@ -528,6 +540,10 @@ if (sandboxEnabled && dockerEnabled) {
 if (cppEnabled || cEnabled) {
     // CMake requires at least maven 3.6.0
     checkMavenVersion("3.6.0", null)
+}
+
+if (goEnabled) {
+    checkGo()
 }
 
 if (apacheReleaseEnabled) {

@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package s7
 
@@ -77,38 +77,38 @@ const (
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.dataBlockStringAddressPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
-		atoi, err := strconv.Atoi(match[STRING_LENGTH])
+		parsedStringLength, err := strconv.ParseUint(match[STRING_LENGTH], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
-		stringLength := uint16(atoi)
+		stringLength := uint16(parsedStringLength)
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
-		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
-		byteOffset, err := checkByteOffset(atoi)
+		byteOffset, err := checkByteOffset(parsedByteOffset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
 		if match[BIT_OFFSET] != "" {
-			atoi, err := strconv.Atoi(match[BIT_OFFSET])
+			parsedBitOffset, err := strconv.ParseUint(match[BIT_OFFSET], 10, 8)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting byteoffset")
 			}
-			bitOffset = uint8(atoi)
+			bitOffset = uint8(parsedBitOffset)
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
 		numElements := uint16(1)
 		if match[NUM_ELEMENTS] != "" {
-			atoi, err := strconv.Atoi(match[NUM_ELEMENTS])
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting numelements")
 			}
-			numElements = uint16(atoi)
+			numElements = uint16(parsedNumElements)
 		}
 
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
@@ -118,36 +118,36 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		return NewStringField(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
-		atoi, err := strconv.Atoi(match[STRING_LENGTH])
+		parsedStringLength, err := strconv.ParseUint(match[STRING_LENGTH], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting stringlength")
 		}
-		stringLength := uint16(atoi)
+		stringLength := uint16(parsedStringLength)
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
-		atoi, err = strconv.Atoi(match[BLOCK_NUMBER])
+		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting blocknumber")
 		}
-		blockNumber, err := checkDatablockNumber(atoi)
+		blockNumber, err := checkDatablockNumber(parsedBlockNumber)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error checking blocknumber")
 		}
-		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 8)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
-		byteOffset, err := checkByteOffset(atoi)
+		byteOffset, err := checkByteOffset(parsedByteOffset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
 		numElements := uint16(1)
 		if match[NUM_ELEMENTS] != "" {
-			atoi, err := strconv.Atoi(match[NUM_ELEMENTS])
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting numelements")
 			}
-			numElements = uint16(atoi)
+			numElements = uint16(parsedNumElements)
 		}
 
 		return NewStringField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
@@ -155,39 +155,39 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
-		atoi, err := strconv.Atoi(match[BLOCK_NUMBER])
+		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting blocknumber")
 		}
-		blockNumber, err := checkDatablockNumber(atoi)
+		blockNumber, err := checkDatablockNumber(parsedBlockNumber)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error checking blocknumber")
 		}
-		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
-		byteOffset, err := checkByteOffset(atoi)
+		byteOffset, err := checkByteOffset(parsedByteOffset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
 		if match[BIT_OFFSET] != "" {
-			atoi, err := strconv.Atoi(match[BIT_OFFSET])
+			parsedBitOffset, err := strconv.ParseUint(match[BIT_OFFSET], 10, 8)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting byteoffset")
 			}
-			bitOffset = uint8(atoi)
+			bitOffset = uint8(parsedBitOffset)
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
 		numElements := uint16(1)
 		if match[NUM_ELEMENTS] != "" {
-			atoi, err := strconv.Atoi(match[NUM_ELEMENTS])
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting numelements")
 			}
-			numElements = uint16(atoi)
+			numElements = uint16(parsedNumElements)
 		}
 
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
@@ -198,39 +198,39 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, query); match != nil {
 		dataType := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		memoryArea := readWriteModel.MemoryArea_DATA_BLOCKS
-		atoi, err := strconv.Atoi(match[BLOCK_NUMBER])
+		parsedBlockNumber, err := strconv.ParseUint(match[BLOCK_NUMBER], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting blocknumber")
 		}
-		blockNumber, err := checkDatablockNumber(atoi)
+		blockNumber, err := checkDatablockNumber(parsedBlockNumber)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error checking blocknumber")
 		}
-		atoi, err = strconv.Atoi(match[BYTE_OFFSET])
+		parsedByteOffset, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
-		byteOffset, err := checkByteOffset(atoi)
+		byteOffset, err := checkByteOffset(parsedByteOffset)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
 		if match[BIT_OFFSET] != "" {
-			atoi, err := strconv.Atoi(match[BIT_OFFSET])
+			parsedBitOffset, err := strconv.ParseUint(match[BIT_OFFSET], 10, 8)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting byteoffset")
 			}
-			bitOffset = uint8(atoi)
+			bitOffset = uint8(parsedBitOffset)
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
 		numElements := uint16(1)
 		if match[NUM_ELEMENTS] != "" {
-			atoi, err := strconv.Atoi(match[NUM_ELEMENTS])
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting numelements")
 			}
-			numElements = uint16(atoi)
+			numElements = uint16(parsedNumElements)
 		}
 
 		return NewField(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
@@ -264,38 +264,38 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 			return nil, errors.Wrap(err, "Error getting memory area")
 		}
 		transferSizeCode := getSizeCode(match[TRANSFER_SIZE_CODE])
-		atoi, err := strconv.Atoi(match[BYTE_OFFSET])
+		parsedTransferSizeCode, err := strconv.ParseUint(match[BYTE_OFFSET], 10, 16)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
-		byteOffset, err := checkByteOffset(atoi)
+		byteOffset, err := checkByteOffset(parsedTransferSizeCode)
 		if err != nil {
 			return nil, errors.Wrap(err, "Error converting byteoffset")
 		}
 		bitOffset := uint8(0)
 		if match[BIT_OFFSET] != "" {
-			atoi, err := strconv.Atoi(match[BIT_OFFSET])
+			parsedBitOffset, err := strconv.ParseUint(match[BIT_OFFSET], 10, 8)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting byteoffset")
 			}
-			bitOffset = uint8(atoi)
+			bitOffset = uint8(parsedBitOffset)
 		} else if dataType == readWriteModel.TransportSize_BOOL {
 			return nil, errors.New("Expected bit offset for BOOL parameters.")
 		}
 		numElements := uint16(1)
 		if match[NUM_ELEMENTS] != "" {
-			atoi, err := strconv.Atoi(match[NUM_ELEMENTS])
+			parsedNumElements, err := strconv.ParseUint(match[NUM_ELEMENTS], 10, 16)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error converting numelements")
 			}
-			numElements = uint16(atoi)
+			numElements = uint16(parsedNumElements)
 		}
 
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
 		if (dataType != readWriteModel.TransportSize_BOOL) && bitOffset != 0 {
-			errors.New("A bit offset other than 0 is only supported for type BOOL")
+			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
 
 		return NewField(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
@@ -303,7 +303,7 @@ func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	return nil, errors.Errorf("Unable to parse %s", query)
 }
 
-func checkDatablockNumber(blockNumber int) (uint16, error) {
+func checkDatablockNumber(blockNumber uint64) (uint16, error) {
 	//ToDo check the value or add reference - limit eventually depending on active S7 --> make a case selection
 	if blockNumber > 64000 || blockNumber < 1 {
 		return 0, errors.New("Datablock numbers larger than 64000 or smaller than 1 are not supported.")
@@ -311,7 +311,7 @@ func checkDatablockNumber(blockNumber int) (uint16, error) {
 	return uint16(blockNumber), nil
 }
 
-func checkByteOffset(byteOffset int) (uint16, error) {
+func checkByteOffset(byteOffset uint64) (uint16, error) {
 	//ToDo check the value or add reference
 	if byteOffset > 2097151 || byteOffset < 0 {
 		return 0, errors.New("ByteOffset must be smaller than 2097151 and positive.")
@@ -327,11 +327,11 @@ func getSizeCode(value string) uint8 {
 		return 0
 	}
 	chars := []rune(value)
-	atoi, err := strconv.Atoi(string(chars[0]))
+	parsedSizeCode, err := strconv.ParseUint(string(chars[0]), 10, 8)
 	if err != nil {
 		return 0
 	}
-	return uint8(atoi)
+	return uint8(parsedSizeCode)
 }
 
 func getMemoryAreaForShortName(shortName string) (readWriteModel.MemoryArea, error) {

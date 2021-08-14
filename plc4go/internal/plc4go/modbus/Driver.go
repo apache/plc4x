@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package modbus
 
@@ -105,8 +105,8 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	// If a unit-identifier was provided in the connection string use this, otherwise use the default of 1
 	unitIdentifier := uint8(1)
 	if value, ok := options["unit-identifier"]; ok {
-		var intValue int
-		intValue, err = strconv.Atoi(value[0])
+		var intValue uint64
+		intValue, err = strconv.ParseUint(value[0], 10, 8)
 		if err == nil {
 			unitIdentifier = uint8(intValue)
 		}
@@ -115,7 +115,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 
 	// Create the new connection
 	connection := NewConnection(unitIdentifier, codec, options, m.fieldHandler)
-	log.Info().Stringer("connection", connection).Msg("created connection, connecting now")
+	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
 }
 

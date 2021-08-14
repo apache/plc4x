@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.test.parserserializer;
 
 import org.apache.commons.codec.DecoderException;
@@ -31,6 +30,7 @@ import org.apache.plc4x.test.migration.MessageValidatorAndMigrator;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
 import org.apache.plc4x.test.parserserializer.model.ParserSerializerTestsuite;
 import org.apache.plc4x.test.parserserializer.model.Testcase;
+import org.apache.plc4x.test.xml.XmlHelper;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -91,9 +91,15 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
             boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
-            Element testsuiteName = testsuiteXml.element(new QName("name"));
-            Element protocolName = testsuiteXml.element(new QName("protocolName"));
-            Element outputFlavor = testsuiteXml.element(new QName("outputFlavor"));
+            String testsuiteName = testsuiteXml.element(new QName("name")).getStringValue();
+            String protocolName = testsuiteXml.element(new QName("protocolName")).getStringValue();
+            String outputFlavor = testsuiteXml.element(new QName("outputFlavor")).getStringValue();
+
+            Element optionsElement = testsuiteXml.element(new QName("options"));;
+            Map<String, String> options = new HashMap<>(XmlHelper.parseParameters(optionsElement));
+            options.put("protocolName", protocolName);
+            options.put("outputFlavor", outputFlavor);
+
             List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
             List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
             for (Element testcaseXml : testcasesXml) {
@@ -116,7 +122,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                         parserArguments.add(element.getTextTrim());
                     }
                 }
-                Testcase testcase = new Testcase(testsuiteName.getStringValue(), protocolName.getStringValue(), outputFlavor.getStringValue(), name, description, raw, rootType, parserArguments, xmlElement);
+                Testcase testcase = new Testcase(testsuiteName, protocolName, outputFlavor, name, description, raw, rootType, parserArguments, xmlElement);
                 if (testcaseXml instanceof LocationAwareElement) {
                     // pass source location to test
                     testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
@@ -124,7 +130,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 testcases.add(testcase);
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-            return new ParserSerializerTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
+            return new ParserSerializerTestsuite(testsuiteName, testcases, littleEndian, options);
         } catch (DocumentException e) {
             throw new ParserSerializerTestsuiteException("Error parsing testsuite xml", e);
         } catch (DecoderException e) {
@@ -137,8 +143,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
 
         try {
             MessageIO messageIO = MessageResolver.getMessageIOStaticLinked(
-                testcase.getProtocolName(),
-                testcase.getOutputFlavor(),
+                testSuite.getOptions(),
                 testcase.getXml().elements().get(0).getName()
             );
             Object parsedOutput = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());

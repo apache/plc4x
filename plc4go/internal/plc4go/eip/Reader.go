@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package eip
 
@@ -285,18 +285,18 @@ func getRequestSize(tag string) int8 {
 }
 
 func toAnsi(tag string) ([]int8, error) {
-	arrayIndex := 0
+	arrayIndex := byte(0)
 	isArray := false
 	isStruct := false
 	tagFinal := tag
 	if strings.Contains(tag, "[") {
 		isArray = true
 		index := tag[strings.Index(tag, "[")+1 : strings.Index(tag, "]")]
-		atoi, err := strconv.Atoi(index)
+		parsedArrayIndex, err := strconv.ParseUint(index, 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		arrayIndex = atoi
+		arrayIndex = byte(parsedArrayIndex)
 		tagFinal = tag[0:strings.Index(tag, "[")]
 	}
 	if strings.Contains(tag, ".") {
@@ -347,7 +347,7 @@ func toAnsi(tag string) ([]int8, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = buffer.WriteByte("", byte(arrayIndex))
+		err = buffer.WriteByte("", arrayIndex)
 		if err != nil {
 			return nil, err
 		}

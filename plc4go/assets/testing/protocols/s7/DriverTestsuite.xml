@@ -535,19 +535,22 @@
             <fields>
               <hurz>
                 <S7Field>
-                  <memoryArea>OUTPUTS</memoryArea>
-                  <blockNumber>0</blockNumber>
-                  <byteOffset>0</byteOffset>
-                  <bitOffset>0</bitOffset>
-                  <numElements>1</numElements>
-                  <dataType>BOOL</dataType>
+                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                  <numElements dataType="uint" bitLength="16">1</numElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </S7Field>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="OK">
-              <PlcBOOL>true</PlcBOOL>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+              </ResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -668,18 +671,22 @@
             <fields>
               <hurz>
                 <S7Field>
-                  <memoryArea>OUTPUTS</memoryArea>
-                  <blockNumber>0</blockNumber>
-                  <byteOffset>0</byteOffset>
-                  <bitOffset>0</bitOffset>
-                  <numElements>1</numElements>
-                  <dataType>BOOL</dataType>
+                  <memoryArea dataType="string" bitLength="56" encoding="UTF-8">OUTPUTS</memoryArea>
+                  <blockNumber dataType="uint" bitLength="16">0</blockNumber>
+                  <byteOffset dataType="uint" bitLength="16">0</byteOffset>
+                  <bitOffset dataType="uint" bitLength="8">0</bitOffset>
+                  <numElements dataType="uint" bitLength="16">1</numElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
                 </S7Field>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="ACCESS_DENIED"/>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="104" encoding="UTF-8">ACCESS_DENIED</result>
+              </ResponseItem>
+            </hurz>
           </values>
         </PlcReadResponse>
       </api-response>

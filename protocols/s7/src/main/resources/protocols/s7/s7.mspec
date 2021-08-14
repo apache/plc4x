@@ -1,21 +1,21 @@
- //
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 ////////////////////////////////////////////////////////////////
 // IsoOnTcp/TPKT
@@ -156,7 +156,7 @@
             [simple   uint 4  'cpuFunctionType']
             [simple   uint 4  'cpuFunctionGroup']
             [simple   uint 8  'currentMode']
-            [simple   uint 8  'sequenceNumber']             
+            [simple   uint 8  'sequenceNumber']
         ]
     ]
 ]
@@ -273,7 +273,7 @@
             [enum     DataTransportErrorCode 'returnCode']
             [enum     DataTransportSize      'transportSize']
             [reserved uint 8        '0x00']
-        ]        
+        ]
     ]
 ]
 
@@ -293,24 +293,24 @@
     [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
     [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
     [manual uint 12 'msec' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)' '2']
-    [simple uint 4  'dow'] 
+    [simple uint 4  'dow']
 ]
 
 [type 'State'
     [simple bit 'SIG_8']
-    [simple bit 'SIG_7']  
+    [simple bit 'SIG_7']
     [simple bit 'SIG_6']
-    [simple bit 'SIG_5'] 
+    [simple bit 'SIG_5']
     [simple bit 'SIG_4']
-    [simple bit 'SIG_3']  
+    [simple bit 'SIG_3']
     [simple bit 'SIG_2']
-    [simple bit 'SIG_1']   
+    [simple bit 'SIG_1']
 ]
 
 [type 'AlarmMessageObjectPushType'
     [const uint 8 'variableSpec' '0x12']
-    [simple uint 8 'lengthspec']  
-    [simple SyntaxIdType 'syntaxId'] 
+    [simple uint 8 'lengthspec']
+    [simple SyntaxIdType 'syntaxId']
     [simple uint 8 'numberOfValues']
     [simple uint 32 'eventId']
     [simple State 'eventState']
@@ -322,8 +322,8 @@
 
 [type 'AlarmMessageAckObjectPushType'
     [const uint 8 'variableSpec' '0x12']
-    [simple uint 8 'lengthspec']  
-    [simple SyntaxIdType 'syntaxId'] 
+    [simple uint 8 'lengthspec']
+    [simple SyntaxIdType 'syntaxId']
     [simple uint 8 'numberOfValues']
     [simple uint 32 'eventId']
     [simple State 'ackStateGoing']
@@ -334,27 +334,27 @@
     [simple DateAndTime 'TimeStamp']
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
-    [array AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]  
+    [array AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
 [type 'AlarmMessageAckPushType'
     [simple DateAndTime 'TimeStamp']
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
-    [array AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]  
+    [array AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
 [type 'AlarmMessageObjectQueryType'
-    [simple uint 8 'lengthDataset'] 
+    [simple uint 8 'lengthDataset']
     [reserved uint 16 '0x0000']
     [const uint 8 'variableSpec' '0x12']
     [simple State 'eventState']
     [simple State 'ackStateGoing']
     [simple State 'ackStateComing']
     [simple DateAndTime 'timeComing']
-    [simple AssociatedValueType 'valueComing'] 
+    [simple AssociatedValueType 'valueComing']
     [simple DateAndTime 'timeGoing']
-    [simple AssociatedValueType 'valueGoing'] 
+    [simple AssociatedValueType 'valueGoing']
 ]
 
 [type 'AlarmMessageQueryType'
@@ -363,13 +363,13 @@
     [enum   DataTransportErrorCode 'returnCode']
     [enum   DataTransportSize      'transportSize']
     [const uint 16 'DataLength' '0xFFFF']
-    [array AlarmMessageObjectQueryType 'messageObjects' count 'numberOfObjects' ]  
+    [array AlarmMessageObjectQueryType 'messageObjects' count 'numberOfObjects' ]
 ]
 
 [type 'AlarmMessageObjectAckType'
     [const uint 8 'variableSpec' '0x12']
-    [const uint 8 'length' '0x08']  
-    [simple SyntaxIdType 'syntaxId'] 
+    [const uint 8 'length' '0x08']
+    [simple SyntaxIdType 'syntaxId']
     [simple uint 8 'numberOfValues']
     [simple uint 32 'eventId']
     [simple State 'ackStateGoing']
@@ -379,13 +379,13 @@
 [type 'AlarmMessageAckType'
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
-    [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]  
+    [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]
 ]
 
 [type 'AlarmMessageAckResponseType'
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
-    [array uint 8 'messageObjects' count 'numberOfObjects' ]  
+    [array uint 8 'messageObjects' count 'numberOfObjects' ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -396,7 +396,7 @@
 //
 // DataItem by Sub Function Type:
 // 0x01 CPU_READSZL
-// 0x02 CPU_MSGS 
+// 0x02 CPU_MSGS
 // 0x03 CPU_DIAGMSG
 // 0x05 ALARM8_IND
 // 0x06 NOTIFY_IND
@@ -473,13 +473,13 @@
             [optional AlarmStateType 'Alarmtype' 'Subscription >= 128']
             [optional uint 8 'Reserve' 'Subscription >= 128']
         ]
-	['0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+	    ['0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
         ]
-	['0x08', '0x02', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+	    ['0x08', '0x02', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
             [simple uint 8 'result']
             [simple uint 8 'reserved01']
         ]
-	['0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+	    ['0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
             [simple uint 8 'result']
             [simple uint 8 'reserved01']
             [simple AlarmType 'alarmType']
@@ -491,12 +491,12 @@
         ['0x04', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAck
             [simple uint 8 'functionId']
             [implicit uint 8 'numberOfObjects' 'COUNT(messageObjects)']
-            [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]  
+            [array AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]
         ]
         ['0x08', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAckResponse
             [simple uint 8 'functionId']
             [implicit  uint 8 'numberOfObjects' 'COUNT(messageObjects)']
-            [array uint 8 'messageObjects' count 'numberOfObjects' ]  
+            [array uint 8 'messageObjects' count 'numberOfObjects' ]
         ]
 
         //ALARM_QUERY Request for alarms stored in the controller
@@ -842,4 +842,3 @@
     ['0x11' LINK_UP]
     ['0x12' UPDATE]
 ]
-

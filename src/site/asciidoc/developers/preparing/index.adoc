@@ -19,23 +19,22 @@
 
 Building a project like Apache PLC4X on multiple target operating-systems is quite a challenge, but I think we managed to make it as simple as possible.
 
-However when building PLC4X there are some requirements the build is expecting you to have provided.
-However this greatly depends on which parts you want to build.
+However, when building PLC4X there are some requirements the build is expecting you to have provided.
+However, this greatly depends on which parts you want to build.
 The `Java` modules hereby probably have the least demanding requirements.
 
 In order to build most Java parts of `PLC4X` you are required to have at least `Java 8` installed on your machine.
 Some integration modules and some other languages however may add some additional constraints to this.
 
-For example if you are using the `with-logstash` module to build the Logstash integration, you are required to use `Java 8` to `Java 11`, below and above doesn't work.
-On the other side as soon as you're building with the `with-c`, `with-cpp` or `with-proxies` you need to use at least `Java 11` as the `cmake-maven-plugin` requires at least this version.
+As soon as you're building with the `with-c`, `with-cpp` or `with-proxies` you need to use at least `Java 11` as the `cmake-maven-plugin` requires at least this version.
 
-TIP: Currently Java 11 is the sweet-spot for being able to build all parts of PLC4X.
+TIP: Currently, Java 11 is the sweet-spot for being able to build all parts of PLC4X.
 
 TIP: We have tested the build with Java 8 up to Java 14 (Latest version at the time of writing this document).
 
 If a new version comes out, please give us a little time to verify and handle any related issues.
 We'll probably fix them as soon as possible.
-However in the past with Oracle's new release strategy, there have been a few bumps on the road.
+However, in the past with Oracle's new release strategy, there have been a few bumps on the road.
 
 Also will PLC4X build with any Maven version starting with `Maven 3.3.0` however the `with-c`, `with-cpp` and `with-proxies` profiles require at least `Maven 3.6` as the `cmake-maven-plugin` requires this.
 
@@ -65,5 +64,5 @@ TIP: Currently Maven 3.6 and above is required for being able to build all parts
 The following pages will describe how to provide these requirements for your operating system.
 
 * link:linux.html[Linux]
-* link:macos.html[Mac OS]
+* link:macos.html[MacOS]
 * link:windows.html[Windows]
