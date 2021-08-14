@@ -25,7 +25,6 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
 import java.io.*;
 import java.util.*;
-import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 

@@ -38,7 +38,9 @@ const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_para
   {/* plc4c_s7_read_write_s7_parameter_write_var_response */
    .parameterType = 0x05, .messageType = 0x03},
   {/* plc4c_s7_read_write_s7_parameter_user_data */
-   .parameterType = 0x00, .messageType = 0x07}
+   .parameterType = 0x00, .messageType = 0x07},
+  {/* plc4c_s7_read_write_s7_parameter_mode_transition */
+   .parameterType = 0x01, .messageType = 0x07}
 
 };
 
@@ -247,6 +249,81 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     }
     (*_message)->s7_parameter_user_data_items = items;
 
+  } else 
+  if((parameterType == 0x01) && (messageType == 0x07)) { /* S7ParameterModeTransition */
+    (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition;
+                    
+    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+    {
+      uint16_t _reserved = 0;
+      _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &_reserved);
+      if(_res != OK) {
+        return _res;
+      }
+      if(_reserved != 0x0010) {
+        printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0010, _reserved);
+      }
+    }
+
+
+                    
+    // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    uint8_t itemLength = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &itemLength);
+    if(_res != OK) {
+      return _res;
+    }
+
+
+                    
+    // Simple Field (method)
+    uint8_t method = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &method);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_parameter_mode_transition_method = method;
+
+
+                    
+    // Simple Field (cpuFunctionType)
+    uint8_t cpuFunctionType = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &cpuFunctionType);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_parameter_mode_transition_cpu_function_type = cpuFunctionType;
+
+
+                    
+    // Simple Field (cpuFunctionGroup)
+    uint8_t cpuFunctionGroup = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &cpuFunctionGroup);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_parameter_mode_transition_cpu_function_group = cpuFunctionGroup;
+
+
+                    
+    // Simple Field (currentMode)
+    uint8_t currentMode = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &currentMode);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_parameter_mode_transition_current_mode = currentMode;
+
+
+                    
+    // Simple Field (sequenceNumber)
+    uint8_t sequenceNumber = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &sequenceNumber);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_parameter_mode_transition_sequence_number = sequenceNumber;
+
   }
 
   return OK;
@@ -377,6 +454,52 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
 
       break;
     }
+    case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition: {
+
+      // Reserved Field
+      _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, 0x0010);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_s7_parameter_length_in_bytes(_message)) - (2));
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (method)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_parameter_mode_transition_method);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (cpuFunctionType)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, _message->s7_parameter_mode_transition_cpu_function_type);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (cpuFunctionGroup)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, _message->s7_parameter_mode_transition_cpu_function_group);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (currentMode)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_parameter_mode_transition_current_mode);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (sequenceNumber)
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_parameter_mode_transition_sequence_number);
+      if(_res != OK) {
+        return _res;
+      }
+
+      break;
+    }
   }
 
   return OK;
@@ -475,6 +598,37 @@ uint16_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_
           curElement = curElement->next;
         }
       }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition: {
+
+      // Reserved Field (reserved)
+      lengthInBits += 16;
+
+
+      // Implicit Field (itemLength)
+      lengthInBits += 8;
+
+
+      // Simple field (method)
+      lengthInBits += 8;
+
+
+      // Simple field (cpuFunctionType)
+      lengthInBits += 4;
+
+
+      // Simple field (cpuFunctionGroup)
+      lengthInBits += 4;
+
+
+      // Simple field (currentMode)
+      lengthInBits += 8;
+
+
+      // Simple field (sequenceNumber)
+      lengthInBits += 8;
 
       break;
     }

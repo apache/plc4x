@@ -18,11 +18,8 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -42,15 +39,8 @@ import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
-import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmS;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSC;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSQ;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify8;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;

@@ -276,21 +276,19 @@
                         </DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">4</dataLength>
-                      <szlId>
-                        <SzlId>
-                          <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
-                            </SzlModuleTypeClass>
-                          </typeClass>
-                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
-                          <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
-                            </SzlSublist>
-                          </sublistList>
-                        </SzlId>
-                      </szlId>
-                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       <S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                        <szlId>
+                          <SzlId>
+                            <typeClass>
+                              <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                            </typeClass>
+                            <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                            <sublistList>
+                              <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
+                            </sublistList>
+                          </SzlId>
+                        </szlId>
+                        <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       </S7PayloadUserDataItemCpuFunctionReadSzlRequest>
                     </S7PayloadUserDataItem>
                   </items>
@@ -366,19 +364,19 @@
                         <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">92</dataLength>
-                      <szlId>
-                        <SzlId>
-                          <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
-                          </typeClass>
-                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
-                          <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
-                          </sublistList>
-                        </SzlId>
-                      </szlId>
-                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       <S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                        <szlId>
+                          <SzlId>
+                            <typeClass>
+                              <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                            </typeClass>
+                            <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                            <sublistList>
+                              <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
+                            </sublistList>
+                          </SzlId>
+                        </szlId>
+                        <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                         <szlItemLength dataType="uint" bitLength="16">28</szlItemLength>
                         <szlItemCount dataType="uint" bitLength="16">3</szlItemCount>
                         <items isList="true">

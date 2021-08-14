@@ -72,6 +72,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
+    // TODO: Actually this is not quite true ... this is only true for some S7 devices
     protected boolean canSubscribe() {
         return true;
     }
