@@ -30,6 +30,19 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
   return plc4c_s7_read_write_data_transport_size_null_const;
 }
 
+// Parse function.
+plc4c_return_code plc4c_s7_read_write_data_transport_size_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_data_transport_size** _message) {
+    plc4c_return_code _res = OK;
+    // TODO: Implement
+    return _res;
+}
+
+plc4c_return_code plc4c_s7_read_write_data_transport_size_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_data_transport_size* _message) {
+    plc4c_return_code _res = OK;
+    // TODO: Implement
+    return _res;
+}
+
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_of(char* value_string) {
     if(strcmp(value_string, "NULL") == 0) {
         return plc4c_s7_read_write_data_transport_size_NULL;
@@ -129,4 +142,13 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
             return -1;
         }
     }
+}
+
+uint16_t plc4c_s7_read_write_data_transport_size_length_in_bytes(plc4c_s7_read_write_data_transport_size* _message) {
+    return plc4c_s7_read_write_data_transport_size_length_in_bits(_message) / 8;
+}
+
+uint16_t plc4c_s7_read_write_data_transport_size_length_in_bits(plc4c_s7_read_write_data_transport_size* _message) {
+    // TODO: Implement
+    return 0;
 }

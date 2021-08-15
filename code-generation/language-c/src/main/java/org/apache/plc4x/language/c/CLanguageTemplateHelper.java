@@ -738,11 +738,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
         // Handling enum properties in C is a little more tricky as we have to use the enum value
-        // and pass this to a function that then returns the desired property value.
+        // and pass this to a function that returns the desired property value.
         else if(propertyTypeDefinition instanceof EnumTypeDefinition) {
             return getCTypeName(propertyTypeDefinition.getName()) +
                 "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
-                "(" + vl.getName() + ")";
+                "(*" + vl.getName() + ")";
         }
         // Else ... generate a simple access path.
         StringBuilder sb = new StringBuilder(vl.getName());

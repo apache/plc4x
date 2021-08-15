@@ -52,7 +52,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   }
   {
     // Count array
-    uint16_t itemCount = 20;
+    uint16_t itemCount = (uint16_t) 20;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
       char* _value = malloc(sizeof(char));

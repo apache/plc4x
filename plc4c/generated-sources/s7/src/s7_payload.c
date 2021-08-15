@@ -75,7 +75,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     }
     {
       // Count array
-      uint16_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_read_var_response_num_items;
+      uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_read_var_response_num_items;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
@@ -100,7 +100,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     }
     {
       // Count array
-      uint16_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_request_items);
+      uint16_t itemCount = (uint16_t) plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_request_items);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
@@ -125,7 +125,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     }
     {
       // Count array
-      uint16_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_response_num_items;
+      uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_response_num_items;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_var_payload_status_item* _value = NULL;
@@ -150,7 +150,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     }
     {
       // Count array
-      uint16_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items);
+      uint16_t itemCount = (uint16_t) plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_s7_payload_user_data_item* _value = NULL;

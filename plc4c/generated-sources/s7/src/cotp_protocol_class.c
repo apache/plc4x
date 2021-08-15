@@ -30,6 +30,19 @@ plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_
   return plc4c_s7_read_write_cotp_protocol_class_null_const;
 }
 
+// Parse function.
+plc4c_return_code plc4c_s7_read_write_cotp_protocol_class_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_cotp_protocol_class** _message) {
+    plc4c_return_code _res = OK;
+    // TODO: Implement
+    return _res;
+}
+
+plc4c_return_code plc4c_s7_read_write_cotp_protocol_class_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_protocol_class* _message) {
+    plc4c_return_code _res = OK;
+    // TODO: Implement
+    return _res;
+}
+
 plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_of(char* value_string) {
     if(strcmp(value_string, "CLASS_0") == 0) {
         return plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
@@ -74,4 +87,13 @@ plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_
         return -1;
       }
     }
+}
+
+uint16_t plc4c_s7_read_write_cotp_protocol_class_length_in_bytes(plc4c_s7_read_write_cotp_protocol_class* _message) {
+    return plc4c_s7_read_write_cotp_protocol_class_length_in_bits(_message) / 8;
+}
+
+uint16_t plc4c_s7_read_write_cotp_protocol_class_length_in_bits(plc4c_s7_read_write_cotp_protocol_class* _message) {
+    // TODO: Implement
+    return 0;
 }

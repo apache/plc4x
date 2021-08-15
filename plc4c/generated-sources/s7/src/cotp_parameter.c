@@ -84,13 +84,13 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
                     
-    // Enum field (tpduSize)
-    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size_null();
-    _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) &tpduSize);
+    // Simple Field (tpduSize)
+    plc4c_s7_read_write_cotp_tpdu_size* tpduSize;
+    _res = plc4c_s7_read_write_cotp_tpdu_size_parse(readBuffer, (void*) &tpduSize);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
+    (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
 
   } else 
   if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
@@ -140,7 +140,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     }
     {
       // Count array
-      uint16_t itemCount = rest;
+      uint16_t itemCount = (uint16_t) rest;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         char* _value = malloc(sizeof(char));
@@ -174,8 +174,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
-      // Enum field (tpduSize)
-      _res = plc4c_spi_write_signed_byte(writeBuffer, 8, _message->cotp_parameter_tpdu_size_tpdu_size);
+      // Simple Field (tpduSize)
+      _res = plc4c_s7_read_write_cotp_tpdu_size_serialize(writeBuffer, &_message->cotp_parameter_tpdu_size_tpdu_size);
       if(_res != OK) {
         return _res;
       }
@@ -248,8 +248,8 @@ uint16_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_c
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
-      // Enum Field (tpduSize)
-      lengthInBits += 8;
+      // Simple field (tpduSize)
+      lengthInBits += plc4c_s7_read_write_cotp_tpdu_size_length_in_bits(&_message->cotp_parameter_tpdu_size_tpdu_size);
 
       break;
     }

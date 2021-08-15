@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/driver_s7_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
@@ -80,9 +81,9 @@ typedef enum plc4c_s7_read_write_s7_payload_user_data_item_type plc4c_s7_read_wr
 plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_get_discriminator(plc4c_s7_read_write_s7_payload_user_data_item_type type);
 
 // Constant values.
-uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH();
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ();
 uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH();
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ();
+uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH();
 
 struct plc4c_s7_read_write_s7_payload_user_data_item {
   /* This is an abstract type so this property saves the type of this typed union */

@@ -145,7 +145,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  {
             <#if helper.isCountArrayField(field)>
 <#if indentContent>  </#if>    // Count array
-<#if indentContent>  </#if>    uint16_t itemCount = ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)};
+<#if indentContent>  </#if>    uint16_t itemCount = (uint16_t) ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)};
 <#if indentContent>  </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
 <#if indentContent>  </#if>      <#if !helper.isSimpleTypeReference(arrayField.type)>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
@@ -398,7 +398,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
-<#if indentContent>  </#if>  (*_message)-><@fieldName baseType=baseType field=simpleField/> = ${simpleField.name};
+<#if indentContent>  </#if>  (*_message)-><@fieldName baseType=baseType field=simpleField/> = <#if helper.isEnumTypeReference(simpleField.type)>*</#if>${simpleField.name};
             <#break>
         <#case "switch">
             <#assign switchField = field>
@@ -538,7 +538,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 
 <#if indentContent>    </#if>  // Manual Field (${manualField.name})<#if indentContent>    </#if>  {
             <#if helper.isSimpleTypeReference(manualField.type)>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, arrayField), field)};
+<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(manualField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, manualField), field)};
             <#else>
 <#if indentContent>    </#if>  _res = ${helper.getCTypeName(manualField.type.name)}_serialize(writeBuffer, (void*) &_value);
             </#if>
@@ -595,7 +595,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(simpleField.type)>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField), field)};
             <#else>
-<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, _message-><@fieldName baseType=baseType field=simpleField/>);
+<#if indentContent>    </#if>  _res = ${helper.getCTypeName(simpleField.type.name)}_serialize(writeBuffer, <#if helper.isEnumTypeReference(simpleField.type)>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
@@ -745,7 +745,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
                     <#assign simpleTypeReference = simpleField.type>
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
                 <#else>
-<#if indentContent>    </#if>  lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(_message-><@fieldName baseType=baseType field=simpleField/>);
+<#if indentContent>    </#if>  lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(<#if helper.isEnumTypeReference(simpleField.type)>&</#if>_message-><@fieldName baseType=baseType field=simpleField/>);
                 </#if>
                 <#break>
             <#case "switch">

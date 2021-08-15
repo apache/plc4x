@@ -51,6 +51,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/driver_${protocolName}_static.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>

@@ -66,6 +66,8 @@ if (DEBUG_OUTPUT)
     endforeach ()
 endif ()
 
+include_directories("include")
+
 #[[
     Build all the modules of PLC4C
 ]]

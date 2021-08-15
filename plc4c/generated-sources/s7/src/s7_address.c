@@ -103,13 +103,13 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* re
 
 
                     
-    // Enum field (area)
-    plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &area);
+    // Simple Field (area)
+    plc4c_s7_read_write_memory_area* area;
+    _res = plc4c_s7_read_write_memory_area_parse(readBuffer, (void*) &area);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_address_any_area = area;
+    (*_message)->s7_address_any_area = *area;
 
 
                     
@@ -178,8 +178,8 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
         return _res;
       }
 
-      // Enum field (area)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_address_any_area);
+      // Simple Field (area)
+      _res = plc4c_s7_read_write_memory_area_serialize(writeBuffer, &_message->s7_address_any_area);
       if(_res != OK) {
         return _res;
       }
@@ -235,8 +235,8 @@ uint16_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_ad
       lengthInBits += 16;
 
 
-      // Enum Field (area)
-      lengthInBits += 8;
+      // Simple field (area)
+      lengthInBits += plc4c_s7_read_write_memory_area_length_in_bits(&_message->s7_address_any_area);
 
 
       // Reserved Field (reserved)

@@ -80,17 +80,17 @@ plc4c_s7_read_write_s7_payload_user_data_item plc4c_s7_read_write_s7_payload_use
 
 
 // Constant values.
-static const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const = 28;
-uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const = 0x08;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const = 0x01;
 uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ() {
   return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const = 0x08;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const;
+static const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const = 28;
+uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const;
 }
 
 // Parse function.
@@ -105,21 +105,21 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     return NO_MEMORY;
   }
 
-  // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &returnCode);
+  // Simple Field (returnCode)
+  plc4c_s7_read_write_data_transport_error_code* returnCode;
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->return_code = returnCode;
+  (*_message)->return_code = *returnCode;
 
-  // Enum field (transportSize)
-  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &transportSize);
+  // Simple Field (transportSize)
+  plc4c_s7_read_write_data_transport_size* transportSize;
+  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->transport_size = transportSize;
+  (*_message)->transport_size = *transportSize;
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
@@ -360,7 +360,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     }
     {
       // Count array
-      uint16_t itemCount = szlItemCount;
+      uint16_t itemCount = (uint16_t) szlItemCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_szl_data_tree_item* _value = NULL;
@@ -497,7 +497,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type = alarmType;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type = *alarmType;
 
 
                     
@@ -550,7 +550,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     }
     {
       // Count array
-      uint16_t itemCount = numberOfObjects;
+      uint16_t itemCount = (uint16_t) numberOfObjects;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
         plc4c_s7_read_write_alarm_message_object_ack_type* _value = NULL;
@@ -594,7 +594,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     }
     {
       // Count array
-      uint16_t itemCount = numberOfObjects;
+      uint16_t itemCount = (uint16_t) numberOfObjects;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
         uint8_t* _value = malloc(sizeof(uint8_t));
@@ -663,13 +663,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 
                     
-    // Enum field (syntaxId)
-    plc4c_s7_read_write_syntax_id_type syntaxId = plc4c_s7_read_write_syntax_id_type_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &syntaxId);
+    // Simple Field (syntaxId)
+    plc4c_s7_read_write_syntax_id_type* syntaxId;
+    _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id = syntaxId;
+    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id = *syntaxId;
 
 
                     
@@ -687,13 +687,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 
                     
-    // Enum field (queryType)
-    plc4c_s7_read_write_query_type queryType = plc4c_s7_read_write_query_type_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &queryType);
+    // Simple Field (queryType)
+    plc4c_s7_read_write_query_type* queryType;
+    _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_query_type = queryType;
+    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_query_type = *queryType;
 
 
                     
@@ -711,13 +711,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 
                     
-    // Enum field (alarmType)
-    plc4c_s7_read_write_alarm_type alarmType = plc4c_s7_read_write_alarm_type_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &alarmType);
+    // Simple Field (alarmType)
+    plc4c_s7_read_write_alarm_type* alarmType;
+    _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type = alarmType;
+    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type = *alarmType;
 
   } else 
   if((cpuFunctionType == 0x08) && (cpuSubfunction == 0x13)) { /* S7PayloadUserDataItemCpuFunctionAlarmQueryResponse */
@@ -749,23 +749,23 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 
                     
-    // Enum field (pudicfReturnCode)
-    plc4c_s7_read_write_data_transport_error_code pudicfReturnCode = plc4c_s7_read_write_data_transport_error_code_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &pudicfReturnCode);
+    // Simple Field (pudicfReturnCode)
+    plc4c_s7_read_write_data_transport_error_code* pudicfReturnCode;
+    _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &pudicfReturnCode);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code = pudicfReturnCode;
+    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code = *pudicfReturnCode;
 
 
                     
-    // Enum field (pudicftransportSize)
-    plc4c_s7_read_write_data_transport_size pudicftransportSize = plc4c_s7_read_write_data_transport_size_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &pudicftransportSize);
+    // Simple Field (pudicftransportSize)
+    plc4c_s7_read_write_data_transport_size* pudicftransportSize;
+    _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &pudicftransportSize);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size = pudicftransportSize;
+    (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size = *pudicftransportSize;
 
 
                     
@@ -789,14 +789,14 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   plc4c_return_code _res = OK;
 
-  // Enum field (returnCode)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->return_code);
+  // Simple Field (returnCode)
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
-  // Enum field (transportSize)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->transport_size);
+  // Simple Field (transportSize)
+  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
@@ -1052,7 +1052,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
       }
 
       // Simple Field (alarmType)
-      _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+      _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
       if(_res != OK) {
         return _res;
       }
@@ -1140,8 +1140,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
       // Const Field (length)
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH());
 
-      // Enum field (syntaxId)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
+      // Simple Field (syntaxId)
+      _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
       if(_res != OK) {
         return _res;
       }
@@ -1152,8 +1152,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
         return _res;
       }
 
-      // Enum field (queryType)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
+      // Simple Field (queryType)
+      _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
       if(_res != OK) {
         return _res;
       }
@@ -1164,8 +1164,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
         return _res;
       }
 
-      // Enum field (alarmType)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
+      // Simple Field (alarmType)
+      _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
       if(_res != OK) {
         return _res;
       }
@@ -1180,14 +1180,14 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
       // Const Field (numberMessageObj)
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ());
 
-      // Enum field (pudicfReturnCode)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
+      // Simple Field (pudicfReturnCode)
+      _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
       if(_res != OK) {
         return _res;
       }
 
-      // Enum field (pudicftransportSize)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
+      // Simple Field (pudicftransportSize)
+      _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
       if(_res != OK) {
         return _res;
       }
@@ -1212,11 +1212,11 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_
 uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   uint16_t lengthInBits = 0;
 
-  // Enum Field (returnCode)
-  lengthInBits += 8;
+  // Simple field (returnCode)
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
 
-  // Enum Field (transportSize)
-  lengthInBits += 8;
+  // Simple field (transportSize)
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
 
   // Implicit Field (dataLength)
   lengthInBits += 16;
@@ -1396,7 +1396,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
       // Simple field (alarmType)
-      lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+      lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
 
 
       // Simple field (reserved02)
@@ -1462,24 +1462,24 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
       lengthInBits += 8;
 
 
-      // Enum Field (syntaxId)
-      lengthInBits += 8;
+      // Simple field (syntaxId)
+      lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
 
 
       // Reserved Field (reserved)
       lengthInBits += 8;
 
 
-      // Enum Field (queryType)
-      lengthInBits += 8;
+      // Simple field (queryType)
+      lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
 
 
       // Reserved Field (reserved)
       lengthInBits += 8;
 
 
-      // Enum Field (alarmType)
-      lengthInBits += 8;
+      // Simple field (alarmType)
+      lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
 
       break;
     }
@@ -1493,12 +1493,12 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
       lengthInBits += 8;
 
 
-      // Enum Field (pudicfReturnCode)
-      lengthInBits += 8;
+      // Simple field (pudicfReturnCode)
+      lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
 
 
-      // Enum Field (pudicftransportSize)
-      lengthInBits += 8;
+      // Simple field (pudicftransportSize)
+      lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
 
 
       // Reserved Field (reserved)
