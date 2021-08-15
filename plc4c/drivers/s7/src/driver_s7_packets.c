@@ -324,7 +324,7 @@ void plc4c_driver_s7_destroy_receive_packet(
           free(s7_param->s7_parameter_user_data_items);
           break;
         case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response:
-          // todo: something
+          // TODO: something
           break;
         case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response:
           // TODO: something

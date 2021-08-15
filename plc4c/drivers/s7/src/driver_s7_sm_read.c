@@ -35,7 +35,7 @@ enum plc4c_driver_s7_read_states {
 
 // Forward declaration of helper function to stop PLC4C_DRIVER_S7_READ_FINISHED
 // state become too big, TODO: move to some header or inline
-plc4c_return_code plc4c_driver_s7_parse_read_responce(
+plc4c_return_code plc4c_driver_s7_parse_read_response(
     plc4c_read_request_execution *execution, plc4c_s7_read_write_tpkt_packet* packet);
 
 plc4c_return_code plc4c_driver_s7_sm_read_init(
@@ -84,7 +84,7 @@ plc4c_return_code plc4c_driver_s7_sm_read_finished(
     return NO_MEMORY;
   execution->read_response->read_request = execution->read_request;
 
-  result = plc4c_driver_s7_parse_read_responce(execution, packet);
+  result = plc4c_driver_s7_parse_read_response(execution, packet);
 
   if (result != OK)
     return result;
