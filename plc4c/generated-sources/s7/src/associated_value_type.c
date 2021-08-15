@@ -96,7 +96,7 @@ plc4c_return_code plc4c_s7_read_write_associated_value_type_serialize(plc4c_spi_
   }
 
   // Manual Field (valueLength)  {
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (uint16_t*) plc4c_utils_list_get_value(_message->value_length, 1));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (uint16_t*) plc4c_utils_list_get_value(_message->value_length);
   if(_res != OK) {
     return _res;
   }
