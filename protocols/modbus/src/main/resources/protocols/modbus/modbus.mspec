@@ -46,13 +46,13 @@
 ]
 
 [type 'ModbusSerialADU' [bit 'response']
-    [simple         uint 16     'transactionId']
-    [reserved       uint 16     '0x0000']
-    [simple         uint 16     'length']
     [simple         uint 8      'address']
 
     // The actual modbus payload
     [simple         ModbusPDU   'pdu' ['response']]
+
+    //This should be a checksum, not sure the status of the checksum field esp in C and Go
+    [checksum uint 16           'headerChecksum' '100']
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']
