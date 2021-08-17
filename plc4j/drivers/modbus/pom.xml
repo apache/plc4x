@@ -98,6 +98,22 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus_rtu.ModbusRTUDriver</Export-Service>
+            <Import-Package>
+              com.fasterxml.jackson.annotation;resolution:=optional,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>

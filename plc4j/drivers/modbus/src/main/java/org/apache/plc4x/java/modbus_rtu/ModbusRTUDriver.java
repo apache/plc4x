@@ -48,7 +48,7 @@ public class ModbusRTUDriver extends GeneratedDriverBase<ModbusSerialADU> {
 
     @Override
     public String getProtocolName() {
-        return "ModbusRTU";
+        return "Modbus RTU";
     }
 
     @Override
@@ -118,8 +118,8 @@ public class ModbusRTUDriver extends GeneratedDriverBase<ModbusSerialADU> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
+            if (byteBuf.readableBytes() >= 3) {
+                return byteBuf.getUnsignedByte(byteBuf.readerIndex() + 2) + 5;
             }
             return -1;
         }

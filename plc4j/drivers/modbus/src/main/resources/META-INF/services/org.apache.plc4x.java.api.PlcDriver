@@ -17,3 +17,4 @@
 # under the License.
 #
 org.apache.plc4x.java.modbus.ModbusDriver
+org.apache.plc4x.java.modbus_rtu.ModbusRTUDriver

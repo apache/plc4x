@@ -52,7 +52,8 @@
     [simple         ModbusPDU   'pdu' ['response']]
 
     //This should be a checksum, not sure the status of the checksum field esp in C and Go
-    [checksum uint 16           'headerChecksum' '100']
+    //[checksum uint 16           'headerChecksum' 'STATIC_CALL("org.apache.plc4x.java.modbus_rtu.utils.StaticHelper.calculateChecksum", readBuffer, _type.encoding)']
+    [simple uint 16 'crc']
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']

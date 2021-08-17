@@ -54,6 +54,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.apache.plc4x.java.modbus_rtu.utils.StaticHelper.calculateChecksum;
+
 public class ModbusRTUProtocolLogic extends Plc4xProtocolBase<ModbusSerialADU> implements HasConfiguration<ModbusRTUConfiguration> {
 
     private Duration requestTimeout;
@@ -93,7 +95,7 @@ public class ModbusRTUProtocolLogic extends Plc4xProtocolBase<ModbusSerialADU> i
             String fieldName = request.getFieldNames().iterator().next();
             ModbusField field = (ModbusField) request.getField(fieldName);
             final ModbusPDU requestPdu = getReadRequestPdu(field);
-            ModbusSerialADU modbusSerialADU = new ModbusSerialADU(address, requestPdu);
+            ModbusSerialADU modbusSerialADU = new ModbusSerialADU(address, requestPdu, calculateChecksum(address, requestPdu));
 
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusSerialADU)
@@ -187,7 +189,7 @@ public class ModbusRTUProtocolLogic extends Plc4xProtocolBase<ModbusSerialADU> i
             PlcField field = request.getField(fieldName);
             final ModbusPDU requestPdu = getWriteRequestPdu(field, ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName));
 
-            ModbusSerialADU modbusSerialADU = new ModbusSerialADU(address, requestPdu);
+            ModbusSerialADU modbusSerialADU = new ModbusSerialADU(address, requestPdu, calculateChecksum(address, requestPdu));
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusSerialADU)
                 .expectResponse(ModbusSerialADU.class, requestTimeout)
