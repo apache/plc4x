@@ -48,7 +48,7 @@ plc4c_return_code plc4c_s7_read_write_device_group_parse(plc4c_spi_read_buffer* 
 plc4c_return_code plc4c_s7_read_write_device_group_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_device_group* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_write_signed_byte(writeBuffer, 8, _message);
+    _res = plc4c_spi_write_signed_byte(writeBuffer, 8, *_message);
 
     return _res;
 }

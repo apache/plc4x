@@ -48,7 +48,7 @@ plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4c_spi_read_buffer* r
 plc4c_return_code plc4c_s7_read_write_szl_sublist_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_sublist* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message);
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
 
     return _res;
 }

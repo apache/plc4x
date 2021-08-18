@@ -48,7 +48,7 @@ plc4c_return_code plc4c_s7_read_write_cpu_subscribe_events_parse(plc4c_spi_read_
 plc4c_return_code plc4c_s7_read_write_cpu_subscribe_events_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cpu_subscribe_events* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message);
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
 
     return _res;
 }

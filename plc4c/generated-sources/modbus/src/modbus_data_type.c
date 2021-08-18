@@ -48,7 +48,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_data_type_parse(plc4c_spi_read_
 plc4c_return_code plc4c_modbus_read_write_modbus_data_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type* _message) {
     plc4c_return_code _res = OK;
 
-    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message);
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
 
     return _res;
 }

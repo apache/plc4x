@@ -76,7 +76,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
-    _res = ${helper.getWriteBufferWriteMethodCall(type.type, "_message", null)?no_esc};
+    _res = ${helper.getWriteBufferWriteMethodCall(type.type, "*_message", null)?no_esc};
 
     return _res;
 }

@@ -400,10 +400,10 @@
 //    ['102.0' BIG]
 //]
 
-//String based enum's needs some work in C, compiles but assigns 0 as values.
-[enum string '-1' 'EnumTypeString'
-    ['Toddy1' TODDY]
-]
+//TODO:  C doesn't support non integer switch fields
+//[enum string '-1' 'EnumTypeString'
+//    ['Toddy1' TODDY]
+//]
 
 //TODO:  Fails to import the base Enum in C, need to find it in getComplexTypeReferences
 //[enum EnumType 'EnumTypeEnum'
