@@ -231,6 +231,7 @@ func (m *defaultCodec) HandleMessages(message interface{}) bool {
 func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 	defer func() {
 		if err := recover(); err != nil {
+			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			log.Error().Msgf("recovered from %v", err)
 		}
 		log.Info().Msg("Keep running")

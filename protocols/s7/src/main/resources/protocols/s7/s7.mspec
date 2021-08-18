@@ -286,13 +286,13 @@
 
 //TODO: Convert BCD to uint
 [type 'DateAndTime'
-    [manual uint 8 'year'     'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)' '1']
-    [manual uint 8  'month'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.month)' '1']
-    [manual uint 8  'day'     'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.day)' '1']
-    [manual uint 8  'hour'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.hour)' '1']
-    [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
-    [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
-    [manual uint 12 'msec'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)' '2']
+    [manual uint 8  'year'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)'    '1']
+    [manual uint 8  'month'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.month)'   '1']
+    [manual uint 8  'day'     'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.day)'     '1']
+    [manual uint 8  'hour'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.hour)'    '1']
+    [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
+    [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
+    [manual uint 12 'msec'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)'  '2']
     [simple uint 4  'dow']
 ]
 

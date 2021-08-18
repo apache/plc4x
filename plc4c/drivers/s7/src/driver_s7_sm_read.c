@@ -185,7 +185,7 @@ void plc4c_driver_s7_free_read_response(plc4c_read_response* response) {
   free(response->items);
 }
 
-plc4c_return_code plc4c_driver_s7_parse_read_responce( 
+plc4c_return_code plc4c_driver_s7_parse_read_response(
                                 plc4c_read_request_execution* execution,
                                 plc4c_s7_read_write_tpkt_packet* packet) {
 

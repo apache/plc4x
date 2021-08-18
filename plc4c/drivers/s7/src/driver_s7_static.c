@@ -35,7 +35,8 @@ uint16_t plc4c_s7_read_write_right_shift3(plc4c_spi_read_buffer* io) {
   return 0;
 }
 
-void plc4c_s7_read_write_left_shift3(plc4c_spi_write_buffer* io, uint16_t value) {
+plc4c_return_code plc4c_s7_read_write_left_shift3(plc4c_spi_write_buffer* io, uint16_t value) {
+  return OK;
 }
 
 uint8_t plc4c_s7_read_write_bcd_to_int(plc4c_spi_read_buffer* io) {
@@ -132,3 +133,14 @@ time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io) {
   // TODO: Implement ...
   return 0;
 }
+
+plc4c_return_code plc4c_s7_read_write_byte_to_bcd(plc4c_spi_write_buffer* writeBuffer, uint8_t value) {
+  // TODO: Implement ...
+  return 0;
+}
+
+plc4c_return_code plc4c_s7_read_write_int_to_s7msec(plc4c_spi_write_buffer* writeBuffer, uint16_t value) {
+  // TODO: Implement ...
+  return 0;
+}
+

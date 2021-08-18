@@ -106,7 +106,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 <#if helper.getAllConstFields()?has_content>
 
 // Constant values.
-    <#list helper.getAllConstFields() as parentType, constField>
+    <#list helper.getAllConstFields() as constField, parentType>
 static const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const = ${constField.referenceValue};
 ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}() {
   return ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const;
@@ -537,11 +537,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign manualField = field>
 
 <#if indentContent>    </#if>  // Manual Field (${manualField.name})<#if indentContent>    </#if>  {
-            <#if helper.isSimpleTypeReference(manualField.type)>
-<#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(manualField.type, "(${helper.getLanguageTypeNameForTypeReference(manualField.type)}*) plc4c_utils_list_get_value(_message->" + helper.getFieldName(baseType, manualField), field)};
-            <#else>
-<#if indentContent>    </#if>  _res = ${helper.getCTypeName(manualField.type.name)}_serialize(writeBuffer, (void*) &_value);
-            </#if>
+<#if indentContent>    </#if>  _res = ${helper.toSerializationExpression(baseType, manualField, manualField.serializeExpression, baseType.parserArguments)};
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;
 <#if indentContent>    </#if>  }

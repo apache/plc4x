@@ -79,43 +79,43 @@ plc4c_return_code plc4c_s7_read_write_date_and_time_serialize(plc4c_spi_write_bu
   plc4c_return_code _res = OK;
 
   // Manual Field (year)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->year);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->year);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (month)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->month);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->month);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (day)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->day);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->day);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (hour)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->hour);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->hour);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (minutes)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->minutes);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->minutes);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (seconds)  {
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (uint8_t*) plc4c_utils_list_get_value(_message->seconds);
+  _res = plc4c_s7_read_write_byte_to_bcd(writeBuffer, _message->seconds);
   if(_res != OK) {
     return _res;
   }
 
   // Manual Field (msec)  {
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 12, (uint16_t*) plc4c_utils_list_get_value(_message->msec);
+  _res = plc4c_s7_read_write_int_to_s7msec(writeBuffer, _message->msec);
   if(_res != OK) {
     return _res;
   }

@@ -126,14 +126,14 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return getLanguageTypeNameForTypeReference(typeReference);
     }
 
-    public Map<ComplexTypeDefinition, ConstField> getAllConstFields() {
-        Map<ComplexTypeDefinition, ConstField> constFields = new HashMap<>();
+    public Map<ConstField, ComplexTypeDefinition> getAllConstFields() {
+        Map<ConstField, ComplexTypeDefinition> constFields = new HashMap<>();
         ((ComplexTypeDefinition) getThisTypeDefinition()).getConstFields().forEach(
-            constField -> constFields.put((ComplexTypeDefinition) getThisTypeDefinition(), constField));
+            constField -> constFields.put(constField, (ComplexTypeDefinition) getThisTypeDefinition()));
         if(getSwitchField() != null) {
             for (DiscriminatedComplexTypeDefinition switchCase : getSwitchField().getCases()) {
                 switchCase.getConstFields().forEach(
-                    constField -> constFields.put(switchCase, constField));
+                    constField -> constFields.put(constField, switchCase));
             }
         }
         return constFields;
@@ -618,6 +618,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         // STATIC_CALL implies that driver specific static logic should be called
         if ("STATIC_CALL".equals(vl.getName())) {
+            if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
+                throw new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
+            }
             String functionName = ((StringLiteral) vl.getArgs().get(0)).getValue();
             // We'll cut off the java package structure and just take the segment after the last "."
             functionName = functionName.substring(functionName.lastIndexOf('.') + 1, functionName.length() -1);
@@ -756,13 +759,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     private String toVariableSerializationExpression(TypeDefinition baseType, Field field, Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if ("STATIC_CALL".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder();
             if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
                 throw new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
             }
-            String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
-            methodName = methodName.substring(1, methodName.length() - 1);
-            sb.append(methodName).append("(");
+            String functionName = ((StringLiteral) vl.getArgs().get(0)).getValue();
+            // We'll cut off the java package structure and just take the segment after the last "."
+            functionName = functionName.substring(functionName.lastIndexOf('.') + 1, functionName.length() -1);
+            // But to make the function name unique, well add the driver prefix to it.
+            StringBuilder sb = new StringBuilder(getCTypeName(functionName));
+            sb.append("(");
             for (int i = 1; i < vl.getArgs().size(); i++) {
                 Term arg = vl.getArgs().get(i);
                 if (i > 1) {
@@ -771,7 +776,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" and "_value" are always available in every parser.
-                    boolean isSerializerArg = "io".equals(va.getName()) || "_value".equals(va.getName()) || "element".equals(va.getName());
+                    boolean isSerializerArg = "writeBuffer".equals(va.getName()) || "_value".equals(va.getName()) || "element".equals(va.getName());
                     boolean isTypeArg = "_type".equals(va.getName());
                     if (!isSerializerArg && !isTypeArg && serialzerArguments != null) {
                         for (Argument serializerArgument : serialzerArguments) {
@@ -782,9 +787,13 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         }
                     }
                     if (isSerializerArg) {
-                        sb.append(va.getName());
+                        if("_value".equals(va.getName())) {
+                            sb.append("_message");
+                        } else {
+                            sb.append(va.getName());
+                        }
                         if(va.getChild() != null) {
-                            sb.append(".");
+                            sb.append("->");
                             appendVariableExpressionRest(sb, baseType, va.getChild());
                         }
                     } else if (isTypeArg) {
