@@ -155,11 +155,10 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (*G
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field")
 	}
 
+	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (priority)
 	priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
@@ -168,11 +167,10 @@ func GroupObjectDescriptorRealisationType7Parse(readBuffer utils.ReadBuffer) (*G
 		return nil, closeErr
 	}
 
+	// Simple Field (valueType)
 	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (valueType)
 	valueType, _valueTypeErr := ComObjectValueTypeParse(readBuffer)
 	if _valueTypeErr != nil {
 		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field")

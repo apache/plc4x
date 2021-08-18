@@ -107,11 +107,10 @@ func CIPEncapsulationReadResponseParse(readBuffer utils.ReadBuffer, len uint16) 
 		return nil, pullErr
 	}
 
+	// Simple Field (response)
 	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (response)
 	response, _responseErr := DF1ResponseMessageParse(readBuffer, len)
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field")

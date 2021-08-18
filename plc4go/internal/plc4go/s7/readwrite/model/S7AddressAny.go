@@ -108,7 +108,7 @@ func (m *S7AddressAny) LengthInBitsConditional(lastItem bool) uint16 {
 	// Simple field (dbNumber)
 	lengthInBits += 16
 
-	// Enum Field (area)
+	// Simple field (area)
 	lengthInBits += 8
 
 	// Reserved Field (reserved)
@@ -160,10 +160,10 @@ func S7AddressAnyParse(readBuffer utils.ReadBuffer) (*S7Address, error) {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field")
 	}
 
+	// Simple Field (area)
 	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(readBuffer)
 	if _areaErr != nil {
 		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field")
@@ -248,17 +248,16 @@ func (m *S7AddressAny) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
 
+		// Simple Field (area)
 		if pushErr := writeBuffer.PushContext("area"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (area)
-		area := CastMemoryArea(m.Area)
-		_areaErr := area.Serialize(writeBuffer)
-		if _areaErr != nil {
-			return errors.Wrap(_areaErr, "Error serializing 'area' field")
-		}
+		_areaErr := m.Area.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("area"); popErr != nil {
 			return popErr
+		}
+		if _areaErr != nil {
+			return errors.Wrap(_areaErr, "Error serializing 'area' field")
 		}
 
 		// Reserved Field (reserved)

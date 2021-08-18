@@ -188,11 +188,10 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		proposedWindowSize = &_val
 	}
 
+	// Simple Field (serviceAck)
 	if pullErr := readBuffer.PullContext("serviceAck"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (serviceAck)
 	serviceAck, _serviceAckErr := BACnetServiceAckParse(readBuffer)
 	if _serviceAckErr != nil {
 		return nil, errors.Wrap(_serviceAckErr, "Error parsing 'serviceAck' field")

@@ -133,11 +133,10 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field")
 	}
 
+	// Simple Field (service)
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (service)
 	service, _serviceErr := CipServiceParse(readBuffer, uint16(exchangeLen)-uint16(uint16(10)))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field")

@@ -233,11 +233,10 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error
 		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field")
 	}
 
+	// Simple Field (unconnectedService)
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (unconnectedService)
 	unconnectedService, _unconnectedServiceErr := CipServiceParse(readBuffer, messageSize)
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field")

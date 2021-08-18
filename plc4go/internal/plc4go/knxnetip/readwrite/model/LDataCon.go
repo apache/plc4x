@@ -142,11 +142,10 @@ func LDataConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 		return nil, closeErr
 	}
 
+	// Simple Field (dataFrame)
 	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (dataFrame)
 	dataFrame, _dataFrameErr := LDataFrameParse(readBuffer)
 	if _dataFrameErr != nil {
 		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field")

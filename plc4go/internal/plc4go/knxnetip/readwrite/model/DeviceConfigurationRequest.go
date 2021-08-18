@@ -108,11 +108,10 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 		return nil, pullErr
 	}
 
+	// Simple Field (deviceConfigurationRequestDataBlock)
 	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParse(readBuffer)
 	if _deviceConfigurationRequestDataBlockErr != nil {
 		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field")
@@ -121,11 +120,10 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 		return nil, closeErr
 	}
 
+	// Simple Field (cemi)
 	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (cemi)
 	cemi, _cemiErr := CEMIParse(readBuffer, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _cemiErr != nil {
 		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field")

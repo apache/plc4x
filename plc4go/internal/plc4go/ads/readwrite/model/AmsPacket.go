@@ -116,11 +116,10 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (targetAmsNetId)
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (targetAmsNetId)
 	targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _targetAmsNetIdErr != nil {
 		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field")
@@ -135,11 +134,10 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field")
 	}
 
+	// Simple Field (sourceAmsNetId)
 	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (sourceAmsNetId)
 	sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParse(readBuffer)
 	if _sourceAmsNetIdErr != nil {
 		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field")
@@ -154,11 +152,10 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field")
 	}
 
+	// Simple Field (commandId)
 	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (commandId)
 	commandId, _commandIdErr := CommandIdParse(readBuffer)
 	if _commandIdErr != nil {
 		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field")
@@ -167,11 +164,10 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, closeErr
 	}
 
+	// Simple Field (state)
 	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (state)
 	state, _stateErr := StateParse(readBuffer)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field")
@@ -199,11 +195,10 @@ func AmsPacketParse(readBuffer utils.ReadBuffer) (*AmsPacket, error) {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field")
 	}
 
+	// Simple Field (data)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (data)
 	data, _dataErr := AdsDataParse(readBuffer, &commandId, state.Response)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")

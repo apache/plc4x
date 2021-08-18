@@ -99,11 +99,10 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
+	// Simple Field (hostProtocolCode)
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hostProtocolCode)
 	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field")
@@ -112,11 +111,10 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 		return nil, closeErr
 	}
 
+	// Simple Field (ipAddress)
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (ipAddress)
 	ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")

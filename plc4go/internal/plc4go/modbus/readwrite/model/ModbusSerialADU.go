@@ -129,11 +129,10 @@ func ModbusSerialADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusSe
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 
+	// Simple Field (pdu)
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(readBuffer, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")

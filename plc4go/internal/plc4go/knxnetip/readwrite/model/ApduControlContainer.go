@@ -105,11 +105,10 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer) (*Apdu, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (controlApdu)
 	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (controlApdu)
 	controlApdu, _controlApduErr := ApduControlParse(readBuffer)
 	if _controlApduErr != nil {
 		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field")

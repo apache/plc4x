@@ -206,11 +206,10 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetServiceAckReadProperty_OPENINGTAG) + " but got " + fmt.Sprintf("%d", openingTag))
 	}
 
+	// Simple Field (value)
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")

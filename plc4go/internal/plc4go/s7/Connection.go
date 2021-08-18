@@ -358,14 +358,14 @@ func (m *Connection) createIdentifyRemoteMessage() *readWriteModel.TPKTPacket {
 		readWriteModel.NewS7PayloadUserData(
 			[]*readWriteModel.S7PayloadUserDataItem{
 				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
 					readWriteModel.NewSzlId(
 						readWriteModel.SzlModuleTypeClass_CPU,
 						0x00,
 						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
 					),
 					0x0000,
+					readWriteModel.DataTransportErrorCode_OK,
+					readWriteModel.DataTransportSize_OCTET_STRING,
 				),
 			},
 		),

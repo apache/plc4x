@@ -120,6 +120,8 @@ func S7ParameterParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parame
 		_parent, typeSwitchError = S7ParameterWriteVarResponseParse(readBuffer)
 	case parameterType == 0x00 && messageType == 0x07: // S7ParameterUserData
 		_parent, typeSwitchError = S7ParameterUserDataParse(readBuffer)
+	case parameterType == 0x01 && messageType == 0x07: // S7ParameterModeTransition
+		_parent, typeSwitchError = S7ParameterModeTransitionParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

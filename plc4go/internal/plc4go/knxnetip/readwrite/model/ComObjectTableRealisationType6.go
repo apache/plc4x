@@ -103,11 +103,10 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer) (*ComObjec
 		return nil, pullErr
 	}
 
+	// Simple Field (comObjectDescriptors)
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (comObjectDescriptors)
 	comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6Parse(readBuffer)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field")

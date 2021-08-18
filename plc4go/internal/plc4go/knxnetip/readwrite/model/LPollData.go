@@ -128,11 +128,10 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (sourceAddress)
 	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (sourceAddress)
 	sourceAddress, _sourceAddressErr := KnxAddressParse(readBuffer)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field")

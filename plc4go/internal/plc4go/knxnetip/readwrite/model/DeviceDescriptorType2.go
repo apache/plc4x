@@ -153,11 +153,10 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field")
 	}
 
+	// Simple Field (channelInfo1)
 	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (channelInfo1)
 	channelInfo1, _channelInfo1Err := ChannelInformationParse(readBuffer)
 	if _channelInfo1Err != nil {
 		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field")
@@ -166,11 +165,10 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 		return nil, closeErr
 	}
 
+	// Simple Field (channelInfo2)
 	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (channelInfo2)
 	channelInfo2, _channelInfo2Err := ChannelInformationParse(readBuffer)
 	if _channelInfo2Err != nil {
 		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field")
@@ -179,11 +177,10 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 		return nil, closeErr
 	}
 
+	// Simple Field (channelInfo3)
 	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (channelInfo3)
 	channelInfo3, _channelInfo3Err := ChannelInformationParse(readBuffer)
 	if _channelInfo3Err != nil {
 		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field")
@@ -192,11 +189,10 @@ func DeviceDescriptorType2Parse(readBuffer utils.ReadBuffer) (*DeviceDescriptorT
 		return nil, closeErr
 	}
 
+	// Simple Field (channelInfo4)
 	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (channelInfo4)
 	channelInfo4, _channelInfo4Err := ChannelInformationParse(readBuffer)
 	if _channelInfo4Err != nil {
 		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field")

@@ -132,11 +132,10 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", MultipleServiceRequest_REQUESTPATH) + " but got " + fmt.Sprintf("%d", RequestPath))
 	}
 
+	// Simple Field (data)
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (data)
 	data, _dataErr := ServicesParse(readBuffer, uint16(serviceLen)-uint16(uint16(6)))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field")

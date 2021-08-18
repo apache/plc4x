@@ -107,11 +107,10 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 		return nil, pullErr
 	}
 
+	// Simple Field (request)
 	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (request)
 	request, _requestErr := DF1RequestMessageParse(readBuffer)
 	if _requestErr != nil {
 		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field")

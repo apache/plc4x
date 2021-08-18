@@ -125,11 +125,10 @@ func TPKTPacketParse(readBuffer utils.ReadBuffer) (*TPKTPacket, error) {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field")
 	}
 
+	// Simple Field (payload)
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (payload)
 	payload, _payloadErr := COTPPacketParse(readBuffer, uint16(len)-uint16(uint16(4)))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field")

@@ -100,7 +100,7 @@ func (m *COTPPacketConnectionRequest) LengthInBitsConditional(lastItem bool) uin
 	// Simple field (sourceReference)
 	lengthInBits += 16
 
-	// Enum Field (protocolClass)
+	// Simple field (protocolClass)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -127,10 +127,10 @@ func COTPPacketConnectionRequestParse(readBuffer utils.ReadBuffer) (*COTPPacket,
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
+	// Simple Field (protocolClass)
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
@@ -174,17 +174,16 @@ func (m *COTPPacketConnectionRequest) Serialize(writeBuffer utils.WriteBuffer) e
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
+		// Simple Field (protocolClass)
 		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (protocolClass)
-		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
-		_protocolClassErr := protocolClass.Serialize(writeBuffer)
-		if _protocolClassErr != nil {
-			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
-		}
+		_protocolClassErr := m.ProtocolClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
 			return popErr
+		}
+		if _protocolClassErr != nil {
+			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketConnectionRequest"); popErr != nil {

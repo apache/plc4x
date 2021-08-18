@@ -183,11 +183,10 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 		}
 	}
 
+	// Simple Field (propertyDataType)
 	if pullErr := readBuffer.PullContext("propertyDataType"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (propertyDataType)
 	propertyDataType, _propertyDataTypeErr := KnxPropertyDataTypeParse(readBuffer)
 	if _propertyDataTypeErr != nil {
 		return nil, errors.Wrap(_propertyDataTypeErr, "Error parsing 'propertyDataType' field")
@@ -216,11 +215,10 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field")
 	}
 
+	// Simple Field (readLevel)
 	if pullErr := readBuffer.PullContext("readLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (readLevel)
 	readLevel, _readLevelErr := AccessLevelParse(readBuffer)
 	if _readLevelErr != nil {
 		return nil, errors.Wrap(_readLevelErr, "Error parsing 'readLevel' field")
@@ -229,11 +227,10 @@ func ApduDataExtPropertyDescriptionResponseParse(readBuffer utils.ReadBuffer) (*
 		return nil, closeErr
 	}
 
+	// Simple Field (writeLevel)
 	if pullErr := readBuffer.PullContext("writeLevel"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (writeLevel)
 	writeLevel, _writeLevelErr := AccessLevelParse(readBuffer)
 	if _writeLevelErr != nil {
 		return nil, errors.Wrap(_writeLevelErr, "Error parsing 'writeLevel' field")

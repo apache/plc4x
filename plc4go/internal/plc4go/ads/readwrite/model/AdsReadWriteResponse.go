@@ -117,11 +117,10 @@ func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (result)
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (result)
 	result, _resultErr := ReturnCodeParse(readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field")

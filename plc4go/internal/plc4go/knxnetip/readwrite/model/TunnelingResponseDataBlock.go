@@ -111,11 +111,10 @@ func TunnelingResponseDataBlockParse(readBuffer utils.ReadBuffer) (*TunnelingRes
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field")
 	}
 
+	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (status)
 	status, _statusErr := StatusParse(readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field")

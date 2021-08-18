@@ -107,11 +107,10 @@ func ConnectionRequestInformationTunnelConnectionParse(readBuffer utils.ReadBuff
 		return nil, pullErr
 	}
 
+	// Simple Field (knxLayer)
 	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(readBuffer)
 	if _knxLayerErr != nil {
 		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field")

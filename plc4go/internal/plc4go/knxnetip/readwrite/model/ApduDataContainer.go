@@ -105,11 +105,10 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 		return nil, pullErr
 	}
 
+	// Simple Field (dataApdu)
 	if pullErr := readBuffer.PullContext("dataApdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (dataApdu)
 	dataApdu, _dataApduErr := ApduDataParse(readBuffer, dataLength)
 	if _dataApduErr != nil {
 		return nil, errors.Wrap(_dataApduErr, "Error parsing 'dataApdu' field")

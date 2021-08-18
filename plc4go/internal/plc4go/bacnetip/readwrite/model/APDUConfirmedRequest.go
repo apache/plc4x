@@ -221,11 +221,10 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		proposedWindowSize = &_val
 	}
 
+	// Simple Field (serviceRequest)
 	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (serviceRequest)
 	serviceRequest, _serviceRequestErr := BACnetConfirmedServiceRequestParse(readBuffer, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(utils.InlineIf(segmentedMessage, func() uint16 { return uint16(uint16(2)) }, func() uint16 { return uint16(uint16(0)) }))))))
 	if _serviceRequestErr != nil {
 		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field")

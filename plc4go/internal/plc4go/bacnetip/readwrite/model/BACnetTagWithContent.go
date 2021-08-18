@@ -188,11 +188,10 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", BACnetTagWithContent_OPENTAG) + " but got " + fmt.Sprintf("%d", openTag))
 	}
 
+	// Simple Field (value)
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (value)
 	value, _valueErr := BACnetTagParse(readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")

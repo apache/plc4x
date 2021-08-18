@@ -132,11 +132,10 @@ func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field")
 	}
 
+	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (error)
 	error, _errorErr := BACnetErrorParse(readBuffer)
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field")

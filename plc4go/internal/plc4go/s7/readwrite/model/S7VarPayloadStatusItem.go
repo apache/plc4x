@@ -66,7 +66,7 @@ func (m *S7VarPayloadStatusItem) LengthInBits() uint16 {
 func (m *S7VarPayloadStatusItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Enum Field (returnCode)
+	// Simple field (returnCode)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -81,10 +81,10 @@ func S7VarPayloadStatusItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadStat
 		return nil, pullErr
 	}
 
+	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
@@ -106,17 +106,16 @@ func (m *S7VarPayloadStatusItem) Serialize(writeBuffer utils.WriteBuffer) error 
 		return pushErr
 	}
 
+	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	_returnCodeErr := returnCode.Serialize(writeBuffer)
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
-	}
+	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return popErr
+	}
+	if _returnCodeErr != nil {
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
 	}
 
 	if popErr := writeBuffer.PopContext("S7VarPayloadStatusItem"); popErr != nil {

@@ -127,11 +127,10 @@ func ModbusTcpADUParse(readBuffer utils.ReadBuffer, response bool) (*ModbusTcpAD
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field")
 	}
 
+	// Simple Field (pdu)
 	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (pdu)
 	pdu, _pduErr := ModbusPDUParse(readBuffer, response)
 	if _pduErr != nil {
 		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field")
