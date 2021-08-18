@@ -17,6 +17,7 @@
   under the License.
 -->
 ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -60,13 +61,23 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 // Parse function.
 plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}** _message) {
     plc4c_return_code _res = OK;
-    // TODO: Implement
+
+    // Allocate enough memory to contain this data structure.
+    (*_message) = malloc(sizeof(${helper.getCTypeName(type.name)}));
+    if(*_message == NULL) {
+        return NO_MEMORY;
+    }
+
+    _res = ${helper.getReadBufferReadMethodCall(type.type, "*_message", null)?no_esc};
+
     return _res;
 }
 
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
-    // TODO: Implement
+
+    _res = ${helper.getWriteBufferWriteMethodCall(type.type, "_message", null)?no_esc};
+
     return _res;
 }
 
@@ -145,6 +156,5 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName
 }
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
-    // TODO: Implement
-    return 0;
+    return ${type.type.sizeInBits};
 }
