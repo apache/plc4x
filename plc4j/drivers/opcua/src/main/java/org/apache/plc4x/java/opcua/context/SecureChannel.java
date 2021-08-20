@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.MessageDigest;
@@ -466,29 +468,44 @@ public class SecureChannel {
         }
     }
 
-    private void onConnectActivateSessionRequest(ConversationContext<OpcuaAPU> context, CreateSessionResponse opcuaMessageResponse, CreateSessionResponse sessionResponse) throws PlcConnectionException {
+    private void onConnectActivateSessionRequest(ConversationContext<OpcuaAPU> context, CreateSessionResponse opcuaMessageResponse, CreateSessionResponse sessionResponse) throws PlcConnectionException, ParseException {
 
         senderCertificate = sessionResponse.getServerCertificate().getStringValue();
         encryptionHandler.setServerCertificate(EncryptionHandler.getCertificateX509(senderCertificate));
         this.senderNonce = sessionResponse.getServerNonce().getStringValue();
         UserTokenType tokenType = UserTokenType.userTokenTypeAnonymous;
+        String[] endpoints = new String[3];
+        try {
+            InetAddress address = InetAddress.getByName(this.configuration.getHost());
+            endpoints[0] = "opc.tcp://" + address.getHostAddress() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+            endpoints[1] = "opc.tcp://" + address.getHostName() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+            endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
-        for (ExtensionObjectDefinition extensionObject: sessionResponse.getServerEndpoints()) {
-            EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-            if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue())) {
-                for (ExtensionObjectDefinition userTokenCast :  endpointDescription.getUserIdentityTokens()) {
-                    UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                    if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                        policyId = identityToken.getPolicyId();
-                        tokenType = identityToken.getTokenType();
-                    } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                        LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                        policyId = identityToken.getPolicyId();
-                        tokenType = identityToken.getTokenType();
+        for (String hostEndpoints : endpoints) {
+            for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
+                EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
+                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
+                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
+                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
+                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
+                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                            policyId = identityToken.getPolicyId();
+                            tokenType = identityToken.getTokenType();
+                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
+                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                            policyId = identityToken.getPolicyId();
+                            tokenType = identityToken.getTokenType();
+                        }
                     }
                 }
             }
+        }
+
+        if (this.policyId == null) {
+            throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
         }
 
         ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
