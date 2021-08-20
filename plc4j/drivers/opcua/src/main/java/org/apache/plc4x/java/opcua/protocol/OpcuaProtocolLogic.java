@@ -236,9 +236,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 if (variant instanceof VariantBoolean) {
                     byte[] array = ((VariantBoolean) variant).getValue();
                     int length = array.length;
-                    Byte[] tmpValue = new Byte[length];
+                    Boolean[] tmpValue = new Boolean[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
+                        if (array[i] == 0) {
+                            tmpValue[i] = false;
+                        } else {
+                            tmpValue[i] = true;
+                        }
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantSByte) {
