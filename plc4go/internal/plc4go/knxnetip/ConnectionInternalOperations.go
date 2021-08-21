@@ -20,12 +20,13 @@
 package knxnetip
 
 import (
+	"reflect"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"reflect"
-	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,13 +79,21 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 		return nil, errors.Wrap(err, "got error sending search request")
 	}
 
+	ttlTimer := time.NewTimer(m.defaultTtl)
 	select {
 	case response := <-result:
+		if !ttlTimer.Stop() {
+			<-ttlTimer.C
+		}
 		return response, nil
 	case errorResponse := <-errorResult:
+		if !ttlTimer.Stop() {
+			<-ttlTimer.C
+		}
 		return nil, errorResponse
 		// For search requests there is no timeout handler running, so we have to do it manually.
-	case <-time.After(m.defaultTtl):
+	case <-ttlTimer.C:
+		ttlTimer.Stop()
 		return nil, errors.New("timeout")
 	}
 }

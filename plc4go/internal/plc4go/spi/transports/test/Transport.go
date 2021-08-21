@@ -85,6 +85,7 @@ func (m *TransportInstance) Close() error {
 func (m *TransportInstance) IsConnected() bool {
 	return m.connected
 }
+
 func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	readableBytes := len(m.readBuffer)
 	log.Trace().Msgf("return number of readable bytes %d", readableBytes)

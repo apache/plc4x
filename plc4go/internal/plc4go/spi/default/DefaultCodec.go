@@ -21,6 +21,8 @@ package _default
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -28,7 +30,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
@@ -289,9 +290,14 @@ mainLoop:
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
+			timeout := time.NewTimer(time.Millisecond * 40)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-			case <-time.After(time.Millisecond * 40):
+				if !timeout.Stop() {
+					<-timeout.C
+				}
+			case <-timeout.C:
+				timeout.Stop()
 				workerLog.Warn().Msgf("Message discarded %s", message)
 			}
 		}

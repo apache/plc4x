@@ -169,6 +169,7 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         configuration.setTransportCode(transportCode);
         configuration.setHost(transportHost);
         configuration.setPort(transportPort);
+        configuration.setTransportEndpoint(transportEndpoint);
         configuration.setEndpoint("opc." + transportCode + "://" + transportHost + ":" + transportPort + "" + transportEndpoint);
 
         // Try to find a transport in order to create a communication channel.
