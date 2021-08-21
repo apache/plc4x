@@ -21,15 +21,13 @@ package udp
 
 import (
 	"bufio"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
-	"time"
-
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type Transport struct {
@@ -182,22 +180,8 @@ func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 	if m.reader == nil {
 		return 0, nil
 	}
-	peekChan := make(chan bool)
-	go func() {
-		_, _ = m.reader.Peek(1)
-		peekChan <- true
-	}()
-	timeout := time.NewTimer(time.Millisecond * 10)
-	select {
-	case <-peekChan:
-		if !timeout.Stop() {
-			<-timeout.C
-		}
-		return uint32(m.reader.Buffered()), nil
-	case <-timeout.C:
-		timeout.Stop()
-		return 0, nil
-	}
+	_, _ = m.reader.Peek(1)
+	return uint32(m.reader.Buffered()), nil
 }
 
 func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
