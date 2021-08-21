@@ -20,13 +20,14 @@
 package _default
 
 import (
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
@@ -159,11 +160,16 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 func (d *defaultConnection) BlockingClose() {
 	log.Trace().Msg("blocking close connection")
 	closeResults := d.GetConnection().Close()
+	timeout := time.NewTimer(d.GetTtl())
 	d.SetConnected(false)
 	select {
 	case <-closeResults:
+		if !timeout.Stop() {
+			<-timeout.C
+		}
 		return
-	case <-time.After(d.GetTtl()):
+	case <-timeout.C:
+		timeout.Stop()
 		return
 	}
 }

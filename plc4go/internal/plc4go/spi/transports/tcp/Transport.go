@@ -21,14 +21,15 @@ package tcp
 
 import (
 	"bufio"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type Transport struct {
@@ -157,10 +158,15 @@ func (m *TransportInstance) GetNumReadableBytes() (uint32, error) {
 		_, _ = m.reader.Peek(1)
 		peekChan <- true
 	}()
+	timeout := time.NewTimer(time.Millisecond * 10)
 	select {
 	case <-peekChan:
+		if !timeout.Stop() {
+			<-timeout.C
+		}
 		return uint32(m.reader.Buffered()), nil
-	case <-time.After(10 * time.Millisecond):
+	case <-timeout.C:
+		timeout.Stop()
 		return 0, nil
 	}
 }

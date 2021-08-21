@@ -21,17 +21,18 @@ package knxnetip
 
 import (
 	"fmt"
+	"math"
+	"net"
+	"strconv"
+	"sync/atomic"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"net"
-	"strconv"
-	"sync/atomic"
-	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +137,12 @@ func (m *Connection) handleTimeout() {
 
 func (m *Connection) resetTimeout() {
 	if m.connectionTimeoutTimer != nil {
-		m.connectionTimeoutTimer.Stop()
+		if !m.connectionTimeoutTimer.Stop() {
+			select {
+			case <-m.connectionTimeoutTimer.C:
+			default:
+			}
+		}
 		m.connectionTimeoutTimer = nil
 	}
 }
