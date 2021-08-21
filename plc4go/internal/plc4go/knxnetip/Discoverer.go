@@ -23,15 +23,16 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"net"
+	"net/url"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"net"
-	"net/url"
-	"time"
 )
 
 type Discoverer struct {
@@ -123,10 +124,16 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 			go func() {
 				// Keep on reading responses till the timeout is done.
 				// TODO: Make this configurable
+				timeout := time.NewTimer(time.Second * 1)
+				timeout.Stop()
 				for start := time.Now(); time.Since(start) < time.Second*5; {
+					timeout.Reset(time.Second * 1)
 					select {
 					case message := <-codec.GetDefaultIncomingMessageChannel():
 						{
+							if !timeout.Stop() {
+								<-timeout.C
+							}
 							searchResponse := driverModel.CastSearchResponse(message)
 							if searchResponse != nil {
 								addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
@@ -144,8 +151,9 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 							}
 							continue
 						}
-					case <-time.After(time.Second * 1):
+					case <-timeout.C:
 						{
+							timeout.Stop()
 							continue
 						}
 					}

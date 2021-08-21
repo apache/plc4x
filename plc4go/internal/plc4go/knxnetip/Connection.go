@@ -23,6 +23,11 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/interceptors"
@@ -34,10 +39,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
 )
 
 type ConnectionMetadata struct {
@@ -334,11 +335,16 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (m *Connection) BlockingClose() {
+	ttlTimer := time.NewTimer(m.defaultTtl)
 	closeResults := m.Close()
 	select {
 	case <-closeResults:
+		if !ttlTimer.Stop() {
+			<-ttlTimer.C
+		}
 		return
-	case <-time.After(m.defaultTtl):
+	case <-ttlTimer.C:
+		ttlTimer.Stop()
 		return
 	}
 }
@@ -354,10 +360,15 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 		// Disconnect from all knx devices we are still connected to.
 		for targetAddress := range m.DeviceConnections {
+			ttlTimer := time.NewTimer(m.defaultTtl)
 			disconnects := m.DeviceDisconnect(targetAddress)
 			select {
 			case _ = <-disconnects:
-			case <-time.After(m.defaultTtl):
+				if !ttlTimer.Stop() {
+					<-ttlTimer.C
+				}
+			case <-ttlTimer.C:
+				ttlTimer.Stop()
 				// If we got a timeout here, well just continue the device will just auto disconnect.
 				log.Debug().Msgf("Timeout disconnecting from device %s.", KnxAddressToString(&targetAddress))
 			}
@@ -377,11 +388,16 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 func (m *Connection) IsConnected() bool {
 	if m.messageCodec != nil {
+		ttlTimer := time.NewTimer(m.defaultTtl)
 		pingChannel := m.Ping()
 		select {
 		case pingResponse := <-pingChannel:
+			if !ttlTimer.Stop() {
+				<-ttlTimer.C
+			}
 			return pingResponse.Err == nil
-		case <-time.After(m.defaultTtl):
+		case <-ttlTimer.C:
+			ttlTimer.Stop()
 			m.handleTimeout()
 			return false
 		}
