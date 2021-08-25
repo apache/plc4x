@@ -133,7 +133,7 @@
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple      uint        32  'invokeId'                                 ]
     // The payload
-    [simple     AdsData    'data'   ['commandId', 'state.response']         ]
+    [simple     AdsData    'data'   ['commandId', 'state.response', 'length']         ]
 ]
 
 [enum uint 16 'CommandId'
@@ -190,7 +190,24 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'AdsData' [CommandId 'commandId', bit 'response']
+[discriminatedType 'AdsResponseData' [int 32 'dataSize', bit 'compactAnswer']
+    [typeSwitch 'compactAnswer', 'dataSize'
+        ['true' AdsReadCompactResponse [int 32 'dataSize']
+            [array int 8 'data' count 'dataSize']
+        ]
+        ['false' AdsReadFullResponse
+            // 4 bytes	ADS error number
+            [simple ReturnCode 'result']
+            // 4 bytes	Length of data which are supplied back.
+            [implicit uint 32 'length' 'COUNT(data)']
+            // n bytes	Data which are supplied back.
+            [array int 8 'data' count 'length']
+        ]
+    ]
+]
+
+
+[discriminatedType 'AdsData' [CommandId 'commandId', bit 'response', int 32 'dataSize']
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -217,13 +234,8 @@
             // 4 bytes	Length of the data (in bytes) which should be read.
             [simple uint 32 'length']
         ]
-        ['ADS_READ', 'true' AdsReadResponse
-            // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
-            // 4 bytes	Length of data which are supplied back.
-            [implicit uint 32 'length' 'COUNT(data)']
-            // n bytes	Data which are supplied back.
-            [array int 8 'data' count 'length']
+        ['ADS_READ', 'true' AdsReadResponse [int 32 'dataSize']
+            [simple AdsResponseData 'payload' ['CAST(dataSize, Integer)', 'dataSize <= 8'] ]
         ]
 
         ['ADS_WRITE', 'false' AdsWriteRequest

@@ -196,14 +196,21 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
             .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
-            .handle(responseAdsData -> {
-                if (responseAdsData.getResult() == ReturnCode.OK) {
-                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
-                    // Convert the response from the PLC into a PLC4X Response ...
+            .handle(readResponse -> {
+                AdsResponseData payload = readResponse.getPayload();
+                if (payload instanceof AdsReadFullResponse) {
+                    AdsReadFullResponse responseAdsData = (AdsReadFullResponse) payload;
+                    if (responseAdsData.getResult() == ReturnCode.OK) {
+                        final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
+                        // Convert the response from the PLC into a PLC4X Response ...
+                        future.complete(plcReadResponse);
+                    } else {
+                        // TODO: Implement this correctly.
+                        future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
+                    }
+                } else if (payload instanceof AdsReadCompactResponse) {
+                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, payload);
                     future.complete(plcReadResponse);
-                } else {
-                    // TODO: Implement this correctly.
-                    future.completeExceptionally(new PlcException("Result is " + responseAdsData.getResult()));
                 }
                 // Finish the request-transaction.
                 transaction.endRequest();
@@ -274,14 +281,18 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return future;
     }
 
-    protected PlcReadResponse convertToPlc4xReadResponse(PlcReadRequest readRequest, AdsData adsData) {
+    protected PlcReadResponse convertToPlc4xReadResponse(PlcReadRequest readRequest, Object adsData) {
         ReadBuffer readBuffer = null;
         Map<String, PlcResponseCode> responseCodes = new HashMap<>();
-        if (adsData instanceof AdsReadResponse) {
-            AdsReadResponse adsReadResponse = (AdsReadResponse) adsData;
+        if (adsData instanceof AdsReadFullResponse) {
+            AdsReadFullResponse adsReadResponse = (AdsReadFullResponse) adsData;
             readBuffer = new ReadBufferByteBased(adsReadResponse.getData(), true);
             responseCodes.put(readRequest.getFieldNames().stream().findFirst().orElse(""),
                 parsePlcResponseCode(adsReadResponse.getResult()));
+        } else if (adsData instanceof AdsReadCompactResponse) {
+            AdsReadCompactResponse adsReadResponse = (AdsReadCompactResponse) adsData;
+            readBuffer = new ReadBufferByteBased(adsReadResponse.getData(), true);
+            responseCodes.put(readRequest.getFieldNames().stream().findFirst().orElse(""), PlcResponseCode.OK);
         } else if (adsData instanceof AdsReadWriteResponse) {
             AdsReadWriteResponse adsReadWriteResponse = (AdsReadWriteResponse) adsData;
             readBuffer = new ReadBufferByteBased(adsReadWriteResponse.getData(), true);

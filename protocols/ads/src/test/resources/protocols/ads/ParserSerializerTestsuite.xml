@@ -147,13 +147,19 @@
             <data>
               <AdsData>
                 <AdsReadResponse>
-                  <result>
-                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-                  </result>
-                  <length dataType="uint" bitLength="32">1</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                  </data>
+                  <payload>
+                    <AdsResponseData>
+                      <AdsReadFullResponse>
+                        <result>
+                          <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                        </result>
+                        <length dataType="uint" bitLength="32">1</length>
+                        <data isList="true">
+                          <value dataType="int" bitLength="8">1</value>
+                        </data>
+                      </AdsReadFullResponse>
+                    </AdsResponseData>
+                  </payload>
                 </AdsReadResponse>
               </AdsData>
             </data>
@@ -457,13 +463,19 @@
             <data>
               <AdsData>
                 <AdsReadResponse>
-                  <result>
-                    <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
-                  </result>
-                  <length dataType="uint" bitLength="32">1</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                  </data>
+                  <payload>
+                    <AdsResponseData>
+                      <AdsReadFullResponse>
+                        <result>
+                          <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
+                        </result>
+                        <length dataType="uint" bitLength="32">1</length>
+                        <data isList="true">
+                          <value dataType="int" bitLength="8">1</value>
+                        </data>
+                      </AdsReadFullResponse>
+                    </AdsResponseData>
+                  </payload>
                 </AdsReadResponse>
               </AdsData>
             </data>
