@@ -51,19 +51,19 @@ func WithDiscoveryOptionTransport(transportName string) WithDiscoveryOption {
 	}
 }
 
-func WithDiscoveryDeviceName(deviceName string) WithDiscoveryOption {
+func WithDiscoveryOptionDeviceName(deviceName string) WithDiscoveryOption {
 	return discoveryOptionDeviceName{
 		deviceName: deviceName,
 	}
 }
 
-func WithDiscoveryLocalAddress(localAddress string) WithDiscoveryOption {
+func WithDiscoveryOptionLocalAddress(localAddress string) WithDiscoveryOption {
 	return discoveryOptionLocalAddress{
 		localAddress: localAddress,
 	}
 }
 
-func WithDiscoveryRemoteAddress(remoteAddress string) WithDiscoveryOption {
+func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption {
 	return discoveryOptionRemoteAddress{
 		remoteAddress: remoteAddress,
 	}
