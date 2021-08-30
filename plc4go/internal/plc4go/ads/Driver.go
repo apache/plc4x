@@ -23,7 +23,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
@@ -103,7 +103,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	return connection.Connect()
 }
 
-func (m *Driver) Discover(_ func(event model.PlcDiscoveryEvent)) error {
+func (m *Driver) Discover(_ func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
 	panic("not available")
 }
 

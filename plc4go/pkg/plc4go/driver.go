@@ -43,5 +43,5 @@ type PlcDriver interface {
 
 	SupportsDiscovery() bool
 
-	Discover(callback func(event model.PlcDiscoveryEvent)) error
+	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
 }

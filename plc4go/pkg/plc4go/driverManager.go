@@ -27,7 +27,7 @@ import (
 	"net/url"
 )
 
-// This is the main entry point for PLC4Go applications
+// PlcDriverManager is the main entry point for PLC4Go applications
 type PlcDriverManager interface {
 	// RegisterDriver Manually register a new driver
 	RegisterDriver(driver PlcDriver)
@@ -47,7 +47,7 @@ type PlcDriverManager interface {
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
-	Discover(func(event model.PlcDiscoveryEvent)) error
+	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
 }
 
 type PlcDriverManger struct {
@@ -207,11 +207,26 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 	return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
-// TODO: Currently all network devices are used as well as all transports and all protocols. It would be cool if we had some sort of DiscoveryRequestBuilder instead of only this single method.
-func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent)) error {
-	for _, driver := range m.drivers {
+func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error {
+	// Check if we've got at least one option to restrict to certain protocols only.
+	// If there is at least one, we only check that protocol, if there are none, all
+	// available protocols are checked.
+	protocolOptions := model.FilterDiscoveryOptionsProtocol(options)
+	discoveryDrivers := map[string]PlcDriver{}
+	if len(protocolOptions) > 0 {
+		for _, protocolOption := range protocolOptions {
+			if driver, ok := m.drivers[protocolOption.GetProtocolName()]; ok {
+				discoveryDrivers[driver.GetProtocolName()] = driver
+			}
+		}
+	} else {
+		discoveryDrivers = m.drivers
+	}
+
+	// Execute discovery on all selected drivers
+	for _, driver := range discoveryDrivers {
 		if driver.SupportsDiscovery() {
-			err := driver.Discover(callback)
+			err := driver.Discover(callback, options...)
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}
