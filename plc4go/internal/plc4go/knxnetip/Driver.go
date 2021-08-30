@@ -89,5 +89,5 @@ func (m Driver) SupportsDiscovery() bool {
 }
 
 func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(callback)
+	return NewDiscoverer().Discover(callback, options...)
 }

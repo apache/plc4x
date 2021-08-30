@@ -32,7 +32,7 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type Discoverer struct {
@@ -43,7 +43,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -52,9 +52,27 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 		return err
 	}
 
-	interfaces, err := net.Interfaces()
+	allInterfaces, err := net.Interfaces()
 	if err != nil {
 		return err
+	}
+
+	// If no device is explicitly selected via option, simply use all of them
+	// However if a discovery option is present to select a device by name, only
+	// add those devices matching any of the given names.
+	var interfaces []net.Interface
+	deviceNames := apiModel.FilterDiscoveryOptionsDeviceName(options)
+	if len(deviceNames) > 0 {
+		for _, curInterface := range allInterfaces {
+			for _, deviceNameOption := range deviceNames {
+				if curInterface.Name == deviceNameOption.GetDeviceName() {
+					interfaces = append(interfaces, curInterface)
+					break
+				}
+			}
+		}
+	} else {
+		interfaces = allInterfaces
 	}
 
 	var tranportInstances []transports.TransportInstance
@@ -144,7 +162,7 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 								}
 								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
 									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-								discoveryEvent := model.NewPlcDiscoveryEvent(
+								discoveryEvent := apiModel.NewPlcDiscoveryEvent(
 									"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
 								// Pass the event back to the callback
 								callback(discoveryEvent)
