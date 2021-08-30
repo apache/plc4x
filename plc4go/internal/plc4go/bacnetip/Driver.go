@@ -98,6 +98,6 @@ func (m *Driver) SupportsDiscovery() bool {
 	return false
 }
 
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent)) error {
+func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
 	panic("implement me")
 }
