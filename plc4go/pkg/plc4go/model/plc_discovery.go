@@ -21,6 +21,58 @@ package model
 
 import "net/url"
 
+type PlcDiscoveryEvent struct {
+	ProtocolCode  string
+	TransportCode string
+	TransportUrl  url.URL
+	Options       map[string][]string
+	Name          string
+}
+
+func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
+	return PlcDiscoveryEvent{
+		ProtocolCode:  protocolCode,
+		TransportCode: transportCode,
+		TransportUrl:  transportUrl,
+		Options:       options,
+		Name:          name,
+	}
+}
+
+func WithDiscoveryOptionProtocol(protocolName string) WithDiscoveryOption {
+	return discoveryOptionProtocol{
+		protocolName: protocolName,
+	}
+}
+
+func WithDiscoveryOptionTransport(transportName string) WithDiscoveryOption {
+	return discoveryOptionTransport{
+		transportName: transportName,
+	}
+}
+
+func WithDiscoveryDeviceName(deviceName string) WithDiscoveryOption {
+	return discoveryOptionDeviceName{
+		deviceName: deviceName,
+	}
+}
+
+func WithDiscoveryLocalAddress(localAddress string) WithDiscoveryOption {
+	return discoveryOptionLocalAddress{
+		localAddress: localAddress,
+	}
+}
+
+func WithDiscoveryRemoteAddress(remoteAddress string) WithDiscoveryOption {
+	return discoveryOptionRemoteAddress{
+		remoteAddress: remoteAddress,
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////7
+// Internal
+/////////////////////////////////////////////////////////////////////////////////////////7
+
 type WithDiscoveryOption interface {
 	IsDiscoveryOption() bool
 }
@@ -30,16 +82,6 @@ type discoveryOption struct {
 
 func (_ discoveryOption) IsDiscoveryOption() bool {
 	return true
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Protocol Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryOptionProtocol(protocolName string) WithDiscoveryOption {
-	return discoveryOptionProtocol{
-		protocolName: protocolName,
-	}
 }
 
 func FilterDiscoveryOptionsProtocol(options []WithDiscoveryOption) []DiscoveryOptionProtocol {
@@ -66,16 +108,6 @@ func (d *discoveryOptionProtocol) GetProtocolName() string {
 	return d.protocolName
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Transport Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryOptionTransport(transportName string) WithDiscoveryOption {
-	return discoveryOptionTransport{
-		transportName: transportName,
-	}
-}
-
 func FilterDiscoveryOptionsTransport(options []WithDiscoveryOption) []DiscoveryOptionTransport {
 	var filtered []DiscoveryOptionTransport
 	for _, option := range options {
@@ -98,16 +130,6 @@ type discoveryOptionTransport struct {
 
 func (d *discoveryOptionTransport) GetTransportName() string {
 	return d.transportName
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Device Name Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryDeviceName(deviceName string) WithDiscoveryOption {
-	return discoveryOptionDeviceName{
-		deviceName: deviceName,
-	}
 }
 
 func FilterDiscoveryOptionsDeviceName(options []WithDiscoveryOption) []DiscoveryOptionDeviceName {
@@ -134,16 +156,6 @@ func (d *discoveryOptionDeviceName) GetDeviceName() string {
 	return d.deviceName
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Local Address Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryLocalAddress(localAddress string) WithDiscoveryOption {
-	return discoveryOptionLocalAddress{
-		localAddress: localAddress,
-	}
-}
-
 func FilterDiscoveryOptionsLocalAddress(options []WithDiscoveryOption) []DiscoveryOptionLocalAddress {
 	var filtered []DiscoveryOptionLocalAddress
 	for _, option := range options {
@@ -168,16 +180,6 @@ func (d *discoveryOptionLocalAddress) GetLocalAddress() string {
 	return d.localAddress
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Remote Address Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryRemoteAddress(remoteAddress string) WithDiscoveryOption {
-	return discoveryOptionRemoteAddress{
-		remoteAddress: remoteAddress,
-	}
-}
-
 func FilterDiscoveryOptionsRemoteAddress(options []WithDiscoveryOption) []DiscoveryOptionRemoteAddress {
 	var filtered []DiscoveryOptionRemoteAddress
 	for _, option := range options {
@@ -200,26 +202,4 @@ type discoveryOptionRemoteAddress struct {
 
 func (d *discoveryOptionRemoteAddress) GetRemoteAddress() string {
 	return d.remoteAddress
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Discovery Events
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-type PlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
-}
-
-func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
-	return PlcDiscoveryEvent{
-		ProtocolCode:  protocolCode,
-		TransportCode: transportCode,
-		TransportUrl:  transportUrl,
-		Options:       options,
-		Name:          name,
-	}
 }
