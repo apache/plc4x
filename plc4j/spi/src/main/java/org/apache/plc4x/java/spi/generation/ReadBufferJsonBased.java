@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.spi.generation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,21 +25,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
 
-    Stack stack;
+    public static final String REQUIRED_ELEMENT_NOT_FOUND = "Required element %s not found in %s";
+    public static final String REQUIRED_CONTEXT_NOT_FOUND = "Required context %s not found in %s";
 
-    Object rootElement;
+    private final Deque stack;
+    private final Object rootElement;
+    private final boolean doValidateAttr;
 
-    int pos;
-
-    boolean doValidateAttr;
+    private int pos;
 
     public ReadBufferJsonBased(InputStream is) {
         this(is, true);
@@ -49,7 +46,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
     public ReadBufferJsonBased(InputStream is, boolean doValidateAttr) {
         this.doValidateAttr = doValidateAttr;
         pos = 1;
-        stack = new Stack<>();
+        stack = new ArrayDeque();
         // JsonParser here would be overkill as json is by definition not deterministic (key/value)
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -72,13 +69,13 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
     @Override
     public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
-        if (stack.empty()) {
+        if (stack.isEmpty()) {
             if (!(rootElement instanceof Map)) {
-                throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, rootElement));
+                throw new PlcRuntimeException(String.format(REQUIRED_CONTEXT_NOT_FOUND, logicalName, rootElement));
             }
             Object context = ((Map) rootElement).get(logicalName);
             if (context == null) {
-                throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, rootElement));
+                throw new PlcRuntimeException(String.format(REQUIRED_CONTEXT_NOT_FOUND, logicalName, rootElement));
             }
             stack.push(context);
             return;
@@ -95,7 +92,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
             }
             Object subContext = ((Map) context).get(logicalName);
             if (subContext == null) {
-                throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
+                throw new PlcRuntimeException(String.format(REQUIRED_CONTEXT_NOT_FOUND, logicalName, peek));
             }
             stack.push(subContext);
             return;
@@ -106,7 +103,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         Map map = (Map) peek;
         Object context = map.get(logicalName);
         if (context == null) {
-            throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
+            throw new PlcRuntimeException(String.format(REQUIRED_CONTEXT_NOT_FOUND, logicalName, peek));
         }
         stack.push(context);
     }
@@ -119,7 +116,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwBitKey, 1);
         Boolean value = (Boolean) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value;
     }
@@ -132,7 +129,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwByteKey, 8);
         String hexString = (String) element.get(logicalName);
         if (hexString == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         if (!hexString.startsWith("0x")) {
             throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
@@ -149,7 +146,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwByteKey, 8 * numberOfBytes);
         String hexString = (String) element.get(logicalName);
         if (hexString == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         if (!hexString.startsWith("0x")) {
             throw new PlcRuntimeException(String.format("Hex string should start with 0x. Actual value %s", hexString));
@@ -170,7 +167,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value.byteValue();
     }
@@ -183,7 +180,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value.shortValue();
     }
@@ -196,7 +193,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value;
     }
@@ -209,7 +206,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return Long.valueOf(value);
     }
@@ -222,7 +219,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwUintKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return BigInteger.valueOf(value);
     }
@@ -235,7 +232,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value.byteValue();
     }
@@ -248,7 +245,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value.shortValue();
     }
@@ -261,7 +258,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value;
     }
@@ -274,7 +271,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return Long.valueOf(value);
     }
@@ -287,7 +284,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwIntKey, bitLength);
         Integer value = (Integer) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return BigInteger.valueOf(value);
     }
@@ -300,7 +297,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value;
     }
@@ -313,7 +310,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return Double.valueOf(value);
     }
@@ -326,7 +323,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwFloatKey, bitLength);
         Float value = (Float) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return BigDecimal.valueOf(value);
     }
@@ -339,7 +336,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         validateAttr(logicalName, element, rwStringKey, bitLength);
         String value = (String) element.get(logicalName);
         if (value == null) {
-            throw new PlcRuntimeException(String.format("Required element %s not found in %s", logicalName, stack.peek()));
+            throw new PlcRuntimeException(String.format(REQUIRED_ELEMENT_NOT_FOUND, logicalName, stack.peek()));
         }
         return value;
     }
@@ -347,12 +344,12 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
     @Override
     public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
-        if (stack.empty()) {
+        if (stack.isEmpty()) {
             throw new PlcRuntimeException(String.format("Required context close %s not found in %s", logicalName, rootElement));
         }
         // Delete us from stack
         stack.pop();
-        if (stack.empty()) {
+        if (stack.isEmpty()) {
             return;
         }
         Object peek = stack.peek();
@@ -364,7 +361,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
         }
         Map map = (Map) peek;
         if (map.get(logicalName) == null) {
-            throw new PlcRuntimeException(String.format("Required context %s not found in %s", logicalName, peek));
+            throw new PlcRuntimeException(String.format(REQUIRED_CONTEXT_NOT_FOUND, logicalName, peek));
         }
         map.remove(logicalName);
     }

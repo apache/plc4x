@@ -16,21 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.api.value;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Base Valuehandler
@@ -38,9 +27,9 @@ import java.util.Set;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcValueHandler {
 
-    public PlcValue newPlcValue(Object value);
-    public PlcValue newPlcValue(Object[] values);
-    public PlcValue newPlcValue(PlcField field, Object value);
-    public PlcValue newPlcValue(PlcField field, Object[] values);
+    PlcValue newPlcValue(Object value);
+    PlcValue newPlcValue(Object[] values);
+    PlcValue newPlcValue(PlcField field, Object value);
+    PlcValue newPlcValue(PlcField field, Object[] values);
 
 }

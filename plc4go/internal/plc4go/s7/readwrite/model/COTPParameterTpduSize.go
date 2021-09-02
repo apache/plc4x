@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -88,7 +88,7 @@ func (m *COTPParameterTpduSize) LengthInBits() uint16 {
 func (m *COTPParameterTpduSize) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
-	// Enum Field (tpduSize)
+	// Simple field (tpduSize)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -103,10 +103,10 @@ func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer) (*COTPParameter, er
 		return nil, pullErr
 	}
 
+	// Simple Field (tpduSize)
 	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (tpduSize)
 	tpduSize, _tpduSizeErr := COTPTpduSizeParse(readBuffer)
 	if _tpduSizeErr != nil {
 		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field")
@@ -134,17 +134,16 @@ func (m *COTPParameterTpduSize) Serialize(writeBuffer utils.WriteBuffer) error {
 			return pushErr
 		}
 
+		// Simple Field (tpduSize)
 		if pushErr := writeBuffer.PushContext("tpduSize"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (tpduSize)
-		tpduSize := CastCOTPTpduSize(m.TpduSize)
-		_tpduSizeErr := tpduSize.Serialize(writeBuffer)
-		if _tpduSizeErr != nil {
-			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
-		}
+		_tpduSizeErr := m.TpduSize.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("tpduSize"); popErr != nil {
 			return popErr
+		}
+		if _tpduSizeErr != nil {
+			return errors.Wrap(_tpduSizeErr, "Error serializing 'tpduSize' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPParameterTpduSize"); popErr != nil {

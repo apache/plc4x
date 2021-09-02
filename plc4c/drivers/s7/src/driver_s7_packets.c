@@ -1,21 +1,21 @@
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include <cotp_protocol_class.h>
 #include <ctype.h>
@@ -241,11 +241,13 @@ void delete_szl_list(plc4c_list_element *element){
 void delete_s7_user_data_payload_list_element(plc4c_list_element *element) {
   plc4c_s7_read_write_s7_payload_user_data_item *item;
   item = element->value;
+
   plc4c_utils_list_delete_elements(
     item->s7_payload_user_data_item_cpu_function_read_szl_response_items, 
     delete_szl_list);
   free(item->s7_payload_user_data_item_cpu_function_read_szl_response_items);
-  free(item->szl_id);
+  // TODO: Depending on the type of data-item, clean free the allocated memory.
+  //free(item->szl_id);
   free(item);
 }
 void delete_s7_read_request_parameter_list_element(plc4c_list_element *element) {
@@ -278,7 +280,8 @@ void delete_payload_user_data_item_list_element(
     plc4c_list_element *element) {
   plc4c_s7_read_write_s7_payload_user_data_item *item;
   item = (plc4c_s7_read_write_s7_payload_user_data_item *)element->value;
-  free(item->szl_id);
+  // TODO: Depending on the type of data-item, clean free the allocated memory.
+  //free(item->szl_id);
   free(item);
 }
 
@@ -321,7 +324,7 @@ void plc4c_driver_s7_destroy_receive_packet(
           free(s7_param->s7_parameter_user_data_items);
           break;
         case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response:
-          // todo: something
+          // TODO: something
           break;
         case plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response:
           // TODO: something
@@ -609,15 +612,15 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   payload_item->return_code = plc4c_s7_read_write_data_transport_error_code_OK;
   payload_item->transport_size =
       plc4c_s7_read_write_data_transport_size_OCTET_STRING;
-  payload_item->szl_index = 0x0000;
-  payload_item->szl_id = malloc(sizeof(plc4c_s7_read_write_szl_id));
-  if (payload_item->szl_id == NULL) {
+  payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_index = 0x0000;
+  payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id = malloc(sizeof(plc4c_s7_read_write_szl_id));
+  if (payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id == NULL) {
     return NO_MEMORY;
   }
-  payload_item->szl_id->type_class =
+  payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id->type_class =
       plc4c_s7_read_write_szl_module_type_class_CPU;
-  payload_item->szl_id->sublist_extract = 0x00;
-  payload_item->szl_id->sublist_list =
+  payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id->sublist_extract = 0x00;
+  payload_item->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id->sublist_list =
       plc4c_s7_read_write_szl_sublist_MODULE_IDENTIFICATION;
   plc4c_utils_list_insert_head_value(
       (*s7_identify_remote_request_packet)

@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
@@ -28,6 +28,7 @@ import org.apache.commons.math3.util.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.List;
@@ -58,7 +59,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.period = period;
     }
 
-    private  PlcDriverManager plcDriverManager;
+    private PlcDriverManager plcDriverManager;
     private PlcConnection connection;
     private String uri;
 
@@ -74,28 +75,22 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.trigger = trigger;
         plcDriverManager = new PooledPlcDriverManager();
         String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
-        uri=plc4xURI;
+        // TODO: is this mutation really intentional
+        uri = plc4xURI;
         try {
             connection = plcDriverManager.getConnection(plc4xURI);
         } catch (PlcConnectionException e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
     }
 
-    public Plc4XEndpoint(String endpointUri, Component component) {
+    public Plc4XEndpoint(String endpointUri, Component component) throws PlcConnectionException {
         super(endpointUri, component);
-        plcDriverManager = new PlcDriverManager();
-        uri = endpointUri;
+        this.plcDriverManager = new PlcDriverManager();
         //Here we establish the connection in the endpoint, as it is created once during the context
         // to avoid disconnecting and reconnecting for every request
-        try {
-            String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
-            uri = plc4xURI;
-            connection = plcDriverManager.getConnection(plc4xURI);
-
-        } catch (PlcConnectionException e) {
-            e.printStackTrace();
-        }
+        this.uri = endpointUri.replaceFirst("plc4x:/?/?", "");
+        this.connection = plcDriverManager.getConnection(this.uri);
     }
 
     public PlcConnection getConnection() {
@@ -111,11 +106,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     public Producer createProducer() throws Exception {
         //Checking if connection is still up and reconnecting if not
         if (!connection.isConnected()) {
-            try {
-                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
         }
         return new Plc4XProducer(this);
     }
@@ -124,15 +115,20 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     public Consumer createConsumer(Processor processor) throws Exception {
         //Checking if connection is still up and reconnecting if not
         if (!connection.isConnected()) {
-            try {
-                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
         }
         return new Plc4XConsumer(this, processor);
     }
-    
+
+    @Override
+    public PollingConsumer createPollingConsumer() throws Exception {
+        //Checking if connection is still up and reconnecting if not
+        if (!connection.isConnected()) {
+            connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+        }
+        return new Plc4XPollingConsumer(this);
+    }
+
     @Override
     public boolean isSingleton() {
         return true;
@@ -181,16 +177,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     }
 
     @Override
-    public void doStop() {
+    public void doStop() throws Exception {
         //Shutting down the connection when leaving the Context
-        try {
-            if (connection != null) {
-                if (connection.isConnected()) {
-                    connection.close();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (connection != null && connection.isConnected()) {
+            connection.close();
         }
     }
 

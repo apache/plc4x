@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -100,7 +100,7 @@ func (m *COTPPacketConnectionResponse) LengthInBitsConditional(lastItem bool) ui
 	// Simple field (sourceReference)
 	lengthInBits += 16
 
-	// Enum Field (protocolClass)
+	// Simple field (protocolClass)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -127,10 +127,10 @@ func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer) (*COTPPacket
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field")
 	}
 
+	// Simple Field (protocolClass)
 	if pullErr := readBuffer.PullContext("protocolClass"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(readBuffer)
 	if _protocolClassErr != nil {
 		return nil, errors.Wrap(_protocolClassErr, "Error parsing 'protocolClass' field")
@@ -174,17 +174,16 @@ func (m *COTPPacketConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}
 
+		// Simple Field (protocolClass)
 		if pushErr := writeBuffer.PushContext("protocolClass"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (protocolClass)
-		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
-		_protocolClassErr := protocolClass.Serialize(writeBuffer)
-		if _protocolClassErr != nil {
-			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
-		}
+		_protocolClassErr := m.ProtocolClass.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("protocolClass"); popErr != nil {
 			return popErr
+		}
+		if _protocolClassErr != nil {
+			return errors.Wrap(_protocolClassErr, "Error serializing 'protocolClass' field")
 		}
 
 		if popErr := writeBuffer.PopContext("COTPPacketConnectionResponse"); popErr != nil {

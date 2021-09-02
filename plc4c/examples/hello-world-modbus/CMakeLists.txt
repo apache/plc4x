@@ -18,6 +18,7 @@
 ]]
 
 include_directories("../../api/include"
+        "../../spi/include"
         "../../drivers/modbus/include"
         "../../transports/tcp/include" )
 

@@ -1,26 +1,24 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import freemarker.cache.ClassTemplateLoader;
-import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.apache.plc4x.plugins.codegenerator.language.LanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
@@ -42,79 +40,83 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types)
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+        Map<String, String> options)
         throws GenerationException {
 
+        // Configure the Freemarker template engine
+        Configuration freemarkerConfiguration = getFreemarkerConfiguration();
+
+        ClassTemplateLoader classTemplateLoader = new ClassTemplateLoader(FreemarkerLanguageOutput.class, "/");
+        freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
+
+        // Initialize all templates
+        List<Template> specTemplates;
+        List<Template> complexTypesTemplateList;
+        List<Template> enumTypesTemplateList;
+        List<Template> dataIoTemplateList;
         try {
-            // Configure the Freemarker template engine
-            Configuration freemarkerConfiguration = getFreemarkerConfiguration();
-
-            ClassTemplateLoader classTemplateLoader = new ClassTemplateLoader(FreemarkerLanguageOutput.class, "/");
-            freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
-
-            // Initialize all templates
-            List<Template> specTemplates = getSpecTemplates(freemarkerConfiguration);
-            List<Template> complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
-            List<Template> enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
-            List<Template> dataIoTemplateList = getDataIoTemplates(freemarkerConfiguration);
-
-            // Generate output that's global for the entire mspec
-            if(!specTemplates.isEmpty()) {
-                Map<String, Object> typeContext = new HashMap<>();
-                typeContext.put("languageName", languageName);
-                typeContext.put("protocolName", protocolName);
-                typeContext.put("outputFlavor", outputFlavor);
-                typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types));
-
-                for(Template template : specTemplates) {
-                    try {
-                        renderTemplate(outputDir, template, typeContext);
-                    } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException |
-                            ParseException e) {
-                        throw new GenerationException("Error generating global protocol output.", e);
-                    }
-                }
-            }
-
-            // Iterate over the types and have content generated for each one
-            for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
-                // Prepare a new generation context
-                Map<String, Object> typeContext = new HashMap<>();
-                typeContext.put("languageName", languageName);
-                typeContext.put("protocolName", protocolName);
-                typeContext.put("outputFlavor", outputFlavor);
-                typeContext.put("typeName", typeEntry.getKey());
-                typeContext.put("type", typeEntry.getValue());
-                typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types));
-
-                // Depending on the type, get the corresponding list of templates.
-                List<Template> templateList;
-                if (typeEntry.getValue() instanceof EnumTypeDefinition) {
-                    templateList = enumTypesTemplateList;
-                } else if (typeEntry.getValue() instanceof DataIoTypeDefinition) {
-                    templateList = dataIoTemplateList;
-                } else {
-                    // Skip outputting the sub-types of io-types.
-                    if(typeEntry.getValue().getParentType() instanceof DataIoTypeDefinition) {
-                        continue;
-                    }
-                    templateList = complexTypesTemplateList;
-                }
-
-                // Generate the output for the given type.
-                LOGGER.info(String.format("Generating type %s", typeEntry.getKey()));
-                for(Template template : templateList) {
-                    try {
-                        renderTemplate(outputDir, template, typeContext);
-                    } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException |
-                            ParseException e) {
-                        throw new GenerationException(
-                            "Error generating output for type '" + typeEntry.getKey() + "'", e);
-                    }
-                }
-            }
+            specTemplates = getSpecTemplates(freemarkerConfiguration);
+            complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
+            enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
+            dataIoTemplateList = getDataIoTemplates(freemarkerConfiguration);
         } catch (IOException e) {
-            throw new GenerationException("Error generating sources", e);
+            throw new GenerationException("Error getting template", e);
+        }
+
+        // Generate output that's global for the entire mspec
+        if (!specTemplates.isEmpty()) {
+            Map<String, Object> typeContext = new HashMap<>();
+            typeContext.put("languageName", languageName);
+            typeContext.put("protocolName", protocolName);
+            typeContext.put("outputFlavor", outputFlavor);
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.putAll(options);
+
+            for (Template template : specTemplates) {
+                try {
+                    renderTemplate(outputDir, template, typeContext);
+                } catch (IOException | TemplateException e) {
+                    throw new GenerationException("Error generating global protocol output.", e);
+                }
+            }
+        }
+
+        // Iterate over the types and have content generated for each one
+        for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
+            // Prepare a new generation context
+            Map<String, Object> typeContext = new HashMap<>();
+            typeContext.put("languageName", languageName);
+            typeContext.put("protocolName", protocolName);
+            typeContext.put("outputFlavor", outputFlavor);
+            typeContext.put("typeName", typeEntry.getKey());
+            typeContext.put("type", typeEntry.getValue());
+            typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types, options));
+
+            // Depending on the type, get the corresponding list of templates.
+            List<Template> templateList;
+            if (typeEntry.getValue() instanceof EnumTypeDefinition) {
+                templateList = enumTypesTemplateList;
+            } else if (typeEntry.getValue() instanceof DataIoTypeDefinition) {
+                templateList = dataIoTemplateList;
+            } else {
+                // Skip outputting the sub-types of io-types.
+                if (typeEntry.getValue().getParentType() instanceof DataIoTypeDefinition) {
+                    continue;
+                }
+                templateList = complexTypesTemplateList;
+            }
+
+            // Generate the output for the given type.
+            LOGGER.info("Generating type {}", typeEntry.getKey());
+            for (Template template : templateList) {
+                try {
+                    renderTemplate(outputDir, template, typeContext);
+                } catch (IOException | TemplateException e) {
+                    throw new GenerationException(
+                        "Error generating output for type '" + typeEntry.getKey() + "'", e);
+                }
+            }
         }
     }
 
@@ -127,25 +129,24 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         template.process(context, new OutputStreamWriter(output));
 
         // Create the means to read in the generated output back in again
-        try(BufferedReader input = new BufferedReader(new InputStreamReader(
+        try (BufferedReader input = new BufferedReader(new InputStreamReader(
             new ByteArrayInputStream(output.toByteArray())))) {
 
             // Extract the output path from the first line of the generated content
             String outputFileName = input.readLine();
             // If there is no outputFileName, this file should be skipped.
-            if(outputFileName == null) {
+            if (outputFileName == null) {
                 return;
             }
             File outputFile = new File(outputDir, outputFileName);
 
             // Create any missing directories
             if (!outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
-                throw new GenerationException(
-                    "Unable to create output directory " + outputFile.getParent());
+                throw new GenerationException("Unable to create output directory " + outputFile.getParent());
             }
 
             // Output the rest to that file
-            try(BufferedWriter outputFileWriter = Files.newBufferedWriter(
+            try (BufferedWriter outputFileWriter = Files.newBufferedWriter(
                 outputFile.toPath(), StandardCharsets.UTF_8)) {
                 String line;
                 while ((line = input.readLine()) != null) {
@@ -157,13 +158,17 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         }
     }
 
-    private Configuration getFreemarkerConfiguration() throws IOException {
+    private Configuration getFreemarkerConfiguration() throws GenerationException {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         configuration.setLogTemplateExceptions(false);
         configuration.setWrapUncheckedExceptions(true);
-        configuration.setDirectoryForTemplateLoading(new File("/"));
+        try {
+            configuration.setDirectoryForTemplateLoading(new File("/"));
+        } catch (IOException e) {
+            throw new GenerationException("Error setting directory for template loading", e);
+        }
         return configuration;
     }
 
@@ -175,6 +180,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types);
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options);
 
 }

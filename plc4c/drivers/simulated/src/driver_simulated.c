@@ -1,21 +1,21 @@
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include <plc4c/driver_simulated.h>
 #include <plc4c/plc4c.h>
@@ -251,8 +251,10 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       } else if (strcmp(type_str, "STDOUT") == 0) {
         type = STDOUT;
       } else {
+        free(type_str);
         return NULL;
       }
+      free(type_str);
       start_segment = address_string + i + 1;
       start_segment_index = i + 1;
     }
@@ -276,8 +278,11 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       } else if (strcmp(datatype_name, "STRING") == 0) {
         data_type = PLC4C_CONSTANT_STRING;
       } else {
+        free(datatype_name);
+        free(name);
         return NULL;
       }
+      free(datatype_name);
 
       start_segment = address_string + i + 1;
       start_segment_index = i + 1;
@@ -293,6 +298,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
       strncpy(num_elements_str, start_segment, (i - start_segment_index));
       char *success = NULL;
       num_elements = (int)strtol(num_elements_str, &success, 10);
+      free(num_elements_str);
       break;
     }
   }

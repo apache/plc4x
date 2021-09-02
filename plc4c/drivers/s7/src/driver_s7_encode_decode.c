@@ -1,21 +1,21 @@
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include <cotp_protocol_class.h>
 #include <ctype.h>
@@ -133,6 +133,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     ////////////////////////////////////////////////////////////////////////////
 
     if (!isalpha(*cur_pos)) {
+      free(s7_item);
       return INVALID_ADDRESS;
     }
 
@@ -253,6 +254,15 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
 
     plc4c_s7_read_write_s7_address* any_address = malloc(sizeof(plc4c_s7_read_write_s7_address));
     if(any_address == NULL) {
+      free(memory_area);
+      free(block_number);
+      free(transfer_size_code);
+      free(byte_offset);
+      free(bit_offset);
+      free(data_type);
+      free(string_length);
+      free(num_elements);
+      free(s7_item);
       return NO_MEMORY;
     }
     any_address->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
@@ -266,25 +276,40 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
       }
     }
     if (any_address->s7_address_any_area == plc4c_s7_read_write_memory_area_null()) {
+      free(memory_area);
+      free(block_number);
+      free(transfer_size_code);
+      free(byte_offset);
+      free(bit_offset);
+      free(data_type);
+      free(string_length);
+      free(num_elements);
+      free(any_address);
+      free(s7_item);
       return INVALID_ADDRESS;
     }
+    free(memory_area);
 
     if (block_number != NULL) {
       any_address->s7_address_any_db_number = strtol(block_number, 0, 10);
     } else {
       any_address->s7_address_any_db_number = 0;
     }
+    free(block_number);
 
     any_address->s7_address_any_byte_address = strtol(byte_offset, 0, 10);
+    free(byte_offset);
 
     if (bit_offset != NULL) {
       any_address->s7_address_any_bit_address = strtol(bit_offset, 0, 10);
     } else {
       any_address->s7_address_any_bit_address = 0;
     }
+    free(bit_offset);
 
     any_address->s7_address_any_transport_size =
         plc4c_s7_read_write_transport_size_value_of(data_type);
+    free(data_type);
 
     if (num_elements != NULL) {
       any_address->s7_address_any_number_of_elements =
@@ -292,6 +317,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     } else {
       any_address->s7_address_any_number_of_elements = 1;
     }
+    free(num_elements);
 
     // TODO: THis should be moved to "driver_s7_packets.c->plc4c_return_code plc4c_driver_s7_create_s7_read_request"
     if (any_address->s7_address_any_transport_size ==
@@ -309,21 +335,19 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
                plc4c_s7_read_write_transport_size_TOD) {
       any_address->s7_address_any_transport_size = plc4c_s7_read_write_transport_size_TIME_OF_DAY;
     }
+    free(string_length);
 
     // Check the optional transport size code.
     if(transfer_size_code != NULL) {
       if(plc4c_s7_read_write_transport_size_get_short_name(any_address->s7_address_any_transport_size) != *transfer_size_code) {
+        free(transfer_size_code);
+        free(any_address);
+        free(s7_item);
         return INVALID_ADDRESS;
       }
     }
+    free(transfer_size_code);
 
-    free(memory_area);
-    free(block_number);
-    free(data_type);
-    free(num_elements);
-    free(byte_offset);
-    free(bit_offset);
-    
     s7_item->s7_var_request_parameter_item_address_address = any_address;
   }
   // - Else -> PLC_PROXY_ADDRESS_PATTERN
@@ -331,6 +355,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     //   - parse the sequence of 2 digit Hex numbers into an array of 10 bytes
     uint8_t* raw_data = malloc(sizeof(uint8_t) * 10);
     if (raw_data == NULL) {
+      free(s7_item);
       return NO_MEMORY;
     }
     cur_pos += 2;
@@ -338,10 +363,14 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
       plc4c_return_code return_code =
           decode_byte(last_pos, cur_pos, raw_data + i);
       if (return_code != OK) {
+        free(raw_data);
+        free(s7_item);
         return return_code;
       }
       if (i < 9) {
         if (*cur_pos != '-') {
+          free(raw_data);
+          free(s7_item);
           return INVALID_ADDRESS;
         }
         // Move to the next segment.
@@ -354,6 +383,9 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     plc4c_return_code return_code =
         plc4c_spi_read_buffer_create(raw_data, 10, &read_buffer);
     if (return_code != OK) {
+      free(read_buffer);
+      free(raw_data);
+      free(s7_item);
       return return_code;
     }
     //   - plc4c_s7_read_write_s7_var_request_parameter_item_parse function to
@@ -361,10 +393,12 @@ plc4c_return_code plc4c_driver_s7_encode_address(char* address, void** item) {
     //   - directly add the resulting struct to the request
     plc4c_s7_read_write_s7_address_parse(
         read_buffer, &s7_item->s7_var_request_parameter_item_address_address);
+
+    free(read_buffer);
+    free(raw_data);
   }
 
   *item = s7_item;
 
- 
   return OK;
 }

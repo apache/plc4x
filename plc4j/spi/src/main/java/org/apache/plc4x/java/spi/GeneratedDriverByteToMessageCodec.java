@@ -36,7 +36,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     private final Object[] parserArgs;
     private final MessageIO<T, T> io;
 
-    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian, Object[] parserArgs) {
+    protected GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian, Object[] parserArgs) {
         super(clazz);
         this.io = io;
         this.bigEndian = bigEndian;
@@ -49,7 +49,9 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
             WriteBufferByteBased buffer = new WriteBufferByteBased(packet.getLengthInBytes(), !bigEndian);
             io.serialize(buffer, packet);
             byteBuf.writeBytes(buffer.getData());
-            LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+            }
         } catch (Exception e) {
             LOGGER.warn("Error encoding package [{}]: {}", packet, e.getMessage(), e);
         }
@@ -59,12 +61,12 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) {
         LOGGER.trace("Receiving bytes, trying to decode Message...");
         // As long as there is data available, continue checking the content.
-        while(byteBuf.readableBytes() > 0) {
+        while (byteBuf.readableBytes() > 0) {
             byte[] bytes = null;
             try {
                 // Check if enough data is present to process the entire package.
                 int packetSize = getPacketSize(byteBuf);
-                if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
+                if (packetSize == -1 || packetSize > byteBuf.readableBytes()) {
                     return;
                 }
 
@@ -81,11 +83,11 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
                 // It seems that one batch of 16 messages is the maximum, so we have to give up
                 // and process the rest next time.
-                if(out.size() >= 16) {
+                if (out.size() >= 16) {
                     return;
                 }
             } catch (Exception e) {
-                if(bytes != null) {
+                if (bytes != null) {
                     LOGGER.warn("Error decoding package with content [{}]: {}",
                         Hex.encodeHexString(bytes), e.getMessage(), e);
                 }

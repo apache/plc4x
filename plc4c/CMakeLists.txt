@@ -34,6 +34,22 @@ set(BUILD_PHASE test-compile CACHE STRING "Phase of the Maven build we are execu
 # Access the Unity version the maven build is providing us with.
 set(UNITY_VERSION 2.5.0 CACHE STRING "Version of the used Unity test framework")
 
+# MinGW GCC versions above 4.7 on Windows include inline definitions of these functions
+# If you run into problems, please read this article: https://stackoverflow.com/questions/27853225/is-there-a-way-to-include-stdio-h-but-ignore-some-of-the-functions-therein
+# These are the constants needed to activate all patches.
+add_compile_definitions(NO_INLINE_VFSCANF=1)
+add_compile_definitions(NO_INLINE_VSSCANF=1)
+add_compile_definitions(NO_INLINE_VSCANF=1)
+add_compile_definitions(NO_INLINE_VSNPRINTF=1)
+add_compile_definitions(NO_INLINE_SNPRINTF=1)
+add_compile_definitions(NO_INLINE_VFWSCANF=1)
+add_compile_definitions(NO_INLINE_VSWSCANF=1)
+add_compile_definitions(NO_INLINE_VWSCANF=1)
+add_compile_definitions(NO_INLINE_SNWPRINTF=1)
+add_compile_definitions(NO_INLINE_VSNWPRINTF=1)
+add_compile_definitions(NO_INLINE_VSWPRINTF=1)
+add_compile_definitions(NO_INLINE_SWPRINTF=1)
+
 # Depending on the phase of the build we are currently running, initialize
 # The test system.
 if (BUILD_PHASE STREQUAL compile)

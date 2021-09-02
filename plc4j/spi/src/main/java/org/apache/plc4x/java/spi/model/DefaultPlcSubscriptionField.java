@@ -53,4 +53,13 @@ public class DefaultPlcSubscriptionField implements PlcSubscriptionField {
     public Optional<Duration> getDuration() {
         return Optional.ofNullable(duration);
     }
+
+    @Override
+    public String toString() {
+        return "DefaultPlcSubscriptionField{" +
+            "plcSubscriptionType=" + plcSubscriptionType +
+            ", plcField=" + plcField +
+            ", duration=" + duration +
+            '}';
+    }
 }

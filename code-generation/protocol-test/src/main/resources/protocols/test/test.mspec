@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 ////////////////////////////////////////////////////////////////
 // Simple Type
@@ -38,17 +38,35 @@
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
     [const          uint 8  'constField'        '5']
-
-    //TODO: Discriminated Field can't be used in simple type
+    // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  'discriminatorField']
-
     [enum           EnumType  'enumField']
     [implicit       uint 8  'implicitField' 'simpleField']
     [optional       uint 8  'optionalField' 'simpleField == 5']
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
     [reserved       uint 8  '0x00']
+    // TypeSwitch field can't be used in non discriminatedTypes
+    //[typeSwitch 'simpleField' ]
+]
 
-    //TODO: TypeSwitch field can't be used in non disriminatedTypes
+// If a type has an unknown field, the entire serializer is reduced to firing an exception
+[type 'FieldTypeTestWithUnknownField'
+    [simple         uint 8 'simpleField']
+    //Abstract fields can only be used within discriminated base types.
+    //[abstract       unit 8  'abstractField']
+    [array          uint 8  'arrayField'        count      '5']
+    //TODO: Checksums fields are not supported in C
+    //[checksum       uint 8  'checksumField'     '100']
+    [const          uint 8  'constField'        '5']
+    // Discriminated Field can't be used in simple type
+    //[discriminator  uint 8  'discriminatorField']
+    [enum           EnumType  'enumField']
+    [implicit       uint 8  'implicitField' 'simpleField']
+    [optional       uint 8  'optionalField' 'simpleField == 5']
+    [padding        uint 8  'paddingField'  '0x00'  'simpleField']
+    [reserved       uint 8  '0x00']
+    [unknown        uint 16]
+    // TypeSwitch field can't be used in non discriminatedTypes
     //[typeSwitch 'simpleField' ]
 ]
 
@@ -80,12 +98,24 @@
 ]
 
 [type 'AbstractTypeTest'
-    [abstract bit 'bitField']
-    [abstract int 8 'intField']
-    [abstract uint 8 'uintField']
-    [abstract float 8.23 'floatField']
-    [abstract float 11.52 'doubleField']
-    [abstract string '8' 'UTF-8' 'stringField']
+    //Abstract fields can only be used within discriminated base types.
+    [simple         uint 8 'simpleField']
+    [abstract bit 'abstractBitField']
+    [abstract int 8 'abstractIntField']
+    [abstract uint 8 'abstractUintField']
+    [abstract float 8.23 'abstractFloatField']
+    [abstract float 11.52 'abstractDoubleField']
+    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [typeSwitch 'simpleField'
+        ['0' AbstractedType
+            [simple bit 'abstractBitField']
+            [simple int 8 'abstractIntField']
+            [simple uint 8 'abstractUintField']
+            [simple float 8.23 'abstractFloatField']
+            [simple float 11.52 'abstractDoubleField']
+            [simple string '8' 'UTF-8' 'abstractStringField']
+        ]
+    ]
 ]
 
 [type 'AbstractTypeTest'
@@ -315,6 +345,26 @@
     ]
 ]
 
+
+//Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
+//[discriminatedType 'SimpleDiscriminatedType'
+//    [discriminator uint 8 'discr']
+//    [typeSwitch 'discr'
+//        ['0x00' SimpleDiscriminatedTypeA
+//            [simple        AnotherSimpleDiscriminatedTypeA 'simpA']
+//        ]
+//    ]
+//]
+
+//[discriminatedType 'AnotherSimpleDiscriminatedType'
+//    [discriminator uint 8 'discr']
+//    [typeSwitch 'discr'
+//        ['0x00' AnotherSimpleDiscriminatedTypeA
+//            [simple        uint 8 'simpA']
+//        ]
+//    ]
+//]
+
 ////////////////////////////////////////////////////////////////
 // Enumerated Type Tests
 ////////////////////////////////////////////////////////////////
@@ -350,10 +400,10 @@
 //    ['102.0' BIG]
 //]
 
-//String based enum's needs some work in C, compiles but assigns 0 as values.
-[enum string '-1' 'EnumTypeString'
-    ['Toddy1' TODDY]
-]
+//TODO:  C doesn't support non integer switch fields
+//[enum string '-1' 'EnumTypeString'
+//    ['Toddy1' TODDY]
+//]
 
 //TODO:  Fails to import the base Enum in C, need to find it in getComplexTypeReferences
 //[enum EnumType 'EnumTypeEnum'

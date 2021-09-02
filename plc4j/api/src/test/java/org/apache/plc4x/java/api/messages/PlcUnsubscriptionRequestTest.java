@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-
 import java.util.List;
 
 import static org.hamcrest.collection.IsEmptyCollection.empty;

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.test.migration;
 
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -40,43 +40,28 @@ public class MessageResolver {
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageResolver.class);
 
     /**
-     * Returns the messageIO class based on a convention out of {@code protocolName} {@code outputFlavor} and {@code name}.
+     * Returns the messageIO class based on a configured package. convention out of {@code protocolName} {@code outputFlavor} and {@code name}.
      * If this fails its tries a fallback using the deprecated attribute {@code className}
      *
-     * @param protocolName name of the protocol
-     * @param outputFlavor flavor of the output (e.g read-write)
-     * @param name         name of the message
+     * @param options Test framework options
+     * @param name    name of the message
      * @return the found MessageIO
      * @throws DriverTestsuiteException if a MessageIO couldn't be found.
      */
     @SuppressWarnings("rawtypes")
-    public static MessageIO getMessageIO(String protocolName, String outputFlavor, String name) throws DriverTestsuiteException {
+    public static MessageIO getMessageIO(Map<String, String> options, String name) throws DriverTestsuiteException {
         try {
-            return MessageResolver.getMessageIOType(protocolName, outputFlavor, name).newInstance();
+            return MessageResolver.getMessageIOType(options, name).getMessageIo().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new DriverTestsuiteException(e);
         }
     }
 
-    public static MessageIO getMessageIOStaticLinked(String protocolName, String outputFlavor, String typeName) throws ParserSerializerTestsuiteException {
-        String ioClassName, ioRootClassName;
-        String classPackage = String.format("org.apache.plc4x.java.%s.%s", protocolName, StringUtils.replace(outputFlavor, "-", ""));
+    public static MessageIO getMessageIOStaticLinked(Map<String, String> options, String typeName) throws ParserSerializerTestsuiteException {
         try {
-            Package.getPackage(classPackage);
-        } catch (RuntimeException e) {
-            throw new DriverTestsuiteException("fallback to old", e);
-        }
-        ioRootClassName = classPackage + "." + typeName;
-        ioClassName = classPackage + ".io." + typeName + "IO";
-        try {
-            Class.forName(ioRootClassName);
-            Class.forName(ioClassName);
-        } catch (ClassNotFoundException e) {
-            throw new ParserSerializerTestsuiteException(e);
-        }
-        try {
-            Class<?> ioRootClass = Class.forName(ioRootClassName);
-            Class<?> ioClass = Class.forName(ioClassName);
+            TypePair typePair = getMessageIOType(options, typeName);
+            Class<?> ioRootClass = typePair.getType();
+            Class<?> ioClass = typePair.getMessageIo();
             Method staticParseMethod = null;
             Method staticSerializeMethod = null;
             final List<Class<?>> parameterTypes = new LinkedList<>();
@@ -149,26 +134,60 @@ public class MessageResolver {
                     }
                 }
             };
-        } catch (ClassNotFoundException e) {
-            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e);
+        } catch (DriverTestsuiteException e) {
+            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e.getCause());
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static Class<? extends MessageIO<?, ?>> getMessageIOType(String protocolName, String outputFlavor, String typeName) throws DriverTestsuiteException {
+    private static TypePair getMessageIOType(Map<String, String> options, String typeName) throws DriverTestsuiteException {
+        String extraMessage = "";
+        if (options.containsKey("package")) {
+            try {
+                return lookup(options.get("package"), typeName);
+            } catch (ClassNotFoundException e) {
+                extraMessage = "custom package '" + options.get("package") + "' and ";
+            }
+        }
+
+        String protocolName = options.get("protocolName");
+        String outputFlavor = options.get("outputFlavor");
         String classPackage = String.format("org.apache.plc4x.java.%s.%s", protocolName, StringUtils.replace(outputFlavor, "-", ""));
         try {
-            Package.getPackage(classPackage);
-        } catch (RuntimeException e) {
-            throw new DriverTestsuiteException(e);
-        }
-        String ioRootClassName = classPackage + "." + typeName;
-        String ioClassName = classPackage + ".io." + typeName + "IO";
-        try {
-            Class.forName(ioRootClassName);
-            return (Class<? extends MessageIO<?, ?>>) Class.forName(ioClassName);
+            return lookup(classPackage, typeName);
         } catch (ClassNotFoundException e) {
-            throw new DriverTestsuiteException(e);
+            throw new DriverTestsuiteException("Could not find " + typeName + " in " + extraMessage + "standard package '" + classPackage + "'");
+        }
+    }
+
+    private static TypePair lookup(String driverPackage, String typeName) throws ClassNotFoundException {
+        try {
+            Package.getPackage(driverPackage);
+        } catch (RuntimeException e) {
+            throw new DriverTestsuiteException("Invalid or non existent package detected: " + driverPackage, e);
+        }
+        String ioRootClassName = driverPackage + "." + typeName;
+        String ioClassName = driverPackage + ".io." + typeName + "IO";
+        // make sure both type and it's IO are present
+        return new TypePair(
+            Class.forName(ioRootClassName),
+            (Class<? extends MessageIO<?, ?>>) Class.forName(ioClassName)
+        );
+    }
+
+    static class TypePair {
+        private final Class<?> type;
+        private final Class<? extends MessageIO<?, ?>> messageIo;
+
+        TypePair(Class<?> type, Class<? extends MessageIO<?, ?>> messageIo) {
+            this.type = type;
+            this.messageIo = messageIo;
+        }
+        Class<?> getType() {
+            return type;
+        }
+        Class<? extends MessageIO<?, ?>> getMessageIo() {
+            return messageIo;
         }
     }
 

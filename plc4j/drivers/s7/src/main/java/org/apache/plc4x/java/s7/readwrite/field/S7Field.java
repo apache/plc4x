@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.s7.readwrite.field;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -34,10 +34,10 @@ import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class S7Field implements PlcField, XmlSerializable {
+public class S7Field implements PlcField, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
@@ -85,8 +85,8 @@ public class S7Field implements PlcField, XmlSerializable {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     protected S7Field(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
-                    @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
-                    @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements) {
+                      @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
+                      @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;
@@ -126,21 +126,21 @@ public class S7Field implements PlcField, XmlSerializable {
     public static boolean matches(String fieldString) {
         return
             DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString).matches() ||
-            DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString).matches() ||
-            DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
-            DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
-            PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches() ||
-            ADDRESS_PATTERN.matcher(fieldString).matches();
+                DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString).matches() ||
+                DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
+                DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
+                PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches() ||
+                ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
     /**
      * @return Java type of expected response.
-     *
+     * <p>
      * TODO validate all Methods existing are implemented
      */
     @Override
     public Class<?> getDefaultJavaType() {
-        switch (dataType){
+        switch (dataType) {
             case STRING:
                 return String.class;
             case USINT:
@@ -175,6 +175,7 @@ public class S7Field implements PlcField, XmlSerializable {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
@@ -193,7 +194,7 @@ public class S7Field implements PlcField, XmlSerializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7StringField(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, stringLength);
+            return new S7StringField(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength);
         } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
@@ -202,30 +203,30 @@ public class S7Field implements PlcField, XmlSerializable {
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             int numElements = 1;
-            if(matcher.group(NUM_ELEMENTS) != null) {
+            if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
             return new S7StringField(dataType, memoryArea, blockNumber,
                 byteOffset, bitOffset, numElements, stringLength);
-        } else if((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
+        } else if ((matcher = DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
-            if(matcher.group(BIT_OFFSET) != null) {
+            if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if(dataType == TransportSize.BOOL) {
+            } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
-            if(matcher.group(NUM_ELEMENTS) != null) {
+            if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
-            if((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
+            if ((transferSizeCode != null) && (dataType.getShortName() != transferSizeCode)) {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
@@ -237,13 +238,13 @@ public class S7Field implements PlcField, XmlSerializable {
             int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
-            if(matcher.group(BIT_OFFSET) != null) {
+            if (matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
-            } else if(dataType == TransportSize.BOOL) {
+            } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
-            if(matcher.group(NUM_ELEMENTS) != null) {
+            if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
 
@@ -300,12 +301,13 @@ public class S7Field implements PlcField, XmlSerializable {
 
     /**
      * checks if DatablockNumber of S7Field is in valid range
+     *
      * @param blockNumber given DatablockNumber
      * @return given blockNumber if Ok, throws PlcInvalidFieldException otherwise
      */
-    private static int checkDatablockNumber(int blockNumber){
+    private static int checkDatablockNumber(int blockNumber) {
         //ToDo check the value or add reference - limit eventually depending on active S7 --> make a case selection
-        if(blockNumber>64000 || blockNumber<1){
+        if (blockNumber > 64000 || blockNumber < 1) {
             throw new PlcInvalidFieldException("Datablock numbers larger than 64000 or smaller than 1 are not supported.");
         }
         return blockNumber;
@@ -313,22 +315,23 @@ public class S7Field implements PlcField, XmlSerializable {
 
     /**
      * checks if ByteOffset from S7Field is in valid range
+     *
      * @param byteOffset given byteOffset
      * @return given byteOffset if Ok, throws PlcInvalidFieldException otherwise
      */
-    private static int checkByteOffset(int byteOffset){
+    private static int checkByteOffset(int byteOffset) {
         //ToDo check the value or add reference
-        if(byteOffset>2097151 || byteOffset<0){
+        if (byteOffset > 2097151 || byteOffset < 0) {
             throw new PlcInvalidFieldException("ByteOffset must be smaller than 2097151 and positive.");
         }
         return byteOffset;
     }
 
     protected static Short getSizeCode(String value) {
-        if((value == null) || value.isEmpty()) {
+        if ((value == null) || value.isEmpty()) {
             return null;
         }
-        if(value.length() > 1) {
+        if (value.length() > 1) {
             return null;
         }
         return (short) value.getBytes()[0];
@@ -336,7 +339,7 @@ public class S7Field implements PlcField, XmlSerializable {
 
     protected static MemoryArea getMemoryAreaForShortName(String shortName) {
         for (MemoryArea memoryArea : MemoryArea.values()) {
-            if(memoryArea.getShortName().equals(shortName)) {
+            if (memoryArea.getShortName().equals(shortName)) {
                 return memoryArea;
             }
         }
@@ -356,34 +359,21 @@ public class S7Field implements PlcField, XmlSerializable {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element messageElement = doc.createElement(getClass().getSimpleName());
-        parent.appendChild(messageElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext(getClass().getSimpleName());
 
-        Element memoryAreaElement = doc.createElement("memoryArea");
-        memoryAreaElement.appendChild(doc.createTextNode(getMemoryArea().name()));
-        messageElement.appendChild(memoryAreaElement);
+        String memoryArea = getMemoryArea().name();
+        writeBuffer.writeString("memoryArea", memoryArea.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), memoryArea);
 
-        Element blockNumberElement = doc.createElement("blockNumber");
-        blockNumberElement.appendChild(doc.createTextNode(Integer.toString(getBlockNumber())));
-        messageElement.appendChild(blockNumberElement);
+        writeBuffer.writeUnsignedInt("blockNumber", 16, getBlockNumber());
+        writeBuffer.writeUnsignedInt("byteOffset", 16, getByteOffset());
+        writeBuffer.writeUnsignedInt("bitOffset", 8, getBitOffset());
+        writeBuffer.writeUnsignedInt("numElements", 16, getNumberOfElements());
 
-        Element byteOffsetElement = doc.createElement("byteOffset");
-        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getByteOffset())));
-        messageElement.appendChild(byteOffsetElement);
+        String dataType = getDataType().name();
+        writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
 
-        Element bitOffsetElement = doc.createElement("bitOffset");
-        bitOffsetElement.appendChild(doc.createTextNode(Integer.toString(getBitOffset())));
-        messageElement.appendChild(bitOffsetElement);
-
-        Element numElementsElement = doc.createElement("numElements");
-        numElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
-        messageElement.appendChild(numElementsElement);
-
-        Element dataTypeElement = doc.createElement("dataType");
-        dataTypeElement.appendChild(doc.createTextNode(getDataType().name()));
-        messageElement.appendChild(dataTypeElement);
+        writeBuffer.popContext(getClass().getSimpleName());
     }
 
 }

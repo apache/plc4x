@@ -1,31 +1,30 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package s7
 
 import (
-	"encoding/xml"
 	"fmt"
 	readWrite "github.com/apache/plc4x/plc4go/internal/plc4go/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type S7PlcField interface {
@@ -123,32 +122,64 @@ func CastTos7FieldFromPlcField(plcField model.PlcField) (PlcField, error) {
 	return PlcField{}, errors.New("couldn't cast to s7PlcField")
 }
 
-func (m PlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.MemoryArea.String(), xml.StartElement{Name: xml.Name{Local: "memoryArea"}}); err != nil {
+	if err := writeBuffer.WriteString("memoryArea", uint8(len(m.MemoryArea.String())*8), "UTF-8", m.MemoryArea.String()); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.BlockNumber, xml.StartElement{Name: xml.Name{Local: "blockNumber"}}); err != nil {
+	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.ByteOffset, xml.StartElement{Name: xml.Name{Local: "byteOffset"}}); err != nil {
+	if err := writeBuffer.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.BitOffset, xml.StartElement{Name: xml.Name{Local: "bitOffset"}}); err != nil {
+	if err := writeBuffer.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.NumElements, xml.StartElement{Name: xml.Name{Local: "numElements"}}); err != nil {
+	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint8(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {
 		return err
 	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m PlcStringField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("memoryArea", uint8(len(m.MemoryArea.String())*8), "UTF-8", m.MemoryArea.String()); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteUint16("numElements", 16, m.stringLength); err != nil {
+		return err
+	}
+	if err := writeBuffer.WriteString("dataType", uint8(len(m.Datatype.String())*8), "UTF-8", m.Datatype.String()); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 	return nil

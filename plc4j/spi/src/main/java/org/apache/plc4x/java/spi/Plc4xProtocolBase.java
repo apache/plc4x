@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -55,6 +54,10 @@ public abstract class Plc4xProtocolBase<T> {
     }
 
     public void onDisconnect(ConversationContext<T> context) {
+        // Intentionally do nothing here
+    }
+
+    public void onDiscover(ConversationContext<T> context) {
         // Intentionally do nothing here
     }
 

@@ -1,21 +1,21 @@
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include <ctype.h>
 #include <plc4c/spi/types_private.h>
@@ -35,7 +35,7 @@ enum plc4c_driver_s7_read_states {
 
 // Forward declaration of helper function to stop PLC4C_DRIVER_S7_READ_FINISHED
 // state become too big, TODO: move to some header or inline
-plc4c_return_code plc4c_driver_s7_parse_read_responce(
+plc4c_return_code plc4c_driver_s7_parse_read_response(
     plc4c_read_request_execution *execution, plc4c_s7_read_write_tpkt_packet* packet);
 
 plc4c_return_code plc4c_driver_s7_sm_read_init(
@@ -84,7 +84,7 @@ plc4c_return_code plc4c_driver_s7_sm_read_finished(
     return NO_MEMORY;
   execution->read_response->read_request = execution->read_request;
 
-  result = plc4c_driver_s7_parse_read_responce(execution, packet);
+  result = plc4c_driver_s7_parse_read_response(execution, packet);
 
   if (result != OK)
     return result;
@@ -185,7 +185,7 @@ void plc4c_driver_s7_free_read_response(plc4c_read_response* response) {
   free(response->items);
 }
 
-plc4c_return_code plc4c_driver_s7_parse_read_responce( 
+plc4c_return_code plc4c_driver_s7_parse_read_response(
                                 plc4c_read_request_execution* execution,
                                 plc4c_s7_read_write_tpkt_packet* packet) {
 

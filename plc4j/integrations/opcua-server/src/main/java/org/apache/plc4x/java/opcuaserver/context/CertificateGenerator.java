@@ -16,10 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.opcuaserver.context;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -49,12 +47,17 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
     private static final String APPURI = "urn:eclipse:milo:plc4x:server";
 
+    private CertificateGenerator() {
+
+    }
+
     public static CertificateKeyPair generateCertificate() {
         KeyPairGenerator kpg = null;
         try {
             kpg = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Security Algorithim is unsupported for certificate");
+            LOGGER.error("Security Algorithm is unsupported for certificate");
+            return null;
         }
         kpg.initialize(2048);
         KeyPair caKeys = kpg.generateKeyPair();
@@ -69,12 +72,14 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
         nameBuilder.addRDN(BCStyle.ST, "DE");
         nameBuilder.addRDN(BCStyle.C, "US");
 
-        BigInteger serial = new BigInteger(RandomUtils.nextBytes(40));
+        byte[] bytes = new byte[40];
+        new SecureRandom().nextBytes(bytes);
+        BigInteger serial = new BigInteger(bytes);
 
         final Calendar calender = Calendar.getInstance();
         calender.add(Calendar.DATE, -1);
         Date startDate = calender.getTime();
-        calender.add(Calendar.DATE, 365*25);
+        calender.add(Calendar.DATE, 365 * 25);
         Date expiryDate = calender.getTime();
 
         KeyPairGenerator generator = null;
@@ -95,9 +100,9 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
                 Locale.ENGLISH,
                 nameBuilder.build(),
                 subjectPublicKeyInfo
-                );
+            );
 
-            GeneralName[] gnArray = new GeneralName[] {new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
+            GeneralName[] gnArray = new GeneralName[]{new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
 
 
             GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence(gnArray));
