@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 ////////////////////////////////////////////////////////////////
 // IsoOnTcp/TPKT
@@ -43,17 +43,17 @@
         ['0xE0' COTPPacketConnectionRequest
             [simple uint 16           'destinationReference']
             [simple uint 16           'sourceReference']
-            [enum   COTPProtocolClass 'protocolClass']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0xD0' COTPPacketConnectionResponse
             [simple uint 16           'destinationReference']
             [simple uint 16           'sourceReference']
-            [enum   COTPProtocolClass 'protocolClass']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0x80' COTPPacketDisconnectRequest
             [simple uint 16           'destinationReference']
             [simple uint 16           'sourceReference']
-            [enum   COTPProtocolClass 'protocolClass']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0xC0' COTPPacketDisconnectResponse
             [simple uint 16 'destinationReference']
@@ -73,7 +73,7 @@
     [implicit      uint 8 'parameterLength' 'lengthInBytes - 2']
     [typeSwitch 'parameterType'
         ['0xC0' COTPParameterTpduSize
-            [enum COTPTpduSize 'tpduSize']
+            [simple COTPTpduSize 'tpduSize']
         ]
         ['0xC1' COTPParameterCallingTsap
             [simple uint 16 'tsapId']
@@ -149,6 +149,15 @@
             [implicit uint 8                  'numItems' 'COUNT(items)']
             [array    S7ParameterUserDataItem 'items' count 'numItems']
         ]
+        ['0x01','0x07' S7ParameterModeTransition
+            [reserved uint 16  '0x0010']
+            [implicit uint 8  'itemLength' 'lengthInBytes - 2']
+            [simple   uint 8  'method']
+            [simple   uint 4  'cpuFunctionType']
+            [simple   uint 4  'cpuFunctionGroup']
+            [simple   uint 8  'currentMode']
+            [simple   uint 8  'sequenceNumber']
+        ]
     ]
 ]
 
@@ -169,7 +178,7 @@
             [enum     TransportSize 'transportSize' 'code']
             [simple   uint 16       'numberOfElements']
             [simple   uint 16       'dbNumber']
-            [enum     MemoryArea    'area']
+            [simple   MemoryArea    'area']
             [reserved uint 5        '0x00']
             [simple   uint 16       'byteAddress']
             [simple   uint 3        'bitAddress']
@@ -195,9 +204,9 @@
 ]
 
 [type 'SzlId'
-    [enum   SzlModuleTypeClass 'typeClass']
+    [simple SzlModuleTypeClass 'typeClass']
     [simple uint 4             'sublistExtract']
-    [enum   SzlSublist         'sublistList']
+    [simple SzlSublist         'sublistList']
 ]
 
 [type 'SzlDataTreeItem'
@@ -223,37 +232,291 @@
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
         ['0x00','0x07' S7PayloadUserData [S7Parameter 'parameter']
-            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
+            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction']]
         ]
     ]
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 [type 'S7VarPayloadDataItem' [bit 'lastItem']
-    [enum     DataTransportErrorCode 'returnCode']
-    [enum     DataTransportSize      'transportSize']
+    [simple   DataTransportErrorCode 'returnCode']
+    [simple   DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
     [array    byte                   'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
     [padding  uint 8                 'pad'        '0x00' 'lastItem ? 0 : COUNT(data) % 2']
 ]
 
 [type 'S7VarPayloadStatusItem'
-    [enum DataTransportErrorCode 'returnCode']
+    [simple DataTransportErrorCode 'returnCode']
 ]
 
-[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType']
-    [enum     DataTransportErrorCode 'returnCode']
-    [enum     DataTransportSize      'transportSize']
-    [implicit uint 16                'dataLength' 'lengthInBytes - 4']
-    [simple   SzlId                  'szlId']
-    [simple   uint 16                'szlIndex']
+
+////////////////////////////////////////////////////////////////
+// Event 7 Alarms Types
+////////////////////////////////////////////////////////////////
+
+//Under test
+[discriminatedType  'S7DataAlarmMessage' [uint 4 'cpuFunctionType']
+    [const    uint 8 'functionId'       '0x00']
+    [const    uint 8 'numberMessageObj' '0x01']
     [typeSwitch 'cpuFunctionType'
-        ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
+        ['0x04' S7MessageObjectRequest
+            [const    uint 8       'variableSpec'  '0x12']
+            [const    uint 8       'length'        '0x08']
+            [simple   SyntaxIdType 'syntaxId']
+            [reserved uint 8       '0x00']
+            [simple   QueryType    'queryType']
+            [reserved uint 8       '0x34']
+            [simple   AlarmType    'alarmType']
         ]
-        ['0x08' S7PayloadUserDataItemCpuFunctionReadSzlResponse
-            [const    uint 16 'szlItemLength' '28']
-            [implicit uint 16 'szlItemCount'  'COUNT(items)']
-            [array SzlDataTreeItem 'items' count 'szlItemCount']
+        ['0x08' S7MessageObjectResponse
+            [simple   DataTransportErrorCode 'returnCode']
+            [simple   DataTransportSize      'transportSize']
+            [reserved uint 8                 '0x00']
+        ]
+    ]
+]
+
+[type 'AssociatedValueType'
+    [simple DataTransportErrorCode 'returnCode']
+    [simple DataTransportSize      'transportSize']
+    [manual uint 16                'valueLength'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
+    [array  uint 8                 'data'          count    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.EventItemLength", readBuffer, valueLength)']
+]
+
+//TODO: Convert BCD to uint
+[type 'DateAndTime'
+    [manual uint 8  'year'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)'    '1']
+    [manual uint 8  'month'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.month)'   '1']
+    [manual uint 8  'day'     'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.day)'     '1']
+    [manual uint 8  'hour'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.hour)'    '1']
+    [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
+    [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
+    [manual uint 12 'msec'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)'  '2']
+    [simple uint 4  'dow']
+]
+
+[type 'State'
+    [simple bit 'SIG_8']
+    [simple bit 'SIG_7']
+    [simple bit 'SIG_6']
+    [simple bit 'SIG_5']
+    [simple bit 'SIG_4']
+    [simple bit 'SIG_3']
+    [simple bit 'SIG_2']
+    [simple bit 'SIG_1']
+]
+
+[type 'AlarmMessageObjectPushType'
+    [const  uint 8              'variableSpec'     '0x12']
+    [simple uint 8              'lengthSpec']
+    [simple SyntaxIdType        'syntaxId']
+    [simple uint 8              'numberOfValues']
+    [simple uint 32             'eventId']
+    [simple State               'eventState']
+    [simple State               'localState']
+    [simple State               'ackStateGoing']
+    [simple State               'ackStateComing']
+    [array  AssociatedValueType 'AssociatedValues' count 'numberOfValues' ]
+]
+
+[type 'AlarmMessageAckObjectPushType'
+    [const  uint 8       'variableSpec' '0x12']
+    [simple uint 8       'lengthSpec']
+    [simple SyntaxIdType 'syntaxId']
+    [simple uint 8       'numberOfValues']
+    [simple uint 32      'eventId']
+    [simple State        'ackStateGoing']
+    [simple State        'ackStateComing']
+]
+
+[type 'AlarmMessagePushType'
+    [simple DateAndTime                'TimeStamp']
+    [simple uint 8                     'functionId']
+    [simple uint 8                     'numberOfObjects']
+    [array  AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]
+]
+
+[type 'AlarmMessageAckPushType'
+    [simple DateAndTime                   'TimeStamp']
+    [simple uint 8                        'functionId']
+    [simple uint 8                        'numberOfObjects']
+    [array  AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]
+]
+
+[type 'AlarmMessageObjectQueryType'
+    [simple   uint 8              'lengthDataset']
+    [reserved uint 16             '0x0000']
+    [const    uint 8              'variableSpec'   '0x12']
+    [simple   State               'eventState']
+    [simple   State               'ackStateGoing']
+    [simple   State               'ackStateComing']
+    [simple   DateAndTime         'timeComing']
+    [simple   AssociatedValueType 'valueComing']
+    [simple   DateAndTime         'timeGoing']
+    [simple   AssociatedValueType 'valueGoing']
+]
+
+[type 'AlarmMessageQueryType'
+    [simple uint 8                      'functionId']
+    [simple uint 8                      'numberOfObjects']
+    [simple DataTransportErrorCode      'returnCode']
+    [simple DataTransportSize           'transportSize']
+    [const  uint 16                     'DataLength'     '0xFFFF']
+    [array  AlarmMessageObjectQueryType 'messageObjects' count    'numberOfObjects' ]
+]
+
+[type 'AlarmMessageObjectAckType'
+    [const  uint 8       'variableSpec' '0x12']
+    [const  uint 8       'length' '0x08']
+    [simple SyntaxIdType 'syntaxId']
+    [simple uint 8       'numberOfValues']
+    [simple uint 32      'eventId']
+    [simple State        'ackStateGoing']
+    [simple State        'ackStateComing']
+]
+
+[type 'AlarmMessageAckType'
+    [simple uint 8                    'functionId']
+    [simple uint 8                    'numberOfObjects']
+    [array  AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]
+]
+
+[type 'AlarmMessageAckResponseType'
+    [simple uint 8 'functionId']
+    [simple uint 8 'numberOfObjects']
+    [array  uint 8 'messageObjects'  count 'numberOfObjects' ]
+]
+
+////////////////////////////////////////////////////////////////
+// DataItem by Function Type:
+// 0x00 PUSH
+// 0x04 TYPE_REQ
+// 0x08 TYPE_RES
+//
+// DataItem by Sub Function Type:
+// 0x01 CPU_READSZL
+// 0x02 CPU_MSGS
+// 0x03 CPU_DIAGMSG
+// 0x05 ALARM8_IND
+// 0x06 NOTIFY_IND
+// 0x07 ALARM8LOCK
+// 0x08 ALARM8UNLOCK
+// 0x0b ALARMACK
+// 0x0c ALARMACK_IND
+// 0x0d ALARM8LOCK_IND
+// 0x0e ALARM8UNLOCK_IND
+// 0x11 ALARMSQ_IND
+// 0x12 ALARMS_IND
+// 0x13 ALARMQUERY
+// 0x16 NOTIFY8_IND
+////////////////////////////////////////////////////////////////
+
+[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
+    [simple     DataTransportErrorCode 'returnCode']
+    [simple     DataTransportSize      'transportSize']
+    [implicit   uint 16                'dataLength'    'lengthInBytes - 4']
+    [typeSwitch 'cpuFunctionType', 'cpuSubfunction', 'dataLength'
+
+        //USER and SYSTEM Messages
+        ['0x00', '0x03' S7PayloadDiagnosticMessage
+            [simple uint 16     'EventId']
+            [simple uint 8      'PriorityClass']
+            [simple uint 8      'ObNumber']
+            [simple uint 16     'DatId']
+            [simple uint 16     'Info1']
+            [simple uint 32     'Info2']
+            [simple DateAndTime 'TimeStamp']
+        ]
+
+        //PUSH message reception S7300 & S7400 (ALARM_SQ, ALARM_S, ALARM_SC, ...)
+        ['0x00', '0x05' S7PayloadAlarm8
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x06' S7PayloadNotify
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x0c' S7PayloadAlarmAckInd
+            [simple AlarmMessageAckPushType 'alarmMessage']
+        ]
+        ['0x00', '0x11' S7PayloadAlarmSQ
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x12' S7PayloadAlarmS
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x13' S7PayloadAlarmSC
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+        ['0x00', '0x16' S7PayloadNotify8
+            [simple AlarmMessagePushType 'alarmMessage']
+        ]
+
+        //Request for specific functions of the SZL system
+        ['0x04', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlRequest
+            [simple   SzlId                  'szlId']
+            [simple   uint 16                'szlIndex']
+        ]
+        ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
+            [simple   SzlId           'szlId']
+            [simple   uint 16         'szlIndex']
+            [const    uint 16         'szlItemLength' '28']
+            [implicit uint 16         'szlItemCount'  'COUNT(items)']
+            [array    SzlDataTreeItem 'items'         count 'szlItemCount']
+        ]
+
+        //Subscription to PUSH messages
+        ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
+            [simple   uint 8         'Subscription']
+            [reserved uint 8         '0x00']
+            [simple   string         '64'           'UTF-8' 'magicKey']
+            [optional AlarmStateType 'Alarmtype'    'Subscription >= 128']
+            [optional uint 8         'Reserve'      'Subscription >= 128']
+        ]
+	    ['0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+        ]
+	    ['0x08', '0x02', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+            [simple uint 8 'result']
+            [simple uint 8 'reserved01']
+        ]
+	    ['0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+            [simple uint 8    'result']
+            [simple uint 8    'reserved01']
+            [simple AlarmType 'alarmType']
+            [simple uint 8    'reserved02']
+            [simple uint 8    'reserved03']
+        ]
+
+        //ALARM_ACK Acknowledgment of alarms
+        ['0x04', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAck
+            [simple   uint 8                    'functionId']
+            [implicit uint 8                    'numberOfObjects' 'COUNT(messageObjects)']
+            [array    AlarmMessageObjectAckType 'messageObjects'  count 'numberOfObjects' ]
+        ]
+        ['0x08', '0x0b' S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+            [simple    uint 8 'functionId']
+            [implicit  uint 8 'numberOfObjects' 'COUNT(messageObjects)']
+            [array     uint 8 'messageObjects'  count 'numberOfObjects' ]
+        ]
+
+        //ALARM_QUERY Request for alarms stored in the controller
+        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
+            [const    uint 8       'functionId'       '0x00']
+            [const    uint 8       'numberMessageObj' '0x01']
+            [const    uint 8       'variableSpec'     '0x12']
+            [const    uint 8       'length'           '0x08']
+            [simple   SyntaxIdType 'syntaxId']
+            [reserved uint 8       '0x00']
+            [simple   QueryType    'queryType']
+            [reserved uint 8       '0x34']
+            [simple   AlarmType    'alarmType']
+        ]
+        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+            [const    uint 8                 'functionId'          '0x00']
+            [const    uint 8                 'numberMessageObj'    '0x01']
+            [simple   DataTransportErrorCode 'pudicfReturnCode']
+            [simple   DataTransportSize      'pudicftransportSize']
+            [reserved uint 8                 '0x00']
         ]
     ]
 ]
@@ -340,10 +603,10 @@
             [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2']
         ]
         ['IEC61131_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '_value.string.length + 2']
+            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value.string) + 2']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(_value.string.length * 2) + 2']
+            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value.string) * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -515,4 +778,67 @@
     ['0x96' MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP]
     ['0xA0' DIAGNOSTIC_BUFFER]
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
+]
+
+[enum uint 8 'CpuSubscribeEvents'
+    ['0x01' CPU]
+    ['0x02' IM]
+    ['0x04' FM]
+    ['0x80' CP]
+]
+
+[enum uint 8 'EventType'
+    ['0x01' MODE]
+    ['0x02' SYS]
+    ['0x04' USR]
+    ['0x80' ALM]
+]
+
+[enum uint 8 'SyntaxIdType'
+    ['0x01' S7ANY]
+    ['0x13' PBC_ID]
+    ['0x15' ALARM_LOCKFREESET]
+    ['0x16' ALARM_INDSET]
+    ['0x19' ALARM_ACKSET]
+    ['0x1A' ALARM_QUERYREQSET]
+    ['0x1C' NOTIFY_INDSET]
+    ['0x82' NCK]
+    ['0x83' NCK_METRIC]
+    ['0x84' NCK_INCH]
+    ['0xA2' DRIVEESANY]
+    ['0xB2' SYM1200]
+    ['0xB0' DBREAD]
+]
+
+[enum uint 8 'AlarmType'
+    ['0x01' SCAN]
+    ['0x02' ALARM_8]
+    ['0x04' ALARM_S]
+]
+
+[enum uint 8 'AlarmStateType'
+    ['0x00' SCAN_ABORT]
+    ['0x01' SCAN_INITIATE]
+    ['0x04' ALARM_ABORT]
+    ['0x05' ALARM_INITIATE]
+    ['0x08' ALARM_S_ABORT]
+    ['0x09' ALARM_S_INITIATE]
+]
+
+[enum uint 8 'QueryType'
+    ['0x01' BYALARMTYPE]
+    ['0x02' ALARM_8]
+    ['0x04' ALARM_S]
+]
+
+[enum uint 8 'ModeTransitionType'
+    ['0x00' STOP]
+    ['0x01' WARM_RESTART]
+    ['0x02' RUN]
+    ['0x03' HOT_RESTART]
+    ['0x04' HOLD]
+    ['0x06' COLD_RESTART]
+    ['0x09' RUN_R]
+    ['0x11' LINK_UP]
+    ['0x12' UPDATE]
 ]

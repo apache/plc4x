@@ -24,11 +24,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 import org.w3c.dom.Element;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcUnsubscriptionResponse implements PlcUnsubscriptionResponse, PlcResponse, XmlSerializable {
+public class DefaultPlcUnsubscriptionResponse implements PlcUnsubscriptionResponse, PlcResponse, Serializable {
 
     private final PlcUnsubscriptionRequest request;
 
@@ -43,7 +45,7 @@ public class DefaultPlcUnsubscriptionResponse implements PlcUnsubscriptionRespon
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
         // TODO: Implement
     }
 

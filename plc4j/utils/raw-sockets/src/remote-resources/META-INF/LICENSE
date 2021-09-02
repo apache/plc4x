@@ -5,4 +5,5 @@ The Files:
 src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawEthernetSocket.java
 src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawIpSocket.java
 src/main/java/org/apache/plc4x/java/utils/rawsockets/attic/RawSocketListener.java
+src/test/java/org/apache/plc4x/java/utils/rawsockets/attic/RawIpSocketTest.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.

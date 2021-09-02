@@ -43,24 +43,23 @@
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
 ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${type.name}IO.java
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
-
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
@@ -122,8 +121,8 @@ public class ${type.name}IO {
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                             <#if helper.isLengthArrayField(field)>
             // Length array
-            int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-            int ${field.name}EndPos = readBuffer.getPos() + _${field.name}Length;
+            long _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
+            long ${field.name}EndPos = readBuffer.getPos() + _${field.name}Length;
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${field.name}EndPos) {
                 value.add(

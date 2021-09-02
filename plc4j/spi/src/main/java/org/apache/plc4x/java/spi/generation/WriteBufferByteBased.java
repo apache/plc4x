@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.BufferByteOutput;
@@ -43,6 +42,10 @@ public class WriteBufferByteBased implements WriteBuffer {
         BufferByteOutput<?> bbo = new BufferByteOutput<>(bb);
         bo = new MyDefaultBitOutput(bbo);
         this.littleEndian = littleEndian;
+    }
+
+    public void setPos(int position) {
+        bb.position(position);
     }
 
     public byte[] getData() {

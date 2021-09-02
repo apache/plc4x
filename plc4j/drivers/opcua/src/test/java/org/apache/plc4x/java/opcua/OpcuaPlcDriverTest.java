@@ -1,21 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.opcua;
 
 import io.vavr.collection.List;
@@ -27,30 +27,24 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
+import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.assertj.core.api.Assertions.fail;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
+
 /**
  */
 public class OpcuaPlcDriverTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -74,7 +68,7 @@ public class OpcuaPlcDriverTest {
     private static final String DATE_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/DateTime";
     private static final String DURATION_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Duration";
     private static final String GUID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Guid";
-    private static final String LOCALISED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
+    private static final String LOCALIZED_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/LocalizedText";
     private static final String NODE_ID_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/NodeId";
     private static final String QUALIFIED_NAM_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/QualifiedName";
     private static final String UTC_TIME_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/UtcTime";
@@ -96,7 +90,7 @@ public class OpcuaPlcDriverTest {
     private static final String UINT16_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt16Array";
     private static final String UINT32_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt32Array";
     private static final String UINT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt64Array";
-
+    private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
 
     // Address of local milo server
     private String miloLocalAddress = "127.0.0.1:12686/milo";
@@ -120,8 +114,6 @@ public class OpcuaPlcDriverTest {
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
 
     private static ExampleServer exampleServer;
-
-
 
     @BeforeAll
     public static void setup() {
@@ -157,9 +149,7 @@ public class OpcuaPlcDriverTest {
                 } catch (Exception e) {
                     fail("Exception during connectionNoParams while closing Test EXCEPTION: " + e.getMessage());
                 }
-
         });
-
     }
 
     @Test
@@ -179,8 +169,6 @@ public class OpcuaPlcDriverTest {
                 }
             });
         });
-
-
     }
 
     @Test
@@ -270,7 +258,7 @@ public class OpcuaPlcDriverTest {
         builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", (short) 3);
         builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
         builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
-        builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + ";INT", 1);
+        //builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + "", (short) 1);
         builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
         builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
         builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
@@ -305,7 +293,7 @@ public class OpcuaPlcDriverTest {
         assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
         assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
         assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
-        assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
+        //assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
         assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
         assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
         assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
@@ -349,17 +337,17 @@ public class OpcuaPlcDriverTest {
         assertMatching(INET_ADDRESS_PATTERN, ":tcp://254.254.254.254");
 
 
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://localhost");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://localhost:3131");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://www.google.de");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://www.google.de:443");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1:251");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254");
+        assertMatching(URI_PATTERN, "opcua:tcp://localhost");
+        assertMatching(URI_PATTERN, "opcua:tcp://localhost:3131");
+        assertMatching(URI_PATTERN, "opcua:tcp://www.google.de");
+        assertMatching(URI_PATTERN, "opcua:tcp://www.google.de:443");
+        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1");
+        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1:251");
+        assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
+        assertMatching(URI_PATTERN, "opcua:tcp://254.254.254.254");
 
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1&discovery=false");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false");
+        assertMatching(URI_PATTERN, "opcua:tcp://127.0.0.1?discovery=false");
+        assertMatching(URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false");
 
     }
 

@@ -45,24 +45,23 @@
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
 ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${type.name}IO.java
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
-
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
@@ -193,7 +192,28 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             for(int curItem = 0; curItem < itemCount; curItem++) {
                 <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
                 <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-                ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)<#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>.build()</#if></#if>;
+            <@compress single_line=true>
+                ${arrayField.name}[curItem] =
+                <#if helper.isSimpleTypeReference(arrayField.type)>
+                    <#assign simpleTypeReference = arrayField.type>
+                    ${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}
+                <#else>
+                    ${arrayField.type.name}IO.staticParse(readBuffer
+                    <#if field.params?has_content>
+                        ,
+                        <#list field.params as parserArgument>
+                            <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true) = 'String'>
+                                ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}.valueOf(${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                            <#else>
+                                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                            </#if>
+                        </#list>
+                    </#if>)
+                    <#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>
+                        .build()
+                    </#if>
+                </#if>;
+            </@compress>
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -201,9 +221,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                 <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+        long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        int ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
+        long ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
         while(readBuffer.getPos() < ${arrayField.name}EndPos) {
             _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall("", simpleTypeReference, "", arrayField)}<#else>${arrayField.type.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
@@ -267,7 +287,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         <#if helper.isEnumField(field)>
@@ -318,9 +337,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        long _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
-        int ${manualArrayField.name}EndPos = readBuffer.getPos() + _${manualArrayField.name}Length;
+        long ${manualArrayField.name}EndPos = readBuffer.getPos() + _${manualArrayField.name}Length;
         while(readBuffer.getPos() < ${manualArrayField.name}EndPos) {
             _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
             <#-- After parsing, update the current position, but only if it's needed -->
@@ -419,7 +438,26 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(simpleField.type.name, helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
         <#else>
         <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleTypeReference, "", simpleField)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        <@compress single_line=true>
+            ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} =
+            <#if helper.isSimpleTypeReference(simpleField.type)>
+                <#assign simpleTypeReference = simpleField.type>
+                ${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleTypeReference, "", simpleField)}
+            <#else>
+                <#assign complexTypeReference = simpleField.type>
+                ${complexTypeReference.name}IO.staticParse(readBuffer
+                <#if field.params?has_content>
+                    ,
+                    <#list field.params as parserArgument>
+                        <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true) = 'String'>
+                            ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}.valueOf(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                        <#else>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep>
+                        </#if>
+                    </#list>
+                </#if>)
+            </#if>;
+        </@compress>
         </#if>
         <#if !helper.isSimpleTypeReference(simpleField.type)>
         readBuffer.closeContext("${simpleField.name}");
@@ -531,7 +569,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
-        <#assign simpleTypeReference = discriminatorField.type>
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();

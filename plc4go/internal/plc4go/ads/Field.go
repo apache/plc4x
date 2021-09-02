@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package ads
 
@@ -23,9 +23,9 @@ import (
 	"encoding/xml"
 	"fmt"
 	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/ads/readwrite/model"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 type PlcField struct {
@@ -107,34 +107,40 @@ func castToDirectAdsFieldFromPlcField(plcField model.PlcField) (DirectPlcField, 
 	return DirectPlcField{}, errors.Errorf("couldn't %T cast to DirectPlcField", plcField)
 }
 
-func (m DirectPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.IndexGroup, xml.StartElement{Name: xml.Name{Local: "indexGroup"}}); err != nil {
+	if err := writeBuffer.WriteUint32("indexGroup", 32, m.IndexGroup); err != nil {
 		return err
 	}
-	if err := e.EncodeElement(m.IndexOffset, xml.StartElement{Name: xml.Name{Local: "indexOffset"}}); err != nil {
+	if err := writeBuffer.WriteUint32("indexOffset", 32, m.IndexOffset); err != nil {
 		return err
 	}
-	if m.StringLength > 0 {
-		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
+
+	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
+		return err
+	}
+
+	if m.StringLength != 0 {
+		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
-		return err
-	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m DirectPlcField) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {
+	panic(name)
 }
 
 type SymbolicPlcField struct {
@@ -180,28 +186,30 @@ func castToSymbolicPlcFieldFromPlcField(plcField model.PlcField) (SymbolicPlcFie
 	return SymbolicPlcField{}, errors.Errorf("couldn't cast %T to SymbolicPlcField", plcField)
 }
 
-func (m SymbolicPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	log.Trace().Msg("MarshalXML")
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 
-	if err := e.EncodeElement(m.SymbolicAddress, xml.StartElement{Name: xml.Name{Local: "symbolicAddress"}}); err != nil {
+	if err := writeBuffer.WriteString("symbolicAddress", uint8(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteUint32("numberOfElements", 32, m.NumberOfElements); err != nil {
+		return err
+	}
+
+	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
+		return err
+	}
+
 	if m.StringLength > 0 {
-		if err := e.EncodeElement(m.StringLength, xml.StartElement{Name: xml.Name{Local: "stringLength"}}); err != nil {
+		if err := writeBuffer.WriteInt32("stringLength", 32, m.StringLength); err != nil {
 			return err
 		}
 	}
-	if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
-		return err
-	}
-	if err := e.EncodeElement(m.Datatype.String(), xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
-		return err
-	}
 
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+	if err := writeBuffer.PopContext(m.FieldType.GetName()); err != nil {
 		return err
 	}
 	return nil

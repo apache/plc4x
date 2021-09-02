@@ -31,7 +31,7 @@ add_library(plc4c-driver-s7
         src/driver_s7_sm_disconnect.c
         src/driver_s7_sm_read.c
         src/driver_s7_sm_write.c
-        ${generatedSources})
+        ${generatedSources} include/plc4c/driver_s7_static.h src/driver_s7_static.c)
 
 target_link_libraries(plc4c-driver-s7
         plc4c-spi)

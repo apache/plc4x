@@ -1,21 +1,21 @@
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include <stdio.h>
 #include <plc4c/spi/evaluation_helper.h>
@@ -36,13 +36,13 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBu
     return NO_MEMORY;
   }
 
-  // Enum field (typeClass)
-  plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_s7_read_write_szl_module_type_class_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 4, (uint8_t*) &typeClass);
+  // Simple Field (typeClass)
+  plc4c_s7_read_write_szl_module_type_class* typeClass;
+  _res = plc4c_s7_read_write_szl_module_type_class_parse(readBuffer, (void*) &typeClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->type_class = typeClass;
+  (*_message)->type_class = *typeClass;
 
   // Simple Field (sublistExtract)
   uint8_t sublistExtract = 0;
@@ -52,13 +52,13 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBu
   }
   (*_message)->sublist_extract = sublistExtract;
 
-  // Enum field (sublistList)
-  plc4c_s7_read_write_szl_sublist sublistList = plc4c_s7_read_write_szl_sublist_null();
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &sublistList);
+  // Simple Field (sublistList)
+  plc4c_s7_read_write_szl_sublist* sublistList;
+  _res = plc4c_s7_read_write_szl_sublist_parse(readBuffer, (void*) &sublistList);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->sublist_list = sublistList;
+  (*_message)->sublist_list = *sublistList;
 
   return OK;
 }
@@ -66,8 +66,8 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* readBu
 plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_id* _message) {
   plc4c_return_code _res = OK;
 
-  // Enum field (typeClass)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 4, _message->type_class);
+  // Simple Field (typeClass)
+  _res = plc4c_s7_read_write_szl_module_type_class_serialize(writeBuffer, &_message->type_class);
   if(_res != OK) {
     return _res;
   }
@@ -78,8 +78,8 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* w
     return _res;
   }
 
-  // Enum field (sublistList)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->sublist_list);
+  // Simple Field (sublistList)
+  _res = plc4c_s7_read_write_szl_sublist_serialize(writeBuffer, &_message->sublist_list);
   if(_res != OK) {
     return _res;
   }
@@ -94,14 +94,14 @@ uint16_t plc4c_s7_read_write_szl_id_length_in_bytes(plc4c_s7_read_write_szl_id* 
 uint16_t plc4c_s7_read_write_szl_id_length_in_bits(plc4c_s7_read_write_szl_id* _message) {
   uint16_t lengthInBits = 0;
 
-  // Enum Field (typeClass)
-  lengthInBits += 4;
+  // Simple field (typeClass)
+  lengthInBits += plc4c_s7_read_write_szl_module_type_class_length_in_bits(&_message->type_class);
 
   // Simple field (sublistExtract)
   lengthInBits += 4;
 
-  // Enum Field (sublistList)
-  lengthInBits += 8;
+  // Simple field (sublistList)
+  lengthInBits += plc4c_s7_read_write_szl_sublist_length_in_bits(&_message->sublist_list);
 
   return lengthInBits;
 }

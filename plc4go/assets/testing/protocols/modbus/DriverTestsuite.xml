@@ -95,16 +95,19 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -182,19 +185,22 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>2</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="OK">
-              <PlcList>
-                <PlcREAL>3.1415927</PlcREAL>
-                <PlcREAL>3.1415927</PlcREAL>
-              </PlcList>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcList>
+                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                </PlcList>
+              </ResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -319,26 +325,32 @@
             <fields>
               <hurz1>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz1>
               <hurz2>
                 <ModbusFieldHoldingRegister>
-                  <address>2</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">2</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz2>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz1 result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz1>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz1>
-            <hurz2 result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz2>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz2>
           </values>
         </PlcReadResponse>
@@ -415,16 +427,16 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
-                <value>3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
             </fields>
           </PlcWriteRequest>
           <fields>
-            <hurz result="OK"/>
+            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
           </fields>
         </PlcWriteResponse>
       </api-response>
@@ -505,17 +517,17 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>2</numberOfElements>
-                  <dataType>REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
-                <value>3.1415927</value>
-                <value>3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
             </fields>
           </PlcWriteRequest>
           <fields>
-            <hurz result="OK"/>
+            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
           </fields>
         </PlcWriteResponse>
       </api-response>

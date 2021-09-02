@@ -1,35 +1,36 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
 import (
 	"errors"
+	"strconv"
+	"strings"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	internalValues "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Reader struct {
@@ -104,9 +105,13 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 				case DevicePropertyAddressPlcField:
 					propertyField := field.(DevicePropertyAddressPlcField)
 
+					timeout := time.NewTimer(m.connection.defaultTtl)
 					results := m.connection.DeviceReadProperty(deviceAddress, propertyField.ObjectId, propertyField.PropertyId, propertyField.PropertyIndex, propertyField.NumElements)
 					select {
 					case result := <-results:
+						if !timeout.Stop() {
+							<-timeout.C
+						}
 						if result.err == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
@@ -114,15 +119,20 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
-					case <-time.After(m.connection.defaultTtl):
+					case <-timeout.C:
+						timeout.Stop()
 						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[fieldName] = nil
 					}
 				case DeviceMemoryAddressPlcField:
+					timeout := time.NewTimer(m.connection.defaultTtl)
 					memoryField := field.(DeviceMemoryAddressPlcField)
 					results := m.connection.DeviceReadMemory(deviceAddress, memoryField.Address, memoryField.NumElements, memoryField.FieldType)
 					select {
 					case result := <-results:
+						if !timeout.Stop() {
+							<-timeout.C
+						}
 						if result.err == nil {
 							responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 							plcValues[fieldName] = *result.value
@@ -130,7 +140,8 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 							responseCodes[fieldName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 							plcValues[fieldName] = nil
 						}
-					case <-time.After(m.connection.defaultTtl):
+					case <-timeout.C:
+						timeout.Stop()
 						responseCodes[fieldName] = apiModel.PlcResponseCode_REMOTE_BUSY
 						plcValues[fieldName] = nil
 					}
@@ -195,6 +206,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 					returnCodes[stringAddress] = apiModel.PlcResponseCode_NOT_FOUND
 					values[stringAddress] = nil
 				}
+				// TODO: Do we need a "default" case here?
 			}
 		} else {
 			// If we don't have any field-type information, add the raw data

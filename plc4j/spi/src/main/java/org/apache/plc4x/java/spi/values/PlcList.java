@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.utils.XmlSerializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,16 +89,15 @@ public class PlcList extends PlcValueAdapter {
     }
 
     @Override
-    public void xmlSerialize(Element parent) {
-        Document doc = parent.getOwnerDocument();
-        Element plcValueElement = doc.createElement("PlcList");
-        parent.appendChild(plcValueElement);
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.pushContext("PlcList");
         for (PlcValue listItem : listItems) {
-            if (!(listItem instanceof XmlSerializable)) {
+            if (!(listItem instanceof Serializable)) {
                 throw new PlcRuntimeException("Error serializing. List item doesn't implement XmlSerializable");
             }
-            ((XmlSerializable) listItem).xmlSerialize(plcValueElement);
+            ((Serializable) listItem).serialize(writeBuffer);
         }
+        writeBuffer.popContext("PlcList");
     }
 
 }

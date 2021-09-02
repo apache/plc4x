@@ -1,24 +1,24 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Stack;
 
 public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
@@ -194,7 +193,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
     @Override
     public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
-        createAndAppend(logicalName, rwStringKey, bitLength, value, writerArgs);
+        createAndAppend(logicalName, rwStringKey, bitLength, value, encoding, writerArgs);
         move(bitLength);
     }
 
@@ -215,7 +214,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
         String context = stack.pop();
         if (!context.equals(logicalName)) {
-            throw new PlcRuntimeException("Unexpected pop context '" + context + '\'');
+            throw new PlcRuntimeException("Unexpected pop context '" + context + '\'' + ". Expected '" + logicalName + '\'');
         }
         if (stack.isEmpty()) {
             try {
@@ -249,6 +248,10 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     private void createAndAppend(String logicalName, String dataType, int bitLength, String data, WithWriterArgs... writerArgs) {
+        createAndAppend(logicalName, dataType, bitLength, data, null, writerArgs);
+    }
+
+    private void createAndAppend(String logicalName, String dataType, int bitLength, String data, String encoding, WithWriterArgs... writerArgs) {
         try {
             indent();
             StartElement startElement = xmlEventFactory.createStartElement("", "", sanitizeLogicalName(logicalName));
@@ -262,6 +265,10 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
                 Attribute additionalStringRepresentationAttribute = xmlEventFactory.createAttribute(rwStringRepresentationKey, additionalStringRepresentation);
                 xmlEventWriter.add(additionalStringRepresentationAttribute);
             }
+            if (encoding != null) {
+                Attribute encodingAttribute = xmlEventFactory.createAttribute(rwEncodingKey, encoding);
+                xmlEventWriter.add(encodingAttribute);
+            }
             Characters dataCharacters = xmlEventFactory.createCharacters(data);
             xmlEventWriter.add(dataCharacters);
             EndElement endElement = xmlEventFactory.createEndElement("", "", sanitizeLogicalName(logicalName));
@@ -271,5 +278,4 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
             throw new PlcRuntimeException(e);
         }
     }
-
 }

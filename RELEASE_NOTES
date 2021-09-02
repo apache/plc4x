@@ -5,14 +5,22 @@
 New Features
 ------------
 
+- The OPC UA driver has been replaced with a native driver. Previously
+  Eclipse Milo was being used.
+
 Incompatible changes
 --------------------
 
 Bug Fixes
 ---------
 
+PLC4X-200   OPC-UA Driver not connecting if params string is not provided
+PLC4X-201   OPC-UA PlcList underlying type not compatible with Eclipse Milo
+PLC4X-202   OPC-UA Driver cannot write Unsigned Types
+PLC4X-291   DefaultPlcSubscriptionField cannot be cast to class OpcuaField
 PLC4X-298   [S7] When writing REAL values the Write
             operation fails with an internal error
+PLC4X-303   OPCUA should support username / password authentication
 
 ==============================================================
 Apache PLC4X 0.8.0

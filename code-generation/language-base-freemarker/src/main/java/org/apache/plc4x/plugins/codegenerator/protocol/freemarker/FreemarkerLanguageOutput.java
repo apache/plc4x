@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import freemarker.cache.ClassTemplateLoader;
@@ -41,7 +40,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     private static final Logger LOGGER = LoggerFactory.getLogger(FreemarkerLanguageOutput.class);
 
     @Override
-    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types)
+    public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
+        Map<String, String> options)
         throws GenerationException {
 
         // Configure the Freemarker template engine
@@ -70,7 +70,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("languageName", languageName);
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
-            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types));
+            typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.putAll(options);
 
             for (Template template : specTemplates) {
                 try {
@@ -90,7 +91,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("outputFlavor", outputFlavor);
             typeContext.put("typeName", typeEntry.getKey());
             typeContext.put("type", typeEntry.getValue());
-            typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types));
+            typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types, options));
 
             // Depending on the type, get the corresponding list of templates.
             List<Template> templateList;
@@ -179,6 +180,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types);
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+        Map<String, String> options);
 
 }

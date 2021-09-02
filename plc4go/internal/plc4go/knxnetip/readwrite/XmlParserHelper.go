@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package readwrite
 
@@ -55,11 +55,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "ConnectionRequestInformation":
 		return model.ConnectionRequestInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Apdu":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		dataLength := uint8(parsedUint)
+		dataLength := uint8(parsedUint0)
 		return model.ApduParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "HPAIDiscoveryEndpoint":
 		return model.HPAIDiscoveryEndpointParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -72,11 +72,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMI":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		size := uint8(parsedUint)
+		size := uint8(parsedUint0)
 		return model.CEMIParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
 	case "KnxNetIpMessage":
 		return model.KnxNetIpMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -106,20 +106,20 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "LDataFrame":
 		return model.LDataFrameParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduDataExt":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		length := uint8(parsedUint)
+		length := uint8(parsedUint0)
 		return model.ApduDataExtParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length)
 	case "ApduControl":
 		return model.ApduControlParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "KnxGroupAddress":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 2)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 2)
 		if err != nil {
 			return nil, err
 		}
-		numLevels := uint8(parsedUint)
+		numLevels := uint8(parsedUint0)
 		return model.KnxGroupAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels)
 	case "GroupObjectDescriptorRealisationType6":
 		return model.GroupObjectDescriptorRealisationType6Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
@@ -130,11 +130,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "GroupObjectDescriptorRealisationType2":
 		return model.GroupObjectDescriptorRealisationType2Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ApduData":
-		parsedUint, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
 			return nil, err
 		}
-		dataLength := uint8(parsedUint)
+		dataLength := uint8(parsedUint0)
 		return model.ApduDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
 	case "GroupObjectDescriptorRealisationType1":
 		return model.GroupObjectDescriptorRealisationType1Parse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

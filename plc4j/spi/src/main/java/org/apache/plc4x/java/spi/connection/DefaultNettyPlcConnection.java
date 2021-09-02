@@ -45,10 +45,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
-    protected final Configuration configuration;
+    protected Configuration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
     protected final boolean awaitSessionDisconnectComplete;
+    protected final boolean awaitSessionDiscoverComplete;
     protected final ProtocolStackConfigurer stackConfigurer;
     protected final CompletableFuture<Void> sessionDisconnectCompleteFuture = new CompletableFuture<>();
 
@@ -58,13 +59,15 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
                                      PlcFieldHandler fieldHandler, PlcValueHandler valueHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     boolean awaitSessionDisconnectComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+                                     boolean awaitSessionDisconnectComplete, boolean awaitSessionDiscoverComplete, ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
         super(canRead, canWrite, canSubscribe, fieldHandler, valueHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         //Used to signal that a disconnect has completed while closing a connection.
         this.awaitSessionDisconnectComplete = awaitSessionDisconnectComplete;
+        //Used to signal that discovery has been completed
+        this.awaitSessionDiscoverComplete = awaitSessionDiscoverComplete;
         this.stackConfigurer = stackConfigurer;
 
         this.connected = false;
@@ -77,6 +80,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             // define a future we can use to signal back that the s7 session is
             // finished initializing.
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
+            CompletableFuture<Configuration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
 
             if(channelFactory == null) {
                 throw new PlcConnectionException("No channel factory provided");
@@ -86,7 +90,26 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             ConfigurationFactory.configure(configuration, channelFactory);
 
             // Have the channel factory create a new channel instance.
-            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture));
+            if (awaitSessionDiscoverComplete) {
+                channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
+                channel.closeFuture().addListener(future -> {
+                    if (!sessionDiscoveredCompleteFuture.isDone()) {
+                        //Do Nothing
+                        try {
+                            sessionDiscoveredCompleteFuture.complete(null);
+                        } catch (Exception e) {
+                            //Do Nothing
+                        }
+
+                    }
+                });
+                channel.pipeline().fireUserEventTriggered(new DiscoverEvent());
+
+                // Wait till the connection is established.
+                sessionDiscoveredCompleteFuture.get();
+            }
+
+            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
@@ -118,9 +141,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
      */
     @Override
     public void close() throws PlcConnectionException {
-
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
-
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
         try {
             if (awaitSessionDisconnectComplete) {
@@ -130,11 +151,10 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             logger.error("Timeout while trying to close connection");
         }
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-
         channel.close().awaitUninterruptibly();
 
         if (!sessionDisconnectCompleteFuture.isDone()) {
-            sessionDisconnectCompleteFuture.complete(null );
+            sessionDisconnectCompleteFuture.complete(null);
         }
 
         channel = null;
@@ -155,7 +175,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         return channel;
     }
 
-    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture) {
+    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture, CompletableFuture<Configuration> sessionDiscoverCompleteFuture) {
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
@@ -174,6 +194,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             sessionSetupCompleteFuture.complete(null);
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
+                        } else if (evt instanceof DiscoveredEvent) {
+                            sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }

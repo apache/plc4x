@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.model;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -30,7 +29,7 @@ import java.util.function.Consumer;
 // Warning: do not override equals and hashCode as these should not include the plcSubscriber.
 public class DefaultPlcSubscriptionHandle implements PlcSubscriptionHandle {
 
-    private final PlcSubscriber plcSubscriber;
+    private final transient PlcSubscriber plcSubscriber;
 
     public DefaultPlcSubscriptionHandle(PlcSubscriber plcSubscriber) {
         this.plcSubscriber = plcSubscriber;
@@ -43,6 +42,9 @@ public class DefaultPlcSubscriptionHandle implements PlcSubscriptionHandle {
 
     @Override
     public boolean equals(Object obj) {
+        if (!(obj instanceof DefaultPlcSubscriptionHandle)) {
+            return false;
+        }
         // A handle is unique therefore we use the default implementation from Object
         return (this == obj);
     }

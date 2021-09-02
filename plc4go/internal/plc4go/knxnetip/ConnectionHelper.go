@@ -1,37 +1,38 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
 import (
 	"fmt"
+	"math"
+	"net"
+	"strconv"
+	"sync/atomic"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"net"
-	"strconv"
-	"sync/atomic"
-	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,24 +126,29 @@ func (m *Connection) handleValueCacheUpdate(destinationAddress []int8, payload [
 
 func (m *Connection) handleTimeout() {
 	// If this is the first timeout in a sequence, start the timer.
-	if m.connectionTimeoutTimer == nil {
+	/*	if m.connectionTimeoutTimer == nil {
 		m.connectionTimeoutTimer = time.NewTimer(m.connectionTtl)
 		go func() {
 			<-m.connectionTimeoutTimer.C
 			m.resetConnection()
 		}()
-	}
+	}*/
 }
 
 func (m *Connection) resetTimeout() {
 	if m.connectionTimeoutTimer != nil {
-		m.connectionTimeoutTimer.Stop()
+		if !m.connectionTimeoutTimer.Stop() {
+			select {
+			case <-m.connectionTimeoutTimer.C:
+			default:
+			}
+		}
 		m.connectionTimeoutTimer = nil
 	}
 }
 
 func (m *Connection) resetConnection() {
-	log.Warn().Msg("Bad connection detected")
+	log.Warn().Msg("Reset connection")
 }
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {

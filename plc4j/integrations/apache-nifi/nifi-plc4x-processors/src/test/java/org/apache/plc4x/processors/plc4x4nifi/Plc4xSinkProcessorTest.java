@@ -22,7 +22,6 @@ import org.apache.plc4x.nifi.Plc4xSinkProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 public class Plc4xSinkProcessorTest {
 
     private TestRunner testRunner;

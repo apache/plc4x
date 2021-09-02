@@ -43,24 +43,24 @@
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.go
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -308,7 +308,7 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#assign manualField = field>
 
 	// Manual Field (${manualField.name})
-	lengthInBits += ${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8
+	lengthInBits += uint16(${helper.toParseExpression(manualField, manualField.lengthExpression, type.parserArguments)} * 8)
 					<#break>
 				<#case "optional">
 					<#assign optionalField = field>
@@ -798,9 +798,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_
 				<#assign manualField = field>
 
 	// Manual Field (${manualField.name})
-	${manualField.name}, _${manualField.name}Err = ${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)}
-	if _${implicitField.name}Err != nil {
+	if pullErr := readBuffer.PullContext("${manualField.name}"); pullErr != nil {
+		return nil, pullErr
+	}
+	${manualField.name}, _${manualField.name}Err := ${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)}
+	if _${manualField.name}Err != nil {
 		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+	if closeErr := readBuffer.CloseContext("${manualField.name}"); closeErr != nil {
+		return nil, closeErr
 	}
 			<#break>
 			<#case "optional">
@@ -876,13 +882,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if type.parserArguments?has_
 			<#case "simple">
 				<#assign simpleField = field>
 
+	// Simple Field (${simpleField.name})
 				<#if !helper.isSimpleTypeReference(simpleField.type)>
 	if pullErr := readBuffer.PullContext("${simpleField.name}"); pullErr != nil {
 		return nil, pullErr
 	}
 				</#if>
-
-	// Simple Field (${simpleField.name})
     <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type) && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
 	${simpleField.name}, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type, null, field)}<#else>${simpleField.type.name}Parse(readBuffer<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*<#elseif helper.needsReferenceForParserArgument(parserArgument.name, helper.getArgumentType(simpleField.type, parserArgument?index))>&</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 	if _${simpleField.name}Err != nil {
@@ -1147,7 +1152,16 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 					<#assign manualField = field>
 
 	// Manual Field (${manualField.name})
-	${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)}
+	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
+		return pushErr
+	}
+	_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)}
+	if popErr := writeBuffer.PopContext("${manualField.name}"); popErr != nil {
+		return popErr
+	}
+	if _${manualField.name}Err != nil {
+		return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
 					<#break>
 				<#case "optional">
 					<#assign optionalField = field>

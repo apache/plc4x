@@ -1,27 +1,31 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
@@ -30,9 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
-	"strings"
-	"time"
 )
 
 type Browser struct {
@@ -116,9 +117,13 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 	// Parse each of these expanded addresses and handle them accordingly.
 	for _, knxAddress := range knxAddresses {
 		// Send a connection request to the device
+		connectTtlTimer := time.NewTimer(m.connection.defaultTtl)
 		deviceConnections := m.connection.DeviceConnect(knxAddress)
 		select {
 		case deviceConnection := <-deviceConnections:
+			if !connectTtlTimer.Stop() {
+				<-connectTtlTimer.C
+			}
 			// If the request returned a connection, process it,
 			// otherwise just ignore it.
 			if deviceConnection.connection != nil {
@@ -147,14 +152,20 @@ func (m Browser) executeDeviceQuery(field DeviceQueryField, browseRequest apiMod
 					queryResults = append(queryResults, queryResult)
 				}
 
+				disconnectTtlTimer := time.NewTimer(m.connection.defaultTtl * 10)
 				deviceDisconnections := m.connection.DeviceDisconnect(knxAddress)
 				select {
 				case _ = <-deviceDisconnections:
-				case <-time.After(m.connection.defaultTtl * 10):
+					if !disconnectTtlTimer.Stop() {
+						<-disconnectTtlTimer.C
+					}
+				case <-disconnectTtlTimer.C:
+					disconnectTtlTimer.Stop()
 					// Just ignore this case ...
 				}
 			}
-		case <-time.After(m.connection.defaultTtl):
+		case <-connectTtlTimer.C:
+			connectTtlTimer.Stop()
 			// In this case the remote was just not responding.
 		}
 		// Just to slow things down a bit (This way we can't exceed the max number of requests per minute)
