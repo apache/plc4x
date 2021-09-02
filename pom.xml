@@ -147,7 +147,7 @@
     <jna.version>5.8.0</jna.version>
     <joda-time.version>2.10.10</joda-time.version>
     <jserialcom.version>2.7.0</jserialcom.version>
-    <junit.jupiter.version>5.7.0</junit.jupiter.version>
+    <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <junit.platform.version>1.7.0</junit.platform.version>
     <log4j.version>2.14.1</log4j.version>
     <logback.version>1.2.3</logback.version>
