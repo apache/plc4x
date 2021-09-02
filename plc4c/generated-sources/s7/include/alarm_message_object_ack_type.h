@@ -37,8 +37,8 @@ extern "C" {
 
 
 // Constant values.
-uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_OBJECT_ACK_TYPE_LENGTH();
 uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_OBJECT_ACK_TYPE_VARIABLE_SPEC();
+uint8_t PLC4C_S7_READ_WRITE_ALARM_MESSAGE_OBJECT_ACK_TYPE_LENGTH();
 
 struct plc4c_s7_read_write_alarm_message_object_ack_type {
   /* Properties */

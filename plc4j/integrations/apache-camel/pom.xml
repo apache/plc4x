@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>3.1.0</camel.version>
+    <camel.version>3.10.0</camel.version>
   </properties>
 
   <build>
@@ -155,6 +155,11 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core-engine</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core-model</artifactId>
       <version>${camel.version}</version>
     </dependency>
     <dependency>
