@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package s7
 
@@ -48,32 +48,32 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 		controllerType: ControllerType_UNKNOWN,
 	}
 	if localRackString := getFromOptions(options, "local-rack"); localRackString != "" {
-		atoi, err := strconv.Atoi(localRackString)
+		parsedInt, err := strconv.ParseInt(localRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-rack")
 		}
-		configuration.localRack = int32(atoi)
+		configuration.localRack = int32(parsedInt)
 	}
 	if localSlotString := getFromOptions(options, "local-rack"); localSlotString != "" {
-		atoi, err := strconv.Atoi(localSlotString)
+		parsedInt, err := strconv.ParseInt(localSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing local-slot")
 		}
-		configuration.localSlot = int32(atoi)
+		configuration.localSlot = int32(parsedInt)
 	}
 	if remoteRackString := getFromOptions(options, "remote-rack"); remoteRackString != "" {
-		atoi, err := strconv.Atoi(remoteRackString)
+		parsedInt, err := strconv.ParseInt(remoteRackString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-rack")
 		}
-		configuration.remoteRack = int32(atoi)
+		configuration.remoteRack = int32(parsedInt)
 	}
 	if remoteSlotString := getFromOptions(options, "remote-rack"); remoteSlotString != "" {
-		atoi, err := strconv.Atoi(remoteSlotString)
+		parsedInt, err := strconv.ParseInt(remoteSlotString, 10, 32)
 		if err != nil {
 			return Configuration{}, errors.Wrap(err, "Error parsing remote-slot")
 		}
-		configuration.remoteSlot = int32(atoi)
+		configuration.remoteSlot = int32(parsedInt)
 	}
 	if controllerTypeString := getFromOptions(options, "controller-type"); controllerTypeString != "" {
 		switch controllerTypeString {
@@ -96,27 +96,27 @@ func ParseFromOptions(options map[string][]string) (Configuration, error) {
 
 	pduSizeString := getFromOptions(options, "pdu-size")
 	if pduSizeString != "" {
-		atoi, err := strconv.Atoi(pduSizeString)
+		parsedUint, err := strconv.ParseUint(pduSizeString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing pdu-size %s", pduSizeString)
 		}
-		configuration.pduSize = uint16(atoi)
+		configuration.pduSize = uint16(parsedUint)
 	}
 
 	if maxAmqCallerString := getFromOptions(options, "max-amq-caller"); maxAmqCallerString != "" {
-		atoi, err := strconv.Atoi(maxAmqCallerString)
+		parsedUint, err := strconv.ParseUint(maxAmqCallerString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-caller %s", maxAmqCallerString)
 		}
-		configuration.maxAmqCaller = uint16(atoi)
+		configuration.maxAmqCaller = uint16(parsedUint)
 	}
 
 	if maxAmqCalleeString := getFromOptions(options, "max-amq-callee"); maxAmqCalleeString != "" {
-		atoi, err := strconv.Atoi(maxAmqCalleeString)
+		parsedUint, err := strconv.ParseUint(maxAmqCalleeString, 10, 16)
 		if err != nil {
 			return Configuration{}, errors.Wrapf(err, "Error parsing max-amq-callee %s", maxAmqCalleeString)
 		}
-		configuration.maxAmqCallee = uint16(atoi)
+		configuration.maxAmqCallee = uint16(parsedUint)
 	}
 	return configuration, nil
 }

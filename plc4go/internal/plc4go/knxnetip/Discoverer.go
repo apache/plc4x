@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
@@ -23,16 +23,16 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"net"
+	"net/url"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
-	"github.com/rs/zerolog/log"
-	"net"
-	"net/url"
-	"time"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
 type Discoverer struct {
@@ -43,7 +43,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -52,9 +52,27 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 		return err
 	}
 
-	interfaces, err := net.Interfaces()
+	allInterfaces, err := net.Interfaces()
 	if err != nil {
 		return err
+	}
+
+	// If no device is explicitly selected via option, simply use all of them
+	// However if a discovery option is present to select a device by name, only
+	// add those devices matching any of the given names.
+	var interfaces []net.Interface
+	deviceNames := apiModel.FilterDiscoveryOptionsDeviceName(options)
+	if len(deviceNames) > 0 {
+		for _, curInterface := range allInterfaces {
+			for _, deviceNameOption := range deviceNames {
+				if curInterface.Name == deviceNameOption.GetDeviceName() {
+					interfaces = append(interfaces, curInterface)
+					break
+				}
+			}
+		}
+	} else {
+		interfaces = allInterfaces
 	}
 
 	var tranportInstances []transports.TransportInstance
@@ -119,35 +137,46 @@ func (d *Discoverer) Discover(callback func(event model.PlcDiscoveryEvent)) erro
 			discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
 				driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port))
 			searchRequestMessage := driverModel.NewSearchRequest(discoveryEndpoint)
-			err = codec.SendRequest(
-				searchRequestMessage,
-				func(message interface{}) bool {
-					searchResponse := driverModel.CastSearchResponse(message)
-					// As we can expect multiple responses, we always tell the codec to keep this selector active
-					return searchResponse != nil
-				},
-				func(message interface{}) error {
-					searchResponse := driverModel.CastSearchResponse(message)
-
-					addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
-					remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
-						uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
-					if err != nil {
-						return err
+			// Send the search request.
+			err = codec.Send(searchRequestMessage)
+			go func() {
+				// Keep on reading responses till the timeout is done.
+				// TODO: Make this configurable
+				timeout := time.NewTimer(time.Second * 1)
+				timeout.Stop()
+				for start := time.Now(); time.Since(start) < time.Second*5; {
+					timeout.Reset(time.Second * 1)
+					select {
+					case message := <-codec.GetDefaultIncomingMessageChannel():
+						{
+							if !timeout.Stop() {
+								<-timeout.C
+							}
+							searchResponse := driverModel.CastSearchResponse(message)
+							if searchResponse != nil {
+								addr := searchResponse.HpaiControlEndpoint.IpAddress.Addr
+								remoteUrl, err := url.Parse(fmt.Sprintf("udp://%d.%d.%d.%d:%d",
+									uint8(addr[0]), uint8(addr[1]), uint8(addr[2]), uint8(addr[3]), searchResponse.HpaiControlEndpoint.IpPort))
+								if err != nil {
+									continue
+								}
+								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
+									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+								discoveryEvent := apiModel.NewPlcDiscoveryEvent(
+									"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
+								// Pass the event back to the callback
+								callback(discoveryEvent)
+							}
+							continue
+						}
+					case <-timeout.C:
+						{
+							timeout.Stop()
+							continue
+						}
 					}
-					deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
-						searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-					discoveryEvent := model.NewPlcDiscoveryEvent(
-						"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
-					// Pass the event back to the callback
-					callback(discoveryEvent)
-					return nil
-				},
-				func(err error) error {
-					log.Debug().Err(err).Msg("got timeout waiting for search-response")
-					return nil
-				},
-				time.Second*1)
+				}
+			}()
 		}
 	}
 	return nil

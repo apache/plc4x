@@ -17,24 +17,25 @@
   under the License.
 -->
 ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
 /*
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 #include "${helper.camelCaseToSnakeCase(typeName)}.h"
 #include <string.h>
@@ -55,6 +56,29 @@ static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
   return ${helper.getCTypeName(type.name)}_null_const;
+}
+
+// Parse function.
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}** _message) {
+    plc4c_return_code _res = OK;
+
+    // Allocate enough memory to contain this data structure.
+    (*_message) = malloc(sizeof(${helper.getCTypeName(type.name)}));
+    if(*_message == NULL) {
+        return NO_MEMORY;
+    }
+
+    _res = ${helper.getReadBufferReadMethodCall(type.type, "*_message", null)?no_esc};
+
+    return _res;
+}
+
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
+    plc4c_return_code _res = OK;
+
+    _res = ${helper.getWriteBufferWriteMethodCall(type.type, "*_message", null)?no_esc};
+
+    return _res;
 }
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string) {
@@ -126,3 +150,11 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_en
 }
     </#list>
 </#if>
+
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* _message) {
+    return ${helper.getCTypeName(type.name)}_length_in_bits(_message) / 8;
+}
+
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
+    return ${type.type.sizeInBits};
+}

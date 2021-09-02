@@ -42,24 +42,24 @@
 <#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 <#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/XmlParserHelper.go
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package ${outputFlavor?replace("-","")}
 
@@ -78,7 +78,8 @@ type ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper struct {
 
 // Temporary imports to silent compiler warnings (TODO: migrate from static to emission based imports)
 func init() {
-	_ = strconv.Atoi
+	_ = strconv.ParseUint
+	_ = strconv.ParseInt
 	_ = strings.Join
 	_ = utils.Dump
 }
@@ -98,19 +99,31 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}XmlParserHelper) Parse(typ
             ${parserArgument.name} := parserArguments[${i}] == "true"
                             <#break>
 						<#case "byte">
+			parsedUint${i}, err := strconv.ParseUint(parserArguments[${i}], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedUint${i})
+							<#break>
                         <#case "uint8">
                         <#case "uint16">
                         <#case "uint32">
                         <#case "uint64">
+			parsedUint${i}, err := strconv.ParseUint(parserArguments[${i}], 10, ${parserArgument.type.getSizeInBits()})
+			if err!=nil {
+				return nil, err
+			}
+			${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedUint${i})
+							<#break>
                         <#case "int8">
                         <#case "int16">
                         <#case "int32">
                         <#case "int64">
-            atoi, err := strconv.Atoi(parserArguments[${i}])
+            parsedInt${i}, err := strconv.ParseInt(parserArguments[${i}], 10, ${parserArgument.type.getSizeInBits()})
             if err!=nil {
                 return nil, err
             }
-            ${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(atoi)
+            ${parserArgument.name} := ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}(parsedInt${i})
                             <#break>
                         <#default>
 			// TODO: find a way to parse the sub types

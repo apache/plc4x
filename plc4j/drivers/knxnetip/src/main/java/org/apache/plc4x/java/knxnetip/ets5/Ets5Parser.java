@@ -1,25 +1,26 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.knxnetip.ets5;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
@@ -31,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -45,6 +47,8 @@ public class Ets5Parser {
     public Ets5Model parse(File knxprojFile) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             DocumentBuilder builder = factory.newDocumentBuilder();
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
@@ -56,7 +60,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry projectHeaderFile = zipFile.getEntry("P-05CD/project.xml");
                 if (projectHeaderFile == null) {
-                    throw new RuntimeException("Error accessing project header file.");
+                    throw new PlcRuntimeException("Error accessing project header file.");
                 }
                 Document projectHeaderDoc = builder.parse(zipFile.getInputStream(projectHeaderFile));
                 final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
@@ -68,7 +72,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry knxMasterDataFile = zipFile.getEntry("knx_master.xml");
                 if (knxMasterDataFile == null) {
-                    throw new RuntimeException("Error accessing KNX master file.");
+                    throw new PlcRuntimeException("Error accessing KNX master file.");
                 }
                 Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
                 final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
@@ -96,7 +100,7 @@ public class Ets5Parser {
                 ////////////////////////////////////////////////////////////////////////////////
                 ZipArchiveEntry projectFile = zipFile.getEntry("P-05CD/0.xml");
                 if (projectFile == null) {
-                    throw new RuntimeException("Error accessing project file.");
+                    throw new PlcRuntimeException("Error accessing project file.");
                 }
                 Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
 
@@ -110,7 +114,7 @@ public class Ets5Parser {
                     topologyNames.put(curAreaAddress, areaNode.getAttribute("Name"));
 
                     final NodeList lines = areaNode.getElementsByTagName("Line");
-                    for(int l = 0; l < lines.getLength(); l++) {
+                    for (int l = 0; l < lines.getLength(); l++) {
                         final Element lineNode = (Element) lines.item(l);
                         final String curLineAddress = curAreaAddress + "/" + lineNode.getAttribute("Address");
                         topologyNames.put(curLineAddress, lineNode.getAttribute("Name"));
@@ -151,7 +155,7 @@ public class Ets5Parser {
                     final String typeString = groupAddressNode.getAttribute("DatapointType");
                     final AddressType addressType = addressTypes.get(typeString);
 
-                    if(addressType != null) {
+                    if (addressType != null) {
                         // Lookup the driver internal data-type.
                         final KnxDatapointType datapointType = knxDatapointTypeMap.get(
                             addressType.getMainType() + "#" + addressType.getSubType());
@@ -162,31 +166,21 @@ public class Ets5Parser {
                 }
                 return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }
-        } catch (IOException e) {
+        } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
             // Zip and Xml Stuff
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            // XML Stuff
-            e.printStackTrace();
-        } catch (SAXException e) {
-            // XML Stuff
-            e.printStackTrace();
-        } catch (XPathExpressionException e) {
-            // XML Stuff
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
-        return null;
     }
 
     private byte getGroupAddressLevel(String knxprojValue) {
-        if("ThreeLevel".equals(knxprojValue)) {
+        if ("ThreeLevel".equals(knxprojValue)) {
             return (byte) 3;
-        } else if("TwoLevel".equals(knxprojValue)) {
+        } else if ("TwoLevel".equals(knxprojValue)) {
             return (byte) 2;
-        } else if("Free".equals(knxprojValue)) {
+        } else if ("Free".equals(knxprojValue)) {
             return (byte) 1;
         }
-        throw new RuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
+        throw new PlcRuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
     }
 
 }

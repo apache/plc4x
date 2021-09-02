@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.utils.rawsockets.netty;
 
 import io.netty.bootstrap.Bootstrap;
@@ -61,8 +60,8 @@ public class RawSocketChannelTest {
             bootstrap.handler(new ChannelInitializer<RawSocketChannel>() {
                 @Override
                 protected void initChannel(RawSocketChannel ch) throws Exception {
-                    System.out.println("Initialize Buffer!");
-                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter(){
+                    logger.info("Initialize Buffer!");
+                    ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                         @Override
                         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                             System.out.println(ByteBufUtil.prettyHexDump(((ByteBuf) msg)));
@@ -71,7 +70,7 @@ public class RawSocketChannelTest {
                     ch.pipeline().addLast(new ChannelHandlerAdapter() {
                         @Override
                         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                            cause.printStackTrace();
+                            logger.warn("Exception caught", cause);
                         }
                     });
                 }
@@ -86,7 +85,7 @@ public class RawSocketChannelTest {
             // Wait till the session is finished initializing.
             channel = f.channel();
 
-            System.out.println("Channel is connected and ready to use...");
+            logger.info("Channel is connected and ready to use...");
 
 
             channel.writeAndFlush(Unpooled.wrappedBuffer("Hallo".getBytes()));

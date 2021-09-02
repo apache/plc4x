@@ -1,33 +1,35 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package knxnetip
 
 import (
+	"math"
+	"strconv"
+	"time"
+
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	values2 "github.com/apache/plc4x/plc4go/internal/plc4go/spi/values"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"math"
-	"strconv"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,13 +47,18 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -95,12 +102,17 @@ func (m *Connection) DeviceConnect(targetAddress driverModel.KnxAddress) <-chan 
 	result := make(chan KnxDeviceConnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceConnectResult{
 			connection: connection,
 			err:        err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -181,12 +193,17 @@ func (m *Connection) DeviceDisconnect(targetAddress driverModel.KnxAddress) <-ch
 	result := make(chan KnxDeviceDisconnectResult)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceDisconnectResult{
 			connection: connection,
 			err:        err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -210,11 +227,16 @@ func (m *Connection) DeviceAuthenticate(targetAddress driverModel.KnxAddress, bu
 	result := make(chan KnxDeviceAuthenticateResult)
 
 	sendResponse := func(err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -258,13 +280,18 @@ func (m *Connection) DeviceReadProperty(targetAddress driverModel.KnxAddress, ob
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -333,13 +360,18 @@ func (m *Connection) DeviceReadPropertyDescriptor(targetAddress driverModel.KnxA
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 
@@ -388,13 +420,18 @@ func (m *Connection) DeviceReadMemory(targetAddress driverModel.KnxAddress, addr
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(time.Millisecond * 10)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
 			numItems: numItems,
 			err:      err,
 		}:
-		default:
+			if !timeout.Stop() {
+				<-timeout.C
+			}
+		case <-timeout.C:
+			timeout.Stop()
 		}
 	}
 

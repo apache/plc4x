@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -69,10 +69,10 @@ func (m *S7VarPayloadDataItem) LengthInBits() uint16 {
 func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Enum Field (returnCode)
+	// Simple field (returnCode)
 	lengthInBits += 8
 
-	// Enum Field (transportSize)
+	// Simple field (transportSize)
 	lengthInBits += 8
 
 	// Implicit Field (dataLength)
@@ -101,10 +101,10 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 		return nil, pullErr
 	}
 
+	// Simple Field (returnCode)
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field")
@@ -113,10 +113,10 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 		return nil, closeErr
 	}
 
+	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (transportSize)
 	transportSize, _transportSizeErr := DataTransportSizeParse(readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field")
@@ -169,35 +169,33 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem
 		return pushErr
 	}
 
+	// Simple Field (returnCode)
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	_returnCodeErr := returnCode.Serialize(writeBuffer)
-	if _returnCodeErr != nil {
-		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
-	}
+	_returnCodeErr := m.ReturnCode.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return popErr
 	}
+	if _returnCodeErr != nil {
+		return errors.Wrap(_returnCodeErr, "Error serializing 'returnCode' field")
+	}
 
+	// Simple Field (transportSize)
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (transportSize)
-	transportSize := CastDataTransportSize(m.TransportSize)
-	_transportSizeErr := transportSize.Serialize(writeBuffer)
-	if _transportSizeErr != nil {
-		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-	}
+	_transportSizeErr := m.TransportSize.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 		return popErr
+	}
+	if _transportSizeErr != nil {
+		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), func() uint16 { return uint16(uint16(1)) }, func() uint16 {
-		return uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
+		return uint16(uint16(utils.InlineIf(m.TransportSize.SizeInBits(), func() uint16 { return uint16(uint16(8)) }, func() uint16 { return uint16(uint16(1)) })))
 	}))))
 	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
 	if _dataLengthErr != nil {

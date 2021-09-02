@@ -31,13 +31,15 @@
   <artifactId>plc4c</artifactId>
   <packaging>pom</packaging>
 
-  <name>Sandbox: PLC4C</name>
+  <name>PLC4C</name>
   <description>Implementation of the protocol adapters for usage as C library.</description>
 
   <properties>
     <unity.version>2.5.0</unity.version>
-    <!-- Tell Sonar where to find the c++ sources -->
-    <sonar.sources/>
+    <!-- Tell Sonar where to find the sources -->
+    <!--sonar.sources></sonar.sources-->
+    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
@@ -117,6 +119,59 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- When running on jenkins, download the sonar build-wrapper so we can do a code analysis -->
+    <profile>
+      <id>jenkins-build</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <!-- Get the build-wrapper from our sonarcloud server -->
+              <execution>
+                <id>get-build-wrapper</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <skipCache>true</skipCache>
+                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
+                  <unpack>true</unpack>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <skipCache>true</skipCache>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+              <execution>
+                <id>modify-cmake</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
@@ -201,22 +256,23 @@
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
         <executions>
+          <!-- TODO: Commented out for now as when running in jenkins for code analysis, the second run would overwrite the results of the first -->
           <!-- Generate the configuration for the main compilation -->
-          <execution>
+          <!--execution>
             <id>cmake-generate-compile</id>
             <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
           </execution>
-          <!-- Compile the main code -->
+          <!- Compile the main code ->
           <execution>
             <id>cmake-execute-compile</id>
             <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
-          </execution>
+          </execution-->
           <!-- Generate the configuration for the test compilation -->
           <execution>
             <id>cmake-generate-test-compile</id>

@@ -32,7 +32,7 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
     // Needed for debugging on remote machines: Output the entire arrays content.
     if(expected_value != actual_value) {
       for(int j = 0; j < num_bytes; j++) {
-        printf("E=%02X %s A=%02X", expected_value, (*(expected_array + j) !=  *(write_buffer->data + j) ? "!=" : "=="), actual_value);
+        printf("E=%02X %s A=%02X | ", *(expected_array + j), (*(expected_array + j) !=  *(write_buffer->data + j) ? "!=" : "=="), *(write_buffer->data + j));
       }
     }
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");

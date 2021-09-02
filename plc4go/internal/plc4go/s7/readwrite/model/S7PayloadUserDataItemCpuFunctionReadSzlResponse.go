@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -32,8 +32,10 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = 28
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
-	Items  []*SzlDataTreeItem
-	Parent *S7PayloadUserDataItem
+	SzlId    *SzlId
+	SzlIndex uint16
+	Items    []*SzlDataTreeItem
+	Parent   *S7PayloadUserDataItem
 }
 
 // The corresponding interface
@@ -50,17 +52,25 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint
 	return 0x08
 }
 
-func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16) {
-	m.Parent.ReturnCode = returnCode
-	m.Parent.TransportSize = transportSize
-	m.Parent.SzlId = szlId
-	m.Parent.SzlIndex = szlIndex
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuSubfunction() uint8 {
+	return 0x01
 }
 
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId *SzlId, szlIndex uint16) *S7PayloadUserDataItem {
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) DataLength() uint16 {
+	return 0
+}
+
+func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) InitializeParent(parent *S7PayloadUserDataItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) {
+	m.Parent.ReturnCode = returnCode
+	m.Parent.TransportSize = transportSize
+}
+
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId *SzlId, szlIndex uint16, items []*SzlDataTreeItem, returnCode DataTransportErrorCode, transportSize DataTransportSize) *S7PayloadUserDataItem {
 	child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
-		Items:  items,
-		Parent: NewS7PayloadUserDataItem(returnCode, transportSize, szlId, szlIndex),
+		SzlId:    szlId,
+		SzlIndex: szlIndex,
+		Items:    items,
+		Parent:   NewS7PayloadUserDataItem(returnCode, transportSize),
 	}
 	child.Parent.Child = child
 	return child.Parent
@@ -96,6 +106,12 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 
 func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
+	// Simple field (szlId)
+	lengthInBits += m.SzlId.LengthInBits()
+
+	// Simple field (szlIndex)
+	lengthInBits += 16
+
 	// Const Field (szlItemLength)
 	lengthInBits += 16
 
@@ -120,6 +136,24 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
 		return nil, pullErr
+	}
+
+	// Simple Field (szlId)
+	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
+		return nil, pullErr
+	}
+	szlId, _szlIdErr := SzlIdParse(readBuffer)
+	if _szlIdErr != nil {
+		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field")
+	}
+	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
+		return nil, closeErr
+	}
+
+	// Simple Field (szlIndex)
+	szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
+	if _szlIndexErr != nil {
+		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field")
 	}
 
 	// Const Field (szlItemLength)
@@ -161,8 +195,10 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlResponse{
-		Items:  items,
-		Parent: &S7PayloadUserDataItem{},
+		SzlId:    szlId,
+		SzlIndex: szlIndex,
+		Items:    items,
+		Parent:   &S7PayloadUserDataItem{},
 	}
 	_child.Parent.Child = _child
 	return _child.Parent, nil
@@ -172,6 +208,25 @@ func (m *S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(writeBuffer 
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pushErr != nil {
 			return pushErr
+		}
+
+		// Simple Field (szlId)
+		if pushErr := writeBuffer.PushContext("szlId"); pushErr != nil {
+			return pushErr
+		}
+		_szlIdErr := m.SzlId.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("szlId"); popErr != nil {
+			return popErr
+		}
+		if _szlIdErr != nil {
+			return errors.Wrap(_szlIdErr, "Error serializing 'szlId' field")
+		}
+
+		// Simple Field (szlIndex)
+		szlIndex := uint16(m.SzlIndex)
+		_szlIndexErr := writeBuffer.WriteUint16("szlIndex", 16, (szlIndex))
+		if _szlIndexErr != nil {
+			return errors.Wrap(_szlIndexErr, "Error serializing 'szlIndex' field")
 		}
 
 		// Const Field (szlItemLength)

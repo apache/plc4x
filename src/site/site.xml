@@ -92,7 +92,6 @@
         <item name="Apache StreamPipes" href="users/integrations/apache-streampipes.html"/>
         <item name="Eclipse Ditto" href="users/integrations/eclipse-ditto.html"/>
         <item name="Eclipse Milo OPC UA Server" href="users/integrations/eclipse-milo.html"/>
-        <item name="Elastic Logstash " href="users/integrations/elastic-logstash.html"/>
       </item>
       <item name="Tools" href="users/tools/index.html">
         <item name="Capture Replay" href="users/tools/capture-replay.html"/>

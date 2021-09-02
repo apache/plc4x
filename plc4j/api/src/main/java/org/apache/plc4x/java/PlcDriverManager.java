@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.api.Experimental;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -31,6 +30,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 public class PlcDriverManager {
 
@@ -69,7 +69,7 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        PlcDriver driver = getDriver(url);
+        PlcDriver driver = getDriverForUrl(url);
         PlcConnection connection = driver.getConnection(url);
         connection.connect();
         return connection;
@@ -84,28 +84,45 @@ public class PlcDriverManager {
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        PlcDriver driver = getDriver(url);
+        PlcDriver driver = getDriverForUrl(url);
         PlcConnection connection = driver.getConnection(url, authentication);
         connection.connect();
         return connection;
     }
 
     /**
-     * Returns suitble driver for protocol or throws an Exception.
-     * @param url Uri to use
+     * Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
+     * @return Set of driver codes for all drivers registered
+     */
+    public Set<String> listDrivers() {
+        return driverMap.keySet();
+    }
+
+    /**
+     * Returns suitable driver for protocol or throws an Exception.
+     * @param protocolCode protocol code identifying the driver
      * @return Driver instance for the given protocol
      * @throws PlcConnectionException If no Suitable Driver can be found
      */
-    @Experimental
-    public PlcDriver getDriver(String url) throws PlcConnectionException {
+    public PlcDriver getDriver(String protocolCode) throws PlcConnectionException {
+        PlcDriver driver = driverMap.get(protocolCode);
+        if (driver == null) {
+            throw new PlcConnectionException("Unable to find driver for protocol '" + protocolCode + "'");
+        }
+        return driver;
+    }
+
+    /**
+     * Returns suitable driver for a given plc4x connection url or throws an Exception.
+     * @param url Uri to use
+     * @return Driver instance for the given url
+     * @throws PlcConnectionException If no Suitable Driver can be found
+     */
+    public PlcDriver getDriverForUrl(String url) throws PlcConnectionException {
         try {
             URI connectionUri = new URI(url);
             String protocol = connectionUri.getScheme();
-            PlcDriver driver = driverMap.get(protocol);
-            if (driver == null) {
-                throw new PlcConnectionException("Unable to find driver for protocol '" + protocol + "'");
-            }
-            return driver;
+            return getDriver(protocol);
         } catch (URISyntaxException e) {
             throw new PlcConnectionException("Invalid plc4j connection string '" + url + "'", e);
         }

@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package model
 
@@ -99,11 +99,10 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field")
 	}
 
+	// Simple Field (hostProtocolCode)
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (hostProtocolCode)
 	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(readBuffer)
 	if _hostProtocolCodeErr != nil {
 		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field")
@@ -112,11 +111,10 @@ func HPAIControlEndpointParse(readBuffer utils.ReadBuffer) (*HPAIControlEndpoint
 		return nil, closeErr
 	}
 
+	// Simple Field (ipAddress)
 	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Simple Field (ipAddress)
 	ipAddress, _ipAddressErr := IPAddressParse(readBuffer)
 	if _ipAddressErr != nil {
 		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field")

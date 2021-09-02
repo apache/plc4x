@@ -1,22 +1,21 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
@@ -594,6 +593,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBytes()" + (serialize ? ")" : "");
         } else if ("lengthInBits".equals(vl.getName())) {
             return (serialize ? getCastExpressionForTypeReference(typeReference) + "(m." : "") + "LengthInBits()" + (serialize ? ")" : "");
+        } else if ("_value".equals(vl.getName())) {
+            if(vl.getChild() != null) {
+                return toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, serialize, suppressPointerAccess);
+            } else {
+                return "m";
+            }
         }
         if (vl.getChild() != null && "length".equals(vl.getChild().getName())) {
             return (serialize ? ("len(m." + StringUtils.capitalize(vl.getName()) + ")") : ("(" + vl.getName() + ")"));
@@ -764,7 +769,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             final DiscriminatorField discriminatorField = (DiscriminatorField) getFieldForNameFromCurrentOrParent(vl.getName());
             // TODO: Should this return something?
         }
-        // If the current property references a parserArguments property and that is a discriminator property, we also have to serialize it differently..
+        // If the variable has a child element and we're able to find a type for this ... get the type.
         else if ((vl.getChild() != null) && (getTypeReferenceForProperty(((ComplexTypeDefinition) getThisTypeDefinition()), vl.getName()) != null)) {
             final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty(((ComplexTypeDefinition) getThisTypeDefinition()), vl.getName());
             if (typeReferenceForProperty.isPresent() && typeReferenceForProperty.get() instanceof ComplexTypeReference) {
@@ -777,6 +782,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     if (matchingDiscriminatorField.isPresent()) {
                         return "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + vl.getName() + ").Child." + StringUtils.capitalize(childProperty) + "()";
                     }
+                } else if(typeDefinition instanceof EnumTypeDefinition) {
+                    return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) +
+                        "." + StringUtils.capitalize(vl.getChild().getName()) + "()";
                 }
             }
         } else if (isVariableLiteralImplicitField(vl)) {

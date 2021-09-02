@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.base.connection;
 
 import com.fazecast.jSerialComm.SerialPort;

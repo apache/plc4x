@@ -1,26 +1,28 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package _default
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -28,7 +30,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 // DefaultCodecRequirements adds required methods to MessageCodec that are needed when using DefaultCodec
@@ -139,7 +140,7 @@ func (m *defaultCodec) GetDefaultIncomingMessageChannel() chan interface{} {
 }
 
 func (m *defaultCodec) Connect() error {
-	log.Info().Msg("Connecting")
+	log.Trace().Msg("Connecting")
 	err := m.transportInstance.Connect()
 	if err == nil {
 		if !m.running {
@@ -231,6 +232,7 @@ func (m *defaultCodec) HandleMessages(message interface{}) bool {
 func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 	defer func() {
 		if err := recover(); err != nil {
+			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
 			log.Error().Msgf("recovered from %v", err)
 		}
 		log.Info().Msg("Keep running")
@@ -250,7 +252,7 @@ mainLoop:
 		now := time.Now()
 
 		// Guard against empty expectations
-		if len(m.expectations) <= 0 {
+		if len(m.expectations) <= 0 && m.customMessageHandling == nil {
 			workerLog.Trace().Msg("no available expectations")
 			// Sleep for 10ms
 			time.Sleep(time.Millisecond * 10)
@@ -288,11 +290,15 @@ mainLoop:
 		// If the message has not been handled and a default handler is provided, call this ...
 		if !messageHandled {
 			workerLog.Trace().Msg("Message was not handled")
-			// TODO: how do we prevent endless blocking if there is no reader on this channel?
+			timeout := time.NewTimer(time.Millisecond * 40)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-			default:
-				workerLog.Warn().Msg("Message discarded")
+				if !timeout.Stop() {
+					<-timeout.C
+				}
+			case <-timeout.C:
+				timeout.Stop()
+				workerLog.Warn().Msgf("Message discarded %s", message)
 			}
 		}
 	}

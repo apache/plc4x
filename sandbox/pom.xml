@@ -41,13 +41,6 @@
 
     <module>test-java-bacnetip-driver</module>
     <module>test-java-df1-driver</module>
-
-    <module>test-streampipes-plc4x-adapters</module>
-    <module>test-streampipes-plc4x-processors</module>
-    <module>test-streampipes-plc4x-shared</module>
-
-    <!-- Examples -->
-    <module>hello-influx-data-collection</module>
   </modules>
 
   <build>

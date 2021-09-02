@@ -82,7 +82,6 @@ WARNING: Currently when enabling the `with-python` module, you are required to a
 There are 3 more profiles that allow you to activate additional modules or functionality:
 
 - `with-docker` : Some modules also provide the means to build `Docker` images. By enabling this profile these images are automatically built too
-- `with-logstash` : Builds the `Elastic Logstash` integration. Unfortunately Elasic has never released the core libraries publicly so we need to then also build `Logstash` locally. As soon as these core libraries are officially released in `Maven-Central`, this profile will be removed again.
 - `with-boost` : Builds a `C`/`C++` Library used by both the `Apache Thrift` build as well as the `C++` drivers. Unfortunately this is an extremely intense build so we have setup the PLC4X build to only require this profile to be activated once. If the resulting artifacts are installed in your `Maven-Local-Repo`, these will be re-used.
 
 The minimum Apache PLC4X build will build only the `Java` modules without any experimental modules:
@@ -95,13 +94,13 @@ If you want to skip the running of tests (even if this is not encouraged) you ca
 
 All Apache PLC4X modules are built by executing the following command:
 
-    mvn -P with-boost,with-cpp,with-docker,with-dotnet,with-logstash,with-sandbox,with-logstash,with-proxies,with-python,with-sandbox install
+    mvn -P with-boost,with-cpp,with-docker,with-dotnet,with-sandbox,with-logstash,with-proxies,with-python,with-sandbox install
 
 This not only builds the artifacts and creates the jar files, but also runs all unit- and integration-tests.
 
 If you want to skip the running of tests (even if this is not encouraged) you can skip them all together.
 
-    mvn -P with-boost,with-cpp,with-docker,with-dotnet,with-logstash,with-sandbox,with-logstash,with-proxies,with-python,with-sandbox install -DskipTests
+    mvn -P with-boost,with-cpp,with-docker,with-dotnet,with-sandbox,with-logstash,with-proxies,with-python,with-sandbox install -DskipTests
 
 This will not skip the compilation of tests however.
 

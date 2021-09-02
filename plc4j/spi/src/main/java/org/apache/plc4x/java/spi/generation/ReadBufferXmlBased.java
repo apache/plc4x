@@ -1,26 +1,26 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.apache.plc4x.java.spi.generation;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -38,6 +38,8 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
 
     public ReadBufferXmlBased(InputStream is) {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         try {
             reader = xmlInputFactory.createXMLEventReader(is);
         } catch (XMLStreamException e) {
@@ -245,17 +247,15 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         return data.trim();
     }
 
-    private boolean validateStartElement(StartElement startElement, String logicalName, String dataType, int bitLength) {
+    private void validateStartElement(StartElement startElement, String logicalName, String dataType, int bitLength) {
         logicalName = sanitizeLogicalName(logicalName);
         if (!startElement.getName().getLocalPart().equals(logicalName)) {
             throw new PlcRuntimeException(String.format("unexpected element '%s'. Expected '%s'", startElement.getName().getLocalPart(), logicalName));
-        } else if (!validateAttr(logicalName, startElement.getAttributes(), dataType, bitLength)) {
-            throw new PlcRuntimeException("Error validating Attributes");
         }
-        return true;
+        validateAttr(logicalName, startElement.getAttributes(), dataType, bitLength);
     }
 
-    private boolean validateAttr(String logicalName, Iterator<Attribute> attr, String dataType, int bitLength) {
+    private void validateAttr(String logicalName, Iterator<Attribute> attr, String dataType, int bitLength) {
         boolean dataTypeValidated = false;
         boolean bitLengthValidate = false;
         while (attr.hasNext()) {
@@ -266,7 +266,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
                 }
                 dataTypeValidated = true;
             } else if (attribute.getName().getLocalPart().equals(rwBitLengthKey)) {
-                if (!attribute.getValue().equals(Integer.valueOf(bitLength).toString())) {
+                if (!attribute.getValue().equals(Integer.toString(bitLength))) {
                     throw new PlcRuntimeException(String.format("%s: Unexpected bitLength '%s'. Want '%d'", logicalName, attribute.getValue(), bitLength));
                 }
                 bitLengthValidate = true;
@@ -278,7 +278,6 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         if (!bitLengthValidate) {
             throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwBitLengthKey));
         }
-        return true;
     }
 
 }
