@@ -33,7 +33,7 @@
 
   <properties>
     <kafka.version>2.5.0</kafka.version>
-    <kafka.connect.maven.plugin.version>0.11.3</kafka.connect.maven.plugin.version>
+    <kafka.connect.maven.plugin.version>0.12.0</kafka.connect.maven.plugin.version>
   </properties>
 
   <repositories>
