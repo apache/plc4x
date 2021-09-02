@@ -21,6 +21,58 @@ package model
 
 import "net/url"
 
+type PlcDiscoveryEvent struct {
+	ProtocolCode  string
+	TransportCode string
+	TransportUrl  url.URL
+	Options       map[string][]string
+	Name          string
+}
+
+func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
+	return PlcDiscoveryEvent{
+		ProtocolCode:  protocolCode,
+		TransportCode: transportCode,
+		TransportUrl:  transportUrl,
+		Options:       options,
+		Name:          name,
+	}
+}
+
+func WithDiscoveryOptionProtocol(protocolName string) WithDiscoveryOption {
+	return discoveryOptionProtocol{
+		protocolName: protocolName,
+	}
+}
+
+func WithDiscoveryOptionTransport(transportName string) WithDiscoveryOption {
+	return discoveryOptionTransport{
+		transportName: transportName,
+	}
+}
+
+func WithDiscoveryOptionDeviceName(deviceName string) WithDiscoveryOption {
+	return discoveryOptionDeviceName{
+		deviceName: deviceName,
+	}
+}
+
+func WithDiscoveryOptionLocalAddress(localAddress string) WithDiscoveryOption {
+	return discoveryOptionLocalAddress{
+		localAddress: localAddress,
+	}
+}
+
+func WithDiscoveryOptionRemoteAddress(remoteAddress string) WithDiscoveryOption {
+	return discoveryOptionRemoteAddress{
+		remoteAddress: remoteAddress,
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////7
+// Internal
+/////////////////////////////////////////////////////////////////////////////////////////7
+
 type WithDiscoveryOption interface {
 	IsDiscoveryOption() bool
 }
@@ -32,22 +84,18 @@ func (_ discoveryOption) IsDiscoveryOption() bool {
 	return true
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Protocol Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryOptionProtocol(protocolName string) WithDiscoveryOption {
-	return discoveryOptionProtocol{
-		protocolName: protocolName,
-	}
-}
-
 func FilterDiscoveryOptionsProtocol(options []WithDiscoveryOption) []DiscoveryOptionProtocol {
+	castFunc := func(typ interface{}) DiscoveryOptionProtocol {
+		if casted, ok := typ.(discoveryOptionProtocol); ok {
+			return &casted
+		}
+		return nil
+	}
 	var filtered []DiscoveryOptionProtocol
 	for _, option := range options {
 		switch option.(type) {
 		case discoveryOptionProtocol:
-			filtered = append(filtered, option.(DiscoveryOptionProtocol))
+			filtered = append(filtered, castFunc(option))
 		}
 	}
 	return filtered
@@ -66,22 +114,18 @@ func (d *discoveryOptionProtocol) GetProtocolName() string {
 	return d.protocolName
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Transport Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryOptionTransport(transportName string) WithDiscoveryOption {
-	return discoveryOptionTransport{
-		transportName: transportName,
-	}
-}
-
 func FilterDiscoveryOptionsTransport(options []WithDiscoveryOption) []DiscoveryOptionTransport {
+	castFunc := func(typ interface{}) DiscoveryOptionTransport {
+		if casted, ok := typ.(discoveryOptionTransport); ok {
+			return &casted
+		}
+		return nil
+	}
 	var filtered []DiscoveryOptionTransport
 	for _, option := range options {
 		switch option.(type) {
 		case discoveryOptionTransport:
-			filtered = append(filtered, option.(DiscoveryOptionTransport))
+			filtered = append(filtered, castFunc(option))
 		}
 	}
 	return filtered
@@ -100,22 +144,18 @@ func (d *discoveryOptionTransport) GetTransportName() string {
 	return d.transportName
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Device Name Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryDeviceName(deviceName string) WithDiscoveryOption {
-	return discoveryOptionDeviceName{
-		deviceName: deviceName,
-	}
-}
-
 func FilterDiscoveryOptionsDeviceName(options []WithDiscoveryOption) []DiscoveryOptionDeviceName {
+	castFunc := func(typ interface{}) DiscoveryOptionDeviceName {
+		if casted, ok := typ.(discoveryOptionDeviceName); ok {
+			return &casted
+		}
+		return nil
+	}
 	var filtered []DiscoveryOptionDeviceName
 	for _, option := range options {
 		switch option.(type) {
 		case discoveryOptionDeviceName:
-			filtered = append(filtered, option.(DiscoveryOptionDeviceName))
+			filtered = append(filtered, castFunc(option))
 		}
 	}
 	return filtered
@@ -134,22 +174,18 @@ func (d *discoveryOptionDeviceName) GetDeviceName() string {
 	return d.deviceName
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Local Address Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryLocalAddress(localAddress string) WithDiscoveryOption {
-	return discoveryOptionLocalAddress{
-		localAddress: localAddress,
-	}
-}
-
 func FilterDiscoveryOptionsLocalAddress(options []WithDiscoveryOption) []DiscoveryOptionLocalAddress {
+	castFunc := func(typ interface{}) DiscoveryOptionLocalAddress {
+		if casted, ok := typ.(discoveryOptionLocalAddress); ok {
+			return &casted
+		}
+		return nil
+	}
 	var filtered []DiscoveryOptionLocalAddress
 	for _, option := range options {
 		switch option.(type) {
 		case discoveryOptionLocalAddress:
-			filtered = append(filtered, option.(DiscoveryOptionLocalAddress))
+			filtered = append(filtered, castFunc(option))
 		}
 	}
 	return filtered
@@ -168,22 +204,18 @@ func (d *discoveryOptionLocalAddress) GetLocalAddress() string {
 	return d.localAddress
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Remote Address Option
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-func WithDiscoveryRemoteAddress(remoteAddress string) WithDiscoveryOption {
-	return discoveryOptionRemoteAddress{
-		remoteAddress: remoteAddress,
-	}
-}
-
 func FilterDiscoveryOptionsRemoteAddress(options []WithDiscoveryOption) []DiscoveryOptionRemoteAddress {
+	castFunc := func(typ interface{}) DiscoveryOptionRemoteAddress {
+		if casted, ok := typ.(discoveryOptionRemoteAddress); ok {
+			return &casted
+		}
+		return nil
+	}
 	var filtered []DiscoveryOptionRemoteAddress
 	for _, option := range options {
 		switch option.(type) {
 		case discoveryOptionRemoteAddress:
-			filtered = append(filtered, option.(DiscoveryOptionRemoteAddress))
+			filtered = append(filtered, castFunc(option))
 		}
 	}
 	return filtered
@@ -200,26 +232,4 @@ type discoveryOptionRemoteAddress struct {
 
 func (d *discoveryOptionRemoteAddress) GetRemoteAddress() string {
 	return d.remoteAddress
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////7
-// Discovery Events
-/////////////////////////////////////////////////////////////////////////////////////////7
-
-type PlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
-}
-
-func NewPlcDiscoveryEvent(protocolCode string, transportCode string, transportUrl url.URL, options map[string][]string, name string) PlcDiscoveryEvent {
-	return PlcDiscoveryEvent{
-		ProtocolCode:  protocolCode,
-		TransportCode: transportCode,
-		TransportUrl:  transportUrl,
-		Options:       options,
-		Name:          name,
-	}
 }
