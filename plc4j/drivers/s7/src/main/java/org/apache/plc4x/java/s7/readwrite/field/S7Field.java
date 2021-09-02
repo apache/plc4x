@@ -175,6 +175,7 @@ public class S7Field implements PlcField, Serializable {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
+            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
@@ -193,7 +194,7 @@ public class S7Field implements PlcField, Serializable {
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
 
-            return new S7StringField(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements, stringLength);
+            return new S7StringField(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength);
         } else if ((matcher = DATA_BLOCK_STRING_SHORT_PATTERN.matcher(fieldString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));

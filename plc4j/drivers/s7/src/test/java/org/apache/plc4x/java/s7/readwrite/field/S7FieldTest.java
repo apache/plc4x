@@ -36,4 +36,21 @@ public class S7FieldTest {
         Assertions.assertEquals(0, s7Field.getBitOffset());
     }
 
+    /**
+     * PLC4X-312 - CAN NOT READ STRING FROM S7 PLC
+     */
+    @Test
+    public void testStringAddress() {
+        final S7Field s7Field = S7Field.of("%DB145.DBX38:STRING(8)[1]");
+        Assertions.assertEquals(TransportSize.STRING, s7Field.getDataType());
+        Assertions.assertEquals(1, s7Field.getNumberOfElements());
+        Assertions.assertEquals(145, s7Field.getBlockNumber());
+        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Field.getMemoryArea());
+        Assertions.assertEquals(38, s7Field.getByteOffset());
+        Assertions.assertEquals(0, s7Field.getBitOffset());
+        Assertions.assertEquals("S7StringField", s7Field.getClass().getSimpleName());
+        S7StringField s7StringField = (S7StringField) s7Field;
+        Assertions.assertEquals(8, s7StringField.getStringLength());
+    }
+
 }
