@@ -255,23 +255,23 @@ public class OpcuaPlcDriverTest {
 
         PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
         builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ":BYTE", (short) 3);
+        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", (short) 3);
         builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
         builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
         //builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + "", (short) 1);
         builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
         builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
         builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-        builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ":SINT", -127);
+        builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";SINT", -127);
         builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
-        builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ":UINT", 65535);
-        builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ":UDINT", 101010101L);
-        builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ":ULINT", new BigInteger("1337"));
-        builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ":UDINT", 102020202L);
+        builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
+        builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 101010101L);
+        builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
+        builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 102020202L);
 
 
         builder.addItem("BooleanArray", BOOL_ARRAY_IDENTIFIER, new Boolean[] {true, true, true, true, true});
-        builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER + ":BYTE", new Short[] {1, 100, 100, 255, 123});
+        builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER + ";BYTE", new Short[] {1, 100, 100, 255, 123});
         builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER, new Double[] {1.0,2.0,3.0,4.0,5.0});
         builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER, new Float[] {1.0F,2.0F,3.0F,4.0F,5.0F});
         builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER, new Short[] {1,2,3,4,5});
@@ -280,9 +280,9 @@ public class OpcuaPlcDriverTest {
         builder.addItem("IntegerArray", INT32_ARRAY_IDENTIFIER, new Integer[] {1,2,3,4,5});
         builder.addItem("SByteArray", SBYTE_ARRAY_IDENTIFIER, new Byte[] {1,2,3,4,5});
         builder.addItem("StringArray", STRING_ARRAY_IDENTIFIER, new String[] {"1","2","3","4","5"});
-        builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER + ":UINT", new Short[] {1,2,3,4,5});
-        builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER + ":UDINT", new Integer[] {1,2,3,4,5});
-        builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER + ":ULINT", new Long[] {1L,2L,3L,4L,5L});
+        builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER + ";UINT", new Short[] {1,2,3,4,5});
+        builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER + ";UDINT", new Integer[] {1,2,3,4,5});
+        builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER + ";ULINT", new Long[] {1L,2L,3L,4L,5L});
 
         builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "11");
 
