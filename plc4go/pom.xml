@@ -546,14 +546,14 @@
           <execution>
             <id>generate-sources</id>
             <phase>generate-sources</phase>
-            <configuration>
-              <tasks>
-                <mkdir dir="target${file.separator}surefire-reports"/>
-              </tasks>
-            </configuration>
             <goals>
               <goal>run</goal>
             </goals>
+            <configuration>
+              <target>
+                <mkdir dir="target${file.separator}surefire-reports"/>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>

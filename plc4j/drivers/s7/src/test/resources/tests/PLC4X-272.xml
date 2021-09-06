@@ -204,15 +204,16 @@
                 <parameterType dataType="uint" bitLength="8">240</parameterType>
                 <S7ParameterSetupCommunication>
                   <reserved dataType="uint" bitLength="8">0</reserved>
-                  <maxAmqCaller dataType="uint" bitLength="16">2</maxAmqCaller>
-                  <maxAmqCallee dataType="uint" bitLength="16">2</maxAmqCallee>
-                  <pduLength dataType="uint" bitLength="16">480</pduLength>
+                  <maxAmqCaller dataType="uint" bitLength="16">3</maxAmqCaller>
+                  <maxAmqCallee dataType="uint" bitLength="16">3</maxAmqCallee>
+                  <pduLength dataType="uint" bitLength="16">240</pduLength>
                 </S7ParameterSetupCommunication>
               </S7Parameter>
             </S7Message>
           </COTPPacket>
         </payload>
       </TPKTPacket>
+
     </incoming-plc-message>
     <!-- Next we'll query some type information -->
     <outgoing-plc-message name="Send S7 Identification Request">
@@ -271,21 +272,19 @@
                         </DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">4</dataLength>
-                      <szlId>
-                        <SzlId>
-                          <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
-                            </SzlModuleTypeClass>
-                          </typeClass>
-                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
-                          <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
-                            </SzlSublist>
-                          </sublistList>
-                        </SzlId>
-                      </szlId>
-                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       <S7PayloadUserDataItemCpuFunctionReadSzlRequest>
+                        <szlId>
+                          <SzlId>
+                            <typeClass>
+                              <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0</SzlModuleTypeClass>
+                            </typeClass>
+                            <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                            <sublistList>
+                              <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17</SzlSublist>
+                            </sublistList>
+                          </SzlId>
+                        </szlId>
+                        <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       </S7PayloadUserDataItemCpuFunctionReadSzlRequest>
                     </S7PayloadUserDataItem>
                   </items>
@@ -356,104 +355,41 @@
                         </DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">92</dataLength>
-                      <szlId>
-                        <SzlId>
-                          <typeClass>
-                            <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
-                            </SzlModuleTypeClass>
-                          </typeClass>
-                          <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
-                          <sublistList>
-                            <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
-                            </SzlSublist>
-                          </sublistList>
-                        </SzlId>
-                      </szlId>
-                      <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                       <S7PayloadUserDataItemCpuFunctionReadSzlResponse>
+                        <szlId>
+                          <SzlId>
+                            <typeClass>
+                              <SzlModuleTypeClass dataType="uint" bitLength="4" stringRepresentation="CPU">0
+                              </SzlModuleTypeClass>
+                            </typeClass>
+                            <sublistExtract dataType="uint" bitLength="4">0</sublistExtract>
+                            <sublistList>
+                              <SzlSublist dataType="uint" bitLength="8" stringRepresentation="MODULE_IDENTIFICATION">17
+                              </SzlSublist>
+                            </sublistList>
+                          </SzlId>
+                        </szlId>
+                        <szlIndex dataType="uint" bitLength="16">0</szlIndex>
                         <szlItemLength dataType="uint" bitLength="16">28</szlItemLength>
                         <szlItemCount dataType="uint" bitLength="16">3</szlItemCount>
                         <items isList="true">
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">1</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
                             <ausbe dataType="uint" bitLength="16">8224</ausbe>
                           </SzlDataTreeItem>
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">6</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">1</ausbg>
                             <ausbe dataType="uint" bitLength="16">8224</ausbe>
                           </SzlDataTreeItem>
                           <SzlDataTreeItem>
                             <itemIndex dataType="uint" bitLength="16">7</itemIndex>
-                            <mlfb isList="true">
-                              <value dataType="int" bitLength="8">54</value>
-                              <value dataType="int" bitLength="8">69</value>
-                              <value dataType="int" bitLength="8">83</value>
-                              <value dataType="int" bitLength="8">55</value>
-                              <value dataType="int" bitLength="8">32</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">50</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">49</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">68</value>
-                              <value dataType="int" bitLength="8">51</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">45</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">88</value>
-                              <value dataType="int" bitLength="8">66</value>
-                              <value dataType="int" bitLength="8">48</value>
-                              <value dataType="int" bitLength="8">32</value>
-                            </mlfb>
+                            <mlfb dataType="byte" bitLength="160">0x36455337203231322d31424433302d3058423020</mlfb>
                             <moduleTypeId dataType="uint" bitLength="16">8224</moduleTypeId>
                             <ausbg dataType="uint" bitLength="16">22018</ausbg>
                             <ausbe dataType="uint" bitLength="16">2</ausbe>

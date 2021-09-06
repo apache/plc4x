@@ -41,7 +41,7 @@
       <plugin>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-package-maven-plugin</artifactId>
-        <version>2.20.1</version>
+        <version>${camel.version}</version>
         <executions>
           <execution>
             <id>prepare</id>
@@ -244,29 +244,6 @@
       <version>0.9.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-
-    <!-- Support camel documentation-->
-    <!-- TODO: Do we need this? -->
-    <!--dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>apt</artifactId>
-      <!- TODO: version temporary defined due to PLC4X-22->
-      <version>${camel.version}</version>
-      <scope>provided</scope>
-    </dependency-->
-
-    <!-- TODO: Do we need this? And if we do, definitely not as scope=compile -->
-    <!--dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <!- TODO: version temporary defined due to PLC4X-22->
-        <exclusions>
-          <exclusion>
-            <artifactId>hamcrest-core</artifactId>
-            <groupId>org.hamcrest</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency-->
 
     <!-- Testing -->
     <dependency>

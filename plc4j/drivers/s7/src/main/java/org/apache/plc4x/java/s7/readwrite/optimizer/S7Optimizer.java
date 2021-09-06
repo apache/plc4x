@@ -124,9 +124,9 @@ public class S7Optimizer extends BaseOptimizer {
 
         for (String fieldName : writeRequest.getFieldNames()) {
             S7Field field = (S7Field) writeRequest.getField(fieldName);
-            PlcValue value = ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName);
+            PlcValue value = writeRequest.getPlcValue(fieldName);
 
-            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
+            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4/* Size of Payload item header*/ +(field.getNumberOfElements() * field.getDataType().getSizeInBytes());
             // If it's an odd number of bytes, add one to make it even
             if (writeRequestItemSize % 2 == 1) {
                 writeRequestItemSize++;

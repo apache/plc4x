@@ -35,7 +35,7 @@
   <description>Implementation of the protocol adapters for usage as C library.</description>
 
   <properties>
-    <unity.version>2.5.0</unity.version>
+    <unity.version>2.5.2</unity.version>
     <!-- Tell Sonar where to find the sources -->
     <!--sonar.sources></sonar.sources-->
     <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
