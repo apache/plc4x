@@ -55,6 +55,7 @@
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="Using SNAPSHOTS" href="users/getting-started/using-snapshots.html"/>
         <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
       </item>
