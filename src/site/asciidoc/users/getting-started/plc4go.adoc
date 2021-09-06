@@ -163,8 +163,8 @@ In order to create and run such a `PlcReadRequest`, please add the following cod
 ----
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
-	    AddItem("field1", "holding-register:1:REAL").
-	    AddItem("field2", "holding-register:3:REAL").
+		AddQuery("field1", "holding-register:1:REAL").
+		AddQuery("field2", "holding-register:3:REAL").
         Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -201,7 +201,7 @@ Now in order to do something with the response:
 	value1 := readRequestResult.Response.GetValue("field1")
 	value2 := readRequestResult.Response.GetValue("field2")
 	fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
-	fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+	fmt.Printf("\n\nResult field2: %f\n", value2.GetFloat32())
 ----
 
 The `GetValue` function returns a `PlcValue` instance, this had accessors for the most general `Go` types.
