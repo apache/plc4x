@@ -126,7 +126,12 @@ public class S7Optimizer extends BaseOptimizer {
             S7Field field = (S7Field) writeRequest.getField(fieldName);
             PlcValue value = writeRequest.getPlcValue(fieldName);
 
-            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4/* Size of Payload item header*/ +(field.getNumberOfElements() * field.getDataType().getSizeInBytes());
+            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4/* Size of Payload item header*/;
+            if (field.getDataType() == TransportSize.BOOL) {
+                writeRequestItemSize += Math.ceil((double) field.getNumberOfElements() / 8);
+            } else {
+                writeRequestItemSize += (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
+            }
             // If it's an odd number of bytes, add one to make it even
             if (writeRequestItemSize % 2 == 1) {
                 writeRequestItemSize++;
@@ -142,15 +147,15 @@ public class S7Optimizer extends BaseOptimizer {
 
                 // Add the item.
             }
-            // If they would exceed, start a new request.
+            // If adding them would exceed, start a new request.
             else {
                 // Create a new PlcWriteRequest containing the current field item.
                 processedRequests.add(new DefaultPlcWriteRequest(
                     ((DefaultPlcWriteRequest) writeRequest).getWriter(), curFields));
 
                 // Reset the size and item lists.
-                curRequestSize = EMPTY_WRITE_REQUEST_SIZE;
-                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
+                curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;
+                curResponseSize = EMPTY_WRITE_RESPONSE_SIZE + writeResponseItemSize;
                 curFields = new LinkedHashMap<>();
 
                 // Splitting of huge fields not yet implemented, throw an exception instead.
