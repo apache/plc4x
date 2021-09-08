@@ -96,7 +96,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
     @Override
     public void onConnect(ConversationContext<AmsTCPPacket> context) {
-        // AMS/ADS doesn't know a concept of a connect.
+        // AMS/ADS doesn't know a concept of a "connect".
         context.fireConnected();
     }
 
