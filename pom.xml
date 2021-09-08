@@ -65,21 +65,21 @@
       <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:dev@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
     </mailingList>
     <mailingList>
       <name>PLC4X Commits List</name>
       <subscribe>mailto:commits-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:commits@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
     </mailingList>
     <mailingList>
       <name>PLC4X Jira Notifications List</name>
       <subscribe>mailto:issues-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:issues-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:issues@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
     </mailingList>
   </mailingLists>
 
@@ -109,7 +109,7 @@
     <apiguardian.version>1.1.1</apiguardian.version>
     <assertj.version>3.20.2</assertj.version>
     <awaitility.version>4.1.0</awaitility.version>
-    <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
+    <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.69</bouncycastle.version>
     <boost.version>1.76.0</boost.version>
