@@ -298,12 +298,12 @@ def checkPython() {
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
-            def result = checkVersionAtLeast(curVersion, "2.7.0")
+            def result = checkVersionAtLeast(curVersion, "3.6.0")
             if (!result) {
                 allConditionsMet = false
             }
         } else {
-            println "missing"
+            println "missing (Please install at least version 3.6.0)"
             allConditionsMet = false
         }
     } catch (Exception e) {
