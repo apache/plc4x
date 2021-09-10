@@ -208,10 +208,18 @@ of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
+NOTE: When running from sources-zip, the `mvnw` might not be executable on `Mac` or `Linux`. This can easily be fixed by running the following command in the directory.
+
+```
+$ chmod +x mvnw
+```
+
+NOTE: If you are working on a `Windows` system, please use `mvnw.cmd` instead of `./mvnw` in the following build commands.
+
 Build PLC4X Java jars and install them in your local maven repository
 
 ```
-mvn install # add -DskipTests to omit running the tests
+./mvnw install # add -DskipTests to omit running the tests
 ```
 
 You can now construct Java applications that use PLC4X. The PLC4X examples
@@ -221,7 +229,7 @@ directory.
 The `Go` drivers can be built by enabling the `with-go` profile:
 
 ```
-mvn -P with-go install  # add -DskipTests to omit running the tests
+./mvnw -P with-go install  # add -DskipTests to omit running the tests
 ```
 
 NOTE: The C++ build is considered experimental and currently not working properly.
@@ -233,7 +241,7 @@ library called, `boost`, which needs to also be built.
 If you want to build them, this has to be enabled by activating the `with-boost`, `with-sandbox` and `with-cpp` maven profiles:
 
 ```
-mvn -P with-boost,with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
+./mvnw -P with-boost,with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
 ```
 
 The `C# / .Net` implementation is currently in a `work in progress` state.
@@ -241,7 +249,7 @@ In order to be able to build the `C# / .Net` module, you currently need to activ
 `with-sandbox` and `with-dotnet` profiles.
 
 ```
-mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
 ```
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
@@ -249,13 +257,13 @@ In order to be able to build the Python module, you currently need to activate t
 `with-sandbox` and `with-python` profiles.
 
 ```
-mvn -P with-sandbox,with-python install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-python install  # add -DskipTests to omit running the tests
 ```
 
 In order to build everything the following command should work:
 
 ```
-mvn -P with-c,with-dotnet,with-go,with-python,with-sandbox install
+./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
 ```
 
 ## Community
