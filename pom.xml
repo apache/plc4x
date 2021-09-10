@@ -112,8 +112,8 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.69</bouncycastle.version>
-    <boost.version>1.76.0</boost.version>
-    <boost.version.underline-short>1_76</boost.version.underline-short>
+    <boost.version>1.77.0</boost.version>
+    <boost.version.underline-short>1_77</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.11.15</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
@@ -135,7 +135,7 @@
     <elasticsearch.version>7.10.0</elasticsearch.version>
     <equalsverifier.version>3.7.1</equalsverifier.version>
     <freemarker.version>2.3.31</freemarker.version>
-    <groovy.version>3.0.8</groovy.version>
+    <groovy.version>3.0.9</groovy.version>
     <gson.version>2.8.8</gson.version>
     <guava.version>30.1.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
@@ -1245,10 +1245,7 @@
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
-            <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
-            <!-- TODO: try to find out why antlr doesn't like the line.separator setting -->
-            <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
-            <arguments>-Papache-release ${arguments}</arguments>
+            <releaseProfiles>apache-release</releaseProfiles>
           </configuration>
         </plugin>
 
@@ -1455,7 +1452,11 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://boostorg.jfrog.io/artifactory/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <!--
+        https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz
+        https://boostorg.jfrog.io/native/main/release/1.77.0/source/boost_1_77_0.tar.gz
+        -->
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
@@ -1479,7 +1480,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
@@ -1503,7 +1504,8 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-win64-x64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <!--boost.url>https://github.com/boostorg/boost/archive/refs/tags/boost-${boost.version}.tar.gz</boost.url-->
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
         <boost.build.executable>b2</boost.build.executable>
         <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
@@ -1613,7 +1615,7 @@
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.9</version>
+            <version>1.11</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <executions>
