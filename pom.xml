@@ -110,7 +110,7 @@
     <assertj.version>3.20.2</assertj.version>
     <awaitility.version>4.1.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
-    <bit-io.version>1.4.3</bit-io.version>
+    <bit-io.version>2.0.5</bit-io.version>
     <bouncycastle.version>1.69</bouncycastle.version>
     <boost.version>1.76.0</boost.version>
     <boost.version.underline-short>1_76</boost.version.underline-short>
