@@ -83,7 +83,7 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 ### Environment
 
-Currently the project is configured to require the following software:
+Currently, the project is configured to require the following software:
 
 1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
  point to that.
@@ -227,14 +227,18 @@ mvn -P with-go install  # add -DskipTests to omit running the tests
 NOTE: The C++ build is considered experimental and currently not working properly.
 
 The `C++` drivers are still under development and still not really usable. 
-Therefore, they are located in the so-called `sandbox`. 
-If you want to build them, this has to be enabled by activating the `with-sandbox` and `with-cpp` maven profiles:
+Therefore, they are located in the so-called `sandbox`. Also does it rely on a 
+library called, `boost`, which needs to also be built.
+
+If you want to build them, this has to be enabled by activating the `with-boost`, `with-sandbox` and `with-cpp` maven profiles:
 
 ```
-mvn -P with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
+mvn -P with-boost,with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
 ```
 
-Same applies for the `C# / .Net` implementation with `with-dotnet` profiles.
+The `C# / .Net` implementation is currently in a `work in progress` state.
+In order to be able to build the `C# / .Net` module, you currently need to activate the:
+`with-sandbox` and `with-dotnet` profiles.
 
 ```
 mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
@@ -242,16 +246,16 @@ mvn -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the t
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
 In order to be able to build the Python module, you currently need to activate the:
-`with-sandbox`, `with-python` and `with-proxies` profiles.
+`with-sandbox` and `with-python` profiles.
 
 ```
-mvn -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit running the tests
+mvn -P with-sandbox,with-python install  # add -DskipTests to omit running the tests
 ```
 
 In order to build everything the following command should work:
 
 ```
-mvn -P with-go,with-boost,with-dotnet,with-proxies,with-python,with-sandbox install
+mvn -P with-c,with-dotnet,with-go,with-python,with-sandbox install
 ```
 
 ## Community

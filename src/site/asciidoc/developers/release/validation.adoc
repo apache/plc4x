@@ -89,7 +89,7 @@ By piping the result into a text file gives you the chance to investigate the co
 
 === Release Tooling
 
-In the `tools` directory we have a little script that can help downloading and checking the hashes and signatures automatically.
+In the `tools` directory we have a little script that can help with downloading and checking the hashes and signatures automatically.
 
 In order to execute this, please change directories into the projects base directory and execute the following command:
 
