@@ -68,7 +68,7 @@ NOTE: Especially in the `sandbox` there may be parts that are not formally relea
 [%interactive]
 * [ ] Search for `Copyright` references, and if they are in headers, make sure these files containing them are mentioned in the LICENSE file.
 * [ ] Build the project according to the information in the README.md file.
-* [ ] [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appendng `-Dmaven.repo.local=../.m2`.
+* [ ] [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appending `-Dmaven.repo.local=../.m2` (On windows use `-D"maven.repo.local"="../.m2"`).
 
 === Using RAT
 
@@ -103,3 +103,29 @@ This will download all the files into a directory: `downloaded-plc4x-{current-fu
 After that it will calculate the SHA512 hash and compare it with the staged hash.
 
 Last not least it will validate the PGP key and print out some information on it.
+
+=== Template for the email for voting
+
+----
++1/-1 (binding)
+
+Name
+
+[] Download all staged artifacts under the url specified in the release vote email.
+[] Verify the signature is correct.
+[] Check if the signature references an Apache email address.
+[] Verify the SHA512 hashes.
+[] Unzip the archive.
+[] Verify the existence of LICENSE, NOTICE, README, RELEASE_NOTES files in the extracted source bundle.
+[] Verify the content of LICENSE, NOTICE, README, RELEASE_NOTES files in the extracted source bundle.
+[] [RM] Verify the staged source README, RELEASE_NOTE files correspond to those in the extracted source bundle.
+[] [RM] Run RAT externally to ensure there are no surprises.
+[] Search for SNAPSHOT references: Only found some in the dummy website copy in the integration-tests
+[] Search for Copyright references, and if they are in headers, make sure these files containing them are mentioned in the LICENSE file.
+[] Build the project according to the information in the README.md file.
+[] [RM] Build the project with all with-xyz profiles and tests enabled and an empty maven local repo.
+----
+
+If everything is ok, I put "OK" int the square brackets.
+If there are minor issues, I put "MINOR" in there and, if it's a short reason, I put an explanation at the end of the line. If it's longer I put a longer section after the checklist.
+If there are major issues, I put "FAIL" in there and comment the same way as with minor issues.
