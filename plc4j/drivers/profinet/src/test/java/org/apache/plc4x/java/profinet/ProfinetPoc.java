@@ -33,7 +33,7 @@ public class ProfinetPoc {
 
         // Send Profinet IO Context Manager (PNIO-CM) Connection Request (UDP)
         DceRpc_Packet connectionRequest = new DceRpc_Packet_Req(
-            1, 0xCAFE, 0x060B, 1, 0, 0, DceRpc_Operation.CONNECT,
+            1, 0x0904, 0x002A, 1, 0, 0, DceRpc_Operation.CONNECT,
             new PnIoCm_Packet_Req(404, 404, 0, 404,
                 new PnIoCm_Block[]{
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
