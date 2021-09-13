@@ -178,7 +178,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                         // Construct and send the search request.
                         Ethernet_Frame identificationRequest = new Ethernet_Frame(
                             // Pre-Defined PROFINET discovery MAC address
-                            new MacAddress(new short[]{0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00}),
+                            new MacAddress(new byte[]{0x01, 0x0E, (byte) 0xCF, 0x00, 0x00, 0x00}),
                             toPlc4xMacAddress(macAddress),
                             new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.BEST_EFFORT, false, 0,
                                 new Ethernet_FramePayload_PnDcp(
@@ -223,7 +223,7 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
 
     private static MacAddress toPlc4xMacAddress(org.pcap4j.util.MacAddress pcap4jMacAddress) {
         byte[] address = pcap4jMacAddress.getAddress();
-        return new MacAddress(new short[]{address[0], address[1], address[2], address[3], address[4], address[5]});
+        return new MacAddress(new byte[]{address[0], address[1], address[2], address[3], address[4], address[5]});
     }
 
     private static class Task implements Runnable {

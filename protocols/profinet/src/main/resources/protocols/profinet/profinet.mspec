@@ -60,8 +60,8 @@
             [const    uint 8              'timeToLive'                      '0x40'                     ]
             // Protocol: UDP
             [const    uint 8              'protocol'                        '0x11'                     ]
-            // TODO: Implement
-            //[checksum uint 16           'headerChecksum'                                             ]
+            // TODO: Implement ...
+            //[checksum uint 16             'headerChecksum'                  ''                         ]
             [simple   IpAddress           'sourceAddress'                                              ]
             [simple   IpAddress           'destinationAddress'                                         ]
             [simple   Udp_Packet          'packet'                                                     ]
@@ -82,8 +82,8 @@
     [simple   uint 16       'sourcePort'                                        ]
     [simple   uint 16       'destinationPort'                                   ]
     [implicit uint 16       'packetLength'    'lengthInBytes'                   ]
-    // TODO: Implement
-    //[checksum uint 16       'headerChecksum'                                    ]
+    // TODO: Implement ...
+    //[checksum uint 16       'headerChecksum'  ''                                ]
     [simple   DceRpc_Packet 'payload'                                           ]
 ]
 
@@ -113,6 +113,17 @@
             [const    uint 1         'lastFragment'                     '1'     ]
             [reserved uint 1         '0x0'                                      ]
         ]
+
+        ['REJECT' DceRpc_Packet_Rej
+            [reserved uint 1         '0x0'                                      ]
+            [const    uint 1         'broadcast'                        '0'     ]
+            [const    uint 1         'idempotent'                       '0'     ]
+            [const    uint 1         'maybe'                            '0'     ]
+            [const    uint 1         'noFragmentAcknowledgeRequested'   '0'     ]
+            [const    uint 1         'fragment'                         '0'     ]
+            [const    uint 1         'lastFragment'                     '0'     ]
+            [reserved uint 1         '0x0'                                      ]
+        ]
     ]
     [reserved      uint 6            '0x00'                                     ]
     [const         uint 1            'cancelWasPending'                 '0'     ]
@@ -126,7 +137,7 @@
     // Floating Point Type: IEEE
     [const         uint 8            'floatingPointRepresentation' '0x00'       ]
     [const         uint 8            'serialHigh'        '0x00'                 ]
-    // FIXME: Strangely the spec seems to also be referencing a 'serialLow' but I can't see that in communictaion
+    [const         uint 8            'serialLow'         '0x00'                 ]
     // 4.10.3.2.8 Coding of the field RPCObjectUUID DEA00000-6C97-11D1-8271-{instanceOrNodeNumber}{deviceId}{vendorId}
     // Apache Vendor Id: 0x060B
     // PLC4X Profinet Driver Device ID (can be chosen freely): 0xCAFE
@@ -154,9 +165,9 @@
     [simple        uint 32           'activity'                                 ]
     [const         uint 16           'activity2'         '0x0000'               ]
     [const         uint 16           'activity3'         '0x1010'               ]
-    [const         uint 16           'activity4'         '0x77BE'               ]
-    [const         uint 32           'activity5'         '0x3D3C6D60'           ]
-    [const         uint 16           'activity6'         '0xA3A9'               ]
+    [const         uint 16           'activity4'         '0xAA25'               ]
+    [const         uint 32           'activity5'         '0x606D3C3D'           ]
+    [const         uint 16           'activity6'         '0xA9A3'               ]
     [simple        uint 32           'serverBootTime'                           ]
     [const         uint 32           'interfaceVer'      '0x00000001'           ]
     [simple        uint 32           'sequenceNumber'                           ]
@@ -166,7 +177,7 @@
     [implicit      uint 16           'fragmentLength'    'payload.lengthInBytes']
     [const         uint 16           'fragmentNum'       '0x0000'               ]
     [const         uint 8            'authProto'         '0x00'                 ]
-    [const         uint 8            'serialLow'         '0x00'                 ]
+    [const         uint 8            'serialLow2'        '0x00'                 ]// TODO: Check this ...
     [simple        PnIoCm_Packet     'payload'           ['packetType']         ]
 ]
 
@@ -184,11 +195,11 @@
 // 01-0E-CF-00-01-03 - FF: Reserved for further multicast addresses within the Type 10 context
 
 [type 'MacAddress'
-    [array uint 8 'address' count '6']
+    [array byte 'address' count '6']
 ]
 
 [type 'IpAddress'
-    [array uint 8 'data' count '4']
+    [array byte 'data' count '4']
 ]
 
 // 4.10.3.2.2
@@ -553,7 +564,7 @@
 ]
 
 // Big Endian
-[type 'PnIoCm_Block'
+[discriminatedType 'PnIoCm_Block'
     [discriminator PnIoCm_BlockType 'blockType'                           ]
     [implicit      uint 16          'blockLength'      'lengthInBytes - 4']
     [simple        uint 8           'blockVersionHigh'                    ]
@@ -580,8 +591,8 @@
             // End ARProperties
             [simple   uint 16                'cmInitiatorActivityTimeoutFactor'                       ]
             [simple   uint 16                'cmInitiatorUdpRtPort'                                   ]
-            //[implicit uint 16                'stationNameLength'    'STR_LEN(cmInitiatorStationName)' ]
-            //[simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'         ]
+            [implicit uint 16                'stationNameLength'    'STR_LEN(cmInitiatorStationName)' ]
+            [simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'         ]
         ]
         ['AR_BLOCK_RES' PnIoCm_Block_ArRes
             [simple   PnIoCm_ArType          'arType'                                                 ]
@@ -598,7 +609,7 @@
             [simple   bit                    'fullSubFrameStructure'                                  ]
             [simple   bit                    'distributedSubFrameWatchDog'                            ]
             [simple   bit                    'fastForwardingMacAdr'                                   ]
-            [reserved uint 16                '0x0000'                                                 ]
+            [reserved uint 17                '0x0000'                                                 ]
             [simple   bit                    'mediaRedundancy'                                        ]
             [reserved uint 7                 '0x00'                                                   ]
             [simple   PnIoCm_RtClass         'rtClass'                                                ]
@@ -714,21 +725,35 @@
     [simple PnIoCm_AddInfo   'addInfo'             ]
 ]
 
-[type 'PnIoCm_Submodule'
-    [simple   uint 16                'slotNumber'                  ]
-    [simple   uint 32                'submoduleIdentNumber'        ]
+[discriminatedType 'PnIoCm_Submodule'
+    [simple        uint 16                'slotNumber'                    ]
+    [simple        uint 32                'submoduleIdentNumber'          ]
     // Begin SubmoduleProperties
-    [reserved uint 10 '0x000']
-    [simple   bit                    'discardIoxs'                 ]
-    [simple   bit                    'reduceOutputModuleDataLength']
-    [simple   bit                    'reduceInputModuleDataLength' ]
-    [simple   bit                    'sharedInput'                 ]
-    [simple   PnIoCm_SubmoduleType   'submoduleType'               ]
+    [reserved      uint 10                '0x000'                         ]
+    [simple        bit                    'discardIoxs'                   ]
+    [simple        bit                    'reduceOutputModuleDataLength'  ]
+    [simple        bit                    'reduceInputModuleDataLength'   ]
+    [simple        bit                    'sharedInput'                   ]
+    [discriminator PnIoCm_SubmoduleType   'submoduleType'                 ]
     // End SubmoduleProperties
-    [simple   PnIoCm_DescriptionType 'descriptionType'             ]
-    [simple   uint 16                'submoduleDataLength'         ]
-    [simple   uint 8                 'lengthIoCs'                  ]
-    [simple   uint 8                 'lengthIoPs'                  ]
+    [typeSwitch 'submoduleType'
+        ['NO_INPUT_NO_OUTPUT_DATA' PnIoCm_Submodule_NoInputNoOutputData
+            [const    uint 16             'dataDescription'       '0x0001']
+            [const    uint 16             'submoduleDataLength'   '0x0000']
+            [const    uint 8              'lengthIoCs'            '0x01'  ]
+            [const    uint 8              'lengthIoPs'            '0x01'  ]
+        ]
+        ['INPUT_AND_OUTPUT_DATA' PnIoCm_Submodule_InputAndOutputData
+            [const    uint 16             'inputDataDescription'  '0x0001']
+            [simple   uint 16             'inputSubmoduleDataLength'      ]
+            [simple   uint 8              'inputLengthIoCs'               ]
+            [simple   uint 8              'inputLengthIoPs'               ]
+            [const    uint 16             'outputDataDescription' '0x0002']
+            [simple   uint 16             'outputSubmoduleDataLength'     ]
+            [simple   uint 8              'outputLengthIoCs'              ]
+            [simple   uint 8              'outputLengthIoPs'              ]
+        ]
+    ]
 ]
 
 [enum uint 16 'PnIoCm_BlockType'
@@ -757,10 +782,11 @@
 
 [enum uint 16 'PnIoCm_IoCrType'
     ['0x0001' INPUT_CR]
+    ['0x0002' OUTPUT_CR]
 ]
 
 [enum uint 4 'PnIoCm_RtClass'
-    ['0x0010' RT_CLASS_2]
+    ['0x2' RT_CLASS_2]
 ]
 
 [enum uint 16 'PnIoCm_AlarmCrType'
@@ -773,6 +799,7 @@
 
 [enum uint 2 'PnIoCm_SubmoduleType'
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
+    ['0x3' INPUT_AND_OUTPUT_DATA]
 ]
 
 [enum uint 16 'PnIoCm_DescriptionType'
