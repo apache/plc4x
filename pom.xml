@@ -103,7 +103,7 @@
     <sonar.cfamily.threads>1</sonar.cfamily.threads>
     <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
-    <plc4x-code-generation.version>1.5.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.5.0</plc4x-code-generation.version>
 
     <antlr.version>4.9.2</antlr.version>
     <apiguardian.version>1.1.1</apiguardian.version>
