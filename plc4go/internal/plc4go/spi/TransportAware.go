@@ -17,19 +17,15 @@
  * under the License.
  */
 
-package transports
+package spi
 
-import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/tcp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-)
+import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 
-func RegisterTcpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.(spi.TransportAware).RegisterTransport(tcp.NewTransport())
-}
-
-func RegisterUdpTransport(driverManager plc4go.PlcDriverManager) {
-	driverManager.(spi.TransportAware).RegisterTransport(udp.NewTransport())
+type TransportAware interface {
+	// RegisterTransport Manually register a new driver
+	RegisterTransport(transport transports.Transport)
+	// ListTransportNames List the names of all drivers registered in the system
+	ListTransportNames() []string
+	// GetTransport Get access to a driver instance for a given driver-name
+	GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error)
 }

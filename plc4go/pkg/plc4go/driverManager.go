@@ -36,13 +36,6 @@ type PlcDriverManager interface {
 	// GetDriver Get access to a driver instance for a given driver-name
 	GetDriver(driverName string) (PlcDriver, error)
 
-	// RegisterTransport Manually register a new driver
-	RegisterTransport(transport transports.Transport)
-	// ListTransportNames List the names of all drivers registered in the system
-	ListTransportNames() []string
-	// GetTransport Get access to a driver instance for a given driver-name
-	GetTransport(transportName string, connectionString string, options map[string][]string) (transports.Transport, error)
-
 	// GetConnection Get a connection to a remote PLC for a given plc4x connection-string
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 

@@ -503,7 +503,7 @@ func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPa
 
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterTransport(test.NewTransport())
+	driverManager.(spi.TransportAware).RegisterTransport(test.NewTransport())
 	driverManager.RegisterDriver(driver)
 
 	for _, testcase := range testsuite.testcases {
