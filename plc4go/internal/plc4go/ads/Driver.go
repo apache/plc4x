@@ -48,11 +48,12 @@ func (m *Driver) GetProtocolName() string {
 }
 
 func (m *Driver) GetDefaultTransport() string {
-	panic("implement me")
+	return "tcp"
 }
 
 func (m *Driver) CheckQuery(query string) error {
-	panic("implement me")
+	_, err := m.fieldHandler.ParseQuery(query)
+	return err
 }
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
