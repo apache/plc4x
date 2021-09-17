@@ -43,22 +43,24 @@ type IBACnetTagApplicationBitString interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationBitString) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationBitString) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationBitString) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
+func (m *BACnetTagApplicationBitString) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.Parent.TagNumber = tagNumber
 	m.Parent.LengthValueType = lengthValueType
 	m.Parent.ExtTagNumber = extTagNumber
 	m.Parent.ExtLength = extLength
+	m.Parent.ExtExtLength = extExtLength
+	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationBitString{
 		UnusedBits: unusedBits,
 		Data:       data,
-		Parent:     NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		Parent:     NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
 	return child.Parent
@@ -126,7 +128,7 @@ func BACnetTagApplicationBitStringParse(readBuffer utils.ReadBuffer, lengthValue
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() uint16 { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) })
+	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) }).(uint16)
 	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 	for readBuffer.GetPos() < _dataEndPos {
 		_item, _err := readBuffer.ReadInt8("", 8)

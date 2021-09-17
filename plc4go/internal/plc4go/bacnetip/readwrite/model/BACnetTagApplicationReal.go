@@ -42,21 +42,23 @@ type IBACnetTagApplicationReal interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagApplicationReal) ContextSpecificTag() uint8 {
-	return 0
+func (m *BACnetTagApplicationReal) TagClass() TagClass {
+	return TagClass_APPLICATION_TAGS
 }
 
-func (m *BACnetTagApplicationReal) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
+func (m *BACnetTagApplicationReal) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.Parent.TagNumber = tagNumber
 	m.Parent.LengthValueType = lengthValueType
 	m.Parent.ExtTagNumber = extTagNumber
 	m.Parent.ExtLength = extLength
+	m.Parent.ExtExtLength = extExtLength
+	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagApplicationReal(value float32, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagApplicationReal(value float32, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagApplicationReal{
 		Value:  value,
-		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		Parent: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
 	return child.Parent

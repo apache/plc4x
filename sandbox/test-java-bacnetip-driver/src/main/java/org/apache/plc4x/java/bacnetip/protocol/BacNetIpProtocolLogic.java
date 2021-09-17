@@ -149,7 +149,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
             BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
-            // The actual value change is in the notifications ... iterate throught them to get it.
+            // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetTagWithContent notification : valueChange.getNotifications()) {
                 // These are value change notifications. Ignore the rest.
                 if (notification.getPropertyIdentifier()[0] == (short) 0x55) {
@@ -163,13 +163,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.of(baCnetTag.getTypeOrTagNumber()));
+                    short tagNumber = baCnetTag.getTagNumber() < 0b1111 ? baCnetTag.getTagNumber() : baCnetTag.getExtTagNumber();
+                    enrichedPlcValue.put("tagNumber", IEC61131ValueHandler.of(tagNumber));
                     enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getLengthValueType()));
-                    if (baCnetTag.getExtTagNumber() != null) {
-                        enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.of(baCnetTag.getExtTagNumber()));
-                    } else {
-                        enrichedPlcValue.put("extTagNumber", new PlcNull());
-                    }
                     if (baCnetTag.getExtLength() != null) {
                         enrichedPlcValue.put("extLength", IEC61131ValueHandler.of(baCnetTag.getExtLength()));
                     } else {
@@ -245,7 +241,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
     protected void publishEvent(BacNetIpField field, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("event", new ResponseItem(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("event", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Send the subscription event to all listeners.
         for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {

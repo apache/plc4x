@@ -144,7 +144,7 @@ func (m *defaultCodec) Connect() error {
 	err := m.transportInstance.Connect()
 	if err == nil {
 		if !m.running {
-			log.Debug().Msg("Message codec currently not running")
+			log.Debug().Msg("Message codec currently not running, starting worker now")
 			go m.Work(&m.DefaultCodecRequirements)
 		}
 		m.running = true

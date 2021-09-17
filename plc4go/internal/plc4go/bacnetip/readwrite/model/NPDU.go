@@ -251,8 +251,8 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		return nil, pullErr
 	}
 	// Count array
-	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) }))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16((*destinationLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
+	destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 		_item, _err := readBuffer.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
@@ -288,8 +288,8 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		return nil, pullErr
 	}
 	// Count array
-	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) }))
-	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16((*sourceLength)) }, func() uint16 { return uint16(uint16(0)) })); curItem++ {
+	sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
 		_item, _err := readBuffer.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field")
@@ -313,7 +313,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
 	var nlm *NLM = nil
 	if messageTypeFieldPresent {
-		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() uint16 { return uint16(uint16(0)) }))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() uint16 { return uint16(uint16(0)) }))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() uint16 { return uint16(uint16(1)) }, func() uint16 { return uint16(uint16(0)) }))))))
+		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		}
@@ -323,7 +323,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
 	var apdu *APDU = nil
 	if !(messageTypeFieldPresent) {
-		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() uint16 { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() uint16 { return uint16(uint16(0)) }))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() uint16 { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() uint16 { return uint16(uint16(0)) }))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() uint16 { return uint16(uint16(1)) }, func() uint16 { return uint16(uint16(0)) }))))))
+		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		}

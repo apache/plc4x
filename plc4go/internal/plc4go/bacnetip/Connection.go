@@ -62,14 +62,14 @@ func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionReque
 	panic("Not implementec yet. (at least as a default)")
 }
 
-func (m *Connection) addSubscriber(subscriber *Subscriber) {
-	for _, sub := range m.subscribers {
+func (c *Connection) addSubscriber(subscriber *Subscriber) {
+	for _, sub := range c.subscribers {
 		if sub == subscriber {
 			log.Debug().Msgf("Subscriber %v already added", subscriber)
 			return
 		}
 	}
-	m.subscribers = append(m.subscribers, subscriber)
+	c.subscribers = append(c.subscribers, subscriber)
 }
 
 func (c *Connection) String() string {

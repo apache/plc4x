@@ -42,21 +42,23 @@ type IBACnetTagContext interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-func (m *BACnetTagContext) ContextSpecificTag() uint8 {
-	return 1
+func (m *BACnetTagContext) TagClass() TagClass {
+	return TagClass_CONTEXT_SPECIFIC_TAGS
 }
 
-func (m *BACnetTagContext) InitializeParent(parent *BACnetTag, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) {
-	m.Parent.TypeOrTagNumber = typeOrTagNumber
+func (m *BACnetTagContext) InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+	m.Parent.TagNumber = tagNumber
 	m.Parent.LengthValueType = lengthValueType
 	m.Parent.ExtTagNumber = extTagNumber
 	m.Parent.ExtLength = extLength
+	m.Parent.ExtExtLength = extExtLength
+	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetTagContext(data []int8, typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) *BACnetTag {
+func NewBACnetTagContext(data []int8, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetTag {
 	child := &BACnetTagContext{
 		Data:   data,
-		Parent: NewBACnetTag(typeOrTagNumber, lengthValueType, extTagNumber, extLength),
+		Parent: NewBACnetTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
 	return child.Parent
@@ -104,7 +106,7 @@ func (m *BACnetTagContext) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagContextParse(readBuffer utils.ReadBuffer, typeOrTagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
+func BACnetTagContextParse(readBuffer utils.ReadBuffer, tagNumber uint8, extTagNumber uint8, lengthValueType uint8, extLength uint8) (*BACnetTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetTagContext"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -115,7 +117,7 @@ func BACnetTagContextParse(readBuffer utils.ReadBuffer, typeOrTagNumber uint8, e
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16(extLength) }, func() uint16 { return uint16(lengthValueType) })
+	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(extLength) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
 	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 	for readBuffer.GetPos() < _dataEndPos {
 		_item, _err := readBuffer.ReadInt8("", 8)

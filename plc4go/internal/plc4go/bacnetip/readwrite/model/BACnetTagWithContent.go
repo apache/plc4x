@@ -33,8 +33,8 @@ const BACnetTagWithContent_CLOSINGTAG uint8 = 0x2f
 
 // The data-structure of this message
 type BACnetTagWithContent struct {
-	TypeOrTagNumber    uint8
-	ContextSpecificTag uint8
+	TagNumber          uint8
+	TagClass           TagClass
 	LengthValueType    uint8
 	ExtTagNumber       *uint8
 	ExtLength          *uint8
@@ -49,8 +49,8 @@ type IBACnetTagWithContent interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
-	return &BACnetTagWithContent{TypeOrTagNumber: typeOrTagNumber, ContextSpecificTag: contextSpecificTag, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, PropertyIdentifier: propertyIdentifier, Value: value}
+func NewBACnetTagWithContent(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value *BACnetTag) *BACnetTagWithContent {
+	return &BACnetTagWithContent{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, PropertyIdentifier: propertyIdentifier, Value: value}
 }
 
 func CastBACnetTagWithContent(structType interface{}) *BACnetTagWithContent {
@@ -77,10 +77,10 @@ func (m *BACnetTagWithContent) LengthInBits() uint16 {
 func (m *BACnetTagWithContent) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (typeOrTagNumber)
+	// Simple field (tagNumber)
 	lengthInBits += 4
 
-	// Simple field (contextSpecificTag)
+	// Simple field (tagClass)
 	lengthInBits += 1
 
 	// Simple field (lengthValueType)
@@ -122,16 +122,22 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 		return nil, pullErr
 	}
 
-	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber, _typeOrTagNumberErr := readBuffer.ReadUint8("typeOrTagNumber", 4)
-	if _typeOrTagNumberErr != nil {
-		return nil, errors.Wrap(_typeOrTagNumberErr, "Error parsing 'typeOrTagNumber' field")
+	// Simple Field (tagNumber)
+	tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
+	if _tagNumberErr != nil {
+		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field")
 	}
 
-	// Simple Field (contextSpecificTag)
-	contextSpecificTag, _contextSpecificTagErr := readBuffer.ReadUint8("contextSpecificTag", 1)
-	if _contextSpecificTagErr != nil {
-		return nil, errors.Wrap(_contextSpecificTagErr, "Error parsing 'contextSpecificTag' field")
+	// Simple Field (tagClass)
+	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
+		return nil, pullErr
+	}
+	tagClass, _tagClassErr := TagClassParse(readBuffer)
+	if _tagClassErr != nil {
+		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field")
+	}
+	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
+		return nil, closeErr
 	}
 
 	// Simple Field (lengthValueType)
@@ -142,7 +148,7 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
-	if bool((typeOrTagNumber) == (15)) {
+	if bool((tagNumber) == (15)) {
 		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
@@ -166,7 +172,7 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 	}
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
-	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() uint16 { return uint16((*extLength)) }, func() uint16 { return uint16(lengthValueType) })
+	_propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16((*extLength)) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
 	_propertyIdentifierEndPos := readBuffer.GetPos() + uint16(_propertyIdentifierLength)
 	for readBuffer.GetPos() < _propertyIdentifierEndPos {
 		_item, _err := readBuffer.ReadUint8("", 8)
@@ -214,7 +220,7 @@ func BACnetTagWithContentParse(readBuffer utils.ReadBuffer) (*BACnetTagWithConte
 	}
 
 	// Create the instance
-	return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
+	return NewBACnetTagWithContent(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
 }
 
 func (m *BACnetTagWithContent) Serialize(writeBuffer utils.WriteBuffer) error {
@@ -222,18 +228,23 @@ func (m *BACnetTagWithContent) Serialize(writeBuffer utils.WriteBuffer) error {
 		return pushErr
 	}
 
-	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := writeBuffer.WriteUint8("typeOrTagNumber", 4, (typeOrTagNumber))
-	if _typeOrTagNumberErr != nil {
-		return errors.Wrap(_typeOrTagNumberErr, "Error serializing 'typeOrTagNumber' field")
+	// Simple Field (tagNumber)
+	tagNumber := uint8(m.TagNumber)
+	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, (tagNumber))
+	if _tagNumberErr != nil {
+		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
 
-	// Simple Field (contextSpecificTag)
-	contextSpecificTag := uint8(m.ContextSpecificTag)
-	_contextSpecificTagErr := writeBuffer.WriteUint8("contextSpecificTag", 1, (contextSpecificTag))
-	if _contextSpecificTagErr != nil {
-		return errors.Wrap(_contextSpecificTagErr, "Error serializing 'contextSpecificTag' field")
+	// Simple Field (tagClass)
+	if pushErr := writeBuffer.PushContext("tagClass"); pushErr != nil {
+		return pushErr
+	}
+	_tagClassErr := m.TagClass.Serialize(writeBuffer)
+	if popErr := writeBuffer.PopContext("tagClass"); popErr != nil {
+		return popErr
+	}
+	if _tagClassErr != nil {
+		return errors.Wrap(_tagClassErr, "Error serializing 'tagClass' field")
 	}
 
 	// Simple Field (lengthValueType)

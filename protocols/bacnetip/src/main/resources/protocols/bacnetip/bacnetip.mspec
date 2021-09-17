@@ -302,16 +302,17 @@
         ['0x06' BACnetUnconfirmedServiceRequestTimeSynchronization
         ]
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
-            [const uint 8 'deviceInstanceLowLimitHeader' '0x0B']
-            [simple uint 24 'deviceInstanceLowLimit']
-            [const uint 8 'deviceInstanceHighLimitHeader' '0x1B']
-            [simple uint 24 'deviceInstanceHighLimit']
-            [const uint 8 'objectNameHeader' '0x3D']
-            [implicit uint 8 'objectNameLength' 'COUNT(objectName) + 1']
-            [simple uint 8 'objectNameCharacterSet']
-            [array int 8 'objectName' length 'objectNameLength - 1']
+            [const uint 8 'deviceInstanceLowLimitHeader' '0x0B'         ]
+            [simple uint 24 'deviceInstanceLowLimit'                    ]
+            [const uint 8 'deviceInstanceHighLimitHeader' '0x1B'        ]
+            [simple uint 24 'deviceInstanceHighLimit'                   ]
+            [const uint 8 'objectNameHeader' '0x3D'                     ]
+            [implicit uint 8 'objectNameLength' 'COUNT(objectName) + 1' ]
+            [simple uint 8 'objectNameCharacterSet'                     ]
+            [array int 8 'objectName' length 'objectNameLength - 1'     ]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
+            // TODO: here we need proper bacnet tags (like a dicriminator etc... see line 494 BACnetTag)
             [const uint 5 'deviceInstanceRangeLowLimitHeader' '0x01']
             [simple uint 3 'deviceInstanceRangeLowLimitLength']
             [array int 8 'deviceInstanceRangeLowLimit' count 'deviceInstanceRangeLowLimitLength']
@@ -479,61 +480,70 @@
 ]
 
 [type 'BACnetTagWithContent'
-    [simple        uint 4 'typeOrTagNumber']
-    [simple        uint 1 'contextSpecificTag']
-    [simple        uint 3 'lengthValueType']
-    [optional      uint 8 'extTagNumber'        'typeOrTagNumber == 15']
-    [optional      uint 8 'extLength'           'lengthValueType == 5']
-    [array         uint 8 'propertyIdentifier'  length          '(lengthValueType == 5) ? extLength : lengthValueType']
-    [const         uint 8 'openTag'             '0x2e']
-    [simple        BACnetTag 'value']
-    [const         uint 8 'closingTag'          '0x2f']
+    [simple        uint 4    'tagNumber'       ]
+    [simple        TagClass  'tagClass'        ]
+    [simple        uint 3    'lengthValueType' ]
+    [optional      uint 8    'extTagNumber'        'tagNumber == 15'     ]
+    [optional      uint 8    'extLength'           'lengthValueType == 5']
+    [array         uint 8    'propertyIdentifier'  length          '(lengthValueType == 5) ? extLength : lengthValueType']
+    [const         uint 8    'openTag'             '0x2e']
+    [simple        BACnetTag 'value'                     ]
+    [const         uint 8    'closingTag'          '0x2f']
 ]
 
 [discriminatedType 'BACnetTag'
-    [simple        uint 4 'typeOrTagNumber']
-    [discriminator uint 1 'contextSpecificTag']
-    [simple        uint 3 'lengthValueType']
-    [optional      uint 8 'extTagNumber' 'typeOrTagNumber == 15']
-    [optional      uint 8 'extLength' 'lengthValueType == 5']
-    [typeSwitch 'contextSpecificTag','typeOrTagNumber'
-        ['0','0x0' BACnetTagApplicationNull
+    [simple        uint 4   'tagNumber'                                                  ]
+    [discriminator TagClass 'tagClass'                                                   ]
+    [simple        uint 3   'lengthValueType'                                            ]
+    [virtual       bit      'isPrimitiveAndNotBoolean' '!(tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6) && tagNumber != 1']
+    [optional      uint 8   'extTagNumber'    'isPrimitiveAndNotBoolean && tagNumber == 15'                          ]
+    [optional      uint 8   'extLength'       'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
+    [optional      uint 16  'extExtLength'    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
+    [optional      uint 32  'extExtExtLength' 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
+    [virtual       uint 32  'actualLength'    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
+    [typeSwitch 'tagClass','tagNumber'
+        ['APPLICATION_TAGS','0x0' BACnetTagApplicationNull
         ]
-        ['0','0x1' BACnetTagApplicationBoolean
+        ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean
         ]
-        ['0','0x2' BACnetTagApplicationUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x2' BACnetTagApplicationUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['0','0x3' BACnetTagApplicationSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x3' BACnetTagApplicationSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['0','0x4' BACnetTagApplicationReal [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x4' BACnetTagApplicationReal [uint 3 'lengthValueType', uint 8 'extLength']
             [simple float 8.23 'value']
         ]
-        ['0','0x5' BACnetTagApplicationDouble [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x5' BACnetTagApplicationDouble [uint 3 'lengthValueType', uint 8 'extLength']
             [simple float 11.52 'value']
         ]
-        ['0','0x6' BACnetTagApplicationOctetString
+        ['APPLICATION_TAGS','0x6' BACnetTagApplicationOctetString
         ]
-        ['0','0x7' BACnetTagApplicationCharacterString
+        ['APPLICATION_TAGS','0x7' BACnetTagApplicationCharacterString
         ]
-        ['0','0x8' BACnetTagApplicationBitString [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x8' BACnetTagApplicationBitString [uint 3 'lengthValueType', uint 8 'extLength']
             [simple uint 8 'unusedBits']
             [array int 8 'data' length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
         ]
-        ['0','0x9' BACnetTagApplicationEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x9' BACnetTagApplicationEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['0','0xA' BACnetTagApplicationDate
+        ['APPLICATION_TAGS','0xA' BACnetTagApplicationDate
         ]
-        ['0','0xB' BACnetTagApplicationTime
+        ['APPLICATION_TAGS','0xB' BACnetTagApplicationTime
         ]
-        ['0','0xC' BACnetTagApplicationObjectIdentifier
+        ['APPLICATION_TAGS','0xC' BACnetTagApplicationObjectIdentifier
         ]
-        ['1' BACnetTagContext [uint 4 'typeOrTagNumber', uint 8 'extTagNumber', uint 3 'lengthValueType', uint 8 'extLength']
+        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext [uint 4 'tagNumber', uint 8 'extTagNumber', uint 3 'lengthValueType', uint 8 'extLength']
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
     ]
+]
+
+[enum uint 1 'TagClass'
+    ['0x0' APPLICATION_TAGS]
+    ['0x1' CONTEXT_SPECIFIC_TAGS]
 ]
 
 [enum int 4 'ApplicationTag'
