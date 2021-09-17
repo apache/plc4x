@@ -576,10 +576,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                // TODO: This is not quite correct with the cast to uint16
                 return "utils.InlineIf(" + toExpression(new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                    "func() uint16 {return uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                    "func() uint16 {return uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
+                    "func() interface{} {return " + getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                    "func() interface{} {return " + getCastExpressionForTypeReference(fieldType) + "(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + ")}).(" + getCastExpressionForTypeReference(fieldType) + ")";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
