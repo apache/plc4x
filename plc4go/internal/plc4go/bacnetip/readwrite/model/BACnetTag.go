@@ -34,6 +34,7 @@ type BACnetTag struct {
 	ExtLength                *uint8
 	ExtExtLength             *uint16
 	ExtExtExtLength          *uint32
+	ActualTagNumber          uint8
 	IsPrimitiveAndNotBoolean bool
 	ActualLength             uint32
 	Child                    IBACnetTagChild
@@ -54,7 +55,7 @@ type IBACnetTagParent interface {
 
 type IBACnetTagChild interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
-	InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, isPrimitiveAndNotBoolean bool, actualLength uint32)
+	InitializeParent(parent *BACnetTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32)
 	GetTypeName() string
 	IBACnetTag
 }
@@ -99,12 +100,14 @@ func (m *BACnetTag) ParentLengthInBits() uint16 {
 	// Simple field (lengthValueType)
 	lengthInBits += 3
 
-	// A virtual field doesn't have any in- or output.
-
 	// Optional Field (extTagNumber)
 	if m.ExtTagNumber != nil {
 		lengthInBits += 8
 	}
+
+	// A virtual field doesn't have any in- or output.
+
+	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (extLength)
 	if m.ExtLength != nil {
@@ -154,18 +157,21 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field")
 	}
 
-	// Virtual field
-	isPrimitiveAndNotBoolean := bool(!(bool(bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))))) && bool(bool((tagNumber) != (1)))
-
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
-	if bool(isPrimitiveAndNotBoolean) && bool(bool((tagNumber) == (15))) {
+	if bool((tagNumber) == (15)) {
 		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field")
 		}
 		extTagNumber = &_val
 	}
+
+	// Virtual field
+	actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() interface{} { return uint8(tagNumber) }, func() interface{} { return uint8((*extTagNumber)) }).(uint8)
+
+	// Virtual field
+	isPrimitiveAndNotBoolean := bool(!(bool(bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6)))))) && bool(bool((tagNumber) != (1)))
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
@@ -251,7 +257,7 @@ func BACnetTagParse(readBuffer utils.ReadBuffer) (*BACnetTag, error) {
 	}
 
 	// Finish initializing
-	_parent.Child.InitializeParent(_parent, tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, isPrimitiveAndNotBoolean, actualLength)
+	_parent.Child.InitializeParent(_parent, tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength, actualTagNumber, isPrimitiveAndNotBoolean, actualLength)
 	return _parent, nil
 }
 

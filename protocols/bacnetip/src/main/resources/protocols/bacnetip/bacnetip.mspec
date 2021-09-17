@@ -492,11 +492,12 @@
 ]
 
 [discriminatedType 'BACnetTag'
-    [simple        uint 4   'tagNumber'                                                  ]
-    [discriminator TagClass 'tagClass'                                                   ]
-    [simple        uint 3   'lengthValueType'                                            ]
+    [simple        uint 4   'tagNumber'                                                   ]
+    [discriminator TagClass 'tagClass'                                                    ]
+    [simple        uint 3   'lengthValueType'                                             ]
+    [optional      uint 8   'extTagNumber'    'tagNumber == 15'                           ]
+    [virtual       uint 8   'actualTagNumber' 'tagNumber < 15 ? tagNumber : extTagNumber' ]
     [virtual       bit      'isPrimitiveAndNotBoolean' '!(tagClass == TagClass.CONTEXT_SPECIFIC_TAGS && lengthValueType == 6) && tagNumber != 1']
-    [optional      uint 8   'extTagNumber'    'isPrimitiveAndNotBoolean && tagNumber == 15'                          ]
     [optional      uint 8   'extLength'       'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
     [optional      uint 16  'extExtLength'    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
     [optional      uint 32  'extExtExtLength' 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
