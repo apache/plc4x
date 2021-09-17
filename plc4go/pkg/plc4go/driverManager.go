@@ -151,11 +151,13 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		}()
 		return ch
 	}
+	log.Debug().Stringer("connectionUrl", connectionUrl).Msgf("got driver %s", driver.GetProtocolName())
 
 	// If a transport is provided alongside the driver, the URL content is decoded as "opaque" data
 	// Then we have to re-parse that to get the transport code as well as the host & port information.
 	var transportName string
 	var transportConnectionString string
+	var transportPath string
 	if len(connectionUrl.Opaque) > 0 {
 		log.Trace().Msg("we handling a opaque connectionUrl")
 		connectionUrl, err := url.Parse(connectionUrl.Opaque)
@@ -169,11 +171,13 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		}
 		transportName = connectionUrl.Scheme
 		transportConnectionString = connectionUrl.Host
+		transportPath = connectionUrl.Path
 	} else {
 		log.Trace().Msg("we handling a non-opaque connectionUrl")
 		// If no transport was provided the driver has to provide a default transport.
 		transportName = driver.GetDefaultTransport()
 		transportConnectionString = connectionUrl.Host
+		transportPath = connectionUrl.Path
 	}
 	log.Debug().
 		Str("transportName", transportName).
@@ -193,6 +197,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 	transportUrl := url.URL{
 		Scheme: transportName,
 		Host:   transportConnectionString,
+		Path:   transportPath,
 	}
 	log.Debug().Stringer("transportUrl", &transportUrl).Msg("Assembled transport url")
 
