@@ -90,7 +90,7 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.CEMIAdditionalInformationParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ComObjectTable":
 		firmwareType := model.FirmwareTypeByName(parserArguments[0])
-		return model.ComObjectTableParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), &firmwareType)
+		return model.ComObjectTableParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), firmwareType)
 	case "KnxAddress":
 		return model.KnxAddressParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ConnectionResponseDataBlock":

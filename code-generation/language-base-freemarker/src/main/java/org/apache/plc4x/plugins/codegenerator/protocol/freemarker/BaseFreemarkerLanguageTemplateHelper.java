@@ -49,6 +49,8 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public static final String START_POS = "startPos";
     public static final String LAST_ITEM = "lastItem";
     public static final String IMPLICIT = "implicit";
+    public static final String VIRTUAL = "virtual";
+    public static final String DISCRIMINATOR = "discriminator";
 
     static {
         builtInFields = new HashMap<>();
@@ -988,6 +990,58 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             if (field.getTypeName().equals(IMPLICIT)) {
                 ImplicitField implicitField = (ImplicitField) field;
                 if (vl.getName().equals(implicitField.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Confirms if a variable is an virtual variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return boolean returns true if the variable's name is an vritual field
+     */
+    protected boolean isVariableLiteralVirtualField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType = (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return false;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals(VIRTUAL)) {
+                VirtualField virtualField = (VirtualField) field;
+                if (vl.getName().equals(virtualField.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Confirms if a variable is an discriminator variable. These need to be handled differently when serializing and parsing.
+     *
+     * @param vl The variable to search for.
+     * @return boolean returns true if the variable's name is an discriminator field
+     */
+    protected boolean isVariableLiteralDiscriminatorField(VariableLiteral vl) {
+        List<Field> fields = null;
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexType = (ComplexTypeDefinition) getThisTypeDefinition();
+            fields = complexType.getFields();
+        }
+        if (fields == null) {
+            return false;
+        }
+        for (Field field : fields) {
+            if (field.getTypeName().equals(DISCRIMINATOR)) {
+                DiscriminatorField discriminatorField = (DiscriminatorField) field;
+                if (vl.getName().equals(discriminatorField.getName())) {
                     return true;
                 }
             }

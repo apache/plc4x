@@ -90,7 +90,7 @@ func (m *ComObjectTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType *FirmwareType) (*ComObjectTable, error) {
+func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -99,11 +99,11 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType *FirmwareType
 	var _parent *ComObjectTable
 	var typeSwitchError error
 	switch {
-	case *firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
+	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
 		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer)
-	case *firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
+	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
 		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer)
-	case *firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
+	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
 		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer)
 	default:
 		// TODO: return actual type

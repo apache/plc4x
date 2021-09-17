@@ -159,9 +159,9 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     <#if !helper.isDiscriminatorField(field.name)>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
-        return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toAccessExpression(field, field.valueExpression, type.parserArguments)});
         <#else>
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toAccessExpression(field, field.valueExpression, type.parserArguments)});
         </#if>
     }
     </#if>

@@ -90,7 +90,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument><#if helper.isComplexTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments?has_content>, <#list typeDefinition.parserArguments as parserArgument><#if helper.isComplexTypeReference(parserArgument.type) && !helper.isEnumTypeReference(parserArgument.type)>&</#if>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

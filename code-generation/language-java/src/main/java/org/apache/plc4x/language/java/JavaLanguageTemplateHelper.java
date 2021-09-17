@@ -19,6 +19,7 @@
 package org.apache.plc4x.language.java;
 
 import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
@@ -37,7 +38,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private final Map<String, String> options;
 
     public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-        Map<String, String> options) {
+                                      Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
         this.options = options;
     }
@@ -532,6 +533,16 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return types.values();
     }*/
 
+    public String toAccessExpression(TypedField field, Term term, Argument[] parserArguments) {
+        return toExpression(field, term, term1 -> {
+            VariableLiteral vl = (VariableLiteral) term1;
+            if (isVariableLiteralVirtualField(vl) || isVariableLiteralDiscriminatorField(vl)) { // If we are accessing virtual|discriminator fields, we need to call the getter.
+                return "get" + StringUtils.capitalize(vl.getName()) + "()";
+            }
+            return toVariableParseExpression(field, term1, parserArguments);
+        });
+    }
+
     public String toParseExpression(TypedField field, Term term, Argument[] parserArguments) {
         return toExpression(field, term, term1 -> toVariableParseExpression(field, term1, parserArguments));
     }
@@ -615,7 +626,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             sb.append("(").append(toVariableParseExpression(field, vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
-            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+            return sb + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         } else if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
             if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
@@ -645,10 +656,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                         }
                     }
                     if (isParserArg) {
-                        sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                    }
-                    // We have to manually evaluate the type information at code-generation time.
-                    else if (isTypeArg) {
+                        sb.append(va.getName()).append((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : "");
+                    } else if (isTypeArg) {// We have to manually evaluate the type information at code-generation time.
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -673,13 +682,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             sb.append(")");
             return sb.toString();
-        }
-        // If we are accessing implicit fields, we need to rely on a local variable instead.
-        else if (isVariableLiteralImplicitField(vl)) {
+        } else if (isVariableLiteralImplicitField(vl)) { // If we are accessing implicit fields, we need to rely on a local variable instead.
             return vl.getName();
-        }
-        // All uppercase names are not fields, but utility methods.
-        else if (vl.getName().equals(vl.getName().toUpperCase())) {
+        } else if (vl.getName().equals(vl.getName().toUpperCase())) { // All uppercase names are not fields, but utility methods.
             StringBuilder sb = new StringBuilder(vl.getName());
             if (vl.getArgs() != null) {
                 sb.append("(");
@@ -696,7 +701,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             if (vl.getIndex() != VariableLiteral.NO_INDEX) {
                 sb.append("[").append(vl.getIndex()).append("]");
             }
-            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+            return sb + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         }
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
     }

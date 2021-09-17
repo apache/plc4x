@@ -62,7 +62,7 @@ func (m AdsXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 	case "AdsData":
 		commandId := model.CommandIdByName(parserArguments[0])
 		response := parserArguments[1] == "true"
-		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), &commandId, response)
+		return model.AdsDataParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), commandId, response)
 	case "AmsNetId":
 		return model.AmsNetIdParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AdsStampHeader":
