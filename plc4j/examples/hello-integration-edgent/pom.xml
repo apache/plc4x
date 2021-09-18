@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>plc4j-hello-integration-edgent</artifactId>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-apache-edgent</artifactId>
-      <version>0.9.0-SNAPSHOT</version>
+      <version>0.9.0</version>
     </dependency>
 
     <dependency>
