@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
