@@ -556,6 +556,15 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- For this module deploying maven artifacts doesn't make any sense -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
