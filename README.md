@@ -73,8 +73,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is exactly Java 11
-(Higher versions can't build the Logstash integration and lower versions can't build the CMake dependent parts).
+NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java or above is also ok. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -83,15 +82,17 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 ### Environment
 
-Currently, the project is configured to require the following software:
+Currently, the project is configured to require the following software when building only the Java parts:
 
-1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
- point to that.
+1. Java 1.8 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
 
-With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
+With this setup you will be able to build the Java part of PLC4X.
+
+The build however does automatically run a prerequisite check and fail the build with an explanation, if not all requirements are meet.
+
 For a full build of PLC4X with all options the following has to be provided:
 
 #### Linux
@@ -287,7 +288,7 @@ Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://
 
 There are multiple forms in which you can become involved with the PLC4X project.
 
-These usually are, but are not limited to:
+These are, but are not limited to:
 
 * Submitting Pull Requests
 * Filing Bug-Reports
