@@ -145,7 +145,8 @@
     <jackson.version>2.12.5</jackson.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>2.3.3</jaxb.version>
-    <jetty-util.version>11.0.6</jetty-util.version>
+    <!-- Newer versions are only compatible with Java 11. It's currently only used for obfuscating a password in the OPC-UA Server anyway -->
+    <jetty-util.version>9.4.43.v20210629</jetty-util.version>
     <jna.version>5.8.0</jna.version>
     <joda-time.version>2.10.10</joda-time.version>
     <jserialcom.version>2.7.0</jserialcom.version>
@@ -793,6 +794,7 @@
             <exclude>**/go.sum</exclude>
 
             <!--exclude>plc4go/**</exclude-->
+            <exclude>content/**</exclude>
           </excludes>
         </configuration>
       </plugin>

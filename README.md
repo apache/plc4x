@@ -73,7 +73,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java or above is also ok. 
+NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java 1.8 or above is ok. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -84,7 +84,7 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 Currently, the project is configured to require the following software when building only the Java parts:
 
-1. Java 1.8 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
+1. Java 1.8 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that. If you also want to build the `plc4c` and `plc4cpp` modules, you will need at least Java 11.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
