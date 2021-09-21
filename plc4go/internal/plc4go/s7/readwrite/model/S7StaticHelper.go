@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package model
 
 import (
@@ -24,7 +25,7 @@ import (
 	"time"
 )
 
-func StaticHelperParseTiaTime(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaTime(io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int millisSinceMidnight = io.readInt(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -35,12 +36,12 @@ func StaticHelperParseTiaTime(io *utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func StaticHelperSerializeTiaTime(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseS5Time(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseS5Time(io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int stuff = io.readInt(16);
 	      // TODO: Implement this correctly.
@@ -51,22 +52,22 @@ func StaticHelperParseS5Time(io *utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func StaticHelperSerializeS5Time(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeS5Time(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing S5TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaLTime(io *utils.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaLTime(io utils.ReadBuffer) (uint32, error) {
 	//throw new NotImplementedException("LTIME not implemented");
 	return 0, nil
 }
 
-func StaticHelperSerializeTiaLTime(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaLTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing LTIME not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (time.Time, error) {
+func StaticHelperParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      long millisSinceMidnight = io.readUnsignedLong(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -77,12 +78,12 @@ func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaTimeOfDay(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaTimeOfDay(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaDate(io *utils.ReadBuffer) (time.Time, error) {
+func StaticHelperParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
@@ -92,12 +93,12 @@ func StaticHelperParseTiaDate(io *utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaDate(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaDate(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (time.Time, error) {
+func StaticHelperParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
 	      int month = io.readUnsignedInt(8);
@@ -116,35 +117,37 @@ func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaDateTime(io *utils.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseS7String(io *utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
-	/*try {
-	      // This is the maximum number of bytes a string can be long.
-	      short maxLength = io.readUnsignedShort(8);
-	      // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-	      short totalStringLength = io.readShort(8);
-	      // Read the full size of the string.
-	      String str = io.readString(stringLength * 8, (String) encoding);
-	      // Cut off the parts that don't belong to it.
-	      return str.substring(0, totalStringLength);
-	  } catch (ParseException e) {
-	      return null;
-	  }*/
-	return "", nil
+func StaticHelperParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
-func StaticHelperSerializeS7String(io *utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
-	return nil
+func StaticHelperSerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+	var multiplier int32
+	switch encoding {
+	case "UTF-8":
+		multiplier = 0
+	case "UTF-16":
+		multiplier = 16
+	}
+	return io.WriteString("", uint8(stringLength*multiplier), encoding, value.GetString())
 }
 
-func StaticHelperParseS7Char(io *utils.ReadBuffer, encoding string) (uint8, error) {
-	return 0, nil
+func StaticHelperParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
+	return io.ReadUint8("", 8)
 }
 
-func StaticHelperSerializeS7Char(io *utils.WriteBuffer, value values.PlcValue, encoding string) error {
-	return nil
+func StaticHelperSerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+	return io.WriteUint8("", 8, value.GetUint8())
 }

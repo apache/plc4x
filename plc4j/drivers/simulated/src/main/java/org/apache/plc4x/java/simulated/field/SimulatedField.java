@@ -1,23 +1,24 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.plc4x.java.simulated.field;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -35,21 +36,19 @@ import java.util.regex.Pattern;
  */
 public class SimulatedField implements PlcField {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimulatedField.class);
-
     /**
      * Examples:
      * - {@code RANDOM/foo:INTEGER}
      * - {@code STDOUT/foo:STRING}
      */
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^(?<type>\\w+)/(?<name>[a-zA-Z0-9_\\\\.]+):(?<dataType>[a-zA-Z0-9]++)(\\[(?<numElements>\\d+)])?$");
 
     private final SimulatedFieldType type;
     private final String name;
-    private final String dataType;
+    private final SimulatedDataTypeSizes dataType;
     private final int numElements;
 
-    private SimulatedField(SimulatedFieldType type, String name, String dataType, int numElements) {
+    private SimulatedField(SimulatedFieldType type, String name, SimulatedDataTypeSizes dataType, int numElements) {
         this.type = type;
         this.name = name;
         this.dataType = dataType;
@@ -64,32 +63,30 @@ public class SimulatedField implements PlcField {
             String dataType;
             switch (matcher.group("dataType").toUpperCase()) {
                 case "INTEGER":
-                    dataType = "IEC61131_DINT";
+                    dataType = "DINT";
                     break;
                 case "BYTE":
-                    dataType = "IEC61131_BYTE";
+                    dataType = "BYTE";
                     break;
                 case "SHORT":
-                    dataType = "IEC61131_INT";
+                    dataType = "INT";
                     break;
                 case "LONG":
-                    dataType = "IEC61131_LINT";
+                    dataType = "LINT";
                     break;
                 case "FLOAT":
-                    dataType = "IEC61131_REAL";
+                    dataType = "REAL";
                     break;
                 case "DOUBLE":
-                    dataType = "IEC61131_LREAL";
+                    dataType = "LREAL";
                     break;
                 case "BOOLEAN":
-                    dataType = "IEC61131_BOOL";
+                    dataType = "BOOL";
                     break;
                 default:
-                    dataType = "IEC61131_" + matcher.group("dataType").toUpperCase();
+                    dataType = matcher.group("dataType").toUpperCase();
             }
-            try {
-                SimulatedDataTypeSizes.enumForValue(dataType).getDataTypeSize();
-            } catch (NullPointerException e) {
+            if (!EnumUtils.isValidEnum(SimulatedDataTypeSizes.class, dataType)) {
                 throw new PlcInvalidFieldException("Invalid data type: " + dataType);
             }
 
@@ -97,7 +94,7 @@ public class SimulatedField implements PlcField {
             if (matcher.group("numElements") != null) {
                 numElements = Integer.parseInt(matcher.group("numElements"));
             }
-            return new SimulatedField(type, name, dataType, numElements);
+            return new SimulatedField(type, name, SimulatedDataTypeSizes.valueOf(dataType), numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -111,14 +108,14 @@ public class SimulatedField implements PlcField {
     }
 
     public String getPlcDataType() {
-        return dataType;
+        return dataType.name();
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDataType() {
+    public SimulatedDataTypeSizes getDataType() {
         return dataType;
     }
 

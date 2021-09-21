@@ -35,7 +35,7 @@ This should look like this:
 ```
 module main
 
-go 1.14
+go 1.16
 ```
 
 Now we need to create a `app.go` file which will be our main program.
@@ -162,10 +162,10 @@ In order to create and run such a `PlcReadRequest`, please add the following cod
 
 ----
 	// Prepare a read-request
-	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddItem("field1", "holding-register:1:REAL")
-	readRequestBuilder.AddItem("field2", "holding-register:3:REAL")
-	readRequest, err := readRequestBuilder.Build()
+	readRequest, err := connection.ReadRequestBuilder().
+		AddQuery("field1", "holding-register:1:REAL").
+		AddQuery("field2", "holding-register:3:REAL").
+        Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
 		t.Fail()
@@ -201,7 +201,7 @@ Now in order to do something with the response:
 	value1 := readRequestResult.Response.GetValue("field1")
 	value2 := readRequestResult.Response.GetValue("field2")
 	fmt.Printf("\n\nResult field1: %f\n", value1.GetFloat32())
-	fmt.Printf("\n\nResult field1: %f\n", value2.GetFloat32())
+	fmt.Printf("\n\nResult field2: %f\n", value2.GetFloat32())
 ----
 
 The `GetValue` function returns a `PlcValue` instance, this had accessors for the most general `Go` types.
@@ -237,12 +237,12 @@ Therefore instead of using a normal `AddItem`, there are tree different function
 
 ----
 	// Prepare a subscription-request
-    subscriptionRequestBuilder := connection.SubscriptionRequestBuilder()
-    subscriptionRequestBuilder.AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp")
-    subscriptionRequestBuilder.AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp")
-    subscriptionRequestBuilder.AddCyclicItem("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond)
-    subscriptionRequestBuilder.AddItemHandler(knxEventHandler)
-    subscriptionRequest, err := subscriptionRequestBuilder.Build()
+    subscriptionRequest, err := connection.SubscriptionRequestBuilder().
+        AddChangeOfStateItem("heating-actual-temperature", "*/*/10:DPT_Value_Temp").
+        AddChangeOfStateItem("heating-target-temperature", "*/*/11:DPT_Value_Temp").
+        AddCyclicItem("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond).
+        AddItemHandler(knxEventHandler).
+        Build()
     if err != nil {
 	    fmt.Printf("Error preparing subscription-request: %s", connectionResult.Err.Error())
         return

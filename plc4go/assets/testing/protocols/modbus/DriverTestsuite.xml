@@ -24,15 +24,18 @@
 
   <name>Modbus</name>
 
+  <protocolName>modbus</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
   <driver-name>modbus</driver-name>
 
   <testcase>
     <name>Single element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
             </field>
@@ -43,12 +46,20 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>2</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -56,11 +67,25 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -70,16 +95,19 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -91,9 +119,9 @@
     <name>Array element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
             </field>
@@ -104,12 +132,20 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>4</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -117,11 +153,29 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP20BJD9s=</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">11</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">8</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -131,19 +185,22 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz result="OK">
-              <PlcList>
-                <PlcREAL>3.1415927</PlcREAL>
-                <PlcREAL>3.1415927</PlcREAL>
-              </PlcList>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcList>
+                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                </PlcList>
+              </ResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -155,13 +212,13 @@
     <name>Multi element read request</name>
     <steps>
       <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+        <TestReadRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz1</name>
               <address>holding-register:1:REAL</address>
             </field>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestField">
               <name>hurz2</name>
               <address>holding-register:3:REAL</address>
             </field>
@@ -172,12 +229,20 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>2</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -185,11 +250,25 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -197,12 +276,20 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>2</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>2</startingAddress>
-            <quantity>2</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">2</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUReadHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -210,11 +297,25 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>2</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP2w==</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">2</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">7</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">3</functionFlag>
+              <ModbusPDUReadHoldingRegistersResponse>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUReadHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -224,26 +325,32 @@
             <fields>
               <hurz1>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz1>
               <hurz2>
                 <ModbusFieldHoldingRegister>
-                  <address>2</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">2</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
               </hurz2>
             </fields>
           </PlcReadRequest>
           <values>
-            <hurz1 result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz1>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz1>
-            <hurz2 result="OK">
-              <PlcREAL>3.1415927</PlcREAL>
+            <hurz2>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+              </ResponseItem>
             </hurz2>
           </values>
         </PlcReadResponse>
@@ -255,9 +362,9 @@
     <name>Single element write request</name>
     <steps>
       <api-request name="Receive Write Request from application">
-        <TestWriteRequest className="org.apache.plc4x.test.driver.model.api.TestWriteRequest">
+        <TestWriteRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestValueField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
               <name>hurz</name>
               <address>holding-register:1:REAL</address>
               <value>3.1415927</value>
@@ -269,13 +376,27 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>2</quantity>
-            <value>QEkP2w==</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">11</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+              <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+                <byteCount dataType="uint" bitLength="8">4</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUWriteMultipleHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -283,12 +404,20 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse">
-            <startingAddress>0</startingAddress>
-            <quantity>2</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+              <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">2</quantity>
+              </ModbusPDUWriteMultipleHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -298,16 +427,16 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>1</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
-                <value>3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
             </fields>
           </PlcWriteRequest>
           <fields>
-            <hurz result="OK"/>
+            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
           </fields>
         </PlcWriteResponse>
       </api-response>
@@ -318,9 +447,9 @@
     <name>Array element write request</name>
     <steps>
       <api-request name="Receive Write Request from application">
-        <TestWriteRequest className="org.apache.plc4x.test.driver.model.api.TestWriteRequest">
+        <TestWriteRequest>
           <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestValueField">
+            <field className="org.apache.plc4x.test.driver.internal.api.TestValueField">
               <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
               <value>3.1415927</value>
@@ -333,13 +462,31 @@
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>4</quantity>
-            <value>QEkP20BJD9s=</value>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">15</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+              <ModbusPDUWriteMultipleHoldingRegistersRequest>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+                <byteCount dataType="uint" bitLength="8">8</byteCount>
+                <value isList="true">
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                  <value dataType="int" bitLength="8">64</value>
+                  <value dataType="int" bitLength="8">73</value>
+                  <value dataType="int" bitLength="8">15</value>
+                  <value dataType="int" bitLength="8">-37</value>
+                </value>
+              </ModbusPDUWriteMultipleHoldingRegistersRequest>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </outgoing-plc-message>
@@ -347,12 +494,20 @@
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>1</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse">
-            <startingAddress>0</startingAddress>
-            <quantity>4</quantity>
+        <ModbusTcpADU>
+          <transactionIdentifier dataType="uint" bitLength="16">1</transactionIdentifier>
+          <protocolIdentifier dataType="uint" bitLength="16">0</protocolIdentifier>
+          <length dataType="uint" bitLength="16">6</length>
+          <unitIdentifier dataType="uint" bitLength="8">1</unitIdentifier>
+          <pdu>
+            <ModbusPDU>
+              <errorFlag dataType="bit" bitLength="1">false</errorFlag>
+              <functionFlag dataType="uint" bitLength="7">16</functionFlag>
+              <ModbusPDUWriteMultipleHoldingRegistersResponse>
+                <startingAddress dataType="uint" bitLength="16">0</startingAddress>
+                <quantity dataType="uint" bitLength="16">4</quantity>
+              </ModbusPDUWriteMultipleHoldingRegistersResponse>
+            </ModbusPDU>
           </pdu>
         </ModbusTcpADU>
       </incoming-plc-message>
@@ -362,17 +517,17 @@
             <fields>
               <hurz>
                 <ModbusFieldHoldingRegister>
-                  <address>0</address>
-                  <numberOfElements>2</numberOfElements>
-                  <dataType>IEC61131_REAL</dataType>
+                  <address dataType="uint" bitLength="16">0</address>
+                  <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                  <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusFieldHoldingRegister>
-                <value>3.1415927</value>
-                <value>3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
+                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
               </hurz>
             </fields>
           </PlcWriteRequest>
           <fields>
-            <hurz result="OK"/>
+            <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
           </fields>
         </PlcWriteResponse>
       </api-response>

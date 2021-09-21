@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.test.manual.ManualTest;
@@ -68,7 +68,18 @@ public class ManualAdsDriverTest extends ManualTest {
     }
 
     public static void main(String[] args) throws Exception {
-        ManualAdsDriverTest test = new ManualAdsDriverTest("ads:tcp://192.168.23.20?sourceAmsNetId=192.168.23.200.1.1&sourceAmsPort=65534&targetAmsNetId=192.168.23.20.1.1&targetAmsPort=851");
+        String spsIp = "192.168.23.20";
+        /////
+        // TODO: adjust this to your ip address
+        String clientIp = "192.168.24.1";
+        //
+        ////
+        String sourceAmsNetId = clientIp + ".1.1";
+        int sourceAmsPort = 65534;
+        String targetAmsNetId = spsIp + ".1.1";
+        int targetAmsPort = 851;
+        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("main.hurz_BOOL:BOOL", true);
         test.addTestCase("main.hurz_BYTE:BYTE", Arrays.asList(false, false, true, false, true, false, true, false));
         test.addTestCase("main.hurz_WORD:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false));

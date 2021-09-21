@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,13 +23,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcCHAR extends PlcIECValue<Short> {
 
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
     static Short minValue = 0;
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
@@ -71,9 +74,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = val.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Character '" + Character.toString(value) + "', Value " + val +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -83,9 +84,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -95,9 +94,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -107,9 +104,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -119,9 +114,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -131,9 +124,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -143,9 +134,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -155,9 +144,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -167,9 +154,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value.shortValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -186,15 +171,10 @@ public class PlcCHAR extends PlcIECValue<Short> {
                 this.value = val;
                 this.isNullable = false;
             } else {
-                throw new PlcInvalidFieldException("Value " + value +
-                  " is out of range " + minValue + " - " + maxValue + " for a " +
-                  this.getClass().getSimpleName() + " Value");
+                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
-        }
-        catch(Exception e) {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        } catch (Exception e) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -205,9 +185,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
@@ -345,8 +323,14 @@ public class PlcCHAR extends PlcIECValue<Short> {
     @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
-        bytes[0] = (byte)(value & 0xff);
+        bytes[0] = (byte) (value & 0xff);
         return bytes;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        String valueString = value.toString();
+        writeBuffer.writeString(getClass().getSimpleName(), 16, StandardCharsets.UTF_8.name(), valueString);
     }
 
 }

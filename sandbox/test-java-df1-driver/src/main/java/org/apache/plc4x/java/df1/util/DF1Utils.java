@@ -18,79 +18,35 @@
  */
 package org.apache.plc4x.java.df1.util;
 
+import com.github.snksoft.crc.CRC;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
-import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest;
-import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.df1.readwrite.io.DF1CommandIO;
+import org.apache.plc4x.java.spi.generation.*;
 
 public class DF1Utils {
 
-    public static int crcCheck(Object... args) {
-        short destinationAddress = (short) args[0];
-        short sourceAddress = (short) args[1];
-        DF1Command command = (DF1Command) args[2];
-        short status = command.getStatus();
-        int transactionCounter = command.getTransactionCounter();
-        if(command instanceof DF1UnprotectedReadRequest) {
-            try {
-                DF1UnprotectedReadRequest unprotectedReadRequest = (DF1UnprotectedReadRequest) command;
-                WriteBuffer writeBuffer = new WriteBuffer(10, false);
-                writeBuffer.writeUnsignedShort(8, destinationAddress);
-                writeBuffer.writeUnsignedShort(8, sourceAddress);
-                writeBuffer.writeUnsignedShort(8, command.getCommandCode());
-                writeBuffer.writeUnsignedShort(8, status);
-                writeBuffer.writeUnsignedInt(16, (short) transactionCounter);
-                writeBuffer.writeUnsignedInt(16, (short) unprotectedReadRequest.getAddress());
-                writeBuffer.writeUnsignedShort(8, (byte) unprotectedReadRequest.getSize());
-                writeBuffer.writeUnsignedShort(8, (byte) 0x03);
-
-                byte[] data = writeBuffer.getData();
-                return calculateCRC(data) & 0xFFFF;
-
-            } catch (ParseException e) {
-                throw new RuntimeException("Something went wrong during the CRC check", e);
-            }
-        } else if(command instanceof DF1UnprotectedReadResponse) {
-            DF1UnprotectedReadResponse unprotectedReadResponseCommand = (DF1UnprotectedReadResponse) command;
-            try {
-                // TODO: size has to be dependent on actual size requested
-                WriteBuffer writeBuffer = new WriteBuffer(10, false);
-                writeBuffer.writeUnsignedShort(8, destinationAddress);
-                writeBuffer.writeUnsignedShort(8, sourceAddress);
-                writeBuffer.writeUnsignedShort(8, command.getCommandCode());
-                writeBuffer.writeUnsignedShort(8, status);
-                writeBuffer.writeUnsignedInt(16, (short) transactionCounter);
-                boolean escape10 = false;
-                for (short data : unprotectedReadResponseCommand.getData()) {
-//                    if (escape10 == true){
-//                        if (data == 0x10) {
-//
-//                        }
-//                    } else{
-//
-//                    }
-                    writeBuffer.writeUnsignedShort(8,  data);
-                }
-                writeBuffer.writeUnsignedShort(8, (byte) 0x03);
-
-                byte[] data = writeBuffer.getData();
-                return calculateCRC(data) & 0xFFFF;
-
-            } catch (ParseException e) {
-                throw new RuntimeException("Something went wrong during the CRC check", e);
-            }
+    public static int crcCheck(short destinationAddress, short sourceAddress, DF1Command command) {
+        // CRC-16/DF-1
+        CRC crc = new CRC(new CRC.Parameters(16, 0x8005, 0x0000, true, true, 0x0000));
+        long df1crc = crc.init();
+        df1crc = crc.update(df1crc, new byte[]{(byte) destinationAddress, (byte) sourceAddress});
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(command.getLengthInBytes(), false);
+        try {
+            DF1CommandIO.staticSerialize(writeBuffer, command);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
-
-        return 0;
+        df1crc = crc.update(df1crc, writeBuffer.getData());
+        df1crc = crc.update(df1crc, new byte[]{0x03});
+        return crc.finalCRC16(df1crc) & 0xFFFF;
     }
 
     public static boolean dataTerminate(ReadBuffer io) {
+        ReadBufferByteBased rbbb = (ReadBufferByteBased) io;
         try {
             // The byte sequence 0x10 followed by 0x03 indicates the end of the message,
             // so if we would read this, we abort the loop and stop reading data.
-            if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == (byte) 0x03)) {
+            if ((rbbb.peekByte(0) == (byte) 0x10) && (rbbb.peekByte(1) == (byte) 0x03)) {
                 return true;
             }
         } catch (ParseException e) {
@@ -100,11 +56,12 @@ public class DF1Utils {
     }
 
     public static short readData(ReadBuffer io) {
+        ReadBufferByteBased rbbb = (ReadBufferByteBased) io;
         try {
             // If we read a 0x10, this has to be followed by another 0x10, which is how
             // this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
-            if ((io.peekByte(0) == (byte) 0x10) && (io.peekByte(1) == 0x10)) {
-                io.readByte(8);
+            if ((rbbb.peekByte(0) == (byte) 0x10) && (rbbb.peekByte(1) == 0x10)) {
+                io.readByte();
             }
             return io.readUnsignedShort(8);
         } catch (ParseException e) {
@@ -126,9 +83,9 @@ public class DF1Utils {
 
     public static int dataLength(short[] data) {
         int i = 0;
-        for(short dataByte : data) {
+        for (short dataByte : data) {
             // If a value is 0x10, this has to be duplicated which increases the message size by one.
-            if(dataByte == 0x10) {
+            if (dataByte == 0x10) {
                 i++;
             }
             i++;
@@ -136,22 +93,4 @@ public class DF1Utils {
         return i;
     }
 
-    private static short calculateCRC(byte[] crcBytes) {
-        int tmp = 0;
-        int crcL, crcR;
-
-        for (int newByte : crcBytes) {
-            crcL = tmp >> 8;
-            crcR = tmp & 0xFF;
-            tmp = (crcL << 8) + (newByte ^ crcR);
-            for (int j = 0; j < 8; j++)
-                if (tmp % 2 == 1) {     // check if LSB shifted out is 1 or 0
-                    tmp = tmp >> 1;
-                    tmp = tmp ^ 0xA001;
-                } else {
-                    tmp = tmp >> 1;
-                }
-        }
-        return Short.reverseBytes((short) tmp);
-    }
 }

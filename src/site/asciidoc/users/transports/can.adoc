@@ -1,0 +1,76 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+:icons: font
+
+== CAN
+
+A CAN transport is a special category of transport which can bring CAN frame data to various drivers.
+All of these transports are meant to follow basic CAN frame data semantics.
+
+Each CAN transport must provide a `CANFrameBuilder` interface realization.
+This builder can be used by drivers which implement application layer protocols on top of CAN bus.
+The builder allow constructing requests which should be passed to the bus operations.
+
+Note this API is available since Apache PLC4X 0.9.
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+|not available
+|This transport ships only additional API on top of existing Apache PLC4X Transport API.
+
+|Name
+2+|CAN
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-can</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Options:
+2+|*none*, an abstract transport
+|===
+
+Main purpose of this transport is basic unification of various CAN bus APIs.
+There is no unified way to access CAN (beside SocketCAN for linux) across multiple platforms.
+We brought this simplistic facade-alike API to serve very basic project needs.
+Its main purpose is to let transport implementer bridge with actual transport or another library.
+With as little effort as possible.
+
+Major advantage of CAN transport facade is possibility to implement application layer protocols in a fully portable way.
+This flexibility is not guaranteed with SocketCAN alone.
+
+The CAN transport responsibility is to bring CAN data to driver implementer.
+This API does not enforce, require or promote a low level bus operations.
+In this regard, these operations can be made by library available for specific CAN adapter in use.
+
+=== Developer notes
+
+Usage of CAN transport APIs is recommended for portability reasons.
+Please have a look on link:../protocols/can.html[CAN] describe usage of CAN driver adapter with CAN transport facade.
+
+== Compatible CAN transports
+
+- link:socketcan.html[SocketCAN]

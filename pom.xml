@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
--->
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>23</version>
+    <version>24</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.8.0</version>
+  <version>0.9.0</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -44,7 +44,7 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/plc4x.git</developerConnection>
     <url>https://github.com/apache/plc4x</url>
-    <tag>v0.8.0</tag>
+    <tag>v0.9.0</tag>
   </scm>
 
   <!-- Only configure the site distribution as the rest is handled by the apache parent -->
@@ -66,21 +66,21 @@
       <subscribe>mailto:dev-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:dev-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:dev@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-dev/</archive>
     </mailingList>
     <mailingList>
       <name>PLC4X Commits List</name>
       <subscribe>mailto:commits-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:commits-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:commits@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-commits/</archive>
     </mailingList>
     <mailingList>
       <name>PLC4X Jira Notifications List</name>
       <subscribe>mailto:issues-subscribe@plc4x.apache.org</subscribe>
       <unsubscribe>mailto:issues-unsubscribe@plc4x.apache.org</unsubscribe>
       <post>mailto:issues@plc4x.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/plc4x-issues/</archive>
     </mailingList>
   </mailingLists>
 
@@ -88,7 +88,7 @@
     <!--
       At least 3.3.3 required for camel-package-maven-plugin
     -->
-    <maven.version>3.3.3</maven.version>
+    <maven.version>3.8.1</maven.version>
 
     <java.version>1.8</java.version>
 
@@ -96,77 +96,81 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>2021-01-25T19:27:41Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
+    <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+    <sonar.cfamily.threads>1</sonar.cfamily.threads>
+    <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
-    <plc4x-code-generation.version>1.4.0</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.5.0</plc4x-code-generation.version>
 
-    <antlr.version>4.9</antlr.version>
-    <apiguardian.version>1.1.0</apiguardian.version>
-    <assertj.version>3.18.1</assertj.version>
-    <!-- TODO: the currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
+    <antlr.version>4.9.2</antlr.version>
+    <apiguardian.version>1.1.1</apiguardian.version>
+    <assertj.version>3.20.2</assertj.version>
+    <awaitility.version>4.1.0</awaitility.version>
+    <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
-    <bouncycastle.version>1.67</bouncycastle.version>
-    <boost.version>1.74.0</boost.version>
-    <boost.version.underline-short>1_74</boost.version.underline-short>
+    <bouncycastle.version>1.69</bouncycastle.version>
+    <boost.version>1.77.0</boost.version>
+    <boost.version.underline-short>1_77</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
-    <byte-buddy.version>1.10.18</byte-buddy.version>
+    <byte-buddy.version>1.11.15</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.18.4</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.4</commons-cli.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
-    <commons-compress.version>1.20</commons-compress.version>
+    <commons-compress.version>1.21</commons-compress.version>
     <commons-configuration2.version>2.7</commons-configuration2.version>
-    <commons-io.version>2.8.0</commons-io.version>
-    <commons-lang3.version>3.11</commons-lang3.version>
+    <commons-io.version>2.11.0</commons-io.version>
+    <commons-lang3.version>3.12.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
-    <commons-pool2.version>2.9.0</commons-pool2.version>
+    <commons-pool2.version>2.11.1</commons-pool2.version>
     <commons-text.version>1.9</commons-text.version>
-    <commons-csv.version>1.8</commons-csv.version>
+    <commons-csv.version>1.9.0</commons-csv.version>
     <dom4j.version>2.1.3</dom4j.version>
     <elasticsearch.version>7.10.0</elasticsearch.version>
-    <equalsverifier.version>3.5</equalsverifier.version>
-    <freemarker.version>2.3.30</freemarker.version>
-    <groovy.version>3.0.6</groovy.version>
-    <gson.version>2.8.6</gson.version>
-    <guava.version>30.0-jre</guava.version>
+    <equalsverifier.version>3.7.1</equalsverifier.version>
+    <freemarker.version>2.3.31</freemarker.version>
+    <groovy.version>3.0.9</groovy.version>
+    <gson.version>2.8.8</gson.version>
+    <guava.version>30.1.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.13</httpclient.version>
-    <httpcore.version>4.4.13</httpcore.version>
-    <jackson.version>2.11.3</jackson.version>
+    <httpcore.version>4.4.14</httpcore.version>
+    <jackson.version>2.12.5</jackson.version>
+    <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>2.3.3</jaxb.version>
-    <jetty-util.version>9.4.32.v20200930</jetty-util.version>
-    <jna.version>5.3.1</jna.version>
-    <joda-time.version>2.10.8</joda-time.version>
-    <jserialcom.version>2.6.2</jserialcom.version>
-    <junit.jupiter.version>5.7.0</junit.jupiter.version>
-    <junit.platform.version>1.7.0</junit.platform.version>
-    <log4j.version>2.11.1</log4j.version>
-    <logback.version>1.2.3</logback.version>
-    <logstash.version>7.10.0</logstash.version>
-    <milo.version>0.5.3</milo.version>
-    <mockito.version>3.6.28</mockito.version>
-    <netty.version>4.1.54.Final</netty.version>
-    <owasp-dependency-check.version>6.0.3</owasp-dependency-check.version>
+    <jetty-util.version>11.0.6</jetty-util.version>
+    <jna.version>5.8.0</jna.version>
+    <joda-time.version>2.10.10</joda-time.version>
+    <jserialcom.version>2.7.0</jserialcom.version>
+    <junit.jupiter.version>5.7.2</junit.jupiter.version>
+    <junit.platform.version>1.7.2</junit.platform.version>
+    <log4j.version>2.14.1</log4j.version>
+    <logback.version>1.2.5</logback.version>
+    <milo.version>0.6.3</milo.version>
+    <mockito.version>3.12.4</mockito.version>
+    <netty.version>4.1.67.Final</netty.version>
+    <owasp-dependency-check.version>6.3.1</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>1.7.30</slf4j.version>
+    <slf4j.version>1.7.32</slf4j.version>
     <thrift.version>0.13.0</thrift.version>
-    <vavr.version>0.10.3</vavr.version>
-    <xmlunit.version>2.8.1</xmlunit.version>
+    <vavr.version>0.10.4</vavr.version>
+    <xmlunit.version>2.8.2</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.1.0</asciidoctor.maven.plugin.version>
-    <asciidoctorj.version>2.4.2</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.0.5</asciidoctorj.diagram.version>
+    <asciidoctorj.version>2.5.1</asciidoctorj.version>
+    <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
   </properties>
 
   <modules>
-    <module>build-utils</module>
+    <module>code-generation</module>
 
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
@@ -225,6 +229,11 @@
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-common</artifactId>
+        <version>${netty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
         <version>${netty.version}</version>
       </dependency>
 
@@ -302,6 +311,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${awaitility.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
         <version>${jaxb.version}</version>
@@ -341,7 +356,8 @@
         <groupId>org.pcap4j</groupId>
         <artifactId>pcap4j-core</artifactId>
         <version>${pcap4j.version}</version>
-        <scope>provided</scope>
+        <!-- Commented out, if there are problems occurring to this, we need to comment it back in. -->
+        <!--scope>provided</scope-->
       </dependency>
       <dependency>
         <groupId>org.pcap4j</groupId>
@@ -617,6 +633,16 @@
         <artifactId>dictionary-manager</artifactId>
         <version>${milo.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>jakarta.activation</artifactId>
+        <version>2.0.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -659,6 +685,11 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -734,6 +765,17 @@
 
             <!-- CLion stuff (C++ IDE) -->
             <exclude>**/cmake-build-debug/**</exclude>
+            <exclude>**/*.make</exclude>
+            <exclude>**/*.cmake</exclude>
+            <exclude>**/*.internal</exclude>
+            <exclude>**/link.txt</exclude>
+            <!-- Not sure why I can't exclude all Makefile's from just the plc4c directory -->
+            <!-- exclude>**/Makefile</exclude -->
+            <exclude>**/Makefile</exclude>
+            <exclude>**/*.includecache</exclude>
+            <exclude>**/CMakeFiles/**</exclude>
+            <exclude>**/CMakeCache.txt</exclude>
+            <exclude>**/DartConfiguration.tcl</exclude>
 
             <!-- Stuff created during a plc4net build -->
             <exclude>**/obj/**</exclude>
@@ -780,8 +822,6 @@
               <goal>process</goal>
             </goals>
             <configuration>
-              <!-- TODO: For some reason the build seems to fail in conjunction with the dependency-plugin unpack goal, if enabled -->
-              <skip>true</skip>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
                 <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
@@ -791,6 +831,57 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <!-- Ensure we're not mixing dependency versions -->
+          <execution>
+            <id>enforce-version-convergence</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <dependencyConvergence />
+              </rules>
+            </configuration>
+          </execution>
+          <!--
+              Fails the build if classes are included from multiple
+              artifacts and these are not identical.
+          -->
+          <execution>
+            <id>enforce-ban-duplicate-classes</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicateClasses>
+                  <scopes>
+                    <scope>compile</scope>
+                    <scope>provided</scope>
+                  </scopes>
+                  <findAllDuplicates>true</findAllDuplicates>
+                  <ignoreWhenIdentical>true</ignoreWhenIdentical>
+                </banDuplicateClasses>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>extra-enforcer-rules</artifactId>
+            <version>1.3</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!--
@@ -915,15 +1006,22 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <!-- With 3.0.0 the dependencyConvergence rule wouldn't work anymore -->
+          <version>3.0.0-M3</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>5.1.1</version>
+          <version>5.1.2</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.3.0</version>
+          <version>4.3.2</version>
         </plugin>
 
         <plugin>
@@ -941,18 +1039,19 @@
         <plugin>
           <groupId>com.googlecode.maven-download-plugin</groupId>
           <artifactId>download-maven-plugin</artifactId>
-          <version>1.6.0</version>
+          <version>1.6.7</version>
         </plugin>
 
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.6</version>
+          <version>0.8.7</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
           <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
@@ -1082,7 +1181,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.3.1</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
@@ -1137,26 +1236,24 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.18.4-b1</version>
+          <version>3.19.2-b1</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.0-M4</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
-            <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
-            <!-- TODO: try to find out why antlr doesn't like the line.separator setting -->
-            <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
-            <arguments>-Papache-release ${arguments}</arguments>
+            <releaseProfiles>apache-release</releaseProfiles>
           </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.7.0.1746</version>
+          <version>3.9.0.2155</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1318,6 +1415,14 @@
       </build>
     </profile>
 
+    <!-- Build PLC4X including the C modules -->
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>plc4c</module>
+      </modules>
+    </profile>
+
     <!-- Build PLC4X including the Go modules -->
     <profile>
       <id>with-go</id>
@@ -1348,7 +1453,11 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <!--
+        https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz
+        https://boostorg.jfrog.io/native/main/release/1.77.0/source/boost_1_77_0.tar.gz
+        -->
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
@@ -1372,7 +1481,7 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
         <boost.build.executable>./b2</boost.build.executable>
         <thrift.bootstrap.executable>./bootstrap.sh</thrift.bootstrap.executable>
@@ -1396,7 +1505,8 @@
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-win64-x64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
-        <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
+        <boost.url>https://boostorg.jfrog.io/native/main/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
+        <!--boost.url>https://github.com/boostorg/boost/archive/refs/tags/boost-${boost.version}.tar.gz</boost.url-->
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
         <boost.build.executable>b2</boost.build.executable>
         <boost.include-directory>libs/libs/boost/include/boost-${boost.version.underline-short}</boost.include-directory>
@@ -1443,85 +1553,6 @@
     -->
     <profile>
       <id>jenkins-build</id>
-    </profile>
-
-    <!--
-      This profile adds some additional checks and settings that should apply during development,
-      but could cause problems after that. As an example it would be impossible to build a released
-      version, if after the release CVEs were reported for one of its dependencies.
-    -->
-    <profile>
-      <id>development</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>3.0.0-M3</version> <!--$NO-MVN-MAN-VER$-->
-            <executions>
-              <!-- Ensure we're not mixing dependency versions -->
-              <execution>
-                <id>enforce-version-convergence</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <dependencyConvergence />
-                  </rules>
-                </configuration>
-              </execution>
-              <!--
-                  Fails the build if classes are included from multiple
-                  artifacts and these are not identical.
-              -->
-              <execution>
-                <id>enforce-ban-duplicate-classes</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <banDuplicateClasses>
-                      <scopes>
-                        <scope>compile</scope>
-                        <scope>provided</scope>
-                      </scopes>
-                      <findAllDuplicates>true</findAllDuplicates>
-                      <ignoreWhenIdentical>true</ignoreWhenIdentical>
-                    </banDuplicateClasses>
-                  </rules>
-                  <fail>true</fail>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>extra-enforcer-rules</artifactId>
-                <version>1.2</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <!--plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <failBuildOnCVSS>8</failBuildOnCVSS>
-            </configuration>
-          </plugin-->
-        </plugins>
-      </build>
     </profile>
 
     <!--
@@ -1585,7 +1616,9 @@
           <plugin>
             <groupId>net.nicoulaj.maven.plugins</groupId>
             <artifactId>checksum-maven-plugin</artifactId>
-            <version>1.9</version>
+            <version>1.11</version>
+            <!-- Only run this in the root module of the project -->
+            <inherited>false</inherited>
             <executions>
               <execution>
                 <goals>

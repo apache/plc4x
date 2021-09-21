@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.connection;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
@@ -25,6 +24,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -33,6 +33,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -82,7 +83,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     /** Applies the given Stack to the Pipeline */
     @Override
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
-            Configuration configuration, ChannelPipeline pipeline, boolean passive) {
+        Configuration configuration, ChannelPipeline pipeline, boolean passive, List<EventListener> ignore) {
         pipeline.addLast(getMessageCodec(configuration));
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, createInstance(protocolClass));
         if(driverContextClass != null) {

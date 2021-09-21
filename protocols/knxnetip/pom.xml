@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>plc4x-protocols-knxnetip</artifactId>
@@ -35,24 +35,37 @@
   <build>
     <plugins>
       <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+      <!--
+        We're intentionally not using the download plugin as this would either download only once
+        and not get any updates or it would try downloading for every build. This however might result
+        in getting banned on the KNX server.
+
+        So this script makes sure the knx-master-data.xml is updated at most every 24h
+      -->
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
+          <!-- Do some pre-build checks and report any findings to the user -->
           <execution>
             <id>fetch-knx-manufacturer-data</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>wget</goal>
+              <goal>execute</goal>
             </goals>
             <configuration>
-              <url>https://update.knx.org/data/XML/project-20/knx_master.xml</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>knx-master-data.xml</outputFileName>
+              <source>${project.basedir}/src/main/script/getKnxMasterData.groovy</source>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -83,9 +96,9 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>9.1.0.8</version>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>10.5</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -95,8 +108,26 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
-      <version>0.8.0</version>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+
+    <!-- Generally used for the metadata generator to not pollute the classpath -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20210307</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

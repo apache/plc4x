@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.spi.values;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -24,13 +23,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcUSINT extends PlcIECValue<Short> {
 
+    private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
     static Short minValue = 0;
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
@@ -59,138 +62,94 @@ public class PlcUSINT extends PlcIECValue<Short> {
     }
 
     public PlcUSINT(Boolean value) {
-        super();
         this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
         this.isNullable = false;
     }
 
     public PlcUSINT(Byte value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = false;
     }
 
     public PlcUSINT(Short value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = value;
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcUSINT(Integer value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = value.shortValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = false;
     }
 
     public PlcUSINT(Long value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = value.shortValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = false;
     }
 
     public PlcUSINT(Float value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value.shortValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = false;
     }
 
     public PlcUSINT(Double value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = value.shortValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = false;
     }
 
     public PlcUSINT(BigInteger value) {
-        super();
-        if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = value.shortValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = true;
     }
 
     public PlcUSINT(BigDecimal value) {
-        super();
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = value.shortValue();
-            this.isNullable = true;
-        } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
-            this.getClass().getSimpleName() + " Value");
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value.shortValue();
+        this.isNullable = true;
     }
 
     public PlcUSINT(String value) {
-        super();
         try {
             short val = Short.parseShort(value.trim());
-            if ((val >= minValue) && (val <= maxValue)) {
-                this.value = val;
-                this.isNullable = false;
-            } else {
-                throw new PlcInvalidFieldException("Value of type " + value +
-                  " is out of range " + minValue + " - " + maxValue + " for a " +
-                  this.getClass().getSimpleName() + " Value");
+            if ((val < minValue) || (val > maxValue)) {
+                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
-        }
-        catch(Exception e) {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+            this.value = val;
+            this.isNullable = false;
+        } catch (Exception e) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcUSINT(@JsonProperty("value") short value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = value;
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
+        if ((value < minValue) || (value > maxValue)) {
+            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
+        this.value = value;
+        this.isNullable = false;
     }
 
     @Override
@@ -202,7 +161,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     @Override
     @JsonIgnore
     public boolean getBoolean() {
-        return (value != null) && !value.equals(0);
+        return (value != null) && !value.equals((short) 0);
     }
 
     @Override
@@ -322,8 +281,13 @@ public class PlcUSINT extends PlcIECValue<Short> {
     @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
-        bytes[0] = (byte)(value & 0xff);
+        bytes[0] = (byte) (value & 0xff);
         return bytes;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+        writeBuffer.writeShort(getClass().getSimpleName(), 8, value);
     }
 
 }

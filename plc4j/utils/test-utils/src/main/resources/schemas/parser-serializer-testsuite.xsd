@@ -23,7 +23,21 @@
     <xs:element name="testsuite">
         <xs:complexType>
             <xs:sequence>
+                <!-- The name of the testsuite -->
                 <xs:element name="name" type="xs:string"/>
+                <!-- The protocolName(id) of the protocol -->
+                <xs:element name="protocolName" type="xs:string"/>
+                <!-- The outputFlavor of the protocol-->
+                <xs:element name="outputFlavor" type="xs:string"/>
+
+                <xs:element name="options" minOccurs="0" maxOccurs="1" type="parameterList">
+                    <xs:annotation>
+                        <xs:documentation>
+                            List of options which are specific to execution of test or environment.
+                            This might be used ie. to influence test framework lookup strategies.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <!--
                     Each testcase is a set of hexadecimal input and expected output.
                     A test will parse the binary input and compare the parsed result
@@ -59,5 +73,18 @@
             <xs:attribute name="bigEndian" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="parameterList">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="parameter">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" />
+                        <xs:element name="value" type="xs:string" minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

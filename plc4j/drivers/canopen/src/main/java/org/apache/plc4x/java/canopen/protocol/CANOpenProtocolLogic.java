@@ -1,28 +1,31 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.canopen.protocol;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -31,13 +34,12 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.can.adapter.Plc4xCANProtocolBase;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.api.conversation.canopen.CANConversation;
 import org.apache.plc4x.java.canopen.api.conversation.canopen.SDODownloadConversation;
 import org.apache.plc4x.java.canopen.api.conversation.canopen.SDOUploadConversation;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrameBuilderFactory;
-import org.apache.plc4x.java.canopen.transport.socketcan.CANOpenSocketCANFrameBuilder;
 import org.apache.plc4x.java.canopen.configuration.CANOpenConfiguration;
 import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
 import org.apache.plc4x.java.canopen.field.CANOpenField;
@@ -45,7 +47,7 @@ import org.apache.plc4x.java.canopen.field.CANOpenHeartbeatField;
 import org.apache.plc4x.java.canopen.field.CANOpenNMTField;
 import org.apache.plc4x.java.canopen.field.CANOpenPDOField;
 import org.apache.plc4x.java.canopen.field.CANOpenSDOField;
-import org.apache.plc4x.java.canopen.socketcan.SocketCANConversation;
+import org.apache.plc4x.java.canopen.conversation.CANTransportConversation;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenHeartbeatPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenNetworkPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPDO;
@@ -57,16 +59,14 @@ import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
 import org.apache.plc4x.java.canopen.readwrite.types.NMTState;
 import org.apache.plc4x.java.canopen.readwrite.types.NMTStateRequest;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -88,6 +88,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,18 +96,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implements HasConfiguration<CANOpenConfiguration>, PlcSubscriber {
+public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
+    implements HasConfiguration<CANOpenConfiguration>, PlcSubscriber {
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10L);
     private Logger logger = LoggerFactory.getLogger(CANOpenProtocolLogic.class);
-
-    private CANOpenFrameBuilderFactory factory = CANOpenSocketCANFrameBuilder::new;
 
     private CANOpenConfiguration configuration;
     private RequestTransactionManager tm;
     private Timer heartbeat;
     private CANOpenDriverContext canContext;
-    private CANConversation<CANOpenFrame> conversation;
+    private CANConversation conversation;
 
     private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
@@ -141,25 +141,25 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
                         try {
                             context.sendToWire(createFrame(new CANOpenHeartbeatPayload(NMTState.OPERATIONAL)));
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            throw new PlcRuntimeException(e);
                         }
                     }
                 }, 10000, 10000);
             }
             context.fireConnected();
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new PlcRuntimeException(e);
         }
     }
 
     @Override
     public void setContext(ConversationContext<CANOpenFrame> context) {
         super.setContext(context);
-        this.conversation = new SocketCANConversation(configuration.getNodeId(), context, configuration.getRequestTimeout(), factory);
+        this.conversation = new CANTransportConversation(configuration.getNodeId(), context, configuration.getRequestTimeout());
     }
 
     private CANOpenFrame createFrame(CANOpenHeartbeatPayload state) throws ParseException {
-        return factory.createBuilder().withNodeId(configuration.getNodeId()).withService(CANOpenService.HEARTBEAT).withPayload(state).build();
+        return new CANOpenFrame((short) configuration.getNodeId(), CANOpenService.HEARTBEAT, state);
     }
 
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
@@ -219,15 +219,10 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
 
         try {
             String fieldName = writeRequest.getFieldNames().iterator().next();
-            WriteBuffer buffer = DataItemIO.staticSerialize(writeValue, field.getCanOpenDataType(), writeValue.getLength(), true);
+            WriteBufferByteBased buffer = DataItemIO.staticSerialize(writeValue, field.getCanOpenDataType(), writeValue.getLength(), true);
             if (buffer != null) {
                 final CANOpenPDOPayload payload = new CANOpenPDOPayload(new CANOpenPDO(buffer.getData()));
-                context.sendToWire(factory.createBuilder()
-                    .withNodeId(field.getNodeId())
-                    .withService(field.getService())
-                    .withPayload(payload)
-                    .build()
-                );
+                context.sendToWire(new CANOpenFrame((short) field.getNodeId(), field.getService(), payload));
                 response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.OK)));
             } else {
                 response.complete(new DefaultPlcWriteResponse(writeRequest, Collections.singletonMap(fieldName, PlcResponseCode.INVALID_DATA)));
@@ -290,6 +285,17 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
         return CompletableFuture.completedFuture(response);
     }
 
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest request) {
+        List<PlcSubscriptionHandle> handles = request.getSubscriptionHandles();
+
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            entry.getKey().getSubscriptionHandles().removeAll(handles);
+        }
+
+        return CompletableFuture.completedFuture(new DefaultPlcUnsubscriptionResponse(request));
+    }
+
     private void readInternally(PlcReadRequest readRequest, CANOpenSDOField field, CompletableFuture<PlcReadResponse> response) {
         String fieldName = readRequest.getFieldNames().iterator().next();
 
@@ -320,7 +326,7 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
     }
 
     @Override
-    protected void decode(ConversationContext<CANOpenFrame> context, CANOpenFrame msg) throws Exception {
+    public void decode(ConversationContext<CANOpenFrame> context, CANOpenFrame msg) throws Exception {
         int nodeId = msg.getNodeId();
         CANOpenService service = msg.getService();
         CANOpenPayload payload = msg.getPayload();
@@ -362,7 +368,7 @@ public class CANOpenProtocolLogic extends Plc4xProtocolBase<CANOpenFrame> implem
                         CANOpenPDOField field = (CANOpenPDOField) handle.getField();
                         byte[] data = ((CANOpenPDOPayload) payload).getPdo().getData();
                         try {
-                            PlcValue value = DataItemIO.staticParse(new ReadBuffer(data, true), field.getCanOpenDataType(), data.length);
+                            PlcValue value = DataItemIO.staticParse(new ReadBufferByteBased(data, true), field.getCanOpenDataType(), data.length);
                             DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(
                                 Instant.now(),
                                 Collections.singletonMap(

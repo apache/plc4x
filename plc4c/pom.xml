@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4x-parent</artifactId>
+    <version>0.9.0</version>
+  </parent>
+
+  <artifactId>plc4c</artifactId>
+  <packaging>pom</packaging>
+
+  <name>PLC4C</name>
+  <description>Implementation of the protocol adapters for usage as C library.</description>
+
+  <properties>
+    <unity.version>2.5.2</unity.version>
+    <!-- Tell Sonar where to find the sources -->
+    <!--sonar.sources></sonar.sources-->
+    <sonar.sources>api,drivers,examples,integrations,spi,transports</sonar.sources>
+    <sonar.cfamily.build-wrapper-output>${project.build.directory}/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+    <option.with-proxies>OFF</option.with-proxies>
+  </properties>
+
+  <!--
+    Notes:
+    - It turns out that the default version of CMake the cmake-maven-plugin uses is too
+    old to detect the recent boost version. So we need to manually download a newer version
+    and tell the plugin to use that instead.
+    - As downloading and building boost takes quite some time, we only do this, if no
+    target/lib/boost is found.
+  -->
+
+  <profiles>
+    <!-- Profile for linux -->
+    <profile>
+      <id>os-unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <!-- Make the cmake executable executable -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>cmake</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Profile for mac -->
+    <profile>
+      <id>os-mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <!-- Make the cmake executable executable -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-cmake-executable</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <basedir>${cmake.root}</basedir>
+                  <executable>chmod</executable>
+                  <arguments>
+                    <argument>+x</argument>
+                    <argument>cmake</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- When running on jenkins, download the sonar build-wrapper so we can do a code analysis -->
+    <profile>
+      <id>jenkins-build</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <!-- Get the build-wrapper from our sonarcloud server -->
+              <execution>
+                <id>get-build-wrapper</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <skipCache>true</skipCache>
+                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
+                  <unpack>true</unpack>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <skipCache>true</skipCache>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+              <execution>
+                <id>modify-cmake</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <executions>
+          <!-- First download the cmake binaries -->
+          <execution>
+            <id>get-cmake</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${cmake.url}</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+          <!--
+            Get additional stuff we need for the build.
+          -->
+          <execution>
+            <id>get-unity</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/ThrowTheSwitch/Unity/archive/v${unity.version}.zip</url>
+              <unpack>true</unpack>
+              <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        Generate the driver code.
+      -->
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-driver-modbus</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>modbus</protocolName>
+              <languageName>c</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-driver-s7</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>s7</protocolName>
+              <languageName>c</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        Do the actual build.
+      -->
+      <plugin>
+        <groupId>com.googlecode.cmake-maven-project</groupId>
+        <artifactId>cmake-maven-plugin</artifactId>
+        <executions>
+          <!-- TODO: Commented out for now as when running in jenkins for code analysis, the second run would overwrite the results of the first -->
+          <!-- Generate the configuration for the main compilation -->
+          <!--execution>
+            <id>cmake-generate-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+          <!- Compile the main code ->
+          <execution>
+            <id>cmake-execute-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution-->
+          <!-- Generate the configuration for the test compilation -->
+          <execution>
+            <id>cmake-generate-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <options>
+                <option>-DUNITY_VERSION:STRING=${unity.version}</option>
+                <option>-DBUILD_PHASE=test-compile</option>
+              </options>
+            </configuration>
+          </execution>
+          <!-- Compile the test code -->
+          <execution>
+            <id>cmake-execute-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!--
+            We need to use a newer version of cmake, so disable downloading
+            and tell the plugin where to find that version.
+          -->
+          <downloadBinaries>false</downloadBinaries>
+          <cmakeDir>${cmake.root}</cmakeDir>
+          <!--
+            Actually the path to the CMakeList.txt file which then again
+            tells to tool where to find the sources.
+          -->
+          <sourcePath>${project.basedir}</sourcePath>
+          <!--
+            Path to where the build configuration is generated
+            (This directory is then used in the compile step to actually perform the build)
+          -->
+          <targetPath>${project.build.directory}/build</targetPath>
+          <!--
+            Name of the generator the compile step will be executing.
+          -->
+          <generator>${cmake.generator}</generator>
+          <!-- The directory where the "generate" step generated the build configuration -->
+          <projectDirectory>${project.build.directory}/build</projectDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <basedir>${project.build.directory}/build</basedir>
+              <executable>${cmake.root}/ctest</executable>
+              <arguments>
+                <argument>--extra-verbose</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- For this module deploying maven artifacts doesn't make any sense -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+    <!--
+      Developers working in plc4c will probably use an IDE like CLion to edit just this
+      Part of the project. These IDEs generate some work-directories we need to exclude.
+    -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <excludes combine.children="append">
+              <exclude>cmake-*/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <!-- This dependency is just to ensure thrift is built first -->
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-language-c</artifactId>
+      <version>0.9.0</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.9.0</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-s7</artifactId>
+      <version>0.9.0</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>

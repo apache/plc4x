@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-tools</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>plc4x-tools-boost</artifactId>

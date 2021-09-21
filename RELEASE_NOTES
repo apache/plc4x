@@ -1,4 +1,49 @@
 ==============================================================
+Apache PLC4X 0.9.0
+==============================================================
+
+New Features
+------------
+
+- The OPC UA driver has been replaced with a native driver. Previously
+  Eclipse Milo was being used.
+
+- Permit customized package names for code generation
+
+- Added an initial draft of a Discover and Browse API to PLC4J
+
+- Replaced the OPC-UA driver using Eclipse Milo with a our own, fully
+  generated, version
+
+- PLC4Go now supports many more drivers
+
+- PLC4Go received a huge internal refactoring and cleanup
+
+- Major cleanup of PLC4C
+
+- S7 Driver now supports event and alarm handling on some S7 models
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+PLC4X-200   OPC-UA Driver not connecting if params string is not provided
+PLC4X-201   OPC-UA PlcList underlying type not compatible with Eclipse Milo
+PLC4X-202   OPC-UA Driver cannot write Unsigned Types
+PLC4X-276   [S7] The most of the supported types don't work correctly
+PLC4X-278   Double Reading Error
+PLC4X-279   nioEventLoopGroup thread proliferation
+PLC4X-280   ADS route request swapped positions of route name and address
+PLC4X-291   DefaultPlcSubscriptionField cannot be cast to class OpcuaField
+PLC4X-298   [S7] When writing REAL values the Write
+            operation fails with an internal error
+PLC4X-299   Modbus - Kafka Connect Configuration
+PLC4X-312   CAN NOT READ STRING FROM S7 PLC
+PLC4X-314   CAN NOT WRITING MANY DATA TO S7 ONE TIME
+
+==============================================================
 Apache PLC4X 0.8.0
 ==============================================================
 

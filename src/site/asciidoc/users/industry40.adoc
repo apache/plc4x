@@ -26,21 +26,21 @@ Usually however in order to do this, a company needed to use the control system 
 This has tied companies to stick to the company they decided to use the PLCs of.
 Making it almost impossible to switch to another vendor.
 
-In the last 20 years in the IT industry, the concept of Open-Source has come up and has more and more proven to be the engine of great innovation.
+In the last 20 years in the IT industry, the concept of open source has come up and has more and more proven to be the engine of great innovation.
 Most of the biggest changes in how we create modern IT systems is a result of this.
 
 Unfortunately the production industry has been missing a lot of this innovation.
-Only a small number of companies today use Open-Source software in their production systems.
+Only a small number of companies today use open source software in their production systems.
 
-=== Benefits of using Open-Source
+=== Benefits of using open source
 
-The benefit of using Open-Source could be huge:
+The benefit of using open source could be huge:
 
 * Increased Flexibility
 * Increased Stability
 * Increased Extendability
 * Improved Security
-* Great Cost-Reduction
+* Great Cost reduction
 
 ==== Increased Flexibility
 
@@ -68,17 +68,17 @@ If the company decided to utilize a public cloud provider, it makes things even 
 ==== Improved Security
 
 This is probably one of the most concerning aspects of modern production control systems.
-Right now, in order to run these systems, a lot of the most popular solutions require companies to run not up-to-date systems.
+Right now, in order to run these systems, a lot of the most popular solutions require companies to run not up to date systems.
 If applying all updates, the company is risking either loss of commercial support or even loss of functionality.
-Therefore an attacker can probably be certain to be able to exploit certain vulnerabilities just by knowing the type and version of the used control-system.
+Therefore an attacker can probably be certain to be able to exploit certain vulnerabilities just by knowing the type and version of the used control system.
 
-==== Cost-Reduction
+==== Cost Reduction
 
-Well the probably biggest and most obvious cost-reduction factor is definitely, that if the software you are using is fee, you will not have to pay for it.
+Well the probably biggest and most obvious cost reduction factor is definitely, that if the software you are using is free, you will not have to pay for it.
 
 Additionally, the ability to get the computing power of one insanely expensive system by using a cluster of cheap commodity systems, helps saving a lot of money.
 
-Being freed of the requirement to stick to the products of one vendor alonw anf to be able to choose the technology and the vendor of used systems freely will definitely also reduce costs.
+Being freed of the requirement to stick to the products of one vendor alone and to be able to choose the technology and the vendor of used systems freely will definitely also reduce costs.
 
 === Options to communicating with PLCs
 
@@ -89,7 +89,7 @@ In general there are two options for communicating with industrial PLCs:
 ** Software protocol converter
 * Using a driver for direct communication
 ** Commercial drivers
-** Open-Source drivers
+** Open source drivers
 
 Well protocol converters are all software in the end, but while a "hardware converter" is usually a closed hardware box that runs some sort of software, a "software converter" is usually an installable service or program that runs on a host system.
 
@@ -103,7 +103,7 @@ Another disadvantage is a slightly increased latency when making information ava
 This is due to the fact that the protocol converter has to send a request to the PLC to get information and as soon as this information is returned to the converter this new information can only be passed on in the other protocol in the next request.
 
 The usage of a protocol converter is probably the ideal solution, if all a company wants to do, is integrate PLCs communicating in one protocol into an existing system using a different protocol.
-In case of integrating open-source software, this usually is a protocol converter that converts into one of the well established open source protocols.
+In case of integrating open source software, this usually is a protocol converter that converts into one of the well established open source protocols.
 The most widely used protocol here currently will probably be `MQTT`.
 
 The option that provides the most possibilities is directly communicating with the PLCs.
@@ -112,13 +112,13 @@ Here the system can always directly access only the exact information required a
 There is a wide variety of drivers available, that generally would allow writing software that directly accesses PLCs.
 Unfortunately most of these are commercial drivers.
 
-While there is a number of open-source drivers, most of these have licenses that render them useless for commercial applications.
-Either they are licensed with restrictive licenses such as GPL or they are dual licensed with a restriction to non-commercial usage for the open-source version and the requirement to purchase a commercial license for commercial use-cases.
+While there is a number of open source drivers, most of these have licenses that render them useless for commercial applications.
+Either they are licensed with restrictive licenses such as GPL or they are dual licensed with a restriction to non-commercial usage for the open source version and the requirement to purchase a commercial license for commercial use cases.
 
 The APIs of all drivers usually differs quite greatly from each one another. This makes it extremely difficult to create solutions that work with a variety of PLCs and protocols.
 
 This is where `Apache PLC4X` comes in. It is the goal of `PLC4X` to provide a suite of drivers for communicating with industrial PLCs using a variety of protocols, but with a shared API and a license model, that is suitable for creating commercial applications.
 
-Hereby `PLC4X` forms the missing link between the automation and the open-source world.
-Making it possible to use the entire stack of open-source technologies to create a new generation of open industrial control systems.
+Hereby `PLC4X` forms the missing link between the automation and the open source world.
+Making it possible to use the entire stack of open source technologies to create a new generation of open industrial control systems.
 

@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 [discriminatedType 'KnxNetIpMessage'
     [implicit      uint 8  'headerLength'    '6']
@@ -119,7 +119,7 @@
 [type 'DIBSuppSvcFamilies'
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
-    [array    ServiceId    'serviceIds' count '3']
+    [array    ServiceId    'serviceIds' length 'structureLength - 2']
 ]
 
 [type 'HPAIDataEndpoint'
@@ -218,6 +218,9 @@
         ['0x04' KnxNetIpTunneling
             [simple uint 8 'version']
         ]
+        ['0x05' KnxNetIpRouting
+            [simple uint 8 'version']
+        ]
         // TODO: Check if this shouldn't be KnxNetIp instead of KnxNet
         ['0x06' KnxNetRemoteLogging
             [simple uint 8 'version']
@@ -300,7 +303,8 @@
             [simple uint  8 'propertyId']
             [simple uint  4 'numberOfElements']
             [simple uint 12 'startIndex']
-            [simple uint 16 'unknown']
+            // TODO: See chapter 4.1.7.3.1 ... this is actually a var length array of elements ('numberOfElements') with the type specified by 'interfaceObjectType'.
+            [simple uint 16 'data']
         ]
 
         ['0xF6' MPropWriteReq
@@ -347,50 +351,51 @@
 // The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
 // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
 [discriminatedType 'LDataFrame'
-    [discriminator bit          'extendedFrame']
+    [simple        bit          'frameType']
     [discriminator bit          'polling']
-    [simple        bit          'repeated']
-    [simple        bit          'notAckFrame']
+    [simple        bit          'notRepeated']
+    [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
     [simple        bit          'errorFlag']
-    [typeSwitch 'extendedFrame','polling'
-       // Page 28ff
-        ['false','false' LDataFrameData
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'destinationAddress' count '2']
-            [simple   bit          'groupAddress']
-            [simple   uint 3       'hopCount']
-            [simple   Apdu         'apdu']
-        ]
+    // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
+    [typeSwitch 'notAckFrame','polling'
         // Page 29ff
-        ['true','false' LDataFrameDataExt
+        // TODO: For some reason it doesn't seem to matter what the frame format is set to, it always seems to be an extended frame
+        // ['true','false','false' LDataExtended
+        ['true','false' LDataExtended
             [simple   bit          'groupAddress']
             [simple   uint 3       'hopCount']
             [simple   uint 4       'extendedFrameFormat']
             [simple   KnxAddress   'sourceAddress']
             [array    int 8        'destinationAddress' count '2']
-            [simple   Apdu         'apdu']
+            [implicit uint 8       'dataLength' 'apdu.lengthInBytes - 1']
+            [simple   Apdu         'apdu' ['dataLength']]
         ]
+        // Page 28ff
+        //['true','false','true' LDataStandard
+        //    [simple   KnxAddress   'sourceAddress']
+        //    [array    int 8        'destinationAddress' count '2']
+        //    [simple   bit          'groupAddress']
+        //    [simple   uint 3       'hopCount']
+        //    [simple   uint 4       'dataLength']
+        //    [simple   Apdu         'apdu' ['dataLength']]
+        //]
         // Page 31ff
-        ['true','true' LDataFramePollingData
+        //['true','true','true' LPollData
+        ['true','true' LPollData
             [simple   KnxAddress   'sourceAddress']
             [array    int 8        'targetAddress' count '2']
             [reserved uint 4       '0x00']
             [simple   uint 6       'numberExpectedPollData']
         ]
-        // Page 31ff
-        ['false','true' LDataFramePollingData
-            [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'targetAddress' count '2']
-            [reserved uint 4       '0x00']
-            [simple   uint 6       'numberExpectedPollData']
+        ['false' LDataFrameACK
+            // TODO: Implement this
         ]
     ]
 ]
 
-[discriminatedType 'Apdu'
-    [simple   uint 8      'dataLength']
+[discriminatedType 'Apdu' [uint 8 'dataLength']
     // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
     [discriminator uint 1 'control']
     [simple        bit    'numbered']
@@ -424,8 +429,11 @@
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
     [typeSwitch 'apciType'
         ['0x0' ApduDataGroupValueRead
+            [reserved uint 6 '0x00']
         ]
-        ['0x1' ApduDataGroupValueResponse
+        ['0x1' ApduDataGroupValueResponse [uint 8 'dataLength']
+            [simple int 6 'dataFirstByte']
+            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0x2' ApduDataGroupValueWrite [uint 8 'dataLength']
             [simple int 6 'dataFirstByte']
@@ -443,8 +451,13 @@
         ['0x7' ApduDataAdcResponse
         ]
         ['0x8' ApduDataMemoryRead
+            [simple uint 6  'numBytes']
+            [simple uint 16 'address']
         ]
         ['0x9' ApduDataMemoryResponse
+            [implicit uint 6  'numBytes' 'COUNT(data)']
+            [simple   uint 16 'address']
+            [array    uint 8  'data'     count 'numBytes']
         ]
         ['0xA' ApduDataMemoryWrite
         ]
@@ -495,8 +508,11 @@
         ]
 
         ['0x11' ApduDataExtAuthorizeRequest
+            [simple uint 8 'level']
+            [array  uint 8 'data' count '4']
         ]
         ['0x12' ApduDataExtAuthorizeResponse
+            [simple uint 8 'level']
         ]
         ['0x13' ApduDataExtKeyWrite
         ]
@@ -514,13 +530,31 @@
             [simple uint 8  'propertyId']
             [simple uint 4  'count']
             [simple uint 12 'index']
-            [array  uint 8 'data' count 'length - 5']
+            [array  uint 8  'data' count 'length - 5']
         ]
-        ['0x17' ApduDataExtPropertyValueWrite
+        ['0x17' ApduDataExtPropertyValueWrite [uint 8 'length']
+            [simple uint 8  'objectIndex']
+            [simple uint 8  'propertyId']
+            [simple uint 4  'count']
+            [simple uint 12 'index']
+            [array  uint 8  'data' count 'length - 5']
         ]
         ['0x18' ApduDataExtPropertyDescriptionRead
+            [simple uint 8 'objectIndex']
+            [simple uint 8 'propertyId']
+            [simple uint 8 'index']
         ]
         ['0x19' ApduDataExtPropertyDescriptionResponse
+            [simple   uint 8              'objectIndex']
+            [simple   uint 8              'propertyId']
+            [simple   uint 8              'index']
+            [simple   bit                 'writeEnabled']
+            [reserved uint 1              '0x0']
+            [simple   KnxPropertyDataType 'propertyDataType']
+            [reserved uint 4              '0x0']
+            [simple   uint 12             'maxNrOfElements']
+            [simple   AccessLevel         'readLevel']
+            [simple   AccessLevel         'writeLevel']
         ]
 
         ['0x1A' ApduDataExtNetworkParameterRead
@@ -649,7 +683,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string 'description',                                                    bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' [string '-1' 'description',                                           bit 'knxSupport']
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -685,55 +719,68 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 4 'FirmwareType' [uint 8 'code']
-    ['0x1' NONE                      ['0xAF']]
-    ['0x2' BCU_1                     ['0x00']]
-    ['0x3' BCU_1_SYSTEM_1            ['0x01']]
-    ['0x4' BCU_2_SYSTEM_2            ['0x02']]
-    ['0x5' BIM_M112                  ['0x70']]
-    ['0x6' SYSTEM_B                  ['0x7B']]
-    ['0x7' IR_DECODER                ['0x81']]
-    ['0x8' MEDIA_COUPLER_PL_TP       ['0x90']]
-    ['0x9' COUPLER                   ['0x91']]
-    ['0xA' RF_BI_DIRECTIONAL_DEVICES ['0x01']]
-    ['0xB' RF_UNI_DIRECTIONAL_DEVICES['0x11']]
-    ['0xC' SYSTEM_300                ['0x30']]
-    ['0xD' SYSTEM_7                  ['0x70']]
+// REMARK: The last digit is intentionally set to 0 so this enum code can only be used as a mask.
+[enum uint 16 'FirmwareType'
+    ['0x0010' SYSTEM_1                  ]
+    ['0x0020' SYSTEM_2                  ]
+    ['0x0300' SYSTEM_300                ]
+    ['0x0700' SYSTEM_7                  ]
+    ['0x07B0' SYSTEM_B                  ]
+    ['0x0810' IR_DECODER                ]
+    ['0x0910' COUPLER                   ]
+    ['0x0AF0' NONE                      ]
+    ['0x10B0' SYSTEM_1_PL110            ]
+    ['0x17B0' SYSTEM_B_PL110            ]
+    ['0x1900' MEDIA_COUPLER_PL_TP       ]
+    ['0x2000' RF_BI_DIRECTIONAL_DEVICES ]
+    ['0x2100' RF_UNI_DIRECTIONAL_DEVICES]
+    ['0x3000' SYSTEM_1_TP0              ]
+    ['0x4000' SYSTEM_1_PL132            ]
+    ['0x5700' SYSTEM_7_KNX_NET_IP       ]
+
 ]
 
 // Helper enum that binds the combinations of medium type and firmware
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 16 'DeviceDescriptorType0'   [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
-    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
-    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
-    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BCU_2_SYSTEM_2'            ]]
-    ['0x0300' TP1_SYSTEM_300            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_300'                ]]
-    ['0x0700' TP1_BIM_M112_0            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
-    ['0x0701' TP1_BIM_M112_1            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
-    ['0x0705' TP1_BIM_M112_5            ['DeviceDescriptorMediumType.TP1',          'FirmwareType.BIM_M112'                  ]]
-    ['0x07B0' TP1_SYSTEM_B              ['DeviceDescriptorMediumType.TP1',          'FirmwareType.SYSTEM_B'                  ]]
-    ['0x0810' TP1_IR_DECODER_0          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
-    ['0x0811' TP1_IR_DECODER_1          ['DeviceDescriptorMediumType.TP1',          'FirmwareType.IR_DECODER'                ]]
-    ['0x0910' TP1_COUPLER_0             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0911' TP1_COUPLER_1             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0912' TP1_COUPLER_2             ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x091A' TP1_KNXNETIP_ROUTER       ['DeviceDescriptorMediumType.TP1',          'FirmwareType.COUPLER'                   ]]
-    ['0x0AFD' TP1_NONE_D                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
-    ['0x0AFE' TP1_NONE_E                ['DeviceDescriptorMediumType.TP1',          'FirmwareType.NONE'                      ]]
-    ['0x1012' PL110_BCU_1_2             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x1013' PL110_BCU_1_3             ['DeviceDescriptorMediumType.PL110',        'FirmwareType.BCU_1_SYSTEM_1'            ]]
-    ['0x17B0' PL110_SYSTEM_B            ['DeviceDescriptorMediumType.PL110',        'FirmwareType.SYSTEM_B'                  ]]
-    ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['DeviceDescriptorMediumType.PL110',        'FirmwareType.MEDIA_COUPLER_PL_TP'       ]]
-    ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_BI_DIRECTIONAL_DEVICES' ]]
-    ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['DeviceDescriptorMediumType.RF',           'FirmwareType.RF_UNI_DIRECTIONAL_DEVICES']]
-    ['0x3012' TP0_BCU_1                 ['DeviceDescriptorMediumType.TP0',          'FirmwareType.BCU_1'                     ]]
-    ['0x4012' PL132_BCU_1               ['DeviceDescriptorMediumType.PL132',        'FirmwareType.BCU_1'                     ]]
-    ['0x5705' KNX_IP_SYSTEM7            ['DeviceDescriptorMediumType.KNX_IP',       'FirmwareType.SYSTEM_7'                  ]]
+[enum uint 16 'DeviceDescriptor'        [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
+    ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0013' TP1_BCU_1_SYSTEM_1_3      ['TP1',          'SYSTEM_1'                  ]]
+    ['0x0020' TP1_BCU_2_SYSTEM_2_0      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0021' TP1_BCU_2_SYSTEM_2_1      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0025' TP1_BCU_2_SYSTEM_2_5      ['TP1',          'SYSTEM_2'                  ]]
+    ['0x0300' TP1_SYSTEM_300            ['TP1',          'SYSTEM_300'                ]]
+    ['0x0700' TP1_BIM_M112_0            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x0701' TP1_BIM_M112_1            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x0705' TP1_BIM_M112_5            ['TP1',          'SYSTEM_7'                  ]]
+    ['0x07B0' TP1_SYSTEM_B              ['TP1',          'SYSTEM_B'                  ]]
+    ['0x0810' TP1_IR_DECODER_0          ['TP1',          'IR_DECODER'                ]]
+    ['0x0811' TP1_IR_DECODER_1          ['TP1',          'IR_DECODER'                ]]
+    ['0x0910' TP1_COUPLER_0             ['TP1',          'COUPLER'                   ]]
+    ['0x0911' TP1_COUPLER_1             ['TP1',          'COUPLER'                   ]]
+    ['0x0912' TP1_COUPLER_2             ['TP1',          'COUPLER'                   ]]
+    ['0x091A' TP1_KNXNETIP_ROUTER       ['TP1',          'COUPLER'                   ]]
+    ['0x0AFD' TP1_NONE_D                ['TP1',          'NONE'                      ]]
+    ['0x0AFE' TP1_NONE_E                ['TP1',          'NONE'                      ]]
+    ['0x1012' PL110_BCU_1_2             ['PL110',        'SYSTEM_1'                  ]]
+    ['0x1013' PL110_BCU_1_3             ['PL110',        'SYSTEM_1'                  ]]
+    ['0x17B0' PL110_SYSTEM_B            ['PL110',        'SYSTEM_B'                  ]]
+    ['0x1900' PL110_MEDIA_COUPLER_PL_TP ['PL110',        'MEDIA_COUPLER_PL_TP'       ]]
+    ['0x2010' RF_BI_DIRECTIONAL_DEVICES ['RF',           'RF_BI_DIRECTIONAL_DEVICES' ]]
+    ['0x2110' RF_UNI_DIRECTIONAL_DEVICES['RF',           'RF_UNI_DIRECTIONAL_DEVICES']]
+    ['0x3012' TP0_BCU_1                 ['TP0',          'SYSTEM_1'                  ]]
+    ['0x4012' PL132_BCU_1               ['PL132',        'SYSTEM_1'                  ]]
+    ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
+]
+
+[enum uint 4 'AccessLevel' [string '-1' 'purpose',         bit 'needsAuthentication']
+    ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
+    ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
+    ['0x2' Level2          ['"configuration"',        'true'                   ]]
+    ['0x3' Level3          ['"end-user"',             'false'                  ]]
+    ['0xF' Level15         ['"read access"',          'false'                  ]]
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 23ff
@@ -760,3 +807,364 @@
     [simple uint 3  'numChannels']
     [simple uint 13 'channelCode']
 ]
+
+// Switch constants taken from the generated KnxPropertyDataType type
+// Representation looked up in:
+// - 03_05_01 Resources v01.09.03 AS.pdf
+// - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
+// - 03_07_02 Datapoint Types v01.08.02 AS.pdf
+[dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
+    [typeSwitch 'propertyType','dataLengthInBytes'
+        ['PDT_CONTROL' BOOL
+            [reserved uint 7        '0x00']
+            [simple   bit           'value']
+        ]
+        ['PDT_CHAR' SINT
+            [simple   int 8         'value']
+        ]
+        ['PDT_UNSIGNED_CHAR' USINT
+            [simple   uint 8        'value']
+        ]
+        ['PDT_INT' INT
+            [simple   int 16        'value']
+        ]
+        // On some systems this property is bigger
+        ['PDT_UNSIGNED_INT','4' UDINT
+            [simple   uint 32       'value']
+        ]
+        ['PDT_UNSIGNED_INT' UINT
+            [simple   uint 16       'value']
+        ]
+        ['PDT_KNX_FLOAT' REAL
+            [simple   float 4.11    'value']
+        ]
+        ['PDT_DATE' Struct
+            [reserved uint 3 '0x00']
+            [simple uint 5 'dayOfMonth']
+            [reserved uint 4 '0x00']
+            [simple uint 4 'month']
+            [reserved uint 1 '0x00']
+            [simple uint 7 'year']        ]
+        ['PDT_TIME' Struct
+            [simple uint 3 'day']
+            [simple uint 5 'hour']
+            [reserved uint 2 '0x00']
+            [simple uint 6 'minutes']
+            [reserved uint 2 '0x00']
+            [simple uint 6 'seconds']
+        ]
+        ['PDT_LONG' DINT
+            [simple   int 32        'value']
+        ]
+        ['PDT_UNSIGNED_LONG' UDINT
+            [simple   uint 32       'value']
+        ]
+        ['PDT_FLOAT' REAL
+            [simple   float 8.23    'value']
+        ]
+        ['PDT_DOUBLE' LREAL
+            [simple   float 11.52   'value']
+        ]
+        ['PDT_CHAR_BLOCK' List
+            [array uint 8           'value' count '10']
+        ]
+        ['PDT_POLL_GROUP_SETTINGS' Struct
+            [array    uint 8        'groupAddress' count '2']
+            [simple   bit           'disable']
+            [reserved uint 3        '0x0']
+            [simple   uint 4        'pollingSoftNr']
+        ]
+        ['PDT_SHORT_CHAR_BLOCK' List
+            [array uint 8           'value' count '5']
+        ]
+        ['PDT_DATE_TIME' Struct
+            [simple uint 8 'year']
+            [reserved uint 4 '0x00']
+            [simple uint 4 'month']
+            [reserved uint 3 '0x00']
+            [simple uint 5 'dayofmonth']
+            [simple uint 3 'dayofweek']
+            [simple uint 5 'hourofday']
+            [reserved uint 2 '0x00']
+            [simple uint 6 'minutes']
+            [reserved uint 2 '0x00']
+            [simple uint 6 'seconds']
+            [simple bit 'fault']
+            [simple bit 'workingDay']
+            [simple bit 'noWd']
+            [simple bit 'noYear']
+            [simple bit 'noDate']
+            [simple bit 'noDayOfWeek']
+            [simple bit 'noTime']
+            [simple bit 'standardSummerTime']
+            [simple bit 'qualityOfClock']
+            [reserved uint 7 '0x00']
+        ]
+        ['PDT_GENERIC_01' List
+            [array uint 8           'value' count '1']
+        ]
+        ['PDT_GENERIC_02' List
+            [array uint 8           'value' count '2']
+        ]
+        ['PDT_GENERIC_03' List
+            [array uint 8           'value' count '3']
+        ]
+        ['PDT_GENERIC_04' List
+            [array uint 8           'value' count '4']
+        ]
+        ['PDT_GENERIC_05' List
+            [array uint 8           'value' count '5']
+        ]
+        ['PDT_GENERIC_06' List
+            [array uint 8           'value' count '6']
+        ]
+        ['PDT_GENERIC_07' List
+            [array uint 8           'value' count '7']
+        ]
+        ['PDT_GENERIC_08' List
+            [array uint 8           'value' count '8']
+        ]
+        ['PDT_GENERIC_09' List
+            [array uint 8           'value' count '9']
+        ]
+        ['PDT_GENERIC_10' List
+            [array uint 8           'value' count '10']
+        ]
+        ['PDT_GENERIC_11' List
+            [array uint 8           'value' count '11']
+        ]
+        ['PDT_GENERIC_12' List
+            [array uint 8           'value' count '12']
+        ]
+        ['PDT_GENERIC_13' List
+            [array uint 8           'value' count '13']
+        ]
+        ['PDT_GENERIC_14' List
+            [array uint 8           'value' count '14']
+        ]
+        ['PDT_GENERIC_15' List
+            [array uint 8           'value' count '15']
+        ]
+        ['PDT_GENERIC_16' List
+            [array uint 8           'value' count '16']
+        ]
+        ['PDT_GENERIC_17' List
+            [array uint 8           'value' count '17']
+        ]
+        ['PDT_GENERIC_18' List
+            [array uint 8           'value' count '18']
+        ]
+        ['PDT_GENERIC_19' List
+            [array uint 8           'value' count '19']
+        ]
+        ['PDT_GENERIC_20' List
+            [array uint 8           'value' count '20']
+        ]
+        // Defaults to PDT_VARIABLE_LENGTH
+        //['PDT_UTF_8'
+        //]
+        ['PDT_VERSION' Struct
+            [simple uint 5 'magicNumber']
+            [simple uint 5 'versionNumber']
+            [simple uint 6 'revisionNumber']
+        ]
+        ['PDT_ALARM_INFO' Struct
+            [simple uint 8 'logNumber']
+            [simple uint 8 'alarmPriority']
+            [simple uint 8 'applicationArea']
+            [simple uint 8 'errorClass']
+            [reserved uint 4 '0x00']
+            [simple bit 'errorcodeSup']
+            [simple bit 'alarmtextSup']
+            [simple bit 'timestampSup']
+            [simple bit 'ackSup']
+            [reserved uint 5 '0x00']
+            [simple bit 'locked']
+            [simple bit 'alarmunack']
+            [simple bit 'inalarm']
+        ]
+        ['PDT_BINARY_INFORMATION' BOOL
+            [reserved uint 7        '0x00']
+            [simple   bit           'value']
+        ]
+        ['PDT_BITSET8' List
+            [array    bit           'value' count '8']
+        ]
+        ['PDT_BITSET16' List
+            [array    bit           'value' count '16']
+        ]
+        ['PDT_ENUM8' USINT
+            [simple uint 8 'value']
+        ]
+        ['PDT_SCALING' USINT
+            [simple uint 8 'value']
+        ]
+        // Defaults to PDT_VARIABLE_LENGTH
+        //['PDT_NE_VL'
+        //]
+        // Defaults to PDT_VARIABLE_LENGTH
+        //['PDT_NE_FL'
+        //]
+        // Defaults to PDT_VARIABLE_LENGTH
+        //['PDT_FUNCTION'
+        //]
+        // Defaults to PDT_VARIABLE_LENGTH
+        //['PDT_ESCAPE'
+        //]
+        // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
+        [ List [uint 8 'dataLengthInBytes']
+            [array uint 8 'value' count 'dataLengthInBytes']
+        ]
+    ]
+]
+
+// 03_05_01 Resources v01.09.03 AS page 171
+[enum uint 8 'ComObjectValueType' [uint 8 'sizeInBytes']
+    ['0x00' BIT1                  ['1']]
+    ['0x01' BIT2                  ['1']]
+    ['0x02' BIT3                  ['1']]
+    ['0x03' BIT4                  ['1']]
+    ['0x04' BIT5                  ['1']]
+    ['0x05' BIT6                  ['1']]
+    ['0x06' BIT7                  ['1']]
+    ['0x07' BYTE1                 ['1']]
+    ['0x08' BYTE2                 ['2']]
+    ['0x09' BYTE3                 ['3']]
+    ['0x0A' BYTE4                 ['4']]
+    ['0x0B' BYTE6                 ['6']]
+    ['0x0C' BYTE8                 ['8']]
+    ['0x0D' BYTE10                ['10']]
+    ['0x0E' BYTE14                ['14']]
+]
+
+[discriminatedType 'ComObjectTable' [FirmwareType 'firmwareType']
+    [typeSwitch 'firmwareType'
+        // The location of the Group Object Table - Realization Type 1 is calculated by
+        // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
+        // is a single byte located at memory address 0x112
+        ['SYSTEM_1' ComObjectTableRealisationType1
+            [simple uint 8 'numEntries']
+            [simple uint 8 'ramFlagsTablePointer']
+            [array GroupObjectDescriptorRealisationType1 'comObjectDescriptors' count 'numEntries']
+        ]
+        // The location of the Group Object Table - Realization Type 2 is calculated by
+        // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
+        // is a single byte located at memory address 0x112
+        ['SYSTEM_2' ComObjectTableRealisationType2
+            [simple uint 8 'numEntries']
+            [simple uint 8 'ramFlagsTablePointer']
+            [array GroupObjectDescriptorRealisationType2 'comObjectDescriptors' count 'numEntries']
+        ]
+        // The Group Object Table in Realization Type 6 is accessed via Properties instead of
+        // reading memory.
+        ['SYSTEM_300' ComObjectTableRealisationType6
+            // TODO: This probably needs to be changed to an array as soon as I know how to actually work with these types
+            [simple GroupObjectDescriptorRealisationType6 'comObjectDescriptors']
+        ]
+        //['SYSTEM_7' ComObjectTableRealisationType7
+
+        //]
+    ]
+]
+
+// 03_05_01 Resources v01.09.03 AS page 168ff
+[type 'GroupObjectDescriptorRealisationType1'
+    // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
+    // if set to 'true' 0x100 has to be added to this value
+    [simple uint 8              'dataPointer']
+    [reserved uint 1            '0x1']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+
+// 03_05_01 Resources v01.09.03 AS page 172ff
+// It's generally identical to the type 1, but uses the reserved bit from type 1 as "updateEnable"
+[type 'GroupObjectDescriptorRealisationType2'
+    // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
+    // if set to 'true' 0x100 has to be added to this value
+    [simple uint 8              'dataPointer']
+    [simple bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+
+// 03_05_01 Resources v01.09.03 AS page 173ff
+[type 'GroupObjectDescriptorRealisationType6'
+    // TODO: Implement
+]
+
+// AKA: System 7
+// It seems that these devices generally define their own format.
+// From having a look at the memory, it looks as if in this case
+// at the address of the ComObjectTable, there's one byte indicating
+// the total number of entries. This seems to be followed by a 2-byte
+// Address and then by the entries themselves. Each entry seems to
+// be 4 bytes long.
+[type 'GroupObjectDescriptorRealisationType7'
+    // Offset of the value memory start address
+    [simple   uint 16             'dataAddress']
+    [simple   bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple   bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple   bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple   bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple   bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple   bit                 'communicationEnable']
+    // Transmission priority
+    [simple   CEMIPriority        'priority']
+    [simple   ComObjectValueType  'valueType']
+]
+
+// 03_05_01 Resources v01.09.03 AS page 194ff
+// AKA: System B
+// This format isn't explicitly described in the spec,
+// however when having a look at the payload in WireShark
+// if looks as if it's simply the realization type 1 or 2
+// without the leading 'dataPointer' field.
+[type 'GroupObjectDescriptorRealisationTypeB'
+    [simple bit                 'updateEnable']
+    // The com object emits GroupValueWrites if the internal value changes
+    [simple bit                 'transmitEnable']
+    // Additional information to the 'dataPointer', if set to 'true' 0x100 needs to be added to the address
+    [simple bit                 'segmentSelectorEnable']
+    // The Com Object reacts to GroupValueWrite requests
+    [simple bit                 'writeEnable']
+    // The Com Object reacts to GroupValueRead requests
+    [simple bit                 'readEnable']
+    // Communication is generally enabled (If this is set to false, 'transmitEnable',
+    // 'writeEnable' and 'readEnable' are generally considered 'false'
+    [simple bit                 'communicationEnable']
+    // Transmission priority
+    [simple CEMIPriority        'priority']
+    [simple ComObjectValueType  'valueType']
+]
+

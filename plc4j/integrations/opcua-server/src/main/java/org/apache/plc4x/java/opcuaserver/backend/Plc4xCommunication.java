@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.plc4x.java.opcuaserver.backend;
 
 import java.lang.reflect.Array;
@@ -94,7 +93,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriver(connectionString).prepareField(tag);
+        return driverManager.getDriverForUrl(connectionString).prepareField(tag);
     }
 
     public void addField(DataItem item) {

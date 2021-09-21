@@ -1,87 +1,132 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package testutils
 
 import (
 	"encoding/hex"
-	"encoding/xml"
-	"errors"
 	"fmt"
-	model2 "github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	api "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"github.com/subchen/go-xmldom"
 	"os"
+	"runtime/debug"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
 
 type DriverTestsuite struct {
 	name             string
+	protocolName     string
+	outputFlavor     string
 	driverName       string
 	driverParameters map[string]string
+	bigEndian        bool
+	parser           XmlParser
+	rootTypeParser   func(utils.ReadBufferByteBased) (interface{}, error)
 	setupSteps       []TestStep
 	teardownSteps    []TestStep
 	testcases        []Testcase
 }
 
+type XmlParser interface {
+	Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+}
+
+type WithOption interface {
+	isOption() bool
+}
+
+type option struct {
+}
+
+func (_ option) isOption() bool {
+	return true
+}
+
+// WithRootTypeParser Can be used to output the root type of a protocol for better debugging
+func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) WithOption {
+	return withRootTypeParser{rootTypeParser: rootTypeParser}
+}
+
+type withRootTypeParser struct {
+	option
+	rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
+}
+
 func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Testcase) error {
+	var options []string
+	for key, value := range m.driverParameters {
+		options = append(options, fmt.Sprintf("%s=%s", key, value))
+	}
+	optionsString := ""
+	if len(options) > 0 {
+		optionsString = "?" + strings.Join(options, "&")
+	}
 	// Get a connection
-	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz")
+	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
 	connectionResult := <-connectionChan
 
 	if connectionResult.Err != nil {
-		return errors.New("error getting a connection: " + connectionResult.Err.Error())
+		return errors.Wrap(connectionResult.Err, "error getting a connection")
 	}
 
-	fmt.Printf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n", testcase.name)
+	log.Info().Msgf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
 
 	// Run the setup steps
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
-			return errors.New("error in setup step " + testStep.name + ": " + err.Error())
+			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
+		// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
+		time.Sleep(time.Second)
 	}
 
 	// Run the actual scenario steps
+	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
-			return errors.New("error in step " + testStep.name + ": " + err.Error())
+			return errors.Wrap(err, "error in step "+testStep.name)
 		}
 	}
 
 	// Run the teardown steps
+	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
 		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
 		if err != nil {
-			return errors.New("error in teardown step " + testStep.name + ": " + err.Error())
+			return errors.Wrap(err, "error in teardown step "+testStep.name)
 		}
 	}
 
-	fmt.Printf("-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
+	log.Info().Msgf("\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
 	return nil
 }
 
@@ -95,30 +140,35 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		return errors.New("transport must be of type TestTransport")
 	}
 
-	fmt.Printf(" - Executing step: %s \n", step.name)
+	start := time.Now()
+	log.Info().Msgf("\n-------------------------------------------------------\n - Executing step: %s \n-------------------------------------------------------\n", step.name)
 
+	log.Debug().Stringer("stepType", step.stepType).Msg("Handling step")
 	switch step.stepType {
-	case StepType_API_REQUEST:
+	case StepTypeApiRequest:
 		switch step.payload.Name {
 		case "TestReadRequest":
 			// Assemble a read-request according to the information in the test xml
+			log.Trace().Msg("Assemble read request")
 			rrb := connection.ReadRequestBuilder()
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
 				fieldAddress := fieldNode.GetChild("address").Text
-				rrb.AddItem(fieldName, fieldAddress)
+				rrb.AddQuery(fieldName, fieldAddress)
 			}
 			readRequest, err := rrb.Build()
 			if err != nil {
-				return errors.New("Error creating read-request: " + err.Error())
+				return errors.Wrap(err, "Error creating read-request")
 			}
 
 			// Execute the read-request and store the response-channel in the testcase.
+			log.Trace().Msg("Execute read request")
 			if testcase.readRequestResultChannel != nil {
 				return errors.New("testcase read-request result channel already occupied")
 			}
 			testcase.readRequestResultChannel = readRequest.Execute()
 		case "TestWriteRequest":
+			log.Trace().Msg("Assemble write request")
 			wrb := connection.WriteRequestBuilder()
 			for _, fieldNode := range step.payload.GetChild("fields").GetChildren("field") {
 				fieldName := fieldNode.GetChild("name").Text
@@ -130,181 +180,252 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				}
 				field, err := he.GetPlcFieldHandler().ParseQuery(fieldAddress)
 				if err != nil {
-					return errors.New("error parsing address: " + fieldAddress + " got error " + err.Error())
+					return errors.Wrapf(err, "error parsing address: %s", fieldAddress)
 				}
 				if field.GetQuantity() > 1 {
 					var fieldValue []string
 					for _, valueChild := range fieldNode.GetChildren("value") {
 						fieldValue = append(fieldValue, valueChild.Text)
 					}
-					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
 				} else {
 					fieldValue := fieldNode.GetChild("value").Text
-					wrb.AddItem(fieldName, fieldAddress, fieldValue)
+					wrb.AddQuery(fieldName, fieldAddress, fieldValue)
 				}
 			}
 			writeRequest, err := wrb.Build()
 			if err != nil {
-				return errors.New("Error creating write-request: " + err.Error())
+				return errors.Wrap(err, "Error creating write-request")
 			}
+			log.Trace().Msg("Execute write request")
 			if testcase.writeRequestResultChannel != nil {
 				return errors.New("testcase write-request result channel already occupied")
 			}
 			testcase.writeRequestResultChannel = writeRequest.Execute()
 		}
-	case StepType_API_RESPONSE:
+	case StepTypeApiResponse:
 		switch step.payload.Name {
 		case "PlcReadResponse":
 			if testcase.readRequestResultChannel == nil {
 				return errors.New("no read response expected")
 			}
+			log.Trace().Msg("Waiting for read request result")
 			readRequestResult := <-testcase.readRequestResultChannel
+			if readRequestResult.Err != nil {
+				return errors.Wrap(readRequestResult.Err, "error sending response")
+			}
 			// Serialize the response to XML
-			actualResponse, err := xml.Marshal(readRequestResult.Response)
+			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			err := readRequestResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
-				return errors.New("error serializing response: " + err.Error())
+				return errors.Wrap(err, "error serializing response")
 			}
+			actualResponse := xmlWriteBuffer.GetXmlString()
 			// Get the reference XML
-			referenceSerialized := step.payload.XML()
+			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults(actualResponse, []byte(referenceSerialized))
+			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
-				return errors.New("Error comparing the results: " + err.Error())
+				return errors.Wrap(err, "Error comparing the results")
 			}
+			// Reset read channel
+			testcase.readRequestResultChannel = nil
 		case "PlcWriteResponse":
 			if testcase.writeRequestResultChannel == nil {
 				return errors.New("no write response expected")
 			}
+			log.Trace().Msg("Waiting for write request result")
 			writeResponseResult := <-testcase.writeRequestResultChannel
+			if writeResponseResult.Err != nil {
+				return errors.Wrap(writeResponseResult.Err, "error sending response")
+			}
 			// Serialize the response to XML
-			actualResponse, err := xml.Marshal(writeResponseResult.Response)
+			xmlWriteBuffer := utils.NewXmlWriteBuffer()
+			err := writeResponseResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
-				return errors.New("error serializing response: " + err.Error())
+				return errors.Wrap(err, "error serializing response")
 			}
+			actualResponse := xmlWriteBuffer.GetXmlString()
 			// Get the reference XML
-			referenceSerialized := step.payload.XML()
+			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults(actualResponse, []byte(referenceSerialized))
+			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
-				return errors.New("Error comparing the results: " + err.Error())
+				return errors.Wrap(err, "Error comparing the results")
 			}
+			// Reset write channel
+			testcase.writeRequestResultChannel = nil
 		}
-	case StepType_OUTGOING_PLC_MESSAGE:
+	case StepTypeOutgoingPlcMessage:
 		typeName := step.payload.Name
-		payloadString := step.payload.XML()
+		payloadString := step.payload.XMLPretty()
 
 		// Parse the xml into a real model
-		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+		log.Trace().Msg("parsing xml")
+		expectedMessage, err := m.parseMessage(typeName, payloadString, step)
 		if err != nil {
-			return errors.New("error parsing xml: " + err.Error())
+			return errors.Wrap(err, "Error parsing message")
 		}
 
 		// Serialize the model into bytes
-		ser, ok := message.(utils.Serializable)
+		log.Trace().Msg("Write to bytes")
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
-			return errors.New("error converting type into Serializable type")
+			return errors.Errorf("error converting type %t into Serializable type", expectedMessage)
 		}
-		wb := utils.NewWriteBuffer()
-		err = ser.Serialize(*wb)
+		var expectedWriteBuffer utils.WriteBufferByteBased
+		if m.bigEndian {
+			expectedWriteBuffer = utils.NewWriteBufferByteBased()
+		} else {
+			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
+		}
+		err = expectedSerializable.Serialize(expectedWriteBuffer)
 		if err != nil {
-			return errors.New("error serializing message: " + err.Error())
+			return errors.Wrap(err, "error serializing expectedMessage")
 		}
-		expectedRawOutput := wb.GetBytes()
+		expectedRawOutput := expectedWriteBuffer.GetBytes()
 		expectedRawOutputLength := uint32(len(expectedRawOutput))
 
+		now := time.Now()
 		// Read exactly this amount of bytes from the transport
-		if testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
-			return errors.New("error getting bytes from transport. Not enough data available")
+		log.Trace().Uint32("expectedRawOutputLength", expectedRawOutputLength).Msg("Reading bytes")
+		for testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
+			if time.Now().Sub(now) > 2*time.Second {
+				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d)", testTransportInstance.GetNumDrainableBytes(), expectedRawOutputLength)
+			}
+			time.Sleep(10 * time.Millisecond)
 		}
-		rawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		if testTransportInstance.GetNumDrainableBytes() != 0 {
+			//panic(fmt.Sprintf("leftover drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes()))
+		}
 		if err != nil {
-			return errors.New("error getting bytes from transport: " + err.Error())
+			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
+		var bufferFactory func([]byte) utils.ReadBufferByteBased
+		if m.bigEndian {
+			bufferFactory = utils.NewReadBufferByteBased
+		} else {
+			bufferFactory = utils.NewLittleEndianReadBufferByteBased
+		}
 		// Compare the bytes read with the ones we expect
+		log.Trace().Msg("Comparing outputs")
 		for i := range expectedRawOutput {
-			if expectedRawOutput[i] != rawOutput[i] {
-				return errors.New("actual output doesn't match expected output")
+			if expectedRawOutput[i] != actualRawOutput[i] {
+				if m.rootTypeParser != nil {
+					readBufferByteBased := bufferFactory(actualRawOutput)
+					actual, err := m.rootTypeParser(readBufferByteBased)
+					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectedSerializable, actual)
+				}
+				return errors.Errorf("actual output doesn't match expected output:\nactual:\n%s\nexpected:\n%s", utils.Dump(actualRawOutput), utils.Dump(expectedRawOutput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
-	case StepType_OUTGOING_PLC_BYTES:
+	case StepTypeOutgoingPlcBytes:
 		// Read exactly this amount of bytes from the transport
+		log.Trace().Msg("Reading bytes")
 		expectedRawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
-			return errors.New("error decoding hex-encoded byte data: " + err.Error())
+			return errors.Wrap(err, "error decoding hex-encoded byte data")
 		}
 		rawInput, err := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawInput)))
 		if err != nil {
-			return errors.New("error getting bytes from transport: " + err.Error())
+			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
 		// Compare the bytes read with the ones we expect
+		log.Trace().Msg("Comparing bytes")
 		for i := range expectedRawInput {
 			if expectedRawInput[i] != rawInput[i] {
-				return errors.New("actual output doesn't match expected output")
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawInput, expectedRawInput)
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
-	case StepType_INCOMING_PLC_MESSAGE:
+	case StepTypeIncomingPlcMessage:
 		typeName := step.payload.Name
-		payloadString := step.payload.XML()
+		payloadString := step.payload.XMLPretty()
 
 		// Parse the xml into a real model
-		message, err := model2.ModbusXmlParserHelper{}.Parse(typeName, payloadString)
+		log.Trace().Msg("Parsing model")
+		expectedMessage, err := m.parseMessage(typeName, payloadString, step)
 		if err != nil {
-			return errors.New("error parsing xml: " + err.Error())
+			return errors.Wrap(err, "error parsing message")
 		}
 
 		// Serialize the model into bytes
-		ser, ok := message.(utils.Serializable)
+		log.Trace().Msg("Serializing bytes")
+		expectedSerializable, ok := expectedMessage.(utils.Serializable)
 		if !ok {
 			return errors.New("error converting type into Serializable type")
 		}
-		wb := utils.NewWriteBuffer()
-		err = ser.Serialize(*wb)
+		var wb utils.WriteBufferByteBased
+		if m.bigEndian {
+			wb = utils.NewWriteBufferByteBased()
+		} else {
+			wb = utils.NewLittleEndianWriteBufferByteBased()
+		}
+		err = expectedSerializable.Serialize(wb)
 		if err != nil {
-			return errors.New("error serializing message: " + err.Error())
+			return errors.Wrap(err, "error serializing expectedMessage")
 		}
 
 		// Send these bytes to the transport
+		log.Trace().Msg("Writing to transport")
 		err = testTransportInstance.FillReadBuffer(wb.GetBytes())
 		if err != nil {
-			return errors.New("error writing data to transport: " + err.Error())
+			return errors.Wrap(err, "error writing data to transport")
 		}
-	case StepType_INCOMING_PLC_BYTES:
+	case StepTypeIncomingPlcBytes:
 		// Get the raw hex-data.
+		log.Trace().Msg("Get hex data")
 		rawInput, err := hex.DecodeString(step.payload.Text)
 		if err != nil {
-			return errors.New("error decoding hex-encoded byte data: " + err.Error())
+			return errors.Wrap(err, "error decoding hex-encoded byte data: ")
 		}
 
 		// Send these bytes to the transport
+		log.Trace().Msg("Writing bytes to transport")
 		err = testTransportInstance.FillReadBuffer(rawInput)
 		if err != nil {
-			return errors.New("error writing data to transport: " + err.Error())
+			return errors.Wrap(err, "error writing data to transport")
 		}
-	case StepType_DELAY:
+	case StepTypeDelay:
 		// Get the number of milliseconds
+		log.Trace().Msg("Getting millis")
 		delay, err := strconv.Atoi(step.payload.Text)
 		if err != nil {
-			return errors.New("invalid delay format: " + err.Error())
+			return errors.Wrap(err, "invalid delay format")
 		}
 		// Sleep for that long
-		time.Sleep(time.Duration(delay))
-	case StepType_TERMINATE:
+		log.Debug().Int("delay", delay).Msg("Sleeping")
+		time.Sleep(time.Millisecond * time.Duration(delay))
+	case StepTypeTerminate:
 		// Simply close the transport connection
+		log.Trace().Msg("closing transport")
 		err := testTransportInstance.Close()
 		if err != nil {
-			return errors.New("error closing transport: " + err.Error())
+			return errors.Wrap(err, "error closing transport")
 		}
 	}
+	log.Info().Msgf("\n\n-------------------------------------------------------\n - Finished step: %s after %vms \n-------------------------------------------------------", step.name, time.Now().Sub(start).Milliseconds())
 	return nil
+}
+
+func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step TestStep) (interface{}, error) {
+	if m.parser == nil {
+		return nil, errors.Errorf("Protocol name %s has no mapped parser", m.protocolName)
+	}
+	parse, err := m.parser.Parse(typeName, payloadString, step.parserArguments...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error parsing xml")
+	}
+	return parse, err
 }
 
 func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
 	normalizeXml(referenceXml)
-	//referenceSerialized := referenceXml.FirstChild().XML()
+	//referenceSerialized := referenceXml.FirstChild().XMLPretty()
 }
 
 type Testcase struct {
@@ -323,18 +444,27 @@ type TestStep struct {
 
 type StepType uint8
 
+//go:generate stringer -type StepType
 const (
-	StepType_OUTGOING_PLC_MESSAGE StepType = 0x01
-	StepType_OUTGOING_PLC_BYTES   StepType = 0x02
-	StepType_INCOMING_PLC_MESSAGE StepType = 0x03
-	StepType_INCOMING_PLC_BYTES   StepType = 0x04
-	StepType_API_REQUEST          StepType = 0x05
-	StepType_API_RESPONSE         StepType = 0x06
-	StepType_DELAY                StepType = 0x07
-	StepType_TERMINATE            StepType = 0x08
+	StepTypeOutgoingPlcMessage StepType = 0x01
+	StepTypeOutgoingPlcBytes   StepType = 0x02
+	StepTypeIncomingPlcMessage StepType = 0x03
+	StepTypeIncomingPlcBytes   StepType = 0x04
+	StepTypeApiRequest         StepType = 0x05
+	StepTypeApiResponse        StepType = 0x06
+	StepTypeDelay              StepType = 0x07
+	StepTypeTerminate          StepType = 0x08
 )
 
-func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) {
+func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, skippedTestCases ...string) {
+	RunDriverTestsuiteWithOptions(t, driver, testPath, parser, nil, skippedTestCases...)
+}
+
+func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPath string, parser XmlParser, options []WithOption, skippedTestCases ...string) {
+	skippedTestCasesMap := map[string]bool{}
+	for _, skippedTestCase := range skippedTestCases {
+		skippedTestCasesMap[skippedTestCase] = true
+	}
 	// Read the test-specification as XML file
 	rootNode, err := ParseDriverTestsuiteXml(testPath)
 	if err != nil {
@@ -343,28 +473,66 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) 
 		return
 	}
 
+	var rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
+	for _, withOption := range options {
+		switch withOption.(type) {
+		case withRootTypeParser:
+			log.Info().Msg("Using root type parser for better output")
+			rootTypeParser = withOption.(withRootTypeParser).rootTypeParser
+		}
+	}
 	// Parse the contents of the test-specification
-	testsuite, err := ParseDriverTestsuite(*rootNode)
+	testsuite, err := ParseDriverTestsuite(*rootNode, parser, rootTypeParser)
 	if err != nil {
-		t.Error(err.Error())
+		// TODO: zerolog doesn't render stack human readable :(
+		fmt.Printf("%+v\n", err)
+		log.Error().
+			Stack().
+			Err(err).
+			Msg("Failed to parse test-specification")
+		t.Error(err)
 		t.Fail()
 		return
 	}
 
+	// We don't want to await completion of connection initialization
+	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
+		connectionConnectAwaiter.SetAwaitSetupComplete(false)
+		connectionConnectAwaiter.SetAwaitDisconnectComplete(false)
+	}
+
 	// Initialize the driver manager
 	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterTransport(test.NewTestTransport())
+	driverManager.(spi.TransportAware).RegisterTransport(test.NewTransport())
 	driverManager.RegisterDriver(driver)
 
 	for _, testcase := range testsuite.testcases {
-		err := testsuite.Run(driverManager, testcase)
-		if err != nil {
-			fmt.Printf("-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
-			t.Fail()
-		}
+		t.Run(testcase.name, func(t *testing.T) {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Error().Msgf("\n-------------------------------------------------------\nPanic Failure\n%+v\n%s\n-------------------------------------------------------\n\n", err, debug.Stack())
+					t.FailNow()
+				}
+			}()
+			if skippedTestCasesMap[testcase.name] {
+				log.Warn().Msgf("Testcase %s skipped", testcase.name)
+				t.Skipf("Testcase %s skipped", testcase.name)
+				return
+			}
+			log.Info().Msgf("Running testcase %s", testcase.name)
+			if err := testsuite.Run(driverManager, testcase); err != nil {
+				log.Error().Err(err).Msgf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
+				t.Fail()
+			}
+		})
 	}
 	// Execute the tests in the testsuite
-	fmt.Printf(testsuite.name)
+	log.Info().Msgf(testsuite.name)
+}
+
+type ConnectionConnectAwaiter interface {
+	SetAwaitSetupComplete(awaitComplete bool)
+	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 
 func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
@@ -377,7 +545,7 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	// Check if the test-file is available
 	info, err := os.Stat(path + "/../../../../" + testPath)
 	if os.IsNotExist(err) {
-		return nil, errors.New("test-File doesn't exist")
+		return nil, errors.Wrap(err, "test-File doesn't exist")
 	}
 	if info.IsDir() {
 		return nil, errors.New("test-file refers to a directory")
@@ -386,7 +554,7 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	// Open a reader for this file
 	dat, err := os.Open(path + "/../../../../" + testPath)
 	if err != nil {
-		return nil, errors.New("error opening file")
+		return nil, errors.Wrap(err, "error opening file")
 	}
 
 	// Read the xml
@@ -394,12 +562,16 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	return node, nil
 }
 
-func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
+func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) (*DriverTestsuite, error) {
 	if node.Name != "driver-testsuite" {
 		return nil, errors.New("invalid document structure")
 	}
+	bigEndian := node.GetAttributeValue("bigEndian") != "false"
 	var testsuiteName string
+	var protocolName string
+	var outputFlavor string
 	var driverName string
+	driverParameters := make(map[string]string)
 	var setupSteps []TestStep
 	var teardownSteps []TestStep
 	var testcases []Testcase
@@ -407,18 +579,37 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 		child := *childPtr
 		if child.Name == "name" {
 			testsuiteName = child.Text
+		} else if child.Name == "protocolName" {
+			protocolName = child.Text
+		} else if child.Name == "outputFlavor" {
+			outputFlavor = child.Text
 		} else if child.Name == "driver-name" {
 			driverName = child.Text
+		} else if child.Name == "driver-parameters" {
+			parameterList := child.FindByName("parameter")
+			for _, parameter := range parameterList {
+				nameElement := parameter.FindOneByName("name")
+				valueElement := parameter.FindOneByName("value")
+				if nameElement == nil || valueElement == nil {
+					return nil, errors.New("invalid parameter found: no present")
+				}
+				name := nameElement.Text
+				value := valueElement.Text
+				if name == "" || value == "" {
+					return nil, errors.New("invalid parameter found: empty")
+				}
+				driverParameters[name] = value
+			}
 		} else if child.Name == "setup" {
 			steps, err := ParseDriverTestsuiteSteps(child)
 			if err != nil {
-				return nil, errors.New("error parsing setup steps")
+				return nil, errors.Wrap(err, "error parsing setup steps")
 			}
 			setupSteps = steps
 		} else if child.Name == "teardown" {
 			steps, err := ParseDriverTestsuiteSteps(child)
 			if err != nil {
-				return nil, errors.New("error teardown setup steps")
+				return nil, errors.Wrap(err, "error teardown setup steps")
 			}
 			teardownSteps = steps
 		} else if child.Name == "testcase" {
@@ -426,7 +617,7 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 			stepsNode := child.FindOneByName("steps")
 			steps, err := ParseDriverTestsuiteSteps(*stepsNode)
 			if err != nil {
-				return nil, errors.New("error parsing testcase " + testcaseName + ": " + err.Error())
+				return nil, errors.Wrap(err, "error parsing testcase "+testcaseName)
 			}
 			testcase := Testcase{
 				name:  testcaseName,
@@ -434,45 +625,61 @@ func ParseDriverTestsuite(node xmldom.Node) (*DriverTestsuite, error) {
 			}
 			testcases = append(testcases, testcase)
 		} else {
-			return nil, errors.New("invalid document structure")
+			return nil, errors.New("invalid document structure. Unhandled element " + child.Name)
 		}
 	}
+	log.Info().
+		Str("testsuite name", testsuiteName).
+		Str("driver name", driverName).
+		Msgf("Parsed test suite %s", testsuiteName)
 
 	return &DriverTestsuite{
-		name:          testsuiteName,
-		driverName:    driverName,
-		setupSteps:    setupSteps,
-		teardownSteps: teardownSteps,
-		testcases:     testcases,
+		name:             testsuiteName,
+		protocolName:     protocolName,
+		outputFlavor:     outputFlavor,
+		driverName:       driverName,
+		driverParameters: driverParameters,
+		bigEndian:        bigEndian,
+		parser:           parser,
+		rootTypeParser:   rootTypeParser,
+		setupSteps:       setupSteps,
+		teardownSteps:    teardownSteps,
+		testcases:        testcases,
 	}, nil
 }
 
 func ParseDriverTestsuiteSteps(node xmldom.Node) ([]TestStep, error) {
+	log.Debug().Str("rootElement", node.Name).Msg("Parsing driver testsuite steps")
 	var testSteps []TestStep
 	for _, step := range node.Children {
 		name := step.GetAttributeValue("name")
+		log.Debug().Str("rootElement", node.Name).Str("name", name).Msg("Parsing step")
 		var stepType StepType
 		switch step.Name {
 		case "api-request":
-			stepType = StepType_API_REQUEST
+			stepType = StepTypeApiRequest
 		case "api-response":
-			stepType = StepType_API_RESPONSE
+			stepType = StepTypeApiResponse
 		case "outgoing-plc-message":
-			stepType = StepType_OUTGOING_PLC_MESSAGE
+			stepType = StepTypeOutgoingPlcMessage
 		case "incoming-plc-message":
-			stepType = StepType_INCOMING_PLC_MESSAGE
+			stepType = StepTypeIncomingPlcMessage
 		case "outgoing-plc-bytes":
-			stepType = StepType_OUTGOING_PLC_BYTES
+			stepType = StepTypeOutgoingPlcBytes
 		case "incoming-plc-bytes":
-			stepType = StepType_INCOMING_PLC_BYTES
+			stepType = StepTypeIncomingPlcBytes
 		case "delay":
-			stepType = StepType_DELAY
+			stepType = StepTypeDelay
 		case "terminate":
-			stepType = StepType_TERMINATE
+			stepType = StepTypeTerminate
+		default:
+			return nil, errors.Errorf("Unknown step with name %s", step.Name)
 		}
 		var parserArguments []string
 		var payload *xmldom.Node
+		log.Debug().Str("rootElement", node.Name).Msg("Looking for payload")
 		for _, childNode := range step.Children {
+			log.Debug().Str("child node name", childNode.Name).Str("rootElement", node.Name).Msg("Found payload candidate")
 			if childNode.Name == "parser-arguments" {
 				for _, parserArgumentNode := range childNode.Children {
 					parserArguments = append(parserArguments, parserArgumentNode.Text)
@@ -482,6 +689,9 @@ func ParseDriverTestsuiteSteps(node xmldom.Node) ([]TestStep, error) {
 			} else {
 				return nil, errors.New("test step can only contain a single payload element")
 			}
+		}
+		if stepType == StepTypeDelay {
+			payload = step
 		}
 		if payload == nil {
 			return nil, errors.New("missing payload element")

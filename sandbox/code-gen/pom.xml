@@ -23,7 +23,7 @@
   <parent>
     <artifactId>plc4x-sandbox</artifactId>
     <groupId>org.apache.plc4x.sandbox</groupId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>code-gen</artifactId>

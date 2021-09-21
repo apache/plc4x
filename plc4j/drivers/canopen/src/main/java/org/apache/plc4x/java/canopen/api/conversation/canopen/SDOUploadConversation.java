@@ -1,28 +1,28 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.canopen.api.conversation.canopen;
 
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.api.segmentation.accumulator.ByteStorage;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
-import org.apache.plc4x.java.canopen.transport.CANOpenFrame;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -38,7 +38,7 @@ public class SDOUploadConversation extends CANOpenConversationBase {
     private final IndexAddress address;
     private final CANOpenDataType type;
 
-    public SDOUploadConversation(CANConversation<CANOpenFrame> delegate, int nodeId, int answerNodeId, IndexAddress address, CANOpenDataType type) {
+    public SDOUploadConversation(CANConversation delegate, int nodeId, int answerNodeId, IndexAddress address, CANOpenDataType type) {
         super(delegate, nodeId, answerNodeId);
         this.address = address;
         this.type = type;

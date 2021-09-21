@@ -1,21 +1,22 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package values
 
 import (
@@ -29,37 +30,37 @@ import (
 
 const (
 	// Bit & Bit-Strings
-	IEC61131_BOOL  string = "IEC61131_BOOL"
-	IEC61131_BYTE  string = "IEC61131_BYTE"
-	IEC61131_WORD  string = "IEC61131_WORD"
-	IEC61131_DWORD string = "IEC61131_DWORD"
-	IEC61131_LWORD string = "IEC61131_LWORD"
+	IEC61131_BOOL  string = "BOOL"
+	IEC61131_BYTE  string = "BYTE"
+	IEC61131_WORD  string = "WORD"
+	IEC61131_DWORD string = "DWORD"
+	IEC61131_LWORD string = "LWORD"
 
 	// Integers
-	IEC61131_USINT string = "IEC61131_USINT"
-	IEC61131_UINT  string = "IEC61131_UINT"
-	IEC61131_UDINT string = "IEC61131_UDINT"
-	IEC61131_ULINT string = "IEC61131_ULINT"
-	IEC61131_SINT  string = "IEC61131_SINT"
-	IEC61131_INT   string = "IEC61131_INT"
-	IEC61131_DINT  string = "IEC61131_DINT"
-	IEC61131_LINT  string = "IEC61131_LINT"
+	IEC61131_USINT string = "USINT"
+	IEC61131_UINT  string = "UINT"
+	IEC61131_UDINT string = "UDINT"
+	IEC61131_ULINT string = "ULINT"
+	IEC61131_SINT  string = "SINT"
+	IEC61131_INT   string = "INT"
+	IEC61131_DINT  string = "DINT"
+	IEC61131_LINT  string = "LINT"
 
 	// Floating Point Values
-	IEC61131_REAL  string = "IEC61131_REAL"
-	IEC61131_LREAL string = "IEC61131_LREAL"
+	IEC61131_REAL  string = "REAL"
+	IEC61131_LREAL string = "LREAL"
 
 	// Temporal Values
-	IEC61131_TIME          string = "IEC61131_TIME"
-	IEC61131_DATE          string = "IEC61131_DATE"
-	IEC61131_TIME_OF_DAY   string = "IEC61131_TIME_OF_DAY"
-	IEC61131_DATE_AND_TIME string = "IEC61131_DATE_AND_TIME"
+	IEC61131_TIME          string = "TIME"
+	IEC61131_DATE          string = "DATE"
+	IEC61131_TIME_OF_DAY   string = "TIME_OF_DAY"
+	IEC61131_DATE_AND_TIME string = "DATE_AND_TIME"
 
 	// Chars and Strings
-	IEC61131_CHAR    string = "IEC61131_CHAR"
-	IEC61131_WCHAR   string = "IEC61131_WCHAR"
-	IEC61131_STRING  string = "IEC61131_STRING"
-	IEC61131_WSTRING string = "IEC61131_WSTRING"
+	IEC61131_CHAR    string = "CHAR"
+	IEC61131_WCHAR   string = "WCHAR"
+	IEC61131_STRING  string = "STRING"
+	IEC61131_WSTRING string = "WSTRING"
 )
 
 type IEC61131ValueHandler struct {

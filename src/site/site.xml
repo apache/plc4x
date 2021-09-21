@@ -22,7 +22,7 @@
   <skin>
     <groupId>org.apache.plc4x.plugins</groupId>
     <artifactId>plc4x-site-skin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </skin>
 
   <!-- Hide the publish date as this will cause changes on every generated page every day -->
@@ -50,10 +50,12 @@
       <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
+      <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
       <item name="Commercial support" href="users/commercial-support.html"/>
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="Using SNAPSHOTS" href="users/getting-started/using-snapshots.html"/>
         <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
       </item>
@@ -91,11 +93,11 @@
         <item name="Apache StreamPipes" href="users/integrations/apache-streampipes.html"/>
         <item name="Eclipse Ditto" href="users/integrations/eclipse-ditto.html"/>
         <item name="Eclipse Milo OPC UA Server" href="users/integrations/eclipse-milo.html"/>
-        <item name="Elastic Logstash " href="users/integrations/elastic-logstash.html"/>
       </item>
       <item name="Tools" href="users/tools/index.html">
         <item name="Capture Replay" href="users/tools/capture-replay.html"/>
         <item name="Connection Pool" href="users/tools/connection-pool.html"/>
+        <item name="Connection Cache" href="users/tools/connection-cache.html"/>
         <item name="Object PLC Mapping (OPM)" href="users/tools/opm.html"/>
         <item name="Scraper" href="users/tools/scraper.html"/>
         <item name="PLC4X without a PLC and Unit Testing" href="users/tools/testing.html"/>

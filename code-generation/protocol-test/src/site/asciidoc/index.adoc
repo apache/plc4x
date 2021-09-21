@@ -1,0 +1,122 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: images/
+:icons: font
+:mspecdir: ../../main/resources
+:sourcedir: ../../../target/generated-site-resources/plc4x
+
+== MSpec Code-Generation Documentation
+
+=== Simple types
+
+Some times no matter what content is coming, the same type is used. In this case a `type` is used:
+
+[source]
+include::{mspecdir}/protocols/test/test.mspec[tag=SimpleBitTypeTest]
+
+
+[source]
+----
+include::{mspecdir}/protocols/test/test.mspec[lines=24..40]
+----
+
+The code generator will create simple POJOs as well as serializers and parsers from this specification.
+
+=== Discriminated types
+
+There are however cases, where the content of the packet determines it's type.
+In these case a `discriminatedType` must be used.
+Each `discriminatedType` must have one `discriminator` field and one `typeSwitch` field to define the sub-types.
+
+[source]
+----
+include::{mspecdir}/protocols/test/test.mspec[lines=46..59]
+----
+
+In contrast to the simple types, in this case a base-type POJO will be created, which contains all the fields all sub-types share.
+However these types are generated as abstract types.
+The subtypes then extend these base-types.
+
+=== Field types
+
+In this section comes a description of all the different types of fields supported by the code generator.
+
+==== array
+
+An `array` field will generate an array property.
+There are 3 variants of arrays which differ in the rule for how many elements the array should contain.
+
+Right now these are:
+- `count`: An explicit number of element will be read
+- `length`: The number of bytes the entire array will consume (The parser will continue reading elements until the given number of bytes are read)
+- `terminated`: The parser will continue to read elements until a given exit termination condition is `true`.
+
+[source]
+----
+include::{mspecdir}/protocols/test/test.mspec[lines=25..27]
+----
+
+The general structure is:
+
+[source]
+----
+[array {simple-type|complex-type} '{name}' {count|length|terminated} '{expression}']
+----
+
+Above definition generates the following code:
+
+In the Pojo:
+[source,java]
+----
+include::{sourcedir}/org/apache/plc4x/java/test/readwrite/SimpleType.java[lines=33..35;55..64;96..109;149..150]
+----
+
+In the IO component:
+
+[source,java]
+----
+include::{sourcedir}/org/apache/plc4x/java/test/readwrite/io/SimpleTypeIO.java[lines=36..71;148..175;232]
+----
+
+==== checksum
+
+==== const
+
+==== implicit
+
+==== manualArray
+
+==== manual
+
+==== optional
+
+==== padding
+
+==== reserved
+
+==== simple
+
+==== virtual
+
+
+
+
+
+[source,java]
+----
+include::{sourcedir}/org/apache/plc4x/java/test/readwrite/SimpleType.java[]
+----

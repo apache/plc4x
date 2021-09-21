@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 [discriminatedType 'FirmataMessage' [bit 'response']
     [discriminator uint 4 'messageType']
@@ -115,7 +115,7 @@
         ['0x79','true' SysexCommandReportFirmwareResponse
             [simple uint 8 'majorVersion']
             [simple uint 8 'minorVersion']
-            [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", io, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
+            [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", writeBuffer, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
         ]
         ['0x7A' SysexCommandSamplingInterval
         ]

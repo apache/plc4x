@@ -23,7 +23,7 @@ There are situations where you don't want to carry around connections in your co
 
 For example if you have a microservice application, you might have multiple services accessing PLC data.
 
-Keeping an open connection for each of these is rather problematic as in contrast to modern computers, PLCs usually are only able to manage a small number of concurrent conntections.
+Keeping an open connection for each of these is rather problematic as in contrast to modern computers, PLCs usually are only able to manage a small number of concurrent connections.
 
 I think a Siemens S7-1200 is limited to 7 concurrent connections and a Siemens LOGO can't do more than 3.
 
@@ -32,7 +32,7 @@ This however puts an unnecessary stress on the PLCs as for protocols like the S7
 
 As usually these services only require ad-hoc access to a PLC, it would be ideal to share connections between services.
 
-Another problem occurs when you open a connection and keep it open for a prolonged timeperiod.
+Another problem occurs when you open a connection and keep it open for a prolonged time period.
 Here it can happen quite often that a connection is terminated because the PLC has been turned off.
 
 Per default the PLC connection has no means of automatically re-connecting.
@@ -51,7 +51,7 @@ There are no API differences from using the normal `PlcDriverManager` so you cal
 
 The structure of the code is now more or less like if you would create a new connection for every request and close it afterwards.
 
-Another benefit of the `PooledPlcDriverManager` is that it will check a connection for any problems before retutning it to the client.
+Another benefit of the `PooledPlcDriverManager` is that it will check a connection for any problems before returning it to the client.
 
 So if a connection was terminated, it will detect this and create a new connection.
 
@@ -59,6 +59,7 @@ So if a connection was terminated, it will detect this and create a new connecti
 
 Here comes a little example program utilizing the `PooledPlcDriverManager`:
 
+[source,java]
 ----
     PlcDriverManager driverManager = new PooledPlcDriverManager();
 
@@ -73,3 +74,4 @@ Here comes a little example program utilizing the `PooledPlcDriverManager`:
 ----
 
 NOTE: When sharing connections between multiple services, be sure to share the instance of the `PooledPldDriverManager` as otherwise you will result in having multiple pools.
+

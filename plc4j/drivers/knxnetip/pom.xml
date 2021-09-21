@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
   </parent>
 
   <artifactId>plc4j-driver-knxnetip</artifactId>
@@ -101,7 +101,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-knxnetip</usedDependency>
           </usedDependencies>
         </configuration>
@@ -113,34 +113,30 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-udp</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-pcap-replay</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
@@ -170,13 +166,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -198,8 +194,8 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-build-utils-language-java</artifactId>
-      <version>0.8.0</version>
+      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <version>0.9.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -207,14 +203,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.8.0</version>
+      <version>0.9.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
