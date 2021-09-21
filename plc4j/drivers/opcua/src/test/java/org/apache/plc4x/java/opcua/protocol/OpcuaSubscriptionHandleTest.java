@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -88,7 +89,11 @@ public class OpcuaSubscriptionHandleTest {
             // this can cause the server to not start correctly.
             // Deleting the directory makes sure the key-store is initialized correctly.
             Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
-            Files.delete(securityBaseDir);
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
 
             exampleServer = new ExampleServer();
             exampleServer.startup().get();

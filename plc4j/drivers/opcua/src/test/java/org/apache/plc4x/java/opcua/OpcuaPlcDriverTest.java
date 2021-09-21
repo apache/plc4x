@@ -39,6 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  */
@@ -118,10 +121,20 @@ public class OpcuaPlcDriverTest {
     @BeforeAll
     public static void setup() {
         try {
+            // When switching JDK versions from a newer to an older version,
+            // this can cause the server to not start correctly.
+            // Deleting the directory makes sure the key-store is initialized correctly.
+            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+
             exampleServer = new ExampleServer();
             exampleServer.startup().get();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +143,7 @@ public class OpcuaPlcDriverTest {
         try {
             exampleServer.shutdown().get();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
