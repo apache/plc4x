@@ -138,8 +138,8 @@ func DescriptionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, er
 
 	// Create a partially initialized instance
 	_child := &DescriptionResponse{
-		DibDeviceInfo:      dibDeviceInfo,
-		DibSuppSvcFamilies: dibSuppSvcFamilies,
+		DibDeviceInfo:      CastDIBDeviceInfo(dibDeviceInfo),
+		DibSuppSvcFamilies: CastDIBSuppSvcFamilies(dibSuppSvcFamilies),
 		Parent:             &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

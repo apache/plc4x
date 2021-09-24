@@ -22,14 +22,14 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultConstField extends DefaultTaggedField implements ConstField {
+public class DefaultConstField extends DefaultField implements ConstField {
 
     private final TypeReference type;
     private final String name;
     private final Object referenceValue;
 
-    public DefaultConstField(String[] tags, TypeReference type, String name, Object referenceValue) {
-        super(tags);
+    public DefaultConstField(String[] tags, boolean isTry, TypeReference type, String name, Object referenceValue) {
+        super(tags, isTry);
         this.type = type;
         this.name = name;
         this.referenceValue = referenceValue;

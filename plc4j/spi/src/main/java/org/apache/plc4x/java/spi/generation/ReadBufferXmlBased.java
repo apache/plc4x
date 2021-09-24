@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import javax.xml.XMLConstants;
@@ -50,6 +51,11 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     @Override
     public int getPos() {
         return pos / 8;
+    }
+
+    @Override
+    public void reset(int pos) {
+        throw new NotImplementedException();
     }
 
     @Override

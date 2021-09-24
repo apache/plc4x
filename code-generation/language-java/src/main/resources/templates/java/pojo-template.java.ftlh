@@ -23,6 +23,7 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
 <#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
@@ -111,7 +112,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     <#assign discriminatedParentType = type>
     <#-- @ftlvariable name="discriminatedParentType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
     // Abstract accessors for discriminator values.
-    <#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
+    <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
     public abstract ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}();
@@ -126,7 +127,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = <#if helper.getLanguageTypeNameForField(field) = 'float'>${field.referenceValue}f<#else>${field.referenceValue}</#if>;
 </#list>
 </#if>
-<#-- Prpoerty fields are fields that require a property in the pojo -->
+<#-- Property fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 
     // Properties.
@@ -214,10 +215,15 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#break>
     <#case "const">
         <#assign constField = field>
-        <#assign simpleTypeReference = constField.type>
+        <#assign typeReference = constField.type>
 
         // Const Field (${constField.name})
+        <#if helper.isSimpleTypeReference(typeReference)>
+        <#assign simpleTypeReference = typeReference>
         lengthInBits += ${simpleTypeReference.sizeInBits};
+        <#else>
+        lengthInBits += ${helper.getEnumBaseTypeReference(typeReference).sizeInBits};
+        </#if>
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>

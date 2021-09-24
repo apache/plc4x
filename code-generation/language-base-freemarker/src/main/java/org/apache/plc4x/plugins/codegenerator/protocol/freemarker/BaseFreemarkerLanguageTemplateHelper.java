@@ -686,9 +686,20 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @return list of symbolic names for the discriminators.
      */
     public List<String> getDiscriminatorNames() {
-        TypeDefinition baseType = thisType;
-        if (thisType.getParentType() != null) {
-            baseType = thisType.getParentType();
+        return getDiscriminatorNames(thisType);
+    }
+
+    /**
+     * Get an ordered list of generated names for the discriminators.
+     * These names can be used to access the type definitions as well as well as the values.
+     *
+     * @param baseType the type to get the discriminator Names from
+     *
+     * @return list of symbolic names for the discriminators.
+     */
+    public List<String> getDiscriminatorNames(TypeDefinition baseType) {
+        if (baseType.getParentType() != null) {
+            baseType = baseType.getParentType();
         }
         final SwitchField switchField = getSwitchField(baseType);
         List<String> discriminatorNames = new ArrayList<>();
@@ -722,9 +733,21 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @return true if a field with the given name already exists in the same type.
      */
     public boolean isDiscriminatorField(String discriminatorName) {
-        List<String> names = getDiscriminatorNames();
+        return isDiscriminatorField(thisType, discriminatorName);
+    }
+
+    /**
+     * Check if there's any field with the given name.
+     * This is required to suppress the generation of a virtual field
+     * in case a discriminated field is providing the information.
+     *
+     * @param discriminatorName name of the virtual name
+     * @return true if a field with the given name already exists in the same type.
+     */
+    public boolean isDiscriminatorField(TypeDefinition typeDefinition, String discriminatorName) {
+        List<String> names = getDiscriminatorNames(typeDefinition);
         if (names != null) {
-            return getDiscriminatorNames().stream()
+            return names.stream()
                 .anyMatch(field -> field.equals(discriminatorName));
         }
         return false;

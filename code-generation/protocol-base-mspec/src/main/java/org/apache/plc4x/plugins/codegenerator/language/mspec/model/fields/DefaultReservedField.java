@@ -22,13 +22,13 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultReservedField extends DefaultTaggedField implements ReservedField {
+public class DefaultReservedField extends DefaultField implements ReservedField {
 
     private final TypeReference type;
     private final Object referenceValue;
 
-    public DefaultReservedField(String[] tags, TypeReference type, Object referenceValue) {
-        super(tags);
+    public DefaultReservedField(String[] tags, boolean isTry, TypeReference type, Object referenceValue) {
+        super(tags, isTry);
         this.type = type;
         this.referenceValue = referenceValue;
     }

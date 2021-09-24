@@ -554,9 +554,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return tracer + toExpression(field, term, variableLiteral -> tracer.dive("variableExpressionGenerator") + toVariableParseExpression(field, variableLiteral, parserArguments));
     }
 
-    public String toSerializationExpression(TypedField field, Term term, Argument[] serializerArgments) {
+    public String toSerializationExpression(TypedField field, Term term, Argument[] serializerArguments) {
         Tracer tracer = Tracer.start("toSerializationExpression");
-        return tracer + toExpression(field, term, variableLiteral -> tracer.dive("variableExpressionGenerator") + toVariableSerializationExpression(field, variableLiteral, serializerArgments));
+        return tracer + toExpression(field, term, variableLiteral -> tracer.dive("variableExpressionGenerator") + toVariableSerializationExpression(field, variableLiteral, serializerArguments));
     }
 
     private String toExpression(TypedField field, Term term, Function<VariableLiteral, String> variableExpressionGenerator) {
@@ -638,6 +638,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else {
             throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
         }
+    }
+
+    public String toVariableEnumAccessExpression(VariableLiteral variableLiteral) {
+        return variableLiteral.getName();
     }
 
     private String toVariableParseExpression(TypedField field, VariableLiteral variableLiteral, Argument[] parserArguments) {

@@ -183,7 +183,7 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 
 	// Create a partially initialized instance
 	_child := &LPollData{
-		SourceAddress:          sourceAddress,
+		SourceAddress:          CastKnxAddress(sourceAddress),
 		TargetAddress:          targetAddress,
 		NumberExpectedPollData: numberExpectedPollData,
 		Parent:                 &LDataFrame{},

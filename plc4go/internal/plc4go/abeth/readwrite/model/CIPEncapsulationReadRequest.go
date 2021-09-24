@@ -125,7 +125,7 @@ func CIPEncapsulationReadRequestParse(readBuffer utils.ReadBuffer) (*CIPEncapsul
 
 	// Create a partially initialized instance
 	_child := &CIPEncapsulationReadRequest{
-		Request: request,
+		Request: CastDF1RequestMessage(request),
 		Parent:  &CIPEncapsulationPacket{},
 	}
 	_child.Parent.Child = _child

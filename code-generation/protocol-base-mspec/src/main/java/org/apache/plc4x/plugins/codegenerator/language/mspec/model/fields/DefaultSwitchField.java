@@ -26,12 +26,14 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DefaultSwitchField implements SwitchField {
+public class DefaultSwitchField implements SwitchField, TryField {
 
+    private final boolean isTry;
     private final Term[] discriminatorExpressions;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(Term[] discriminatorExpressions) {
+    public DefaultSwitchField(boolean isTry, Term[] discriminatorExpressions) {
+        this.isTry = isTry;
         this.discriminatorExpressions = discriminatorExpressions;
         this.cases = new LinkedList<>();
     }
@@ -52,4 +54,7 @@ public class DefaultSwitchField implements SwitchField {
         return new Term[0];
     }
 
+    public boolean isTry() {
+        return isTry;
+    }
 }

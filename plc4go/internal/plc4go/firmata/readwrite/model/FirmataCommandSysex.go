@@ -139,7 +139,7 @@ func FirmataCommandSysexParse(readBuffer utils.ReadBuffer, response bool) (*Firm
 
 	// Create a partially initialized instance
 	_child := &FirmataCommandSysex{
-		Command: command,
+		Command: CastSysexCommand(command),
 		Parent:  &FirmataCommand{},
 	}
 	_child.Parent.Child = _child

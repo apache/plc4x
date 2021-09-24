@@ -24,6 +24,8 @@ import java.math.BigInteger;
 public interface ReadBuffer {
     int getPos();
 
+    void reset(int pos);
+
     boolean hasMore(int numBits);
 
     void pullContext(String logicalName, WithReaderArgs... readerArgs);

@@ -22,15 +22,15 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultEnumField extends DefaultTaggedField implements EnumField {
+public class DefaultEnumField extends DefaultField implements EnumField {
 
     private final TypeReference type;
     private final String name;
     private final String fieldName;
     private final Term[] params;
 
-    public DefaultEnumField(String[] tags, TypeReference type, String name, String fieldName, Term[] params) {
-        super(tags);
+    public DefaultEnumField(String[] tags, boolean isTry, TypeReference type, String name, String fieldName, Term[] params) {
+        super(tags, isTry);
         this.type = type;
         this.name = name;
         this.fieldName = fieldName;

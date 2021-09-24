@@ -22,7 +22,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultArrayField extends DefaultTaggedField implements ArrayField {
+public class DefaultArrayField extends DefaultField implements ArrayField {
 
     private final TypeReference type;
     private final String name;
@@ -30,8 +30,8 @@ public class DefaultArrayField extends DefaultTaggedField implements ArrayField 
     private final Term loopExpression;
     private final Term[] params;
 
-    public DefaultArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term[] params) {
-        super(tags);
+    public DefaultArrayField(String[] tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, Term[] params) {
+        super(tags, isTry);
         this.type = type;
         this.name = name;
         this.loopType = loopType;

@@ -59,7 +59,7 @@ public abstract class DefaultTypeDefinition {
     }
 
     public TypeReference getTypeReference() {
-        return new DefaultComplexTypeReference(getName());
+        return new DefaultComplexTypeReference(getName(), null);
     }
 
 }

@@ -121,7 +121,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &ConnectionResponseDataBlockTunnelConnection{
-		KnxAddress: knxAddress,
+		KnxAddress: CastKnxAddress(knxAddress),
 		Parent:     &ConnectionResponseDataBlock{},
 	}
 	_child.Parent.Child = _child

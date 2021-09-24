@@ -317,7 +317,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		}
-		nlm = _val
+		nlm = CastNLM(_val)
 	}
 
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
@@ -327,7 +327,7 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		}
-		apdu = _val
+		apdu = CastAPDU(_val)
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDU"); closeErr != nil {

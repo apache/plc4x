@@ -34,7 +34,7 @@ complexType
  ;
 
 fieldDefinition
- : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : LBRACKET tryParse? field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 dataIoDefinition
@@ -49,6 +49,7 @@ field
  | discriminatorField
  | enumField
  | implicitField
+ | assertField
  | manualArrayField
  | manualField
  | optionalField
@@ -73,7 +74,7 @@ checksumField
  ;
 
 constField
- : 'const' type=dataType name=idExpression expected=expression
+ : 'const' type=typeReference name=idExpression expected=expression
  ;
 
 discriminatorField
@@ -86,6 +87,10 @@ enumField
 
 implicitField
  : 'implicit' type=dataType name=idExpression serializeExpression=expression
+ ;
+
+assertField
+ : 'assert' type=typeReference name=idExpression condition=expression
  ;
 
 manualArrayField
@@ -129,7 +134,7 @@ enumValueDefinition
  ;
 
 typeReference
- : complexTypeReference=IDENTIFIER_LITERAL
+ : complexTypeReference=IDENTIFIER_LITERAL (LBRACKET params=multipleExpressions RBRACKET)?
  | simpleTypeReference=dataType
  ;
 
@@ -148,6 +153,10 @@ dataType
  | base='time'
  | base='date'
  | base='dateTime'
+ ;
+
+tryParse
+ : 'try'
  ;
 
 argument

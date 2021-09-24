@@ -22,14 +22,14 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultImplicitField extends DefaultTaggedField implements ImplicitField {
+public class DefaultImplicitField extends DefaultField implements ImplicitField {
 
     private final TypeReference type;
     private final String name;
     private final Term serializeExpression;
 
-    public DefaultImplicitField(String[] tags, TypeReference type, String name, Term serializeExpression) {
-        super(tags);
+    public DefaultImplicitField(String[] tags, boolean isTry, TypeReference type, String name, Term serializeExpression) {
+        super(tags, isTry);
         this.type = type;
         this.name = name;
         this.serializeExpression = serializeExpression;

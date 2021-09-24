@@ -42,6 +42,14 @@ func init() {
 
 func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
+	case "BACnetComplexTag":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 4)
+		if err != nil {
+			return nil, err
+		}
+		tagNumberArgument := uint8(parsedUint0)
+		dataType := model.BACnetDataTypeByName(parserArguments[1])
+		return model.BACnetComplexTagParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumberArgument, dataType)
 	case "APDU":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {

@@ -244,7 +244,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
 		}
-		priority = _val
+		priority = CastBACnetTag(_val)
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestWriteProperty"); closeErr != nil {
@@ -257,8 +257,8 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 		ObjectInstanceNumber:     objectInstanceNumber,
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
-		Value:                    value,
-		Priority:                 priority,
+		Value:                    CastBACnetTag(value),
+		Priority:                 CastBACnetTag(priority),
 		Parent:                   &BACnetConfirmedServiceRequest{},
 	}
 	_child.Parent.Child = _child

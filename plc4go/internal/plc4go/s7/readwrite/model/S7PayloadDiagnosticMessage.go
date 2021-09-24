@@ -203,7 +203,7 @@ func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer) (*S7PayloadUse
 		DatId:         DatId,
 		Info1:         Info1,
 		Info2:         Info2,
-		TimeStamp:     TimeStamp,
+		TimeStamp:     CastDateAndTime(TimeStamp),
 		Parent:        &S7PayloadUserDataItem{},
 	}
 	_child.Parent.Child = _child

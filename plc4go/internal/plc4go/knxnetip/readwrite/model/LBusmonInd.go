@@ -179,7 +179,7 @@ func LBusmonIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 	_child := &LBusmonInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
+		DataFrame:                   CastLDataFrame(dataFrame),
 		Crc:                         crc,
 		Parent:                      &CEMI{},
 	}

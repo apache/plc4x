@@ -121,7 +121,7 @@ func SearchRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) {
 
 	// Create a partially initialized instance
 	_child := &SearchRequest{
-		HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint,
+		HpaiIDiscoveryEndpoint: CastHPAIDiscoveryEndpoint(hpaiIDiscoveryEndpoint),
 		Parent:                 &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

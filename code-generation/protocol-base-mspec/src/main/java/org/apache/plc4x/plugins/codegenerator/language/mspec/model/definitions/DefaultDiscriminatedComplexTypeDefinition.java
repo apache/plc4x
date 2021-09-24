@@ -37,9 +37,11 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
     public DiscriminatorField getDiscriminatorField() {
         // For a discriminated type, the discriminator is always defined in the parent type,
         // which is always a DefaultComplexTypeDefinition instance.
-        return ((DefaultComplexTypeDefinition) getParentType()).getFields().stream().filter(
-            field -> field instanceof DiscriminatorField).map(
-            field -> (DiscriminatorField) field).findFirst().orElse(null);
+        return ((DefaultComplexTypeDefinition) getParentType()).getFields().stream()
+            .filter(field -> field instanceof DiscriminatorField)
+            .map(field -> (DiscriminatorField) field)
+            .findFirst()
+            .orElse(null);
     }
 
     public String[] getDiscriminatorValues() {

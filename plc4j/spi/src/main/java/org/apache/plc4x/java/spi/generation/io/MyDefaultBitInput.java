@@ -21,6 +21,8 @@ package org.apache.plc4x.java.spi.generation.io;
 import com.github.jinahya.bit.io.ArrayByteInput;
 import com.github.jinahya.bit.io.DefaultBitInput;
 
+import java.io.IOException;
+
 /**
  * Modified version that exposes the position.
  */
@@ -31,7 +33,16 @@ public class MyDefaultBitInput extends DefaultBitInput<ArrayByteInput> {
     }
 
     public long getPos() {
+        // TODO: we should report bits as we would loose this information on a reset
         return delegate.getIndex();
     }
 
+    public void reset(int pos) {
+        try {
+            align(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        delegate.setIndex(pos);
+    }
 }

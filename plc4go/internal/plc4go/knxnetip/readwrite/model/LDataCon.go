@@ -162,7 +162,7 @@ func LDataConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 	_child := &LDataCon{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
+		DataFrame:                   CastLDataFrame(dataFrame),
 		Parent:                      &CEMI{},
 	}
 	_child.Parent.Child = _child

@@ -527,7 +527,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return tracer + "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {
                 tracer = tracer.dive("variable literal instanceOf");
-                return tracer+toVariableExpression(fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
+                return tracer + toVariableExpression(fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
             } else {
                 throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
             }

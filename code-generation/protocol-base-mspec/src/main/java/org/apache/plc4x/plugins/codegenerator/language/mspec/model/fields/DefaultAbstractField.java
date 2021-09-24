@@ -23,14 +23,14 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultAbstractField extends DefaultTaggedField implements AbstractField {
+public class DefaultAbstractField extends DefaultField implements AbstractField {
 
     private final TypeReference type;
     private final String name;
     private final Term[] params;
 
-    public DefaultAbstractField(String[] tags, TypeReference type, String name, Term[] params) {
-        super(tags);
+    public DefaultAbstractField(String[] tags, boolean isTry, TypeReference type, String name, Term[] params) {
+        super(tags, isTry);
         this.type = type;
         this.name = name;
         this.params = params;

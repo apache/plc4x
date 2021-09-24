@@ -192,7 +192,7 @@ func DF1SymbolMessageFrameParse(readBuffer utils.ReadBuffer) (*DF1Symbol, error)
 	_child := &DF1SymbolMessageFrame{
 		DestinationAddress: destinationAddress,
 		SourceAddress:      sourceAddress,
-		Command:            command,
+		Command:            CastDF1Command(command),
 		Parent:             &DF1Symbol{},
 	}
 	_child.Parent.Child = _child

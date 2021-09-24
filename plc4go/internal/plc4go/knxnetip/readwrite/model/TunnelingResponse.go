@@ -121,7 +121,7 @@ func TunnelingResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 
 	// Create a partially initialized instance
 	_child := &TunnelingResponse{
-		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
+		TunnelingResponseDataBlock: CastTunnelingResponseDataBlock(tunnelingResponseDataBlock),
 		Parent:                     &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

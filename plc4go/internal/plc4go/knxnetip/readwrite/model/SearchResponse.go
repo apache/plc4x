@@ -155,9 +155,9 @@ func SearchResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, error) 
 
 	// Create a partially initialized instance
 	_child := &SearchResponse{
-		HpaiControlEndpoint: hpaiControlEndpoint,
-		DibDeviceInfo:       dibDeviceInfo,
-		DibSuppSvcFamilies:  dibSuppSvcFamilies,
+		HpaiControlEndpoint: CastHPAIControlEndpoint(hpaiControlEndpoint),
+		DibDeviceInfo:       CastDIBDeviceInfo(dibDeviceInfo),
+		DibSuppSvcFamilies:  CastDIBSuppSvcFamilies(dibSuppSvcFamilies),
 		Parent:              &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

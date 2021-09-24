@@ -22,12 +22,12 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.UnknownField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultUnknownField extends DefaultTaggedField implements UnknownField {
+public class DefaultUnknownField extends DefaultField implements UnknownField {
 
     private final TypeReference type;
 
-    public DefaultUnknownField(String[] tags, TypeReference type) {
-        super(tags);
+    public DefaultUnknownField(String[] tags, boolean isTry, TypeReference type) {
+        super(tags, isTry);
         this.type = type;
     }
 

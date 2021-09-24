@@ -23,6 +23,7 @@
 <#-- @ftlvariable name="protocolName" type="java.lang.String" -->
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/package-info.java
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

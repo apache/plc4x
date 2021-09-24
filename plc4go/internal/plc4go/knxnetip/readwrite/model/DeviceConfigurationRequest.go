@@ -138,8 +138,8 @@ func DeviceConfigurationRequestParse(readBuffer utils.ReadBuffer, totalLength ui
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationRequest{
-		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
-		Cemi:                                cemi,
+		DeviceConfigurationRequestDataBlock: CastDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock),
+		Cemi:                                CastCEMI(cemi),
 		Parent:                              &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

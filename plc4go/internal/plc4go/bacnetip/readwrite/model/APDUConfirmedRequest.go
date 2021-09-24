@@ -247,7 +247,7 @@ func APDUConfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16) (
 		InvokeId:                  invokeId,
 		SequenceNumber:            sequenceNumber,
 		ProposedWindowSize:        proposedWindowSize,
-		ServiceRequest:            serviceRequest,
+		ServiceRequest:            CastBACnetConfirmedServiceRequest(serviceRequest),
 		Parent:                    &APDU{},
 	}
 	_child.Parent.Child = _child

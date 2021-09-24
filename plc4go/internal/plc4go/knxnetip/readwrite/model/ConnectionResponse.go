@@ -147,7 +147,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
 		}
-		hpaiDataEndpoint = _val
+		hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
@@ -157,7 +157,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
 		}
-		connectionResponseDataBlock = _val
+		connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponse"); closeErr != nil {
@@ -168,8 +168,8 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	_child := &ConnectionResponse{
 		CommunicationChannelId:      communicationChannelId,
 		Status:                      status,
-		HpaiDataEndpoint:            hpaiDataEndpoint,
-		ConnectionResponseDataBlock: connectionResponseDataBlock,
+		HpaiDataEndpoint:            CastHPAIDataEndpoint(hpaiDataEndpoint),
+		ConnectionResponseDataBlock: CastConnectionResponseDataBlock(connectionResponseDataBlock),
 		Parent:                      &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

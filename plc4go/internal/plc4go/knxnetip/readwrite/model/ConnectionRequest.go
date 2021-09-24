@@ -155,9 +155,9 @@ func ConnectionRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 
 	// Create a partially initialized instance
 	_child := &ConnectionRequest{
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
+		HpaiDiscoveryEndpoint:        CastHPAIDiscoveryEndpoint(hpaiDiscoveryEndpoint),
+		HpaiDataEndpoint:             CastHPAIDataEndpoint(hpaiDataEndpoint),
+		ConnectionRequestInformation: CastConnectionRequestInformation(connectionRequestInformation),
 		Parent:                       &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

@@ -121,7 +121,7 @@ func DeviceConfigurationAckParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 
 	// Create a partially initialized instance
 	_child := &DeviceConfigurationAck{
-		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
+		DeviceConfigurationAckDataBlock: CastDeviceConfigurationAckDataBlock(deviceConfigurationAckDataBlock),
 		Parent:                          &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

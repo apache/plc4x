@@ -48,36 +48,57 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     @Override
     public List<SimpleField> getSimpleFields() {
-        return fields.stream().filter(field -> field instanceof SimpleField).map(
-            field -> (SimpleField) field).collect(Collectors.toList());
+        return fields.stream()
+            .filter(SimpleField.class::isInstance)
+            .map(SimpleField.class::cast)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<ConstField> getConstFields() {
-        return fields.stream().filter(field -> field instanceof ConstField).map(
-            field -> (ConstField) field).collect(Collectors.toList());
+        return fields.stream()
+            .filter(ConstField.class::isInstance)
+            .map(ConstField.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AssertField> getAssertFields() {
+        return fields.stream()
+            .filter(AssertField.class::isInstance)
+            .map(AssertField.class::cast)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<PropertyField> getPropertyFields() {
-        return fields.stream().filter(field -> ((field instanceof PropertyField) && !(field instanceof ConstField) && !(field instanceof VirtualField))).map(field -> (PropertyField) field)
+        return fields.stream()
+            .filter(PropertyField.class::isInstance)
+            .filter(field -> !(field instanceof ConstField) && !(field instanceof VirtualField))
+            .map(PropertyField.class::cast)
             .collect(Collectors.toList());
     }
 
     @Override
     public List<AbstractField> getAbstractFields() {
-        return fields.stream().filter(field -> field instanceof AbstractField).map(
-            field -> (AbstractField) field).collect(Collectors.toList());
+        return fields.stream()
+            .filter(AbstractField.class::isInstance)
+            .map(AbstractField.class::cast)
+            .collect(Collectors.toList());
     }
 
     public List<ImplicitField> getImplicitFields() {
-        return fields.stream().filter(field -> field instanceof ImplicitField).map(
-            field -> (ImplicitField) field).collect(Collectors.toList());
+        return fields.stream()
+            .filter(ImplicitField.class::isInstance)
+            .map(ImplicitField.class::cast)
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<VirtualField> getVirtualFields() {
-        return fields.stream().filter(field -> (field instanceof VirtualField)).map(field -> (VirtualField) field)
+        return fields.stream()
+            .filter(VirtualField.class::isInstance)
+            .map(VirtualField.class::cast)
             .collect(Collectors.toList());
     }
 
@@ -93,10 +114,10 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     @Override
     public List<PropertyField> getParentPropertyFields() {
-        if (getParentType() != null) {
-            return ((ComplexTypeDefinition) getParentType()).getAllPropertyFields();
+        if (getParentType() == null) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        return ((ComplexTypeDefinition) getParentType()).getAllPropertyFields();
     }
 
 }

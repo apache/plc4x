@@ -151,7 +151,7 @@ func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 	// Create a partially initialized instance
 	_child := &APDUError{
 		OriginalInvokeId: originalInvokeId,
-		Error:            error,
+		Error:            CastBACnetError(error),
 		Parent:           &APDU{},
 	}
 	_child.Parent.Child = _child

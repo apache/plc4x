@@ -217,9 +217,9 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
 		ExtendedFrameFormat: extendedFrameFormat,
-		SourceAddress:       sourceAddress,
+		SourceAddress:       CastKnxAddress(sourceAddress),
 		DestinationAddress:  destinationAddress,
-		Apdu:                apdu,
+		Apdu:                CastApdu(apdu),
 		Parent:              &LDataFrame{},
 	}
 	_child.Parent.Child = _child

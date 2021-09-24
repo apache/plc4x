@@ -182,7 +182,7 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		}
-		payload = _val
+		payload = CastS7Message(_val)
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacket"); closeErr != nil {
