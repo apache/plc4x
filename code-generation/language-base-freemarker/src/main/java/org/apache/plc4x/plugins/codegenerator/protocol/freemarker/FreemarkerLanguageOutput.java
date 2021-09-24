@@ -71,6 +71,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("protocolName", protocolName);
             typeContext.put("outputFlavor", outputFlavor);
             typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types, options));
+            typeContext.put("tracer", Tracer.start("global"));
             typeContext.putAll(options);
 
             for (Template template : specTemplates) {
@@ -92,6 +93,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             typeContext.put("typeName", typeEntry.getKey());
             typeContext.put("type", typeEntry.getValue());
             typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types, options));
+            typeContext.put("tracer", Tracer.start("types"));
 
             // Depending on the type, get the corresponding list of templates.
             List<Template> templateList;
