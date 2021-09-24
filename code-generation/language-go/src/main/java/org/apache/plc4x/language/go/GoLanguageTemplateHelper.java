@@ -512,7 +512,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("null literal instanceOf");
                 return tracer + "nil";
             } else if (term instanceof BooleanLiteral) {
-                tracer = tracer.dive("null literal instanceOf");
+                tracer = tracer.dive("boolean literal instanceOf");
                 return tracer + getCastExpressionForTypeReference(fieldType) + "(" + ((BooleanLiteral) term).getValue() + ")";
             } else if (term instanceof NumericLiteral) {
                 tracer = tracer.dive("numeric literal instanceOf");
@@ -523,9 +523,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return tracer + getCastExpressionForTypeReference(fieldType) + "(" + ((NumericLiteral) term).getNumber().toString() + ")";
                 }
             } else if (term instanceof StringLiteral) {
-                return "\"" + ((StringLiteral) term).getValue() + "\"";
+                tracer = tracer.dive("string literal instanceOf");
+                return tracer + "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {
-                return toVariableExpression(fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
+                tracer = tracer.dive("variable literal instanceOf");
+                return tracer+toVariableExpression(fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
             } else {
                 throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
             }
@@ -707,11 +709,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                     if (isParserArg) {
                         if (va.getName().equals("_value")) {
-                            sb.append(va.getName().substring(1) + ((va.getChild() != null) ?
-                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : ""));
+                            sb.append(va.getName().substring(1)).append((va.getChild() != null) ?
+                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
                         } else {
-                            sb.append(va.getName() + ((va.getChild() != null) ?
-                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : ""));
+                            sb.append(va.getName()).append((va.getChild() != null) ?
+                                "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
                         }
                     }
                     // We have to manually evaluate the type information at code-generation time.
