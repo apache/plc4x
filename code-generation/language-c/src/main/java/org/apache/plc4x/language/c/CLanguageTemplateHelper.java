@@ -590,10 +590,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             final VariableLiteral sourceTerm = (VariableLiteral) vl.getArgs().get(0);
             final VariableLiteral typeTerm = (VariableLiteral) vl.getArgs().get(1);
-            ComplexTypeReference castTypeReference = typeTerm::getName;
-            final TypeDefinition castType = getTypeDefinitionForTypeReference(castTypeReference);
+            final TypeDefinition castType = getTypeDefinitions().get(typeTerm.getName());
             // If we're casting to a sub-type of a discriminated value, we got to cast to the parent
-            // type instead and add the name of the sub-type as prefix to the property we're tryging to
+            // type instead and add the name of the sub-type as prefix to the property we're trying to
             // access next.
             StringBuilder sb = new StringBuilder();
             sb.append("((");
