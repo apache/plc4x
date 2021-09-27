@@ -20,17 +20,21 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.TaggedField;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public abstract class DefaultTaggedField implements TaggedField {
 
-    private final String[] tags;
+    private final List<String> tags;
 
-    public DefaultTaggedField(String[] tags) {
+    public DefaultTaggedField(List<String> tags) {
         this.tags = tags;
     }
 
     @Override
-    public String[] getTags() {
-        return tags;
+    public Optional<List<String>> getTags() {
+        return Optional.ofNullable(tags);
     }
 
 }

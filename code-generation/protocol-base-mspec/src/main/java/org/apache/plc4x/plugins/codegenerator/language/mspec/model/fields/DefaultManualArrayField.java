@@ -22,6 +22,10 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class DefaultManualArrayField extends DefaultField implements ManualArrayField {
 
     private final TypeReference type;
@@ -31,17 +35,17 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
-    private final Term[] params;
+    private final List<Term> params;
 
-    public DefaultManualArrayField(String[] tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, Term[] params) {
+    public DefaultManualArrayField(List<String> tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
         super(tags, isTry);
-        this.type = type;
-        this.name = name;
-        this.loopType = loopType;
-        this.loopExpression = loopExpression;
-        this.parseExpression = parseExpression;
-        this.serializeExpression = serializeExpression;
-        this.lengthExpression = lengthExpression;
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.loopType = Objects.requireNonNull(loopType);
+        this.loopExpression = Objects.requireNonNull(loopExpression);
+        this.parseExpression = Objects.requireNonNull(parseExpression);
+        this.serializeExpression = Objects.requireNonNull(serializeExpression);
+        this.lengthExpression = Objects.requireNonNull(lengthExpression);
         this.params = params;
     }
 
@@ -74,8 +78,7 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     }
 
     @Override
-    public Term[] getParams() {
-        return params;
+    public Optional<List<Term>> getParams() {
+        return Optional.ofNullable(params);
     }
-
 }

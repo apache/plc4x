@@ -27,20 +27,20 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
-  {/* plc4c_s7_read_write_s7_parameter_setup_communication */
-   .parameterType = 0xF0, .messageType = -1},
-  {/* plc4c_s7_read_write_s7_parameter_read_var_request */
-   .parameterType = 0x04, .messageType = 0x01},
-  {/* plc4c_s7_read_write_s7_parameter_read_var_response */
-   .parameterType = 0x04, .messageType = 0x03},
-  {/* plc4c_s7_read_write_s7_parameter_write_var_request */
-   .parameterType = 0x05, .messageType = 0x01},
-  {/* plc4c_s7_read_write_s7_parameter_write_var_response */
-   .parameterType = 0x05, .messageType = 0x03},
-  {/* plc4c_s7_read_write_s7_parameter_user_data */
-   .parameterType = 0x00, .messageType = 0x07},
   {/* plc4c_s7_read_write_s7_parameter_mode_transition */
-   .parameterType = 0x01, .messageType = 0x07}
+   .parameterType = 0x01, .messageType = 0x07 },
+  {/* plc4c_s7_read_write_s7_parameter_read_var_request */
+   .parameterType = 0x04, .messageType = 0x01 },
+  {/* plc4c_s7_read_write_s7_parameter_read_var_response */
+   .parameterType = 0x04, .messageType = 0x03 },
+  {/* plc4c_s7_read_write_s7_parameter_user_data */
+   .parameterType = 0x00, .messageType = 0x07 },
+  {/* plc4c_s7_read_write_s7_parameter_write_var_request */
+   .parameterType = 0x05, .messageType = 0x01 },
+  {/* plc4c_s7_read_write_s7_parameter_setup_communication */
+   .parameterType = 0xF0, .messageType = -1 },
+  {/* plc4c_s7_read_write_s7_parameter_write_var_response */
+   .parameterType = 0x05, .messageType = 0x03 }
 
 };
 

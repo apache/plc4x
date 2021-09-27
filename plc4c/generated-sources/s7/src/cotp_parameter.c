@@ -28,15 +28,15 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminators[] = {
   {/* plc4c_s7_read_write_cotp_parameter_tpdu_size */
-   .parameterType = 0xC0},
-  {/* plc4c_s7_read_write_cotp_parameter_calling_tsap */
-   .parameterType = 0xC1},
-  {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
-   .parameterType = 0xC2},
-  {/* plc4c_s7_read_write_cotp_parameter_checksum */
-   .parameterType = 0xC3},
+   .parameterType = 0xC0 },
   {/* plc4c_s7_read_write_cotp_parameter_disconnect_additional_information */
-   .parameterType = 0xE0}
+   .parameterType = 0xE0 },
+  {/* plc4c_s7_read_write_cotp_parameter_calling_tsap */
+   .parameterType = 0xC1 },
+  {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
+   .parameterType = 0xC2 },
+  {/* plc4c_s7_read_write_cotp_parameter_checksum */
+   .parameterType = 0xC3 }
 
 };
 

@@ -25,7 +25,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
  */
 public class Tracer {
 
-    protected static boolean ENABLED = System.getenv().containsKey("PLC4X_TRACE_CODE_GEN");
+    protected static boolean ENABLED = "true".equalsIgnoreCase(System.getenv().get("PLC4X_TRACE_CODE_GEN"));
 
     protected final String currentTrace;
 
@@ -51,6 +51,19 @@ public class Tracer {
      */
     public Tracer dive(String sub) {
         return new Tracer(currentTrace + separator() + sub);
+    }
+
+    /**
+     * Can be used to remove traces from a traced string.
+     *
+     * @param somethingContainingTraces something containing traces
+     * @return de-traced string
+     */
+    public String removeTraces(String somethingContainingTraces) {
+        if (somethingContainingTraces == null) {
+            return null;
+        }
+        return somethingContainingTraces.replaceAll("/\\*.*\\*/", "");
     }
 
     protected String separator() {

@@ -27,18 +27,18 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminators[] = {
-  {/* plc4c_s7_read_write_cotp_packet_data */
-   .tpduCode = 0xF0},
-  {/* plc4c_s7_read_write_cotp_packet_connection_request */
-   .tpduCode = 0xE0},
   {/* plc4c_s7_read_write_cotp_packet_connection_response */
-   .tpduCode = 0xD0},
-  {/* plc4c_s7_read_write_cotp_packet_disconnect_request */
-   .tpduCode = 0x80},
+   .tpduCode = 0xD0 },
+  {/* plc4c_s7_read_write_cotp_packet_data */
+   .tpduCode = 0xF0 },
   {/* plc4c_s7_read_write_cotp_packet_disconnect_response */
-   .tpduCode = 0xC0},
+   .tpduCode = 0xC0 },
+  {/* plc4c_s7_read_write_cotp_packet_disconnect_request */
+   .tpduCode = 0x80 },
+  {/* plc4c_s7_read_write_cotp_packet_connection_request */
+   .tpduCode = 0xE0 },
   {/* plc4c_s7_read_write_cotp_packet_tpdu_error */
-   .tpduCode = 0x70}
+   .tpduCode = 0x70 }
 
 };
 

@@ -22,17 +22,21 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.EnumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class DefaultEnumField extends DefaultField implements EnumField {
 
     private final TypeReference type;
     private final String name;
     private final String fieldName;
-    private final Term[] params;
+    private final List<Term> params;
 
-    public DefaultEnumField(String[] tags, boolean isTry, TypeReference type, String name, String fieldName, Term[] params) {
+    public DefaultEnumField(List<String> tags, boolean isTry, TypeReference type, String name, String fieldName, List<Term> params) {
         super(tags, isTry);
-        this.type = type;
-        this.name = name;
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
         this.fieldName = fieldName;
         this.params = params;
     }
@@ -45,12 +49,13 @@ public class DefaultEnumField extends DefaultField implements EnumField {
         return name;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    public Optional<String> getFieldName() {
+        return Optional.ofNullable(fieldName);
     }
 
-    public Term[] getParams() {
-        return params;
+    @Override
+    public Optional<List<Term>> getParams() {
+        return Optional.ofNullable(params);
     }
 
 }

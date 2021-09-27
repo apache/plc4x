@@ -28,9 +28,9 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_data_alarm_message_discriminator plc4c_s7_read_write_s7_data_alarm_message_discriminators[] = {
   {/* plc4c_s7_read_write_s7_message_object_request */
-   .cpuFunctionType = 0x04},
+   .cpuFunctionType = 0x04 },
   {/* plc4c_s7_read_write_s7_message_object_response */
-   .cpuFunctionType = 0x08}
+   .cpuFunctionType = 0x08 }
 
 };
 
@@ -52,6 +52,10 @@ static const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OB
 uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ() {
   return PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_NUMBER_MESSAGE_OBJ_const;
 }
+static const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const = 0x00;
+uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID() {
+  return PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const;
+}
 static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH_const = 0x08;
 uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
   return PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH_const;
@@ -59,10 +63,6 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_LENGTH() {
 static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC_const = 0x12;
 uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC() {
   return PLC4C_S7_READ_WRITE_S7_MESSAGE_OBJECT_REQUEST_VARIABLE_SPEC_const;
-}
-static const uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const = 0x00;
-uint8_t PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID() {
-  return PLC4C_S7_READ_WRITE_S7_DATA_ALARM_MESSAGE_FUNCTION_ID_const;
 }
 
 // Parse function.

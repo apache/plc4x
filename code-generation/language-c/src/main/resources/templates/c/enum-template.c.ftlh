@@ -18,6 +18,9 @@
 -->
 ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -68,7 +71,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         return NO_MEMORY;
     }
 
-    _res = ${helper.getReadBufferReadMethodCall(type.type, "*_message", null)?no_esc};
+    _res = ${helper.getReadBufferReadMethodCall(type.type.asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
 
     return _res;
 }
@@ -76,7 +79,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
-    _res = ${helper.getWriteBufferWriteMethodCall(type.type, "*_message", null)?no_esc};
+    _res = ${helper.getWriteBufferWriteMethodCall(type.type.asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
 
     return _res;
 }
@@ -118,7 +121,7 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
   switch(value) {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
     case ${helper.getCTypeName(type.name)}_${enumValue.name}: { /* '${enumValue.value}' */
-      return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName)) == '-1'>-1<#elseif helper.isComplexTypeReference(type.getConstantType(constantName))><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}</#if>;
+      return <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) == '-1'>-1<#elseif helper.isComplexTypeReference(type.getConstantType(constantName))><#if helper.isEnumTypeReference(type.getConstantType(constantName))>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if><#else>${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}</#if>;
     }<#sep>
     </#sep></#list>
 
@@ -131,14 +134,14 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value) {
     <#if helper.isStringTypeReference(type.getConstantType(constantName))>
         <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
-    if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}) == 0) {
+    if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}) == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};
     }
         </#list>
     <#else>
     switch(value) {
     <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
-        case ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}: {
+        case ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}: {
             return ${helper.getCTypeName(type.name)}_${enumValue.name};
         }
     </#list>
@@ -156,5 +159,5 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName
 }
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
-    return ${type.type.sizeInBits};
+    return ${type.type.asSimpleTypeReference().orElseThrow().sizeInBits};
 }

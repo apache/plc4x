@@ -27,84 +27,84 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_discriminators[] = {
-  {/* plc4c_modbus_read_write_modbus_pdu_error */
-   .errorFlag = true, .functionFlag = -1, .response = -1},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request */
-   .errorFlag = false, .functionFlag = 0x02, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response */
-   .errorFlag = false, .functionFlag = 0x02, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_coils_request */
-   .errorFlag = false, .functionFlag = 0x01, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_coils_response */
-   .errorFlag = false, .functionFlag = 0x01, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_single_coil_request */
-   .errorFlag = false, .functionFlag = 0x05, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_single_coil_response */
-   .errorFlag = false, .functionFlag = 0x05, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_coils_request */
-   .errorFlag = false, .functionFlag = 0x0F, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_coils_response */
-   .errorFlag = false, .functionFlag = 0x0F, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_input_registers_request */
-   .errorFlag = false, .functionFlag = 0x04, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_input_registers_response */
-   .errorFlag = false, .functionFlag = 0x04, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_holding_registers_request */
-   .errorFlag = false, .functionFlag = 0x03, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response */
-   .errorFlag = false, .functionFlag = 0x03, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_single_register_request */
-   .errorFlag = false, .functionFlag = 0x06, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_single_register_response */
-   .errorFlag = false, .functionFlag = 0x06, .response = true},
   {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request */
-   .errorFlag = false, .functionFlag = 0x10, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_response */
-   .errorFlag = false, .functionFlag = 0x10, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request */
-   .errorFlag = false, .functionFlag = 0x17, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response */
-   .errorFlag = false, .functionFlag = 0x17, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request */
-   .errorFlag = false, .functionFlag = 0x16, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_response */
-   .errorFlag = false, .functionFlag = 0x16, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request */
-   .errorFlag = false, .functionFlag = 0x18, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_response */
-   .errorFlag = false, .functionFlag = 0x18, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_file_record_request */
-   .errorFlag = false, .functionFlag = 0x14, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_file_record_response */
-   .errorFlag = false, .functionFlag = 0x14, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_file_record_request */
-   .errorFlag = false, .functionFlag = 0x15, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_write_file_record_response */
-   .errorFlag = false, .functionFlag = 0x15, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_exception_status_request */
-   .errorFlag = false, .functionFlag = 0x07, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_exception_status_response */
-   .errorFlag = false, .functionFlag = 0x07, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_request */
-   .errorFlag = false, .functionFlag = 0x08, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_response */
-   .errorFlag = false, .functionFlag = 0x08, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request */
-   .errorFlag = false, .functionFlag = 0x0B, .response = false},
+   .errorFlag = false, .functionFlag = 0x10, .response = false },
   {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response */
-   .errorFlag = false, .functionFlag = 0x0B, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request */
-   .errorFlag = false, .functionFlag = 0x0C, .response = false},
-  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response */
-   .errorFlag = false, .functionFlag = 0x0C, .response = true},
+   .errorFlag = false, .functionFlag = 0x0B, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_response */
+   .errorFlag = false, .functionFlag = 0x10, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_coils_response */
+   .errorFlag = false, .functionFlag = 0x0F, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request */
+   .errorFlag = false, .functionFlag = 0x17, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response */
+   .errorFlag = false, .functionFlag = 0x17, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_exception_status_response */
+   .errorFlag = false, .functionFlag = 0x07, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_coils_response */
+   .errorFlag = false, .functionFlag = 0x01, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_file_record_request */
+   .errorFlag = false, .functionFlag = 0x14, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_response */
+   .errorFlag = false, .functionFlag = 0x18, .response = true },
   {/* plc4c_modbus_read_write_modbus_pdu_report_server_id_request */
-   .errorFlag = false, .functionFlag = 0x11, .response = false},
+   .errorFlag = false, .functionFlag = 0x11, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_single_coil_request */
+   .errorFlag = false, .functionFlag = 0x05, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_holding_registers_request */
+   .errorFlag = false, .functionFlag = 0x03, .response = false },
   {/* plc4c_modbus_read_write_modbus_pdu_report_server_id_response */
-   .errorFlag = false, .functionFlag = 0x11, .response = true},
-  {/* plc4c_modbus_read_write_modbus_pdu_read_device_identification_request */
-   .errorFlag = false, .functionFlag = 0x2B, .response = false},
+   .errorFlag = false, .functionFlag = 0x11, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_coils_request */
+   .errorFlag = false, .functionFlag = 0x01, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_input_registers_request */
+   .errorFlag = false, .functionFlag = 0x04, .response = false },
   {/* plc4c_modbus_read_write_modbus_pdu_read_device_identification_response */
-   .errorFlag = false, .functionFlag = 0x2B, .response = true}
+   .errorFlag = false, .functionFlag = 0x2B, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_single_register_request */
+   .errorFlag = false, .functionFlag = 0x06, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request */
+   .errorFlag = false, .functionFlag = 0x0B, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request */
+   .errorFlag = false, .functionFlag = 0x16, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_error */
+   .errorFlag = true, .functionFlag = -1, .response = -1 },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response */
+   .errorFlag = false, .functionFlag = 0x03, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_single_coil_response */
+   .errorFlag = false, .functionFlag = 0x05, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_device_identification_request */
+   .errorFlag = false, .functionFlag = 0x2B, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_input_registers_response */
+   .errorFlag = false, .functionFlag = 0x04, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_response */
+   .errorFlag = false, .functionFlag = 0x16, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request */
+   .errorFlag = false, .functionFlag = 0x02, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_multiple_coils_request */
+   .errorFlag = false, .functionFlag = 0x0F, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_exception_status_request */
+   .errorFlag = false, .functionFlag = 0x07, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_file_record_response */
+   .errorFlag = false, .functionFlag = 0x15, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_response */
+   .errorFlag = false, .functionFlag = 0x02, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_file_record_response */
+   .errorFlag = false, .functionFlag = 0x14, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_response */
+   .errorFlag = false, .functionFlag = 0x08, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response */
+   .errorFlag = false, .functionFlag = 0x0C, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request */
+   .errorFlag = false, .functionFlag = 0x0C, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request */
+   .errorFlag = false, .functionFlag = 0x18, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_single_register_response */
+   .errorFlag = false, .functionFlag = 0x06, .response = true },
+  {/* plc4c_modbus_read_write_modbus_pdu_write_file_record_request */
+   .errorFlag = false, .functionFlag = 0x15, .response = false },
+  {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_request */
+   .errorFlag = false, .functionFlag = 0x08, .response = false }
 
 };
 

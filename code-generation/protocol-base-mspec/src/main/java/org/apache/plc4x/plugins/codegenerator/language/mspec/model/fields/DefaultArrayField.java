@@ -22,20 +22,24 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class DefaultArrayField extends DefaultField implements ArrayField {
 
     private final TypeReference type;
     private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
-    private final Term[] params;
+    private final List<Term> params;
 
-    public DefaultArrayField(String[] tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, Term[] params) {
+    public DefaultArrayField(List<String> tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, List<Term> params) {
         super(tags, isTry);
-        this.type = type;
-        this.name = name;
-        this.loopType = loopType;
-        this.loopExpression = loopExpression;
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.loopType = Objects.requireNonNull(loopType);
+        this.loopExpression = Objects.requireNonNull(loopExpression);
         this.params = params;
     }
 
@@ -56,8 +60,8 @@ public class DefaultArrayField extends DefaultField implements ArrayField {
     }
 
     @Override
-    public Term[] getParams() {
-        return params;
+    public Optional<List<Term>> getParams() {
+        return Optional.ofNullable(params);
     }
 
 }

@@ -26,7 +26,7 @@
 #include "plc4c/spi/types_private.h"
 
 // Uncomment to add printf spam at end of plc4c_system_create_connection()
-#define DEBUG_PLC4C_SYSTEM
+//#define DEBUG_PLC4C_SYSTEM
 
 #ifdef _WIN32
 #define strtok_r strtok_s

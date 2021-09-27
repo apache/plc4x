@@ -22,17 +22,22 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class DefaultChecksumField extends DefaultField implements ChecksumField {
 
     private final TypeReference type;
     private final String name;
     private final Term checksumExpression;
 
-    public DefaultChecksumField(String[] tags, boolean isTry, TypeReference type, String name, Term checksumExpression) {
+    public DefaultChecksumField(List<String> tags, boolean isTry, TypeReference type, String name, Term checksumExpression) {
         super(tags, isTry);
-        this.type = type;
-        this.name = name;
-        this.checksumExpression = checksumExpression;
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.checksumExpression = Objects.requireNonNull(checksumExpression);
     }
 
     public TypeReference getType() {
@@ -47,8 +52,8 @@ public class DefaultChecksumField extends DefaultField implements ChecksumField 
         return checksumExpression;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    public Optional<List<Term>> getParams() {
+        return Optional.of(Collections.emptyList());
     }
 
 }

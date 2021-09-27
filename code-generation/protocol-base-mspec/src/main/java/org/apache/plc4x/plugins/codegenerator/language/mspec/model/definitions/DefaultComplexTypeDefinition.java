@@ -25,6 +25,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implements ComplexTypeDefinition {
@@ -32,10 +33,10 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final boolean isAbstract;
     private final List<Field> fields;
 
-    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean isAbstract, List<Field> fields) {
+    public DefaultComplexTypeDefinition(String name, List<Argument> parserArguments, List<String> tags, boolean isAbstract, List<Field> fields) {
         super(name, parserArguments, tags);
         this.isAbstract = isAbstract;
-        this.fields = fields;
+        this.fields = Objects.requireNonNull(fields);
     }
 
     public boolean isAbstract() {

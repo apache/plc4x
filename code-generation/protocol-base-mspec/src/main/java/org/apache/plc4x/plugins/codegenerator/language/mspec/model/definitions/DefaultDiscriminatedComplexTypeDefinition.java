@@ -24,14 +24,15 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTypeDefinition implements DiscriminatedComplexTypeDefinition {
 
-    private final String[] discriminatorValues;
+    private final List<String> discriminatorValues;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, String[] discriminatorValues, List<Field> fields) {
+    public DefaultDiscriminatedComplexTypeDefinition(String name, List<Argument> parserArguments, List<String> tags, List<String> discriminatorValues, List<Field> fields) {
         super(name, parserArguments, tags, false, fields);
-        this.discriminatorValues = discriminatorValues;
+        this.discriminatorValues = Objects.requireNonNull(discriminatorValues);
     }
 
     public DiscriminatorField getDiscriminatorField() {
@@ -44,7 +45,7 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
             .orElse(null);
     }
 
-    public String[] getDiscriminatorValues() {
+    public List<String> getDiscriminatorValues() {
         return discriminatorValues;
     }
 

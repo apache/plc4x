@@ -26,7 +26,6 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.go.GoLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.go
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -99,12 +98,12 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 		case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */
 		    <#if helper.isComplexTypeReference(type.getConstantType(constantName))>
 		        <#if helper.isEnumTypeReference(type.getConstantType(constantName))>
-			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName)) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}</#if>
+			return <#if helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow()) = "0">${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}_${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}</#if>
 			    <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}
+            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
                 </#if>
             <#else>
-            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}
+            return ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}
             </#if>
 		}
 		</#list>
@@ -155,7 +154,7 @@ func Cast${type.name}(structType interface{}) ${type.name} {
 }
 
 func (m ${type.name}) LengthInBits() uint16 {
-	<#assign simpleTypeReference = type.type>
+	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	return <#if helper.isStringTypeReference(type.type)>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
@@ -164,7 +163,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
 }
 
 <#if type.type?has_content && helper.isSimpleTypeReference(type.type)>
-	<#assign simpleTypeReference = type.type>
+	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference))}
