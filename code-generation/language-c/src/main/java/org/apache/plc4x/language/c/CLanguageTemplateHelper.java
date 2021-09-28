@@ -128,7 +128,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     public Map<ConstField, ComplexTypeDefinition> getAllConstFields() {
-        Map<ConstField, ComplexTypeDefinition> constFields = new HashMap<>();
+        Map<ConstField, ComplexTypeDefinition> constFields = new LinkedHashMap<>();
         ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
         complexTypeDefinition.getConstFields()
             .forEach(constField -> constFields.put(constField, complexTypeDefinition));
