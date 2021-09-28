@@ -27,12 +27,12 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_discriminators[] = {
+  {/* plc4c_s7_read_write_s7_message_request */
+   .messageType = 0x01 },
   {/* plc4c_s7_read_write_s7_message_response */
    .messageType = 0x02 },
   {/* plc4c_s7_read_write_s7_message_response_data */
    .messageType = 0x03 },
-  {/* plc4c_s7_read_write_s7_message_request */
-   .messageType = 0x01 },
   {/* plc4c_s7_read_write_s7_message_user_data */
    .messageType = 0x07 }
 

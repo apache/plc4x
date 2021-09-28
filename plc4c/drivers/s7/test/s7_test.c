@@ -56,26 +56,26 @@ void internal_parse_serialize_test(uint8_t* payload,
   plc4c_return_code return_code =
       plc4c_spi_read_buffer_create(payload, payload_size, &read_buffer);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error creating read buffer");
   }
 
   plc4c_s7_read_write_tpkt_packet* message = NULL;
   return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, &message);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error error parsing tpkt packet");
   }
 
   plc4c_spi_write_buffer* write_buffer;
   return_code = plc4c_spi_write_buffer_create(payload_size, &write_buffer);
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error writing to buffer");
   }
 
   return_code =
       plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, message);
 
   if (return_code != OK) {
-    TEST_FAIL_MESSAGE("Error");
+    TEST_FAIL_MESSAGE("Error serializing");
   }
 
   internal_assert_arrays_equal(payload, write_buffer, payload_size);
