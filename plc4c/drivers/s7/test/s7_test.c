@@ -20,6 +20,7 @@
 
 #include "plc4c/spi/read_buffer.h"
 #include "tpkt_packet.h"
+#include "stdio.h"
 
 void s7_address_parser_test();
 
@@ -31,9 +32,18 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
     uint8_t actual_value = *(write_buffer->data + i);
     // Needed for debugging on remote machines: Output the entire arrays content.
     if(expected_value != actual_value) {
+      printf("\n");
       for(int j = 0; j < num_bytes; j++) {
-        printf("E=%02X %s A=%02X | ", *(expected_array + j), (*(expected_array + j) !=  *(write_buffer->data + j) ? "!=" : "=="), *(write_buffer->data + j));
+        bool different = *(expected_array + j) !=  *(write_buffer->data + j);
+        if(different) {
+            printf("\033[0;31m");
+        }
+        printf("E=%02X %s A=%02X | ", *(expected_array + j), ( different ? "!=" : "=="), *(write_buffer->data + j));
+        if(different) {
+            printf("\033[0m");
+        }
       }
+      printf("\n");
     }
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");
   }
