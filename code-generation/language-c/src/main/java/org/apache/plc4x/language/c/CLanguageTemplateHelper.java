@@ -874,12 +874,13 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
         if (isSerializerArg) {
+            tracer = tracer.dive("is serializer arg");
             StringBuilder sb = new StringBuilder(variableLiteral.getName());
             if (variableLiteral.getChild().isPresent()) {
                 sb.append(".");
                 appendVariableExpressionRest(sb, baseType, variableLiteral.getChild().get());
             }
-            return sb.toString();
+            return tracer + sb.toString();
         }
         if (isTypeArg) {
             tracer = tracer.dive("is type arg");
@@ -921,6 +922,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         StringBuilder sb = new StringBuilder("_message->");
         // If this is a property of a sub-type, add the sub-type name to the property.
         if (baseType != thisType) {
+            tracer = tracer.dive("this is not this type");
             sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
         }
 
@@ -1091,7 +1093,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     private void appendVariableExpressionRest(StringBuilder sb, TypeDefinition baseType, VariableLiteral variableLiteral) {
+        Tracer tracer = Tracer.start("appendVariableExpressionRest");
         if (variableLiteral.isIndexed()) {
+            tracer = tracer.dive("isindexed");
             sb.insert(0, "plc4c_utils_list_get_value(");
             sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
             sb.append(", ").append(variableLiteral.getIndex()).append(")");
@@ -1100,11 +1104,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         // Suppress any "lengthInBytes" properties as these are handled differently in C
         variableLiteral.getChild()
-            .filter(child -> "lengthInBytes".equals(child.getName()))
+            .filter(child -> !"lengthInBytes".equals(child.getName()))
             .ifPresent(child -> {
                 sb.append(".");
                 appendVariableExpressionRest(sb, baseType, child);
             });
+        sb.append(tracer);
     }
 
     public int getNumBits(SimpleTypeReference simpleTypeReference) {
