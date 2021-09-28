@@ -845,10 +845,8 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeReference getArgumentType(TypeReference typeReference, int index) {
-        if (!(typeReference instanceof ComplexTypeReference)) {
-            throw new FreemarkerException("Only complex type references supported here.");
-        }
-        ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
+        Objects.requireNonNull(typeReference, "type reference must not be null");
+        ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(() -> new FreemarkerException("Only complex type references supported here."));
         if (!getTypeDefinitions().containsKey(complexTypeReference.getName())) {
             throw new FreemarkerException("Could not find definition of complex type " + complexTypeReference.getName());
         }

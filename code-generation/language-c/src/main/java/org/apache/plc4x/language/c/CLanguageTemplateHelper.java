@@ -937,8 +937,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (variableLiteral.getChild().isPresent())) {
                     tracer = tracer.dive("is enum type definition");
                     sb.append(camelCaseToSnakeCase(variableLiteral.getName()));
-                    return getCTypeName(typeDefinitionForTypeReference.getName()) +
-                        tracer + "_get_" + camelCaseToSnakeCase(variableLiteral.getChild().get().getName()) +
+                    return tracer + getCTypeName(typeDefinitionForTypeReference.getName()) + "_get_" + camelCaseToSnakeCase(variableLiteral.getChild().get().getName()) +
                         "(" + sb + ")";
                 }
             }
