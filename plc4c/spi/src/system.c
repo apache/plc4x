@@ -267,11 +267,11 @@ plc4c_return_code plc4c_system_create_connection(
   plc4c_connection_set_protocol_code(new_connection, connection_token);
 
   // TRANSPORT CODE (2nd item, ':' delimited, optional)
-  if (strncmp(connection_string_pos, "//", 2) == 0) {
+  if (connection_string_pos != NULL && strncmp(connection_string_pos, "//", 2) == 0) {
     plc4c_connection_set_transport_code(new_connection, NULL);
   } else {
     connection_token = strtok_r(connection_string_pos, ":", &connection_string_pos);
-    if (strncmp(connection_string_pos, "//", 2) != 0)
+    if (connection_string_pos == NULL || strncmp(connection_string_pos, "//", 2) != 0)
       return INVALID_CONNECTION_STRING;
     plc4c_connection_set_transport_code(new_connection, connection_token);
   }
@@ -286,7 +286,7 @@ plc4c_return_code plc4c_system_create_connection(
   plc4c_connection_set_transport_connect_information(new_connection, connection_token);
 
   // PARAMETERS (last item, '?' delimited, optional)
-  if (strlen(parameters_token) > 0)  {
+  if (parameters_token != NULL && strlen(parameters_token) > 0)  {
     plc4c_connection_set_parameters(new_connection, parameters_token);
     if (strchr(parameters_token,'?'))
       return INVALID_CONNECTION_STRING;

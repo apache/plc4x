@@ -33,7 +33,7 @@ In the `Profiles` list, click on the `+` button to add a new profile.
 I gave this profile the name `Test`.
 
 In the settings select the `Build type` = `Debug`, `Toolchain` = `Use Default`.
-`CMake options` = `-DUNITY_VERSION:STRING=2.5.0 -DBUILD_PHASE=test-compile`.
+`CMake options` = `-DUNITY_VERSION:STRING=2.5.2 -DBUILD_PHASE=test-compile`.
 
 Leave the rest unchanged (which is actually empty).
 
