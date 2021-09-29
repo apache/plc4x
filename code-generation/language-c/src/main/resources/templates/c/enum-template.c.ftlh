@@ -132,7 +132,7 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
 }
 
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_enum_for_field_${helper.camelCaseToSnakeCase(constantName)}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} value) {
-    <#if helper.isStringTypeReference(type.getConstantType(constantName))>
+    <#if type.getConstantType(constantName).isStringTypeReference()>
         <#list helper.getEnumValuesForUniqueConstantValues(type.enumValues, constantName) as enumValue>
     if (strcmp(value, ${helper.escapeEnumValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())?no_esc}) == 0) {
         return ${helper.getCTypeName(type.name)}_${enumValue.name};

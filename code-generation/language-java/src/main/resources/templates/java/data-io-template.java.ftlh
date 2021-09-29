@@ -118,7 +118,7 @@ public class ${type.name}IO {
             curPos = readBuffer.getPos() - startPos;
                         </#if>
             <#-- If this is a count array, we can directly initialize an array with the given size -->
-                        <#if helper.isCountArrayField(field)>
+                        <#if field.isCountArrayField()>
             // Count array
             if(${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)} > Integer.MAX_VALUE) {
                 throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
@@ -134,7 +134,7 @@ public class ${type.name}IO {
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                            <#if helper.isLengthArrayField(arrayField)>
+                            <#if arrayField.isLengthArrayField()>
             // Length array
             long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)};
             long ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
@@ -155,7 +155,7 @@ public class ${type.name}IO {
                 );
             }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                            <#elseif helper.isTerminatedArrayField(arrayField)>
+                            <#elseif arrayField.isTerminatedArrayField()>
             // Terminated array
             List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)}))) {
@@ -239,10 +239,10 @@ public class ${type.name}IO {
                 <#-- In this case we need to wrap each field in a PlcValue that matches it's natural type -->
             Map<String, PlcValue> _map = new HashMap<>();
                 <#list case.fields as field>
-                    <#if helper.isArrayField(field)>
+                    <#if field.isArrayField()>
                         <#assign field=field.asArrayField().orElseThrow()>
             _map.put("${field.name}", new PlcList(${field.name}));
-                    <#elseif helper.isPropertyField(field)>
+                    <#elseif field.isPropertyField()>
                         <#assign field=field.asPropertyField().orElseThrow()>
                         <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
                             <#case "Boolean">

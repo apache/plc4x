@@ -27,7 +27,7 @@
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
 <#-- @ftlvariable name="field" type="org.apache.plc4x.plugins.codegenerator.types.fields.Field" -->
-<#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
+<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -86,7 +86,7 @@ extern "C" {
     data-structure. So with this enum we're doing exactly this. It will be used in the serializers and
     parsers and stored in discriminated types.
 -->
-<#if helper.isDiscriminatedParentTypeDefinition(type)>
+<#if type.isDiscriminatedParentTypeDefinition()>
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct ${helper.getCTypeName(type.name)}_discriminator {
@@ -104,7 +104,7 @@ typedef struct ${helper.getCTypeName(type.name)}_discriminator ${helper.getCType
 
 // Enum assigning each sub-type an individual id.
 enum ${helper.getCTypeName(type.name)}_type {
-    <#list helper.getSubTypeDefinitions() as subtype>
+    <#list type.getSubTypeDefinitions() as subtype>
   ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,
     </#list>
 };
@@ -129,22 +129,22 @@ ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentTy
     Create the general data-structure for this type
 -->
 struct ${helper.getCTypeName(type.name)} {
-<#if helper.isDiscriminatedParentTypeDefinition(type)>
+<#if type.isDiscriminatedParentTypeDefinition()>
   /* This is an abstract type so this property saves the type of this typed union */
   ${helper.getCTypeName(type.name)}_type _type;
 </#if>
   /* Properties */
-<#list helper.getPropertyAndSwitchFields() as field>
-    <#if helper.isSwitchField(field)>
+<#list type.getPropertyAndSwitchFields() as field>
+    <#if field.isSwitchField()>
         <#assign switchField=field.asSwitchField().orElseThrow()>
   union {
         <#list switchField.cases as case>
             <#if case.propertyFields?has_content>
     struct { /* ${case.name} */
                 <#list case.propertyFields as caseField>
-                    <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !helper.isOptionalField(caseField) && !helper.isArrayField(caseField) && !helper.isManualArrayField(caseField)>
+                    <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !caseField.isOptionalField() && !caseField.isArrayField() && !caseField.isManualArrayField()>
       ${helper.getLanguageTypeNameForField(caseField)} ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
-                    <#elseif helper.isArrayField(caseField) || helper.isManualArrayField(caseField)>
+                    <#elseif caseField.isArrayField() || caseField.isManualArrayField()>
       plc4c_list* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
                     <#else>
       ${helper.getLanguageTypeNameForField(caseField)}* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
@@ -154,10 +154,10 @@ struct ${helper.getCTypeName(type.name)} {
             </#if>
         </#list>
   };
-    <#elseif (helper.isSimpleTypeReference(field.type) || helper.isEnumField(field)) && !helper.isOptionalField(field) && !helper.isArrayField(field) && !helper.isManualArrayField(field)>
+    <#elseif (helper.isSimpleTypeReference(field.type) || helper.isEnumField(field)) && !field.isOptionalField() && !field.isArrayField() && !field.isManualArrayField()>
         <#assign namedField = field.asNamedField().orElseThrow()>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(namedField.name)}${helper.getTypeSizeForField(field.asTypedField().orElseThrow())}<#if field.loopType??>${helper.getLoopExpressionSuffix(field.asTypedField().orElseThrow())}</#if>;
-    <#elseif helper.isArrayField(field) || helper.isManualArrayField(field)>
+    <#elseif field.isArrayField() || field.isManualArrayField()>
         <#assign namedField = field.asNamedField().orElseThrow()>
   plc4c_list* ${helper.camelCaseToSnakeCase(namedField.name)};
     <#else>

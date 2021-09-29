@@ -66,19 +66,18 @@ import java.math.BigInteger;
 
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
-public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
+public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${type.name}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
 
 <#--
     If this is a discriminated child type, we need to generate methods for accessing it's discriminator
     values, as if they were normal java properties.
 -->
-<#if helper.isDiscriminatedChildTypeDefinition()>
-    <#assign discriminatedChildType = type>
-    <#-- @ftlvariable name="discriminatedChildType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition" -->
+<#if type.isDiscriminatedChildTypeDefinition()>
+    <#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
     // Accessors for discriminator values.
-    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+    <#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorValue>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+        <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)>
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
             <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
         return <#if helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]) = "String"><#if discriminatorValue??>"${discriminatorValue}"<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if><#else><#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if></#if>;
@@ -93,13 +92,13 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     If this is a discriminated parent type, we need to generate the abstract methods for accessing it's
     discriminator values instead.
 -->
-<#if helper.isDiscriminatedParentTypeDefinition()>
+<#if type.isDiscriminatedParentTypeDefinition()>
     <#assign discriminatedParentType = type>
     <#-- @ftlvariable name="discriminatedParentType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
     // Abstract accessors for discriminator values.
     <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+        <#if !type.isNonDiscriminatorField(discriminatorName)>
     public abstract ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}();
         </#if>
     </#list>
@@ -142,7 +141,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
 </#list>
 <#list type.virtualFields as field>
-    <#if !helper.isDiscriminatorField(field.name)>
+    <#if !type.isDiscriminatorField(field.name)>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toAccessExpression(field, field.valueExpression, parserArguments)});
@@ -177,7 +176,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#if helper.isSimpleTypeReference(arrayField.type)>
             <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
             lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
-        <#elseif helper.isCountArrayField(arrayField)>
+        <#elseif arrayField.isCountArrayField()>
             int i=0;
             <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
             for(${complexTypeReference.name} element : ${arrayField.name}) {

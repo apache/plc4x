@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition" -->
-<#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
+<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -79,7 +79,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
         curPos = readBuffer.getPos() - startPos;
                     </#if>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
-                    <#if helper.isCountArrayField(arrayField)>
+                    <#if arrayField.isCountArrayField()>
         // Count array
         plc4c_list* ${arrayField.name};
         plc4c_utils_list_create(&${arrayField.name});
@@ -96,7 +96,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                     <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                     <#else>
                     <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                        <#if helper.isLengthArrayField(arrayField)>
+                        <#if arrayField.isLengthArrayField()>
         // Length array
         int _${arrayField.name}Length = ${helper.toParseExpression(type, arrayField, arrayField.loopExpression, parserArguments)};
         List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
@@ -109,7 +109,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                             </#if>
         }
                         <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                        <#elseif helper.isTerminatedArrayField(arrayField)>
+                        <#elseif arrayField.isTerminatedArrayField()>
         // Terminated array
         List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toParseExpression(type, arrayField, arrayField.loopExpression, parserArguments)}))) {

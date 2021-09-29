@@ -605,11 +605,24 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return toEnumVariableExpression(typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
         }
         // If we are accessing enum constants, these also need to be output differently.
-        else if ((getFieldForNameFromCurrent(variableLiteral.getName()) instanceof EnumField) && (variableLiteral.getChild().isPresent())) {
+        else if (thisType.isComplexTypeDefinition()
+            && thisType.asComplexTypeDefinition()
+            .orElseThrow(IllegalAccessError::new)
+            .getPropertyFieldByName(variableLiteral.getName())
+            .filter(EnumField.class::isInstance)
+            .isPresent()
+            && (variableLiteral.getChild().isPresent())
+        ) {
             return toConstantVariableExpression(typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
         }
         // If we are accessing optional fields, (we might need to use pointer-access).
-        else if (!serialize && (getFieldForNameFromCurrent(variableLiteral.getName()) instanceof OptionalField)) {
+        else if (!serialize && thisType.isComplexTypeDefinition()
+            && thisType.asComplexTypeDefinition()
+            .orElseThrow(IllegalStateException::new)
+            .getPropertyFieldByName(variableLiteral.getName())
+            .filter(OptionalField.class::isInstance)
+            .isPresent()
+        ) {
             return toOptionalVariableExpression(typeReference, variableLiteral, parserArguments, serializerArguments, suppressPointerAccess, tracer);
         }
         // If we are accessing implicit fields, we need to rely on local variable instead.
@@ -638,9 +651,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
 
         // If the current property references a discriminator value, we have to serialize it differently.
-        else if ((getFieldForNameFromCurrentOrParent(variableLiteral.getName()) != null) && (getFieldForNameFromCurrentOrParent(variableLiteral.getName()) instanceof DiscriminatorField)) {
+        else if (thisType.isComplexTypeDefinition() && thisType.asComplexTypeDefinition()
+            .orElseThrow(IllegalStateException::new)
+            .getPropertyFieldFromThisOrParentByName(variableLiteral.getName())
+            .filter(DiscriminatorField.class::isInstance)
+            .isPresent()) {
             tracer = tracer.dive("discriminator value");
-            final DiscriminatorField discriminatorField = (DiscriminatorField) getFieldForNameFromCurrentOrParent(variableLiteral.getName());
             // TODO: Should this return something?
         }
         // If the variable has a child element and we're able to find a type for this ... get the type.
@@ -1259,12 +1275,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .map(complexTypeReference -> {
                 // Check if this is a local field.
                 // FIXME: shouldn't this look onto the argumentType? this is nowhere used...
-                Field field = getFieldForNameFromCurrent(propertyName);
-                if (field instanceof TypedField) {
-                    TypedField typedField = (TypedField) field;
-                    return typedField.getType() instanceof ComplexTypeReference && !(getTypeDefinitionForTypeReference(typedField.getType()) instanceof EnumTypeDefinition);
-                }
-                return false;
+                return thisType.asComplexTypeDefinition()
+                    .map(
+                        complexTypeDefinition -> complexTypeDefinition.getPropertyFieldByName(propertyName)
+                            .map(TypedField.class::cast)
+                            .map(TypedField::getType)
+                            .filter(ComplexTypeReference.class::isInstance)
+                            .map(this::getTypeDefinitionForTypeReference)
+                            .map(typeDefinition -> !(typeDefinition instanceof EnumTypeDefinition))
+                            .orElse(false)
+                    )
+                    .orElse(false);
             })
             .orElse(false);
     }

@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
-<#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
+<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.c
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -54,13 +54,13 @@
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
 <#-- Helper function to get the discriminator for a given enum type constant -->
-<#if helper.isDiscriminatedParentTypeDefinition(type)>
+<#if type.isDiscriminatedParentTypeDefinition()>
 // Array of discriminator values that match the enum type constants.
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_discriminators[] = {
-    <#if helper.getDiscriminatorValues()?has_content>
-        <#list helper.getDiscriminatorValues() as name, typeValues>
+    <#if type.getDiscriminatorCaseToKeyValueMap()?has_content>
+        <#list type.getDiscriminatorCaseToKeyValueMap() as name, typeValues>
   {/* ${helper.getCTypeName(name)} */
 <#if true>   </#if><@compress single_line=true>
                <#list typeValues as key, value>
@@ -136,7 +136,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    return NO_MEMORY;
 <#if indentContent>  </#if>  }
 <#if indentContent>  </#if>  {
-            <#if helper.isCountArrayField(field)>
+            <#if field.isCountArrayField()>
 <#if indentContent>  </#if>    // Count array
 <#if indentContent>  </#if>    uint16_t itemCount = (uint16_t) ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)};
 <#if indentContent>  </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
@@ -160,7 +160,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 </#if>
 <#if indentContent>  </#if>    }
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-            <#elseif helper.isLengthArrayField(arrayField)>
+            <#elseif arrayField.isLengthArrayField()>
 <#if indentContent>  </#if>    // Length array
 <#if indentContent>  </#if>    uint8_t _${arrayField.name}Length = ${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)};
 <#if indentContent>  </#if>    uint8_t ${arrayField.name}EndPos = plc4c_spi_read_get_pos(readBuffer) + _${arrayField.name}Length;
@@ -188,7 +188,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
                 </#if>
 <#if indentContent>  </#if>    }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-            <#elseif helper.isTerminatedArrayField(arrayField)>
+            <#elseif arrayField.isTerminatedArrayField()>
 <#if indentContent>  </#if>    // Terminated array
 <#if indentContent>  </#if>    while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
@@ -399,14 +399,14 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list switchField.cases as case>
             <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])>
-<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow(), parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
             <#else>
-<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow(), parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValue?index].name])}_${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
            </#if>
-<#if helper.isDiscriminatedChildTypeDefinition()>
-    <#assign discriminatedChildType = type>
+<#if baseType.isDiscriminatedChildTypeDefinition()>
+    <#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
     // Accessors for discriminator values.
-    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+    <#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, dicriminatorValue>
         ${discriminatorName}
     </#list>
 </#if>

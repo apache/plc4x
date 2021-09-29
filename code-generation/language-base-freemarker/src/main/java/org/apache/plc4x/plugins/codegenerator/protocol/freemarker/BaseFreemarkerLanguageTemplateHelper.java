@@ -160,7 +160,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public boolean isEnumTypeReference(TypeReference typeReference) {
-        if (!isComplexTypeReference(typeReference)) {
+        if (typeReference == null) {
+            return false;
+        }
+        if (!typeReference.isComplexTypeReference()) {
             return false;
         }
         return getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition;
@@ -686,10 +689,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     }
 
     public TypeDefinition getTypeDefinitionForTypeReference(TypeReference typeReference) {
-        if (!isComplexTypeReference(typeReference)) {
-            throw new FreemarkerException("Type reference must be a complex type reference");
-        }
-        ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
+        Objects.requireNonNull(typeReference);
+        ComplexTypeReference complexTypeReference = typeReference
+            .asComplexTypeReference()
+            .orElseThrow(() -> new FreemarkerException("Type reference must be a complex type reference"));
         return getTypeDefinitions().get(complexTypeReference.getName());
     }
 
@@ -703,7 +706,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         return ((ComplexTypeDefinition) thisType).getSubTypeDefinitions();
     }
-
     /* *********************************************************************************
      * Methods related to terms and expressions.
      **********************************************************************************/
@@ -718,12 +720,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         return term.isFixedValueExpression();
     }
-
     protected int evaluateFixedValueExpression(Term term) {
-        final Expression expression = new ExpressionBuilder(toString(term)).build();
+        Objects.requireNonNull(term);
+        final Expression expression = new ExpressionBuilder(term.stringRepresentation()).build();
         return (int) expression.evaluate();
     }
-
     /**
      * @deprecated use field method.
      */
@@ -759,7 +760,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         return type;
     }
-
     /**
      * @deprecated use field method.
      */
@@ -843,7 +843,6 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         return thisType.getDiscriminatorCaseToKeyValueMap();
     }
-
     public TypeReference getArgumentType(TypeReference typeReference, int index) {
         Objects.requireNonNull(typeReference, "type reference must not be null");
         ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(() -> new FreemarkerException("Only complex type references supported here."));
@@ -1138,6 +1137,15 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             }
         }
         return null;
+    }
+
+    /**
+     * can be used to throw a exception from the template
+     * @param message the message
+     * @return the exception
+     */
+    public Supplier<FreemarkerException> fail(String message) {
+        return () -> new FreemarkerException(message);
     }
 
 }

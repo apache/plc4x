@@ -27,7 +27,7 @@
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
 <#-- @ftlvariable name="field" type="org.apache.plc4x.plugins.codegenerator.types.fields.NamedField" -->
-<#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
+<#if !type.isDiscriminatedChildTypeDefinition()>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file

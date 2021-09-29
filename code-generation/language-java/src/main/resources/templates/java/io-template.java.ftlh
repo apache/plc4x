@@ -73,7 +73,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}IO.class);
 
 <#-- The parse and serialize methods here are just proxies for forwardning the requests to static counterparts -->
-<#if !helper.isDiscriminatedChildTypeDefinition()>
+<#if !type.isDiscriminatedChildTypeDefinition()>
     @Override
     public ${type.name} parse(ReadBuffer readBuffer, Object... args) throws ParseException {
         <#if parserArguments?has_content>
@@ -133,7 +133,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
     <#assign hasParentParserArguments=(type.parentType?? && type.parentType.parserArguments.isPresent() && type.parentType.parserArguments.orElseThrow()?filter(arg -> hasParserArguments && !parserArguments?map(argument->argument.name)?seq_contains(arg.name) || !hasParserArguments)?has_content)>
     <#assign parentParserArgumentList><#if hasParentParserArguments><#list type.parentType.parserArguments.orElseThrow()?filter(arg -> hasParserArguments && !parserArguments?map(argument->argument.name)?seq_contains(arg.name) || !hasParserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-    public static ${type.name}<#if helper.isDiscriminatedChildTypeDefinition()>Builder</#if> staticParse(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if><#if hasParentParserArguments>, ${parentParserArgumentList}</#if>) throws ParseException {
+    public static ${type.name}<#if type.isDiscriminatedChildTypeDefinition()>Builder</#if> staticParse(ReadBuffer readBuffer<#if hasParserArguments>, ${parserArgumentList}</#if><#if hasParentParserArguments>, ${parentParserArgumentList}</#if>) throws ParseException {
         readBuffer.pullContext("${type.name}");
         int startPos = readBuffer.getPos();
         int curPos;
@@ -141,15 +141,15 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 <#switch field.typeName>
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
-        <#if helper.isByteBased(arrayField.type)>
+        <#if arrayField.type.isByteBased()>
         // Byte Array field (${arrayField.name})
             <#assign numberOfBytesExpression>
                 <#compress>
-                    <#if helper.isCountArrayField(field)>
+                    <#if field.isCountArrayField()>
                         int numberOfBytes = ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
-                    <#elseif helper.isLengthArrayField(field)>
+                    <#elseif field.isLengthArrayField()>
                         int numberOfBytes = ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
-                    <#elseif helper.isTerminatedArrayField(field)>
+                    <#elseif field.isTerminatedArrayField()>
                     <#-- TODO: we need to find out to implement this-->
                         int numberOfBytes := ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
                     <#else>
@@ -168,7 +168,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         curPos = readBuffer.getPos() - startPos;
             </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
-            <#if helper.isCountArrayField(field)>
+            <#if field.isCountArrayField()>
         // Count array
         if(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)} > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
@@ -202,7 +202,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                     <#assign parentParseArguments><#if hasParentParseArguments><#list typeDefinition.parentType.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
                     <#if hasParentParseArguments>, ${tracer.dive("count array parent parse arguments")} ${parentParseArguments}</#if>
                     )
-                    <#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>
+                    <#if helper.getTypeDefinitionForTypeReference(arrayField.type).isDiscriminatedChildTypeDefinition()>
                         .build()
                     </#if>
                 </#if>;
@@ -212,7 +212,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
             <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                <#if helper.isLengthArrayField(field)>
+                <#if field.isLengthArrayField()>
         // Length array
         long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
@@ -246,7 +246,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                 </#if>
         }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                <#elseif helper.isTerminatedArrayField(field)>
+                <#elseif field.isTerminatedArrayField()>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}))) {
@@ -380,7 +380,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         curPos = readBuffer.getPos() - startPos;
         </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
-        <#if helper.isCountArrayField(field)>
+        <#if field.isCountArrayField()>
         // Count array
         int _${manualArrayField.name}Count = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, parserArguments)};
         ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count];
@@ -390,7 +390,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-            <#if helper.isLengthArrayField(field)>
+            <#if field.isLengthArrayField()>
         // Length array
         long _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, parserArguments)};
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
@@ -403,7 +403,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             </#if>
         }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-            <#elseif helper.isTerminatedArrayField(field)>
+            <#elseif field.isTerminatedArrayField()>
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, parserArguments)}))) {
@@ -456,7 +456,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                 <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
                 <#assign typeName=complexTypeReference.name>
                 <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-                <#if helper.isDiscriminatedChildTypeDefinition(typeDefinition)>
+                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                     <#-- Usually you don't use child directly unless they are parameterized #-->
                     <#assign typeName=typeDefinition.parentType.name>
                     <#assign typeDefinition=typeDefinition.parentType>
@@ -499,7 +499,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign complexTypeReference=assertField.type.asComplexTypeReference().orElseThrow()>
             <#assign typeName=complexTypeReference.name>
             <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-            <#if helper.isDiscriminatedChildTypeDefinition(typeDefinition)>
+            <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#assign typeName=typeDefinition.getParentType().name>
             </#if>
             <@compress single_line=true>
@@ -580,7 +580,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign complexTypeReference = simpleField.type.asComplexTypeReference().orElseThrow()>
             <#assign typeName=complexTypeReference.name>
             <#assign typeDefinition = helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-            <#if helper.isDiscriminatedChildTypeDefinition(typeDefinition)>
+            <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
                 <#-- Usually you don't use child directly unless they are parameterized #-->
                 <#assign typeName=typeDefinition.parentType.name>
                 <#assign typeDefinition=typeDefinition.parentType>
@@ -694,9 +694,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         readBuffer.closeContext("${type.name}");
         // Create the instance
-        <#if helper.isDiscriminatedChildTypeDefinition()>
+        <#if type.isDiscriminatedChildTypeDefinition()>
         return new ${type.name}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
-        <#elseif helper.isDiscriminatedParentTypeDefinition()>
+        <#elseif type.isDiscriminatedParentTypeDefinition()>
         return builder.build(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         <#else>
         return new ${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
@@ -717,7 +717,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Array Field (${arrayField.name})
         if(_value.get${arrayField.name?cap_first}() != null) {
-            <#if helper.isByteBased(arrayField.type)>
+            <#if arrayField.type.isByteBased()>
             // Byte Array field (${arrayField.name})
             writeBuffer.writeByteArray("${arrayField.name}", _value.get${arrayField.name?cap_first}());
             <#else>
@@ -908,13 +908,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     }
 </#if>
 
-<#if helper.isDiscriminatedParentTypeDefinition()>
+<#if type.isDiscriminatedParentTypeDefinition()>
     public static interface ${type.name}Builder {
         ${type.name} build(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>);
     }
 
 </#if>
-<#if helper.isDiscriminatedChildTypeDefinition()>
+<#if type.isDiscriminatedChildTypeDefinition()>
     public static class ${type.name}Builder implements ${type.parentType.name}IO.${type.parentType.name}Builder {
         <#if type.propertyFields?has_content>
             <#list type.propertyFields as field>

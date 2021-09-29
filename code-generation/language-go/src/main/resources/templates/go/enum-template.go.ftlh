@@ -69,7 +69,7 @@ type I${type.name} interface {
 
 const(
 <#list type.enumValues as enumValue>
-	${type.name}_${enumValue.name} ${type.name} = <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>
+	${type.name}_${enumValue.name} ${type.name} = <#if type.type.isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>
 </#list>
 )
 
@@ -126,11 +126,11 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 func ${type.name}ByValue(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>) ${type.name} {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
-		case <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>:
+		case <#if type.type.isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
 			return ${type.name}_${enumValue.name}
 </#list>
 	}
-	return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
 func ${type.name}ByName(value string) ${type.name} {
@@ -140,7 +140,7 @@ func ${type.name}ByName(value string) ${type.name} {
 		return ${type.name}_${enumValue.name}
 	</#list>
 	}
-	return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+	return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 }
 
 func Cast${type.name}(structType interface{}) ${type.name} {
@@ -148,14 +148,14 @@ func Cast${type.name}(structType interface{}) ${type.name} {
 		if s${type.name}, ok := typ.(${type.name}); ok {
 			return s${type.name}
 		}
-		return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>
+		return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>
 	}
 	return castFunc(structType)
 }
 
 func (m ${type.name}) LengthInBits() uint16 {
 	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
-	return <#if helper.isStringTypeReference(type.type)>0<#else>${simpleTypeReference.sizeInBits}</#if>
+	return <#if type.type.isStringTypeReference()>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
 func (m ${type.name}) LengthInBytes() uint16 {
@@ -168,7 +168,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
 	val, err := ${helper.getReadBufferReadMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference))}
 	if err != nil {
-		return <#if helper.isStringTypeReference(type.type)>""<#elseif baseType == "bool">false<#else>0</#if>, nil
+		return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil
 	}
 	return ${type.name}ByValue(val), nil
 }
