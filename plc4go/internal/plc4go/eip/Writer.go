@@ -77,7 +77,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			requestPathSize := int8(dataLength / 2)
 			data, err := encodeValue(value, field.GetType(), elements)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding value for field %s", fieldName),
@@ -86,7 +86,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding eip ansi for field %s", fieldName),
@@ -147,27 +147,27 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse.Parent, writeRequest)
 
 						if err != nil {
-							result <- model.PlcWriteRequestResult{
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
 								Request: writeRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request:  writeRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request: writeRequest,
 							Err:     errors.New("got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),
@@ -244,27 +244,27 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 						readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse.Parent, writeRequest)
 
 						if err != nil {
-							result <- model.PlcWriteRequestResult{
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
 								Request: writeRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request:  writeRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request: writeRequest,
 							Err:     errors.New("got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),

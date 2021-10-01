@@ -158,7 +158,7 @@ func (m Reader) Read(readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcRea
 
 		// Assemble the results
 		result := internalModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues)
-		resultChan <- apiModel.PlcReadRequestResult{
+		resultChan <- &internalModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: result,
 			Err:      nil,

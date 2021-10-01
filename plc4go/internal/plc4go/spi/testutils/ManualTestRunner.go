@@ -59,8 +59,8 @@ func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interfac
 
 func (m *ManualTestSuite) Run() {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
-	if connectionResult.Err != nil {
-		panic(connectionResult.Err)
+	if connectionResult.GetErr() != nil {
+		panic(connectionResult.GetErr())
 	}
 	connection := connectionResult
 	log.Info().Msg("Reading all types in separate requests")
@@ -78,7 +78,7 @@ func (m *ManualTestSuite) Run() {
 
 func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnectionConnectResult, fieldName string, testCase ManualTestCase) {
 	// Prepare the read-request
-	readRequestBuilder := connection.Connection.ReadRequestBuilder()
+	readRequestBuilder := connection.GetConnection().ReadRequestBuilder()
 	readRequestBuilder.AddQuery(fieldName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
@@ -87,12 +87,12 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 
 	// Execute the read request
 	readResponseResult := <-readRequest.Execute()
-	if readResponseResult.Err != nil {
-		t.Errorf("Error getting response %v", err)
+	if readResponseResult.GetErr() != nil {
+		t.Errorf("Error getting response %v", readResponseResult.GetErr())
 		t.FailNow()
 		return
 	}
-	readResponse := readResponseResult.Response
+	readResponse := readResponseResult.GetResponse()
 
 	// Check the result
 	assertEquals(t, 1, len(readResponse.GetFieldNames()), fieldName)
@@ -129,7 +129,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		}
 		log.Info().Msgf("       using order: %s", sb.String())
 
-		builder := connection.Connection.ReadRequestBuilder()
+		builder := connection.GetConnection().ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {
 			fieldName := testCase.Address
 			builder.AddQuery(fieldName, testCase.Address)
@@ -142,11 +142,11 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 
 		// Execute the read request
 		readResponseResult := <-readRequest.Execute()
-		if readResponseResult.Err != nil {
+		if readResponseResult.GetErr() != nil {
 			t.Errorf("Error getting response %v", err)
 			return
 		}
-		readResponse := readResponseResult.Response
+		readResponse := readResponseResult.GetResponse()
 
 		// Check the result
 		assertEquals(t, len(shuffledTestcases), len(readResponse.GetFieldNames()))

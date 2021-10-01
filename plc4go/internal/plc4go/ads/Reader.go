@@ -72,7 +72,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 
 func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.PlcReadRequestResult) {
 	if len(readRequest.GetFieldNames()) != 1 {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.New("ads only supports single-item requests"),
@@ -86,7 +86,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	if needsResolving(field) {
 		adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -96,7 +96,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 		}
 		field, err = m.resolveField(adsField)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -107,7 +107,7 @@ func (m *Reader) singleRead(readRequest model.PlcReadRequest, result chan model.
 	}
 	adsField, err := castToDirectAdsFieldFromPlcField(field)
 	if err != nil {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.Wrap(err, "invalid field item type"),
@@ -158,7 +158,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 	for _, fieldName := range readRequest.GetFieldNames() {
 		field, err := castToAdsFieldFromPlcField(readRequest.GetField(fieldName))
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "error casting field"),
@@ -206,7 +206,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		if needsResolving(field) {
 			adsField, err := castToSymbolicPlcFieldFromPlcField(field)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -216,7 +216,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 			}
 			field, err = m.resolveField(adsField)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "invalid field item type"),
@@ -227,7 +227,7 @@ func (m *Reader) multiRead(readRequest model.PlcReadRequest, result chan model.P
 		}
 		adsField, err := castToDirectAdsFieldFromPlcField(field)
 		if err != nil {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: nil,
 				Err:      errors.Wrap(err, "invalid field item type"),
@@ -276,28 +276,28 @@ func (m *Reader) sendOverTheWire(userdata readWriteModel.AmsPacket, readRequest 
 			readResponse, err := m.ToPlc4xReadResponse(*amsTcpPaket, readRequest)
 
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request: readRequest,
 					Err:     errors.Wrap(err, "Error decoding response"),
 				}
 				// TODO: should we return the error here?
 				return nil
 			}
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
 				Response: readResponse,
 			}
 			return nil
 		},
 		func(err error) error {
-			result <- model.PlcReadRequestResult{
+			result <- &plc4goModel.DefaultPlcReadRequestResult{
 				Request: readRequest,
 				Err:     errors.Wrap(err, "got timeout while waiting for response"),
 			}
 			return nil
 		},
 		time.Second*1); err != nil {
-		result <- model.PlcReadRequestResult{
+		result <- &plc4goModel.DefaultPlcReadRequestResult{
 			Request:  readRequest,
 			Response: nil,
 			Err:      errors.Wrap(err, "error sending message"),
@@ -340,14 +340,14 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 	}()
 	// We wait synchronous for the resolution response before we can continue
 	response := <-result
-	if response.Err != nil {
-		log.Debug().Err(response.Err).Msg("Error during resolve")
-		return DirectPlcField{}, response.Err
+	if response.GetErr() != nil {
+		log.Debug().Err(response.GetErr()).Msg("Error during resolve")
+		return DirectPlcField{}, response.GetErr()
 	}
-	if response.Response.GetResponseCode("dummy") != model.PlcResponseCode_OK {
-		return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.Response.GetResponseCode("dummy"))
+	if response.GetResponse().GetResponseCode("dummy") != model.PlcResponseCode_OK {
+		return DirectPlcField{}, errors.Errorf("Got a response error %#v", response.GetResponse().GetResponseCode("dummy"))
 	}
-	handle := response.Response.GetValue("dummy").GetUint32()
+	handle := response.GetResponse().GetValue("dummy").GetUint32()
 	log.Debug().Uint32("handle", handle).Str("symbolicAddress", symbolicField.SymbolicAddress).Msg("Resolved symbolic address")
 	directPlcField := DirectPlcField{
 		IndexGroup:  uint32(readWriteModel.ReservedIndexGroups_ADSIGRP_SYM_VALBYHND),

@@ -91,8 +91,8 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	connectionChan := driverManager.GetConnection(m.driverName + ":test://hurz" + optionsString)
 	connectionResult := <-connectionChan
 
-	if connectionResult.Err != nil {
-		return errors.Wrap(connectionResult.Err, "error getting a connection")
+	if connectionResult.GetConnection() != nil {
+		return errors.Wrap(connectionResult.GetErr(), "error getting a connection")
 	}
 
 	log.Info().Msgf("\n-------------------------------------------------------\nExecuting testcase: %s \n-------------------------------------------------------\n", testcase.name)
@@ -100,7 +100,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the setup steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
-		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
@@ -111,7 +111,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the actual scenario steps
 	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
-		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in step "+testStep.name)
 		}
@@ -120,7 +120,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the teardown steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
-		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.GetConnection(), &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in teardown step "+testStep.name)
 		}
@@ -211,12 +211,12 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			log.Trace().Msg("Waiting for read request result")
 			readRequestResult := <-testcase.readRequestResultChannel
-			if readRequestResult.Err != nil {
-				return errors.Wrap(readRequestResult.Err, "error sending response")
+			if readRequestResult.GetErr() != nil {
+				return errors.Wrap(readRequestResult.GetErr(), "error sending response")
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := readRequestResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := readRequestResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}
@@ -236,12 +236,12 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			}
 			log.Trace().Msg("Waiting for write request result")
 			writeResponseResult := <-testcase.writeRequestResultChannel
-			if writeResponseResult.Err != nil {
-				return errors.Wrap(writeResponseResult.Err, "error sending response")
+			if writeResponseResult.GetErr() != nil {
+				return errors.Wrap(writeResponseResult.GetErr(), "error sending response")
 			}
 			// Serialize the response to XML
 			xmlWriteBuffer := utils.NewXmlWriteBuffer()
-			err := writeResponseResult.Response.(utils.Serializable).Serialize(xmlWriteBuffer)
+			err := writeResponseResult.GetResponse().(utils.Serializable).Serialize(xmlWriteBuffer)
 			if err != nil {
 				return errors.Wrap(err, "error serializing response")
 			}

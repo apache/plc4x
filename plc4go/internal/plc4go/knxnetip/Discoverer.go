@@ -29,6 +29,7 @@ import (
 
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
@@ -162,8 +163,13 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), o
 								}
 								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
 									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-								discoveryEvent := apiModel.NewPlcDiscoveryEvent(
-									"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
+								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+									ProtocolCode:  "knxnet-ip",
+									TransportCode: "udp",
+									TransportUrl:  *remoteUrl,
+									Options:       nil,
+									Name:          deviceName,
+								}
 								// Pass the event back to the callback
 								callback(discoveryEvent)
 							}

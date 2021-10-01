@@ -19,41 +19,5 @@
 
 package model
 
-import (
-	"net/url"
-)
-
-type DefaultPlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-	return d.TransportCode
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
-	return d.TransportCode
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
-	return d.TransportUrl
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
-	return d.Options
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetName() string {
-	return d.Name
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
-	if d.Options != nil {
-		panic("Not implemented")
-	}
-	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
+type DefaultPlcUnsubscriptionResponse struct {
 }

@@ -19,41 +19,22 @@
 
 package model
 
-import (
-	"net/url"
-)
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
-type DefaultPlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
+type DefaultPlcWriteRequestResult struct {
+	Request  model.PlcWriteRequest
+	Response model.PlcWriteResponse
+	Err      error
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-	return d.TransportCode
+func (d *DefaultPlcWriteRequestResult) GetRequest() model.PlcWriteRequest {
+	return d.Request
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
-	return d.TransportCode
+func (d *DefaultPlcWriteRequestResult) GetResponse() model.PlcWriteResponse {
+	return d.Response
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
-	return d.TransportUrl
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
-	return d.Options
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetName() string {
-	return d.Name
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
-	if d.Options != nil {
-		panic("Not implemented")
-	}
-	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
+func (d *DefaultPlcWriteRequestResult) GetErr() error {
+	return d.Err
 }

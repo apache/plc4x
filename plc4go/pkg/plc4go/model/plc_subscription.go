@@ -46,10 +46,10 @@ type PlcSubscriptionRequestBuilder interface {
 	Build() (PlcSubscriptionRequest, error)
 }
 
-type PlcSubscriptionRequestResult struct {
-	Request  PlcSubscriptionRequest
-	Response PlcSubscriptionResponse
-	Err      error
+type PlcSubscriptionRequestResult interface {
+	GetRequest() PlcSubscriptionRequest
+	GetResponse() PlcSubscriptionResponse
+	GetErr() error
 }
 
 type PlcSubscriptionRequest interface {

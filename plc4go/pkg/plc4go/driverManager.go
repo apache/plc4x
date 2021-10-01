@@ -43,20 +43,45 @@ type PlcDriverManager interface {
 	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
 }
 
-type PlcDriverManger struct {
-	drivers    map[string]PlcDriver
-	transports map[string]transports.Transport
-}
-
 func NewPlcDriverManager() PlcDriverManager {
 	log.Trace().Msg("Creating plc driver manager")
-	return PlcDriverManger{
+	return &plcDriverManger{
 		drivers:    map[string]PlcDriver{},
 		transports: map[string]transports.Transport{},
 	}
 }
 
-func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type plcDriverManger struct {
+	drivers    map[string]PlcDriver
+	transports map[string]transports.Transport
+}
+
+type plcConnectionConnectResult struct {
+	connection PlcConnection
+	err        error
+}
+
+func (d *plcConnectionConnectResult) GetConnection() PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionConnectResult) GetErr() error {
+	return d.err
+}
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
+
+func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
 	if driver == nil {
 		panic("driver must not be nil")
 	}
@@ -72,7 +97,7 @@ func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
 	log.Info().Str("protocolName", driver.GetProtocolName()).Msgf("Driver for %s registered", driver.GetProtocolName())
 }
 
-func (m PlcDriverManger) ListDriverNames() []string {
+func (m *plcDriverManger) ListDriverNames() []string {
 	log.Trace().Msg("Listing driver names")
 	var driverNames []string
 	for driverName := range m.drivers {
@@ -82,14 +107,14 @@ func (m PlcDriverManger) ListDriverNames() []string {
 	return driverNames
 }
 
-func (m PlcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
+func (m *plcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 	if val, ok := m.drivers[driverName]; ok {
 		return val, nil
 	}
 	return nil, errors.Errorf("couldn't find driver %s", driverName)
 }
 
-func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
+func (m *plcDriverManger) RegisterTransport(transport transports.Transport) {
 	if transport == nil {
 		panic("transport must not be nil")
 	}
@@ -105,7 +130,7 @@ func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
 	log.Info().Str("transportName", transport.GetTransportName()).Msgf("Transport for %s registered", transport.GetTransportName())
 }
 
-func (m PlcDriverManger) ListTransportNames() []string {
+func (m *plcDriverManger) ListTransportNames() []string {
 	log.Trace().Msg("Listing transport names")
 	var transportNames []string
 	for transportName := range m.transports {
@@ -115,7 +140,7 @@ func (m PlcDriverManger) ListTransportNames() []string {
 	return transportNames
 }
 
-func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
+func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
 	if val, ok := m.transports[transportName]; ok {
 		log.Debug().Str("transportName", transportName).Msg("Returning transport")
 		return val, nil
@@ -123,7 +148,7 @@ func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[stri
 	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
-func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
+func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
 	log.Debug().Str("connectionString", connectionString).Msgf("Getting connection for %s", connectionString)
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
@@ -131,7 +156,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Error().Err(err).Msg("Error parsing connection")
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error parsing connection string"))
+			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 		}()
 		return ch
 	}
@@ -147,7 +172,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting driver for connection string"))
+			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
 		}()
 		return ch
 	}
@@ -165,7 +190,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 			log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
 			ch := make(chan PlcConnectionConnectResult)
 			go func() {
-				ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error parsing connection string"))
+				ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 			}()
 			return ch
 		}
@@ -188,7 +213,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Error().Msg("got a empty transport")
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.New("no transport specified and no default defined by driver"))
+			ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
 		}()
 		return ch
 	}
@@ -205,7 +230,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 	return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
-func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error {
+func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.

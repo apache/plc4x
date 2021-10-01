@@ -56,7 +56,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			field := readRequest.GetField(fieldName)
 			address, err := encodeS7Address(field)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
@@ -124,27 +124,27 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 					readResponse, err := m.ToPlc4xReadResponse(*payload, readRequest)
 
 					if err != nil {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
 					}
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: readResponse,
 					}
 					return transaction.EndRequest()
 				},
 				func(err error) error {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request: readRequest,
 						Err:     errors.Wrap(err, "got timeout while waiting for response"),
 					}
 					return transaction.EndRequest()
 				},
 				time.Second*1); err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),

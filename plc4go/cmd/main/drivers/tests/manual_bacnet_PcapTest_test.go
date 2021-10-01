@@ -47,10 +47,10 @@ func Test(t *testing.T) {
 	driverManager.RegisterDriver(bacnetip.NewDriver())
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport())
 	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp")
-	if result.Err != nil {
-		panic(result.Err)
+	if result.GetErr() != nil {
+		panic(result.GetErr())
 	}
-	connection := result.Connection
+	connection := result.GetConnection()
 	defer connection.Close()
 	build, err := connection.SubscriptionRequestBuilder().
 		AddEventQuery("furz", "*/*/*").
@@ -62,10 +62,10 @@ func Test(t *testing.T) {
 		panic(err)
 	}
 	requestResult := <-build.Execute()
-	if requestResult.Err != nil {
-		panic(requestResult.Err)
+	if requestResult.GetErr() != nil {
+		panic(requestResult.GetErr())
 	}
-	log.Info().Msgf("got response %v", requestResult.Response)
+	log.Info().Msgf("got response %v", requestResult.GetResponse())
 
 	//time.Sleep(time.Hour)
 }

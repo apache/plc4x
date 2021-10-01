@@ -19,41 +19,37 @@
 
 package model
 
-import (
-	"net/url"
-)
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 
-type DefaultPlcDiscoveryEvent struct {
-	ProtocolCode  string
-	TransportCode string
-	TransportUrl  url.URL
-	Options       map[string][]string
-	Name          string
+type DefaultPlcBrowseQueryResult struct {
+	Field             model.PlcField
+	Name              string
+	Readable          bool
+	Writable          bool
+	Subscribable      bool
+	PossibleDataTypes []string
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-	return d.TransportCode
+func (d *DefaultPlcBrowseQueryResult) GetField() model.PlcField {
+	return d.Field
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
-	return d.TransportCode
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetTransportUrl() url.URL {
-	return d.TransportUrl
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetOptions() map[string][]string {
-	return d.Options
-}
-
-func (d *DefaultPlcDiscoveryEvent) GetName() string {
+func (d *DefaultPlcBrowseQueryResult) GetName() string {
 	return d.Name
 }
 
-func (d *DefaultPlcDiscoveryEvent) GetConnectionString() string {
-	if d.Options != nil {
-		panic("Not implemented")
-	}
-	return d.ProtocolCode + ":" + d.TransportCode + "//" + d.TransportUrl.Host
+func (d *DefaultPlcBrowseQueryResult) IsReadable() bool {
+	return d.Readable
+}
+
+func (d *DefaultPlcBrowseQueryResult) IsWritable() bool {
+	return d.Writable
+}
+
+func (d *DefaultPlcBrowseQueryResult) IsSubscribable() bool {
+	return d.Subscribable
+}
+
+func (d *DefaultPlcBrowseQueryResult) GetPossibleDataTypes() []string {
+	return d.PossibleDataTypes
 }

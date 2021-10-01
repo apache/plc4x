@@ -75,6 +75,38 @@ type DefaultConnectionMetadata struct {
 	ProvidesBrowsing     bool
 }
 
+type DefaultPlcConnectionConnectResult interface {
+	plc4go.PlcConnectionConnectResult
+}
+
+func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err error) DefaultPlcConnectionConnectResult {
+	return &plcConnectionConnectResult{
+		connection: connection,
+		err:        err,
+	}
+}
+
+type DefaultPlcConnectionCloseResult interface {
+	plc4go.PlcConnectionCloseResult
+}
+
+func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err error) plc4go.PlcConnectionCloseResult {
+	return &plcConnectionCloseResult{
+		connection: connection,
+		err:        err,
+	}
+}
+
+type DefaultPlcConnectionPingResult interface {
+	plc4go.PlcConnectionPingResult
+}
+
+func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult {
+	return &plcConnectionPingResult{
+		err: err,
+	}
+}
+
 ///////////////////////////////////////
 ///////////////////////////////////////
 //
@@ -135,6 +167,40 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, options 
 	}
 }
 
+type plcConnectionConnectResult struct {
+	connection plc4go.PlcConnection
+	err        error
+}
+
+func (d *plcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionConnectResult) GetErr() error {
+	return d.err
+}
+
+type plcConnectionCloseResult struct {
+	connection plc4go.PlcConnection
+	err        error
+}
+
+func (d *plcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionCloseResult) GetErr() error {
+	return d.err
+}
+
+type plcConnectionPingResult struct {
+	err error
+}
+
+func (d *plcConnectionPingResult) GetErr() error {
+	return d.err
+}
+
 //
 // Internal section
 //
@@ -152,7 +218,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 		err := d.GetMessageCodec().Connect()
 		d.SetConnected(true)
 		connection := d.GetConnection()
-		ch <- plc4go.NewPlcConnectionConnectResult(connection, err)
+		ch <- NewDefaultPlcConnectionConnectResult(connection, err)
 	}()
 	return ch
 }
@@ -179,7 +245,7 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	d.SetConnected(false)
 	ch := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
-		ch <- plc4go.NewPlcConnectionCloseResult(d.GetConnection(), nil)
+		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), nil)
 	}()
 	return ch
 }
@@ -192,9 +258,9 @@ func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	ch := make(chan plc4go.PlcConnectionPingResult)
 	go func() {
 		if d.GetConnection().IsConnected() {
-			ch <- plc4go.NewPlcConnectionPingResult(nil)
+			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {
-			ch <- plc4go.NewPlcConnectionPingResult(errors.New("not connected"))
+			ch <- NewDefaultPlcConnectionPingResult(errors.New("not connected"))
 		}
 	}()
 	return ch
