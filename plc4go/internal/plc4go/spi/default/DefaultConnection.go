@@ -20,6 +20,7 @@
 package _default
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -49,20 +50,20 @@ type DefaultConnection interface {
 }
 
 // NewDefaultConnection is the factory for a DefaultConnection
-func NewDefaultConnection(requirements DefaultConnectionRequirements, options ...WithOption) DefaultConnection {
+func NewDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	return buildDefaultConnection(requirements, options...)
 }
 
 // WithDefaultTtl ttl is time.Second * 10 by default
-func WithDefaultTtl(defaultTtl time.Duration) WithOption {
+func WithDefaultTtl(defaultTtl time.Duration) options.WithOption {
 	return withDefaultTtl{defaultTtl: defaultTtl}
 }
 
-func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) WithOption {
+func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) options.WithOption {
 	return withPlcFieldHandler{plcFieldHandler: plcFieldHandler}
 }
 
-func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) WithOption {
+func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption {
 	return withPlcValueHandler{plcValueHandler: plcValueHandler}
 }
 
@@ -114,18 +115,18 @@ func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult
 //
 
 type withDefaultTtl struct {
-	option
+	options.Option
 	// defaultTtl the time to live after a close
 	defaultTtl time.Duration
 }
 
 type withPlcFieldHandler struct {
-	option
+	options.Option
 	plcFieldHandler spi.PlcFieldHandler
 }
 
 type withPlcValueHandler struct {
-	option
+	options.Option
 	plcValueHandler spi.PlcValueHandler
 }
 
@@ -139,15 +140,12 @@ type defaultConnection struct {
 	valueHandler spi.PlcValueHandler
 }
 
-func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...WithOption) DefaultConnection {
+func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
 	defaultTtl := time.Second * 10
 	var fieldHandler spi.PlcFieldHandler
 	var valueHandler spi.PlcValueHandler
 
 	for _, option := range options {
-		if !option.isOption() {
-			panic("not a option")
-		}
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl

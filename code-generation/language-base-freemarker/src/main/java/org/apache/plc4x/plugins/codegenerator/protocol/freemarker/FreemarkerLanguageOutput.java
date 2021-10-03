@@ -41,7 +41,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     @Override
     public void generate(File outputDir, String languageName, String protocolName, String outputFlavor, Map<String, TypeDefinition> types,
-        Map<String, String> options)
+                         Map<String, String> options)
         throws GenerationException {
 
         // Configure the Freemarker template engine
@@ -157,7 +157,14 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 }
                 outputFileWriter.flush();
             }
+
+            // Apply post-processing to the template
+            postProcessTemplateOutput(outputFile);
         }
+    }
+
+    protected void postProcessTemplateOutput(File outputFile) {
+        // NOOP
     }
 
     private Configuration getFreemarkerConfiguration() throws GenerationException {
@@ -183,6 +190,6 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
     protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-        Map<String, String> options);
+                                                                  Map<String, String> options);
 
 }
