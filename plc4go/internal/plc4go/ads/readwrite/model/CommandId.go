@@ -32,24 +32,24 @@ type ICommandId interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const(
-	CommandId_INVALID CommandId = 0x0000
-	CommandId_ADS_READ_DEVICE_INFO CommandId = 0x0001
-	CommandId_ADS_READ CommandId = 0x0002
-	CommandId_ADS_WRITE CommandId = 0x0003
-	CommandId_ADS_READ_STATE CommandId = 0x0004
-	CommandId_ADS_WRITE_CONTROL CommandId = 0x0005
-	CommandId_ADS_ADD_DEVICE_NOTIFICATION CommandId = 0x0006
+const (
+	CommandId_INVALID                        CommandId = 0x0000
+	CommandId_ADS_READ_DEVICE_INFO           CommandId = 0x0001
+	CommandId_ADS_READ                       CommandId = 0x0002
+	CommandId_ADS_WRITE                      CommandId = 0x0003
+	CommandId_ADS_READ_STATE                 CommandId = 0x0004
+	CommandId_ADS_WRITE_CONTROL              CommandId = 0x0005
+	CommandId_ADS_ADD_DEVICE_NOTIFICATION    CommandId = 0x0006
 	CommandId_ADS_DELETE_DEVICE_NOTIFICATION CommandId = 0x0007
-	CommandId_ADS_DEVICE_NOTIFICATION CommandId = 0x0008
-	CommandId_ADS_READ_WRITE CommandId = 0x0009
+	CommandId_ADS_DEVICE_NOTIFICATION        CommandId = 0x0008
+	CommandId_ADS_READ_WRITE                 CommandId = 0x0009
 )
 
 var CommandIdValues []CommandId
 
 func init() {
 	_ = errors.New
-	CommandIdValues = []CommandId {
+	CommandIdValues = []CommandId{
 		CommandId_INVALID,
 		CommandId_ADS_READ_DEVICE_INFO,
 		CommandId_ADS_READ,
@@ -65,26 +65,26 @@ func init() {
 
 func CommandIdByValue(value uint16) CommandId {
 	switch value {
-		case 0x0000:
-			return CommandId_INVALID
-		case 0x0001:
-			return CommandId_ADS_READ_DEVICE_INFO
-		case 0x0002:
-			return CommandId_ADS_READ
-		case 0x0003:
-			return CommandId_ADS_WRITE
-		case 0x0004:
-			return CommandId_ADS_READ_STATE
-		case 0x0005:
-			return CommandId_ADS_WRITE_CONTROL
-		case 0x0006:
-			return CommandId_ADS_ADD_DEVICE_NOTIFICATION
-		case 0x0007:
-			return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
-		case 0x0008:
-			return CommandId_ADS_DEVICE_NOTIFICATION
-		case 0x0009:
-			return CommandId_ADS_READ_WRITE
+	case 0x0000:
+		return CommandId_INVALID
+	case 0x0001:
+		return CommandId_ADS_READ_DEVICE_INFO
+	case 0x0002:
+		return CommandId_ADS_READ
+	case 0x0003:
+		return CommandId_ADS_WRITE
+	case 0x0004:
+		return CommandId_ADS_READ_STATE
+	case 0x0005:
+		return CommandId_ADS_WRITE_CONTROL
+	case 0x0006:
+		return CommandId_ADS_ADD_DEVICE_NOTIFICATION
+	case 0x0007:
+		return CommandId_ADS_DELETE_DEVICE_NOTIFICATION
+	case 0x0008:
+		return CommandId_ADS_DEVICE_NOTIFICATION
+	case 0x0009:
+		return CommandId_ADS_READ_WRITE
 	}
 	return 0
 }
@@ -174,4 +174,3 @@ func (e CommandId) name() string {
 func (e CommandId) String() string {
 	return e.name()
 }
-

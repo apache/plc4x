@@ -142,7 +142,7 @@ func (m *BACnetComplexTagOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 
 		// Simple Field (theString)
 		theString := string(m.TheString)
-		_theStringErr := writeBuffer.WriteString("theString", uint8(m.ActualLengthInBit), "ASCII", (theString))
+		_theStringErr := writeBuffer.WriteString("theString", uint8(m.ActualLengthInBit), "TF-", (theString))
 		if _theStringErr != nil {
 			return errors.Wrap(_theStringErr, "Error serializing 'theString' field")
 		}
