@@ -128,10 +128,10 @@
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['STRING' STRING
-            [simple string 255 'value' encoding='UTF-8']
+            [simple string 255 'value']
         ]
         ['WSTRING' STRING
-            [simple string 255 'value' encoding='UTF-8']
+            [simple string 255 'value']
         ]
     ]
 ]

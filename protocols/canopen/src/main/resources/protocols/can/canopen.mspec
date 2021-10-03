@@ -333,15 +333,15 @@
             [array int 8 'value' length 'size']
         ]
         ['OCTET_STRING' STRING
-           [simple vstring 'size' 'test' encoding='UTF-8']
+           [simple vstring 'size' 'test']
         ]
         ['VISIBLE_STRING' STRING
-            [simple vstring 'size' 'value' encoding='UTF-8']
+            [simple vstring 'size' 'value']
         ]
         //CANOpenDataType.TIME_OF_DAY' CANOpenTime
         //CANOpenDataType.TIME_DIFFERENCE' CANOpenTime
         ['UNICODE_STRING' STRING
-            [simple vstring 'size/8' 'value' encoding='UTF-8']
+            [simple vstring 'size/8' 'value']
         ]
     ]
 ]
