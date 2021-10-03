@@ -50,14 +50,15 @@
               <goal>verify</goal>
             </goals>
             <configuration>
-              <!-- These option allow that openjdk >16 can run the google-code-format -->
-              <mavenOpts>
-                --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-              </mavenOpts>
+              <!-- These option allow that openjdk >=16 can run the google-code-format -->
+              <!-- TODO: Add this to a self-activating maven profile -->
+              <!--mavenOpts>
+                - -add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+                - -add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+                - -add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+                - -add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+                - -add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+              </mavenOpts-->
               <debug>true</debug>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>

@@ -469,7 +469,7 @@
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
             [simple   uint 8         'Subscription']
             [reserved uint 8         '0x00']
-            [simple   string         64             'magicKey'            encoding='UTF-8']
+            [simple   string         64             'magicKey'           ]
             [optional AlarmStateType 'Alarmtype'    'Subscription >= 128']
             [optional uint 8         'Reserve'      'Subscription >= 128']
         ]
@@ -597,18 +597,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' CHAR
-            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1' encoding='UTF-8']
+            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
         ]
         ['IEC61131_WCHAR' CHAR
-            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='UTF-16']
+            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='"UTF-16"']
         ]
         ['IEC61131_STRING' STRING
             // TODO: Fix this length
-            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value.string) + 2' encoding='UTF-8']
+            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
         ]
         ['IEC61131_WSTRING' STRING
             // TODO: Fix this length
-            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value.string) * 2) + 2' encoding='UTF-16']
+            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------

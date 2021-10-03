@@ -443,16 +443,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign optionalField = field.asOptionalField().orElseThrow()>
 
         // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-        <#if !optionalField.conditionExpression.present>
+        ${helper.getLanguageTypeNameForField(optionalField)} ${optionalField.name} = null;
         <#-- TODO: we need to initalize base types-->
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = null;
         curPos = readBuffer.getPos();
         try {
-        </#if>
         <#if optionalField.conditionExpression.present && optionalField.conditionExpression.orElseThrow().contains("curPos")>
         curPos = readBuffer.getPos();
         </#if>
-        ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
         <#if optionalField.conditionExpression.present>
         if(${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}) {
         </#if>
@@ -500,11 +497,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if optionalField.conditionExpression.present>
         }
         </#if>
-        <#if !optionalField.conditionExpression.present>
         } catch(ParseAssertException ignore){
-        readBuffer.reset(curPos);
+            readBuffer.reset(curPos);
         }
-        </#if>
         <#break>
     <#case "assert">
         <#assign assertField = field.asAssertField().orElseThrow()>

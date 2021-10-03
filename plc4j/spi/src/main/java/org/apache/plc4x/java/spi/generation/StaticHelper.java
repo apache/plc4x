@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.generation;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Collection;
 
@@ -86,11 +87,15 @@ public class StaticHelper {
         throw new PlcRuntimeException("Unable to count object of type " + obj.getClass().getName());
     }
 
-    public static int STR_LEN(String str) {
+    public static int STR_LEN(Object str) {
         if (str == null) {
             return 0;
         }
-        return str.length();
+        if (str instanceof PlcValue) {
+            PlcValue plcValue = (PlcValue) str;
+            return plcValue.getString().length();
+        }
+        return str.toString().length();
     }
 
     public static <T> T CAST(Object obj, Class<T> clazz) {
