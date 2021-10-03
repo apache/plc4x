@@ -20,45 +20,26 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
 type Driver struct {
-	fieldHandler            spi.PlcFieldHandler
+	_default.DefaultDriver
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		fieldHandler:            NewFieldHandler(),
+		DefaultDriver:           _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewFieldHandler()),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
-}
-
-func (m *Driver) GetProtocolCode() string {
-	return "bacnet-ip"
-}
-
-func (m *Driver) GetProtocolName() string {
-	return "BACnet/IP"
-}
-
-func (m *Driver) GetDefaultTransport() string {
-	return "udp"
-}
-
-func (m *Driver) CheckQuery(query string) error {
-	_, err := m.fieldHandler.ParseQuery(query)
-	return err
 }
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
@@ -90,15 +71,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	log.Debug().Msgf("working with codec %#v", codec)
 
 	// Create the new connection
-	connection := NewConnection(codec, m.fieldHandler)
+	connection := NewConnection(codec, m.GetPlcFieldHandler())
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
-}
-
-func (m *Driver) SupportsDiscovery() bool {
-	return false
-}
-
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	panic("implement me")
 }

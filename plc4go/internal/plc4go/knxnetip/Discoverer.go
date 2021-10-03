@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"net"
 	"net/url"
 	"time"
@@ -44,7 +45,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -62,7 +63,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), o
 	// However if a discovery option is present to select a device by name, only
 	// add those devices matching any of the given names.
 	var interfaces []net.Interface
-	deviceNames := apiModel.FilterDiscoveryOptionsDeviceName(options)
+	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
 	if len(deviceNames) > 0 {
 		for _, curInterface := range allInterfaces {
 			for _, deviceNameOption := range deviceNames {

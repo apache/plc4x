@@ -20,6 +20,7 @@
 package plc4go
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
@@ -40,7 +41,7 @@ type PlcDriverManager interface {
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
-	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
+	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
 }
 
 func NewPlcDriverManager() PlcDriverManager {
@@ -49,6 +50,26 @@ func NewPlcDriverManager() PlcDriverManager {
 		drivers:    map[string]PlcDriver{},
 		transports: map[string]transports.Transport{},
 	}
+}
+
+func WithDiscoveryOptionProtocol(protocolName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionProtocol(protocolName)
+}
+
+func WithDiscoveryOptionTransport(transportName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionTransport(transportName)
+}
+
+func WithDiscoveryOptionDeviceName(deviceName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionDeviceName(deviceName)
+}
+
+func WithDiscoveryOptionLocalAddress(localAddress string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionLocalAddress(localAddress)
+}
+
+func WithDiscoveryOptionRemoteAddress(remoteAddress string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionRemoteAddress(remoteAddress)
 }
 
 ///////////////////////////////////////
@@ -230,11 +251,11 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
-func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error {
+func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.
-	protocolOptions := model.FilterDiscoveryOptionsProtocol(options)
+	protocolOptions := options.FilterDiscoveryOptionsProtocol(discoveryOptions)
 	discoveryDrivers := map[string]PlcDriver{}
 	if len(protocolOptions) > 0 {
 		for _, protocolOption := range protocolOptions {
@@ -249,7 +270,7 @@ func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent),
 	// Execute discovery on all selected drivers
 	for _, driver := range discoveryDrivers {
 		if driver.SupportsDiscovery() {
-			err := driver.Discover(callback, options...)
+			err := driver.Discover(callback, discoveryOptions...)
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}

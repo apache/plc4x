@@ -20,41 +20,22 @@
 package ads
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
 type Driver struct {
-	fieldHandler spi.PlcFieldHandler
+	_default.DefaultDriver
 }
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		fieldHandler: NewFieldHandler(),
+		DefaultDriver: _default.NewDefaultDriver("ads", "Beckhoff TwinCat ADS", "tcp", NewFieldHandler()),
 	}
-}
-
-func (m *Driver) GetProtocolCode() string {
-	return "ads"
-}
-
-func (m *Driver) GetProtocolName() string {
-	return "Beckhoff TwinCat ADS"
-}
-
-func (m *Driver) GetDefaultTransport() string {
-	return "tcp"
-}
-
-func (m *Driver) CheckQuery(query string) error {
-	_, err := m.fieldHandler.ParseQuery(query)
-	return err
 }
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
@@ -93,7 +74,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 
 	// Create the new connection
-	connection, err := NewConnection(codec, configuration, m.fieldHandler)
+	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler())
 	if err != nil {
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
@@ -103,12 +84,4 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	}
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
-}
-
-func (m *Driver) Discover(_ func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	panic("not available")
-}
-
-func (m *Driver) SupportsDiscovery() bool {
-	return false
 }

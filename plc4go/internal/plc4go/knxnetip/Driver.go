@@ -22,6 +22,7 @@ package knxnetip
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
@@ -31,25 +32,14 @@ import (
 )
 
 type Driver struct {
+	_default.DefaultDriver
 	fieldHandler spi.PlcFieldHandler
 }
 
 func NewDriver() *Driver {
 	return &Driver{
-		fieldHandler: NewFieldHandler(),
+		DefaultDriver: _default.NewDefaultDriver("knxnet-ip", "KNXNet/IP", "udp", NewFieldHandler()),
 	}
-}
-
-func (m Driver) GetProtocolCode() string {
-	return "knxnet-ip"
-}
-
-func (m Driver) GetProtocolName() string {
-	return "KNXNet/IP"
-}
-
-func (m Driver) GetDefaultTransport() string {
-	return "udp"
 }
 
 func (m Driver) CheckQuery(query string) error {
@@ -89,6 +79,6 @@ func (m Driver) SupportsDiscovery() bool {
 	return true
 }
 
-func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	return NewDiscoverer().Discover(callback, options...)
+func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer().Discover(callback, discoveryOptions...)
 }

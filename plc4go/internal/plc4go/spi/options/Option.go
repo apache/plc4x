@@ -17,16 +17,17 @@
  * under the License.
  */
 
-package _default
+package options
 
 // WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
 type WithOption interface {
 	isOption() bool
 }
 
-type option struct {
+// Option is a marker struct which can be used to mark an option
+type Option struct {
 }
 
-func (_ option) isOption() bool {
+func (_ Option) isOption() bool {
 	return true
 }

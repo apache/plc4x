@@ -20,6 +20,7 @@
 package plc4go
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"net/url"
@@ -41,7 +42,9 @@ type PlcDriver interface {
 	// GetConnection Establishes a connection to a given PLC using the information in the connectionString
 	GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan PlcConnectionConnectResult
 
+	// SupportsDiscovery returns true if this driver supports discovery
 	SupportsDiscovery() bool
 
-	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
+	// Discover TODO: document me
+	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
 }
