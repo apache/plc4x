@@ -34,11 +34,11 @@
 
   <build>
     <plugins>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-datatypes</id>
             <phase>generate-resources</phase>
@@ -54,13 +54,7 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
             <id>fetch-opc-statuscodes</id>
             <phase>generate-resources</phase>
@@ -74,12 +68,6 @@
               <outputFileName>StatusCode.csv</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-discriminators</id>
             <phase>generate-resources</phase>
@@ -93,12 +81,6 @@
               <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>fetch-opc-services-enum</id>
             <phase>generate-resources</phase>

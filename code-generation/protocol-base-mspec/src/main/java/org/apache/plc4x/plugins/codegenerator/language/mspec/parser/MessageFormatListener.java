@@ -282,8 +282,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterOptionalField(MSpecParser.OptionalFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String conditionExpressionString = getExprString(ctx.condition);
-        Term conditionExpression = getExpressionTerm(conditionExpressionString);
+        Term conditionExpression = null;
+        if (ctx.condition != null) {
+            String conditionExpressionString = getExprString(ctx.condition);
+            conditionExpression = getExpressionTerm(conditionExpressionString);
+        }
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
         Field field = new DefaultOptionalField(null, type, name, conditionExpression, params);
@@ -475,7 +478,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional "encoding" field and length expression.
         if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
-                (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
+            (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
             if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
                 Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
                 return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");

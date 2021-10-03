@@ -449,7 +449,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         curPos = readBuffer.getPos();
         try {
         </#if>
-        <#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
+        <#if optionalField.conditionExpression.present && optionalField.conditionExpression.orElseThrow().contains("curPos")>
         curPos = readBuffer.getPos();
         </#if>
         ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
