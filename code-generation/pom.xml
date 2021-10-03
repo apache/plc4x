@@ -30,7 +30,7 @@
   <artifactId>plc4x-code-generation</artifactId>
   <packaging>pom</packaging>
 
-  <name>PLC4X: Code-Generation</name>
+  <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
   <modules>

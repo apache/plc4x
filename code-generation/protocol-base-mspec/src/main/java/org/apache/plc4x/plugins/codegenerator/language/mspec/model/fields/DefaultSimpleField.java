@@ -32,8 +32,8 @@ public class DefaultSimpleField extends DefaultField implements SimpleField {
     private final String name;
     private final List<Term> params;
 
-    public DefaultSimpleField(List<String> tags, boolean isTry, TypeReference type, String name, List<Term> params) {
-        super(tags, isTry);
+    public DefaultSimpleField(List<String> tags, TypeReference type, String name, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.params = params;

@@ -94,7 +94,7 @@
     [simple uint 8 'uintField']
     [simple float 8.23 'floatField']
     [simple float 11.52 'doubleField']
-    [simple string '8' 'UTF-8' 'stringField']
+    [simple string 8 'stringField']
 ]
 
 [type 'AbstractTypeTest'
@@ -105,7 +105,7 @@
     [abstract uint 8 'abstractUintField']
     [abstract float 8.23 'abstractFloatField']
     [abstract float 11.52 'abstractDoubleField']
-    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [abstract string 8 'abstractStringField']
     [typeSwitch 'simpleField'
         ['0' AbstractedType
             [simple bit 'abstractBitField']
@@ -113,7 +113,7 @@
             [simple uint 8 'abstractUintField']
             [simple float 8.23 'abstractFloatField']
             [simple float 11.52 'abstractDoubleField']
-            [simple string '8' 'UTF-8' 'abstractStringField']
+            [simple string 8 'abstractStringField']
         ]
     ]
 ]
@@ -126,7 +126,7 @@
     [abstract uint 8 'abstractUintField']
     [abstract float 8.23 'abstractFloatField']
     [abstract float 11.52 'abstractDoubleField']
-    [abstract string '8' 'UTF-8' 'abstractStringField']
+    [abstract string 8 'abstractStringField']
     [typeSwitch 'simpleField'
         ['0' AbstractedType
             //Abstract fields need to be overriden in child
@@ -135,7 +135,7 @@
             [simple uint 8 'abstractUintField']
             [simple float 8.23 'abstractFloatField']
             [simple float 11.52 'abstractDoubleField']
-            [simple string '8' 'UTF-8' 'abstractStringField']
+            [simple string 8 'abstractStringField']
         ]
     ]
 ]
@@ -146,7 +146,7 @@
     [array uint 8 'uintField' count      '5']
     [array float 8.23 'floatField' count      '5']
     [array float 11.52 'doubleField' count      '5']
-    [array string '8' 'UTF-8' 'stringField' count      '5']
+    [array string 8 'stringField' count      '5']
 ]
 
 //TODO: Checksums fields are not supported in C
@@ -159,7 +159,7 @@
     //[checksum float 8.23 'floatField' '100.0f']
     //[checksum float 11.52 'doubleField' '100.0']
     //String field cannot be used as a checksum
-    //[checksum string '11 * 8' 'UTF-8' 'stringField' '"HELLO TODDY"']
+    //[checksum vstring '11 * 8' 'stringField' '"HELLO TODDY"']
 //]
 
 [type 'ConstTypeTest'
@@ -168,7 +168,7 @@
     [const uint 8 'uintField' '100']
     [const float 8.23 'floatField' '100.0']
     [const float 11.52 'doubleField' '100.0']
-    [const string '8' 'UTF-8' 'stringField' '"HELLO TODDY"']
+    [const string 8 'stringField' '"HELLO TODDY"']
 ]
 
 [type 'EnumTypeTest'
@@ -177,12 +177,12 @@
 
 [type 'PascalStringTypeTest'
     [simple int 8 'stringLength']
-    [simple string 'stringLength' 'UTF-8' 'stringField']
+    [simple vstring 'stringLength' 'stringField']
 ]
 
 [type 'ImplicitPascalStringTypeTest'
     [implicit int 8 'stringLength' 'stringField.length']
-    [simple string 'stringLength' 'UTF-8' 'stringField']
+    [simple vstring 'stringLength' 'stringField']
 ]
 
 [type 'ImplicitTypeTest'
@@ -196,7 +196,7 @@
     [implicit float 8.23 'floatField' 'simpleField']
     [implicit float 11.52 'doubleField' 'simpleField']
     //TODO: String literals can't be used in the expression
-    //[implicit string '8' 'UTF-8' 'stringField' 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
+    //[implicit string 8 'stringField' 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
 ]
 
 [type 'OptionalTypeTest'
@@ -221,7 +221,7 @@
 //    [virtual uint 8 'virtualUintField' 'simpleField']
 //    [virtual float 8.23 'virtualFloatField' 'simpleField']
 //    [virtual float 11.52 'virtualDoubleField' 'simpleField']
-//    [virtual string '24' 'virtualStringField' 'simpleField']
+//    [virtual string 24 'virtualStringField' 'simpleField']
 //]
 
 //TODO: Virtual fields fail for GO, haven't checked C assuming fails.
@@ -232,7 +232,7 @@
 //    [virtual uint 8 'virtualUintField' 'simpleField']
 //    [virtual float 8.23 'virtualFloatField' 'simpleField']
 //    [virtual float 11.52 'virtualDoubleField' 'simpleField']
-//    [virtual string '24' 'UTF-8' 'virtualStringField' 'simpleField']
+//    [virtual string 24 'virtualStringField' 'simpleField']
 //    [typeSwitch 'simpleField'
 //        ['0' DiscriminatedVirtualType
 //            [simple int 8 'intField']
@@ -401,7 +401,7 @@
 //]
 
 //TODO:  C doesn't support non integer switch fields
-//[enum string '-1' 'EnumTypeString'
+//[enum string 48 'EnumTypeString'
 //    ['Toddy1' TODDY]
 //]
 
@@ -413,7 +413,7 @@
 //]
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
-//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string '-1' 'stringType', EnumType 'enumType']
+//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string 32 'stringType', EnumType 'enumType']
 //    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
@@ -425,7 +425,7 @@
 //]
 
 //Showing allowed parameter types for enums
-[enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string '-1' 'stringType', EnumType 'enumType']
+[enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string 32 'stringType', EnumType 'enumType']
     ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
     ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]

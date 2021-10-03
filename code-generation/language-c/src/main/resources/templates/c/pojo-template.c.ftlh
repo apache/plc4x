@@ -319,11 +319,13 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#assign optionalField = field.asOptionalField().orElseThrow()>
 
 <#if indentContent>  </#if>  // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-            <#if optionalField.conditionExpression.contains("curPos")>
+            <#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
 <#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(readBuffer) - startPos;
             </#if>
 <#if indentContent>  </#if>  ${helper.getLanguageTypeNameForField(field)}* ${optionalField.name} = NULL;
-<#if indentContent>  </#if>  if(${helper.toParseExpression(baseType, field, optionalField.conditionExpression, parserArguments)}) {
+            <#if optionalField.conditionExpression.present>
+<#if indentContent>  </#if>  if(${helper.toParseExpression(baseType, field, optionalField.conditionExpression.get(), parserArguments)}) {
+            </#if>
         <#if helper.isSimpleTypeReference(optionalField.type)>
 <#if indentContent>  </#if>    ${optionalField.name} = malloc(sizeof(${helper.getLanguageTypeNameForField(field)}));
 <#if indentContent>  </#if>    if(${optionalField.name} == NULL) {
@@ -338,9 +340,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
 <#if indentContent>  </#if>    (*_message)-><@fieldName baseType=baseType field=optionalField/> = ${optionalField.name};
+            <#if optionalField.conditionExpression.present>
 <#if indentContent>  </#if>  } else {
 <#if indentContent>  </#if>    (*_message)-><@fieldName baseType=baseType field=optionalField/> = NULL;
 <#if indentContent>  </#if>  }
+            </#if>
             <#break>
         <#case "padding">
             <#assign paddingField = field.asPaddingField().orElseThrow()>

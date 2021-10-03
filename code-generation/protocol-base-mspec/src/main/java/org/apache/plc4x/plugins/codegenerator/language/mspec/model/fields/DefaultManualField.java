@@ -35,8 +35,8 @@ public class DefaultManualField extends DefaultField implements ManualField {
     private final Term lengthExpression;
     private final List<Term> params;
 
-    public DefaultManualField(List<String> tags, boolean isTry, TypeReference type, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
-        super(tags, isTry);
+    public DefaultManualField(List<String> tags, TypeReference type, String name, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.parseExpression = Objects.requireNonNull(parseExpression);

@@ -241,6 +241,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 case UFLOAT:
                     throw new FreemarkerException("Unsupported unsigned float type.");
                 case STRING:
+                case VSTRING:
                     return "char*";
                 case TIME:
                     return "time_t";//throw new FreemarkerException("Unsupported time type.");
@@ -304,6 +305,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 return " : " + simpleTypeReference.getSizeInBits();
             case STRING:
+            case VSTRING:
             case TIME:
             case DATE:
             case DATETIME:
@@ -340,6 +342,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     }
                     break;
                 case STRING:
+                case VSTRING:
                     return "\"" + valueString + "\"";
             }
         }
@@ -406,6 +409,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return "plc4c_spi_read_string(readBuffer, " + toParseExpression(thisType, field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
@@ -460,6 +464,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return "plc4c_spi_write_string(writeBuffer, " + toSerializationExpression(thisType, field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\", " + fieldName + ")";
@@ -483,6 +488,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 case UFLOAT:
                     return "0.0f";
                 case STRING:
+                case VSTRING:
                     return "\"\"";
                 case TIME:
                     throw new FreemarkerException("Unsupported time type.");
@@ -1123,6 +1129,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 return floatTypeReference.getSizeInBits();
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return stringTypeReference.getSizeInBits();
             default:

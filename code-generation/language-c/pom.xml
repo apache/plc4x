@@ -29,7 +29,7 @@
 
   <artifactId>plc4x-code-generation-language-c</artifactId>
 
-  <name>PLC4X: Build Utils: Language: C</name>
+  <name>Code-Generation: Language: C</name>
   <description>Code generation template for generating C code</description>
 
   <build>
@@ -89,6 +89,28 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Make sure the dependencies of the module are built first -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-test</artifactId>
+      <version>0.10.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

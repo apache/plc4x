@@ -34,8 +34,8 @@ public class DefaultArrayField extends DefaultField implements ArrayField {
     private final Term loopExpression;
     private final List<Term> params;
 
-    public DefaultArrayField(List<String> tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, List<Term> params) {
-        super(tags, isTry);
+    public DefaultArrayField(List<String> tags, TypeReference type, String name, LoopType loopType, Term loopExpression, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.loopType = Objects.requireNonNull(loopType);

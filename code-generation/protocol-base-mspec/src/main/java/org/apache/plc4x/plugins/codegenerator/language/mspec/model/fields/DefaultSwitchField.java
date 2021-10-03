@@ -21,12 +21,11 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.TryField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
-public class DefaultSwitchField implements SwitchField, TryField {
+public class DefaultSwitchField implements SwitchField {
 
     private final boolean isTry;
     private final List<Term> discriminatorExpressions;

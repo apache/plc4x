@@ -37,8 +37,8 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     private final Term lengthExpression;
     private final List<Term> params;
 
-    public DefaultManualArrayField(List<String> tags, boolean isTry, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
-        super(tags, isTry);
+    public DefaultManualArrayField(List<String> tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.loopType = Objects.requireNonNull(loopType);

@@ -23,7 +23,7 @@
     [simple uint        16  'dummy']
 ]
 
-[dataIo 'DataItem' [string '-1' 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [string 8 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
             [simple   bit    'value']
@@ -128,10 +128,10 @@
             [array uint 16 'value' count 'numberOfValues']
         ]
         ['STRING' STRING
-            [simple string '255' 'UTF-8' 'value']
+            [simple string 255 'value' encoding='UTF-8']
         ]
         ['WSTRING' STRING
-            [simple string '255' 'UTF-8' 'value']
+            [simple string 255 'value' encoding='UTF-8']
         ]
     ]
 ]

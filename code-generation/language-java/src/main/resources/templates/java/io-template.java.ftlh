@@ -442,11 +442,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign optionalField = field.asOptionalField().orElseThrow()>
 
         // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-        <#if optionalField.conditionExpression.contains("curPos")>
+        <#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
         curPos = readBuffer.getPos() - startPos;
         </#if>
         ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
-        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression, parserArguments)}) {
+        <#if optionalField.conditionExpression.present>
+        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}) {
+        </#if>
         <@compress single_line=true>
             ${optionalField.name} =
             <#if helper.isEnumField(optionalField)>
@@ -488,7 +490,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             ;
         </@compress>
 
+        <#if optionalField.conditionExpression.present>
         }
+        </#if>
         <#break>
     <#case "assert">
         <#assign assertField = field.asAssertField().orElseThrow()>
@@ -557,20 +561,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
 
-        <#if simpleField.isTry()>
-            <#-- TODO: we need to initalize base types-->
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} = null;
-        curPos = readBuffer.getPos();
-        try {
-        </#if>
-
         <#if !helper.isSimpleTypeReference(simpleField.type)>
         readBuffer.pullContext("${simpleField.name}");
         </#if>
 
         // Simple Field (${simpleField.name})
         <@compress single_line=true>
-        <#if !simpleField.isTry()>${helper.getLanguageTypeNameForField(simpleField)}</#if> ${simpleField.name} =
+        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} =
         <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
         <#if helper.isEnumField(simpleField)>
         /* enum based simple field with type ${simpleField.type.name} */
@@ -620,12 +617,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         readBuffer.closeContext("${simpleField.name}");
         </#if>
 
-
-        <#if simpleField.isTry()>
-        } catch(ParseAssertException ignore){
-            readBuffer.reset(curPos);
-        }
-        </#if>
         <#break>
     <#case "switch">
         <#assign switchField = field.asSwitchField().orElseThrow()>

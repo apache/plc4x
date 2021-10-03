@@ -33,8 +33,8 @@ public class DefaultConstField extends DefaultField implements ConstField {
     private final String name;
     private final Object referenceValue;
 
-    public DefaultConstField(List<String> tags, boolean isTry, TypeReference type, String name, Object referenceValue) {
-        super(tags, isTry);
+    public DefaultConstField(List<String> tags, TypeReference type, String name, Object referenceValue) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.referenceValue = Objects.requireNonNull(referenceValue);

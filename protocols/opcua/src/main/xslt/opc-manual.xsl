@@ -60,10 +60,10 @@
 ]
 
 [discriminatedType 'MessagePDU' [bit 'response']
-    [discriminator string '24'          'messageType']
+    [discriminator string 24            'messageType']
     [typeSwitch 'messageType','response'
         ['HEL','false'     OpcuaHelloRequest
-            [simple          string '8'         'chunk']
+            [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'version']
             [simple          int 32             'receiveBufferSize']
@@ -73,7 +73,7 @@
             [simple          PascalString       'endpoint']
         ]
         ['ACK','true'     OpcuaAcknowledgeResponse
-            [simple          string '8'         'chunk']
+            [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'version']
             [simple          int 32             'receiveBufferSize']
@@ -82,7 +82,7 @@
             [simple          int 32             'maxChunkCount']
         ]
         ['OPN','false'     OpcuaOpenRequest
-            [simple          string '8'         'chunk']
+            [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'secureChannelId']
             [simple          PascalString       'endpoint']
@@ -93,7 +93,7 @@
             [array           int 8              'message' count 'messageSize - (endpoint.stringLength == -1 ? 0 : endpoint.stringLength ) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
        ['OPN','true'     OpcuaOpenResponse
-           [simple          string '8'         'chunk']
+           [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
            [simple          PascalString       'securityPolicyUri']
@@ -104,7 +104,7 @@
            [array           int 8              'message' count 'messageSize - (securityPolicyUri.stringLength == -1 ? 0 : securityPolicyUri.stringLength) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
        ['CLO','false'     OpcuaCloseRequest
-           [simple          string '8'         'chunk']
+           [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
            [simple          int 32             'secureTokenId']
@@ -113,7 +113,7 @@
            [simple          ExtensionObject       'message' ['false']]
        ]
        ['MSG','false'     OpcuaMessageRequest
-           [simple          string '8'         'chunk']
+           [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
            [simple          int 32             'secureTokenId']
@@ -122,7 +122,7 @@
            [array           int 8              'message' count 'messageSize - 24']
        ]
        ['MSG','true'     OpcuaMessageResponse
-           [simple          string '8'         'chunk']
+           [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
            [simple          int 32             'secureTokenId']
@@ -150,7 +150,7 @@
     [simple bit 'namespaceURISpecified']
     [simple bit 'serverIndexSpecified']
     [simple NodeIdTypeDefinition 'nodeId']
-    [virtual string '-1' 'utf-8' 'identifier' 'nodeId.identifier']
+    [virtual vstring '-1' 'identifier' 'nodeId.identifier']
     [optional PascalString 'namespaceURI' 'namespaceURISpecified']
     [optional uint 32 'serverIndex' 'serverIndexSpecified']
 ]
@@ -172,11 +172,11 @@
     //A serialized object prefixed with its data type identifier.
     [simple ExpandedNodeId 'typeId']
     [optional ExtensionObjectEncodingMask 'encodingMask' 'includeEncodingMask']
-    [virtual string '-1' 'identifier' 'typeId.identifier']
+    [virtual vstring '-1' 'identifier' 'typeId.identifier']
     [simple ExtensionObjectDefinition 'body' ['identifier']]
 ]
 
-[discriminatedType 'ExtensionObjectDefinition' [string '-1' 'identifier']
+[discriminatedType 'ExtensionObjectDefinition' [vstring '-1' 'identifier']
     [typeSwitch 'identifier'
         ['0' NullExtension
         ]
@@ -213,7 +213,7 @@
     ]
 ]
 
-[discriminatedType 'UserIdentityTokenDefinition' [string '-1' 'identifier']
+[discriminatedType 'UserIdentityTokenDefinition' [vstring '-1' 'identifier']
     [typeSwitch 'identifier'
         ['anonymous' AnonymousIdentityToken
         ]
@@ -344,37 +344,37 @@
 ]
 
 [discriminatedType 'NodeIdTypeDefinition'
-    [abstract string '-1' 'identifier']
+    [abstract vstring '-1' 'identifier']
     [discriminator NodeIdType 'nodeType']
     [typeSwitch 'nodeType'
         ['nodeIdTypeTwoByte' NodeIdTwoByte
             [simple uint 8 'id']
-            [virtual string '-1' 'identifier' 'id']
+            [virtual vstring '-1' 'identifier' 'id']
         ]
         ['nodeIdTypeFourByte' NodeIdFourByte
             [simple uint 8 'namespaceIndex']
             [simple uint 16 'id']
-            [virtual string '-1' 'identifier' 'id']
+            [virtual vstring '-1' 'identifier' 'id']
         ]
         ['nodeIdTypeNumeric' NodeIdNumeric
             [simple uint 16 'namespaceIndex']
             [simple uint 32 'id']
-            [virtual string '-1' 'identifier' 'id']
+            [virtual vstring '-1' 'identifier' 'id']
         ]
         ['nodeIdTypeString' NodeIdString
             [simple uint 16 'namespaceIndex']
             [simple PascalString 'id']
-            [virtual string '-1' 'identifier' 'id.stringValue']
+            [virtual vstring '-1' 'identifier' 'id.stringValue']
         ]
         ['nodeIdTypeGuid' NodeIdGuid
             [simple uint 16 'namespaceIndex']
             [array int 8 'id' count '16']
-            [virtual string '-1' 'identifier' 'id']
+            [virtual vstring '-1' 'identifier' 'id']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
             [simple uint 16 'namespaceIndex']
             [simple PascalByteString 'id']
-            [virtual string '-1' 'identifier' 'id.stringValue']
+            [virtual vstring '-1' 'identifier' 'id.stringValue']
         ]
     ]
 ]
@@ -382,12 +382,12 @@
 [type 'NodeId'
     [reserved int 2 '0x00']
     [simple NodeIdTypeDefinition 'nodeId']
-    [virtual string '-1' 'id' 'nodeId.identifier']
+    [virtual vstring '-1' 'id' 'nodeId.identifier']
 ]
 
 [type 'PascalString'
     [implicit int 32 'sLength'          'stringValue.length == 0 ? -1 : stringValue.length']
-    [simple string 'sLength == -1 ? 0 : sLength * 8' 'UTF-8' 'stringValue']
+    [simple vstring 'sLength == -1 ? 0 : sLength * 8' 'stringValue']
     [virtual  int 32 'stringLength'     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
@@ -413,7 +413,7 @@
 // OpaqueType
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
-[enum string '-1' 'OpcuaDataType' [uint 8 'variantType']
+[enum string 112 'OpcuaDataType' [uint 8 'variantType']
     ['NULL' NULL ['0']]
     ['BOOL' BOOL ['1']]
     ['BYTE' BYTE ['3']]
@@ -440,7 +440,7 @@
     ['STRING' STRING ['12']]
 ]
 
-[enum string '-1' 'OpcuaIdentifierType'
+[enum string 8 'OpcuaIdentifierType'
     ['s' STRING_IDENTIFIER]
     ['i' NUMBER_IDENTIFIER]
     ['g' GUID_IDENTIFIER]

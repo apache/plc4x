@@ -142,9 +142,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     emitRequiredImport("math/big");
                     return "*big.Float";
                 }
-                case STRING: {
+                case STRING:
+                case VSTRING:
                     return "string";
-                }
                 case TIME: {
                     return "Time";
                 }
@@ -212,6 +212,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                     return "values.NewPlcBREAL";
                 case STRING:
+                case VSTRING:
                     return "values.NewPlcSTRING";
                 case TIME:
                     return "values.NewPlcTIME";
@@ -240,6 +241,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case FLOAT:
                     return "0.0";
                 case STRING:
+                case VSTRING:
                     return "\"\"";
             }
         } else if (typeReference instanceof ComplexTypeReference) {
@@ -263,6 +265,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 return floatTypeReference.getSizeInBits();
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return stringTypeReference.getSizeInBits();
             default:
@@ -329,6 +332,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "readBuffer.ReadBigFloat(\"" + logicalName + "\", true, " + floatTypeReference.getExponent() + ", " + floatTypeReference.getMantissa() + ")";
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
         }
@@ -393,6 +397,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
                     stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
@@ -980,6 +985,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                     break;
                 case STRING:
+                case VSTRING:
                     return "\"" + valueString + "\"";
             }
         }
@@ -1105,7 +1111,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                 } else if (curField instanceof OptionalField) {
                     OptionalField optionalField = (OptionalField) curField;
-                    if (optionalField.getConditionExpression().contains(name)) {
+                    if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().get().contains(name)) {
                         return name;
                     }
                 } else if (curField instanceof SwitchField) {
@@ -1207,7 +1213,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         } else if (curField instanceof OptionalField) {
             OptionalField optionalField = (OptionalField) curField;
-            if (optionalField.getConditionExpression().contains(variable)) {
+            if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().get().contains(variable)) {
                 return true;
             }
         }

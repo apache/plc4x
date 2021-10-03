@@ -51,7 +51,7 @@
 ]
 
 
-[enum string '1' 'OpcuaIdentifierType'
+[enum string 8 'OpcuaIdentifierType'
     ['s' STRING_IDENTIFIER]
     ['i' NUMBER_IDENTIFIER]
     ['g' GUID_IDENTIFIER]

@@ -137,17 +137,18 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>@project.version@</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>@project.version@</version>
-    </dependency>
+<dependencies>
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-api</artifactId>
+    <version>@project.version@</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-spi</artifactId>
+    <version>@project.version@</version>
+  </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>

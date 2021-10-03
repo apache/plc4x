@@ -125,60 +125,57 @@
             [reserved uint 1         '0x0'                                      ]
         ]
     ]
-    [reserved      uint 6            '0x00'                                     ]
-    [const         uint 1            'cancelWasPending'                 '0'     ]
-    [reserved      uint 1            '0x0'                                      ]
-    // Byte Order:
-    // 0x0 = Big-Endian
-    // 0x1 = Little-Endian
-    [const         uint 4            'integerEncoding'   '0x0'                  ]
-    // Character Type: Ascii
-    [const         uint 4            'characterEncoding' '0x0'                  ]
-    // Floating Point Type: IEEE
-    [const         uint 8            'floatingPointRepresentation' '0x00'       ]
-    [const         uint 8            'serialHigh'        '0x00'                 ]
-    [const         uint 8            'serialLow'         '0x00'                 ]
-    // 4.10.3.2.8 Coding of the field RPCObjectUUID DEA00000-6C97-11D1-8271-{instanceOrNodeNumber}{deviceId}{vendorId}
-    // Apache Vendor Id: 0x060B
-    // PLC4X Profinet Driver Device ID (can be chosen freely): 0xCAFE
-    // NOTE: We can get the Device-Id and Vendor-Id from the PN-DCP search result of the browser.
-    [const         uint 32           'uuid1'             '0xDEA00000'           ]
-    [const         uint 16           'uuid2'             '0x6C97'               ]
-    [const         uint 16           'uuid3'             '0x11D1'               ]
-    [const         uint 16           'uuid4'             '0x8271'               ]
-    [simple        uint 16           'instanceOrNodeNumber'                     ]
-    [simple        uint 16           'deviceId'                                 ]
-    [simple        uint 16           'vendorId'                                 ]
-    // 4.10.3.2.9
-    // Device Interface:            DEA00001-6C97-11D1-8271-00A02442DF7D
-    // Controller Interface:        DEA00002-6C97-11D1-8271-00A02442DF7D
-    // Supervisor Interface:        DEA00003-6C97-11D1-8271-00A02442DF7D
-    // Parameter Server Interface:  DEA00004-6C97-11D1-8271-00A02442DF7D
-    [const         uint 32           'interface1'        '0xDEA00001'           ]
-    [const         uint 16           'interface2'        '0x6C97'               ]
-    [const         uint 16           'interface3'        '0x11D1'               ]
-    [const         uint 16           'interface4'        '0x8271'               ]
-    [const         uint 16           'interface5'        '0x00A0'               ]
-    [const         uint 32           'interface6'        '0x2442DF7D'           ]
-    // 4.10.3.2.10
-    // The Controller and the Device generate the uuid for each AR (Application Relationship) and use them as long as the AR exists
-    [simple        uint 32           'activity'                                 ]
-    [const         uint 16           'activity2'         '0x0000'               ]
-    [const         uint 16           'activity3'         '0x1010'               ]
-    [const         uint 16           'activity4'         '0xAA25'               ]
-    [const         uint 32           'activity5'         '0x606D3C3D'           ]
-    [const         uint 16           'activity6'         '0xA9A3'               ]
-    [simple        uint 32           'serverBootTime'                           ]
-    [const         uint 32           'interfaceVer'      '0x00000001'           ]
-    [simple        uint 32           'sequenceNumber'                           ]
-    [simple        DceRpc_Operation  'operation'                                ]
-    [const         uint 16           'interfaceHint'     '0xFFFF'               ]
-    [const         uint 16           'activityHint'      '0xFFFF'               ]
-    [implicit      uint 16           'fragmentLength'    'payload.lengthInBytes']
-    [const         uint 16           'fragmentNum'       '0x0000'               ]
-    [const         uint 8            'authProto'         '0x00'                 ]
-    [const         uint 8            'serialLow2'        '0x00'                 ]// TODO: Check this ...
-    [simple        PnIoCm_Packet     'payload'           ['packetType']         ]
+    [reserved      uint 6            '0x00'                                        ]
+    [const         uint 1            'cancelWasPending'                 '0'        ]
+    [reserved      uint 1            '0x0'                                         ]
+    [simple        IntegerEncoding   'integerEncoding'                             ]
+    [simple        CharacterEncoding 'characterEncoding'                           ]
+    [simple        FloatingPointEncoding 'floatingPointEncoding'                   ]
+    //[batchSet encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
+        [const         uint 8            'serialHigh'        '0x00'      endianes='test' line='test']
+        [const         uint 8            'serialLow'         '0x00'                ]
+        // 4.10.3.2.8 Coding of the field RPCObjectUUID DEA00000-6C97-11D1-8271-{instanceOrNodeNumber}{deviceId}{vendorId}
+        // Apache Vendor Id: 0x060B
+        // PLC4X Profinet Driver Device ID (can be chosen freely): 0xCAFE
+        // NOTE: We can get the Device-Id and Vendor-Id from the PN-DCP search result of the browser.
+        [const        uint 32           'uuid1'             '0xDEA00000'           ]
+        [const        uint 16           'uuid2'             '0x6C97'               ]
+        [const        uint 16           'uuid3'             '0x11D1'               ]
+        [const        uint 16           'uuid4'             '0x8271'               ]
+        [simple       uint 16           'instanceOrNodeNumber'                     ]
+        [simple       uint 16           'deviceId'                                 ]
+        [simple       uint 16           'vendorId'                                 ]
+        // 4.10.3.2.9
+        // Device Interface:            DEA00001-6C97-11D1-8271-00A02442DF7D
+        // Controller Interface:        DEA00002-6C97-11D1-8271-00A02442DF7D
+        // Supervisor Interface:        DEA00003-6C97-11D1-8271-00A02442DF7D
+        // Parameter Server Interface:  DEA00004-6C97-11D1-8271-00A02442DF7D
+        [const        uint 32           'interface1'        '0xDEA00001'           ]
+        [const        uint 16           'interface2'        '0x6C97'               ]
+        [const        uint 16           'interface3'        '0x11D1'               ]
+        [const        uint 16           'interface4'        '0x8271'               ]
+        [const        uint 16           'interface5'        '0x00A0'               ]
+        [const        uint 32           'interface6'        '0x2442DF7D'           ]
+        // 4.10.3.2.10
+        // The Controller and the Device generate the uuid for each AR (Application Relationship) and use them as long as the AR exists
+        [simple        uint 32           'activity'                                ]
+        [const        uint 16           'activity2'         '0x0000'               ]
+        [const        uint 16           'activity3'         '0x1010'               ]
+        [const        uint 16           'activity4'        '0xAA25'                ]
+        [const        uint 32           'activity5'        '0x606D3C3D'            ]
+        [const        uint 16           'activity6'        '0xA9A3'                ]
+        [simple        uint 32           'serverBootTime'                          ]
+        [const        uint 32           'interfaceVer'      '0x00000001'           ]
+        [simple        uint 32           'sequenceNumber'                          ]
+        [simple        DceRpc_Operation  'operation'                               ]
+        [const        uint 16           'interfaceHint'     '0xFFFF'               ]
+        [const        uint 16           'activityHint'      '0xFFFF'               ]
+        [implicit     uint 16           'fragmentLength'    'payload.lengthInBytes']
+        [const        uint 16           'fragmentNum'       '0x0000'               ]
+        [const        uint 8            'authProto'         '0x00'                 ]
+        [const        uint 8            'serialLow2'        '0x00'                 ]// TODO: Check this ...
+        [simple       PnIoCm_Packet     'payload'           ['packetType']         ]
+    //]
 ]
 
 [type 'Uuid'
@@ -224,7 +221,7 @@
 ]
 
 // https://de.wikipedia.org/wiki/IEEE_802.1p
-[enum uint 3 'VirtualLanPriority'   [string '2' 'acronym']
+[enum uint 3 'VirtualLanPriority'   [string 16 'acronym']
     ['0x0' BEST_EFFORT              ['BE'                ]]
     ['0x1' BACKGROUND               ['BK'                ]]
     ['0x2' EXCELLENT_EFFORT         ['EE'                ]]
@@ -592,7 +589,7 @@
             [simple   uint 16                'cmInitiatorActivityTimeoutFactor'                       ]
             [simple   uint 16                'cmInitiatorUdpRtPort'                                   ]
             [implicit uint 16                'stationNameLength'    'STR_LEN(cmInitiatorStationName)' ]
-            [simple   string                 'stationNameLength * 8' 'cmInitiatorStationName'         ]
+            [simple   vstring                'stationNameLength * 8' 'cmInitiatorStationName'         ]
         ]
         ['AR_BLOCK_RES' PnIoCm_Block_ArRes
             [simple   PnIoCm_ArType          'arType'                                                 ]
@@ -816,4 +813,21 @@
 
 [enum uint 3 'PnIoCm_AddInfo'
     ['0x0' NONE]
+]
+
+[enum uint 4 'IntegerEncoding'
+    ['0x0' BIG_ENDIAN]
+    ['0x1' LITTLE_ENDIAN]
+]
+
+[enum uint 4 'CharacterEncoding'
+    ['0x0' ASCII]
+    ['0x0' EBCDIC]
+]
+
+[enum uint 8 'FloatingPointEncoding'
+    ['0x00' IEEE]
+    ['0x01' VAX ]
+    ['0x02' CRAY]
+    ['0x03' IBM ]
 ]

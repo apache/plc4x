@@ -29,7 +29,7 @@
 
   <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
 
-  <name>PLC4X: Build Utils: Protocol Base: MSpec</name>
+  <name>Code-Generation: Protocol Base: MSpec</name>
   <description>Base stuff for building protocols using our custom MSpec format.</description>
 
   <build>

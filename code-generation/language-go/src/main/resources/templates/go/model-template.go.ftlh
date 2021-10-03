@@ -834,11 +834,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
 
 	// Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-				<#if optionalField.conditionExpression.contains("curPos")>
+				<#if optionalField.conditionExpression.present && optionalField.conditionExpression.get().contains("curPos")>
 	curPos = readBuffer.GetPos() - startPos
 				</#if>
 	var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
-	if ${helper.toBooleanParseExpression(optionalField.conditionExpression, parserArguments)} {
+	<#if optionalField.conditionExpression.present>
+	if ${helper.toBooleanParseExpression(optionalField.conditionExpression.get(), parserArguments)} {
+    </#if>
 			<#if helper.isSimpleTypeReference(optionalField.type)>
 		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow())}
 		if _err != nil {
@@ -889,7 +891,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		}
 		${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
 			</#if>
+	<#if optionalField.conditionExpression.present>
 	}
+	</#if>
 			<#break>
 			<#case "assert">
 				<#assign assertField = field.asAssertField().orElseThrow()>
