@@ -66,7 +66,7 @@ public class FieldUtils {
             }
             case "optional": {
                 OptionalField optionalField = (OptionalField) field;
-                return optionalField.getConditionExpression().contains(label);
+                return optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().get().contains(label);
             }
             case "padding": {
                 PaddingField paddingField = (PaddingField) field;

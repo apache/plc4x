@@ -361,5 +361,5 @@
 [type 'VariableStringType'
     //Confirm implicit can be used in string length
     [implicit uint 32 'stringLength' 'stringValue.lengthInBytes']
-    [simple string 'stringLength' 'stringValue']
+    [simple vstring 'stringLength' 'stringValue']
 ]

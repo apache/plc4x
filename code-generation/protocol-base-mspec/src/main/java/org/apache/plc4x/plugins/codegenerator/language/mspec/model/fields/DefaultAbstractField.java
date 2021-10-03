@@ -19,7 +19,6 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.AbstractField;
-import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
@@ -33,8 +32,8 @@ public class DefaultAbstractField extends DefaultField implements AbstractField 
     private final String name;
     private final List<Term> params;
 
-    public DefaultAbstractField(List<String> tags, boolean isTry, TypeReference type, String name, List<Term> params) {
-        super(tags, isTry);
+    public DefaultAbstractField(List<String> tags, TypeReference type, String name, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.params = params;

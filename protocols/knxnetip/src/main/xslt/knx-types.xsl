@@ -29,25 +29,25 @@
     />
 
     <xsl:template match="/">
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements. See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership. The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License. You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied. See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
-[enum uint 16 'KnxDatapointMainType' [uint 16 'number', uint 8 'sizeInBits', string '-1' 'name']
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+[enum uint 16 'KnxDatapointMainType' [uint 16 'number', uint 8 'sizeInBits', string 8 'name']
     ['0' DPT_UNKNOWN ['0', '0', '"Unknown Datapoint Type"']]
     // Begin: Some typed needed to support all IEC types on KNX (Which the standard generally doesn't support)
     ['1' DPT_64_BIT_SET ['0', '64', '"Unknown Datapoint Type"']]
@@ -59,7 +59,7 @@
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType"/>
 ]
 
-[enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointMainType 'datapointMainType', string '-1' 'name']
+[enum uint 32 'KnxDatapointType' [uint 16 'number', KnxDatapointMainType 'datapointMainType', string 8 'name']
     ['0' DPT_UNKNOWN    ['0', 'DPT_UNKNOWN',               '"Unknown Datapoint Subtype"']]
     // Begin: Some typed needed to support all IEC types on KNX (Which the standard generally doesn't support)
     ['1' BOOL           ['0', 'DPT_1_BIT',                 '"BOOL"']]
@@ -92,23 +92,23 @@
         <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype"/>
 ]
 
-[enum uint 16 'KnxInterfaceObjectType' [string '-1' 'code', string '-1' 'name']
+[enum uint 16 'KnxInterfaceObjectType' [string 8 'code', string 8 'name']
     ['0' OT_UNKNOWN ['U', '"Unknown Interface Object Type"']]
     ['1' OT_GENERAL ['G', '"General Interface Object Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectTypes/knx:InterfaceObjectType"/>
 ]
 
-[enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string '-1' 'name']
+[enum uint 32 'KnxInterfaceObjectProperty' [uint 8 'propertyId', KnxInterfaceObjectType 'objectType', KnxPropertyDataType 'propertyDataType', string 8 'name']
     ['0' PID_UNKNOWN    ['0', 'OT_UNKNOWN', 'PDT_UNKNOWN', '"Unknown Interface Object Property"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:InterfaceObjectProperties/knx:InterfaceObjectProperty"/>
 ]
 
-[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string '-1' 'name']
+[enum uint 8 'KnxPropertyDataType' [uint 8 'number', uint 8 'sizeInBytes', string 8 'name']
     ['0' PDT_UNKNOWN    ['0', '0',  '"Unknown Property Data Type"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:PropertyDataTypes/knx:PropertyDataType"/>
 ]
 
-[enum uint 16 'KnxManufacturer' [uint 16 'number', string '-1' 'name']
+[enum uint 16 'KnxManufacturer' [uint 16 'number', string 8 'name']
     ['0' M_UNKNOWN ['0', '"Unknown Manufacturer"']]
     <xsl:apply-templates select="knx:KNX/knx:MasterData/knx:Manufacturers/knx:Manufacturer"/>
 ]
@@ -445,7 +445,7 @@
                         <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
-            [simple   string '<xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/>' '<xsl:value-of select="$encoding"/>' 'value']
+            [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> 'value' encoding='<xsl:value-of select="$encoding"/>']
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
                 <xsl:choose>
@@ -514,7 +514,7 @@
                         <xsl:when test="$field/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
-                string '<xsl:value-of select="$field/@Width"/>' '<xsl:value-of select="$encoding"/>'</xsl:when>
+                string <xsl:value-of select="$field/@Width"/></xsl:when>
             <xsl:when test="name($field) = 'UnsignedInteger'">uint <xsl:value-of select="$field/@Width"/></xsl:when>
             <xsl:when test="name($field) = 'SignedInteger'">int <xsl:value-of select="$field/@Width"/></xsl:when>
             <xsl:when test="name($field) = 'Float'">

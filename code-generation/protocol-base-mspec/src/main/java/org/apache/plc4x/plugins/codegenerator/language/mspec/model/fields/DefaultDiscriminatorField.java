@@ -32,8 +32,8 @@ public class DefaultDiscriminatorField extends DefaultField implements Discrimin
     private final TypeReference type;
     private final String name;
 
-    public DefaultDiscriminatorField(List<String> tags, boolean isTry, TypeReference type, String name) {
-        super(tags, isTry);
+    public DefaultDiscriminatorField(List<String> tags, TypeReference type, String name) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
     }

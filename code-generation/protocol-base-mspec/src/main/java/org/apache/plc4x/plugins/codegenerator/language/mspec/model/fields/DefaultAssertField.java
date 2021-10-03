@@ -33,8 +33,8 @@ public class DefaultAssertField extends DefaultField implements AssertField {
     private final Term conditionExpression;
     private final List<Term> params;
 
-    public DefaultAssertField(List<String> tags, boolean isTry, TypeReference type, String name, Term conditionExpression, List<Term> params) {
-        super(tags, isTry);
+    public DefaultAssertField(List<String> tags, TypeReference type, String name, Term conditionExpression, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.conditionExpression = Objects.requireNonNull(conditionExpression);

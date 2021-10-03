@@ -36,6 +36,7 @@ public class KnxNetIpProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
+        System.out.println("Parsing: knxnetip.mspec");
         InputStream schemaInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/knxnetip.mspec");
         if(schemaInputStream == null) {
@@ -44,6 +45,7 @@ public class KnxNetIpProtocol implements Protocol {
         Map<String, TypeDefinition> typeDefinitionMap =
             new LinkedHashMap<>(new MessageFormatParser().parse(schemaInputStream));
 
+        System.out.println("Parsing: knx-master-data.mspec");
         InputStream masterDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/knx-master-data.mspec");
         if(masterDataInputStream == null) {
@@ -51,6 +53,7 @@ public class KnxNetIpProtocol implements Protocol {
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(masterDataInputStream));
 
+        System.out.println("Parsing: device-info.mspec");
         InputStream deviceDataInputStream = KnxNetIpProtocol.class.getResourceAsStream(
             "/protocols/knxnetip/device-info.mspec");
         if(deviceDataInputStream == null) {

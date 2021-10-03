@@ -31,8 +31,8 @@ public class DefaultUnknownField extends DefaultField implements UnknownField {
 
     private final TypeReference type;
 
-    public DefaultUnknownField(List<String> tags, boolean isTry, TypeReference type) {
-        super(tags, isTry);
+    public DefaultUnknownField(List<String> tags, TypeReference type) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
     }
 

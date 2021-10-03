@@ -29,7 +29,7 @@
 
   <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
 
-  <name>PLC4X: Build Utils: Language Base: Freemarker</name>
+  <name>Code-Generation: Language Base: Freemarker</name>
   <description>Base code for building language outputs based on Freemarker</description>
 
   <dependencies>

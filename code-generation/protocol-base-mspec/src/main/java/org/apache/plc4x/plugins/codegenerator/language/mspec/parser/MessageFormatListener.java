@@ -34,9 +34,9 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
+import org.apache.plc4x.plugins.codegenerator.types.terms.DefaultNumericLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import javax.xml.crypto.OctetStreamData;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -140,7 +140,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String name = getIdString(ctx.name);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultAbstractField(null, fieldDefinitionContext.tryParse() != null, type, name, params);
+        Field field = new DefaultAbstractField(null, type, name, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -155,7 +155,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term loopExpression = getExpressionTerm(loopExpressionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultArrayField(null, fieldDefinitionContext.tryParse() != null, type, name, loopType, loopExpression, params);
+        Field field = new DefaultArrayField(null, type, name, loopType, loopExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -167,8 +167,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String name = getIdString(ctx.name);
         String checksumExpressionString = getExprString(ctx.checksumExpression);
         Term checksumExpression = getExpressionTerm(checksumExpressionString);
-        MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
-        Field field = new DefaultChecksumField(null, fieldDefinitionContext.tryParse() != null, type, name, checksumExpression);
+        Field field = new DefaultChecksumField(null, type, name, checksumExpression);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -179,8 +178,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         TypeReference type = ctx.type.dataType() != null ? getSimpleTypeReference(ctx.type.dataType()) : getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         String expected = getExprString(ctx.expected);
-        MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
-        Field field = new DefaultConstField(null, fieldDefinitionContext.tryParse() != null, type, name, expected);
+        Field field = new DefaultConstField(null, type, name, expected);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -190,8 +188,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterDiscriminatorField(MSpecParser.DiscriminatorFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
-        Field field = new DefaultDiscriminatorField(null, fieldDefinitionContext.tryParse() != null, type, name);
+        Field field = new DefaultDiscriminatorField(null, type, name);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -207,7 +204,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         }
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultEnumField(null, fieldDefinitionContext.tryParse() != null, type, name, fieldName, params);
+        Field field = new DefaultEnumField(null, type, name, fieldName, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -219,8 +216,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String name = getIdString(ctx.name);
         String serializeExpressionString = getExprString(ctx.serializeExpression);
         Term serializeExpression = getExpressionTerm(serializeExpressionString);
-        MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
-        Field field = new DefaultImplicitField(null, fieldDefinitionContext.tryParse() != null, type, name, serializeExpression);
+        Field field = new DefaultImplicitField(null, type, name, serializeExpression);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -234,7 +230,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term conditionExpression = getExpressionTerm(conditionExpressionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultAssertField(null, fieldDefinitionContext.tryParse() != null, type, name, conditionExpression, params);
+        Field field = new DefaultAssertField(null, type, name, conditionExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -256,7 +252,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term lengthExpression = getExpressionTerm(lengthExpressionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultManualArrayField(null, fieldDefinitionContext.tryParse() != null, type, name, loopType, loopExpression,
+        Field field = new DefaultManualArrayField(null, type, name, loopType, loopExpression,
             parseExpression, serializeExpression, lengthExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
@@ -275,7 +271,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term lengthExpression = getExpressionTerm(lengthExpressionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultManualField(null, fieldDefinitionContext.tryParse() != null, type, name, parseExpression, serializeExpression,
+        Field field = new DefaultManualField(null, type, name, parseExpression, serializeExpression,
             lengthExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
@@ -290,7 +286,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term conditionExpression = getExpressionTerm(conditionExpressionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultOptionalField(null, fieldDefinitionContext.tryParse() != null, type, name, conditionExpression, params);
+        Field field = new DefaultOptionalField(null, type, name, conditionExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -306,7 +302,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         Term paddingCondition = getExpressionTerm(paddingConditionString);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultPaddingField(null, fieldDefinitionContext.tryParse() != null, type, name, paddingValue, paddingCondition, params);
+        Field field = new DefaultPaddingField(null, type, name, paddingValue, paddingCondition, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -316,7 +312,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterReservedField(MSpecParser.ReservedFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String expected = getExprString(ctx.expected);
-        Field field = new DefaultReservedField(null, false, type, expected);
+        Field field = new DefaultReservedField(null, type, expected);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -328,7 +324,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String name = getIdString(ctx.name);
         MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
         List<Term> params = getFieldParams(fieldDefinitionContext);
-        Field field = new DefaultSimpleField(null, fieldDefinitionContext.tryParse() != null, type, name, params);
+        Field field = new DefaultSimpleField(null, type, name, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -349,7 +345,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void enterUnknownField(MSpecParser.UnknownFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
-        Field field = new DefaultUnknownField(null, false, type);
+        Field field = new DefaultUnknownField(null, type);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -361,7 +357,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         String name = getIdString(ctx.name);
         String valueExpressionString = getExprString(ctx.valueExpression);
         Term valueExpression = getExpressionTerm(valueExpressionString);
-        Field field = new DefaultVirtualField(null, false, type, name, valueExpression);
+        Field field = new DefaultVirtualField(null, type, name, valueExpression);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -478,12 +474,17 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional "encoding" field and length expression.
-        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) {
-            String encoding = (ctx.encoding != null) ? ctx.encoding.getText() : "UTF-8";
-            Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
-            return new DefaultStringTypeReference(simpleBaseType, lengthExpression, encoding);
+        if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
+                (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
+            if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
+                Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
+                return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");
+            } else {
+                int size = Integer.parseInt(ctx.size.getText());
+                return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size), "UTF-8");
+            }
         }
-        // If a size it specified its a simple integer length based type.
+        // If a size it specified it's a simple integer length based type.
         if (ctx.size != null) {
             int size = Integer.parseInt(ctx.size.getText());
             return new DefaultIntegerTypeReference(simpleBaseType, size);

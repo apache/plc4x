@@ -32,8 +32,8 @@ public class DefaultReservedField extends DefaultField implements ReservedField 
     private final TypeReference type;
     private final Object referenceValue;
 
-    public DefaultReservedField(List<String> tags, boolean isTry, TypeReference type, Object referenceValue) {
-        super(tags, isTry);
+    public DefaultReservedField(List<String> tags, TypeReference type, Object referenceValue) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.referenceValue = Objects.requireNonNull(referenceValue);
     }

@@ -253,28 +253,28 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* rea
     } else         if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
 
                 // Manual Field (value)
-                char* value = (char*) (plc4c_s7_read_write_parse_s7_char(readBuffer, "UTF-8"));
+                char* value = (char*) (plc4c_s7_read_write_parse_s7_char(readBuffer, "TF-"));
 
                 *data_item = plc4c_data_create_char_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
 
                 // Manual Field (value)
-                char* value = (char*) (plc4c_s7_read_write_parse_s7_char(readBuffer, "UTF-16"));
+                char* value = (char*) (plc4c_s7_read_write_parse_s7_char(readBuffer, "TF-"));
 
                 *data_item = plc4c_data_create_char_data(value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
 
                 // Manual Field (value)
-                char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "UTF-8"));
+                char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "TF-"));
 
                 *data_item = plc4c_data_create_string_data(stringLength, value);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
 
                 // Manual Field (value)
-                char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "UTF-16"));
+                char* value = (char*) (plc4c_s7_read_write_parse_s7_string(readBuffer, stringLength, "TF-"));
 
                 *data_item = plc4c_data_create_string_data(stringLength, value);
 

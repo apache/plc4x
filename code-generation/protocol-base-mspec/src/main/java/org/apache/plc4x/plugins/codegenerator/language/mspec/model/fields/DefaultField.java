@@ -18,20 +18,12 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import org.apache.plc4x.plugins.codegenerator.types.fields.TryField;
-
 import java.util.List;
 
-public abstract class DefaultField extends DefaultTaggedField implements TryField {
+public abstract class DefaultField extends DefaultTaggedField {
 
-    private final boolean isTry;
-
-    protected DefaultField(List<String> tags, boolean isTry) {
+    protected DefaultField(List<String> tags) {
         super(tags);
-        this.isTry = isTry;
     }
 
-    public boolean isTry() {
-        return isTry;
-    }
 }

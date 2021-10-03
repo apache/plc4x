@@ -469,7 +469,7 @@
         ['0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscription
             [simple   uint 8         'Subscription']
             [reserved uint 8         '0x00']
-            [simple   string         '64'           'UTF-8' 'magicKey']
+            [simple   string         64             'magicKey'            encoding='UTF-8']
             [optional AlarmStateType 'Alarmtype'    'Subscription >= 128']
             [optional uint 8         'Reserve'      'Subscription >= 128']
         ]
@@ -521,7 +521,7 @@
     ]
 ]
 
-[dataIo 'DataItem' [string '-1' 'dataProtocolId', int 32 'stringLength']
+[dataIo 'DataItem' [string 8 'dataProtocolId', int 32 'stringLength']
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
         // Bit
@@ -597,16 +597,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' CHAR
-            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
+            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1' encoding='UTF-8']
         ]
         ['IEC61131_WCHAR' CHAR
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2']
+            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='UTF-16']
         ]
         ['IEC61131_STRING' STRING
-            [manual string '-1' 'UTF-8' 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value.string) + 2']
+            // TODO: Fix this length
+            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value.string) + 2' encoding='UTF-8']
         ]
         ['IEC61131_WSTRING' STRING
-            [manual string '-1' 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value.string) * 2) + 2']
+            // TODO: Fix this length
+            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value.string) * 2) + 2' encoding='UTF-16']
         ]
 
         // -----------------------------------------
@@ -679,7 +681,7 @@
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 'TransportSize'  [uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', string '-1' 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
+[enum int 8 'TransportSize'  [uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', string 8 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
     // Bit Strings
     ['0x01' BOOL             ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' BYTE             ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
@@ -720,7 +722,7 @@
     ['0x1B' DT               ['0x0F'       , 'X'               , '12'                , 'null'                  , 'null'             , 'IEC61131_DATE_AND_TIME', 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
-[enum uint 8 'MemoryArea'             [string '24' 'shortName']
+[enum uint 8 'MemoryArea'             [string 24 'shortName']
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]

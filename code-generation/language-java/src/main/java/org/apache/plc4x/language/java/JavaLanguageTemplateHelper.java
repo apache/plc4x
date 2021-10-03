@@ -150,6 +150,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     }
                     return BigDecimal.class.getSimpleName();
                 case STRING:
+                case VSTRING:
                     return String.class.getSimpleName();
                 case TIME:
                     return LocalTime.class.getSimpleName();
@@ -214,6 +215,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                         return "PlcLREAL";
                     }
                 case STRING:
+                case VSTRING:
                     return "PlcSTRING";
                 case TIME:
                 case DATE:
@@ -265,6 +267,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     }
                     return "null";
                 case STRING:
+                case VSTRING:
                     return "null";
             }
             throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
@@ -302,6 +305,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 return floatTypeReference.getSizeInBits();
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return stringTypeReference.getSizeInBits();
             default:
@@ -363,6 +367,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     floatTypeReference.getMantissa() + ");" +
                     "\n        })).get()";
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return "readBuffer.readString(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
@@ -427,6 +432,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     throw new RuntimeException("Unsupported float type");
                 }
             case STRING:
+            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return "writeBuffer.writeString(\"" + logicalName + "\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList())) + ", \"" +
                     stringTypeReference.getEncoding() + "\", (String) " + fieldName + "" + writerArgsString + ")";
@@ -976,6 +982,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     }
                     break;
                 case STRING:
+                case VSTRING:
                     return "\"" + valueString + "\"";
             }
         }

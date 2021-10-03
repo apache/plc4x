@@ -27,14 +27,18 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
- | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
- | 'enum' (type=typeReference)? name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
- | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
+ : 'type' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? (fieldDefinition|batchSetDefinition)*
+ | 'discriminatedType' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? (fieldDefinition|batchSetDefinition)+
+ | 'enum' (type=typeReference)? name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
- : LBRACKET tryParse? field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : LBRACKET field (attributes=attributeList) (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ ;
+
+batchSetDefinition
+ : LBRACKET 'batchSet' attributes=attributeList fieldDefinition+ RBRACKET
  ;
 
 dataIoDefinition
@@ -102,7 +106,7 @@ manualField
  ;
 
 optionalField
- : 'optional' type=typeReference name=idExpression condition=expression
+ : 'optional' type=typeReference name=idExpression (condition=expression)?
  ;
 
 paddingField
@@ -149,14 +153,19 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='string' length=expression (encoding=idExpression)?
+ | base='string' size=INTEGER_LITERAL
+ | base='vstring' (length=expression)?
  | base='time'
  | base='date'
  | base='dateTime'
  ;
 
-tryParse
- : 'try'
+attribute
+ : name=IDENTIFIER_LITERAL '=' value=expression
+ ;
+
+attributeList
+ : attribute*
  ;
 
 argument

@@ -36,7 +36,6 @@ public class PassiveBacNetIpDriver2Manual {
         if (!pcapFile.exists())
             FileUtils.copyURLToFile(new URL("https://wiki.wireshark.org/Protocols/bacnet?action=AttachFile&do=get&target=bacnet-stack-services.cap"), pcapFile);
 
-
         final BacNetIpDriver driver = new BacNetIpDriver();
         final PlcConnection connection = driver.getConnection(
             "bacnet-ip:pcap://" + pcapFile.getAbsolutePath());

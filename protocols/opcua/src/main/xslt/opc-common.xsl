@@ -96,13 +96,18 @@
     </xsl:template>
 
     <xsl:template match="opc:EnumeratedType">
-        <xsl:message>[INFO] Parsing Enumerated Datatype - <xsl:value-of select="@Name"/></xsl:message><xsl:text>
+        <xsl:message>[INFO] Parsing Enumerated Datatype - <xsl:value-of select="@Name"/></xsl:message>
+        <xsl:choose>
+            <xsl:when test="opc:EnumeratedValue"><xsl:text>
+
 </xsl:text>[enum uint <xsl:value-of select="@LengthInBits"/> '<xsl:value-of select="@Name"/>'<xsl:text>
 </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:EnumeratedValue"/>
 ]
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="opc:Documentation">// <xsl:value-of select="."/></xsl:template>
@@ -316,7 +321,7 @@
             <xsl:when test="$datatype = 'opc:UInt64'">uint 64</xsl:when>
             <xsl:when test="$datatype = 'opc:Float'">float 8.23</xsl:when>
             <xsl:when test="$datatype = 'opc:Double'">float 11.52</xsl:when>
-            <xsl:when test="$datatype = 'opc:Char'">string '1'</xsl:when>
+            <xsl:when test="$datatype = 'opc:Char'">string 8</xsl:when>
             <xsl:when test="$datatype = 'opc:CharArray'">PascalString</xsl:when>
             <xsl:when test="$datatype = 'opc:Guid'">GuidValue</xsl:when>
             <xsl:when test="$datatype = 'opc:ByteString'">PascalByteString</xsl:when>

@@ -419,7 +419,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
                     
     // Simple Field (magicKey)
     char* magicKey = "";
-    _res = plc4c_spi_read_string(readBuffer, 64, "'UTF-8'", (char**) &magicKey);
+    _res = plc4c_spi_read_string(readBuffer, 64, "UTF-8", (char**) &magicKey);
     if(_res != OK) {
       return _res;
     }
@@ -1010,7 +1010,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
       }
 
       // Simple Field (magicKey)
-      _res = plc4c_spi_write_string(writeBuffer, 64, "'UTF-8'", _message->s7_payload_user_data_item_cpu_function_msg_subscription_magic_key);
+      _res = plc4c_spi_write_string(writeBuffer, 64, "UTF-8", _message->s7_payload_user_data_item_cpu_function_msg_subscription_magic_key);
       if(_res != OK) {
         return _res;
       }

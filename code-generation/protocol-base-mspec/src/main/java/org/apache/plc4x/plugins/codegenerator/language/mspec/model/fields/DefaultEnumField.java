@@ -33,8 +33,8 @@ public class DefaultEnumField extends DefaultField implements EnumField {
     private final String fieldName;
     private final List<Term> params;
 
-    public DefaultEnumField(List<String> tags, boolean isTry, TypeReference type, String name, String fieldName, List<Term> params) {
-        super(tags, isTry);
+    public DefaultEnumField(List<String> tags, TypeReference type, String name, String fieldName, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.fieldName = fieldName;

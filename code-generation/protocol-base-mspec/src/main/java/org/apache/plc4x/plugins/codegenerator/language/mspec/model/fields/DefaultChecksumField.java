@@ -33,8 +33,8 @@ public class DefaultChecksumField extends DefaultField implements ChecksumField 
     private final String name;
     private final Term checksumExpression;
 
-    public DefaultChecksumField(List<String> tags, boolean isTry, TypeReference type, String name, Term checksumExpression) {
-        super(tags, isTry);
+    public DefaultChecksumField(List<String> tags, TypeReference type, String name, Term checksumExpression) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.checksumExpression = Objects.requireNonNull(checksumExpression);

@@ -33,11 +33,11 @@ public class DefaultOptionalField extends DefaultField implements OptionalField 
     private final Term conditionExpression;
     private final List<Term> params;
 
-    public DefaultOptionalField(List<String> tags, boolean isTry, TypeReference type, String name, Term conditionExpression, List<Term> params) {
-        super(tags, isTry);
+    public DefaultOptionalField(List<String> tags, TypeReference type, String name, Term conditionExpression, List<Term> params) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
-        this.conditionExpression = Objects.requireNonNull(conditionExpression);
+        this.conditionExpression = conditionExpression;
         this.params = params;
     }
 
@@ -49,8 +49,8 @@ public class DefaultOptionalField extends DefaultField implements OptionalField 
         return name;
     }
 
-    public Term getConditionExpression() {
-        return conditionExpression;
+    public Optional<Term> getConditionExpression() {
+        return Optional.ofNullable(conditionExpression);
     }
 
     public Optional<List<Term>> getParams() {

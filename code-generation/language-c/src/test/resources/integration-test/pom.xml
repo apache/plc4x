@@ -362,16 +362,12 @@
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-language-c</artifactId>
     <version>@project.version@</version>
-    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-    <scope>provided</scope>
   </dependency>
 
   <dependency>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation-protocol-test</artifactId>
     <version>@project.version@</version>
-    <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-    <scope>provided</scope>
   </dependency>
 
   <dependency>

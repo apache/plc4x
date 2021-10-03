@@ -302,13 +302,13 @@
         ['0x06' BACnetUnconfirmedServiceRequestTimeSynchronization
         ]
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
-            [try simple     BACnetComplexTagUnsignedInteger ['0', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeLowLimit'  ]
-            [optional       BACnetComplexTagUnsignedInteger ['1', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeHighLimit' 'deviceInstanceRangeLowLimit != null']
-            [try simple     BACnetComplexTagOctetString     ['2', 'BACnetDataType.OCTET_STRING'     ] 'objectIdentifier' ]
-            [optional       BACnetComplexTagOctetString     ['3', 'BACnetDataType.OCTET_STRING'     ] 'objectName' 'objectIdentifier == null' ]
+            [optional BACnetComplexTagUnsignedInteger 'deviceInstanceRangeLowLimit'                                        ['0', 'BACnetDataType.UNSIGNED_INTEGER' ]]
+            [optional BACnetComplexTagUnsignedInteger 'deviceInstanceRangeHighLimit' 'deviceInstanceRangeLowLimit != null' ['1', 'BACnetDataType.UNSIGNED_INTEGER' ]]
+            [optional BACnetComplexTagOctetString     'objectIdentifier'                                                   ['2', 'BACnetDataType.OCTET_STRING'     ]]
+            [optional BACnetComplexTagOctetString     'objectName'                   'objectIdentifier == null'            ['3', 'BACnetDataType.OCTET_STRING'     ]]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
-            // TODO: here we need proper bacnet tags (like a dicriminator etc... see line 494 BACnetTag)
+            // TODO: here we need proper bacnet tags (like a discriminator etc... see line 494 BACnetTag)
             [const uint 5 'deviceInstanceRangeLowLimitHeader' '0x01']
             [simple uint 3 'deviceInstanceRangeLowLimitLength']
             [array int 8 'deviceInstanceRangeLowLimit' count 'deviceInstanceRangeLowLimitLength']
@@ -355,8 +355,8 @@
         ]
         ['OCTET_STRING' BACnetComplexTagOctetString [uint 32 'actualLength']
             // TODO: The reader expects int but uint32 get's mapped to long so even uint32 would easily overflow...
-            [virtual    uint    16                           'actualLengthInBit' 'actualLength * 8']
-            [simple     string 'actualLengthInBit' 'ASCII'   'theString']
+            [virtual    uint     16                           'actualLengthInBit' 'actualLength * 8']
+            [simple     vstring 'actualLengthInBit' 'ASCII'   'theString']
         ]
         ['CHARACTER_STRING' BACnetComplexTagCharacterString
         ]

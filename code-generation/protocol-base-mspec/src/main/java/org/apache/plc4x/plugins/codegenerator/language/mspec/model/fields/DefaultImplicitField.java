@@ -33,8 +33,8 @@ public class DefaultImplicitField extends DefaultField implements ImplicitField 
     private final String name;
     private final Term serializeExpression;
 
-    public DefaultImplicitField(List<String> tags, boolean isTry, TypeReference type, String name, Term serializeExpression) {
-        super(tags, isTry);
+    public DefaultImplicitField(List<String> tags, TypeReference type, String name, Term serializeExpression) {
+        super(tags);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
