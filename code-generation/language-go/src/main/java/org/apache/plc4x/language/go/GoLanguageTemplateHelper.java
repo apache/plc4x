@@ -1111,7 +1111,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     }
                 } else if (curField instanceof OptionalField) {
                     OptionalField optionalField = (OptionalField) curField;
-                    if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().get().contains(name)) {
+                    if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().orElseThrow(IllegalStateException::new).contains(name)) {
                         return name;
                     }
                 } else if (curField instanceof SwitchField) {
@@ -1213,7 +1213,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         } else if (curField instanceof OptionalField) {
             OptionalField optionalField = (OptionalField) curField;
-            if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().get().contains(variable)) {
+            if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().orElseThrow(IllegalStateException::new).contains(variable)) {
                 return true;
             }
         }
