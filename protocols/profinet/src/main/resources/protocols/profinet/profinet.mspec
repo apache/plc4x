@@ -589,7 +589,7 @@
             [simple   uint 16                         'cmInitiatorActivityTimeoutFactor'                       ]
             [simple   uint 16                         'cmInitiatorUdpRtPort'                                   ]
             [implicit uint 16                         'stationNameLength'     'STR_LEN(cmInitiatorStationName)']
-            [simple   vstring 'stationNameLength * 8' 'cmInitiatorStationName'                                 ]
+            [simple   vstring                'stationNameLength * 8' 'cmInitiatorStationName'         ]
         ]
         ['AR_BLOCK_RES' PnIoCm_Block_ArRes
             [simple   PnIoCm_ArType          'arType'                                                 ]
