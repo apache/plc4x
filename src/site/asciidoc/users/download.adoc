@@ -60,7 +60,7 @@ PLC4X-314   CAN NOT WRITING MANY DATA TO S7 ONE TIME
 === Previous Releases
 
 [#release-0_8_0]
-==== 0.8.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.asc[ASC] ]
+==== 0.8.0 Official https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.8.0/apache-plc4x-0.8.0-source-release.zip.asc[ASC] ]
 
 This is an ordinary PLC4X release, containing changes that
 accumulated over time. It doesn't have an explicit focus on
