@@ -386,7 +386,7 @@
     [array int 8 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' [string 8 'dataFormatName', int 32 'stringLength']
+[dataIo 'DataItem' [vstring 'dataFormatName', int 32 'stringLength']
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -458,18 +458,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['IEC61131_CHAR' STRING
-//            [simple string 8 'value']
+            [simple string 8 'value']
         ]
         ['IEC61131_WCHAR' STRING
-//            [simple string 16 'value' encoding='"UTF-16"']
+            [simple string 16 'value' encoding='"UTF-16"']
         ]
         ['IEC61131_STRING' STRING
             // TODO: Fix this length
-            [manual   string 8 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [manual   vstring 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['IEC61131_WSTRING' STRING
             // TODO: Fix this length
-            [manual string 8 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
+            [manual vstring 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
@@ -498,7 +498,7 @@
     ]
 ]
 
-[enum int 8 'AdsDataType' [uint 16 'numBytes', string 8 'dataFormatName']
+[enum int 8 'AdsDataType' [uint 16 'numBytes', vstring 'dataFormatName']
     ['0x01' BOOL       ['1', 'IEC61131_BOOL']]
     ['0x02' BIT        ['1', 'IEC61131_BOOL']]
     ['0x03' BIT8       ['1', 'IEC61131_BOOL']]

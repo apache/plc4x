@@ -521,7 +521,7 @@
     ]
 ]
 
-[dataIo 'DataItem' [string 8 'dataProtocolId', int 32 'stringLength']
+[dataIo 'DataItem' [vstring 'dataProtocolId', int 32 'stringLength']
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
         // Bit
@@ -604,11 +604,11 @@
         ]
         ['IEC61131_STRING' STRING
             // TODO: Fix this length
-            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
+            [manual vstring 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
         ]
         ['IEC61131_WSTRING' STRING
             // TODO: Fix this length
-            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
+            [manual vstring 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
@@ -681,7 +681,7 @@
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 'TransportSize'  [uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', string 8 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
+[enum int 8 'TransportSize'  [uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
     // Bit Strings
     ['0x01' BOOL             ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' BYTE             ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]

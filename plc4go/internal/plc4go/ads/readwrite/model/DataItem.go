@@ -164,7 +164,23 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataFormatName == "IEC61131_CHAR": // STRING
+
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32((8)))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcSTRING(value), nil
 	case dataFormatName == "IEC61131_WCHAR": // STRING
+
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadString("value", uint32((16)))
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcSTRING(value), nil
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
@@ -327,7 +343,17 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFo
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_CHAR": // STRING
+
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint8((8)), "TF-", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
 	case dataFormatName == "IEC61131_WCHAR": // STRING
+
+		// Simple Field (value)
+		if _err := writeBuffer.WriteString("value", uint8((16)), "TF-", value.GetString()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)

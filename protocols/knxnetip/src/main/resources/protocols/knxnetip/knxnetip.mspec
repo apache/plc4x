@@ -683,7 +683,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [string 8 'description',                                         bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' [vstring 'description',                                         bit 'knxSupport']
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -775,7 +775,7 @@
     ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
 ]
 
-[enum uint 4 'AccessLevel' [string 8 'purpose',        bit 'needsAuthentication']
+[enum uint 4 'AccessLevel' [vstring 'purpose',        bit 'needsAuthentication']
     ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
     ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
     ['0x2' Level2          ['"configuration"',        'true'                   ]]

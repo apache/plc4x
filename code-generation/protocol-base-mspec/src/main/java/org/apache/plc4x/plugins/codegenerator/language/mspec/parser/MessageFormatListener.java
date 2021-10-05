@@ -480,8 +480,12 @@ public class MessageFormatListener extends MSpecBaseListener {
         if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
             if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
-                Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
-                return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");
+                if(ctx.length != null) {
+                    Term lengthExpression = getExpressionTerm(ctx.length.getText().substring(1, ctx.length.getText().length() - 1));
+                    return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");
+                } else {
+                    return new DefaultStringTypeReference(simpleBaseType, null, "UTF-8");
+                }
             } else {
                 int size = Integer.parseInt(ctx.size.getText());
                 return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size), "UTF-8");
