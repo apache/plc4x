@@ -26,6 +26,7 @@ import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 
@@ -45,7 +46,7 @@ public abstract class CANOpenConversationBase {
     }
 
     protected PlcValue decodeFrom(byte[] data, CANOpenDataType type, int length) throws ParseException {
-        return DataItemIO.staticParse(new ReadBufferByteBased(data, true), type, length);
+        return DataItemIO.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), type, length);
     }
 
     protected <T> void onError(CompletableFuture<T> receiver, CANOpenSDOResponse response, Throwable error) {

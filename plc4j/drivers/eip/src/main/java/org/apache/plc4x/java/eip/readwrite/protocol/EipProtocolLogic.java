@@ -280,7 +280,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             MultipleServiceResponse responses = (MultipleServiceResponse) p;
             int nb = responses.getServiceNb();
             CipService[] arr = new CipService[nb];
-            ReadBufferByteBased read = new ReadBufferByteBased(responses.getServicesData(), true);
+            ReadBufferByteBased read = new ReadBufferByteBased(responses.getServicesData(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
             int total = (int) read.getTotalBytes();
             for (int i = 0; i < nb; i++) {
                 int length = 0;
@@ -290,7 +290,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 } else {
                     length = responses.getOffsets()[i + 1] - offset - responses.getOffsets()[0]; //Calculate length with offsets (substracting first offset)
                 }
-                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, offset + length), true);
+                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, offset + length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
                     service = CipServiceIO.staticParse(read, length);
@@ -501,7 +501,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 } else {
                     length = resp.getOffsets()[i + 1] - offset; //Calculate length with offsets
                 }
-                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, length), true);
+                ReadBuffer serviceBuf = new ReadBufferByteBased(read.getBytes(offset, length), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
                 CipService service = null;
                 try {
                     service = CipServiceIO.staticParse(read, length);

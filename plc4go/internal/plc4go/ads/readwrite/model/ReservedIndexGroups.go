@@ -32,44 +32,44 @@ type IReservedIndexGroups interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-const(
-	ReservedIndexGroups_ADSIGRP_SYMTAB ReservedIndexGroups = 0x0000F000
-	ReservedIndexGroups_ADSIGRP_SYMNAME ReservedIndexGroups = 0x0000F001
-	ReservedIndexGroups_ADSIGRP_SYMVAL ReservedIndexGroups = 0x0000F002
-	ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME ReservedIndexGroups = 0x0000F003
-	ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME ReservedIndexGroups = 0x0000F004
-	ReservedIndexGroups_ADSIGRP_SYM_VALBYHND ReservedIndexGroups = 0x0000F005
-	ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND ReservedIndexGroups = 0x0000F006
-	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME ReservedIndexGroups = 0x0000F007
-	ReservedIndexGroups_ADSIGRP_SYM_VERSION ReservedIndexGroups = 0x0000F008
-	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX ReservedIndexGroups = 0x0000F009
-	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD ReservedIndexGroups = 0x0000F00A
-	ReservedIndexGroups_ADSIGRP_SYM_UPLOAD ReservedIndexGroups = 0x0000F00B
-	ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO ReservedIndexGroups = 0x0000F00C
-	ReservedIndexGroups_ADSIGRP_SYMNOTE ReservedIndexGroups = 0x0000F010
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB ReservedIndexGroups = 0x0000F020
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX ReservedIndexGroups = 0x0000F021
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE ReservedIndexGroups = 0x0000F025
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB ReservedIndexGroups = 0x0000F030
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX ReservedIndexGroups = 0x0000F031
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE ReservedIndexGroups = 0x0000F035
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI ReservedIndexGroups = 0x0000F040
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO ReservedIndexGroups = 0x0000F050
-	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB ReservedIndexGroups = 0x0000F060
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ ReservedIndexGroups = 0x0000F080
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE ReservedIndexGroups = 0x0000F081
-	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE ReservedIndexGroups = 0x0000F082
+const (
+	ReservedIndexGroups_ADSIGRP_SYMTAB                  ReservedIndexGroups = 0x0000F000
+	ReservedIndexGroups_ADSIGRP_SYMNAME                 ReservedIndexGroups = 0x0000F001
+	ReservedIndexGroups_ADSIGRP_SYMVAL                  ReservedIndexGroups = 0x0000F002
+	ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME           ReservedIndexGroups = 0x0000F003
+	ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME           ReservedIndexGroups = 0x0000F004
+	ReservedIndexGroups_ADSIGRP_SYM_VALBYHND            ReservedIndexGroups = 0x0000F005
+	ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND          ReservedIndexGroups = 0x0000F006
+	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME          ReservedIndexGroups = 0x0000F007
+	ReservedIndexGroups_ADSIGRP_SYM_VERSION             ReservedIndexGroups = 0x0000F008
+	ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX        ReservedIndexGroups = 0x0000F009
+	ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD            ReservedIndexGroups = 0x0000F00A
+	ReservedIndexGroups_ADSIGRP_SYM_UPLOAD              ReservedIndexGroups = 0x0000F00B
+	ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO          ReservedIndexGroups = 0x0000F00C
+	ReservedIndexGroups_ADSIGRP_SYMNOTE                 ReservedIndexGroups = 0x0000F010
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB            ReservedIndexGroups = 0x0000F020
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX            ReservedIndexGroups = 0x0000F021
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE          ReservedIndexGroups = 0x0000F025
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB            ReservedIndexGroups = 0x0000F030
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX            ReservedIndexGroups = 0x0000F031
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE         ReservedIndexGroups = 0x0000F035
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI          ReservedIndexGroups = 0x0000F040
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO          ReservedIndexGroups = 0x0000F050
+	ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB           ReservedIndexGroups = 0x0000F060
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ           ReservedIndexGroups = 0x0000F080
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE          ReservedIndexGroups = 0x0000F081
+	ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE     ReservedIndexGroups = 0x0000F082
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE ReservedIndexGroups = 0x0000F083
-	ReservedIndexGroups_ADSIGRP_DEVICE_DATA ReservedIndexGroups = 0x0000F100
-	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE ReservedIndexGroups = 0x00000000
-	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE ReservedIndexGroups = 0x00000002
+	ReservedIndexGroups_ADSIGRP_DEVICE_DATA             ReservedIndexGroups = 0x0000F100
+	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE       ReservedIndexGroups = 0x00000000
+	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE       ReservedIndexGroups = 0x00000002
 )
 
 var ReservedIndexGroupsValues []ReservedIndexGroups
 
 func init() {
 	_ = errors.New
-	ReservedIndexGroupsValues = []ReservedIndexGroups {
+	ReservedIndexGroupsValues = []ReservedIndexGroups{
 		ReservedIndexGroups_ADSIGRP_SYMTAB,
 		ReservedIndexGroups_ADSIGRP_SYMNAME,
 		ReservedIndexGroups_ADSIGRP_SYMVAL,
@@ -105,66 +105,66 @@ func init() {
 
 func ReservedIndexGroupsByValue(value uint32) ReservedIndexGroups {
 	switch value {
-		case 0x00000000:
-			return ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE
-		case 0x00000002:
-			return ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE
-		case 0x0000F000:
-			return ReservedIndexGroups_ADSIGRP_SYMTAB
-		case 0x0000F001:
-			return ReservedIndexGroups_ADSIGRP_SYMNAME
-		case 0x0000F002:
-			return ReservedIndexGroups_ADSIGRP_SYMVAL
-		case 0x0000F003:
-			return ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME
-		case 0x0000F004:
-			return ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME
-		case 0x0000F005:
-			return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND
-		case 0x0000F006:
-			return ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND
-		case 0x0000F007:
-			return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME
-		case 0x0000F008:
-			return ReservedIndexGroups_ADSIGRP_SYM_VERSION
-		case 0x0000F009:
-			return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX
-		case 0x0000F00A:
-			return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD
-		case 0x0000F00B:
-			return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD
-		case 0x0000F00C:
-			return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO
-		case 0x0000F010:
-			return ReservedIndexGroups_ADSIGRP_SYMNOTE
-		case 0x0000F020:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB
-		case 0x0000F021:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX
-		case 0x0000F025:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE
-		case 0x0000F030:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB
-		case 0x0000F031:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX
-		case 0x0000F035:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE
-		case 0x0000F040:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI
-		case 0x0000F050:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO
-		case 0x0000F060:
-			return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB
-		case 0x0000F080:
-			return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ
-		case 0x0000F081:
-			return ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE
-		case 0x0000F082:
-			return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE
-		case 0x0000F083:
-			return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE
-		case 0x0000F100:
-			return ReservedIndexGroups_ADSIGRP_DEVICE_DATA
+	case 0x00000000:
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE
+	case 0x00000002:
+		return ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE
+	case 0x0000F000:
+		return ReservedIndexGroups_ADSIGRP_SYMTAB
+	case 0x0000F001:
+		return ReservedIndexGroups_ADSIGRP_SYMNAME
+	case 0x0000F002:
+		return ReservedIndexGroups_ADSIGRP_SYMVAL
+	case 0x0000F003:
+		return ReservedIndexGroups_ADSIGRP_SYM_HNDBYNAME
+	case 0x0000F004:
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYNAME
+	case 0x0000F005:
+		return ReservedIndexGroups_ADSIGRP_SYM_VALBYHND
+	case 0x0000F006:
+		return ReservedIndexGroups_ADSIGRP_SYM_RELEASEHND
+	case 0x0000F007:
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAME
+	case 0x0000F008:
+		return ReservedIndexGroups_ADSIGRP_SYM_VERSION
+	case 0x0000F009:
+		return ReservedIndexGroups_ADSIGRP_SYM_INFOBYNAMEEX
+	case 0x0000F00A:
+		return ReservedIndexGroups_ADSIGRP_SYM_DOWNLOAD
+	case 0x0000F00B:
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOAD
+	case 0x0000F00C:
+		return ReservedIndexGroups_ADSIGRP_SYM_UPLOADINFO
+	case 0x0000F010:
+		return ReservedIndexGroups_ADSIGRP_SYMNOTE
+	case 0x0000F020:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIB
+	case 0x0000F021:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIX
+	case 0x0000F025:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RISIZE
+	case 0x0000F030:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOB
+	case 0x0000F031:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOX
+	case 0x0000F035:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWOSIZE
+	case 0x0000F040:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARI
+	case 0x0000F050:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_CLEARO
+	case 0x0000F060:
+		return ReservedIndexGroups_ADSIGRP_IOIMAGE_RWIOB
+	case 0x0000F080:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ
+	case 0x0000F081:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_WRITE
+	case 0x0000F082:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_READ_WRITE
+	case 0x0000F083:
+		return ReservedIndexGroups_ADSIGRP_MULTIPLE_RELEASE_HANDLE
+	case 0x0000F100:
+		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA
 	}
 	return 0
 }
@@ -334,4 +334,3 @@ func (e ReservedIndexGroups) name() string {
 func (e ReservedIndexGroups) String() string {
 	return e.name()
 }
-

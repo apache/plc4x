@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
-                       bigEndian="false">
+                       byteOrder="LITTLE_ENDIAN">
 
   <name>CANOpen SDO Segmentation</name>
 

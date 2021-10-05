@@ -28,10 +28,7 @@ import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
 import org.apache.plc4x.java.socketcan.readwrite.io.SocketCANFrameIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
@@ -102,7 +99,7 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
                     @Override
                     public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
                         try {
-                            return serializer.parse(new ReadBufferByteBased(frame.getData(), true), args);
+                            return serializer.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
                         } catch (ParseException e) {
                             throw new PlcRuntimeException(e);
                         }

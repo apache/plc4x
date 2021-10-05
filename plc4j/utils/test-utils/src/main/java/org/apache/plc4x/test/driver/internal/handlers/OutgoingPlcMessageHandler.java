@@ -19,6 +19,7 @@
 package org.apache.plc4x.test.driver.internal.handlers;
 
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.test.driver.internal.DriverTestsuiteConfiguration;
 import org.apache.plc4x.test.driver.internal.utils.ChannelUtil;
 import org.apache.plc4x.test.driver.internal.utils.Delay;
@@ -41,12 +42,12 @@ public class OutgoingPlcMessageHandler {
         this.parserArguments = parserArguments;
     }
 
-    public void executeOutgoingPlcMessage(Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) {
+    public void executeOutgoingPlcMessage(Plc4xEmbeddedChannel embeddedChannel, ByteOrder byteOrder) {
         // As we're in the asynchronous world, give the driver some time to respond.
         Delay.shortDelay();
         // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
         final byte[] data = ChannelUtil.getOutboundBytes(embeddedChannel);
         // Validate the data actually matches the expected message.
-        MessageValidatorAndMigrator.validateOutboundMessageAndMigrate("TODO: insert testcase name here", driverTestsuiteConfiguration.getOptions(), payload, parserArguments, data, bigEndian, driverTestsuiteConfiguration.isAutoMigrate(), driverTestsuiteConfiguration.getSuiteUri());
+        MessageValidatorAndMigrator.validateOutboundMessageAndMigrate("TODO: insert testcase name here", driverTestsuiteConfiguration.getOptions(), payload, parserArguments, data, byteOrder, driverTestsuiteConfiguration.isAutoMigrate(), driverTestsuiteConfiguration.getSuiteUri());
     }
 }

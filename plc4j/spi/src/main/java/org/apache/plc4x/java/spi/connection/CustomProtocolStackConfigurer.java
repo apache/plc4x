@@ -29,6 +29,7 @@ import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.context.DriverContext;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 
@@ -43,7 +44,7 @@ import java.util.function.ToIntFunction;
 public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> implements ProtocolStackConfigurer<BASE_PACKET_CLASS> {
 
     private final Class<BASE_PACKET_CLASS> basePacketClass;
-    private final boolean bigEndian;
+    private final ByteOrder byteOrder;
     private final Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
     private final Function<Configuration, ? extends DriverContext> driverContext;
     private final Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> protocolIO;
@@ -57,7 +58,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     /** Only accessible via Builder */
     CustomProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass,
-                                  boolean bigEndian,
+                                  ByteOrder byteOrder,
                                   Object[] parserArgs,
                                   Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                   Function<Configuration, ? extends DriverContext> driverContext,
@@ -65,7 +66,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator,
                                   Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover) {
         this.basePacketClass = basePacketClass;
-        this.bigEndian = bigEndian;
+        this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
         this.protocol = protocol;
         this.driverContext = driverContext;
@@ -75,7 +76,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     }
 
     private ChannelHandler getMessageCodec(Configuration configuration) {
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), bigEndian, parserArgs,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), byteOrder, parserArgs,
             packetSizeEstimator == null ? null : packetSizeEstimator.apply(configuration),
             corruptPacketRemover == null ? null : corruptPacketRemover.apply(configuration));
     }
@@ -105,7 +106,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private final Class<BASE_PACKET_CLASS> basePacketClass;
         private final Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIo;
         private Function<Configuration, ? extends DriverContext> driverContext;
-        private boolean bigEndian = true;
+        private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
         private Object[] parserArgs;
         private Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
@@ -121,8 +122,18 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             return this;
         }
 
+        public CustomProtocolStackBuilder<BASE_PACKET_CLASS> byteOrder(ByteOrder byteOrder) {
+            this.byteOrder = byteOrder;
+            return this;
+        }
+
+        public CustomProtocolStackBuilder<BASE_PACKET_CLASS> bigEndian() {
+            this.byteOrder = ByteOrder.BIG_ENDIAN;
+            return this;
+        }
+
         public CustomProtocolStackBuilder<BASE_PACKET_CLASS> littleEndian() {
-            this.bigEndian = false;
+            this.byteOrder = ByteOrder.LITTLE_ENDIAN;
             return this;
         }
 
@@ -149,7 +160,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public CustomProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             return new CustomProtocolStackConfigurer<>(
-                basePacketClass, bigEndian, parserArgs, protocol, driverContext, messageIo, packetSizeEstimator, corruptPacketRemover);
+                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageIo, packetSizeEstimator, corruptPacketRemover);
         }
 
     }

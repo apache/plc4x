@@ -31,17 +31,25 @@ public class WriteBufferByteBased implements WriteBuffer {
 
     private final ByteBuffer bb;
     private final MyDefaultBitOutput bo;
-    private final boolean littleEndian;
+    private ByteOrder byteOrder;
 
     public WriteBufferByteBased(int size) {
-        this(size, false);
+        this(size, ByteOrder.BIG_ENDIAN);
     }
 
-    public WriteBufferByteBased(int size, boolean littleEndian) {
+    public WriteBufferByteBased(int size, ByteOrder byteOrder) {
         bb = ByteBuffer.allocate(size);
         BufferByteOutput<?> bbo = new BufferByteOutput<>(bb);
         bo = new MyDefaultBitOutput(bbo);
-        this.littleEndian = littleEndian;
+        this.byteOrder = byteOrder;
+    }
+
+    public ByteOrder getByteOrder() {
+        return byteOrder;
+    }
+
+    public void setByteOrder(ByteOrder byteOrder) {
+        this.byteOrder = byteOrder;
     }
 
     public void setPos(int position) {
@@ -129,7 +137,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new ParseException("unsigned int can only contain max 32 bits");
         }
         try {
-            if (littleEndian) {
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                 value = Integer.reverseBytes(value) >> 16;
             }
             bo.writeInt(true, bitLength, value);
@@ -147,7 +155,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new ParseException("unsigned long can only contain max 63 bits");
         }
         try {
-            if (littleEndian) {
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                 value = Long.reverseBytes(value) >> 32;
             }
             bo.writeLong(true, bitLength, value);
@@ -160,7 +168,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
         try {
             if (bitLength == 64) {
-                if (littleEndian) {
+                if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                     if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
                         writeLong(logicalName, 32, value.longValue());
                         writeLong(logicalName, 32, value.shiftRight(32).longValue());
@@ -209,7 +217,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            if (littleEndian) {
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                 value = Short.reverseBytes(value);
             }
             bo.writeShort(false, bitLength, value);
@@ -227,7 +235,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if (littleEndian) {
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                 value = Integer.reverseBytes(value);
             }
             bo.writeInt(false, bitLength, value);
@@ -245,7 +253,7 @@ public class WriteBufferByteBased implements WriteBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if (littleEndian) {
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                 value = Long.reverseBytes(value);
             }
             bo.writeLong(false, bitLength, value);
@@ -283,7 +291,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 

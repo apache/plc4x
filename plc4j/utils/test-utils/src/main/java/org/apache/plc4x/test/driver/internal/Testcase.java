@@ -20,6 +20,7 @@ package org.apache.plc4x.test.driver.internal;
 
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.internal.utils.Synchronizer;
@@ -83,25 +84,25 @@ public class Testcase implements LocationAware {
         LOGGER.info("Starting testcase: {}", name);
         final PlcConnection plcConnection = connectionManager.getConnection(driverTestsuite.getDriverTestsuiteConfiguration().getDriverName(), driverTestsuite.getDriverTestsuiteConfiguration().getDriverParameters());
         final Plc4xEmbeddedChannel embeddedChannel = connectionManager.getEmbeddedChannel(plcConnection);
-        final boolean bigEndian = driverTestsuite.getDriverTestsuiteConfiguration().isBigEndian();
+        final ByteOrder byteOrder = driverTestsuite.getDriverTestsuiteConfiguration().getByteOrder();
         // Be sure this is reset, just in case a previous testcase failed.
         synchronizer.responseFuture = null;
         if (!driverTestsuite.getSetupSteps().isEmpty()) {
             LOGGER.info("Running setup steps");
             for (TestStep setupStep : driverTestsuite.getSetupSteps()) {
-                setupStep.execute(plcConnection, embeddedChannel, bigEndian);
+                setupStep.execute(plcConnection, embeddedChannel, byteOrder);
             }
             LOGGER.info("Finished setup steps");
         }
         LOGGER.info("Running test steps");
         for (TestStep step : steps) {
-            step.execute(plcConnection, embeddedChannel, bigEndian);
+            step.execute(plcConnection, embeddedChannel, byteOrder);
         }
         LOGGER.info("Finished test steps");
         if (!driverTestsuite.getTeardownSteps().isEmpty()) {
             LOGGER.info("Running teardown steps");
             for (TestStep teardownStep : driverTestsuite.getTeardownSteps()) {
-                teardownStep.execute(plcConnection, embeddedChannel, bigEndian);
+                teardownStep.execute(plcConnection, embeddedChannel, byteOrder);
             }
             LOGGER.info("Finished teardown steps");
         }

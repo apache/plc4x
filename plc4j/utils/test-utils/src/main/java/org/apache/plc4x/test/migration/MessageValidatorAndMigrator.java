@@ -54,15 +54,15 @@ public class MessageValidatorAndMigrator {
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
-     * @param bigEndian       if BOM is big endian
+     * @param byteOrder       the byte-oder being used
      * @param autoMigrate     indicates if we want to migrate to a new version
      * @param siteURI         the file which we want to auto migrate
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+    public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
-        validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, bigEndian, autoMigrate, siteURI);
+        validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
     }
 
     /**
@@ -73,14 +73,14 @@ public class MessageValidatorAndMigrator {
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
-     * @param bigEndian       if BOM is big endian
+     * @param byteOrder       the byte-order being used
      * @param autoMigrate     indicates if we want to migrate to a new version
      * @param siteURI         the file which we want to auto migrate
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageIO messageIO, Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, !bigEndian);
+    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageIO messageIO, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+        final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
             final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray());
