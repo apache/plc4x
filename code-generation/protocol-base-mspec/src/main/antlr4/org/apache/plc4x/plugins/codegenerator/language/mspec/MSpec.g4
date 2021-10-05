@@ -143,7 +143,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER_LITERAL (LBRACKET params=argumentList RBRACKET)? (fieldDefinition|batchSetDefinition)* RBRACKET
  ;
 
 dataType

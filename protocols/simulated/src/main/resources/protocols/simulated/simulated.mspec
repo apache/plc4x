@@ -23,7 +23,7 @@
     [simple uint        16  'dummy']
 ]
 
-[dataIo 'DataItem' [string 8 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' [vstring 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
             [simple   bit    'value']
