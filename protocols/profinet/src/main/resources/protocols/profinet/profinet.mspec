@@ -88,98 +88,119 @@
 ]
 
 // 4.10.3.2
-[discriminatedType 'DceRpc_Packet'
-    [const         uint 8            'version'           '0x04'                 ]
-    [discriminator DceRpc_PacketType 'packetType'                               ]
-    [typeSwitch 'packetType'
-        ['REQUEST'  DceRpc_Packet_Req
-            [reserved uint 1         '0x0'                                      ]
-            [const    uint 1         'broadcast'                        '0'     ]
-            [const    uint 1         'idempotent'                       '1'     ]
-            [const    uint 1         'maybe'                            '0'     ]
-            [const    uint 1         'noFragmentAcknowledgeRequested'   '0'     ]
-            [const    uint 1         'fragment'                         '0'     ]
-            [const    uint 1         'lastFragment'                     '0'     ]
-            [reserved uint 1         '0x0'                                      ]
-        ]
-
-        ['RESPONSE' DceRpc_Packet_Res
-            [reserved uint 1         '0x0'                                      ]
-            [const    uint 1         'broadcast'                        '0'     ]
-            [const    uint 1         'idempotent'                       '0'     ]
-            [const    uint 1         'maybe'                            '0'     ]
-            [const    uint 1         'noFragmentAcknowledgeRequested'   '1'     ]
-            [const    uint 1         'fragment'                         '0'     ]
-            [const    uint 1         'lastFragment'                     '1'     ]
-            [reserved uint 1         '0x0'                                      ]
-        ]
-
-        ['REJECT' DceRpc_Packet_Rej
-            [reserved uint 1         '0x0'                                      ]
-            [const    uint 1         'broadcast'                        '0'     ]
-            [const    uint 1         'idempotent'                       '0'     ]
-            [const    uint 1         'maybe'                            '0'     ]
-            [const    uint 1         'noFragmentAcknowledgeRequested'   '0'     ]
-            [const    uint 1         'fragment'                         '0'     ]
-            [const    uint 1         'lastFragment'                     '0'     ]
-            [reserved uint 1         '0x0'                                      ]
-        ]
+// A lot of the fields are set to constant values, which would
+// usually be dynamic. However are we trying to limit the number of
+// arguments needed to construct the messages and Profinet only seems
+// be using a very limited subset of all possible DCE/RPC packets.
+[type 'DceRpc_Packet'
+// RPC Header {
+    // RPCVersion 4.10.3.2.1
+    [const         uint 8                'version'                        '0x04'                 ]
+    // RPCPacketType 4.10.3.2.2
+    [simple        DceRpc_PacketType     'packetType'                                            ]
+    // PRCFlags 4.10.3.2.3
+    [reserved      bit                                                    'false'                ]
+    [const         bit                   'broadcast'                      'false'                ]
+    [const         bit                   'idempotent'                     'false'                ]
+    [const         bit                   'maybe'                          'false'                ]
+    [const         bit                   'noFragmentAcknowledgeRequested' 'false'                ]
+    [const         bit                   'fragment'                       'false'                ]
+    [const         bit                   'lastFragment'                   'false'                ]
+    [reserved      bit                                                    'false'                ]
+    // PRCFlags2 4.10.3.2.4
+    [reserved      uint 6                                                 '0x00'                 ]
+    [const         bit                   'cancelWasPending'               'false'                ]
+    [reserved      bit                                                    'false'                ]
+    // RPCDRep 4.10.3.2.5
+    [simple        IntegerEncoding       'integerEncoding'                                       ]
+    [simple        CharacterEncoding     'characterEncoding'                                     ]
+    // RPCDRep2 4.10.3.2.5
+    [simple        FloatingPointEncoding 'floatingPointEncoding'                                 ]
+    // RPCSerialHigh 4.10.3.2.6
+    [const         uint 8                'serialHigh'                     '0x00'                 ]
+    [batchSet encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
+        // RPCObjectUUID 4.10.3.2.8
+        [simple DceRpc_ObjectUuid        'objectUuid'                                            ]
+        // RPCInterfaceUUID 4.10.3.2.9
+        [simple DceRpc_InterfaceUuid     'interfaceUuid'                                         ]
+        // RPCActivityUUID 4.10.3.2.10
+        [simple DceRpc_ActivityUuid      'activityUuid'                                          ]
+        // RPCServerBootTime 4.10.3.2.11
+        [simple uint 32                  'serverBootTime'                                        ]
+        // RPCInterfaceVersion 4.10.3.2.12
+        [const  uint 32                  'interfaceVer'                   '0x00000001'           ]
+        // RPCSequenceNmb 4.10.3.2.13
+        [simple uint 32                  'sequenceNumber'                                        ]
+        // RPCOperationNmb 4.10.3.2.14
+        [simple DceRpc_Operation         'operation'                                             ]
+        // RPCInterfaceHint 4.10.3.2.15
+        [const        uint 16            'interfaceHint'                  '0xFFFF'               ]
+        // RPCActivityHint 4.10.3.2.16
+        [const        uint 16            'activityHint'                   '0xFFFF'               ]
+        // RPCLengthOfBody 4.10.3.2.17
+        [implicit     uint 16            'lengthOfBody'                   'payload.lengthInBytes']
+        // RPCFragmentNmb 4.10.3.2.18 (Setting this to 0 as we will probably never have anything but 0 here
+        [const        uint 16            'fragmentNum'                    '0x0000'               ]
+        // RPCAuthenticationProtocol 4.10.3.2.19
+        [const        uint 8             'authProto'                      '0x00'                 ]
     ]
-    [reserved      uint 6            '0x00'                                        ]
-    [const         uint 1            'cancelWasPending'                 '0'        ]
-    [reserved      uint 1            '0x0'                                         ]
-    [simple        IntegerEncoding   'integerEncoding'                             ]
-    [simple        CharacterEncoding 'characterEncoding'                           ]
-    [simple        FloatingPointEncoding 'floatingPointEncoding'                   ]
-    //[batchSet encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
-        [const         uint 8            'serialHigh'        '0x00'      endianes='test' line='test']
-        [const         uint 8            'serialLow'         '0x00'                ]
-        // 4.10.3.2.8 Coding of the field RPCObjectUUID DEA00000-6C97-11D1-8271-{instanceOrNodeNumber}{deviceId}{vendorId}
-        // Apache Vendor Id: 0x060B
-        // PLC4X Profinet Driver Device ID (can be chosen freely): 0xCAFE
-        // NOTE: We can get the Device-Id and Vendor-Id from the PN-DCP search result of the browser.
-        [const        uint 32           'uuid1'             '0xDEA00000'           ]
-        [const        uint 16           'uuid2'             '0x6C97'               ]
-        [const        uint 16           'uuid3'             '0x11D1'               ]
-        [const        uint 16           'uuid4'             '0x8271'               ]
-        [simple       uint 16           'instanceOrNodeNumber'                     ]
-        [simple       uint 16           'deviceId'                                 ]
-        [simple       uint 16           'vendorId'                                 ]
-        // 4.10.3.2.9
-        // Device Interface:            DEA00001-6C97-11D1-8271-00A02442DF7D
-        // Controller Interface:        DEA00002-6C97-11D1-8271-00A02442DF7D
-        // Supervisor Interface:        DEA00003-6C97-11D1-8271-00A02442DF7D
-        // Parameter Server Interface:  DEA00004-6C97-11D1-8271-00A02442DF7D
-        [const        uint 32           'interface1'        '0xDEA00001'           ]
-        [const        uint 16           'interface2'        '0x6C97'               ]
-        [const        uint 16           'interface3'        '0x11D1'               ]
-        [const        uint 16           'interface4'        '0x8271'               ]
-        [const        uint 16           'interface5'        '0x00A0'               ]
-        [const        uint 32           'interface6'        '0x2442DF7D'           ]
-        // 4.10.3.2.10
-        // The Controller and the Device generate the uuid for each AR (Application Relationship) and use them as long as the AR exists
-        [simple        uint 32           'activity'                                ]
-        [const        uint 16           'activity2'         '0x0000'               ]
-        [const        uint 16           'activity3'         '0x1010'               ]
-        [const        uint 16           'activity4'        '0xAA25'                ]
-        [const        uint 32           'activity5'        '0x606D3C3D'            ]
-        [const        uint 16           'activity6'        '0xA9A3'                ]
-        [simple        uint 32           'serverBootTime'                          ]
-        [const        uint 32           'interfaceVer'      '0x00000001'           ]
-        [simple        uint 32           'sequenceNumber'                          ]
-        [simple        DceRpc_Operation  'operation'                               ]
-        [const        uint 16           'interfaceHint'     '0xFFFF'               ]
-        [const        uint 16           'activityHint'      '0xFFFF'               ]
-        [implicit     uint 16           'fragmentLength'    'payload.lengthInBytes']
-        [const        uint 16           'fragmentNum'       '0x0000'               ]
-        [const        uint 8            'authProto'         '0x00'                 ]
-        [const        uint 8            'serialLow2'        '0x00'                 ]// TODO: Check this ...
-        [simple       PnIoCm_Packet     'payload'           ['packetType']         ]
-    //]
+    // RPCSerialLow 4.10.3.2.7
+    [const            uint 8             'serialLow'                      '0x00'                 ]
+// RPC Header }
+// RPC Payload {
+    [simple PnIoCm_Packet 'payload' encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"' ['packetType'] ]
+// RPC Payload }
 ]
 
-[type 'Uuid'
-    [array byte 'data' count '16']
+// RPCObjectUUID 4.10.3.2.8
+[type 'DceRpc_ObjectUuid'
+    [const  uint 32 'data1'      '0xDEA00000'                      ]
+    [const  uint 16 'data2'      '0x6C97'                          ]
+    [const  uint 16 'data3'      '0x11D1'                          ]
+    // This part is described as a byte array, so the byte order is always big-endian
+    [const  uint 16 'data4'      '0x8271'     encoding='BIG_ENDIAN']
+    [simple uint 16 'nodeNumber'              encoding='BIG_ENDIAN']
+    [simple uint 16 'deviceId'                encoding='BIG_ENDIAN']
+    [simple uint 16 'vendorId'                encoding='BIG_ENDIAN']
+]
+
+// RPCInterfaceUUID 4.10.3.2.9
+// NOTE: If we would have been only using Big Endian encoding, we would have
+//       implemented this via an enum. However as the first 8 bytes are
+//       dynamically endianed and the last 8 bytes are set to Big Endian, we
+//       had to do this trick.
+[discriminatedType 'DceRpc_InterfaceUuid'
+    [discriminator  uint 32 'interfaceType'                                ]
+    [const          uint 16 'data1'      '0x6C97'                          ]
+    [const          uint 16 'data2'      '0x11D1'                          ]
+    // This part is described as a byte array, so the byte order is always big-endian
+    [const          uint 16 'data3'      '0x8271'     encoding='BIG_ENDIAN']
+    [const          uint 16 'data4'      '0x00A0'     encoding='BIG_ENDIAN']
+    [const          uint 16 'data5'      '0x2442'     encoding='BIG_ENDIAN']
+    [const          uint 16 'data6'      '0xDF7D'     encoding='BIG_ENDIAN']
+    [typeSwitch 'interfaceType'
+        ['0xDEA00001' DceRpc_InterfaceUuid_DeviceInterface
+        ]
+        ['0xDEA00002' DceRpc_InterfaceUuid_ControllerInterface
+        ]
+        ['0xDEA00003' DceRpc_InterfaceUuid_SupervisorInterface
+        ]
+        ['0xDEA00004' DceRpc_InterfaceUuid_ParameterInterface
+        ]
+    ]
+]
+
+// RPCActivityUUID 4.10.3.2.10
+// NOTE: This value is generally randomly generated by the initiator
+//       and used throughout the entire communication. Unfortunately,
+//       the first parts are effected by endianess, and the last 8
+//       bytes are fixed big-endian. Therefore the complicated notation.
+[type 'DceRpc_ActivityUuid'
+    [simple  uint 32 'data1'                      ]
+    [simple  uint 16 'data2'                      ]
+    [simple  uint 16 'data3'                      ]
+    // This part is described as a byte array, so the byte order is always big-endian
+    [simple  uint 64 'data4' encoding='BIG_ENDIAN']
 ]
 
 // There are some special MAC addresses reserved:
@@ -190,7 +211,6 @@
 // 01-0E-CF-00-01-01:      As multicast destination for RT_CLASS_3
 // 01-0E-CF-00-01-02:      As invalid frame multicast destination for RT_CLASS_3
 // 01-0E-CF-00-01-03 - FF: Reserved for further multicast addresses within the Type 10 context
-
 [type 'MacAddress'
     [array byte 'address' count '6']
 ]
@@ -215,9 +235,14 @@
     ['0x0A' CANCEL_ACKNOWLEDGE   ]
 ]
 
+// 4.10.3.2.14
 [enum uint 16 'DceRpc_Operation'
-    ['0x0000' CONNECT]
-    ['0x0003' WRITE  ]
+    ['0x0000' CONNECT      ]
+    ['0x0001' RELEASE      ]
+    ['0x0002' READ         ]
+    ['0x0003' WRITE        ]
+    ['0x0004' CONTROL      ]
+    ['0x0005' READ_IMPLICIT]
 ]
 
 // https://de.wikipedia.org/wiki/IEEE_802.1p
@@ -751,6 +776,10 @@
             [simple   uint 8              'outputLengthIoPs'              ]
         ]
     ]
+]
+
+[type 'Uuid'
+    [array byte 'data' count '16']
 ]
 
 [enum uint 16 'PnIoCm_BlockType'

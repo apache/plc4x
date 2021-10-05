@@ -32,11 +32,7 @@ import org.apache.plc4x.java.can.generic.transport.GenericFrame;
 import org.apache.plc4x.java.genericcan.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
@@ -93,7 +89,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
             for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 GenericCANSubscriptionHandle subscription = (GenericCANSubscriptionHandle) handle;
                 Map<String, ResponseItem<PlcValue>> fields = new LinkedHashMap<>();
-                ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), true);
+                ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), ByteOrder.LITTLE_ENDIAN);
                 buffer.pullContext("readFields");
                 if (subscription.matches(msg.getNodeId())) {
                     for (Entry<String, GenericCANField> field : subscription.getFields().entrySet()) {
@@ -151,7 +147,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                     continue;
                 }
                 GenericCANField canField = (GenericCANField) plcField;
-                WriteBuffer buffer = messages.computeIfAbsent(canField.getNodeId(), (node) -> new WriteBufferByteBased(8, true));
+                WriteBuffer buffer = messages.computeIfAbsent(canField.getNodeId(), (node) -> new WriteBufferByteBased(8, ByteOrder.LITTLE_ENDIAN));
 
                 Map<String, PlcResponseCode> statusMap = responses.computeIfAbsent(canField.getNodeId(), (node) -> new HashMap<>());
 

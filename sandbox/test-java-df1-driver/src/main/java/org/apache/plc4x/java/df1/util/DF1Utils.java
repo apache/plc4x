@@ -30,7 +30,7 @@ public class DF1Utils {
         CRC crc = new CRC(new CRC.Parameters(16, 0x8005, 0x0000, true, true, 0x0000));
         long df1crc = crc.init();
         df1crc = crc.update(df1crc, new byte[]{(byte) destinationAddress, (byte) sourceAddress});
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(command.getLengthInBytes(), false);
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(command.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
         try {
             DF1CommandIO.staticSerialize(writeBuffer, command);
         } catch (ParseException e) {

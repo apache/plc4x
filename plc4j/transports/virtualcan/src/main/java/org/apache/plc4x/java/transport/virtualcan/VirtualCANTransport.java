@@ -21,10 +21,7 @@ package org.apache.plc4x.java.transport.virtualcan;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
 import org.apache.plc4x.java.transport.can.FrameData;
@@ -101,7 +98,7 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
                     @Override
                     public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
                         try {
-                            return serializer.parse(new ReadBufferByteBased(getData(), true), args);
+                            return serializer.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
                         } catch (ParseException e) {
                             throw new PlcRuntimeException(e);
                         }

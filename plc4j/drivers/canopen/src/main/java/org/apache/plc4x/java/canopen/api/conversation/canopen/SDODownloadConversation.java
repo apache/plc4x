@@ -27,6 +27,7 @@ import org.apache.plc4x.java.canopen.readwrite.*;
 import org.apache.plc4x.java.canopen.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.canopen.readwrite.types.SDOResponseCommand;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +44,7 @@ public class SDODownloadConversation extends CANOpenConversationBase {
         this.indexAddress = indexAddress;
 
         try {
-            data = DataItemIO.staticSerialize(value, type,  null,true).getData();
+            data = DataItemIO.staticSerialize(value, type,  null, ByteOrder.LITTLE_ENDIAN).getData();
         } catch (ParseException e) {
             throw new PlcRuntimeException("Could not serialize data", e);
         }

@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="BIG_ENDIAN">
 
   <name>KNXNet/IP</name>
 

@@ -20,6 +20,7 @@ package org.apache.plc4x.test.driver.internal;
 
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.internal.handlers.*;
@@ -96,22 +97,22 @@ public class TestStep implements LocationAware {
         return Optional.ofNullable(location);
     }
 
-    public void execute(PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
+    public void execute(PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, ByteOrder byteOrder) throws DriverTestsuiteException {
         assert type != null;
         LOGGER.info(String.format("  - Running step: '%s' - %s", name, type));
         try {
             switch (type) {
                 case OUTGOING_PLC_BYTES:
-                    outgoingPlcBytesHandler.executeOutgoingPlcBytes(embeddedChannel, bigEndian);
+                    outgoingPlcBytesHandler.executeOutgoingPlcBytes(embeddedChannel, byteOrder);
                     break;
                 case OUTGOING_PLC_MESSAGE:
-                    outgoingPlcMessageHandler.executeOutgoingPlcMessage(embeddedChannel, bigEndian);
+                    outgoingPlcMessageHandler.executeOutgoingPlcMessage(embeddedChannel, byteOrder);
                     break;
                 case INCOMING_PLC_BYTES:
                     incomingPlcBytesHandler.executeIncomingPlcBytes();
                     break;
                 case INCOMING_PLC_MESSAGE:
-                    incomingPlcMessageHandler.executeIncomingPlcMessage(embeddedChannel, bigEndian);
+                    incomingPlcMessageHandler.executeIncomingPlcMessage(embeddedChannel, byteOrder);
                     break;
                 case API_REQUEST:
                     apiRequestHandler.executeApiRequest(plcConnection);

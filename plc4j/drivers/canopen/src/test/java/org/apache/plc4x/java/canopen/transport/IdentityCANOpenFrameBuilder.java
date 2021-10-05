@@ -24,6 +24,7 @@ import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
 import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
 import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
@@ -56,7 +57,7 @@ public class IdentityCANOpenFrameBuilder implements CANFrameBuilder<CANOpenFrame
     public CANOpenFrame create() {
         try {
             return new CANOpenFrame(
-                nodeId, service, CANOpenPayloadIO.staticParse(new ReadBufferByteBased(data, true), service)
+                nodeId, service, CANOpenPayloadIO.staticParse(new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN), service)
             );
         } catch (ParseException e) {
             throw new PlcRuntimeException(e);

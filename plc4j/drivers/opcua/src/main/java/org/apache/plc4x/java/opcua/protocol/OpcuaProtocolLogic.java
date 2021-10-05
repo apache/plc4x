@@ -167,14 +167,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             opcuaReadRequest);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
             Consumer<byte []> consumer = opcuaResponse -> {
                 PlcReadResponse response = null;
                 try {
-                    response = new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody()).getResults()));
+                    response = new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody()).getResults()));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 };
@@ -699,14 +699,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             opcuaWriteRequest);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
                 WriteResponse responseMessage = null;
                 try {
-                    responseMessage = (WriteResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                    responseMessage = (WriteResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -824,14 +824,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             createSubscriptionRequest);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateSubscriptionResponse responseMessage = null;
                 try {
-                    responseMessage = (CreateSubscriptionResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                    responseMessage = (CreateSubscriptionResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

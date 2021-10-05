@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
-                       bigEndian="true">
+                       byteOrder="BIG_ENDIAN">
 
   <!-- https://base64.guru/converter/encode/hex -->
 

@@ -42,7 +42,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URISyntaxException;
 import java.util.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -68,7 +67,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
     }
 
     @TestFactory
-    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException, URISyntaxException {
+    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
         ParserSerializerTestsuite testSuite = parseTestsuite();
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for (Testcase testcase : testSuite.getTestcases()) {
@@ -90,12 +89,12 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
             reader.setDocumentFactory(new LocationAwareDocumentFactory());
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
-            boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
+            ByteOrder byteOrder = ByteOrder.valueOf(testsuiteXml.attributeValue("byteOrder", "BIG_ENDIAN"));
             String testsuiteName = testsuiteXml.element(new QName("name")).getStringValue();
             String protocolName = testsuiteXml.element(new QName("protocolName")).getStringValue();
             String outputFlavor = testsuiteXml.element(new QName("outputFlavor")).getStringValue();
 
-            Element optionsElement = testsuiteXml.element(new QName("options"));;
+            Element optionsElement = testsuiteXml.element(new QName("options"));
             Map<String, String> options = new HashMap<>(XmlHelper.parseParameters(optionsElement));
             options.put("protocolName", protocolName);
             options.put("outputFlavor", outputFlavor);
@@ -130,7 +129,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 testcases.add(testcase);
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-            return new ParserSerializerTestsuite(testsuiteName, testcases, littleEndian, options);
+            return new ParserSerializerTestsuite(testsuiteName, testcases, byteOrder, options);
         } catch (DocumentException e) {
             throw new ParserSerializerTestsuiteException("Error parsing testsuite xml", e);
         } catch (DecoderException e) {
@@ -139,7 +138,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
     }
 
     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-        ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.isLittleEndian());
+        ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.getByteOrder());
 
         try {
             MessageIO messageIO = MessageResolver.getMessageIOStaticLinked(
@@ -153,12 +152,12 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 testcase.getXml().elements().get(0),
                 testcase.getParserArguments(),
                 testcase.getRaw(),
-                !testSuite.isLittleEndian(),
+                testSuite.getByteOrder(),
                 autoMigrate,
                 suiteUri
             );
 
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(((Message) parsedOutput).getLengthInBytes(), testSuite.isLittleEndian());
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(((Message) parsedOutput).getLengthInBytes(), testSuite.getByteOrder());
             messageIO.serialize(writeBuffer, parsedOutput);
             byte[] data = writeBuffer.getData();
             if (testcase.getRaw().length != data.length) {

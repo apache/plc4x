@@ -160,13 +160,13 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             createMonitoredItemsRequest);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateMonitoredItemsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (unknownExtensionObject instanceof CreateMonitoredItemsResponse) {
                         responseMessage = (CreateMonitoredItemsResponse) unknownExtensionObject;
                     } else {
@@ -271,7 +271,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             publishRequest);
 
                         try {
-                            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+                            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
                             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
                             /*  Create Consumer for the response message, error and timeout to be sent to the Secure Channel */
@@ -279,7 +279,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                 PublishResponse responseMessage = null;
                                 ServiceFault serviceFault = null;
                                 try {
-                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                                     if (unknownExtensionObject instanceof PublishResponse) {
                                         responseMessage = (PublishResponse) unknownExtensionObject;
                                     } else {
@@ -385,14 +385,14 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             deleteSubscriptionrequest);
 
         try {
-            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), true);
+            WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             ExtensionObjectIO.staticSerialize(buffer, extObject);
 
             //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
             Consumer<byte[]> consumer = opcuaResponse -> {
                 DeleteSubscriptionsResponse responseMessage = null;
                 try {
-                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                    ExtensionObjectDefinition unknownExtensionObject = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (unknownExtensionObject instanceof DeleteSubscriptionsResponse) {
                         responseMessage = (DeleteSubscriptionsResponse) unknownExtensionObject;
                     } else {

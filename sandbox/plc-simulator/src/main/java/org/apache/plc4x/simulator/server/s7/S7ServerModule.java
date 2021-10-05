@@ -32,6 +32,7 @@ import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
@@ -75,7 +76,7 @@ public class S7ServerModule implements ServerModule {
                     @Override
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
-                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class, new TPKTPacketIO(), true, null,
+                        pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class, new TPKTPacketIO(), ByteOrder.BIG_ENDIAN, null,
                             new S7Driver.ByteLengthEstimator(),
                             new S7Driver.CorruptPackageCleaner()));
                         pipeline.addLast(new S7Step7ServerAdapter(context));

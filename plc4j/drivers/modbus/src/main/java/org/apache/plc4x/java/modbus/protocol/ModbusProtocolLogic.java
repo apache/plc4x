@@ -428,7 +428,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         try {
             WriteBufferByteBased buffer;
             if(plcValue instanceof PlcList) {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 byte[] data = buffer.getData();
                 switch (((ModbusField) field).getDataType()) {
                     case BOOL:
@@ -443,7 +443,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {

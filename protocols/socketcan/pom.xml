@@ -29,7 +29,7 @@
 
   <artifactId>plc4x-protocols-socketcan</artifactId>
 
-  <name>Protocols: CANopen</name>
+  <name>Protocols: SocketCAN</name>
   <description>Protocol of binary representation of SocketCAN frames.</description>
 
   <dependencies>
