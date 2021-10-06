@@ -20,6 +20,7 @@
 package testutils
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -45,7 +46,7 @@ type DriverTestsuite struct {
 	outputFlavor     string
 	driverName       string
 	driverParameters map[string]string
-	bigEndian        bool
+	byteOrder        binary.ByteOrder
 	parser           XmlParser
 	rootTypeParser   func(utils.ReadBufferByteBased) (interface{}, error)
 	setupSteps       []TestStep
@@ -274,7 +275,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.Errorf("error converting type %t into Serializable type", expectedMessage)
 		}
 		var expectedWriteBuffer utils.WriteBufferByteBased
-		if m.bigEndian {
+		if m.byteOrder == binary.BigEndian {
 			expectedWriteBuffer = utils.NewWriteBufferByteBased()
 		} else {
 			expectedWriteBuffer = utils.NewLittleEndianWriteBufferByteBased()
@@ -304,7 +305,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		var bufferFactory func([]byte) utils.ReadBufferByteBased
-		if m.bigEndian {
+		if m.byteOrder == binary.BigEndian {
 			bufferFactory = utils.NewReadBufferByteBased
 		} else {
 			bufferFactory = utils.NewLittleEndianReadBufferByteBased
@@ -360,7 +361,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			return errors.New("error converting type into Serializable type")
 		}
 		var wb utils.WriteBufferByteBased
-		if m.bigEndian {
+		if m.byteOrder == binary.BigEndian {
 			wb = utils.NewWriteBufferByteBased()
 		} else {
 			wb = utils.NewLittleEndianWriteBufferByteBased()
@@ -566,7 +567,12 @@ func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser fun
 	if node.Name != "driver-testsuite" {
 		return nil, errors.New("invalid document structure")
 	}
-	bigEndian := node.GetAttributeValue("bigEndian") != "false"
+	var byteOrder binary.ByteOrder
+	if node.GetAttributeValue("byteOrder") != "LITTLE_ENDIAN" {
+		byteOrder = binary.BigEndian
+	} else {
+		byteOrder = binary.LittleEndian
+	}
 	var testsuiteName string
 	var protocolName string
 	var outputFlavor string
@@ -639,7 +645,7 @@ func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser fun
 		outputFlavor:     outputFlavor,
 		driverName:       driverName,
 		driverParameters: driverParameters,
-		bigEndian:        bigEndian,
+		byteOrder:        byteOrder,
 		parser:           parser,
 		rootTypeParser:   rootTypeParser,
 		setupSteps:       setupSteps,

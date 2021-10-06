@@ -82,6 +82,14 @@ func (rb *byteReadBuffer) Reset() {
 	rb.reader = bitio.NewReader(bytes.NewBuffer(rb.data))
 }
 
+func (rb *byteReadBuffer) SetByteOrder(byteOrder binary.ByteOrder) {
+	rb.byteOrder = byteOrder
+}
+
+func (rb *byteReadBuffer) GetByteOrder() binary.ByteOrder {
+	return rb.byteOrder
+}
+
 func (rb *byteReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
