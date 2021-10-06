@@ -84,7 +84,7 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 Currently, the project is configured to require the following software when building only the Java parts:
 
-1. Java 1.8 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that. If you also want to build the `plc4c` and `plc4cpp` modules, you will need at least Java 11.
+1. Java 11 JDK: For running Maven in general as well as compiling the Java modules `JAVA_HOME` configured to point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) [Graphviz](https://www.graphviz.org/) : For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
