@@ -150,7 +150,7 @@ func MultipleServiceRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16)
 
 	// Create a partially initialized instance
 	_child := &MultipleServiceRequest{
-		Data:   data,
+		Data:   CastServices(data),
 		Parent: &CipService{},
 	}
 	_child.Parent.Child = _child

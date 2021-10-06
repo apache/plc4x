@@ -25,9 +25,6 @@ New Features
 
 - Added an initial draft of a Discover and Browse API to PLC4J
 
-- Replaced the OPC-UA driver using Eclipse Milo with a our own, fully
-  generated, version
-
 - PLC4Go now supports many more drivers
 
 - PLC4Go received a huge internal refactoring and cleanup

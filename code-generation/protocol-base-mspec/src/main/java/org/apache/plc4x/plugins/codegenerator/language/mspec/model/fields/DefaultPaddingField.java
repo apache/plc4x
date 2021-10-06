@@ -22,20 +22,24 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultPaddingField extends DefaultTaggedField implements PaddingField {
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+public class DefaultPaddingField extends DefaultField implements PaddingField {
 
     private final TypeReference type;
     private final String name;
     private final Term paddingValue;
     private final Term paddingCondition;
-    private final Term[] params;
+    private final List<Term> params;
 
-    public DefaultPaddingField(String[] tags, TypeReference type, String name, Term paddingValue, Term paddingCondition, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
-        this.paddingValue = paddingValue;
-        this.paddingCondition = paddingCondition;
+    public DefaultPaddingField(List<String> tags, boolean isTry, TypeReference type, String name, Term paddingValue, Term paddingCondition, List<Term> params) {
+        super(tags, isTry);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
+        this.paddingValue = Objects.requireNonNull(paddingValue);
+        this.paddingCondition = Objects.requireNonNull(paddingCondition);
         this.params = params;
     }
 
@@ -55,8 +59,8 @@ public class DefaultPaddingField extends DefaultTaggedField implements PaddingFi
         return paddingCondition;
     }
 
-    public Term[] getParams() {
-        return params;
+    public Optional<List<Term>> getParams() {
+        return Optional.ofNullable(params);
     }
 
 }

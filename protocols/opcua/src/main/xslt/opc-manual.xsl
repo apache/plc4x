@@ -158,14 +158,14 @@
 [type 'ExtensionHeader'
     [reserved int 5 '0x00']
     [simple bit 'xmlbody']
-    [simple bit 'binaryBody]
+    [simple bit 'binaryBody']
 ]
 
 [type 'ExtensionObjectEncodingMask'
     [reserved int 5 '0x00']
     [simple bit 'typeIdSpecified']
     [simple bit 'xmlbody']
-    [simple bit 'binaryBody]
+    [simple bit 'binaryBody']
 ]
 
 [type 'ExtensionObject' [bit 'includeEncodingMask']
@@ -400,12 +400,17 @@
 
 ]
 
-[type 'DataTypeDefinition'
+//[type 'DataTypeDefinition'
+//
+//]
 
-]
-
+// StructuredTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and not(@BaseType)]"/>
+
+// EnumeratedTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType"/>
+
+// OpaqueType
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
 [enum string '-1' 'OpcuaDataType' [uint 8 'variantType']

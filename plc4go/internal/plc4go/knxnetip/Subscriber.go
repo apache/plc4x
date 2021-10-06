@@ -56,7 +56,7 @@ func (m *Subscriber) Subscribe(subscriptionRequest apiModel.PlcSubscriptionReque
 			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
 		}
 
-		result <- apiModel.PlcSubscriptionRequestResult{
+		result <- &internalModel.DefaultPlcSubscriptionRequestResult{
 			Request:  subscriptionRequest,
 			Response: internalModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes),
 			Err:      nil,

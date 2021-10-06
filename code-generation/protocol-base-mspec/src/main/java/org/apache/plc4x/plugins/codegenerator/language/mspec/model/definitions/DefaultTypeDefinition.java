@@ -24,15 +24,19 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public abstract class DefaultTypeDefinition {
 
-    private final String name;
-    private final Argument[] parserArguments;
-    private final String[] tags;
-    private TypeDefinition parentType;
+    protected final String name;
+    protected final List<Argument> parserArguments;
+    protected final List<String> tags;
+    protected TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags) {
-        this.name = name;
+    public DefaultTypeDefinition(String name, List<Argument> parserArguments, List<String> tags) {
+        this.name = Objects.requireNonNull(name);
         this.parserArguments = parserArguments;
         this.tags = tags;
         this.parentType = null;
@@ -42,12 +46,12 @@ public abstract class DefaultTypeDefinition {
         return name;
     }
 
-    public Argument[] getParserArguments() {
-        return parserArguments;
+    public Optional<List<Argument>> getParserArguments() {
+        return Optional.ofNullable(parserArguments);
     }
 
-    public String[] getTags() {
-        return tags;
+    public Optional<List<String>> getTags() {
+        return Optional.ofNullable(tags);
     }
 
     public TypeDefinition getParentType() {
@@ -59,7 +63,7 @@ public abstract class DefaultTypeDefinition {
     }
 
     public TypeReference getTypeReference() {
-        return new DefaultComplexTypeReference(getName());
+        return new DefaultComplexTypeReference(getName(), null);
     }
 
 }

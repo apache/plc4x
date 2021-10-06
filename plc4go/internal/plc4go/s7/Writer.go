@@ -55,7 +55,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			plcValue := writeRequest.GetValue(fieldName)
 			s7Address, err := encodeS7Address(field)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding s7 address for field %s", fieldName),
@@ -65,7 +65,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			parameterItems[i] = readWriteModel.NewS7VarRequestParameterItemAddress(s7Address)
 			value, err := serializePlcValue(field, plcValue)
 			if err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding value for field %s", fieldName),
@@ -127,27 +127,27 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 					readResponse, err := m.ToPlc4xWriteResponse(*payload, writeRequest)
 
 					if err != nil {
-						result <- model.PlcWriteRequestResult{
+						result <- &plc4goModel.DefaultPlcWriteRequestResult{
 							Request: writeRequest,
 							Err:     errors.Wrap(err, "Error decoding response"),
 						}
 						return transaction.EndRequest()
 					}
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request:  writeRequest,
 						Response: readResponse,
 					}
 					return transaction.EndRequest()
 				},
 				func(err error) error {
-					result <- model.PlcWriteRequestResult{
+					result <- &plc4goModel.DefaultPlcWriteRequestResult{
 						Request: writeRequest,
 						Err:     errors.New("got timeout while waiting for response"),
 					}
 					return transaction.EndRequest()
 				},
 				time.Second*1); err != nil {
-				result <- model.PlcWriteRequestResult{
+				result <- &plc4goModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,
 					Response: nil,
 					Err:      errors.Wrap(err, "error sending message"),

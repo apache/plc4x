@@ -18,15 +18,24 @@
  */
 package org.apache.plc4x.language.java;
 
+import com.google.googlejavaformat.java.FormatterException;
 import freemarker.template.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 
+import com.google.googlejavaformat.java.Formatter;
+
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
+
+    private Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
@@ -70,9 +79,22 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
-        Map<String, String> options) {
+                                                         Map<String, String> options) {
         return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types, options);
     }
 
-
+    @Override
+    protected void postProcessTemplateOutput(File outputFile) {
+        try {
+            FileUtils.writeStringToFile(
+                outputFile,
+                formatter.formatSourceAndFixImports(
+                    FileUtils.readFileToString(outputFile, StandardCharsets.UTF_8)
+                ),
+                StandardCharsets.UTF_8
+            );
+        } catch (IOException | FormatterException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

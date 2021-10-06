@@ -35,11 +35,11 @@ func main() {
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
-	if connectionResult.Err != nil {
-		fmt.Printf("error connecting to PLC: %s", connectionResult.Err.Error())
+	if connectionResult.GetErr() != nil {
+		fmt.Printf("error connecting to PLC: %s", connectionResult.GetErr().Error())
 		return
 	}
-	connection := connectionResult.Connection
+	connection := connectionResult.GetConnection()
 
 	// Make sure the connection is closed at the end
 	defer connection.BlockingClose()
@@ -49,7 +49,7 @@ func main() {
 		AddQuery("field", "holding-register:26:REAL", 2.7182818284).
 		Build()
 	if err != nil {
-		fmt.Printf("error preparing read-request: %s", connectionResult.Err.Error())
+		fmt.Printf("error preparing read-request: %s", connectionResult.GetErr().Error())
 		return
 	}
 
@@ -58,13 +58,13 @@ func main() {
 
 	// Wait for the response to finish
 	wrr := <-wrc
-	if wrr.Err != nil {
-		fmt.Printf("error executing write-request: %s", wrr.Err.Error())
+	if wrr.GetErr() != nil {
+		fmt.Printf("error executing write-request: %s", wrr.GetErr().Error())
 		return
 	}
 
-	if wrr.Response.GetResponseCode("field") != model.PlcResponseCode_OK {
-		fmt.Printf("error an non-ok return code: %s", wrr.Response.GetResponseCode("field").GetName())
+	if wrr.GetResponse().GetResponseCode("field") != model.PlcResponseCode_OK {
+		fmt.Printf("error an non-ok return code: %s", wrr.GetResponse().GetResponseCode("field").GetName())
 		return
 	}
 	fmt.Print("Result: SUCCESS\n")

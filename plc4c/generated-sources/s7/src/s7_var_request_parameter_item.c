@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_write_s7_var_request_parameter_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_var_request_parameter_item_address */
-   .itemType = 0x12}
+   .itemType = 0x12 }
 
 };
 

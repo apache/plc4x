@@ -211,7 +211,7 @@ func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
 		OriginalInvokeId:   originalInvokeId,
 		SequenceNumber:     sequenceNumber,
 		ProposedWindowSize: proposedWindowSize,
-		ServiceAck:         serviceAck,
+		ServiceAck:         CastBACnetServiceAck(serviceAck),
 		Parent:             &APDU{},
 	}
 	_child.Parent.Child = _child

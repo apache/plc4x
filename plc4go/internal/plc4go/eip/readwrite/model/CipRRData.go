@@ -160,7 +160,7 @@ func CipRRDataParse(readBuffer utils.ReadBuffer, len uint16) (*EipPacket, error)
 
 	// Create a partially initialized instance
 	_child := &CipRRData{
-		Exchange: exchange,
+		Exchange: CastCipExchange(exchange),
 		Parent:   &EipPacket{},
 	}
 	_child.Parent.Child = _child

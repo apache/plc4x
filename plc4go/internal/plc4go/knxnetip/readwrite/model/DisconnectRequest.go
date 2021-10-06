@@ -151,7 +151,7 @@ func DisconnectRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, erro
 	// Create a partially initialized instance
 	_child := &DisconnectRequest{
 		CommunicationChannelId: communicationChannelId,
-		HpaiControlEndpoint:    hpaiControlEndpoint,
+		HpaiControlEndpoint:    CastHPAIControlEndpoint(hpaiControlEndpoint),
 		Parent:                 &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

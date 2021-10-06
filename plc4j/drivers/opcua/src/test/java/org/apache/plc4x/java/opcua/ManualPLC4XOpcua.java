@@ -37,6 +37,9 @@ import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.eclipse.milo.examples.server.ExampleServer;
 
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -91,9 +94,18 @@ public class ManualPLC4XOpcua {
 
     public static void main(String args[]) {
         try {
+            // When switching JDK versions from a newer to an older version,
+            // this can cause the server to not start correctly.
+            // Deleting the directory makes sure the key-store is initialized correctly.
+            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
+            try {
+                Files.delete(securityBaseDir);
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+
             ExampleServer testServer = new ExampleServer();
             testServer.startup().get();
-
         } catch (Exception e) {
             throw new PlcRuntimeException(e);
         }

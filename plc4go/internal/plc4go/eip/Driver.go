@@ -21,16 +21,16 @@ package eip
 
 import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
 )
 
 type Driver struct {
-	fieldHandler            spi.PlcFieldHandler
+	_default.DefaultDriver
 	tm                      spi.RequestTransactionManager
 	awaitSetupComplete      bool
 	awaitDisconnectComplete bool
@@ -38,28 +38,11 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	return &Driver{
-		fieldHandler:            NewFieldHandler(),
+		DefaultDriver:           _default.NewDefaultDriver("eip", "EthernetIP", "tcp", NewFieldHandler()),
 		tm:                      spi.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
-}
-
-func (m *Driver) GetProtocolCode() string {
-	return "eip"
-}
-
-func (m *Driver) GetProtocolName() string {
-	return "EthernetIP"
-}
-
-func (m *Driver) GetDefaultTransport() string {
-	return "tcp"
-}
-
-func (m *Driver) CheckQuery(query string) error {
-	_, err := m.fieldHandler.ParseQuery(query)
-	return err
 }
 
 func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
@@ -70,7 +53,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		}()
 		return ch
 	}
@@ -82,7 +65,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		}()
 		return ch
 	}
@@ -95,7 +78,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		log.Error().Err(err).Msgf("Invalid options")
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid options"))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid options"))
 		}()
 		return ch
 	}
@@ -105,7 +88,7 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 		log.Error().Err(err).Msgf("Invalid options")
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid options"))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Invalid options"))
 		}()
 		return ch
 	}
@@ -113,17 +96,9 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.fieldHandler, &m.tm)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcFieldHandler(), &m.tm)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.Connect()
-}
-
-func (m *Driver) SupportsDiscovery() bool {
-	return false
-}
-
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	panic("implement me")
 }
 
 func (m *Driver) SetAwaitSetupComplete(awaitComplete bool) {

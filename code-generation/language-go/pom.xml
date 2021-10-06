@@ -50,6 +50,7 @@
             </goals>
             <configuration>
               <debug>true</debug>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
               <settingsFile>src/test/resources/settings.xml</settingsFile>

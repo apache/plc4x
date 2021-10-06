@@ -139,7 +139,7 @@ func APDUUnconfirmedRequestParse(readBuffer utils.ReadBuffer, apduLength uint16)
 
 	// Create a partially initialized instance
 	_child := &APDUUnconfirmedRequest{
-		ServiceRequest: serviceRequest,
+		ServiceRequest: CastBACnetUnconfirmedServiceRequest(serviceRequest),
 		Parent:         &APDU{},
 	}
 	_child.Parent.Child = _child

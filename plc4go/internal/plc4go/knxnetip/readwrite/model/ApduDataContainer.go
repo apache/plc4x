@@ -123,7 +123,7 @@ func ApduDataContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apd
 
 	// Create a partially initialized instance
 	_child := &ApduDataContainer{
-		DataApdu: dataApdu,
+		DataApdu: CastApduData(dataApdu),
 		Parent:   &Apdu{},
 	}
 	_child.Parent.Child = _child

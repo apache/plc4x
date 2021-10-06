@@ -23,12 +23,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"net"
 	"net/url"
 	"time"
 
 	driverModel "github.com/apache/plc4x/plc4go/internal/plc4go/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
@@ -43,7 +45,7 @@ func NewDiscoverer() *Discoverer {
 	return &Discoverer{}
 }
 
-func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
+func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
 	udpTransport := udp.NewTransport()
 
 	// Create a connection string for the KNX broadcast discovery address.
@@ -61,7 +63,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), o
 	// However if a discovery option is present to select a device by name, only
 	// add those devices matching any of the given names.
 	var interfaces []net.Interface
-	deviceNames := apiModel.FilterDiscoveryOptionsDeviceName(options)
+	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
 	if len(deviceNames) > 0 {
 		for _, curInterface := range allInterfaces {
 			for _, deviceNameOption := range deviceNames {
@@ -162,8 +164,13 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), o
 								}
 								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
 									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
-								discoveryEvent := apiModel.NewPlcDiscoveryEvent(
-									"knxnet-ip", "udp", *remoteUrl, nil, deviceName)
+								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
+									ProtocolCode:  "knxnet-ip",
+									TransportCode: "udp",
+									TransportUrl:  *remoteUrl,
+									Options:       nil,
+									Name:          deviceName,
+								}
 								// Pass the event back to the callback
 								callback(discoveryEvent)
 							}

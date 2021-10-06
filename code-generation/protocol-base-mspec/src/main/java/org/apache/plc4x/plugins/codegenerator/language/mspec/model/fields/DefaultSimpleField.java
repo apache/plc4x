@@ -22,16 +22,20 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultSimpleField extends DefaultTaggedField implements SimpleField {
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+public class DefaultSimpleField extends DefaultField implements SimpleField {
 
     private final TypeReference type;
     private final String name;
-    private final Term[] params;
+    private final List<Term> params;
 
-    public DefaultSimpleField(String[] tags, TypeReference type, String name, Term[] params) {
-        super(tags);
-        this.type = type;
-        this.name = name;
+    public DefaultSimpleField(List<String> tags, boolean isTry, TypeReference type, String name, List<Term> params) {
+        super(tags, isTry);
+        this.type = Objects.requireNonNull(type);
+        this.name = Objects.requireNonNull(name);
         this.params = params;
     }
 
@@ -43,8 +47,8 @@ public class DefaultSimpleField extends DefaultTaggedField implements SimpleFiel
         return name;
     }
 
-    public Term[] getParams() {
-        return params;
+    public Optional<List<Term>> getParams() {
+        return Optional.ofNullable(params);
     }
 
 }

@@ -162,7 +162,7 @@ func LDataIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
 	_child := &LDataInd{
 		AdditionalInformationLength: additionalInformationLength,
 		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
+		DataFrame:                   CastLDataFrame(dataFrame),
 		Parent:                      &CEMI{},
 	}
 	_child.Parent.Child = _child

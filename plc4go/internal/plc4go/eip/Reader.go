@@ -65,7 +65,7 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 			}
 			ansi, err := toAnsi(tag)
 			if err != nil {
-				result <- model.PlcReadRequestResult{
+				result <- &plc4goModel.DefaultPlcReadRequestResult{
 					Request:  readRequest,
 					Response: nil,
 					Err:      errors.Wrapf(err, "Error encoding eip ansi for field %s", fieldName),
@@ -144,27 +144,27 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						readResponse, err := m.ToPlc4xReadResponse(multipleServiceResponse.Parent, readRequest)
 
 						if err != nil {
-							result <- model.PlcReadRequestResult{
+							result <- &plc4goModel.DefaultPlcReadRequestResult{
 								Request: readRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request:  readRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),
@@ -224,27 +224,27 @@ func (m *Reader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequ
 						readResponse, err := m.ToPlc4xReadResponse(cipReadResponse.Parent, readRequest)
 
 						if err != nil {
-							result <- model.PlcReadRequestResult{
+							result <- &plc4goModel.DefaultPlcReadRequestResult{
 								Request: readRequest,
 								Err:     errors.Wrap(err, "Error decoding response"),
 							}
 							return transaction.EndRequest()
 						}
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request:  readRequest,
 							Response: readResponse,
 						}
 						return transaction.EndRequest()
 					},
 					func(err error) error {
-						result <- model.PlcReadRequestResult{
+						result <- &plc4goModel.DefaultPlcReadRequestResult{
 							Request: readRequest,
 							Err:     errors.Wrap(err, "got timeout while waiting for response"),
 						}
 						return transaction.EndRequest()
 					},
 					time.Second*1); err != nil {
-					result <- model.PlcReadRequestResult{
+					result <- &plc4goModel.DefaultPlcReadRequestResult{
 						Request:  readRequest,
 						Response: nil,
 						Err:      errors.Wrap(err, "error sending message"),

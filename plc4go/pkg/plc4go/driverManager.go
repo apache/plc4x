@@ -20,6 +20,7 @@
 package plc4go
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
@@ -40,23 +41,68 @@ type PlcDriverManager interface {
 	GetConnection(connectionString string) <-chan PlcConnectionConnectResult
 
 	// Discover Execute all available discovery methods on all available drivers using all transports
-	Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error
-}
-
-type PlcDriverManger struct {
-	drivers    map[string]PlcDriver
-	transports map[string]transports.Transport
+	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
 }
 
 func NewPlcDriverManager() PlcDriverManager {
 	log.Trace().Msg("Creating plc driver manager")
-	return PlcDriverManger{
+	return &plcDriverManger{
 		drivers:    map[string]PlcDriver{},
 		transports: map[string]transports.Transport{},
 	}
 }
 
-func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
+func WithDiscoveryOptionProtocol(protocolName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionProtocol(protocolName)
+}
+
+func WithDiscoveryOptionTransport(transportName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionTransport(transportName)
+}
+
+func WithDiscoveryOptionDeviceName(deviceName string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionDeviceName(deviceName)
+}
+
+func WithDiscoveryOptionLocalAddress(localAddress string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionLocalAddress(localAddress)
+}
+
+func WithDiscoveryOptionRemoteAddress(remoteAddress string) options.WithDiscoveryOption {
+	return options.WithDiscoveryOptionRemoteAddress(remoteAddress)
+}
+
+///////////////////////////////////////
+///////////////////////////////////////
+//
+// Internal section
+//
+
+type plcDriverManger struct {
+	drivers    map[string]PlcDriver
+	transports map[string]transports.Transport
+}
+
+type plcConnectionConnectResult struct {
+	connection PlcConnection
+	err        error
+}
+
+func (d *plcConnectionConnectResult) GetConnection() PlcConnection {
+	return d.connection
+}
+
+func (d *plcConnectionConnectResult) GetErr() error {
+	return d.err
+}
+
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////
+
+func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
 	if driver == nil {
 		panic("driver must not be nil")
 	}
@@ -72,7 +118,7 @@ func (m PlcDriverManger) RegisterDriver(driver PlcDriver) {
 	log.Info().Str("protocolName", driver.GetProtocolName()).Msgf("Driver for %s registered", driver.GetProtocolName())
 }
 
-func (m PlcDriverManger) ListDriverNames() []string {
+func (m *plcDriverManger) ListDriverNames() []string {
 	log.Trace().Msg("Listing driver names")
 	var driverNames []string
 	for driverName := range m.drivers {
@@ -82,14 +128,14 @@ func (m PlcDriverManger) ListDriverNames() []string {
 	return driverNames
 }
 
-func (m PlcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
+func (m *plcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 	if val, ok := m.drivers[driverName]; ok {
 		return val, nil
 	}
 	return nil, errors.Errorf("couldn't find driver %s", driverName)
 }
 
-func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
+func (m *plcDriverManger) RegisterTransport(transport transports.Transport) {
 	if transport == nil {
 		panic("transport must not be nil")
 	}
@@ -105,7 +151,7 @@ func (m PlcDriverManger) RegisterTransport(transport transports.Transport) {
 	log.Info().Str("transportName", transport.GetTransportName()).Msgf("Transport for %s registered", transport.GetTransportName())
 }
 
-func (m PlcDriverManger) ListTransportNames() []string {
+func (m *plcDriverManger) ListTransportNames() []string {
 	log.Trace().Msg("Listing transport names")
 	var transportNames []string
 	for transportName := range m.transports {
@@ -115,7 +161,7 @@ func (m PlcDriverManger) ListTransportNames() []string {
 	return transportNames
 }
 
-func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
+func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[string][]string) (transports.Transport, error) {
 	if val, ok := m.transports[transportName]; ok {
 		log.Debug().Str("transportName", transportName).Msg("Returning transport")
 		return val, nil
@@ -123,7 +169,7 @@ func (m PlcDriverManger) GetTransport(transportName string, _ string, _ map[stri
 	return nil, errors.Errorf("couldn't find transport %s", transportName)
 }
 
-func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
+func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
 	log.Debug().Str("connectionString", connectionString).Msgf("Getting connection for %s", connectionString)
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
@@ -131,7 +177,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Error().Err(err).Msg("Error parsing connection")
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error parsing connection string"))
+			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 		}()
 		return ch
 	}
@@ -147,7 +193,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error getting driver for connection string"))
+			ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
 		}()
 		return ch
 	}
@@ -165,7 +211,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 			log.Err(err).Str("connectionUrl.Opaque", connectionUrl.Opaque).Msg("Couldn't get transport due to parsing error")
 			ch := make(chan PlcConnectionConnectResult)
 			go func() {
-				ch <- NewPlcConnectionConnectResult(nil, errors.Wrap(err, "error parsing connection string"))
+				ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error parsing connection string")}
 			}()
 			return ch
 		}
@@ -188,7 +234,7 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 		log.Error().Msg("got a empty transport")
 		ch := make(chan PlcConnectionConnectResult)
 		go func() {
-			ch <- NewPlcConnectionConnectResult(nil, errors.New("no transport specified and no default defined by driver"))
+			ch <- &plcConnectionConnectResult{err: errors.New("no transport specified and no default defined by driver")}
 		}()
 		return ch
 	}
@@ -205,11 +251,11 @@ func (m PlcDriverManger) GetConnection(connectionString string) <-chan PlcConnec
 	return driver.GetConnection(transportUrl, m.transports, configOptions)
 }
 
-func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), options ...model.WithDiscoveryOption) error {
+func (m *plcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error {
 	// Check if we've got at least one option to restrict to certain protocols only.
 	// If there is at least one, we only check that protocol, if there are none, all
 	// available protocols are checked.
-	protocolOptions := model.FilterDiscoveryOptionsProtocol(options)
+	protocolOptions := options.FilterDiscoveryOptionsProtocol(discoveryOptions)
 	discoveryDrivers := map[string]PlcDriver{}
 	if len(protocolOptions) > 0 {
 		for _, protocolOption := range protocolOptions {
@@ -224,7 +270,7 @@ func (m PlcDriverManger) Discover(callback func(event model.PlcDiscoveryEvent), 
 	// Execute discovery on all selected drivers
 	for _, driver := range discoveryDrivers {
 		if driver.SupportsDiscovery() {
-			err := driver.Discover(callback, options...)
+			err := driver.Discover(callback, discoveryOptions...)
 			if err != nil {
 				return errors.Wrapf(err, "Error running Discover on driver %s", driver.GetProtocolName())
 			}

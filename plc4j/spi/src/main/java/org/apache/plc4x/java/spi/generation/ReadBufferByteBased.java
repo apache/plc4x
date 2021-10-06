@@ -49,6 +49,11 @@ public class ReadBufferByteBased implements ReadBuffer {
         return (int) bi.getPos();
     }
 
+    @Override
+    public void reset(int pos) {
+        bi.reset(pos);
+    }
+
     public byte[] getBytes(int startPos, int endPos) {
         int numBytes = endPos - startPos;
         byte[] data = new byte[numBytes];

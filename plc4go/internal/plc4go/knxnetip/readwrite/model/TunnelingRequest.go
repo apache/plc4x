@@ -138,8 +138,8 @@ func TunnelingRequestParse(readBuffer utils.ReadBuffer, totalLength uint16) (*Kn
 
 	// Create a partially initialized instance
 	_child := &TunnelingRequest{
-		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
-		Cemi:                      cemi,
+		TunnelingRequestDataBlock: CastTunnelingRequestDataBlock(tunnelingRequestDataBlock),
+		Cemi:                      CastCEMI(cemi),
 		Parent:                    &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

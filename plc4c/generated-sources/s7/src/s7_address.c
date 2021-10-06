@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminators[] = {
   {/* plc4c_s7_read_write_s7_address_any */
-   .addressType = 0x10}
+   .addressType = 0x10 }
 
 };
 

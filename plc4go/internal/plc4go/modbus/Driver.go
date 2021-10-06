@@ -22,10 +22,9 @@ package modbus
 import (
 	"encoding/json"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/modbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"net/url"
@@ -33,30 +32,13 @@ import (
 )
 
 type Driver struct {
-	fieldHandler spi.PlcFieldHandler
+	_default.DefaultDriver
 }
 
 func NewDriver() *Driver {
 	return &Driver{
-		fieldHandler: NewFieldHandler(),
+		DefaultDriver: _default.NewDefaultDriver("modbus", "Modbus", "tcp", NewFieldHandler()),
 	}
-}
-
-func (m Driver) GetProtocolCode() string {
-	return "modbus"
-}
-
-func (m Driver) GetProtocolName() string {
-	return "Modbus"
-}
-
-func (m Driver) GetDefaultTransport() string {
-	return "tcp"
-}
-
-func (m Driver) CheckQuery(query string) error {
-	_, err := m.fieldHandler.ParseQuery(query)
-	return err
 }
 
 func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
@@ -67,7 +49,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		}()
 		return ch
 	}
@@ -79,7 +61,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
 		ch := make(chan plc4go.PlcConnectionConnectResult)
 		go func() {
-			ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		}()
 		return ch
 	}
@@ -114,15 +96,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	log.Debug().Uint8("unitIdentifier", unitIdentifier).Msgf("using unit identifier %d", unitIdentifier)
 
 	// Create the new connection
-	connection := NewConnection(unitIdentifier, codec, options, m.fieldHandler)
+	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcFieldHandler())
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
 	return connection.Connect()
-}
-
-func (m Driver) SupportsDiscovery() bool {
-	return false
-}
-
-func (m Driver) Discover(callback func(event apiModel.PlcDiscoveryEvent), options ...apiModel.WithDiscoveryOption) error {
-	panic("implement me")
 }

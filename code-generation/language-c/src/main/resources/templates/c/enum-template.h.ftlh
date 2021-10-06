@@ -17,6 +17,9 @@
   under the License.
 -->
 ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
+<#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -65,7 +68,7 @@ extern "C" {
 -->
 enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if helper.isStringTypeReference(type.type)>${enumValue?index}<#elseif helper.isComplexTypeReference(type.type)><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type)}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = <#if type.type.isStringTypeReference()>${enumValue?index}<#elseif helper.isComplexTypeReference(type.type)><#if helper.isEnumTypeReference(type.type)>${helper.getLanguageTypeNameForTypeReference(type.type)}_${enumValue.value}<#else>${enumValue.value}</#if><#else>${enumValue.value}</#if><#sep>,
 </#sep></#list>
 
 };

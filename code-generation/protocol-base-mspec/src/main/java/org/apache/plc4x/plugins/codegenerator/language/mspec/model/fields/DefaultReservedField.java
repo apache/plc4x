@@ -22,15 +22,20 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public class DefaultReservedField extends DefaultTaggedField implements ReservedField {
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+public class DefaultReservedField extends DefaultField implements ReservedField {
 
     private final TypeReference type;
     private final Object referenceValue;
 
-    public DefaultReservedField(String[] tags, TypeReference type, Object referenceValue) {
-        super(tags);
-        this.type = type;
-        this.referenceValue = referenceValue;
+    public DefaultReservedField(List<String> tags, boolean isTry, TypeReference type, Object referenceValue) {
+        super(tags, isTry);
+        this.type = Objects.requireNonNull(type);
+        this.referenceValue = Objects.requireNonNull(referenceValue);
     }
 
     public TypeReference getType() {
@@ -41,8 +46,8 @@ public class DefaultReservedField extends DefaultTaggedField implements Reserved
         return referenceValue;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    public Optional<List<Term>> getParams() {
+        return Optional.of(Collections.emptyList());
     }
 
 }

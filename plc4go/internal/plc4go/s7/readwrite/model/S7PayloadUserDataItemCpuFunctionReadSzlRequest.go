@@ -142,7 +142,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &S7PayloadUserDataItemCpuFunctionReadSzlRequest{
-		SzlId:    szlId,
+		SzlId:    CastSzlId(szlId),
 		SzlIndex: szlIndex,
 		Parent:   &S7PayloadUserDataItem{},
 	}

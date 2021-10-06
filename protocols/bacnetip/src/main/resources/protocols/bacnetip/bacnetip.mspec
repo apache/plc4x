@@ -302,14 +302,10 @@
         ['0x06' BACnetUnconfirmedServiceRequestTimeSynchronization
         ]
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
-            [const uint 8 'deviceInstanceLowLimitHeader' '0x0B'         ]
-            [simple uint 24 'deviceInstanceLowLimit'                    ]
-            [const uint 8 'deviceInstanceHighLimitHeader' '0x1B'        ]
-            [simple uint 24 'deviceInstanceHighLimit'                   ]
-            [const uint 8 'objectNameHeader' '0x3D'                     ]
-            [implicit uint 8 'objectNameLength' 'COUNT(objectName) + 1' ]
-            [simple uint 8 'objectNameCharacterSet'                     ]
-            [array int 8 'objectName' length 'objectNameLength - 1'     ]
+            [try simple     BACnetComplexTagUnsignedInteger ['0', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeLowLimit'  ]
+            [optional       BACnetComplexTagUnsignedInteger ['1', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeHighLimit' 'deviceInstanceRangeLowLimit != null']
+            [try simple     BACnetComplexTagOctetString     ['2', 'BACnetDataType.OCTET_STRING'     ] 'objectIdentifier' ]
+            [optional       BACnetComplexTagOctetString     ['3', 'BACnetDataType.OCTET_STRING'     ] 'objectName' 'objectIdentifier == null' ]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
             // TODO: here we need proper bacnet tags (like a dicriminator etc... see line 494 BACnetTag)
@@ -325,6 +321,57 @@
         ['0x0A' BACnetUnconfirmedServiceRequestWriteGroup
         ]
         ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+        ]
+    ]
+]
+
+[discriminatedType 'BACnetComplexTag' [uint 4 'tagNumberArgument', BACnetDataType 'dataType']
+    [assert        uint 4           'tagNumber'                 'tagNumberArgument'                                           ]
+    [const         TagClass         'tagClass'                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
+    [simple        uint 3           'lengthValueType'                                                                         ]
+    [optional      uint 8           'extTagNumber'              'tagNumber == 15'                                             ]
+    [virtual       uint 8           'actualTagNumber'           'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
+    [virtual       bit              'isPrimitiveAndNotBoolean'  '!(lengthValueType == 6) && tagNumber != 1'                   ]
+    [optional      uint 8           'extLength'        'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
+    [optional      uint 16          'extExtLength'     'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
+    [optional      uint 32          'extExtExtLength'  'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
+    [virtual       uint 32          'actualLength'     'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
+    [typeSwitch 'dataType'
+        ['NULL' BACnetComplexTagNull
+        ]
+        ['BOOLEAN' BACnetComplexTagBoolean
+        ]
+        ['UNSIGNED_INTEGER' BACnetComplexTagUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ]
+        ['SIGNED_INTEGER' BACnetComplexTagSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ]
+        ['REAL' BACnetComplexTagReal [uint 3 'lengthValueType', uint 8 'extLength']
+            [simple float 8.23 'value']
+        ]
+        ['DOUBLE' BACnetComplexTagDouble [uint 3 'lengthValueType', uint 8 'extLength']
+            [simple float 11.52 'value']
+        ]
+        ['OCTET_STRING' BACnetComplexTagOctetString [uint 32 'actualLength']
+            // TODO: The reader expects int but uint32 get's mapped to long so even uint32 would easily overflow...
+            [virtual    uint    16                           'actualLengthInBit' 'actualLength * 8']
+            [simple     string 'actualLengthInBit' 'ASCII'   'theString']
+        ]
+        ['CHARACTER_STRING' BACnetComplexTagCharacterString
+        ]
+        ['BIT_STRING' BACnetComplexTagBitString [uint 3 'lengthValueType', uint 8 'extLength']
+            [simple uint 8 'unusedBits']
+            [array int 8 'data' length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
+        ]
+        ['ENUMERATED' BACnetComplexTagEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
+            [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ]
+        ['DATE' BACnetComplexTagDate
+        ]
+        ['TIME' BACnetComplexTagTime
+        ]
+        ['BACNET_OBJECT_IDENTIFIER' BACnetComplexTagObjectIdentifier
         ]
     ]
 ]
@@ -547,7 +594,7 @@
     ['0x1' CONTEXT_SPECIFIC_TAGS]
 ]
 
-[enum int 4 'ApplicationTag'
+[enum int 4 'BACnetDataType'
     ['0x0' NULL]
     ['0x1' BOOLEAN]
     ['0x2' UNSIGNED_INTEGER]

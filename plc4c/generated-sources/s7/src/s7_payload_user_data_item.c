@@ -28,41 +28,41 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_payload_diagnostic_message */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x03, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x03, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm8 */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x05, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x05, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_notify */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x06, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x06, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_ack_ind */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x0c, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x0c, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_sq */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x11, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x11, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_s */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x12, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x12, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_sc */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x13, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x13, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_notify8 */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x16, .dataLength = -1},
+   .cpuFunctionType = 0x00, .cpuSubfunction = 0x16, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1},
+   .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1},
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x02, .dataLength = -1},
+   .cpuFunctionType = 0x04, .cpuSubfunction = 0x02, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x00},
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x00 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_sys_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x02},
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x02 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x05},
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x05 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x0b, .dataLength = -1},
+   .cpuFunctionType = 0x04, .cpuSubfunction = 0x0b, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x0b, .dataLength = -1},
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x0b, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x13, .dataLength = -1},
+   .cpuFunctionType = 0x04, .cpuSubfunction = 0x13, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1}
+   .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1 }
 
 };
 
@@ -80,33 +80,33 @@ plc4c_s7_read_write_s7_payload_user_data_item plc4c_s7_read_write_s7_payload_use
 
 
 // Constant values.
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const = 0x01;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const;
-}
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const = 0x01;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const;
-}
 static const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const = 28;
 uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH() {
   return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const;
-}
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const = 0x12;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID_const = 0x00;
 uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID() {
   return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const = 0x00;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const = 0x01;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const;
+}
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const = 0x12;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const;
 }
 static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const = 0x08;
 uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH() {
   return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const;
+}
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const = 0x00;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const;
+}
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const = 0x01;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const;
 }
 
 // Parse function.

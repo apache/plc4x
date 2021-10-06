@@ -40,6 +40,11 @@ class MessageFormatParserTest {
     void parseSomething() {
         Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
         System.out.println(parse);
+    }
 
+    @Test
+    void parseSomethingElse() {
+        Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example2"));
+        System.out.println(parse);
     }
 }

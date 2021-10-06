@@ -21,25 +21,28 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.TryField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public class DefaultSwitchField implements SwitchField {
+public class DefaultSwitchField implements SwitchField, TryField {
 
-    private final Term[] discriminatorExpressions;
+    private final boolean isTry;
+    private final List<Term> discriminatorExpressions;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(Term[] discriminatorExpressions) {
-        this.discriminatorExpressions = discriminatorExpressions;
+    public DefaultSwitchField(boolean isTry, List<Term> discriminatorExpressions) {
+        this.isTry = isTry;
+        this.discriminatorExpressions = Objects.requireNonNull(discriminatorExpressions);
         this.cases = new LinkedList<>();
     }
 
-    public Term[] getDiscriminatorExpressions() {
+    public List<Term> getDiscriminatorExpressions() {
         return discriminatorExpressions;
     }
 
+    // TODO: replace with immutable
     public void addCase(DiscriminatedComplexTypeDefinition caseType) {
         cases.add(caseType);
     }
@@ -48,8 +51,11 @@ public class DefaultSwitchField implements SwitchField {
         return cases;
     }
 
-    public Term[] getParams() {
-        return new Term[0];
+    public Optional<List<Term>> getParams() {
+        return Optional.of(Collections.emptyList());
     }
 
+    public boolean isTry() {
+        return isTry;
+    }
 }

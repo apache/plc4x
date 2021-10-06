@@ -27,10 +27,10 @@ type PlcWriteRequestBuilder interface {
 	Build() (PlcWriteRequest, error)
 }
 
-type PlcWriteRequestResult struct {
-	Request  PlcWriteRequest
-	Response PlcWriteResponse
-	Err      error
+type PlcWriteRequestResult interface {
+	GetRequest() PlcWriteRequest
+	GetResponse() PlcWriteResponse
+	GetErr() error
 }
 
 type PlcWriteRequest interface {

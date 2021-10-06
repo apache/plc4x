@@ -121,7 +121,7 @@ func BVLCOriginalBroadcastNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint
 
 	// Create a partially initialized instance
 	_child := &BVLCOriginalBroadcastNPDU{
-		Npdu:   npdu,
+		Npdu:   CastNPDU(npdu),
 		Parent: &BVLC{},
 	}
 	_child.Parent.Child = _child

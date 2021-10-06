@@ -70,7 +70,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	go func() {
 		err := m.messageCodec.Connect()
 		if err != nil {
-			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 		}
 
 		// For testing purposes we can skip the waiting for a complete connection
@@ -79,7 +79,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 			log.Warn().Msg("Connection used in an unsafe way. !!!DON'T USE IN PRODUCTION!!!")
 			// Here we write directly and don't wait till the connection is "really" connected
 			// Note: we can't use fireConnected here as it's guarded against m.driverContext.awaitSetupComplete
-			ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+			ch <- _default.NewDefaultPlcConnectionConnectResult(m, err)
 			m.SetConnected(true)
 			return
 		}
@@ -153,7 +153,7 @@ func (m *Connection) setupConnection(ch chan plc4go.PlcConnectionConnectResult) 
 
 func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnectionConnectResult) {
 	if m.driverContext.awaitSetupComplete {
-		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
 		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
 	}
@@ -161,7 +161,7 @@ func (m *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 
 func (m *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
 	if m.driverContext.awaitSetupComplete {
-		ch <- plc4go.NewPlcConnectionConnectResult(m, nil)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(m, nil)
 	} else {
 		log.Info().Msg("Successfully connected")
 	}

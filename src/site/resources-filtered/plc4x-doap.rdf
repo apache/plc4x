@@ -88,6 +88,13 @@
 
         <release>
             <Version>
+                <name>Latest 0.9.0 release</name>
+                <created>2021-09-21</created>
+                <revision>0.9.0</revision>
+            </Version>
+        </release>
+        <release>
+            <Version>
                 <name>Latest 0.8.0 release (Go drivers)</name>
                 <created>2021-01-28</created>
                 <revision>0.8.0</revision>

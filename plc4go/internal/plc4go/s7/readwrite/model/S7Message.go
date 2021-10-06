@@ -206,7 +206,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
 		}
-		parameter = _val
+		parameter = CastS7Parameter(_val)
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
@@ -216,7 +216,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		}
-		payload = _val
+		payload = CastS7Payload(_val)
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Message"); closeErr != nil {

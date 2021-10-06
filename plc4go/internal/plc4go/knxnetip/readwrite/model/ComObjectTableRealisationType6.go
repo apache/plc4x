@@ -121,7 +121,7 @@ func ComObjectTableRealisationType6Parse(readBuffer utils.ReadBuffer) (*ComObjec
 
 	// Create a partially initialized instance
 	_child := &ComObjectTableRealisationType6{
-		ComObjectDescriptors: comObjectDescriptors,
+		ComObjectDescriptors: CastGroupObjectDescriptorRealisationType6(comObjectDescriptors),
 		Parent:               &ComObjectTable{},
 	}
 	_child.Parent.Child = _child

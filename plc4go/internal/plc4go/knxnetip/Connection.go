@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"strconv"
 	"strings"
 	"sync"
@@ -195,7 +196,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	result := make(chan plc4go.PlcConnectionConnectResult)
 	sendResult := func(connection plc4go.PlcConnection, err error) {
-		result <- plc4go.NewPlcConnectionConnectResult(connection, err)
+		result <- _default.NewDefaultPlcConnectionConnectResult(connection, err)
 	}
 
 	go func() {
@@ -377,9 +378,9 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 		// Send a disconnect request from the gateway.
 		_, err := m.sendGatewayDisconnectionRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
+			result <- _default.NewDefaultPlcConnectionCloseResult(m, errors.Wrap(err, "got an error while disconnecting"))
 		} else {
-			result <- plc4go.NewPlcConnectionCloseResult(m, nil)
+			result <- _default.NewDefaultPlcConnectionCloseResult(m, nil)
 		}
 	}()
 
@@ -395,7 +396,7 @@ func (m *Connection) IsConnected() bool {
 			if !ttlTimer.Stop() {
 				<-ttlTimer.C
 			}
-			return pingResponse.Err == nil
+			return pingResponse.GetErr() == nil
 		case <-ttlTimer.C:
 			ttlTimer.Stop()
 			m.handleTimeout()
@@ -412,9 +413,9 @@ func (m *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 		// Send the connection state request
 		_, err := m.sendConnectionStateRequest()
 		if err != nil {
-			result <- plc4go.NewPlcConnectionPingResult(errors.Wrap(err, "got an error"))
+			result <- _default.NewDefaultPlcConnectionPingResult(errors.Wrap(err, "got an error"))
 		} else {
-			result <- plc4go.NewPlcConnectionPingResult(nil)
+			result <- _default.NewDefaultPlcConnectionPingResult(nil)
 		}
 		return
 	}()

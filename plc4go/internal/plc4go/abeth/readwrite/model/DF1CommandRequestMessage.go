@@ -125,7 +125,7 @@ func DF1CommandRequestMessageParse(readBuffer utils.ReadBuffer) (*DF1RequestMess
 
 	// Create a partially initialized instance
 	_child := &DF1CommandRequestMessage{
-		Command: command,
+		Command: CastDF1RequestCommand(command),
 		Parent:  &DF1RequestMessage{},
 	}
 	_child.Parent.Child = _child

@@ -151,7 +151,7 @@ func ConnectionStateRequestParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage,
 	// Create a partially initialized instance
 	_child := &ConnectionStateRequest{
 		CommunicationChannelId: communicationChannelId,
-		HpaiControlEndpoint:    hpaiControlEndpoint,
+		HpaiControlEndpoint:    CastHPAIControlEndpoint(hpaiControlEndpoint),
 		Parent:                 &KnxNetIpMessage{},
 	}
 	_child.Parent.Child = _child

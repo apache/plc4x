@@ -158,7 +158,7 @@ func BVLCForwardedNPDUParse(readBuffer utils.ReadBuffer, bvlcLength uint16) (*BV
 	_child := &BVLCForwardedNPDU{
 		Ip:     ip,
 		Port:   port,
-		Npdu:   npdu,
+		Npdu:   CastNPDU(npdu),
 		Parent: &BVLC{},
 	}
 	_child.Parent.Child = _child

@@ -36,7 +36,7 @@ public class OpcuaProtocol implements Protocol {
 
     @Override
     public Map<String, TypeDefinition> getTypeDefinitions() throws GenerationException {
-
+        System.out.println("Parsing: opc-manual.mspec");
         InputStream manualInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-manual.mspec");
         if(manualInputStream == null) {
@@ -45,6 +45,7 @@ public class OpcuaProtocol implements Protocol {
         Map<String, TypeDefinition> typeDefinitionMap =
             new LinkedHashMap<>(new MessageFormatParser().parse(manualInputStream));
 
+        System.out.println("Parsing: opc-services.mspec");
         InputStream servicesInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-services.mspec");
         if(servicesInputStream == null) {
@@ -52,7 +53,7 @@ public class OpcuaProtocol implements Protocol {
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(servicesInputStream));
 
-
+        System.out.println("Parsing: opc-status.mspec");
         InputStream statusInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-status.mspec");
         if(statusInputStream == null) {
@@ -60,7 +61,7 @@ public class OpcuaProtocol implements Protocol {
         }
         typeDefinitionMap.putAll(new MessageFormatParser().parse(statusInputStream));
 
-
+        System.out.println("Parsing: opc-types.mspec");
         InputStream typesInputStream = OpcuaProtocol.class.getResourceAsStream(
             "/protocols/opcua/opc-types.mspec");
         if(typesInputStream == null) {

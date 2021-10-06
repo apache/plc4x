@@ -123,7 +123,7 @@ func ApduControlContainerParse(readBuffer utils.ReadBuffer) (*Apdu, error) {
 
 	// Create a partially initialized instance
 	_child := &ApduControlContainer{
-		ControlApdu: controlApdu,
+		ControlApdu: CastApduControl(controlApdu),
 		Parent:      &Apdu{},
 	}
 	_child.Parent.Child = _child

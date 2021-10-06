@@ -237,7 +237,7 @@ func BACnetServiceAckReadPropertyParse(readBuffer utils.ReadBuffer) (*BACnetServ
 		ObjectInstanceNumber:     objectInstanceNumber,
 		PropertyIdentifierLength: propertyIdentifierLength,
 		PropertyIdentifier:       propertyIdentifier,
-		Value:                    value,
+		Value:                    CastBACnetTag(value),
 		Parent:                   &BACnetServiceAck{},
 	}
 	_child.Parent.Child = _child

@@ -19,8 +19,11 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+import (
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+)
 
 type PlcDiscoverer interface {
-	Discover(callback func(event model.PlcDiscoveryEvent)) error
+	Discover(callback func(event model.PlcDiscoveryEvent), discoveryOptions ...options.WithDiscoveryOption) error
 }

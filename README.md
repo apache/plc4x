@@ -73,7 +73,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java or above is also ok. 
+NOTE: Currently the Java versions which supports building of all parts of Apache PLC4X is Java 11 or higher (lower versions can't build the CMake dependent parts, such as PLC4C and PLC4Cpp). However, if you only want to build the Java parts, Java 1.8 or above is ok. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)

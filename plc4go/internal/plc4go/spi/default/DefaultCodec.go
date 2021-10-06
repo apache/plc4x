@@ -21,6 +21,7 @@ package _default
 
 import (
 	"fmt"
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
@@ -46,7 +47,7 @@ type DefaultCodec interface {
 }
 
 // NewDefaultCodec is the factory for a DefaultCodec
-func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...WithOption) DefaultCodec {
+func NewDefaultCodec(requirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	return buildDefaultCodec(requirements, transportInstance, options...)
 }
 
@@ -57,7 +58,7 @@ type DefaultExpectation struct {
 	HandleError    spi.HandleError
 }
 
-func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool) WithOption {
+func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool) options.WithOption {
 	return withCustomMessageHandler{customMessageHandler: customMessageHandler}
 }
 
@@ -68,7 +69,7 @@ func WithCustomMessageHandler(customMessageHandler func(codec *DefaultCodecRequi
 //
 
 type withCustomMessageHandler struct {
-	option
+	options.Option
 	customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
 }
 
@@ -81,13 +82,10 @@ type defaultCodec struct {
 	customMessageHandling         func(codec *DefaultCodecRequirements, message interface{}) bool
 }
 
-func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...WithOption) DefaultCodec {
+func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transportInstance transports.TransportInstance, options ...options.WithOption) DefaultCodec {
 	var customMessageHandler func(codec *DefaultCodecRequirements, message interface{}) bool
 
 	for _, option := range options {
-		if !option.isOption() {
-			panic("not a option")
-		}
 		switch option.(type) {
 		case withCustomMessageHandler:
 			customMessageHandler = option.(withCustomMessageHandler).customMessageHandler

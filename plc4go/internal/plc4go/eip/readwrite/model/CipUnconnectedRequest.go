@@ -272,7 +272,7 @@ func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error
 
 	// Create a partially initialized instance
 	_child := &CipUnconnectedRequest{
-		UnconnectedService: unconnectedService,
+		UnconnectedService: CastCipService(unconnectedService),
 		BackPlane:          backPlane,
 		Slot:               slot,
 		Parent:             &CipService{},

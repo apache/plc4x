@@ -26,13 +26,13 @@ import org.apache.plc4x.java.spi.values.PlcStruct;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
+import java.nio.file.FileSystems;
 
 public class PassiveBacNetIpDriver2Manual {
 
     public static void main(String[] args) throws Exception {
         String tempDirectory = FileUtils.getTempDirectoryPath();
-        File pcapFile = Path.of(tempDirectory, "bacnet-stack-services.cap").toFile();
+        File pcapFile = FileSystems.getDefault().getPath(tempDirectory, "bacnet-stack-services.cap").toFile();
         if (!pcapFile.exists())
             FileUtils.copyURLToFile(new URL("https://wiki.wireshark.org/Protocols/bacnet?action=AttachFile&do=get&target=bacnet-stack-services.cap"), pcapFile);
 

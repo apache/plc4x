@@ -17,16 +17,29 @@
  * under the License.
  */
 
-package _default
+package model
 
-// WithOption is a marker interface for options supplied by the builders like WithDefaultTtl
-type WithOption interface {
-	isOption() bool
+import "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
+
+type DefaultPlcBrowseEvent struct {
+	Request   model.PlcBrowseRequest
+	QueryName string
+	Result    model.PlcBrowseQueryResult
+	Err       error
 }
 
-type option struct {
+func (d *DefaultPlcBrowseEvent) GetRequest() model.PlcBrowseRequest {
+	return d.Request
 }
 
-func (_ option) isOption() bool {
-	return true
+func (d *DefaultPlcBrowseEvent) GetQueryName() string {
+	return d.QueryName
+}
+
+func (d *DefaultPlcBrowseEvent) GetResult() model.PlcBrowseQueryResult {
+	return d.Result
+}
+
+func (d *DefaultPlcBrowseEvent) GetErr() error {
+	return d.Err
 }
