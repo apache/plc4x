@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'KnxNetIpMessage'
+[discriminatedType 'KnxNetIpMessage' byteOrder='"BIG_ENDIAN"'
     [implicit      uint 8  'headerLength'    '6']
     [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']

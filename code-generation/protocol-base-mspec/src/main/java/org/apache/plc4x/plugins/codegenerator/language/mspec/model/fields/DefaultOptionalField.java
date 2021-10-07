@@ -23,6 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,8 +34,8 @@ public class DefaultOptionalField extends DefaultField implements OptionalField 
     private final Term conditionExpression;
     private final List<Term> params;
 
-    public DefaultOptionalField(List<String> tags, TypeReference type, String name, Term conditionExpression, List<Term> params) {
-        super(tags);
+    public DefaultOptionalField(Map<String, Term> attributes, TypeReference type, String name, Term conditionExpression, List<Term> params) {
+        super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.conditionExpression = conditionExpression;

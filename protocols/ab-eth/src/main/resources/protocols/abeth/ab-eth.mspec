@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'CIPEncapsulationPacket'
+[discriminatedType 'CIPEncapsulationPacket' byteOrder='"BIG_ENDIAN"'
     [discriminator uint 16 'commandType']
     [implicit      uint 16 'len' 'lengthInBytes - 28']
     [simple        uint 32 'sessionHandle']

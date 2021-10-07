@@ -23,22 +23,24 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 public abstract class DefaultTypeDefinition {
 
     protected final String name;
+    private final Map<String, Term> attributes;
     protected final List<Argument> parserArguments;
-    protected final List<String> tags;
     protected TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name, List<Argument> parserArguments, List<String> tags) {
+    public DefaultTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments) {
         this.name = Objects.requireNonNull(name);
+        this.attributes = attributes;
         this.parserArguments = parserArguments;
-        this.tags = tags;
         this.parentType = null;
     }
 
@@ -46,12 +48,15 @@ public abstract class DefaultTypeDefinition {
         return name;
     }
 
-    public Optional<List<Argument>> getParserArguments() {
-        return Optional.ofNullable(parserArguments);
+    public Optional<Term> getAttribute(String attributeName) {
+        if(attributes.containsKey(attributeName)) {
+            return Optional.of(attributes.get(attributeName));
+        }
+        return Optional.empty();
     }
 
-    public Optional<List<String>> getTags() {
-        return Optional.ofNullable(tags);
+    public Optional<List<Argument>> getParserArguments() {
+        return Optional.ofNullable(parserArguments);
     }
 
     public TypeDefinition getParentType() {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'FirmataMessage' [bit 'response']
+[discriminatedType 'FirmataMessage' byteOrder='"BIG_ENDIAN"' [bit 'response']
     [discriminator uint 4 'messageType']
     [typeSwitch 'messageType'
         // Reading operations

@@ -18,12 +18,26 @@
  */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
-import java.util.List;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-public abstract class DefaultField extends DefaultTaggedField {
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
-    protected DefaultField(List<String> tags) {
-        super(tags);
+public abstract class DefaultField {
+
+    private final Map<String, Term> attributes;
+
+    protected DefaultField(Map<String, Term> attributes) {
+        super();
+        this.attributes = Objects.requireNonNull(attributes);
+    }
+
+    public Optional<Term> getAttribute(String attributeName) {
+        if(attributes.containsKey(attributeName)) {
+            return Optional.of(attributes.get(attributeName));
+        }
+        return Optional.empty();
     }
 
 }

@@ -22,16 +22,18 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTypeDefinition implements DiscriminatedComplexTypeDefinition {
 
     private final List<String> discriminatorValues;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, List<Argument> parserArguments, List<String> tags, List<String> discriminatorValues, List<Field> fields) {
-        super(name, parserArguments, tags, false, fields);
+    public DefaultDiscriminatedComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, List<String> discriminatorValues, List<Field> fields) {
+        super(name, attributes, parserArguments, false, fields);
         this.discriminatorValues = Objects.requireNonNull(discriminatorValues);
     }
 

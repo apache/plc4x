@@ -55,7 +55,7 @@
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.
 
-[type 'OpcuaAPU' [bit 'response']
+[type 'OpcuaAPU' byteOrder='"LITTLE_ENDIAN"' [bit 'response']
     [simple         MessagePDU   'message' ['response']]
 ]
 

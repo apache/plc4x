@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'BVLC'
+[discriminatedType 'BVLC' byteOrder='"BIG_ENDIAN"'
     [const         uint 8  'bacnetType'   '0x81'       ]
     [discriminator uint 8  'bvlcFunction'              ]
     [implicit      uint 16 'bvlcLength' 'lengthInBytes']

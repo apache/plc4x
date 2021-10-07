@@ -27,12 +27,10 @@ import java.util.*;
 
 public class DefaultSwitchField implements SwitchField {
 
-    private final boolean isTry;
     private final List<Term> discriminatorExpressions;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(boolean isTry, List<Term> discriminatorExpressions) {
-        this.isTry = isTry;
+    public DefaultSwitchField(List<Term> discriminatorExpressions) {
         this.discriminatorExpressions = Objects.requireNonNull(discriminatorExpressions);
         this.cases = new LinkedList<>();
     }
@@ -50,11 +48,13 @@ public class DefaultSwitchField implements SwitchField {
         return cases;
     }
 
+    @Override
+    public Optional<Term> getAttribute(String attributeName) {
+        return Optional.empty();
+    }
+
     public Optional<List<Term>> getParams() {
         return Optional.of(Collections.emptyList());
     }
 
-    public boolean isTry() {
-        return isTry;
-    }
 }

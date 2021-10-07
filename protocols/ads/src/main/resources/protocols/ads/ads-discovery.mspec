@@ -21,17 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[enum uint 8 'Operation'
-    ['0x01' DISCOVERY]
-    ['0x06' ROUTE    ]
-]
-
-[enum uint 8 'Direction'
-    ['0x00' REQUEST ]
-    ['0x80' RESPONSE]
-]
-
-[discriminatedType 'AdsDiscovery'
+[discriminatedType 'AdsDiscovery' byteOrder='"BIG_ENDIAN"'
     [const uint 32 'header' '0x03661471L']
     [reserved   uint 32  '0x00000000L']
     [enum Operation 'operation']
@@ -77,6 +67,16 @@
             [reserved uint 24 '0x000000']
         ]
     ]
+]
+
+[enum uint 8 'Operation'
+    ['0x01' DISCOVERY]
+    ['0x06' ROUTE    ]
+]
+
+[enum uint 8 'Direction'
+    ['0x00' REQUEST ]
+    ['0x80' RESPONSE]
 ]
 
 [enum uint 24 'RouteStatus'
