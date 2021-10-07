@@ -22,6 +22,7 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
 
@@ -31,9 +32,9 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     private final List<EnumValue> enumValues;
     private final Map<String, TypeReference> constants;
 
-    public DefaultEnumTypeDefinition(String name, TypeReference type, List<EnumValue> enumValues,
-                                     List<Argument> constants, List<String> tags) {
-        super(name, constants, tags);
+    public DefaultEnumTypeDefinition(String name, TypeReference type, Map<String, Term> attributes, List<EnumValue> enumValues,
+                                     List<Argument> constants) {
+        super(name, attributes, constants);
         this.type = Objects.requireNonNull(type);
         this.enumValues = Objects.requireNonNull(enumValues);
         this.constants = new HashMap<>();

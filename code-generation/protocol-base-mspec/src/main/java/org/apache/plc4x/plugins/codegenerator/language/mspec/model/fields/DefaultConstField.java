@@ -22,10 +22,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ConstField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class DefaultConstField extends DefaultField implements ConstField {
 
@@ -33,8 +30,8 @@ public class DefaultConstField extends DefaultField implements ConstField {
     private final String name;
     private final Object referenceValue;
 
-    public DefaultConstField(List<String> tags, TypeReference type, String name, Object referenceValue) {
-        super(tags);
+    public DefaultConstField(Map<String, Term> attributes, TypeReference type, String name, Object referenceValue) {
+        super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.referenceValue = Objects.requireNonNull(referenceValue);

@@ -37,7 +37,7 @@
  PnPtcp     PROFINET Precision Transparent Clock Protocol
 */
 
-[type 'Ethernet_Frame'
+[type 'Ethernet_Frame' byteOrder='"BIG_ENDIAN"'
     // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress            'destination']
     [simple MacAddress            'source'     ]
@@ -92,7 +92,7 @@
 // usually be dynamic. However are we trying to limit the number of
 // arguments needed to construct the messages and Profinet only seems
 // be using a very limited subset of all possible DCE/RPC packets.
-[type 'DceRpc_Packet'
+[type 'DceRpc_Packet' byteOrder='"BIG_ENDIAN"'
 // RPC Header {
     // RPCVersion 4.10.3.2.1
     [const         uint 8                'version'                        '0x04'                 ]
@@ -118,7 +118,7 @@
     [simple        FloatingPointEncoding 'floatingPointEncoding'                                 ]
     // RPCSerialHigh 4.10.3.2.6
     [const         uint 8                'serialHigh'                     '0x00'                 ]
-    [batchSet encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
+    [batchSet byteOrder='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
         // RPCObjectUUID 4.10.3.2.8
         [simple DceRpc_ObjectUuid        'objectUuid'                                            ]
         // RPCInterfaceUUID 4.10.3.2.9
@@ -148,20 +148,20 @@
     [const            uint 8             'serialLow'                      '0x00'                 ]
 // RPC Header }
 // RPC Payload {
-    [simple PnIoCm_Packet 'payload' encoding='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"' ['packetType'] ]
+    [simple PnIoCm_Packet 'payload' byteOrder='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"' ['packetType'] ]
 // RPC Payload }
 ]
 
 // RPCObjectUUID 4.10.3.2.8
 [type 'DceRpc_ObjectUuid'
-    [const  uint 32 'data1'      '0xDEA00000'                      ]
-    [const  uint 16 'data2'      '0x6C97'                          ]
-    [const  uint 16 'data3'      '0x11D1'                          ]
+    [const  uint 32 'data1'      '0xDEA00000'                         ]
+    [const  uint 16 'data2'      '0x6C97'                             ]
+    [const  uint 16 'data3'      '0x11D1'                             ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [const  uint 16 'data4'      '0x8271'     encoding='BIG_ENDIAN']
-    [simple uint 16 'nodeNumber'              encoding='BIG_ENDIAN']
-    [simple uint 16 'deviceId'                encoding='BIG_ENDIAN']
-    [simple uint 16 'vendorId'                encoding='BIG_ENDIAN']
+    [const  uint 16 'data4'      '0x8271'     byteOrder='"BIG_ENDIAN"']
+    [simple uint 16 'nodeNumber'              byteOrder='"BIG_ENDIAN"']
+    [simple uint 16 'deviceId'                byteOrder='"BIG_ENDIAN"']
+    [simple uint 16 'vendorId'                byteOrder='"BIG_ENDIAN"']
 ]
 
 // RPCInterfaceUUID 4.10.3.2.9
@@ -170,14 +170,14 @@
 //       dynamically endianed and the last 8 bytes are set to Big Endian, we
 //       had to do this trick.
 [discriminatedType 'DceRpc_InterfaceUuid'
-    [discriminator  uint 32 'interfaceType'                                ]
-    [const          uint 16 'data1'      '0x6C97'                          ]
-    [const          uint 16 'data2'      '0x11D1'                          ]
+    [discriminator  uint 32 'interfaceType'                                   ]
+    [const          uint 16 'data1'      '0x6C97'                             ]
+    [const          uint 16 'data2'      '0x11D1'                             ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [const          uint 16 'data3'      '0x8271'     encoding='BIG_ENDIAN']
-    [const          uint 16 'data4'      '0x00A0'     encoding='BIG_ENDIAN']
-    [const          uint 16 'data5'      '0x2442'     encoding='BIG_ENDIAN']
-    [const          uint 16 'data6'      '0xDF7D'     encoding='BIG_ENDIAN']
+    [const          uint 16 'data3'      '0x8271'     byteOrder='"BIG_ENDIAN"']
+    [const          uint 16 'data4'      '0x00A0'     byteOrder='"BIG_ENDIAN"']
+    [const          uint 16 'data5'      '0x2442'     byteOrder='"BIG_ENDIAN"']
+    [const          uint 16 'data6'      '0xDF7D'     byteOrder='"BIG_ENDIAN"']
     [typeSwitch 'interfaceType'
         ['0xDEA00001' DceRpc_InterfaceUuid_DeviceInterface
         ]
@@ -196,11 +196,11 @@
 //       the first parts are effected by endianess, and the last 8
 //       bytes are fixed big-endian. Therefore the complicated notation.
 [type 'DceRpc_ActivityUuid'
-    [simple  uint 32 'data1'                      ]
-    [simple  uint 16 'data2'                      ]
-    [simple  uint 16 'data3'                      ]
+    [simple  uint 32 'data1'                         ]
+    [simple  uint 16 'data2'                         ]
+    [simple  uint 16 'data3'                         ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [simple  uint 64 'data4' encoding='BIG_ENDIAN']
+    [simple  uint 64 'data4' byteOrder='"BIG_ENDIAN"']
 ]
 
 // There are some special MAC addresses reserved:

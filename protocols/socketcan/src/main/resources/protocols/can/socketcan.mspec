@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[type 'SocketCANFrame'
+[type 'SocketCANFrame' byteOrder='"LITTLE_ENDIAN"'
     [simple int 32 'rawId']
     [virtual int 32 'identifier'
         'STATIC_CALL("org.apache.plc4x.java.transport.socketcan.helper.HeaderParser.readIdentifier", rawId)'

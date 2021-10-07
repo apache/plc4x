@@ -24,8 +24,10 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefini
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
@@ -33,8 +35,8 @@ public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implement
     private final SwitchField switchField;
     private final TypeReference type;
 
-    public DefaultDataIoTypeDefinition(String name, List<Argument> parserArguments, List<String> tags, SwitchField switchField) {
-        super(name, parserArguments, tags);
+    public DefaultDataIoTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, SwitchField switchField) {
+        super(name, attributes, parserArguments);
         this.switchField = Objects.requireNonNull(switchField);
         if (parserArguments.size() < 1) {
             throw new IllegalStateException();

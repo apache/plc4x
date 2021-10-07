@@ -22,10 +22,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class DefaultVirtualField extends DefaultField implements VirtualField {
 
@@ -33,8 +30,8 @@ public class DefaultVirtualField extends DefaultField implements VirtualField {
     private final String name;
     private final Term valueExpression;
 
-    public DefaultVirtualField(List<String> tags, TypeReference type, String name, Term valueExpression) {
-        super(tags);
+    public DefaultVirtualField(Map<String, Term> attributes, TypeReference type, String name, Term valueExpression) {
+        super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.valueExpression = Objects.requireNonNull(valueExpression);

@@ -21,7 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsTCPPacket'
+[type 'AmsTCPPacket' byteOrder='"LITTLE_ENDIAN"'
     // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
     // These bytes must be set to 0.
     [reserved   uint       16       '0x0000'                            ]

@@ -21,11 +21,9 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implements ComplexTypeDefinition {
@@ -33,8 +31,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final boolean isAbstract;
     private final List<Field> fields;
 
-    public DefaultComplexTypeDefinition(String name, List<Argument> parserArguments, List<String> tags, boolean isAbstract, List<Field> fields) {
-        super(name, parserArguments, tags);
+    public DefaultComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, boolean isAbstract, List<Field> fields) {
+        super(name, attributes, parserArguments);
         this.isAbstract = isAbstract;
         this.fields = Objects.requireNonNull(fields);
     }

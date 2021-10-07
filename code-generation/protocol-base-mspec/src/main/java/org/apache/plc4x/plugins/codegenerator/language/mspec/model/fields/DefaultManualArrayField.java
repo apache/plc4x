@@ -23,6 +23,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -37,8 +38,8 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     private final Term lengthExpression;
     private final List<Term> params;
 
-    public DefaultManualArrayField(List<String> tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
-        super(tags);
+    public DefaultManualArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
+        super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.loopType = Objects.requireNonNull(loopType);
