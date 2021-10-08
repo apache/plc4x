@@ -30,7 +30,12 @@ public class FieldReaderUnknown<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        throw new IllegalStateException("not possible with unknown field");
+    }
+
+    public void readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        T unknownValue = dataReader.read(logicalName, readerArgs);
+        LOGGER.debug("Read unkown value {}", unknownValue);
     }
 
 }
