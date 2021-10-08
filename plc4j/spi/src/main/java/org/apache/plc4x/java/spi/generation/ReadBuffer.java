@@ -28,6 +28,10 @@ public interface ReadBuffer {
 
     boolean hasMore(int numBits);
 
+    ByteOrder getByteOrder();
+
+    void setByteOrder(ByteOrder byteOrder);
+
     void pullContext(String logicalName, WithReaderArgs... readerArgs);
 
     boolean readBit(String logicalName, WithReaderArgs... readerArgs) throws ParseException;

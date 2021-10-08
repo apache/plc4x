@@ -21,7 +21,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public interface DataReaderEnum<T> extends DataReader {
+public interface DataReaderEnum<T> extends DataReader<T> {
 
     T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 

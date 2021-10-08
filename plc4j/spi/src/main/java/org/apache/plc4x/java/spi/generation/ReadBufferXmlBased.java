@@ -64,6 +64,17 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
+    public ByteOrder getByteOrder() {
+        // NO OP
+        return ByteOrder.BIG_ENDIAN;
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        // NO OP
+    }
+
+    @Override
     public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
         StartElement startElement = travelToNextStartElement();
         String elementName = startElement.getName().getLocalPart();

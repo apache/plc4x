@@ -26,11 +26,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 public class ReadBufferByteBased implements ReadBuffer {
 
     private final MyDefaultBitInput bi;
-    private final ByteOrder byteOrder;
+    private ByteOrder byteOrder;
     private final long totalBytes;
 
     public ReadBufferByteBased(byte[] input) {
@@ -38,6 +39,8 @@ public class ReadBufferByteBased implements ReadBuffer {
     }
 
     public ReadBufferByteBased(byte[] input, ByteOrder byteOrder) {
+        Objects.requireNonNull(input);
+        Objects.requireNonNull(byteOrder);
         ArrayByteInput abi = new ArrayByteInput(input);
         this.bi = new MyDefaultBitInput(abi);
         this.byteOrder = byteOrder;
@@ -68,6 +71,16 @@ public class ReadBufferByteBased implements ReadBuffer {
     @Override
     public boolean hasMore(int numBits) {
         return (numBits / 8) <= (totalBytes - getPos());
+    }
+
+    @Override
+    public ByteOrder getByteOrder() {
+        return byteOrder;
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        this.byteOrder = byteOrder;
     }
 
     public byte peekByte(int offset) throws ParseException {
