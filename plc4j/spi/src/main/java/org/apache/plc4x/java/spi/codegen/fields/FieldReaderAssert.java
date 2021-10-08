@@ -25,6 +25,8 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class FieldReaderAssert<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAssert.class);
@@ -34,10 +36,11 @@ public class FieldReaderAssert<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with assert field");
     }
 
-    public T readAssertField(String logicalName, DataReader<T> dataReader, boolean condition, WithReaderArgs... readerArgs) throws ParseException {
-        if (!condition) {
-            throw new ParseAssertException("Doesn't meet expectations");
+    public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        T readValue = dataReader.read(logicalName, readerArgs);
+        if (Objects.equals(readValue, expectedValue)) {
+            throw new ParseAssertException("Actual value " + readValue + " doesn't match expected " + expectedValue);
         }
-        return dataReader.read(logicalName, readerArgs);
+        return readValue;
     }
 }
