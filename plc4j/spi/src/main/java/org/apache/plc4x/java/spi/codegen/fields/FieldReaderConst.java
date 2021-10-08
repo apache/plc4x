@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
-import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
@@ -37,11 +36,11 @@ public class FieldReaderConst<T> implements FieldReader<T> {
     }
 
     public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
-        T readValue = dataReader.read(logicalName, readerArgs);
-        if (Objects.equals(readValue, expectedValue)) {
-            throw new ParseException("Actual value " + readValue + " doesn't match expected " + expectedValue);
+        T constValue = dataReader.read(logicalName, readerArgs);
+        if (!Objects.equals(constValue, expectedValue)) {
+            throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue);
         }
-        return readValue;
+        return constValue;
     }
 
 }

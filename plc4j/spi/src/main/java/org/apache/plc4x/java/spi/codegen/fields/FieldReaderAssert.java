@@ -37,10 +37,10 @@ public class FieldReaderAssert<T> implements FieldReader<T> {
     }
 
     public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
-        T readValue = dataReader.read(logicalName, readerArgs);
-        if (Objects.equals(readValue, expectedValue)) {
-            throw new ParseAssertException("Actual value " + readValue + " doesn't match expected " + expectedValue);
+        T assertValue = dataReader.read(logicalName, readerArgs);
+        if (!Objects.equals(assertValue, expectedValue)) {
+            throw new ParseAssertException("Actual value " + assertValue + " doesn't match expected " + expectedValue);
         }
-        return readValue;
+        return assertValue;
     }
 }
