@@ -30,17 +30,18 @@ public class FieldReaderConst<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderConst.class);
 
+    public static final FieldReaderConst<?> INSTANCE = new FieldReaderConst<>();
+
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         throw new IllegalStateException("not possible with const field");
     }
 
-    public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+    public void readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         T constValue = dataReader.read(logicalName, readerArgs);
         if (!Objects.equals(constValue, expectedValue)) {
             throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue);
         }
-        return constValue;
     }
 
 }

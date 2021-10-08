@@ -28,6 +28,8 @@ public class FieldReaderImplicit<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderImplicit.class);
 
+    public static final FieldReaderImplicit<?> INSTANCE = new FieldReaderImplicit<>();
+
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
