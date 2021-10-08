@@ -51,6 +51,8 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypeReferences()?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+
+import org.apache.plc4x.java.spi.codegen.fields;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -318,12 +320,15 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if helper.isSimpleTypeReference(constField.type)>
             <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
         ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
+
+        // TODO: value assingment gets useless once this is transformed to field read only as the check happens within anyway
+        FieldReaderConst.INSTANCE.readConstField(String logicalName, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
         <#else>
         ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumBaseTypeReference(constField.type), "", constField)});
-        </#if>
         if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
             throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name});
         }
+        </#if>
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
