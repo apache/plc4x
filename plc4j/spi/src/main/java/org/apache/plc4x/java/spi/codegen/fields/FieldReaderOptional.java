@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -35,7 +34,7 @@ public class FieldReaderOptional<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with optional field");
     }
 
-    public T readOptionalField(String logicalName, DataReader<T> dataReader, boolean condition, WithOption... options) throws ParseException {
+    public T readOptionalField(String logicalName, DataReader<T> dataReader, boolean condition, WithReaderArgs... readerArgs) throws ParseException {
         if (!condition) {
             LOGGER.debug("Condition doesnt match for field {}", logicalName);
             return null;
@@ -43,7 +42,7 @@ public class FieldReaderOptional<T> implements FieldReader<T> {
 
         int curPos = dataReader.getPos();
         try {
-            return dataReader.read(logicalName, options);
+            return dataReader.read(logicalName, readerArgs);
         } catch (ParseAssertException e) {
             LOGGER.trace("Assertion doesnt match for field {}", logicalName, e);
             dataReader.setPos(curPos);

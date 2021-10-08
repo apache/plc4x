@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
+import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
@@ -31,7 +31,13 @@ public class FieldReaderAssert<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with optional field");
+        throw new IllegalStateException("not possible with assert field");
     }
 
+    public T readAssertField(String logicalName, DataReader<T> dataReader, boolean condition, WithReaderArgs... readerArgs) throws ParseException {
+        if (!condition) {
+            throw new ParseAssertException("Doesn't meet expectations");
+        }
+        return dataReader.read(logicalName, readerArgs);
+    }
 }
