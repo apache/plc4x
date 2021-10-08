@@ -105,16 +105,16 @@ public interface WriteBuffer {
         writeBigInteger("", bitLength, value);
     }
 
-    void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException;
+    void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException;
 
-    default void writeFloat(float value, int bitsExponent, int bitsMantissa) throws ParseException {
-        writeFloat("", value, bitsExponent, bitsMantissa);
+    default void writeFloat(int bitLength, float value) throws ParseException {
+        writeFloat("", bitLength, value);
     }
 
-    void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException;
+    void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException;
 
-    default void writeDouble(double value, int bitsExponent, int bitsMantissa) throws ParseException {
-        writeDouble("", value, bitsExponent, bitsMantissa);
+    default void writeDouble(int bitLength, double value) throws ParseException {
+        writeDouble("", bitLength, value);
     }
 
     void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException;
