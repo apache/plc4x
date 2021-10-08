@@ -104,16 +104,16 @@
             [array uint 64 'value' count 'numberOfValues']
         ]
         ['REAL','1' REAL
-            [simple float 8.23  'value']
+            [simple float 32  'value']
         ]
         ['REAL' List
-            [array float 8.23 'value' count 'numberOfValues']
+            [array float 32 'value' count 'numberOfValues']
         ]
         ['LREAL','1' LREAL
-            [simple float 11.52  'value']
+            [simple float 64  'value']
         ]
         ['LREAL' List
-            [array float 11.52 'value' count 'numberOfValues']
+            [array float 64 'value' count 'numberOfValues']
         ]
         ['CHAR','1' CHAR
             [simple uint 8 'value']

@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
@@ -172,15 +171,13 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
-        int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
+    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwFloatKey, bitLength, Float.toString(value), writerArgs);
         move(bitLength);
     }
 
     @Override
-    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
-        int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
+    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException {
         createAndAppend(logicalName, rwFloatKey, bitLength, Double.toString(value), writerArgs);
         move(bitLength);
     }

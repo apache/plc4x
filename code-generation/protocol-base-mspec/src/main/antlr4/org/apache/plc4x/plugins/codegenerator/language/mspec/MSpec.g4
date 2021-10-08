@@ -151,8 +151,8 @@ dataType
  | base='byte'
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
- | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
+ | base='float' size=INTEGER_LITERAL
+ | base='ufloat' size=INTEGER_LITERAL
  | base='string' size=INTEGER_LITERAL
  | base='vstring' (length=expression)?
  | base='time'

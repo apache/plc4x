@@ -28,7 +28,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLREAL extends PlcIECValue<Double> {
@@ -266,7 +265,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws ParseException {
-        writeBuffer.writeDouble(getClass().getSimpleName(), value, 11, 52);
+        writeBuffer.writeDouble(getClass().getSimpleName(), 64, value);
     }
 
 }

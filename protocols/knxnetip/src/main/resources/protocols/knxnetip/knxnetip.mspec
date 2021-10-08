@@ -836,7 +836,7 @@
             [simple   uint 16       'value']
         ]
         ['PDT_KNX_FLOAT' REAL
-            [simple   float 4.11    'value']
+            [simple   float 16      'value' encoding='"KNXFloat"']
         ]
         ['PDT_DATE' Struct
             [reserved uint 3 '0x00']
@@ -860,10 +860,10 @@
             [simple   uint 32       'value']
         ]
         ['PDT_FLOAT' REAL
-            [simple   float 8.23    'value']
+            [simple   float 32    'value']
         ]
         ['PDT_DOUBLE' LREAL
-            [simple   float 11.52   'value']
+            [simple   float 64   'value']
         ]
         ['PDT_CHAR_BLOCK' List
             [array uint 8           'value' count '10']

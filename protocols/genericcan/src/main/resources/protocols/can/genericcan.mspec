@@ -97,10 +97,10 @@
             [simple int 64 'value']
         ]
         ['REAL32' REAL
-            [simple float 8.23 'value']
+            [simple float 32 'value']
         ]
         ['REAL64' LREAL
-            [simple float 11.52 'value']
+            [simple float 64 'value']
         ]
     ]
 ]
