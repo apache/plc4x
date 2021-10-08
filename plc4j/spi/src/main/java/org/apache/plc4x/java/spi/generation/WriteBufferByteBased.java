@@ -275,19 +275,19 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
-        if (bitsExponent != 8 || bitsMantissa != 23) {
+    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException {
+        if (bitLength != 32) {
             throw new UnsupportedOperationException("Error writing float: Exponent and/or Mantissa non standard size");
         }
-        writeInt(logicalName, 1 + bitsExponent + bitsMantissa, Float.floatToRawIntBits(value));
+        writeInt(logicalName, bitLength, Float.floatToRawIntBits(value));
     }
 
     @Override
-    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
-        if (bitsExponent != 11 || bitsMantissa != 52) {
+    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException {
+        if (bitLength != 64) {
             throw new UnsupportedOperationException("Error writing double: Exponent and/or Mantissa non standard size");
         }
-        writeLong(logicalName, 1 + bitsExponent + bitsMantissa, Double.doubleToRawLongBits(value));
+        writeLong(logicalName, bitLength, Double.doubleToRawLongBits(value));
     }
 
     @Override

@@ -448,10 +448,10 @@
         // Floating point values
         // -----------------------------------------
         ['IEC61131_REAL' REAL
-            [simple float 8.23  'value']
+            [simple float 32  'value']
         ]
         ['IEC61131_LREAL' LREAL
-            [simple float 11.52 'value']
+            [simple float 64 'value']
         ]
 
         // -----------------------------------------

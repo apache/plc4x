@@ -207,20 +207,18 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeFloat(String logicalName, float value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(logicalName, value);
         });
     }
 
     @Override
-    public void writeDouble(String logicalName, double value, int bitsExponent, int bitsMantissa, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
-            int bitLength = (value < 0 ? 1 : 0) + bitsExponent + bitsMantissa;
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
             generator.writeNumberField(sanitizedLogicalName, value);
         });

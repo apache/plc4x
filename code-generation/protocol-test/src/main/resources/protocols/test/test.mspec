@@ -73,8 +73,8 @@
 /*
  * TODO: doesn't compile in java
 [type 'UFloatTypeTest'
-    [simple ufloat 8.23 'ufloatField']
-    [simple ufloat 11.52 'udoubleField']
+    [simple ufloat 32 'ufloatField']
+    [simple ufloat 64 'udoubleField']
 ]
 */
 
@@ -92,8 +92,8 @@
     [simple byte 'byteField']
     [simple int 8 'intField']
     [simple uint 8 'uintField']
-    [simple float 8.23 'floatField']
-    [simple float 11.52 'doubleField']
+    [simple float 32 'floatField']
+    [simple float 64 'doubleField']
     [simple string 8 'stringField']
 ]
 
@@ -103,16 +103,16 @@
     [abstract bit 'abstractBitField']
     [abstract int 8 'abstractIntField']
     [abstract uint 8 'abstractUintField']
-    [abstract float 8.23 'abstractFloatField']
-    [abstract float 11.52 'abstractDoubleField']
+    [abstract float 32 'abstractFloatField']
+    [abstract float 64 'abstractDoubleField']
     [abstract string 8 'abstractStringField']
     [typeSwitch 'simpleField'
         ['0' AbstractedType
             [simple bit 'abstractBitField']
             [simple int 8 'abstractIntField']
             [simple uint 8 'abstractUintField']
-            [simple float 8.23 'abstractFloatField']
-            [simple float 11.52 'abstractDoubleField']
+            [simple float 32 'abstractFloatField']
+            [simple float 64 'abstractDoubleField']
             [simple string 8 'abstractStringField']
         ]
     ]
@@ -124,8 +124,8 @@
     [abstract bit 'abstractBitField']
     [abstract int 8 'abstractIntField']
     [abstract uint 8 'abstractUintField']
-    [abstract float 8.23 'abstractFloatField']
-    [abstract float 11.52 'abstractDoubleField']
+    [abstract float 32 'abstractFloatField']
+    [abstract float 64 'abstractDoubleField']
     [abstract string 8 'abstractStringField']
     [typeSwitch 'simpleField'
         ['0' AbstractedType
@@ -133,8 +133,8 @@
             [simple bit 'abstractBitField']
             [simple int 8 'abstractIntField']
             [simple uint 8 'abstractUintField']
-            [simple float 8.23 'abstractFloatField']
-            [simple float 11.52 'abstractDoubleField']
+            [simple float 32 'abstractFloatField']
+            [simple float 64 'abstractDoubleField']
             [simple string 8 'abstractStringField']
         ]
     ]
@@ -144,8 +144,8 @@
     [array bit 'bitField' count      '5']
     [array int 8 'intField' count      '5']
     [array uint 8 'uintField' count      '5']
-    [array float 8.23 'floatField' count      '5']
-    [array float 11.52 'doubleField' count      '5']
+    [array float 32 'floatField' count      '5']
+    [array float 64 'doubleField' count      '5']
     [array string 8 'stringField' count      '5']
 ]
 
@@ -156,8 +156,8 @@
     //[checksum int 8 'intField' '100']
     //[checksum uint 8 'uintField' '100']
     //Float fields cannot be used as checksums
-    //[checksum float 8.23 'floatField' '100.0f']
-    //[checksum float 11.52 'doubleField' '100.0']
+    //[checksum float 32 'floatField' '100.0f']
+    //[checksum float 64 'doubleField' '100.0']
     //String field cannot be used as a checksum
     //[checksum vstring '11 * 8' 'stringField' '"HELLO TODDY"']
 //]
@@ -166,8 +166,8 @@
     [const bit 'bitField' 'true']
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
-    [const float 8.23 'floatField' '100.0']
-    [const float 11.52 'doubleField' '100.0']
+    [const float 32 'floatField' '100.0']
+    [const float 64 'doubleField' '100.0']
     [const string 8 'stringField' '"HELLO TODDY"']
 ]
 
@@ -193,8 +193,8 @@
     [implicit bit 'bitField' 'simpleField > 0']
     [implicit int 8 'intField' 'simpleField']
     [implicit uint 8 'uintField' 'simpleField']
-    [implicit float 8.23 'floatField' 'simpleField']
-    [implicit float 11.52 'doubleField' 'simpleField']
+    [implicit float 32 'floatField' 'simpleField']
+    [implicit float 64 'doubleField' 'simpleField']
     //TODO: String literals can't be used in the expression
     //[implicit string 8 'stringField' 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"']
 ]
@@ -219,8 +219,8 @@
 //    [virtual bit 'virtualBitField' 'simpleField == 0']
 //    [virtual int 8 'virtualIntField' 'simpleField']
 //    [virtual uint 8 'virtualUintField' 'simpleField']
-//    [virtual float 8.23 'virtualFloatField' 'simpleField']
-//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual float 32 'virtualFloatField' 'simpleField']
+//    [virtual float 64 'virtualDoubleField' 'simpleField']
 //    [virtual string 24 'virtualStringField' 'simpleField']
 //]
 
@@ -230,8 +230,8 @@
 //    [virtual bit 'virtualBitField' 'simpleField == 0']
 //    [virtual int 8 'virtualIntField' 'simpleField']
 //    [virtual uint 8 'virtualUintField' 'simpleField']
-//    [virtual float 8.23 'virtualFloatField' 'simpleField']
-//    [virtual float 11.52 'virtualDoubleField' 'simpleField']
+//    [virtual float 32 'virtualFloatField' 'simpleField']
+//    [virtual float 64 'virtualDoubleField' 'simpleField']
 //    [virtual string 24 'virtualStringField' 'simpleField']
 //    [typeSwitch 'simpleField'
 //        ['0' DiscriminatedVirtualType
@@ -387,14 +387,14 @@
 ]
 
 //TODO:  C doesn't support non integer switch fields
-//[enum float 8.23 'EnumTypeFloat'
+//[enum float 32 'EnumTypeFloat'
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
 //]
 
 //TODO:  C doesn't support non integer switch fields
-//[enum float 11.52 'EnumTypeDouble'
+//[enum float 64 'EnumTypeDouble'
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
@@ -413,7 +413,7 @@
 //]
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
-//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 8.23 'floatType', float 11.52 'doubleType', string 32 'stringType', EnumType 'enumType']
+//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 32 'floatType', float 64 'doubleType', string 32 'stringType', EnumType 'enumType']
 //    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
