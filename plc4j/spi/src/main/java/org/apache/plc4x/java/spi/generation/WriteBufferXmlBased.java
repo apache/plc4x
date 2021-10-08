@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 
 public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
 
@@ -257,9 +258,9 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
             xmlEventWriter.add(dataTypeAttribute);
             Attribute bitLengthAttribute = xmlEventFactory.createAttribute(rwBitLengthKey, String.valueOf(bitLength));
             xmlEventWriter.add(bitLengthAttribute);
-            String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs);
-            if (additionalStringRepresentation != null) {
-                Attribute additionalStringRepresentationAttribute = xmlEventFactory.createAttribute(rwStringRepresentationKey, additionalStringRepresentation);
+            Optional<String> additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs);
+            if (additionalStringRepresentation.isPresent()) {
+                Attribute additionalStringRepresentationAttribute = xmlEventFactory.createAttribute(rwStringRepresentationKey, additionalStringRepresentation.get());
                 xmlEventWriter.add(additionalStringRepresentationAttribute);
             }
             if (encoding != null) {

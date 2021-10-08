@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoCloseable {
 
@@ -311,9 +312,9 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         }
         generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwDataTypeKey), dataType);
         generator.writeNumberField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwBitLengthKey), bitLength);
-        String stringRepresentation = extractAdditionalStringRepresentation(writerArgs);
-        if (stringRepresentation != null) {
-            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation);
+        Optional<String> stringRepresentation = extractAdditionalStringRepresentation(writerArgs);
+        if (stringRepresentation.isPresent()) {
+            generator.writeStringField(String.format(PLC4X_ATTRIBUTE_FORMAT, logicalName, rwStringRepresentationKey), stringRepresentation.get());
         }
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface BufferCommons {
@@ -57,20 +58,20 @@ public interface BufferCommons {
         return false;
     }
 
-    default String extractAdditionalStringRepresentation(WithReaderArgs... readerArgs) {
+    default Optional<String> extractAdditionalStringRepresentation(WithReaderArgs... readerArgs) {
         return extractAdditionalStringRepresentation(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
     }
 
-    default String extractAdditionalStringRepresentation(WithWriterArgs... writerArgs) {
+    default Optional<String> extractAdditionalStringRepresentation(WithWriterArgs... writerArgs) {
         return extractAdditionalStringRepresentation(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
     }
 
-    default String extractAdditionalStringRepresentation(WithReaderWriterArgs... readerWriterArgs) {
+    default Optional<String> extractAdditionalStringRepresentation(WithReaderWriterArgs... readerWriterArgs) {
         for (WithReaderWriterArgs arg : readerWriterArgs) {
             if (arg instanceof withAdditionalStringRepresentation) {
-                return ((withAdditionalStringRepresentation) arg).stringRepresentation();
+                return Optional.of(((withAdditionalStringRepresentation) arg).stringRepresentation());
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
