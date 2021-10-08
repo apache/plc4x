@@ -19,10 +19,13 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
+import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class FieldReaderConst<T> implements FieldReader<T> {
 
@@ -30,7 +33,15 @@ public class FieldReaderConst<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        throw new IllegalStateException("not possible with const field");
+    }
+
+    public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        T readValue = dataReader.read(logicalName, readerArgs);
+        if (Objects.equals(readValue, expectedValue)) {
+            throw new ParseException("Actual value " + readValue + " doesn't match expected " + expectedValue);
+        }
+        return readValue;
     }
 
 }
