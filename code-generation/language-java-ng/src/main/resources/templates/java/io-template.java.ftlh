@@ -321,8 +321,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
         ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
 
-        // TODO: value assingment gets useless once this is transformed to field read only as the check happens within anyway
-        FieldReaderConst.INSTANCE.readConstField(String logicalName, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
+        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field(String logicalName, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
         <#else>
         ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumBaseTypeReference(constField.type), "", constField)});
         if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
