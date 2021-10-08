@@ -43,4 +43,13 @@ public class DataReaderSimpleBigDecimal implements DataReaderSimple<BigDecimal> 
         readBuffer.reset(position);
     }
 
+    @Override
+    public ByteOrder getByteOrder() {
+        return readBuffer.getByteOrder();
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        readBuffer.setByteOrder(byteOrder);
+    }
 }

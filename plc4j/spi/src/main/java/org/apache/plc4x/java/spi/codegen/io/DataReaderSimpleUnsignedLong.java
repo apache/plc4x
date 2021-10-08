@@ -40,4 +40,14 @@ public class DataReaderSimpleUnsignedLong implements DataReaderSimple<Long> {
     public void setPos(int position) {
         readBuffer.reset(position);
     }
+
+    @Override
+    public ByteOrder getByteOrder() {
+        return readBuffer.getByteOrder();
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        readBuffer.setByteOrder(byteOrder);
+    }
 }

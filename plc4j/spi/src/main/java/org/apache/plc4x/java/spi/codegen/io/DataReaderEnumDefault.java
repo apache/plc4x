@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.codegen.WithOption;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
@@ -42,6 +42,16 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
     @Override
     public void setPos(int position) {
         dataReader.setPos(position);
+    }
+
+    @Override
+    public ByteOrder getByteOrder() {
+        return dataReader.getByteOrder();
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        dataReader.setByteOrder(byteOrder);
     }
 
     @Override

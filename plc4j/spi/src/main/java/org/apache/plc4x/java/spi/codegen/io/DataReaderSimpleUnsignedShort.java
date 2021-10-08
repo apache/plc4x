@@ -29,7 +29,7 @@ public class DataReaderSimpleUnsignedShort implements DataReaderSimple<Short> {
     }
 
     @Override
-    public Short read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Short read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readUnsignedShort(logicalName, bitLength, readerArgs);
     }
 
@@ -39,5 +39,15 @@ public class DataReaderSimpleUnsignedShort implements DataReaderSimple<Short> {
 
     public void setPos(int position) {
         readBuffer.reset(position);
+    }
+
+    @Override
+    public ByteOrder getByteOrder() {
+        return readBuffer.getByteOrder();
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        readBuffer.setByteOrder(byteOrder);
     }
 }
