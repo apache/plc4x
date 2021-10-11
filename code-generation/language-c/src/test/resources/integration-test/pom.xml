@@ -29,7 +29,7 @@
 
   <artifactId>plc4j-c-mspec-test</artifactId>
 
-  <name>PLC4J: Driver: C Mpsec Test</name>
+  <name>PLC4J: Driver: C Mspec Test</name>
   <description></description>
 
   <properties>

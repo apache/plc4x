@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>plc4j-go-mspec-test</artifactId>
-  <name>PLC4J: Driver: Go Mpsec Test</name>
+  <name>PLC4J: Driver: Go Mspec Test</name>
   <description></description>
 
 <build>
