@@ -321,9 +321,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
         ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
 
-        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field(String logicalName, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
+        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field("${constField.name}", new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
         <#else>
-        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field(String logicalName, new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(constField.type), false)}(readBuffer), ${type.name}.${constField.name?upper_case})))
+        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field("${constField.name}", new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(constField.type), false)}(readBuffer), ${type.name}.${constField.name?upper_case})))
         </#if>
         <#break>
     <#case "discriminator">

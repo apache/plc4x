@@ -156,10 +156,10 @@
             [simple   int 64     'value']
         ]
         ['REAL' REAL
-            [simple   float 8.23 'value']
+            [simple   float 32 'value']
         ]
         ['LREAL' LREAL
-            [simple   float 11.52 'value']
+            [simple   float 64 'value']
         ]
         ['CHAR' CHAR
             [simple   uint 8     'value']
@@ -466,13 +466,13 @@
             <xsl:when test="$datapointSubtype/knx:Format/knx:Float">
                 <xsl:choose>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 16">
-            [simple   float 4.11 'value']
+            [simple   float 16 'value']
                     </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 32">
-            [simple   float 8.23 'value']
+            [simple   float 32 'value']
                     </xsl:when>
                     <xsl:when test="fn:number($datapointSubtype/knx:Format/knx:Float/@Width) = 64">
-            [simple   float 11.52 'value']
+            [simple   float 64 'value']
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
@@ -519,9 +519,9 @@
             <xsl:when test="name($field) = 'SignedInteger'">int <xsl:value-of select="$field/@Width"/></xsl:when>
             <xsl:when test="name($field) = 'Float'">
                 <xsl:choose>
-                    <xsl:when test="$field/@Width = 16">float 4.11</xsl:when>
-                    <xsl:when test="$field/@Width = 32">float 8.23</xsl:when>
-                    <xsl:when test="$field/@Width = 64">float 11.52</xsl:when>
+                    <xsl:when test="$field/@Width = 16">float 16</xsl:when>
+                    <xsl:when test="$field/@Width = 32">float 32</xsl:when>
+                    <xsl:when test="$field/@Width = 64">float 64</xsl:when>
                     <xsl:otherwise>hurz</xsl:otherwise>
                 </xsl:choose>
             </xsl:when>

@@ -466,7 +466,7 @@ func parsePlcValue(field EIPPlcField, data utils.ReadBufferByteBased, _type read
 				if _type.Size()*8 != 64 {
 					panic("Unexpected size")
 				}
-				readFloat64, err := data.ReadFloat64("", true, 11, 52)
+				readFloat64, err := data.ReadFloat64("", 64)
 				if err != nil {
 					return nil, err
 				}
@@ -506,7 +506,7 @@ func parsePlcValue(field EIPPlcField, data utils.ReadBufferByteBased, _type read
 			if _type.Size()*8 != 64 {
 				panic("Unexpected size")
 			}
-			readFloat32, err := data.ReadFloat32("", true, 11, 52)
+			readFloat32, err := data.ReadFloat32("", 64)
 			if err != nil {
 				return nil, err
 			}
