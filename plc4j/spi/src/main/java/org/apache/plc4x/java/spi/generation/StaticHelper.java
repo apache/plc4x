@@ -110,7 +110,8 @@ public class StaticHelper {
         return (int) Math.ceil(value);
     }
 
-    public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
+    // TODO: Commented out this block and the next as we're trying to get rid of the code all together.
+    /*public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
         return toFloat(io, "", signed, bitsExponent, bitsMantissa);
     }
 
@@ -135,7 +136,7 @@ public class StaticHelper {
         } catch (ParseException e) {
             return 0.0f;
         }
-    }
+    }*/
 
     public static boolean fromFloatSign(double value) {
         return value < 0;
