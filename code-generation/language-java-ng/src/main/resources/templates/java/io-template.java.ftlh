@@ -53,7 +53,9 @@ import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import org.apache.plc4x.java.spi.codegen.fields.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
 import org.apache.plc4x.java.spi.codegen.io.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -324,6 +326,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign typeRefForDataCall = helper.getEnumBaseTypeReference(constField.type)>
             <#assign dataReaderCall>new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, ${helper.getDataReaderCall(typeRefForDataCall)})</#assign>
         </#if>
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = read${field.typeName?cap_first}Field("${constField.name}", ${dataReaderCall}, ${type.name}.${constField.name?upper_case});
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -496,6 +499,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if optionalField.conditionExpression.present>
         }
         </#if>
+            if (1 == 2) {
+                throw new ParseAssertException("oh no java");
+            }
         } catch(ParseAssertException ignore){
             readBuffer.reset(curPos);
         }
@@ -547,7 +553,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)});
             while ((readBuffer.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
-                ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
+                Object ignore = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
             }
             readBuffer.closeContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         }
