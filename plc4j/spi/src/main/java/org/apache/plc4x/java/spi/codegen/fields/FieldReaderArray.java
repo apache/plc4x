@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import jdk.internal.org.objectweb.asm.TypeReference;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;

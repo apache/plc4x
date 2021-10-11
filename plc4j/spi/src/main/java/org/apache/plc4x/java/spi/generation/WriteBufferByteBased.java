@@ -279,6 +279,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         if (bitLength != 32) {
             throw new UnsupportedOperationException("Error writing float: Exponent and/or Mantissa non standard size");
         }
+        // TODO: This assumes the default encoding of IEEE 32 bit floating point
         writeInt(logicalName, bitLength, Float.floatToRawIntBits(value));
     }
 
@@ -287,6 +288,7 @@ public class WriteBufferByteBased implements WriteBuffer {
         if (bitLength != 64) {
             throw new UnsupportedOperationException("Error writing double: Exponent and/or Mantissa non standard size");
         }
+        // TODO: This assumes the default encoding of IEEE 64 bit floating point
         writeLong(logicalName, bitLength, Double.doubleToRawLongBits(value));
     }
 
