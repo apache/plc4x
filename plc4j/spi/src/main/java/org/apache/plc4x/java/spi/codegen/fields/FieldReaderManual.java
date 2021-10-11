@@ -24,12 +24,18 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Function;
+
 public class FieldReaderManual<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderManual.class);
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        throw new IllegalStateException("not possible with checksum field");
+    }
+
+    public T readField(String logicalName, DataReader<T> dataReader, Function parseFunction, Function serializeFunction, Function lengthFunction, WithReaderArgs... readerArgs) throws ParseException {
         return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
     }
 

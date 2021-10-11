@@ -30,6 +30,10 @@ public class FieldReaderChecksum<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        throw new IllegalStateException("not possible with checksum field");
+    }
+
+    public T readField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
         return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
     }
 

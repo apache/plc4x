@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
-import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
