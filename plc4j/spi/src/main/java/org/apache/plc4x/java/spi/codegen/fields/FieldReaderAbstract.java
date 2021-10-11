@@ -24,13 +24,18 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This reader should actually never be used as an abstract field never gets read, it only makes sure
+ * abstract accessor methods are generated in the abstract parent type.
+ * @param <T>
+ */
 public class FieldReaderAbstract<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAbstract.class);
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        return null;
     }
 
 }

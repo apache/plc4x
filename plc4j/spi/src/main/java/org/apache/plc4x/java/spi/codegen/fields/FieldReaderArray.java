@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import jdk.internal.org.objectweb.asm.TypeReference;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -31,6 +32,18 @@ public class FieldReaderArray<T> implements FieldReader<T> {
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+    }
+
+    public T[] readFieldCount(String logicalName, DataReader<T> dataReader, int count, WithReaderArgs... readerArgs) throws ParseException {
+        return null;
+    }
+
+    public T[] readFieldLength(String logicalName, DataReader<T> dataReader, int length, WithReaderArgs... readerArgs) throws ParseException {
+        return null;
+    }
+
+    public T[] readFieldTerminated(String logicalName, DataReader<T> dataReader, T termination, WithReaderArgs... readerArgs) throws ParseException {
+        return null;
     }
 
 }
