@@ -18,20 +18,19 @@
  */
 package org.apache.plc4x.language.java;
 
+import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
-import freemarker.template.*;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.io.FileUtils;
-import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
-
-import com.google.googlejavaformat.java.Formatter;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
@@ -94,7 +93,7 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
                 StandardCharsets.UTF_8
             );
         } catch (IOException | FormatterException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error formatting " + outputFile, e);
         }
     }
 }
