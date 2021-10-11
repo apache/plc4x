@@ -52,7 +52,8 @@ import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypeReferences()?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
-import org.apache.plc4x.java.spi.codegen.fields;
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -319,11 +320,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Const Field (${constField.name})
         <#if helper.isSimpleTypeReference(constField.type)>
             <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
-        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
-
-        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field("${constField.name}", new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case}))
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = new FieldReader${field.typeName?cap_first}<>().read${field.typeName?cap_first}Field("${constField.name}", new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(simpleTypeReference, false)}(readBuffer), ${type.name}.${constField.name?upper_case});
         <#else>
-        FieldReader${field.typeName?cap_first}.INSTANCE.read${field.typeName?cap_first}Field("${constField.name}", new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(constField.type), false)}(readBuffer), ${type.name}.${constField.name?upper_case})))
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = new FieldReader${field.typeName?cap_first}<>().read${field.typeName?cap_first}Field("${constField.name}", new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, new DataReaderSimple${helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(constField.type), false)}(readBuffer), ${type.name}.${constField.name?upper_case}));
         </#if>
         <#break>
     <#case "discriminator">

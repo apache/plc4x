@@ -37,11 +37,12 @@ public class FieldReaderConst<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with const field");
     }
 
-    public void readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+    public T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         T constValue = switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(constValue, expectedValue)) {
             throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue);
         }
+        return constValue;
     }
 
 }
