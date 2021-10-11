@@ -30,7 +30,7 @@
 
   <artifactId>plc4j-java-mspec-test</artifactId>
 
-  <name>PLC4J: Driver: Java Mpsec Test</name>
+  <name>PLC4J: Driver: Java Mspec Test</name>
   <description></description>
 
   <build>
