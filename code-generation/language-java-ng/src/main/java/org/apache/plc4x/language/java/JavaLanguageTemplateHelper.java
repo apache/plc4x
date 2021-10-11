@@ -18,15 +18,6 @@
  */
 package org.apache.plc4x.language.java;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
@@ -38,7 +29,15 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -140,8 +139,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case FLOAT:
                 case UFLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    int sizeInBits = floatTypeReference.getSizeInBits();
                     if (sizeInBits <= 32) {
                         return allowPrimitive ? float.class.getSimpleName() : Float.class.getSimpleName();
                     }
@@ -206,8 +204,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case FLOAT:
                 case UFLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    int sizeInBits = floatTypeReference.getSizeInBits();
                     if (sizeInBits <= 32) {
                         return "PlcREAL";
                     }
@@ -257,8 +254,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return "null";
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    int sizeInBits = floatTypeReference.getSizeInBits();
                     if (sizeInBits <= 32) {
                         return "0.0f";
                     }
@@ -358,14 +354,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
-                String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
-                return "((Supplier<" + type + ">) (() -> {" +
-                    "\n            return (" + typeCast + ") toFloat(readBuffer, \"" + logicalName + "\", " +
-                    ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false") +
-                    ", " + floatTypeReference.getExponent() + ", " +
-                    floatTypeReference.getMantissa() + ");" +
-                    "\n        })).get()";
+                return "readBuffer.read"+type+"(\"" + logicalName +"\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
@@ -425,9 +414,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.writeFloat(\"" + logicalName + "\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + "" + writerArgsString + ")";
+                    return "writeBuffer.writeFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.writeDouble(\"" + logicalName + "\", " + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + "" + writerArgsString + ")";
+                    return "writeBuffer.writeDouble(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + "," + fieldName + "" + writerArgsString + ")";
                 } else {
                     throw new RuntimeException("Unsupported float type");
                 }

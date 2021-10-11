@@ -317,54 +317,48 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "readBuffer.readBit(\"" + logicalName + "\")";
+                String bitType = "Bit";
+                return "readBuffer.read" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
-                ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
-                return "readBuffer.readByte(\"" + logicalName + "\")";
+                String byteType = "Byte";
+                return "readBuffer.read" + byteType + "(\"" + logicalName + "\")";
             case UINT:
+                String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                    return "readBuffer.readUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    unsignedIntegerType = "UnsignedByte";
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    unsignedIntegerType = "UnsignedShort";
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    unsignedIntegerType = "UnsignedInt";
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    unsignedIntegerType = "UnsignedLong";
+                } else {
+                    unsignedIntegerType = "UnsignedBigInteger";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "readBuffer.readUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
-                }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "readBuffer.readUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
-                }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "readBuffer.readUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
-                }
-                return "readBuffer.readUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                return "readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "readBuffer.readSignedByte(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
+                String integerType;
+                if (simpleTypeReference.getSizeInBits() <= 8) {
+                    integerType = "SignedByte";
+                } else if (simpleTypeReference.getSizeInBits() <= 16) {
+                    integerType = "Short";
+                } else if (simpleTypeReference.getSizeInBits() <= 32) {
+                    integerType = "Int";
+                } else if (simpleTypeReference.getSizeInBits() <= 64) {
+                    integerType = "Long";
+                } else {
+                    integerType = "BigInteger";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "readBuffer.readShort(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
-                }
-                if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "readBuffer.readInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
-                }
-                if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "readBuffer.readLong(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ")";
-                }
-                return "readBuffer.readBigInteger(" + integerTypeReference.getSizeInBits() + ")";
+                return "readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
-                String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
-                return "((Supplier<" + type + ">) (() -> {" +
-                    "\n            return (" + typeCast + ") toFloat(readBuffer, \"" + logicalName + "\", " +
-                    ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false") +
-                    ", " + floatTypeReference.getSizeInBits() + ");" +
-                    "\n        })).get()";
+                String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
+                return "readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
+                String stringType = "String";
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "readBuffer.readString(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                return "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
         }
         return "";

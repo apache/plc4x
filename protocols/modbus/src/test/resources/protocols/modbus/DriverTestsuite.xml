@@ -106,7 +106,7 @@
             <hurz>
               <ResponseItem>
                 <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
               </ResponseItem>
             </hurz>
           </values>
@@ -197,8 +197,8 @@
               <ResponseItem>
                 <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
                 <PlcList>
-                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
-                  <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
                 </PlcList>
               </ResponseItem>
             </hurz>
@@ -343,13 +343,13 @@
             <hurz1>
               <ResponseItem>
                 <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
               </ResponseItem>
             </hurz1>
             <hurz2>
               <ResponseItem>
                 <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcREAL dataType="float" bitLength="31">3.1415927410125732</PlcREAL>
+                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
               </ResponseItem>
             </hurz2>
           </values>

@@ -148,7 +148,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_REAL": // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -157,7 +157,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_LREAL": // LREAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", true, 11, 52)
+		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}

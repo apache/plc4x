@@ -325,7 +325,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_REAL && numberOfValues == 1: // REAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", true, 8, 23)
+		value, _valueErr := readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -336,7 +336,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadFloat32("value", true, 8, 23)
+			_item, _itemErr := readBuffer.ReadFloat32("value", 32)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -347,7 +347,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 	case dataType == ModbusDataType_LREAL && numberOfValues == 1: // LREAL
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", true, 11, 52)
+		value, _valueErr := readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -358,7 +358,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadFloat64("value", true, 11, 52)
+			_item, _itemErr := readBuffer.ReadFloat64("value", 64)
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}

@@ -229,8 +229,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
+                    int sizeInBits = floatTypeReference.getSizeInBits();
                     if (sizeInBits <= 32) {
                         return "float";
                     }

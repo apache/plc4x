@@ -349,15 +349,11 @@ func (j *jsonReadBuffer) ReadBigInt(logicalName string, bitLength uint64, reader
 	}
 }
 
-func (j *jsonReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float32, error) {
+func (j *jsonReadBuffer) ReadFloat32(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float32, error) {
 	if j.err != nil {
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
@@ -370,15 +366,11 @@ func (j *jsonReadBuffer) ReadFloat32(logicalName string, signed bool, exponentBi
 	}
 }
 
-func (j *jsonReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (float64, error) {
+func (j *jsonReadBuffer) ReadFloat64(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (float64, error) {
 	if j.err != nil {
 		return 0, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
@@ -391,15 +383,11 @@ func (j *jsonReadBuffer) ReadFloat64(logicalName string, signed bool, exponentBi
 	}
 }
 
-func (j *jsonReadBuffer) ReadBigFloat(logicalName string, signed bool, exponentBitLength uint8, mantissaBitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error) {
+func (j *jsonReadBuffer) ReadBigFloat(logicalName string, bitLength uint8, readerArgs ...WithReaderArgs) (*big.Float, error) {
 	if j.err != nil {
 		return nil, j.err
 	}
 	logicalName = j.sanitizeLogicalName(logicalName)
-	bitLength := exponentBitLength + mantissaBitLength
-	if signed {
-		bitLength += 1
-	}
 	j.move(uint(bitLength))
 	peek, element := j.getElement(logicalName)
 	if err := j.validateAttr(logicalName, element, "float", uint(bitLength), readerArgs...); err != nil {
