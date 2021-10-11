@@ -154,7 +154,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         // Set a map of attributes that should be set for all fields.
         Map<String, Term> curBatchSetAttributes = new HashMap<>();
         // Add all attributes of the lower layers and initialize the new map with it.
-        if(!batchSetAttributes.empty()) {
+        if (!batchSetAttributes.empty()) {
             curBatchSetAttributes.putAll(batchSetAttributes.peek());
         }
         // Add all attributes defined in the current batchSet field.
@@ -507,7 +507,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
             if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
-                if(ctx.length != null) {
+                if (ctx.length != null) {
                     Term lengthExpression = getExpressionTerm(ctx.length);
                     return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");
                 } else {
@@ -518,28 +518,25 @@ public class MessageFormatListener extends MSpecBaseListener {
                 return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size), "UTF-8");
             }
         }
-        // If a size it specified it's a simple integer length based type.
-        if (ctx.size != null) {
-            int size = Integer.parseInt(ctx.size.getText());
-            return new DefaultIntegerTypeReference(simpleBaseType, size);
-        }
-        // If exponent and mantissa are present, it's a floating point representation.
-        else if ((ctx.exponent != null) && (ctx.mantissa != null)) {
-            int exponent = Integer.parseInt(ctx.exponent.getText());
-            int mantissa = Integer.parseInt(ctx.mantissa.getText());
-            return new DefaultFloatTypeReference(simpleBaseType, exponent, mantissa);
-        } else if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.TIME) ||
-            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATE) ||
-            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
-            return new DefaultTemporalTypeReference(simpleBaseType);
-        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
-            return new DefaultBooleanTypeReference();
-        } else if (simpleBaseType == SimpleTypeReference.SimpleBaseType.BYTE) {
-            return new DefaultByteTypeReference();
-        }
-        // In all other cases (bit) it's just assume it's length it 1.
-        else {
-            return new DefaultIntegerTypeReference(simpleBaseType, 1);
+        switch (simpleBaseType) {
+            case INT:
+            case UINT:
+                int integerSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultIntegerTypeReference(simpleBaseType, integerSize);
+            case FLOAT:
+            case UFLOAT:
+                int floatSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultFloatTypeReference(simpleBaseType, floatSize);
+            case TIME:
+            case DATE:
+            case DATETIME:
+                return new DefaultTemporalTypeReference(simpleBaseType);
+            case BIT:
+                return new DefaultBooleanTypeReference();
+            case BYTE:
+                return new DefaultByteTypeReference();
+            default:
+                return new DefaultIntegerTypeReference(simpleBaseType, 1);
         }
     }
 
@@ -594,7 +591,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             attributes.putAll(batchSetAttributes.peek());
         }
         // Add any attributes set on the current field itself.
-        if(ctx.parent.parent instanceof MSpecParser.FieldDefinitionContext) {
+        if (ctx.parent.parent instanceof MSpecParser.FieldDefinitionContext) {
             MSpecParser.FieldDefinitionContext fieldDefinitionContext = (MSpecParser.FieldDefinitionContext) ctx.parent.parent;
             for (MSpecParser.AttributeContext attributeContext : fieldDefinitionContext.attributes.attribute()) {
                 Term attributeExpression = getExpressionTerm(attributeContext.value);
