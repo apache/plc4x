@@ -60,19 +60,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     @Override
     public String getLanguageTypeNameForField(Field field) {
-        boolean optional = field instanceof OptionalField;
         // If the referenced type is a DataIo type, the value is of type PlcValue.
-        if (field instanceof PropertyField) {
-            PropertyField propertyField = (PropertyField) field;
-            if (propertyField.getType() instanceof ComplexTypeReference) {
-                ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
+        if (field.isPropertyField()) {
+            PropertyField propertyField = field.asPropertyField().orElseThrow(IllegalStateException::new);
+            if (propertyField.getType().isComplexTypeReference()) {
+                ComplexTypeReference complexTypeReference = propertyField.getType().asComplexTypeReference().orElseThrow(IllegalStateException::new);
                 final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
             }
         }
-        return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !optional);
+        return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !field.isOptionalField());
     }
 
     public String getNonPrimitiveLanguageTypeNameForField(TypedField field) {

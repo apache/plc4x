@@ -26,6 +26,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +36,9 @@ import java.util.*;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
-    private Formatter formatter = new Formatter();
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaLanguageOutput.class);
+
+    private final Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
@@ -93,7 +97,7 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
                 StandardCharsets.UTF_8
             );
         } catch (IOException | FormatterException e) {
-            throw new RuntimeException("Error formatting " + outputFile, e);
+            LOGGER.error("Error formatting {}", outputFile, e);
         }
     }
 }
