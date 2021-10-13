@@ -18,27 +18,24 @@
  */
 package org.apache.plc4x.language.java;
 
-import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import freemarker.template.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
+
+import com.google.googlejavaformat.java.Formatter;
 
 public class JavaLanguageOutput extends FreemarkerLanguageOutput {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JavaLanguageOutput.class);
-
-    private final Formatter formatter = new Formatter();
+    private Formatter formatter = new Formatter();
 
     @Override
     public String getName() {
@@ -97,7 +94,7 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
                 StandardCharsets.UTF_8
             );
         } catch (IOException | FormatterException e) {
-            LOGGER.error("Error formatting {}", outputFile, e);
+            throw new RuntimeException(e);
         }
     }
 }

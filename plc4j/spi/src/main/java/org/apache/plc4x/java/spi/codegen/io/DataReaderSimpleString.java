@@ -26,13 +26,15 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 public class DataReaderSimpleString implements DataReaderSimple<String> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleString(ReadBuffer readBuffer) {
+    public DataReaderSimpleString(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public String read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public String read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readString(logicalName, bitLength, "UTF-8", readerArgs);
     }
 

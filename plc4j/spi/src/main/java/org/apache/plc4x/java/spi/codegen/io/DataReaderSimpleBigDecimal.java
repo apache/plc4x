@@ -25,13 +25,15 @@ import java.math.BigDecimal;
 public class DataReaderSimpleBigDecimal implements DataReaderSimple<BigDecimal> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleBigDecimal(ReadBuffer readBuffer) {
+    public DataReaderSimpleBigDecimal(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public BigDecimal read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public BigDecimal read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readBigDecimal(logicalName, bitLength, readerArgs);
     }
 

@@ -51,11 +51,6 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypeReferences()?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
-
-import org.apache.plc4x.java.spi.codegen.fields.*;
-import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
-import org.apache.plc4x.java.spi.codegen.io.*;
-import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -321,12 +316,14 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Const Field (${constField.name})
         <#if helper.isSimpleTypeReference(constField.type)>
-            <#assign dataReaderCall>${helper.getDataReaderCall(constField.type)}</#assign>
+            <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
         <#else>
-            <#assign typeRefForDataCall = helper.getEnumBaseTypeReference(constField.type)>
-            <#assign dataReaderCall>new DataReaderEnumDefault(${helper.getLanguageTypeNameForField(field)}::enumForValue, ${helper.getDataReaderCall(typeRefForDataCall)})</#assign>
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumBaseTypeReference(constField.type), "", constField)});
         </#if>
-        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = read${field.typeName?cap_first}Field("${constField.name}", ${dataReaderCall}, ${type.name}.${constField.name?upper_case});
+        if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
+            throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name});
+        }
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -499,9 +496,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if optionalField.conditionExpression.present>
         }
         </#if>
-            if (1 == 2) {
-                throw new ParseAssertException("oh no java");
-            }
         } catch(ParseAssertException ignore){
             readBuffer.reset(curPos);
         }
@@ -553,7 +547,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)});
             while ((readBuffer.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
-                Object ignore = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
+                ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
             }
             readBuffer.closeContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         }

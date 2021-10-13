@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
-import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class FieldReaderReserved<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with reserved field");
     }
 
-    public T readAssertField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
+    public T readReservedField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
         T reserved = dataReader.read(logicalName, readerArgs);
         if (!Objects.equals(reserved, referenceValue)) {
             LOGGER.info("Expected constant value {} but got {} for reserved field.", referenceValue, reserved);

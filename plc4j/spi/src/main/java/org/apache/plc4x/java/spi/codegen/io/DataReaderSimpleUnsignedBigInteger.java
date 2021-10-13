@@ -18,20 +18,25 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 import java.math.BigInteger;
 
 public class DataReaderSimpleUnsignedBigInteger implements DataReaderSimple<BigInteger> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleUnsignedBigInteger(ReadBuffer readBuffer) {
+    public DataReaderSimpleUnsignedBigInteger(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public BigInteger read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public BigInteger read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readUnsignedBigInteger(logicalName, bitLength, readerArgs);
     }
 

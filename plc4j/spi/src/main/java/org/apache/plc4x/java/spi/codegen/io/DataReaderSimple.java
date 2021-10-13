@@ -18,14 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
-
 public interface DataReaderSimple<T> extends DataReader<T> {
-
-    default T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException(DataReaderSimple.class.getSimpleName() + " can't be called without a bit length");
-    }
-
-    T read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException;
 
 }

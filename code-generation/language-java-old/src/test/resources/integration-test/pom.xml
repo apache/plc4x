@@ -107,7 +107,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java-old</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-code-generation-protocol-test</usedDependency>
           </usedDependencies>
         </configuration>
@@ -180,7 +180,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java-ng</artifactId>
+      <artifactId>plc4x-code-generation-language-java-old</artifactId>
       <version>@project.version@</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

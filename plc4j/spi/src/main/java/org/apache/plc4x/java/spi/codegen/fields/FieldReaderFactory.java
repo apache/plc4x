@@ -47,4 +47,17 @@ public class FieldReaderFactory {
     public static <T> T readDiscriminatorField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderDiscriminator<T>().readField(logicalName, dataReader, readerArgs);
     }
+
+    public static <T> T readImplicitField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderImplicit<T>().readField(logicalName, dataReader, readerArgs);
+    }
+
+    public static <T> T readReservedField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderReserved<T>().readReservedField(logicalName, dataReader, expectedValue, readerArgs);
+    }
+
+    public static <T> T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderUnknown<T>().readUnknownField(logicalName, dataReader, readerArgs);
+    }
+
 }

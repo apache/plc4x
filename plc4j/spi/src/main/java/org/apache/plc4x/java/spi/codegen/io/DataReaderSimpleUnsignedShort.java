@@ -18,18 +18,23 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 public class DataReaderSimpleUnsignedShort implements DataReaderSimple<Short> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleUnsignedShort(ReadBuffer readBuffer) {
+    public DataReaderSimpleUnsignedShort(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Short read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public Short read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readUnsignedShort(logicalName, bitLength, readerArgs);
     }
 

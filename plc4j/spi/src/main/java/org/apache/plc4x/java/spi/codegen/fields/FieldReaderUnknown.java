@@ -33,9 +33,10 @@ public class FieldReaderUnknown<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with unknown field");
     }
 
-    public void readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+    public T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         T unknownValue = dataReader.read(logicalName, readerArgs);
-        LOGGER.debug("Read unkown value {}", unknownValue);
+        LOGGER.debug("Read unknown value {}", unknownValue);
+        return unknownValue;
     }
 
 }

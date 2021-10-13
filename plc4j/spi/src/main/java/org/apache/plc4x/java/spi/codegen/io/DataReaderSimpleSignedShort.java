@@ -23,13 +23,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataReaderSimpleSignedShort implements DataReaderSimple<Short> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleSignedShort(ReadBuffer readBuffer) {
+    public DataReaderSimpleSignedShort(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Short read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Short read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         return readBuffer.readShort(logicalName, bitLength, readerArgs);
     }
 
