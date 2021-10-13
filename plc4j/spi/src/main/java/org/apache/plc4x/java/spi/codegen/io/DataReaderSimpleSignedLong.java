@@ -23,13 +23,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataReaderSimpleSignedLong implements DataReaderSimple<Long> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleSignedLong(ReadBuffer readBuffer) {
+    public DataReaderSimpleSignedLong(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Long read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Long read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         return readBuffer.readLong(logicalName, bitLength, readerArgs);
     }
 

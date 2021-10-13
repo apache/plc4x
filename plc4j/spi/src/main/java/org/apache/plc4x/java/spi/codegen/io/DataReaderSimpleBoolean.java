@@ -18,7 +18,10 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 import java.util.Objects;
 
@@ -31,10 +34,7 @@ public class DataReaderSimpleBoolean implements DataReaderSimple<Boolean> {
     }
 
     @Override
-    public Boolean read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
-        if(bitLength != 1) {
-            throw new ParseException("Bit fields only support bitLength of 1");
-        }
+    public Boolean read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         return readBuffer.readBit(logicalName, readerArgs);
     }
 

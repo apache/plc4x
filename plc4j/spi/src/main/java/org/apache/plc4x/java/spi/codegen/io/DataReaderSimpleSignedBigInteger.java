@@ -25,13 +25,15 @@ import java.math.BigInteger;
 public class DataReaderSimpleSignedBigInteger implements DataReaderSimple<BigInteger> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleSignedBigInteger(ReadBuffer readBuffer) {
+    public DataReaderSimpleSignedBigInteger(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public BigInteger read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public BigInteger read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         return readBuffer.readBigInteger(logicalName, bitLength, readerArgs);
     }
 

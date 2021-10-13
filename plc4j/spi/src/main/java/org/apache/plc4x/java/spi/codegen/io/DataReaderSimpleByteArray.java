@@ -18,22 +18,28 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 public class DataReaderSimpleByteArray implements DataReaderSimple<byte[]> {
 
     private final ReadBuffer readBuffer;
 
-    public DataReaderSimpleByteArray(ReadBuffer readBuffer) {
+    private final int bitLength;
+
+    public DataReaderSimpleByteArray(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public byte[] read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public byte[] read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
         if (bitLength % 8 != 0) {
             throw new ParseException("ByteArray fields only support bitLength which are multiples of 8");
         }
-        return readBuffer.readByteArray(logicalName, bitLength * 8, readerArgs);
+        return readBuffer.readByteArray(logicalName, bitLength / 8, readerArgs);
     }
 
     public int getPos() {

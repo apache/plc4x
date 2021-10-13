@@ -23,13 +23,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataReaderSimpleByte implements DataReaderSimple<Byte> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleByte(ReadBuffer readBuffer) {
+    public DataReaderSimpleByte(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Byte read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Byte read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         if(bitLength != 8) {
             throw new ParseException("Byte fields only support bitLength of 8");
         }

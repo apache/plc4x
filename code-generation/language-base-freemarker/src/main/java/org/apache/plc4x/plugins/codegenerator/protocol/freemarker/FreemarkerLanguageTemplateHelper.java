@@ -28,12 +28,15 @@ public interface FreemarkerLanguageTemplateHelper {
 
     String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
+    @Deprecated
     default String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         return getReadBufferReadMethodCall(simpleTypeReference, null, null);
     }
 
+    @Deprecated
     String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field);
 
+    @Deprecated
     String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName, TypedField field);
 
     String getNullValueForTypeReference(TypeReference typeReference);

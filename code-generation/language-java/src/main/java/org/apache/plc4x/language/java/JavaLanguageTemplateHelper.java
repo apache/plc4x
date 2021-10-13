@@ -60,19 +60,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     @Override
     public String getLanguageTypeNameForField(Field field) {
-        boolean optional = field instanceof OptionalField;
         // If the referenced type is a DataIo type, the value is of type PlcValue.
-        if (field instanceof PropertyField) {
-            PropertyField propertyField = (PropertyField) field;
-            if (propertyField.getType() instanceof ComplexTypeReference) {
-                ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
+        if (field.isPropertyField()) {
+            PropertyField propertyField = field.asPropertyField().orElseThrow(IllegalStateException::new);
+            if (propertyField.getType().isComplexTypeReference()) {
+                ComplexTypeReference complexTypeReference = propertyField.getType().asComplexTypeReference().orElseThrow(IllegalStateException::new);
                 final TypeDefinition typeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
                     return "PlcValue";
                 }
             }
         }
-        return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !optional);
+        return getLanguageTypeNameForTypeReference(((TypedField) field).getType(), !field.isOptionalField());
     }
 
     public String getNonPrimitiveLanguageTypeNameForField(TypedField field) {
@@ -309,19 +308,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
+    @Deprecated
     @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
-        return getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+        return "/*TODO: migrate me*/"+getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
     }
 
+    @Deprecated
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 String bitType = "Bit";
-                return "readBuffer.read" + bitType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/"+"readBuffer.read" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
                 String byteType = "Byte";
-                return "readBuffer.read" + byteType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/"+"readBuffer.read" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -336,7 +337,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 } else {
                     unsignedIntegerType = "UnsignedBigInteger";
                 }
-                return "readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/"+"readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
@@ -350,16 +351,61 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 } else {
                     integerType = "BigInteger";
                 }
-                return "readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/"+"readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
                 String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/"+"readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
                 String stringType = "String";
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                return "/*TODO: migrate me*/"+"readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
+        }
+        return "/*TODO: migrate me*/"+"";
+    }
+
+    public String getDataReaderCall(TypeReference typeReference) {
+        if (isEnumTypeReference(typeReference)) {
+            final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
+            final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
+            return "new DataReaderEnumDefault(" + languageTypeName + "::enumForValue, " + getDataReaderCall(enumBaseTypeReference) + ")";
+        } else if (typeReference.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            return getDataReaderCall(simpleTypeReference);
+        } else if (typeReference.isComplexTypeReference()) {
+            return "new DataReaderComplex(readBuffer)";
+        } else {
+            throw new IllegalStateException("What is this type? " + typeReference);
+        }
+    }
+
+    public String getDataReaderCall(SimpleTypeReference simpleTypeReference) {
+        final int sizeInBits = simpleTypeReference.getSizeInBits();
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "readBoolean(readBuffer)";
+            case BYTE:
+                return "readByte(readBuffer, " + sizeInBits + ")";
+            case UINT:
+                if (sizeInBits <= 4) return "readUnsignedByte(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "readUnsignedShort(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "readUnsignedInt(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "readUnsignedLong(readBuffer, " + sizeInBits + ")";
+                return "readUnsignedBigInteger(readBuffer, " + sizeInBits + ")";
+            case INT:
+                if (sizeInBits <= 8) return "readSignedByte(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "readSignedShort(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "readSignedInt(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "readSignedLong(readBuffer, " + sizeInBits + ")";
+                return "readSignedBigInteger(readBuffer, " + sizeInBits + ")";
+            case FLOAT:
+                if (sizeInBits <= 32) return "readFloat(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "readDouble(readBuffer, " + sizeInBits + ")";
+                return "readBigDecimal(readBuffer, " + sizeInBits + ")";
+            case STRING:
+            case VSTRING:
+                return "readString(readBuffer, " + sizeInBits + ")";
         }
         return "";
     }

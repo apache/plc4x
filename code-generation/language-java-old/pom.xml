@@ -27,9 +27,9 @@
     <version>0.10.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4x-code-generation-language-java-ng</artifactId>
+  <artifactId>plc4x-code-generation-language-java-old</artifactId>
 
-  <name>Code-Generation: Language: Java NG</name>
+  <name>Code-Generation: Language: Java Old</name>
   <description>Code generation template for generating Java code</description>
 
   <build>
@@ -64,6 +64,13 @@
               <projectsDirectory>src/test/resources</projectsDirectory>
               <cloneProjectsTo>${project.build.directory}/integration-tests</cloneProjectsTo>
               <settingsFile>src/test/resources/settings.xml</settingsFile>
+              <extraArtifacts>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-language-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-maven-plugin:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-protocol-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
+                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
+              </extraArtifacts>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
               </pomIncludes>

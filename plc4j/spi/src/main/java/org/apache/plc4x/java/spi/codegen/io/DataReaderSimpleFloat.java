@@ -23,13 +23,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataReaderSimpleFloat implements DataReaderSimple<Float> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleFloat(ReadBuffer readBuffer) {
+    public DataReaderSimpleFloat(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Float read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Float read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         return readBuffer.readFloat(logicalName, bitLength, readerArgs);
     }
 

@@ -23,13 +23,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataReaderSimpleDouble implements DataReaderSimple<Double> {
 
     private final ReadBuffer readBuffer;
+    private final int bitLength;
 
-    public DataReaderSimpleDouble(ReadBuffer readBuffer) {
+    public DataReaderSimpleDouble(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
     @Override
-    public Double read(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException  {
+    public Double read(String logicalName, WithReaderArgs... readerArgs) throws ParseException  {
         return readBuffer.readDouble(logicalName, bitLength, readerArgs);
     }
 

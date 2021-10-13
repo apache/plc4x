@@ -51,6 +51,11 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypeReferences()?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -313,17 +318,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "const">
         <#assign constField = field.asConstField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Const Field (${constField.name})
-        <#if helper.isSimpleTypeReference(constField.type)>
-            <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
-        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(constField.name, simpleTypeReference, "", constField)};
-        <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumBaseTypeReference(constField.type), "", constField)});
-        </#if>
-        if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
-            throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name});
-        }
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -366,10 +365,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "implicit">
         <#assign implicitField = field.asImplicitField().orElseThrow()>
-        <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference, "", implicitField)};
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
@@ -496,46 +496,20 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if optionalField.conditionExpression.present>
         }
         </#if>
+            if (1 == 2) {
+                throw new ParseAssertException("oh no java");
+            }
         } catch(ParseAssertException ignore){
             readBuffer.reset(curPos);
         }
         <#break>
     <#case "assert">
         <#assign assertField = field.asAssertField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Assert Field
-        <#if helper.isEnumField(assertField)>
-        ${helper.getLanguageTypeNameForField(field)} ${assertField.name} = ${helper.getLanguageTypeNameForField(assertField)}.enumForValue(${helper.getReadBufferReadMethodCall(assertField.name, helper.getEnumBaseTypeReference(simpleTypeReference), "", assertField)});
-        <#elseif helper.isComplexTypeReference(assertField.type)>
-            <#assign complexTypeReference=assertField.type.asComplexTypeReference().orElseThrow()>
-            <#assign typeName=complexTypeReference.name>
-            <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-            <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                <#assign typeName=typeDefinition.getParentType().name>
-            </#if>
-            <@compress single_line=true>
-        ${helper.getLanguageTypeNameForField(field)} ${assertField.name} = (${complexTypeReference.name}) ${typeName}IO.staticParse(readBuffer
-                <#if field.params.isPresent()>
-                    ,
-                    <#list field.params.orElseThrow() as parserArgument>
-                        (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleTypeReference, parserArgument?index), true)})
-                        (${helper.toParseExpression(assertField, parserArgument, parserArguments)})<#sep>, </#sep>
-                    </#list>
-                </#if>
-                <#if complexTypeReference.params.isPresent()>
-                    ,
-                    <#list complexTypeReference.params.orElseThrow() as typeParam>
-                        ${helper.toAccessExpression(null, typeParam, null)}<#sep>, </#sep>
-                    </#list>
-                </#if>);
-            </@compress>
-        <#else>
-            <#assign simpleTypeReference = assertField.type.asSimpleTypeReference().orElseThrow()>
-        ${helper.getLanguageTypeNameForField(field)} ${assertField.name} = ${helper.getReadBufferReadMethodCall(assertField.name, simpleTypeReference.asSimpleTypeReference().orElseThrow(), "", assertField)};
-        </#if>
-        if(${assertField.name} != ${helper.toParseExpression(assertField.asTypedField().orElseThrow(), assertField.conditionExpression, parserArguments)}) {
-            throw new ParseAssertException("assertField ${assertField.name} with value " + ${assertField.name} + " didn't match the expected value " + ${helper.toParseExpression(assertField, assertField.conditionExpression, parserArguments)});
-        }
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
         <#break>
     <#case "padding">
         <#assign paddingField = field.asPaddingField().orElseThrow()>
@@ -547,22 +521,17 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)});
             while ((readBuffer.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
-                ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
+                Object ignore = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
             }
             readBuffer.closeContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
         }
         <#break>
     <#case "reserved">
         <#assign reservedField = field.asReservedField().orElseThrow()>
-        <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
 
-        // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-        {
-            ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference, "", reservedField)};
-            if(reserved != ${helper.getReservedValue(reservedField)}) {
-                LOGGER.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.");
-            }
-        }
+        // ${field.typeName?cap_first} Field
+        read${field.typeName?cap_first}Field("reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)});
         <#break>
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
@@ -671,12 +640,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
     <#case "unknown">
         <#assign unknownField = field.asUnknownField().orElseThrow()>
-        <#assign simpleTypeReference = unknownField.type.asSimpleTypeReference().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
 
-        // Unknown Field
-        ${helper.getReadBufferReadMethodCall("unknown" , simpleTypeReference, "", unknownField)};
+        // ${field.typeName?cap_first} Field
+        read${field.typeName?cap_first}Field("unknown", ${helper.getDataReaderCall(typedField.type)});
         <#break>
-
     <#case "virtual">
         <#assign virtualField = field.asVirtualField().orElseThrow()>
 

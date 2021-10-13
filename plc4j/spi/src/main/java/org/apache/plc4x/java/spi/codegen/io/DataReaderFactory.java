@@ -24,60 +24,60 @@ import java.math.BigInteger;
 
 public class DataReaderFactory {
 
-    public static DataReader<Boolean>  readBoolean(ReadBuffer readBuffer) {
+    public static DataReader<Boolean> readBoolean(ReadBuffer readBuffer) {
         return new DataReaderSimpleBoolean(readBuffer);
     }
 
-    public static DataReader<Byte> readUnsignedByte(ReadBuffer readBuffer) {
-        return new DataReaderSimpleUnsignedByte(readBuffer);
+    public static DataReader<Byte> readUnsignedByte(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleUnsignedByte(readBuffer, bitLength);
     }
 
-    public static DataReader<Short> readUnsignedShort(ReadBuffer readBuffer) {
-        return new DataReaderSimpleUnsignedShort(readBuffer);
+    public static DataReader<Short> readUnsignedShort(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleUnsignedShort(readBuffer, bitLength);
     }
 
-    public static DataReader<Integer> readUnsignedInt(ReadBuffer readBuffer) {
-        return new DataReaderSimpleUnsignedInt(readBuffer);
+    public static DataReader<Integer> readUnsignedInt(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleUnsignedInt(readBuffer, bitLength);
     }
 
-    public static DataReader<Long> readUnsignedLong(ReadBuffer readBuffer) {
-        return new DataReaderSimpleUnsignedLong(readBuffer);
+    public static DataReader<Long> readUnsignedLong(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleUnsignedLong(readBuffer, bitLength);
     }
 
-    public static DataReader<BigInteger> readUnsignedBigInteger(ReadBuffer readBuffer) {
-        return new DataReaderSimpleUnsignedBigInteger(readBuffer);
+    public static DataReader<BigInteger> readUnsignedBigInteger(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleUnsignedBigInteger(readBuffer, bitLength);
     }
 
-    public static DataReader<Byte> readSignedByte(ReadBuffer readBuffer) {
-        return new DataReaderSimpleSignedByte(readBuffer);
+    public static DataReader<Byte> readSignedByte(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleSignedByte(readBuffer, bitLength);
     }
 
-    public static DataReader<Short> readSignedShort(ReadBuffer readBuffer) {
-        return new DataReaderSimpleSignedShort(readBuffer);
+    public static DataReader<Short> readSignedShort(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleSignedShort(readBuffer, bitLength);
     }
 
-    public static DataReader<Integer> readSignedInt(ReadBuffer readBuffer) {
-        return new DataReaderSimpleSignedInt(readBuffer);
+    public static DataReader<Integer> readSignedInt(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleSignedInt(readBuffer, bitLength);
     }
 
-    public static DataReader<Long> readSignedLong(ReadBuffer readBuffer) {
-        return new DataReaderSimpleSignedLong(readBuffer);
+    public static DataReader<Long> readSignedLong(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleSignedLong(readBuffer, bitLength);
     }
 
-    public static DataReader<BigInteger> readSignedBigInteger(ReadBuffer readBuffer) {
-        return new DataReaderSimpleSignedBigInteger(readBuffer);
+    public static DataReader<BigInteger> readSignedBigInteger(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleSignedBigInteger(readBuffer, bitLength);
     }
 
-    public static DataReader<Float> readFloat(ReadBuffer readBuffer) {
-        return new DataReaderSimpleFloat(readBuffer);
+    public static DataReader<Float> readFloat(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleFloat(readBuffer, bitLength);
     }
 
-    public static DataReader<Double> readDouble(ReadBuffer readBuffer) {
-        return new DataReaderSimpleDouble(readBuffer);
+    public static DataReader<Double> readDouble(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleDouble(readBuffer, bitLength);
     }
 
-    public static DataReader<String > readString(ReadBuffer readBuffer) {
-        return new DataReaderSimpleString(readBuffer);
+    public static DataReader<String> readString(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleString(readBuffer, bitLength);
     }
 
 }
