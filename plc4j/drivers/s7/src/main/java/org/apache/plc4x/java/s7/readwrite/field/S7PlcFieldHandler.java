@@ -30,8 +30,10 @@ public class S7PlcFieldHandler implements PlcFieldHandler {
             return S7Field.of(fieldQuery);
         } else if (S7SubscriptionField.matches(fieldQuery)){
             return S7SubscriptionField.of(fieldQuery);
-        } else if (S7SslField.matches(fieldQuery)){
-            return S7SslField.of(fieldQuery);
+        } else if (S7SzlField.matches(fieldQuery)){
+            return S7SzlField.of(fieldQuery);
+        } else if (S7AckField.matches(fieldQuery)){
+            return S7AckField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }

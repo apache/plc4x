@@ -34,6 +34,8 @@ import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
+import org.apache.plc4x.java.s7.readwrite.field.S7AckField;
+import org.apache.plc4x.java.s7.readwrite.field.S7SzlField;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -62,6 +64,25 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, PlcField> curFields = new LinkedHashMap<>();
 
         for (String fieldName : readRequest.getFieldNames()) {
+            if ((readRequest.getField(fieldName) instanceof S7SzlField)) {
+                LinkedHashMap<String, PlcField> sslFields = new LinkedHashMap<>();
+                S7SzlField field = (S7SzlField) readRequest.getField(fieldName);                
+                sslFields.put(fieldName, field);
+                processedRequests.add(new DefaultPlcReadRequest(
+                    ((DefaultPlcReadRequest) readRequest).getReader(), sslFields));
+                continue;
+            }
+            
+            if ((readRequest.getField(fieldName) instanceof S7AckField)) {
+                LinkedHashMap<String, PlcField> ackFields = new LinkedHashMap<>();
+                S7AckField field = (S7AckField) readRequest.getField(fieldName);                
+                ackFields.put(fieldName, field);
+                processedRequests.add(new DefaultPlcReadRequest(
+                    ((DefaultPlcReadRequest) readRequest).getReader(), ackFields));
+                continue;
+            }            
+            
+            
             S7Field field = (S7Field) readRequest.getField(fieldName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
@@ -105,7 +126,7 @@ public class S7Optimizer extends BaseOptimizer {
             processedRequests.add(new DefaultPlcReadRequest(
                 ((DefaultPlcReadRequest) readRequest).getReader(), curFields));
         }
-
+        
         return processedRequests;
     }
 

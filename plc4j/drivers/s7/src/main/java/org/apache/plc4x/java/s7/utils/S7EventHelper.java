@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ import org.apache.plc4x.java.s7.readwrite.types.ModeTransitionType;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.values.PlcList;
 
 
 /**
@@ -400,7 +402,7 @@ public class S7EventHelper {
     /**
      *
      */
-    public enum SSL {
+    public enum SZL {
     ID_0x0011(0x0011,"Module identification."){
         @Override
         public StringBuilder execute(ByteBuf data) {
@@ -573,16 +575,16 @@ public class S7EventHelper {
     private int code;
     private String description;
     
-    private static final Map<Integer, SSL> map;
+    private static final Map<Integer, SZL> map;
     
     static {
         map = new HashMap<>();
-        for (SSL subssl : SSL.values()) {
+        for (SZL subssl : SZL.values()) {
             map.put(subssl.code, subssl);
         }
     }    
     
-    SSL(final int code, final String description){
+    SZL(final int code, final String description){
         this.code = code;
         this.description = description;
     }
@@ -595,7 +597,7 @@ public class S7EventHelper {
         return description;
     }
     
-    public static SSL valueOf(int code) {
+    public static SZL valueOf(int code) {
         return map.get(code);
     }    
     
@@ -603,12 +605,16 @@ public class S7EventHelper {
     
     private static StringBuilder ID_0xXY11(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
-            for (int i=1; i <= ssl_count; i++){
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
 
                 sb.append("Index: ").append(data.readShort()).append("\r\n");
@@ -627,12 +633,16 @@ public class S7EventHelper {
     
     private static StringBuilder ID_0xXY12(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
-            for (int i=1; i <= ssl_count; i++){
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");            
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 int code = data.readShort();
                 sb.append(CPU_CHARACTERISTICS.valueOf(code)).append(": ").
@@ -646,12 +656,16 @@ public class S7EventHelper {
     
     private static StringBuilder ID_0xXY13(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
-            for (int i=1; i <= ssl_count; i++){
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 sb.append("Index: ").append(data.readShort()).append("\r\n");
                 int code = data.readShort();
@@ -700,12 +714,16 @@ public class S7EventHelper {
      
     private static StringBuilder ID_0xXY14(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
-            for (int i=1; i <= ssl_count; i++){
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
+            for (int i=1; i <= szl_count; i++){
                 int index = data.readShort(); 
                 int code = data.readShort();
                 int quantity = data.readShort();
@@ -753,13 +771,17 @@ public class S7EventHelper {
        
     private static StringBuilder ID_0xXY15(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");;
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");;
+            sb.append("SZL-ID: ").append(szl_length).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_length).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");;
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");;
 
-            for (int i=1; i <= ssl_count; i++){
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 int type = data.readShort();
                 switch(type){
@@ -787,13 +809,17 @@ public class S7EventHelper {
           
     private static StringBuilder ID_0xXY1C(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
        try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");;
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");;
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");             
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");;
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");;
 
-            for (int i=1; i <= ssl_count; i++){
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 int index = data.getShort(data.readerIndex());
                 int index_b0 = data.readByte();
@@ -916,14 +942,18 @@ public class S7EventHelper {
     
     private static StringBuilder ID_0xXY22(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();        
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");;
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");;
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");;
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");;
 
-            for (int i=1; i <= ssl_count; i++){
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 ByteBuf  infobytes = data.readSlice(20);
                 short al1 = data.readShort();
@@ -961,12 +991,16 @@ public class S7EventHelper {
 
     private static StringBuilder ID_0xXY74(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort();
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         try {
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
-            for (int i=1; i <= ssl_count; i++){
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
+            for (int i=1; i <= szl_count; i++){
                 sb.append("Data Record: ").append(i).append("\r\n");
                 int cpu_type = data.readByte();
                 int led_id = data.readByte();
@@ -1043,12 +1077,16 @@ public class S7EventHelper {
     
     private static StringBuilder ID_0xXYA0(ByteBuf data){
         StringBuilder sb = new StringBuilder();
-        int ssl_length = data.readShort();
-        int ssl_count = data.readShort(); 
+        int szl_id = data.readShort();
+        int szl_index = data.readShort();
+        int szl_length = data.readShort();
+        int szl_count = data.readShort();
         
         try{
-            sb.append("SSL partial list length in bytes: ").append(ssl_length).append("\r\n");
-            sb.append("SSL partial list count: ").append(ssl_count).append("\r\n");
+            sb.append("SZL-ID: ").append(szl_id).append("\r\n");
+            sb.append("SZL-Index: ").append(szl_index).append("\r\n");              
+            sb.append("SZL partial list length in bytes: ").append(szl_length).append("\r\n");
+            sb.append("SZL partial list count: ").append(szl_count).append("\r\n");
             int i = 1;
             while(data.isReadable()){
                 sb.append("Data Record: ").append(i).append("\r\n");
@@ -1840,7 +1878,19 @@ public class S7EventHelper {
         return strOut;
     }    
     
-     
+    /*
+    * 
+    * @param data List of Bytes to convert to ByteBuf
+    * @return The ByteBuf with list values.
+    */    
+    public static ByteBuf ListToByteBuf(final List<Byte> data){        
+        ByteBuf bytebuf = Unpooled.buffer(data.size());
+        data.forEach((value) -> {
+            bytebuf.writeByte(value.byteValue());
+            }
+        );
+        return bytebuf;
+    }     
     
     
 }

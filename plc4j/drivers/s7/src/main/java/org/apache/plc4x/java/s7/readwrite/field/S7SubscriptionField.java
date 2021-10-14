@@ -39,7 +39,7 @@ public class S7SubscriptionField implements PlcField {
         Pattern.compile("(^MODE)|(^SYS)|(^USR)|(^ALM)");
     //Event ack
     private static final Pattern EVENT_ALARM_ACK_PATTERN = 
-        Pattern.compile("(^ACK:)(((?:,{0,1})(16#[0-9a-fA-F]{8}))+)");
+        Pattern.compile("(^XACK:)(((?:,{0,1})(16#[0-9a-fA-F]{8})(;([0-9a-fA-F]{2})))+)");
     
     //Query alarms from PLC.
     //TODO: Query SCAN 
@@ -124,12 +124,15 @@ public class S7SubscriptionField implements PlcField {
             //TODO: Actually only ALARM_S (SIG_1)
             Matcher matcher = EVENT_ALARM_ACK_PATTERN.matcher(fieldString);
             if (matcher.matches()){
+                String[] arrIdAndSig;
                 String EventIds = matcher.group(2);
                 String[] arrStrEventId = EventIds.split(",");
                 ArrayList<Integer> arrEventId = new ArrayList<>();
                 for (String EventId:arrStrEventId){
                     EventId = EventId.replaceAll("16#", "");
-                    arrEventId.add(Integer.parseInt(EventId, 16));                    
+                    arrIdAndSig =  EventId.split(";");
+                    arrEventId.add(Integer.parseInt(arrIdAndSig[0], 16));
+                    arrEventId.add(Integer.parseInt(arrIdAndSig[1], 16));                    
                 }
                 return new S7SubscriptionField(S7SubscriptionFieldType.ALARM_ACK,
                             arrEventId);
