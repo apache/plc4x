@@ -245,5 +245,7 @@ public class StaticHelper {
             Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    
+ 
 }

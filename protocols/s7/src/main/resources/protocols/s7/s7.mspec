@@ -285,6 +285,13 @@
     [array  uint 8                 'data'          count    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.EventItemLength", readBuffer, valueLength)']
 ]
 
+[type 'AssociatedQueryValueType'
+    [simple DataTransportErrorCode 'returnCode']
+    [simple DataTransportSize      'transportSize']
+    [simple uint 16                'valueLength']
+    [array  uint 8                 'data'          count    'valueLength']
+]
+
 //TODO: Convert BCD to uint
 [type 'DateAndTime'
     [manual uint 8  'year'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)'    '1']
@@ -345,26 +352,29 @@
     [array  AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageObjectQueryType'
-    [simple   uint 8              'lengthDataset']
-    [reserved uint 16             '0x0000']
-    [const    uint 8              'variableSpec'   '0x12']
-    [simple   State               'eventState']
-    [simple   State               'ackStateGoing']
-    [simple   State               'ackStateComing']
-    [simple   DateAndTime         'timeComing']
-    [simple   AssociatedValueType 'valueComing']
-    [simple   DateAndTime         'timeGoing']
-    [simple   AssociatedValueType 'valueGoing']
-]
-
-[type 'AlarmMessageQueryType'
+[type 'AlarmMessageQueryType' [uint 16 'dataLength']
     [simple uint 8                      'functionId']
     [simple uint 8                      'numberOfObjects']
     [simple DataTransportErrorCode      'returnCode']
     [simple DataTransportSize           'transportSize']
     [const  uint 16                     'DataLength'     '0xFFFF']
-    [array  AlarmMessageObjectQueryType 'messageObjects' count    'numberOfObjects' ]
+    [array  AlarmMessageObjectQueryType 'messageObjects' count   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.countAMOQT", readBuffer, dataLength)' ]
+]
+
+//TODO: Check for Alarm_8
+[type 'AlarmMessageObjectQueryType'
+    [simple   uint 8              'lengthDataset']
+    [reserved uint 16             '0x0000']
+    [simple   AlarmType           'alarmType']
+    [simple   uint 32             'eventId']
+    [reserved uint 8             '0x00']
+    [simple   State               'eventState']
+    [simple   State               'ackStateGoing']
+    [simple   State               'ackStateComing']
+    [optional   DateAndTime         'timeComing' 'lengthDataset > 10']
+    [optional   AssociatedQueryValueType 'valueComing' 'lengthDataset > 10']
+    [optional   DateAndTime         'timeGoing' 'lengthDataset > 10']
+    [optional   AssociatedQueryValueType 'valueGoing' 'lengthDataset > 10']
 ]
 
 [type 'AlarmMessageObjectAckType'
@@ -448,8 +458,8 @@
         ['0x00', '0x12' S7PayloadAlarmS
             [simple AlarmMessagePushType 'alarmMessage']
         ]
-        ['0x00', '0x13' S7PayloadAlarmSC
-            [simple AlarmMessagePushType 'alarmMessage']
+        ['0x00', '0x13' S7PayloadAlarmQuery [uint 16 'dataLength']
+            [simple AlarmMessageQueryType 'alarmMessage' ['dataLength']]
         ]
         ['0x00', '0x16' S7PayloadNotify8
             [simple AlarmMessagePushType 'alarmMessage']
@@ -513,7 +523,7 @@
 
 
         //ALARM_QUERY Request for alarms stored in the controller
-        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
+        ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
             [const    uint 8       'functionId'       '0x00']
             [const    uint 8       'numberMessageObj' '0x01']
             [const    uint 8       'variableSpec'     '0x12']
@@ -521,15 +531,18 @@
             [simple   SyntaxIdType 'syntaxId']
             [reserved uint 8       '0x00']
             [simple   QueryType    'queryType']
-            [reserved uint 8       '0x34']
+            [reserved uint 16       '0x3400']
+            [reserved uint 16       '0x0000']
+            //[reserved uint 8       '0x00']
             [simple   AlarmType    'alarmType']
         ]
-        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-            [const    uint 8                 'functionId'          '0x00']
-            [const    uint 8                 'numberMessageObj'    '0x01']
-            [simple   DataTransportErrorCode 'pudicfReturnCode']
-            [simple   DataTransportSize      'pudicftransportSize']
-            [reserved uint 8                 '0x00']
+        ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse [uint 16 'dataLength' ]
+            //[const    uint 8                 'functionId'          '0x00']
+            //[const    uint 8                 'numberMessageObj'    '0x01']
+            //[simple   DataTransportErrorCode 'pudicfReturnCode']
+            //[simple   DataTransportSize      'pudicftransportSize']
+            //[reserved uint 8                 '0x00']
+            [array byte 'items' count 'dataLength']
         ]
     ]
 ]

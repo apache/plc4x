@@ -39,8 +39,12 @@ import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
+import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectQueryType;
+import org.apache.plc4x.java.s7.readwrite.AlarmMessageQueryType;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmQuery;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -148,6 +152,13 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                             } else {
                                 S7SysEvent sysevent = new S7SysEvent(msg);
                                 dispathqueue.add(sysevent);
+                            }
+                        } else
+                        if (obj instanceof S7PayloadAlarmQuery){
+                            AlarmMessageQueryType msgs = ((S7PayloadAlarmQuery) obj).getAlarmMessage();
+                            for(AlarmMessageObjectQueryType msg:msgs.getMessageObjects()){
+                                S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
+                                dispathqueue.add(alarmevent);
                             }
                         } else {
                             S7AlarmEvent alarmevent = new S7AlarmEvent(obj);

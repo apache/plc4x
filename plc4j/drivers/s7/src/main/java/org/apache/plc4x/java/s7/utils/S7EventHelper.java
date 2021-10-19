@@ -1891,6 +1891,44 @@ public class S7EventHelper {
         );
         return bytebuf;
     }     
-    
+
+
+    /*
+    * It is responsible for calculating the size of the array in the 
+    * "AlarmMessageQueryType" object. The S7-300s return a constant 
+    * value of 2, so a larger array is not created despite having all 
+    * the information in the buffer.
+    * Tested with S7-300
+    */
+    public static byte countAMOQT(ReadBuffer io, int dataLength) {
+        
+        int pos = io.getPos();
+        long lengthOfDatSet = 0;
+        int lengthInBits = 0;
+        int i = 0;
+        byte[] buffer;
+        try{
+            do {
+                io.pullContext("lengthOfDataSet");
+                lengthOfDatSet = io.readLong(8);
+                lengthInBits = (int) lengthOfDatSet * 8;
+                io.closeContext("lengthOfDataSet");
+                if (io.hasMore(lengthInBits) &&  (lengthInBits > 0)) {
+                    io.pullContext("buffer");
+                    buffer = io.readByteArray("items", (int) lengthOfDatSet);
+                    io.closeContext("buffer");
+                    i++;
+                }
+            } while (io.hasMore(8));
+        
+        } catch (Exception ex)  {
+            
+        } finally {
+            io.reset(pos);
+        }
+        
+        return (byte) i;
+        
+    }    
     
 }

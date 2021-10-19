@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.s7.events;
 
+import io.netty.buffer.ByteBuf;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -35,7 +36,9 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageAckObjectPushType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageAckPushType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectPushType;
+import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectQueryType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessagePushType;
+import org.apache.plc4x.java.s7.readwrite.AssociatedQueryValueType;
 import org.apache.plc4x.java.s7.readwrite.AssociatedValueType;
 import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8;
@@ -44,6 +47,7 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmS;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmSQ;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadNotify8;
+import org.apache.plc4x.java.s7.readwrite.types.AlarmType;
 
 /**
  *
@@ -91,6 +95,16 @@ public class S7AlarmEvent implements S7Event {
         SIG_8_STATE,    
 
         SIG_DATA,
+        SIG_DATA_GOING,        
+        SIG_DATA_GOING_STATUS,    
+        SIG_DATA_GOING_SIZE,  
+        SIG_DATA_GOING_LENGTH,         
+        
+        SIG_DATA_COMING,
+        SIG_DATA_COMING_STATUS,    
+        SIG_DATA_COMING_SIZE,  
+        SIG_DATA_COMING_LENGTH,          
+        
         SIG_1_DATA,
         SIG_2_DATA,
         SIG_3_DATA,
@@ -146,12 +160,96 @@ public class S7AlarmEvent implements S7Event {
         
     };
   
-    private final Instant timeStamp;
+    private Instant timeStamp;
     private final Map<String, Object> map;   
 
     public S7AlarmEvent(Object obj) {
         this.map = new HashMap();
-        if (obj instanceof S7PayloadAlarmAckInd) {
+        
+        if (obj instanceof AlarmMessageObjectQueryType) {
+            AlarmMessageObjectQueryType event = (AlarmMessageObjectQueryType) obj;
+            map.put(Fields.EVENT_ID.name(), event.getEventId());  
+            if (event.getAlarmType() == AlarmType.ALARM_S) {
+                map.put(Fields.TYPE.name(), "ALARMS_QUERY");    
+                map.put(Fields.ASSOCIATED_VALUES.name(), 1); 
+                
+                DateAndTime tcoming = event.getTimeComing();
+                int year = (tcoming.getYear()>=90)?tcoming.getYear()+1900:tcoming.getYear()+2000;        
+                 LocalDateTime ldt = LocalDateTime.of(year,
+                        tcoming.getMonth(),
+                        tcoming.getDay(),
+                        tcoming.getHour(),
+                        tcoming.getMinutes(), 
+                        tcoming.getSeconds(), 
+                        tcoming.getMsec()*1000000);
+                this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
+                map.put(S7AlarmEvent.Fields.TIMESTAMP_COMING.name(),this.timeStamp);  
+                
+                DateAndTime tgoing = event.getTimeGoing();
+                /*
+                year = (tgoing.getYear()>=90)?tgoing.getYear()+1900:tgoing.getYear()+2000;        
+                ldt = LocalDateTime.of(year,
+                        tgoing.getMonth(),
+                        tgoing.getDay(),
+                        tgoing.getHour(),
+                        tgoing.getMinutes(), 
+                        tgoing.getSeconds(), 
+                        tgoing.getMsec()*1000000);
+                Instant timegoing = ldt.toInstant(ZoneOffset.UTC);
+                */
+                map.put(S7AlarmEvent.Fields.TIMESTAMP_GOING.name(),Instant.now());  
+
+                AssociatedQueryValueType datacoming = event.getValueComing();
+                AssociatedQueryValueType datagoing = event.getValueGoing();
+                
+                byte[] buffercoming = new byte[datacoming.getData().length];
+                byte[] buffergoing  = new byte[datagoing.getData().length];
+                                
+                int j = 0;
+                for (short s:datacoming.getData()) {
+                    buffercoming[j] = (byte) s;
+                    j++;
+                }
+                map.put(Fields.SIG_DATA_COMING.name(),  buffercoming);
+                map.put(Fields.SIG_DATA_COMING_STATUS.name(), datacoming.getReturnCode().getValue());
+                map.put(Fields.SIG_DATA_COMING_SIZE.name(), datacoming.getTransportSize().getValue());
+                map.put(Fields.SIG_DATA_COMING_LENGTH.name(), datacoming.getValueLength());                
+                
+                j = 0;
+                for (short s:datagoing.getData()) {
+                    buffergoing[j] = (byte) s;
+                    j++;
+                }
+                    
+                map.put(Fields.SIG_DATA_GOING.name(),  buffergoing);                   
+                map.put(Fields.SIG_DATA_GOING_STATUS.name(), datagoing.getReturnCode().getValue());
+                map.put(Fields.SIG_DATA_GOING_SIZE.name(), datagoing.getTransportSize().getValue());
+                map.put(Fields.SIG_DATA_GOING_LENGTH.name(), datagoing.getValueLength());              
+                                                           
+            } else if (event.getAlarmType() == AlarmType.ALARM_8) {
+                map.put(Fields.TYPE.name(), "ALARM8_QUERY");
+            };
+
+            map.put(Fields.SIG_1_DATA_GOING.name(), event.getAckStateGoing().getSIG_1());
+            map.put(Fields.SIG_2_DATA_GOING.name(), event.getAckStateGoing().getSIG_2());
+            map.put(Fields.SIG_3_DATA_GOING.name(), event.getAckStateGoing().getSIG_3());
+            map.put(Fields.SIG_4_DATA_GOING.name(), event.getAckStateGoing().getSIG_4());
+            map.put(Fields.SIG_5_DATA_GOING.name(), event.getAckStateGoing().getSIG_5());
+            map.put(Fields.SIG_6_DATA_GOING.name(), event.getAckStateGoing().getSIG_6());
+            map.put(Fields.SIG_7_DATA_GOING.name(), event.getAckStateGoing().getSIG_7());
+            map.put(Fields.SIG_8_DATA_GOING.name(), event.getAckStateGoing().getSIG_8()); 
+
+            map.put(Fields.SIG_1_DATA_COMING.name(), event.getAckStateComing().getSIG_1());
+            map.put(Fields.SIG_2_DATA_COMING.name(), event.getAckStateComing().getSIG_2());
+            map.put(Fields.SIG_3_DATA_COMING.name(), event.getAckStateComing().getSIG_3());
+            map.put(Fields.SIG_4_DATA_COMING.name(), event.getAckStateComing().getSIG_4());            
+            map.put(Fields.SIG_5_DATA_COMING.name(), event.getAckStateComing().getSIG_5());
+            map.put(Fields.SIG_6_DATA_COMING.name(), event.getAckStateComing().getSIG_6());
+            map.put(Fields.SIG_7_DATA_COMING.name(), event.getAckStateComing().getSIG_7());
+            map.put(Fields.SIG_8_DATA_COMING.name(), event.getAckStateComing().getSIG_8());                   
+                
+            
+        } else if (obj instanceof S7PayloadAlarmAckInd) {
             AlarmMessageAckPushType msg = ((S7PayloadAlarmAckInd) obj).getAlarmMessage(); 
             DateAndTime dt = msg.getTimeStamp();
             int year = (dt.getYear()>=90)?dt.getYear()+1900:dt.getYear()+2000;        
@@ -292,8 +390,7 @@ public class S7AlarmEvent implements S7Event {
             
             }
             
-        }
-
+        } 
     };
     
     
