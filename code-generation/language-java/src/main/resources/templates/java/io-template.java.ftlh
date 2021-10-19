@@ -145,6 +145,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         int curPos;
 <#list type.fields as field>
 <#switch field.typeName>
+    <#-- TODO: Port this -->
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
         <#if arrayField.type.isByteBased()>
@@ -302,6 +303,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             readBuffer.closeContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         </#if>
         <#break>
+    <#-- TODO: Port this -->
     <#case "checksum">
         <#assign checksumField = field.asChecksumField().orElseThrow()>
         <#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
@@ -324,6 +326,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
         <#break>
+    <#-- TODO: Port this -->
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
 
@@ -351,6 +354,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         </#if>
 
         <#break>
+    <#-- TODO: Port this -->
     <#case "enum">
         <#assign enumField = field.asEnumField().orElseThrow()>
 
@@ -371,6 +375,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});
         <#break>
+    <#-- TODO: Port this -->
     <#case "manualArray">
         <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
 
@@ -432,12 +437,14 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         </#if>
         readBuffer.closeContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         <#break>
+    <#-- TODO: Port this -->
     <#case "manual">
         <#assign manualField = field.asManualField().orElseThrow()>
 
         // Manual Field (${manualField.name})
         ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)});
         <#break>
+    <#-- TODO: Port this -->
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>
 
@@ -526,6 +533,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field
         read${field.typeName?cap_first}Field("reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)});
         <#break>
+    <#-- TODO: Port this -->
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
 
@@ -586,6 +594,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         </#if>
 
         <#break>
+    <#-- TODO: Port this -->
     <#case "switch">
         <#assign switchField = field.asSwitchField().orElseThrow()>
 
@@ -638,6 +647,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field
         read${field.typeName?cap_first}Field("unknown", ${helper.getDataReaderCall(typedField.type)});
         <#break>
+    <#-- TODO: Port this -->
     <#case "virtual">
         <#assign virtualField = field.asVirtualField().orElseThrow()>
 
