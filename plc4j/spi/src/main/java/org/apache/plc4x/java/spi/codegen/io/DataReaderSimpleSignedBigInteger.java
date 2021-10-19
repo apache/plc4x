@@ -18,18 +18,16 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 import java.math.BigInteger;
 
-public class DataReaderSimpleSignedBigInteger implements DataReaderSimple<BigInteger> {
-
-    private final ReadBuffer readBuffer;
-    private final int bitLength;
+public class DataReaderSimpleSignedBigInteger extends DataReaderSimpleBase<BigInteger> {
 
     public DataReaderSimpleSignedBigInteger(ReadBuffer readBuffer, int bitLength) {
-        this.readBuffer = readBuffer;
-        this.bitLength = bitLength;
+        super(readBuffer, bitLength);
     }
 
     @Override
@@ -37,21 +35,4 @@ public class DataReaderSimpleSignedBigInteger implements DataReaderSimple<BigInt
         return readBuffer.readBigInteger(logicalName, bitLength, readerArgs);
     }
 
-    public int getPos() {
-        return readBuffer.getPos();
-    }
-
-    public void setPos(int position) {
-        readBuffer.reset(position);
-    }
-
-    @Override
-    public ByteOrder getByteOrder() {
-        return readBuffer.getByteOrder();
-    }
-
-    @Override
-    public void setByteOrder(ByteOrder byteOrder) {
-        readBuffer.setByteOrder(byteOrder);
-    }
 }

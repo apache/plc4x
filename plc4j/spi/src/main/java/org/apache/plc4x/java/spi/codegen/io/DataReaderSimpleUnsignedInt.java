@@ -18,16 +18,14 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public class DataReaderSimpleUnsignedInt implements DataReaderSimple<Integer> {
-
-    private final ReadBuffer readBuffer;
-    private final int bitLength;
+public class DataReaderSimpleUnsignedInt extends DataReaderSimpleBase<Integer> {
 
     public DataReaderSimpleUnsignedInt(ReadBuffer readBuffer, int bitLength) {
-        this.readBuffer = readBuffer;
-        this.bitLength = bitLength;
+        super(readBuffer, bitLength);
     }
 
     @Override
@@ -35,21 +33,4 @@ public class DataReaderSimpleUnsignedInt implements DataReaderSimple<Integer> {
         return readBuffer.readUnsignedInt(logicalName, bitLength, readerArgs);
     }
 
-    public int getPos() {
-        return readBuffer.getPos();
-    }
-
-    public void setPos(int position) {
-        readBuffer.reset(position);
-    }
-
-    @Override
-    public ByteOrder getByteOrder() {
-        return readBuffer.getByteOrder();
-    }
-
-    @Override
-    public void setByteOrder(ByteOrder byteOrder) {
-        readBuffer.setByteOrder(byteOrder);
-    }
 }
