@@ -64,4 +64,15 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
         I rawValue = (I) dataReader.read(logicalName, readerArgs);
         return enumResolver.apply(rawValue);
     }
+
+    @Override
+    public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
+        dataReader.pullContext(logicalName, readerArgs);
+    }
+
+    @Override
+    public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
+        dataReader.closeContext(logicalName, readerArgs);
+    }
+
 }

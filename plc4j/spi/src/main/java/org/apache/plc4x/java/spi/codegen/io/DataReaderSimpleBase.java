@@ -19,29 +19,23 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-import java.util.function.Supplier;
+public abstract class DataReaderSimpleBase<T> implements DataReaderSimple<T> {
 
-public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
-    private final Supplier<T> complexSupplier;
+    protected final ReadBuffer readBuffer;
+    protected final int bitLength;
 
-    // TODO: maybe replace with resetable or something so its clear that that's the only purpose
-    private final ReadBuffer readBuffer;
-
-    public DataReaderComplexDefault(Supplier<T> complexSupplier, ReadBuffer readBuffer) {
-        this.complexSupplier = complexSupplier;
+    public DataReaderSimpleBase(ReadBuffer readBuffer, int bitLength) {
         this.readBuffer = readBuffer;
+        this.bitLength = bitLength;
     }
 
-    @Override
     public int getPos() {
         return readBuffer.getPos();
     }
 
-    @Override
     public void setPos(int position) {
         readBuffer.reset(position);
     }
@@ -57,18 +51,6 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
     }
 
     @Override
-    public T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
-        return read(logicalName, complexSupplier, readerArgs);
-    }
-
-    public T read(String logicalName, Supplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException {
-        readBuffer.pullContext(logicalName,readerArgs);
-        final T t = complexSupplier.get();
-        readBuffer.closeContext(logicalName,readerArgs);
-        return t;
-    }
-
-    @Override
     public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
         readBuffer.pullContext(logicalName, readerArgs);
     }
@@ -79,4 +61,3 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
     }
 
 }
-

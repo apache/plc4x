@@ -513,18 +513,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "padding">
         <#assign paddingField = field.asPaddingField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
-        // Padding Field (padding)
-        {
-            readBuffer.pullContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
-            int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)});
-            while ((readBuffer.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
-                // Just read the padding data and ignore it
-                Object ignore = ${helper.getReadBufferReadMethodCall(simpleTypeReference, "", paddingField)};
-            }
-            readBuffer.closeContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
-        }
+        // ${field.typeName?cap_first} Field (padding)
+        read${field.typeName?cap_first}Field(${helper.getDataReaderCall(typedField.type)}, (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)}));
         <#break>
     <#case "reserved">
         <#assign reservedField = field.asReservedField().orElseThrow()>

@@ -171,7 +171,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public BigInteger readBigInteger(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
         move(bitLength);
         return new BigInteger(decode(logicalName, rwIntKey, bitLength));
     }
@@ -189,7 +189,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+    public BigDecimal readBigDecimal(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
         move(bitLength);
         return new BigDecimal(decode(logicalName, rwFloatKey, bitLength));
     }
@@ -223,7 +223,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
             if (xmlEvent.isStartElement()) {
                 return xmlEvent.asStartElement();
             } else if (xmlEvent.isEndElement()) {
-                throw new PlcRuntimeException(String.format("Unexpected End element %s", xmlEvent.asEndElement().getName().getLocalPart()));
+                throw new PlcRuntimeException(String.format("Unexpected End element '%s'", xmlEvent.asEndElement().getName().getLocalPart()));
             }
         }
         throw new PlcRuntimeException("EOF");
@@ -238,7 +238,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
                 throw new PlcRuntimeException(e);
             }
             if (xmlEvent.isStartElement()) {
-                throw new PlcRuntimeException(String.format("Unexpected Start element %s", xmlEvent.asStartElement().getName().getLocalPart()));
+                throw new PlcRuntimeException(String.format("Unexpected Start element '%s'", xmlEvent.asStartElement().getName().getLocalPart()));
             } else if (xmlEvent.isEndElement()) {
                 return xmlEvent.asEndElement();
             }
@@ -279,7 +279,7 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
             Attribute attribute = attr.next();
             if (attribute.getName().getLocalPart().equals(rwDataTypeKey)) {
                 if (!attribute.getValue().equals(dataType)) {
-                    throw new PlcRuntimeException(String.format("%s: Unexpected dataType :%s. Want %s", logicalName, attribute.getValue(), dataType));
+                    throw new PlcRuntimeException(String.format("%s: Unexpected dataType '%s'. Want '%s'", logicalName, attribute.getValue(), dataType));
                 }
                 dataTypeValidated = true;
             } else if (attribute.getName().getLocalPart().equals(rwBitLengthKey)) {
@@ -290,10 +290,10 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
             }
         }
         if (!dataTypeValidated) {
-            throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwDataTypeKey));
+            throw new PlcRuntimeException(String.format("%s: required attribute '%s' missing", logicalName, rwDataTypeKey));
         }
         if (!bitLengthValidate) {
-            throw new PlcRuntimeException(String.format("%s: required attribute %s missing", logicalName, rwBitLengthKey));
+            throw new PlcRuntimeException(String.format("%s: required attribute '%s' missing", logicalName, rwBitLengthKey));
         }
     }
 

@@ -23,6 +23,7 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 public interface DataReader<T> {
+
     T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 
     int getPos();
@@ -32,4 +33,8 @@ public interface DataReader<T> {
     ByteOrder getByteOrder();
 
     void setByteOrder(ByteOrder byteOrder);
+
+    void pullContext(String logicalName, WithReaderArgs... readerArgs);
+    void closeContext(String logicalName, WithReaderArgs... readerArgs);
+
 }

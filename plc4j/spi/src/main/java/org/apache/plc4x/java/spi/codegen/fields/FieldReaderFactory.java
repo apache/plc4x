@@ -52,6 +52,10 @@ public class FieldReaderFactory {
         return new FieldReaderImplicit<T>().readField(logicalName, dataReader, readerArgs);
     }
 
+    public static <T> void readPaddingField(DataReader<T> dataReader, int timesPadding, WithReaderArgs... readerArgs) throws ParseException {
+        new FieldReaderPadding<T>().readPaddingField(dataReader, timesPadding, readerArgs);
+    }
+
     public static <T> T readReservedField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderReserved<T>().readReservedField(logicalName, dataReader, expectedValue, readerArgs);
     }

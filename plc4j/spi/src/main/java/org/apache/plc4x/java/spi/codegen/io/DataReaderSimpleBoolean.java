@@ -18,19 +18,14 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-import java.util.Objects;
-
-public class DataReaderSimpleBoolean implements DataReaderSimple<Boolean> {
-
-    private final ReadBuffer readBuffer;
+public class DataReaderSimpleBoolean extends DataReaderSimpleBase<Boolean> {
 
     public DataReaderSimpleBoolean(ReadBuffer readBuffer) {
-        this.readBuffer = Objects.requireNonNull(readBuffer);
+        super(readBuffer, 1);
     }
 
     @Override
@@ -38,21 +33,4 @@ public class DataReaderSimpleBoolean implements DataReaderSimple<Boolean> {
         return readBuffer.readBit(logicalName, readerArgs);
     }
 
-    public int getPos() {
-        return readBuffer.getPos();
-    }
-
-    public void setPos(int position) {
-        readBuffer.reset(position);
-    }
-
-    @Override
-    public ByteOrder getByteOrder() {
-        return readBuffer.getByteOrder();
-    }
-
-    @Override
-    public void setByteOrder(ByteOrder byteOrder) {
-        readBuffer.setByteOrder(byteOrder);
-    }
 }
