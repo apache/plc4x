@@ -1,0 +1,25 @@
+(^XACK:)
+(
+ (
+  (?:,{0,1})
+  (16#[0-9a-fA-F]{8})
+  (;
+   ([0-9a-fA-F]{2})
+  )
+ )+
+)
+
+
+(^CYC:)
+(
+ (
+  (?:,{0,1})
+  (%DB
+   (?<blockNumber>\d{1,5}).DB
+   (?<transferSizeCode>[XBWD]?)
+   (?<byteOffset>\d{1,7})
+   (\[(?<numElements>\d+)])
+   ?
+  )
+ )+
+)
