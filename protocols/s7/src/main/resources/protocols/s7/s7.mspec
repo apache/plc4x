@@ -22,10 +22,10 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'TPKTPacket' byteOrder='"BIG_ENDIAN"'
-    [const    uint 8     'protocolId' '0x03']
-    [reserved uint 8     '0x00']
-    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
-    [simple   COTPPacket 'payload' ['len - 4']]
+    [const    uint 8                 'protocolId' '0x03'                     ]
+    [reserved uint 8                 '0x00'                                  ]
+    [implicit uint 16                'len'        'payload.lengthInBytes + 4']
+    [simple   COTPPacket ['len - 4'] 'payload'                               ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -37,35 +37,35 @@
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
         ['0xF0' COTPPacketData
-            [simple bit    'eot']
-            [simple uint 7 'tpduRef']
+            [simple bit    'eot'                            ]
+            [simple uint 7 'tpduRef'                        ]
         ]
         ['0xE0' COTPPacketConnectionRequest
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference']
-            [simple COTPProtocolClass 'protocolClass']
+            [simple uint 16           'sourceReference'     ]
+            [simple COTPProtocolClass 'protocolClass'       ]
         ]
         ['0xD0' COTPPacketConnectionResponse
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference']
-            [simple COTPProtocolClass 'protocolClass']
+            [simple uint 16           'sourceReference'     ]
+            [simple COTPProtocolClass 'protocolClass'       ]
         ]
         ['0x80' COTPPacketDisconnectRequest
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference']
-            [simple COTPProtocolClass 'protocolClass']
+            [simple uint 16           'sourceReference'     ]
+            [simple COTPProtocolClass 'protocolClass'       ]
         ]
         ['0xC0' COTPPacketDisconnectResponse
-            [simple uint 16 'destinationReference']
-            [simple uint 16 'sourceReference']
+            [simple uint 16 'destinationReference'          ]
+            [simple uint 16 'sourceReference'               ]
         ]
         ['0x70' COTPPacketTpduError
-            [simple uint 16 'destinationReference']
-            [simple uint 8  'rejectCause']
+            [simple uint 16 'destinationReference'          ]
+            [simple uint 8  'rejectCause'                   ]
         ]
     ]
-    [array    COTPParameter 'parameters' length '(headerLength + 1) - curPos' ['(headerLength + 1) - curPos']]
-    [optional S7Message     'payload'    'curPos < cotpLen']
+    [array    COTPParameter ['(headerLength + 1) - curPos'] 'parameters' length '(headerLength + 1) - curPos']
+    [optional S7Message                                     'payload'    'curPos < cotpLen']
 ]
 
 [discriminatedType 'COTPParameter' [uint 8 'rest']
@@ -115,8 +115,8 @@
         ['0x07' S7MessageUserData
         ]
     ]
-    [optional S7Parameter 'parameter' 'parameterLength > 0' ['messageType']]
-    [optional S7Payload   'payload'   'payloadLength > 0'   ['messageType', 'parameter']]
+    [optional S7Parameter ['messageType']              'parameter' 'parameterLength > 0']
+    [optional S7Payload   ['messageType', 'parameter'] 'payload'   'payloadLength > 0'  ]
 ]
 
 ////////////////////////////////////////////////////////////////

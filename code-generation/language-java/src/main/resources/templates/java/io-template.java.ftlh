@@ -444,71 +444,16 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Manual Field (${manualField.name})
         ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)});
         <#break>
-    <#-- TODO: Port this -->
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-        ${helper.getLanguageTypeNameForField(optionalField)} ${optionalField.name} = null;
-        <#-- TODO: we need to initalize base types-->
-        curPos = readBuffer.getPos();
-        try {
+        // ${field.typeName?cap_first} Field (${namedField.name}) (Can be skipped, if a given expression evaluates to false)
         <#if optionalField.conditionExpression.present && optionalField.conditionExpression.orElseThrow().contains("curPos")>
-        curPos = readBuffer.getPos();
+            curPos = readBuffer.getPos();
         </#if>
-        <#if optionalField.conditionExpression.present>
-        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}) {
-        </#if>
-        <@compress single_line=true>
-            ${optionalField.name} =
-            <#if helper.isEnumField(optionalField)>
-             ${helper.getLanguageTypeNameForField(optionalField)}.enumForValue(
-                ${helper.getReadBufferReadMethodCall(optionalField.name, helper.getEnumBaseTypeReference(optionalField.type), "", optionalField)}
-            )
-            <#elseif helper.isComplexTypeReference(optionalField.type)>
-                <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
-                <#assign typeName=complexTypeReference.name>
-                <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                    <#-- Usually you don't use child directly unless they are parameterized #-->
-                    <#assign typeName=typeDefinition.parentType.name>
-                    <#assign typeDefinition=typeDefinition.parentType>
-                </#if>
-                <#-- We downcast to the referenced type-->
-            (${complexTypeReference.name}) ${typeName}IO.staticParse(
-                readBuffer
-                <#if field.params.isPresent()>,
-                    <#list field.params.orElseThrow() as parserArgument>
-                        (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(optionalField.type, parserArgument?index), true)})
-                        (${helper.toParseExpression(optionalField, parserArgument, parserArguments)})<#sep>, </#sep>
-                    </#list>
-                </#if>
-                <#if complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-                    <#assign argumentOffset=0>
-                    <#if field.params.isPresent()><#assign argumentOffset=field.params.orElseThrow()?size></#if>
-                    ,
-                    <#list complexTypeReference.params.orElseThrow() as typeParam>
-                    <#-- We cast here explicitly as java sometimes can't infer the type. e.g. 0 is a int and not a byte#-->
-                        (${helper.getLanguageTypeNameForTypeReference(typeDefinition.parserArguments.orElseThrow()[typeParam?index + argumentOffset].type, true)})
-                        ${helper.toAccessExpression(null, typeParam, null)}<#sep>, </#sep>
-                    </#list>
-                </#if>
-                )
-            <#else>
-             ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow(), "", optionalField)}
-            </#if>
-            ;
-        </@compress>
-
-        <#if optionalField.conditionExpression.present>
-        }
-        </#if>
-            if (1 == 2) {
-                throw new ParseAssertException("oh no java");
-            }
-        } catch(ParseAssertException ignore){
-            readBuffer.reset(curPos);
-        }
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, <#if optionalField.conditionExpression.present>${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}<#else>true</#if>);
         <#break>
     <#case "assert">
         <#assign assertField = field.asAssertField().orElseThrow()>
@@ -647,16 +592,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field
         read${field.typeName?cap_first}Field("unknown", ${helper.getDataReaderCall(typedField.type)});
         <#break>
-    <#-- TODO: Port this -->
     <#case "virtual">
         <#assign virtualField = field.asVirtualField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Virtual field (Just declare a local variable so we can access it in the parser)
-        <#if helper.getLanguageTypeNameForField(field) = 'String'>
-        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toParseExpression(virtualField, virtualField.valueExpression, parserArguments)});
-        <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, parserArguments)});
-        </#if>
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field(${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.valueExpression, parserArguments)});
         <#break>
 </#switch>
 </#list>

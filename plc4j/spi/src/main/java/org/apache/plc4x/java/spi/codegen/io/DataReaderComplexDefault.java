@@ -26,12 +26,13 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import java.util.function.Supplier;
 
 public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
-    private final Supplier<T> complexSupplier;
+
+    private final ComplexTypeSupplier<T> complexSupplier;
 
     // TODO: maybe replace with resetable or something so its clear that that's the only purpose
     private final ReadBuffer readBuffer;
 
-    public DataReaderComplexDefault(Supplier<T> complexSupplier, ReadBuffer readBuffer) {
+    public DataReaderComplexDefault(ComplexTypeSupplier<T> complexSupplier, ReadBuffer readBuffer) {
         this.complexSupplier = complexSupplier;
         this.readBuffer = readBuffer;
     }
@@ -61,7 +62,7 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
         return read(logicalName, complexSupplier, readerArgs);
     }
 
-    public T read(String logicalName, Supplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException {
+    public T read(String logicalName, ComplexTypeSupplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException {
         readBuffer.pullContext(logicalName,readerArgs);
         final T t = complexSupplier.get();
         readBuffer.closeContext(logicalName,readerArgs);

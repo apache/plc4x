@@ -374,7 +374,22 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
-            return "new DataReaderComplex(readBuffer)";
+            final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().get();
+            String parserArguments = "";
+            if(complexTypeReference.getParams().isPresent()) {
+                final List<Term> terms = complexTypeReference.getParams().get();
+                StringBuilder sb = new StringBuilder();
+                for (Term term : terms) {
+                    sb.append(", ").append(toParseExpression(null, term, null));
+                }
+                parserArguments = sb.toString();
+            }
+            return "new DataReaderComplexDefault<>(new ComplexTypeSupplier<" + getLanguageTypeNameForTypeReference(typeReference) + ">() {" +
+                "    @Override\n" +
+                "    public " + getLanguageTypeNameForTypeReference(typeReference) + " get() throws ParseException {\n" +
+                "        return " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + parserArguments + ");\n" +
+                "    }" +
+                "}, readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
