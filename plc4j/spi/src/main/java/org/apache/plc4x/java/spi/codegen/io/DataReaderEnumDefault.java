@@ -27,9 +27,9 @@ import java.util.function.Function;
 public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
 
     private final Function<I, T> enumResolver;
-    private final DataReaderSimple<I> dataReader;
+    private final DataReader<I> dataReader;
 
-    public DataReaderEnumDefault(Function<I, T> enumResolver, DataReaderSimple<I> dataReader) {
+    public DataReaderEnumDefault(Function<I, T> enumResolver, DataReader<I> dataReader) {
         this.enumResolver = enumResolver;
         this.dataReader = dataReader;
     }

@@ -25,6 +25,6 @@ import java.util.function.Supplier;
 
 public interface DataReaderComplex<T> extends DataReader<T> {
 
-    T read(String logicalName, Supplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException;
+    T read(String logicalName, ComplexTypeSupplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException;
 
 }

@@ -30,7 +30,14 @@ public class FieldReaderVirtual<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        throw new IllegalStateException("not possible with unknown field");
+    }
+
+    public T readVirtualField(Class<T> type, Object valueExpression, WithReaderArgs... readerArgs) throws ParseException {
+        if(type == String.class) {
+            return (T) String.valueOf(valueExpression);
+        }
+        return (T) valueExpression;
     }
 
 }
