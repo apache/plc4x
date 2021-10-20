@@ -45,6 +45,12 @@ public class S7SubscriptionField implements PlcField {
     //TODO: Query SCAN 
     private static final Pattern EVENT_ALARM_QUERY_PATTERN = 
         Pattern.compile("(^QUERY:)((ALARM_S)|(ALARM_8))");    
+    
+    private static final Pattern EVENT_SUBSCRIPTION_QUERY_PATTERN =     
+    Pattern.compile("(^CYC:)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[B]?)(?<byteOffset>\\d{1,7})(\\[(?<numElements>\\d+)]))?)+)");
+    
+    private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");    
        
     private final S7SubscriptionFieldType fieldtype;
     private final EventType eventtype;

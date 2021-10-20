@@ -935,6 +935,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             try {
 
                 S7PayloadUserDataItem payloaditem = S7PayloadUserDataItemIO.staticParse(readBuffer, 
+                        (byte) 0x04,
                         (byte) 0x00, 
                         itemparameter.getCpuSubfunction());
                 System.out.println(payloaditem);
