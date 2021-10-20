@@ -22,10 +22,10 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'TPKTPacket' byteOrder='"BIG_ENDIAN"'
-    [const    uint 8                 'protocolId' '0x03'                     ]
-    [reserved uint 8                 '0x00'                                  ]
-    [implicit uint 16                'len'        'payload.lengthInBytes + 4']
-    [simple   COTPPacket ['len - 4'] 'payload'                               ]
+    [const    uint 8                 'protocolId' '0x03']
+    [reserved uint 8                 '0x00']
+    [implicit uint 16                'len'       'payload.lengthInBytes + 4']
+    [simple   COTPPacket ['len - 4'] 'payload']
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -37,31 +37,31 @@
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
         ['0xF0' COTPPacketData
-            [simple bit    'eot'                            ]
-            [simple uint 7 'tpduRef'                        ]
+            [simple bit    'eot']
+            [simple uint 7 'tpduRef']
         ]
         ['0xE0' COTPPacketConnectionRequest
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference'     ]
-            [simple COTPProtocolClass 'protocolClass'       ]
+            [simple uint 16           'sourceReference']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0xD0' COTPPacketConnectionResponse
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference'     ]
-            [simple COTPProtocolClass 'protocolClass'       ]
+            [simple uint 16           'sourceReference']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0x80' COTPPacketDisconnectRequest
             [simple uint 16           'destinationReference']
-            [simple uint 16           'sourceReference'     ]
-            [simple COTPProtocolClass 'protocolClass'       ]
+            [simple uint 16           'sourceReference']
+            [simple COTPProtocolClass 'protocolClass']
         ]
         ['0xC0' COTPPacketDisconnectResponse
-            [simple uint 16 'destinationReference'          ]
-            [simple uint 16 'sourceReference'               ]
+            [simple uint 16 'destinationReference']
+            [simple uint 16 'sourceReference']
         ]
         ['0x70' COTPPacketTpduError
-            [simple uint 16 'destinationReference'          ]
-            [simple uint 8  'rejectCause'                   ]
+            [simple uint 16 'destinationReference']
+            [simple uint 8  'rejectCause']
         ]
     ]
     [array    COTPParameter ['(headerLength + 1) - curPos'] 'parameters' length '(headerLength + 1) - curPos']
@@ -223,16 +223,16 @@
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
     [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','0x03' S7PayloadReadVarResponse [S7Parameter 'parameter']
-            [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems' ['lastItem']]
+            [array S7VarPayloadDataItem ['lastItem'] 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest [S7Parameter 'parameter']
-            [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)' ['lastItem']]
+            [array S7VarPayloadDataItem ['lastItem'] 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse [S7Parameter 'parameter']
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
         ['0x00','0x07' S7PayloadUserData [S7Parameter 'parameter']
-            [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction']]
+            [array S7PayloadUserDataItem ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction'] 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
         ]
     ]
 ]
