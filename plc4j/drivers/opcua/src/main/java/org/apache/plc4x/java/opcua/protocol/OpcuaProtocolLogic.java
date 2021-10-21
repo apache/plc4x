@@ -174,13 +174,27 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             Consumer<byte []> consumer = opcuaResponse -> {
                 PlcReadResponse response = null;
                 try {
-                    response = new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody()).getResults()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                };
+                    ExtensionObjectDefinition reply = ExtensionObjectIO.staticParse(new ReadBufferByteBased(opcuaResponse, true), false).getBody();
+                    if (reply instanceof ReadResponse) {
+                        future.complete(new DefaultPlcReadResponse(request, readResponse(request.getFieldNames(), ((ReadResponse) reply).getResults())));
+                    } else {
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Read request ended up with ServiceFault: {}", header);
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                        }
 
-                // Pass the response back to the application.
-                future.complete(response);
+                        Map<String, ResponseItem<PlcValue>> status = new LinkedHashMap<>();
+                        for (String key : request.getFieldNames()) {
+                            status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                        }
+                        future.complete(new DefaultPlcReadResponse(request, status));
+                        return;
+                    }
+                } catch (ParseException e) {
+                    future.completeExceptionally(new PlcRuntimeException(e));
+                };
             };
 
             /* Functional Consumer example using inner class */
