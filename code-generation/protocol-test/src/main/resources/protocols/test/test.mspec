@@ -40,7 +40,7 @@
     [const          uint 8  'constField'        '5']
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  'discriminatorField']
-    [enum           EnumType  'enumField' 'lalala']
+    [enum           EnumTypeParameters  'enumField' 'intType']
     [implicit       uint 8  'implicitField' 'simpleField']
     [optional       uint 8  'optionalField' 'simpleField == 5']
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
@@ -60,7 +60,7 @@
     [const          uint 8  'constField'        '5']
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  'discriminatorField']
-    [enum           EnumType  'enumField' 'lalala']
+    [enum           EnumTypeParameters  'enumField' 'intType']
     [implicit       uint 8  'implicitField' 'simpleField']
     [optional       uint 8  'optionalField' 'simpleField == 5']
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
@@ -172,7 +172,7 @@
 ]
 
 [type 'EnumTypeTest'
-    [enum           EnumType  'enumField' 'lalala']
+    [enum           EnumTypeParameters  'enumField' 'intType']
 ]
 
 [type 'PascalStringTypeTest'
