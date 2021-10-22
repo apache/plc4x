@@ -53,8 +53,4 @@ public class DefaultSwitchField implements SwitchField {
         return Optional.empty();
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

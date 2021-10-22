@@ -258,7 +258,7 @@
     [simple uint 64 'QuadIntField']
 ]
 
-//Specific test confirming a continous loop isn't formed when working out the length.
+//Specific test confirming a continuous loop isn't formed when working out the length.
 [type 'LentghLoopTest'
     [simple        uint 16 'commandType']
     [implicit      uint 16 'len' 'lengthInBytes - 8']
@@ -301,7 +301,7 @@
 ]
 
 // Enumerated Parameter
-[discriminatedType 'EnumDiscriminatedTypeParameter' [EnumType 'discr']
+[discriminatedType 'EnumDiscriminatedTypeParameter' (EnumType 'discr')
     [typeSwitch 'discr'
         ['BOOL' EnumDiscriminatedTypeAParameter
             [simple        uint 8 'simpA']
@@ -316,7 +316,7 @@
 ]
 
 // Multiple Enumerated Parameters
-[discriminatedType 'EnumDiscriminatedTypeParameterMultiple' [EnumType 'discr1', EnumTypeInt 'discr2']
+[discriminatedType 'EnumDiscriminatedTypeParameterMultiple' (EnumType 'discr1', EnumTypeInt 'discr2')
     [typeSwitch 'discr1','discr2'
         ['BOOL','BOOLINT' EnumDiscriminatedTypeAParameterMultiple
             [simple        uint 8 'simpA']
@@ -413,19 +413,19 @@
 //]
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
-//[enum int 8 'EnumTypeAllTest'  [bit 'bitType', int 8 'intType', uint 8 'uintType', float 32 'floatType', float 64 'doubleType', string '-1' 'stringType', EnumType 'enumType']
+//[enum int 8 'EnumTypeAllTest'  (bit 'bitType', int 8 'intType', uint 8 'uintType', float 32 'floatType', float 64 'doubleType', string '-1' 'stringType', EnumType 'enumType')
 //    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
 //TODO:  Keyword named parameters aren't allowed
-//[enum int 8 'EnumTypeIntTest'  [int 8 'int']
+//[enum int 8 'EnumTypeIntTest'  (int 8 'int')
 //    ['0x01' BOOL             ['1']]
 //    ['0x02' BYTE             ['2']]
 //]
 
 //Showing allowed parameter types for enums
-[enum int 8 'EnumTypeParameters'  [bit 'bitType', int 8 'intType', uint 8 'uintType', string 32 'stringType', EnumType 'enumType']
+[enum int 8 'EnumTypeParameters'  (bit 'bitType', int 8 'intType', uint 8 'uintType', string 32 'stringType', EnumType 'enumType')
     ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
     ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]
@@ -434,7 +434,7 @@
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
 
-[dataIo 'DataIOType' [EnumType 'dataType']
+[dataIo 'DataIOType' (EnumType 'dataType')
     [typeSwitch 'dataType'
         ['BOOL' BOOL
             [simple bit 'value']

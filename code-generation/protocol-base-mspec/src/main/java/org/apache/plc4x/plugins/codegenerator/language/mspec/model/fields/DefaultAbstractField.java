@@ -31,13 +31,11 @@ public class DefaultAbstractField extends DefaultField implements AbstractField 
 
     private final TypeReference type;
     private final String name;
-    private final List<Term> params;
 
-    public DefaultAbstractField(Map<String, Term> attributes, TypeReference type, String name, List<Term> params) {
+    public DefaultAbstractField(Map<String, Term> attributes, TypeReference type, String name) {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
-        this.params = params;
     }
 
     public TypeReference getType() {
@@ -46,10 +44,6 @@ public class DefaultAbstractField extends DefaultField implements AbstractField 
 
     public String getName() {
         return name;
-    }
-
-    public Optional<List<Term>> getParams() {
-        return Optional.ofNullable(params);
     }
 
 }

@@ -27,14 +27,14 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? (fieldDefinition|batchSetDefinition)*
- | 'discriminatedType' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? (fieldDefinition|batchSetDefinition)+
- | 'enum' (type=typeReference)? name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
- | 'dataIo' name=idExpression (attributes=attributeList) (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
+ : 'type' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)*
+ | 'discriminatedType' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)+
+ | 'enum' (type=typeReference)? name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
- : LBRACKET field (attributes=attributeList) (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : LBRACKET field (attributes=attributeList) RBRACKET
  ;
 
 batchSetDefinition
@@ -138,7 +138,7 @@ enumValueDefinition
  ;
 
 typeReference
- : complexTypeReference=IDENTIFIER_LITERAL (LBRACKET params=multipleExpressions RBRACKET)?
+ : complexTypeReference=IDENTIFIER_LITERAL (LRBRACKET params=multipleExpressions RRBRACKET)?
  | simpleTypeReference=dataType
  ;
 
@@ -210,6 +210,8 @@ idExpression
 TICK : '\'';
 LBRACKET : '[';
 RBRACKET : ']';
+LRBRACKET : '(';
+RRBRACKET : ')';
 LCBRACKET : '{';
 RCBRACKET : '}';
 

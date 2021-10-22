@@ -33,15 +33,13 @@ public class DefaultArrayField extends DefaultField implements ArrayField {
     private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
-    private final List<Term> params;
 
-    public DefaultArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, List<Term> params) {
+    public DefaultArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression) {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.loopType = Objects.requireNonNull(loopType);
         this.loopExpression = Objects.requireNonNull(loopExpression);
-        this.params = params;
     }
 
     public TypeReference getType() {
@@ -58,11 +56,6 @@ public class DefaultArrayField extends DefaultField implements ArrayField {
 
     public Term getLoopExpression() {
         return loopExpression;
-    }
-
-    @Override
-    public Optional<List<Term>> getParams() {
-        return Optional.ofNullable(params);
     }
 
 }

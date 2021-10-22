@@ -22,10 +22,8 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultManualArrayField extends DefaultField implements ManualArrayField {
 
@@ -36,9 +34,8 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
     private final Term parseExpression;
     private final Term serializeExpression;
     private final Term lengthExpression;
-    private final List<Term> params;
 
-    public DefaultManualArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, List<Term> params) {
+    public DefaultManualArrayField(Map<String, Term> attributes, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression) {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
@@ -47,7 +44,6 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
         this.parseExpression = Objects.requireNonNull(parseExpression);
         this.serializeExpression = Objects.requireNonNull(serializeExpression);
         this.lengthExpression = Objects.requireNonNull(lengthExpression);
-        this.params = params;
     }
 
     public TypeReference getType() {
@@ -78,8 +74,4 @@ public class DefaultManualArrayField extends DefaultField implements ManualArray
         return lengthExpression;
     }
 
-    @Override
-    public Optional<List<Term>> getParams() {
-        return Optional.ofNullable(params);
-    }
 }

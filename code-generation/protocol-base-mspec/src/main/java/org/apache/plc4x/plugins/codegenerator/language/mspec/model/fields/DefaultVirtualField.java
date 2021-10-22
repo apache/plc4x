@@ -49,8 +49,4 @@ public class DefaultVirtualField extends DefaultField implements VirtualField {
         return valueExpression;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

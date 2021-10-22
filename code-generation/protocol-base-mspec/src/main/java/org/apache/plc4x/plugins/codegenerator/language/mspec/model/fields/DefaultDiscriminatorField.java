@@ -43,8 +43,4 @@ public class DefaultDiscriminatorField extends DefaultField implements Discrimin
         return name;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

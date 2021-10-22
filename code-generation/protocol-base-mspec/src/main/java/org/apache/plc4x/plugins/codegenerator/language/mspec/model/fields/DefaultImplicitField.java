@@ -49,8 +49,4 @@ public class DefaultImplicitField extends DefaultField implements ImplicitField 
         return serializeExpression;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

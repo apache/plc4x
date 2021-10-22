@@ -49,8 +49,4 @@ public class DefaultConstField extends DefaultField implements ConstField {
         return referenceValue;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

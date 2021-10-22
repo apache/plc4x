@@ -43,8 +43,4 @@ public class DefaultReservedField extends DefaultField implements ReservedField 
         return referenceValue;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

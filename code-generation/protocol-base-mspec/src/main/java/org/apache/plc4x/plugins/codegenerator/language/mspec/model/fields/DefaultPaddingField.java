@@ -33,15 +33,13 @@ public class DefaultPaddingField extends DefaultField implements PaddingField {
     private final String name;
     private final Term paddingValue;
     private final Term paddingCondition;
-    private final List<Term> params;
 
-    public DefaultPaddingField(Map<String, Term> attributes, TypeReference type, String name, Term paddingValue, Term paddingCondition, List<Term> params) {
+    public DefaultPaddingField(Map<String, Term> attributes, TypeReference type, String name, Term paddingValue, Term paddingCondition) {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.paddingValue = Objects.requireNonNull(paddingValue);
         this.paddingCondition = Objects.requireNonNull(paddingCondition);
-        this.params = params;
     }
 
     public TypeReference getType() {
@@ -58,10 +56,6 @@ public class DefaultPaddingField extends DefaultField implements PaddingField {
 
     public Term getPaddingCondition() {
         return paddingCondition;
-    }
-
-    public Optional<List<Term>> getParams() {
-        return Optional.ofNullable(params);
     }
 
 }
