@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
@@ -311,7 +312,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     @Deprecated
     @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
-        return "/*TODO: migrate me*/"+getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
+        return "/*TODO: migrate me*/" + getReadBufferReadMethodCall("", simpleTypeReference, valueString, field);
     }
 
     @Deprecated
@@ -319,10 +320,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 String bitType = "Bit";
-                return "/*TODO: migrate me*/"+"readBuffer.read" + bitType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + bitType + "(\"" + logicalName + "\")";
             case BYTE:
                 String byteType = "Byte";
-                return "/*TODO: migrate me*/"+"readBuffer.read" + byteType + "(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + byteType + "(\"" + logicalName + "\")";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -337,7 +338,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 } else {
                     unsignedIntegerType = "UnsignedBigInteger";
                 }
-                return "/*TODO: migrate me*/"+"readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + unsignedIntegerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
@@ -351,18 +352,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 } else {
                     integerType = "BigInteger";
                 }
-                return "/*TODO: migrate me*/"+"readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + integerType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case FLOAT:
                 String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                return "/*TODO: migrate me*/"+"readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + floatType + "(\"" + logicalName + "\", " + simpleTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
                 String stringType = "String";
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "/*TODO: migrate me*/"+"readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
         }
-        return "/*TODO: migrate me*/"+"";
+        return "/*TODO: migrate me*/" + "";
     }
 
     public String getDataReaderCall(TypeReference typeReference) {
@@ -371,25 +372,19 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
             return "new DataReaderEnumDefault(" + languageTypeName + "::enumForValue, " + getDataReaderCall(enumBaseTypeReference) + ")";
         } else if (typeReference.isSimpleTypeReference()) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+            SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
-            final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().get();
-            String parserArguments = "";
-            if(complexTypeReference.getParams().isPresent()) {
-                final List<Term> terms = complexTypeReference.getParams().get();
-                StringBuilder sb = new StringBuilder();
-                for (Term term : terms) {
-                    sb.append(", ").append(toParseExpression(null, term, null));
-                }
-                parserArguments = sb.toString();
+            final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
+            String parserArguments = complexTypeReference.getParams()
+                .map(terms -> terms.stream()
+                    .map(term -> toParseExpression(null, term, null))
+                    .collect(Collectors.joining(", "))
+                ).orElse("");
+            if (StringUtils.isNotBlank(parserArguments)) {
+                parserArguments = ", " + parserArguments;
             }
-            return "new DataReaderComplexDefault<>(new ComplexTypeSupplier<" + getLanguageTypeNameForTypeReference(typeReference) + ">() {" +
-                "    @Override\n" +
-                "    public " + getLanguageTypeNameForTypeReference(typeReference) + " get() throws ParseException {\n" +
-                "        return " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + parserArguments + ");\n" +
-                "    }" +
-                "}, readBuffer)";
+            return "new DataReaderComplexDefault<>(() -> " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + parserArguments + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }

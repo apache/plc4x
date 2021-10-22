@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
 
+@FunctionalInterface
 public interface ComplexTypeSupplier<T> {
 
     T get() throws ParseException;
