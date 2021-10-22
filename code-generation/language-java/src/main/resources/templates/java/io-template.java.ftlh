@@ -303,6 +303,14 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             readBuffer.closeContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         </#if>
         <#break>
+    <#case "assert">
+        <#assign assertField = field.asAssertField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
+
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
+        <#break>
     <#-- TODO: Port this -->
     <#case "checksum">
         <#assign checksumField = field.asChecksumField().orElseThrow()>
@@ -454,14 +462,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             curPos = readBuffer.getPos();
         </#if>
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}</#if>);
-        <#break>
-    <#case "assert">
-        <#assign assertField = field.asAssertField().orElseThrow()>
-        <#assign typedField = field.asTypedField().orElseThrow()>
-        <#assign namedField = field.asNamedField().orElseThrow()>
-
-        // ${field.typeName?cap_first} Field (${namedField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
         <#break>
     <#case "padding">
         <#assign paddingField = field.asPaddingField().orElseThrow()>
