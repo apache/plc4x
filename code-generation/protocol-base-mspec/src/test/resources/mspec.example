@@ -138,7 +138,7 @@
     // This contains the AmsPort of the station, from which the packet was sent.
     [simple     uint        16  'sourceAmsPort'                             ]
     // 2 bytes.
-    [enum       CommandId       'commandId'                                 ]
+    [enum       CommandId       'commandId'                         'lalala']
     // 2 bytes.
     [simple     State           'state'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
