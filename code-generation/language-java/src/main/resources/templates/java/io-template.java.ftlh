@@ -453,7 +453,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#if optionalField.conditionExpression.present && optionalField.conditionExpression.orElseThrow().contains("curPos")>
             curPos = readBuffer.getPos();
         </#if>
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, <#if optionalField.conditionExpression.present>${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}<#else>true</#if>);
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}</#if>);
         <#break>
     <#case "assert">
         <#assign assertField = field.asAssertField().orElseThrow()>

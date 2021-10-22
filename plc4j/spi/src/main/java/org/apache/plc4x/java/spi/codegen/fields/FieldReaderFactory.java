@@ -52,6 +52,10 @@ public class FieldReaderFactory {
         return new FieldReaderImplicit<T>().readField(logicalName, dataReader, readerArgs);
     }
 
+    public static <T> T readOptionalField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderOptional<T>().readOptionalField(logicalName, dataReader, true, readerArgs);
+    }
+
     public static <T> T readOptionalField(String logicalName, DataReader<T> dataReader, boolean condition, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderOptional<T>().readOptionalField(logicalName, dataReader, condition, readerArgs);
     }
@@ -62,6 +66,10 @@ public class FieldReaderFactory {
 
     public static <T> T readReservedField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderReserved<T>().readReservedField(logicalName, dataReader, expectedValue, readerArgs);
+    }
+
+    public static <T> T readSimpleField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderSimple<T>().readField(logicalName,dataReader,readerArgs);
     }
 
     public static <T> T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
