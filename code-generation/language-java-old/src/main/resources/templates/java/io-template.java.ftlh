@@ -357,11 +357,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         readBuffer.pullContext("${enumField.name}");
         // Enum field (${enumField.name})
-        <#if enumField.fieldName.isPresent()>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName.orElseThrow()?cap_first}(${helper.getReadBufferReadMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "", enumField)});
-        <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "", enumField)});
-        </#if>
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName?cap_first}(${helper.getReadBufferReadMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "", enumField)});
         readBuffer.closeContext("${enumField.name}");
         <#break>
     <#case "implicit">
@@ -787,11 +783,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         writeBuffer.pushContext("${enumField.name}");
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(enumField)}) _value.get${enumField.name?cap_first}();
-        <#if enumField.fieldName.isPresent()>
-        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName.orElseThrow()), "(" + enumField.name + ".get" + enumField.fieldName.orElseThrow()?cap_first + "())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
-        <#else>
-        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
-        </#if>
+        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
         writeBuffer.popContext("${enumField.name}");
         <#break>
     <#case "implicit">

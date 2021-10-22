@@ -254,7 +254,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         </#if>
 
         <#break>
-    <#-- TODO: Port this -->
     <#case "enum">
         <#assign enumField = field.asEnumField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
