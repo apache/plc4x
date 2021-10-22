@@ -193,7 +193,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                     ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
                 <#else>
                     ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#if field.params.isPresent()>
+                    <#--if field.params.isPresent()>
                         ,
                         <#list field.params.orElseThrow() as parserArgument>
                             <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true) = 'String'>
@@ -202,7 +202,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                                 (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
                             </#if>
                         </#list>
-                    </#if>
+                    </#if-->
                     <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
                     <#-- We expose the parentParserArguments to the child here too-->
                     <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
@@ -231,13 +231,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                             ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
                         <#else>
                             ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                            <#if field.params.isPresent()>
+                            <#--if field.params.isPresent()>
                                 ,
                                 <#list field.params.orElseThrow() as parserArgument>
                                     (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)})
                                     (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
                                 </#list>
-                            </#if>
+                            </#if-->
                             <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
                         <#-- We expose the parentParserArguments to the child here too-->
                             <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
@@ -263,13 +263,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                             ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
                         <#else>
                             ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                            <#if field.params.isPresent()>
+                            <#--if field.params.isPresent()>
                                 ,
                                 <#list field.params.orElseThrow() as parserArgument>
                                     (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)})
                                     (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
                                 </#list>
-                            </#if>
+                            </#if-->
                             <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
                         <#-- We expose the parentParserArguments to the child here too-->
                             <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
@@ -349,13 +349,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                     ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference, "", discriminatorField)}
                 <#else>
                     ${discriminatorField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#if discriminatorField.params.isPresent()>
+                    <#--if discriminatorField.params.isPresent()>
                         ,
                         <#list discriminatorField.params.orElseThrow() as parserArgument>
                             (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleTypeReference, parserArgument?index), true)})
                             (${helper.toParseExpression(discriminatorField, parserArgument, null)})<#sep>, </#sep>
                         </#list>
-                    </#if>
+                    </#if-->
                     )
                 </#if>;
             </@compress>
@@ -590,7 +590,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                     <#else>
                         <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
                 boolean lastItem = curItem == (itemCount - 1);
-                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, element<#if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, element<#--if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if-->);
                     </#if>
                 curItem++;
             }
