@@ -22,14 +22,62 @@ import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
+import java.lang.reflect.Array;
+import java.util.List;
+import java.util.function.Supplier;
+
 public class FieldReaderFactory {
 
     public static <T> T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderAbstract<T>().readField(logicalName, dataReader, readerArgs);
     }
 
-    public static <T> T readArrayField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderArray<T>().readField(logicalName, dataReader, readerArgs);
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public static <T> T[] readCountArrayField(Class<T> t, String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
+        List<T> innerResult = readCountArrayField(logicalName, dataReader, count, readerArgs);
+        T[] result = (T[]) Array.newInstance(t, innerResult.size());
+        for (int curItem = 0; curItem < innerResult.size(); curItem++) {
+            result[curItem] = innerResult.get(curItem);
+        }
+        dataReader.closeContext(logicalName, readerArgs);
+        return result;
+    }
+
+    public static <T> List<T> readCountArrayField(String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderArray<T>().readFieldCount(logicalName, dataReader, count, readerArgs);
+    }
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public static <T> T[] readLengthArrayField(Class<T> t, String logicalName, DataReader<T> dataReader, int length, WithReaderArgs... readerArgs) throws ParseException {
+        List<T> innerResult = readLengthArrayField(logicalName, dataReader, length, readerArgs);
+        T[] result = (T[]) Array.newInstance(t, innerResult.size());
+        for (int curItem = 0; curItem < innerResult.size(); curItem++) {
+            result[curItem] = innerResult.get(curItem);
+        }
+        dataReader.closeContext(logicalName, readerArgs);
+        return result;
+    }
+
+    public static <T> List<T> readLengthArrayField(String logicalName, DataReader<T> dataReader, int length, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderArray<T>().readFieldLength(logicalName, dataReader, length, readerArgs);
+    }
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public static <T> T[] readTerminatedArrayField(Class<T> t, String logicalName, DataReader<T> dataReader, Supplier<Boolean> termination, WithReaderArgs... readerArgs) throws ParseException {
+        List<T> innerResult = readTerminatedArrayField(logicalName, dataReader, termination, readerArgs);
+        T[] result = (T[]) Array.newInstance(t, innerResult.size());
+        for (int curItem = 0; curItem < innerResult.size(); curItem++) {
+            result[curItem] = innerResult.get(curItem);
+        }
+        dataReader.closeContext(logicalName, readerArgs);
+        return result;
+    }
+
+    public static <T> List<T> readTerminatedArrayField(String logicalName, DataReader<T> dataReader, Supplier<Boolean> termination, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderArray<T>().readFieldTerminated(logicalName, dataReader, termination, readerArgs);
     }
 
     public static <T> T readAssertField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
@@ -69,7 +117,7 @@ public class FieldReaderFactory {
     }
 
     public static <T> T readSimpleField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderSimple<T>().readField(logicalName,dataReader,readerArgs);
+        return new FieldReaderSimple<T>().readField(logicalName, dataReader, readerArgs);
     }
 
     public static <T> T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
