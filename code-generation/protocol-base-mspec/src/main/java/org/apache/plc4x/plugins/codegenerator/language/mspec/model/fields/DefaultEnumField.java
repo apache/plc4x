@@ -24,7 +24,6 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DefaultEnumField extends DefaultField implements EnumField {
 
@@ -36,7 +35,7 @@ public class DefaultEnumField extends DefaultField implements EnumField {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
-        this.fieldName = fieldName;
+        this.fieldName = Objects.requireNonNull(fieldName);
     }
 
     public TypeReference getType() {
@@ -47,8 +46,8 @@ public class DefaultEnumField extends DefaultField implements EnumField {
         return name;
     }
 
-    public Optional<String> getFieldName() {
-        return Optional.ofNullable(fieldName);
+    public String getFieldName() {
+        return fieldName;
     }
 
 }

@@ -60,8 +60,7 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
     }
 
     public T read(String logicalName, Function<I, T> enumResolver, WithReaderArgs... readerArgs) throws ParseException {
-        // TODO: ensure type safety
-        I rawValue = (I) dataReader.read(logicalName, readerArgs);
+        I rawValue = dataReader.read(logicalName, readerArgs);
         return enumResolver.apply(rawValue);
     }
 
