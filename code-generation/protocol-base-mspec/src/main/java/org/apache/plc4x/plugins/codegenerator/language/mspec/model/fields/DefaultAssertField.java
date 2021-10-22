@@ -32,14 +32,12 @@ public class DefaultAssertField extends DefaultField implements AssertField {
     private final TypeReference type;
     private final String name;
     private final Term conditionExpression;
-    private final List<Term> params;
 
-    public DefaultAssertField(Map<String, Term> attributes, TypeReference type, String name, Term conditionExpression, List<Term> params) {
+    public DefaultAssertField(Map<String, Term> attributes, TypeReference type, String name, Term conditionExpression) {
         super(attributes);
         this.type = Objects.requireNonNull(type);
         this.name = Objects.requireNonNull(name);
         this.conditionExpression = Objects.requireNonNull(conditionExpression);
-        this.params = params;
     }
 
     public TypeReference getType() {
@@ -52,11 +50,6 @@ public class DefaultAssertField extends DefaultField implements AssertField {
 
     public Term getConditionExpression() {
         return conditionExpression;
-    }
-
-    @Override
-    public Optional<List<Term>> getParams() {
-        return Optional.ofNullable(params);
     }
 
 }

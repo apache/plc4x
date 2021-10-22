@@ -49,8 +49,4 @@ public class DefaultChecksumField extends DefaultField implements ChecksumField 
         return checksumExpression;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

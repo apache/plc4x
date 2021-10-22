@@ -37,8 +37,4 @@ public class DefaultUnknownField extends DefaultField implements UnknownField {
         return type;
     }
 
-    public Optional<List<Term>> getParams() {
-        return Optional.of(Collections.emptyList());
-    }
-
 }

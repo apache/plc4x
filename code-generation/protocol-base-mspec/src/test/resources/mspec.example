@@ -124,7 +124,7 @@
 
 [type 'AmsPacket'
     [simple     AmsHeader  'amsHeader'                                                            ]
-    [simple     ADSData    'data'   ['amsHeader.commandId', 'amsHeader.state.response']              ]
+    [simple     ADSData('amsHeader.commandId', 'amsHeader.state.response')    'data'                 ]
 ]
 
 // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
@@ -206,7 +206,7 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'ADSData' [CommandId 'commandId', bit 'response']
+[discriminatedType 'ADSData' (CommandId 'commandId', bit 'response')
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'true' AdsInvalidResponse]
         ['INVALID', 'false' AdsInvalidRequest]
