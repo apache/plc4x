@@ -18,9 +18,11 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +32,14 @@ public class FieldReaderEnum<T> implements FieldReader<T> {
 
     @Override
     public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with checksum field");
+        throw new NotImplementedException();
     }
 
-    public T readField(String logicalName, DataReader<T> dataReader, String propertyName, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+    public T readField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        dataReader.pullContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        T result = switchByteOrderIfNecessary(() -> dataReader.read(innerName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        dataReader.closeContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        return result;
     }
 
 }

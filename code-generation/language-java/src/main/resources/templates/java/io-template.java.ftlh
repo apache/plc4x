@@ -257,15 +257,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#-- TODO: Port this -->
     <#case "enum">
         <#assign enumField = field.asEnumField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        readBuffer.pullContext("${enumField.name}");
         // Enum field (${enumField.name})
-        <#if enumField.fieldName.isPresent()>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.firstEnumForField${enumField.fieldName.orElseThrow()?cap_first}(${helper.getReadBufferReadMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "", enumField)});
-        <#else>
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumBaseTypeReference(enumField.type), "", enumField)});
-        </#if>
-        readBuffer.closeContext("${enumField.name}");
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", ${helper.getDataReaderCall(helper.getEnumBaseTypeReference(enumField.type))});
         <#break>
     <#case "implicit">
         <#assign implicitField = field.asImplicitField().orElseThrow()>
