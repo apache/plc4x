@@ -96,6 +96,10 @@ public class FieldReaderFactory {
         return new FieldReaderDiscriminator<T>().readField(logicalName, dataReader, readerArgs);
     }
 
+    public static <T> T readEnumField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderEnum<T>().readField(logicalName, innerName, dataReader, readerArgs);
+    }
+
     public static <T> T readImplicitField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return new FieldReaderImplicit<T>().readField(logicalName, dataReader, readerArgs);
     }
