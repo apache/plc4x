@@ -481,63 +481,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#-- TODO: Port this -->
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        <#if !helper.isSimpleTypeReference(simpleField.type)>
-        readBuffer.pullContext("${simpleField.name}");
-        </#if>
-
-        // Simple Field (${simpleField.name})
-        <@compress single_line=true>
-        ${helper.getLanguageTypeNameForField(simpleField)} ${simpleField.name} =
-        <#assign simpleFieldLogicalName><#if helper.isSimpleTypeReference(simpleField.type)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
-        <#if helper.isEnumField(simpleField)>
-        /* enum based simple field with type ${simpleField.type.name} */
-        ${helper.getLanguageTypeNameForField(simpleField)}.enumForValue(
-            ${helper.getReadBufferReadMethodCall(simpleField.type.name, helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)}
-        );
-        <#elseif helper.isComplexTypeReference(simpleField.type)>
-            <#assign complexTypeReference = simpleField.type.asComplexTypeReference().orElseThrow()>
-            <#assign typeName=complexTypeReference.name>
-            <#assign typeDefinition = helper.getTypeDefinitionForTypeReference(complexTypeReference)>
-            <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                <#-- Usually you don't use child directly unless they are parameterized #-->
-                <#assign typeName=typeDefinition.parentType.name>
-                <#assign typeDefinition=typeDefinition.parentType>
-            </#if>
-                <#-- We downcast to the referenced type -->
-        (${simpleField.type.name}) ${typeName}IO.staticParse(readBuffer
-            <#if field.params.isPresent()>,
-                <#list field.params.orElseThrow() as parserArgument>
-                    <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(complexTypeReference, parserArgument?index), true) = 'String'>
-            ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(complexTypeReference, parserArgument?index), true)}
-                .valueOf(${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep>
-                    <#else>
-                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(complexTypeReference, parserArgument?index), true)})
-                (${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep>
-                    </#if>
-                </#list>
-            </#if>
-            <#if complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-                <#assign argumentOffset=0>
-                <#if field.params.isPresent()><#assign argumentOffset=field.params.orElseThrow()?size></#if>
-            ,
-                    <#list complexTypeReference.params.orElseThrow() as typeParam>
-                            <#-- We cast here explicitly as java sometimes can't infer the type. e.g. 0 is a int and not a byte#-->
-            (${helper.getLanguageTypeNameForTypeReference(typeDefinition.parserArguments.orElseThrow()[typeParam?index + argumentOffset].type, true)})
-            ${helper.toAccessExpression(null, typeParam, null)}<#sep>, </#sep>
-                    </#list>
-            </#if>
-                )
-        <#else>
-        ${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}
-        </#if>
-            ;
-        </@compress>
-
-        <#if !helper.isSimpleTypeReference(simpleField.type)>
-        readBuffer.closeContext("${simpleField.name}");
-        </#if>
-
+        // ${field.typeName?cap_first} Field (${namedField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});
         <#break>
     <#-- TODO: Port this -->
     <#case "switch">
