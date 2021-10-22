@@ -17,22 +17,22 @@
  * under the License.
  */
 
-[enum uint 4 'CANOpenService' [uint 8 'min', uint 8 'max', bit 'pdo']
-    ['0b0000' NMT             ['0',     '0'    , 'false' ] ]
-    ['0b0001' SYNC            ['0x80',  '0x80' , 'false' ] ]
-    ['0b0001' EMCY            ['0x81',  '0xFF' , 'false' ] ]
-    ['0b0010' TIME            ['0x100', '0x100', 'false' ] ]
-    ['0b0011' TRANSMIT_PDO_1  ['0x180', '0x1FF', 'true'  ] ]
-    ['0b0100' RECEIVE_PDO_1   ['0x200', '0x27F', 'true'  ] ]
-    ['0b0101' TRANSMIT_PDO_2  ['0x280', '0x2FF', 'true'  ] ]
-    ['0b0110' RECEIVE_PDO_2   ['0x300', '0x37F', 'true'  ] ]
-    ['0b0111' TRANSMIT_PDO_3  ['0x380', '0x3FF', 'true'  ] ]
-    ['0b1000' RECEIVE_PDO_3   ['0x400', '0x47F', 'true'  ] ]
-    ['0b1001' TRANSMIT_PDO_4  ['0x480', '0x4FF', 'true'  ] ]
-    ['0b1010' RECEIVE_PDO_4   ['0x500', '0x57F', 'true'  ] ]
-    ['0b1011' TRANSMIT_SDO    ['0x580', '0x5FF', 'false' ] ]
-    ['0b1100' RECEIVE_SDO     ['0x600', '0x67F', 'false' ] ]
-    ['0b1110' HEARTBEAT       ['0x700', '0x77F', 'false' ] ]
+[enum uint 4 'CANOpenService'(uint 8 'min', uint 8 'max', bit 'pdo')
+    ['0b0000' NMT             ('0',     '0'    , 'false') ]
+    ['0b0001' SYNC            ('0x80',  '0x80' , 'false') ]
+    ['0b0001' EMCY            ('0x81',  '0xFF' , 'false') ]
+    ['0b0010' TIME            ('0x100', '0x100', 'false') ]
+    ['0b0011' TRANSMIT_PDO_1  ('0x180', '0x1FF', 'true' ) ]
+    ['0b0100' RECEIVE_PDO_1   ('0x200', '0x27F', 'true' ) ]
+    ['0b0101' TRANSMIT_PDO_2  ('0x280', '0x2FF', 'true' ) ]
+    ['0b0110' RECEIVE_PDO_2   ('0x300', '0x37F', 'true' ) ]
+    ['0b0111' TRANSMIT_PDO_3  ('0x380', '0x3FF', 'true' ) ]
+    ['0b1000' RECEIVE_PDO_3   ('0x400', '0x47F', 'true' ) ]
+    ['0b1001' TRANSMIT_PDO_4  ('0x480', '0x4FF', 'true' ) ]
+    ['0b1010' RECEIVE_PDO_4   ('0x500', '0x57F', 'true' ) ]
+    ['0b1011' TRANSMIT_SDO    ('0x580', '0x5FF', 'false') ]
+    ['0b1100' RECEIVE_SDO     ('0x600', '0x67F', 'false') ]
+    ['0b1110' HEARTBEAT       ('0x700', '0x77F', 'false') ]
 ]
 
 [enum uint 8 'NMTStateRequest'
@@ -50,7 +50,7 @@
     ['0x7f' PRE_OPERATIONAL]
 ]
 
-[discriminatedType 'CANOpenPayload' [CANOpenService 'service']
+[discriminatedType 'CANOpenPayload'(CANOpenService 'service')
     [typeSwitch 'service'
         ['NMT' CANOpenNetworkPayload
             [enum NMTStateRequest 'request']
@@ -61,36 +61,36 @@
             [simple CANOpenTime 'timeOfDay']
         ]
         ['RECEIVE_PDO_1' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['1', 'true']]
+            [simple CANOpenPDO('1', 'true') 'pdo']
         ]
         ['TRANSMIT_PDO_1' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['1', 'false']]
+            [simple CANOpenPDO('1', 'false') 'pdo']
         ]
         ['RECEIVE_PDO_2' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['2', 'true']]
+            [simple CANOpenPDO('2', 'true') 'pdo']
         ]
         ['TRANSMIT_PDO_2' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['1', 'false']]
+            [simple CANOpenPDO('1', 'false') 'pdo']
         ]
         ['RECEIVE_PDO_3' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['3', 'true']]
+            [simple CANOpenPDO('3', 'true') 'pdo']
         ]
         ['TRANSMIT_PDO_3' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['1', 'false']]
+            [simple CANOpenPDO('1', 'false') 'pdo']
         ]
         ['RECEIVE_PDO_4' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['4', 'true']]
+            [simple CANOpenPDO('4', 'true') 'pdo']
         ]
         ['TRANSMIT_PDO_4' CANOpenPDOPayload
-            [simple CANOpenPDO 'pdo' ['1', 'false']]
+            [simple CANOpenPDO('1', 'false') 'pdo']
         ]
         ['RECEIVE_SDO' CANOpenSDORequest
             [enum SDORequestCommand 'command']
-            [simple SDORequest 'request' ['command']]
+            [simple SDORequest('command') 'request']
         ]
         ['TRANSMIT_SDO' CANOpenSDOResponse
             [enum SDOResponseCommand 'command']
-            [simple SDOResponse 'response' ['command']]
+            [simple SDOResponse('command') 'response']
         ]
         ['HEARTBEAT' CANOpenHeartbeatPayload
             [enum NMTState 'state']

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[enum 'GenericCANDataType' [uint 8 'numBits']
+[enum 'GenericCANDataType' (uint 8 'numBits')
     [BYTE        [ '8'] ]
     [BOOLEAN     [ '1'] ]
     [UNSIGNED8   [ '8'] ]
@@ -40,7 +40,7 @@
     [REAL64      ['64'] ]
 ]
 
-[dataIo 'DataItem' byteOrder='"LITTLE_ENDIAN"' [GenericCANDataType 'dataType']
+[dataIo 'DataItem' byteOrder='"LITTLE_ENDIAN"' (GenericCANDataType 'dataType')
     [typeSwitch 'dataType'
         ['BYTE' BYTE
             [simple byte 'value']
