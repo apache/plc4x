@@ -23,7 +23,7 @@
     [const          uint 16     'modbusTcpDefaultPort' '502']
 ]
 
-[type 'ModbusTcpADU' byteOrder='"BIG_ENDIAN"' [bit 'response']
+[type 'ModbusTcpADU' byteOrder='"BIG_ENDIAN"' (bit 'response')
     // It is used for transaction pairing, the MODBUS server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     'transactionIdentifier']
@@ -45,7 +45,7 @@
     [simple         ModbusPDU   'pdu' ['response']]
 ]
 
-[type 'ModbusSerialADU' byteOrder='"LITTLE_ENDIAN"' [bit 'response']
+[type 'ModbusSerialADU' byteOrder='"LITTLE_ENDIAN"' (bit 'response')
     [simple         uint 16     'transactionId']
     [reserved       uint 16     '0x0000']
     [simple         uint 16     'length']
@@ -55,7 +55,7 @@
     [simple         ModbusPDU   'pdu' ['response']]
 ]
 
-[discriminatedType 'ModbusPDU' [bit 'response']
+[discriminatedType 'ModbusPDU' (bit 'response')
     [discriminator bit         'errorFlag']
     [discriminator uint 7      'functionFlag']
     [typeSwitch 'errorFlag','functionFlag','response'

@@ -30,10 +30,10 @@
         ]
         ['0x03' BVLCReadBroadcastDistributionTableAck
         ]
-        ['0x04' BVLCForwardedNPDU [uint 16 'bvlcLength']
+        ['0x04' BVLCForwardedNPDU(uint 16 'bvlcLength')
             [array  uint 8  'ip'    count '4'         ]
             [simple uint 16 'port'                    ]
-            [simple NPDU    'npdu' ['bvlcLength - 10']]
+            [simple NPDU('bvlcLength - 10')    'npdu' ]
         ]
         ['0x05' BVLCRegisterForeignDevice
         ]
@@ -45,18 +45,18 @@
         ]
         ['0x09' BVLCDistributeBroadcastToNetwork
         ]
-        ['0x0A' BVLCOriginalUnicastNPDU [uint 16 'bvlcLength']
-            [simple NPDU 'npdu' ['bvlcLength - 4']]
+        ['0x0A' BVLCOriginalUnicastNPDU(uint 16 'bvlcLength')
+            [simple NPDU('bvlcLength - 4') 'npdu']
         ]
-        ['0x0B' BVLCOriginalBroadcastNPDU [uint 16 'bvlcLength']
-            [simple NPDU 'npdu' ['bvlcLength - 4']]
+        ['0x0B' BVLCOriginalBroadcastNPDU(uint 16 'bvlcLength')
+            [simple NPDU('bvlcLength - 4') 'npdu']
         ]
         ['0x0C' BVLCSecureBVLL
         ]
     ]
 ]
 
-[type 'NPDU' [uint 16 'npduLength']
+[type 'NPDU'(uint 16 'npduLength')
     [simple   uint 8        'protocolVersionNumber']
     [simple   bit           'messageTypeFieldPresent']
     [reserved uint 1        '0']
@@ -72,27 +72,27 @@
     [optional uint 8        'sourceLength'              'sourceSpecified']
     [array    uint 8        'sourceAddress' count       'sourceSpecified ? sourceLength : 0']
     [optional uint 8        'hopCount'                  'destinationSpecified']
-    [optional NLM           'nlm'                       'messageTypeFieldPresent'  ['npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))']]
-    [optional APDU          'apdu'                      '!messageTypeFieldPresent' ['npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))']]
+    [optional NLM('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')           'nlm'                       'messageTypeFieldPresent'  ]
+    [optional APDU('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')          'apdu'                      '!messageTypeFieldPresent' ]
 ]
 
-[discriminatedType 'NLM' [uint 16 'apduLength']
+[discriminatedType 'NLM'(uint 16 'apduLength')
     [discriminator uint 8  'messageType']
     [optional      uint 16 'vendorId' '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch 'messageType'
-        ['0x0' NLMWhoIsRouterToNetwork [uint 16 'apduLength', uint 8  'messageType']
+        ['0x0' NLMWhoIsRouterToNetwork(uint 16 'apduLength', uint 8  'messageType')
             [array uint 16 'destinationNetworkAddress' length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
-        ['0x1' NLMIAmRouterToNetwork [uint 16 'apduLength', uint 8  'messageType']
+        ['0x1' NLMIAmRouterToNetwork(uint 16 'apduLength', uint 8  'messageType')
             [array uint 16 'destinationNetworkAddress' length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
     ]
 ]
 
-[discriminatedType 'APDU' [uint 16 'apduLength']
+[discriminatedType 'APDU'(uint 16 'apduLength')
     [discriminator uint 4 'apduType']
     [typeSwitch 'apduType'
-        ['0x0' APDUConfirmedRequest [uint 16 'apduLength']
+        ['0x0' APDUConfirmedRequest(uint 16 'apduLength')
             [simple   bit    'segmentedMessage'                       ]
             [simple   bit    'moreFollows'                            ]
             [simple   bit    'segmentedResponseAccepted'              ]
@@ -102,11 +102,11 @@
             [simple   uint 8 'invokeId'                               ]
             [optional uint 8 'sequenceNumber'       'segmentedMessage']
             [optional uint 8 'proposedWindowSize'   'segmentedMessage']
-            [simple   BACnetConfirmedServiceRequest 'serviceRequest'  ['apduLength - (3 + (segmentedMessage ? 2 : 0))']]
+            [simple   BACnetConfirmedServiceRequest('apduLength - (3 + (segmentedMessage ? 2 : 0))') 'serviceRequest']
         ]
-        ['0x1' APDUUnconfirmedRequest [uint 16 'apduLength']
+        ['0x1' APDUUnconfirmedRequest(uint 16 'apduLength')
             [reserved uint 4                          '0'             ]
-            [simple   BACnetUnconfirmedServiceRequest 'serviceRequest' ['apduLength - 1']]
+            [simple   BACnetUnconfirmedServiceRequest('apduLength - 1') 'serviceRequest']
         ]
         ['0x2' APDUSimpleAck
             [reserved uint 4 '0'               ]
@@ -149,12 +149,12 @@
     ]
 ]
 
-[discriminatedType 'BACnetConfirmedServiceRequest' [uint 16 'len']
+[discriminatedType 'BACnetConfirmedServiceRequest'(uint 16 'len')
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
         ]
-        ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification [uint 16 'len']
+        ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification(uint 16 'len')
             [const  uint 8               'subscriberProcessIdentifierHeader'         '0x09'                 ]
             [simple uint 8               'subscriberProcessIdentifier'                                      ]
             [const  uint 8               'monitoredObjectIdentifierHeader'           '0x1C'                 ]
@@ -212,7 +212,7 @@
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
         ]
-        ['0x0F' BACnetConfirmedServiceRequestWriteProperty [uint 16 'len']
+        ['0x0F' BACnetConfirmedServiceRequestWriteProperty(uint 16 'len')
             [const    uint 8    'objectIdentifierHeader'    '0x0C'                          ]
             [simple   uint 10   'objectType'                                                ]
             [simple   uint 22   'objectInstanceNumber'                                      ]
@@ -267,7 +267,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetUnconfirmedServiceRequest' [uint 16 'len']
+[discriminatedType 'BACnetUnconfirmedServiceRequest'(uint 16 'len')
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x00' BACnetUnconfirmedServiceRequestIAm
@@ -288,7 +288,7 @@
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
-        ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer [uint 16 'len']
+        ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(uint 16 'len')
             [const uint 8 'vendorIdHeader' '0x09']
             [simple uint 8 'vendorId']
             [const uint 8 'serviceNumberHeader' '0x1A']
@@ -302,10 +302,10 @@
         ['0x06' BACnetUnconfirmedServiceRequestTimeSynchronization
         ]
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
-            [optional BACnetComplexTagUnsignedInteger ['0', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeLowLimit'                                         ]
-            [optional BACnetComplexTagUnsignedInteger ['1', 'BACnetDataType.UNSIGNED_INTEGER' ] 'deviceInstanceRangeHighLimit'  'deviceInstanceRangeLowLimit != null' ]
-            [optional BACnetComplexTagOctetString     ['2', 'BACnetDataType.OCTET_STRING'     ] 'objectIdentifier'                                                    ]
-            [optional BACnetComplexTagOctetString     ['3', 'BACnetDataType.OCTET_STRING'     ] 'objectName'                    'objectIdentifier == null'            ]
+            [optional BACnetComplexTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   'deviceInstanceRangeLowLimit'                                         ]
+            [optional BACnetComplexTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   'deviceInstanceRangeHighLimit'  'deviceInstanceRangeLowLimit != null' ]
+            [optional BACnetComplexTagOctetString('2', 'BACnetDataType.OCTET_STRING')           'objectIdentifier'                                                    ]
+            [optional BACnetComplexTagOctetString('3', 'BACnetDataType.OCTET_STRING')           'objectName'                    'objectIdentifier == null'            ]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
             // TODO: here we need proper bacnet tags (like a discriminator etc... see line 494 BACnetTag)
@@ -325,7 +325,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetComplexTag' [uint 4 'tagNumberArgument', BACnetDataType 'dataType']
+[discriminatedType 'BACnetComplexTag'(uint 4 'tagNumberArgument', BACnetDataType 'dataType')
     [assert        uint 4           'tagNumber'                 'tagNumberArgument'                                           ]
     [const         TagClass         'tagClass'                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
     [simple        uint 3           'lengthValueType'                                                                         ]
@@ -341,30 +341,30 @@
         ]
         ['BOOLEAN' BACnetComplexTagBoolean
         ]
-        ['UNSIGNED_INTEGER' BACnetComplexTagUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['UNSIGNED_INTEGER' BACnetComplexTagUnsignedInteger(uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['SIGNED_INTEGER' BACnetComplexTagSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['SIGNED_INTEGER' BACnetComplexTagSignedInteger(uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['REAL' BACnetComplexTagReal [uint 3 'lengthValueType', uint 8 'extLength']
+        ['REAL' BACnetComplexTagReal(uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 32 'value']
         ]
-        ['DOUBLE' BACnetComplexTagDouble [uint 3 'lengthValueType', uint 8 'extLength']
+        ['DOUBLE' BACnetComplexTagDouble(uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 64 'value']
         ]
-        ['OCTET_STRING' BACnetComplexTagOctetString [uint 32 'actualLength']
+        ['OCTET_STRING' BACnetComplexTagOctetString(uint 32 'actualLength')
             // TODO: The reader expects int but uint32 get's mapped to long so even uint32 would easily overflow...
             [virtual    uint     16                  'actualLengthInBit' 'actualLength * 8']
             [simple     vstring 'actualLengthInBit'  'theString' encoding='ASCII']
         ]
         ['CHARACTER_STRING' BACnetComplexTagCharacterString
         ]
-        ['BIT_STRING' BACnetComplexTagBitString [uint 3 'lengthValueType', uint 8 'extLength']
+        ['BIT_STRING' BACnetComplexTagBitString(uint 3 'lengthValueType', uint 8 'extLength')
             [simple uint 8 'unusedBits']
             [array int 8 'data' length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
         ]
-        ['ENUMERATED' BACnetComplexTagEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
+        ['ENUMERATED' BACnetComplexTagEnumerated(uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['DATE' BACnetComplexTagDate

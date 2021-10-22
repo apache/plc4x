@@ -284,12 +284,12 @@
         // 1) One containing only an AllSelectorBlock
         // 2) One containing optionally either NameOfStationBlock or AliasNameBlock and another optional IdentifyReqBlock
         // (I assume, that if in case 2 both optionally aren't used, this might not be valid and option 1 should be sent instead)
-        ['DCP_Identify_ReqPDU','IDENTIFY','false' PnDcp_Pdu_IdentifyReq [uint 16 'dcpDataLength']
+        ['DCP_Identify_ReqPDU','IDENTIFY','false' PnDcp_Pdu_IdentifyReq(uint 16 'dcpDataLength')
             [array PnDcp_Block 'blocks' length 'dcpDataLength'           ]
         ]
 
         // Response to a Identify request
-        ['DCP_Identify_ResPDU','IDENTIFY','true' PnDcp_Pdu_IdentifyRes [uint 16 'dcpDataLength']
+        ['DCP_Identify_ResPDU','IDENTIFY','true' PnDcp_Pdu_IdentifyRes(uint 16 'dcpDataLength')
             [array PnDcp_Block 'blocks' length 'dcpDataLength'           ]
         ]
 
@@ -365,13 +365,13 @@
         // DEVICE_PROPERTIES_OPTION
         ////////////////////////////////////////////////////////////////////////////
 
-        ['DEVICE_PROPERTIES_OPTION','1' PnDcp_Block_DevicePropertiesDeviceVendor [uint 16 'blockLength']
+        ['DEVICE_PROPERTIES_OPTION','1' PnDcp_Block_DevicePropertiesDeviceVendor(uint 16 'blockLength')
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [array    byte        'deviceVendorValue' count 'blockLength-2'             ]
             [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", deviceVendorValue) % 2']
         ]
-        ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation [uint 16 'blockLength']
+        ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 'blockLength')
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [array    byte        'nameOfStation' count 'blockLength-2'                 ]
@@ -391,11 +391,11 @@
             [reserved uint 8  '0x00'                                                    ]
         ]
         // Contains a list of option combinations the device supports.
-        ['DEVICE_PROPERTIES_OPTION','5' PnDcp_Block_DevicePropertiesDeviceOptions [uint 16 'blockLength']
+        ['DEVICE_PROPERTIES_OPTION','5' PnDcp_Block_DevicePropertiesDeviceOptions(uint 16 'blockLength')
             [reserved uint 16               '0x0000'                                    ]
             [array    PnDcp_SupportedDeviceOption 'supportedOptions' length 'blockLength - 2' ]
         ]
-        ['DEVICE_PROPERTIES_OPTION','6' PnDcp_Block_DevicePropertiesAliasName [uint 16 'blockLength']
+        ['DEVICE_PROPERTIES_OPTION','6' PnDcp_Block_DevicePropertiesAliasName(uint 16 'blockLength')
             [reserved uint 16     '0x0000'                                              ]
             [array    byte        'aliasNameValue' count 'blockLength-2'                ]
             [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", aliasNameValue) % 2']
@@ -566,10 +566,10 @@
 // TODO: Check if it's really Little Endian
 // 5.1.2
 // 5.5.2.2
-[discriminatedType 'PnIoCm_Packet' [DceRpc_PacketType 'packetType']
+[discriminatedType 'PnIoCm_Packet'(DceRpc_PacketType 'packetType')
     [typeSwitch 'packetType'
         ['REQUEST' PnIoCm_Packet_Req
-            [simple uint 32            'argsMaximum'            ]
+            [simple uint 32 'argsMaximum'            ]
         ]
         ['RESPONSE' PnIoCm_Packet_Res
             [simple uint 8  'errorCode2'             ]

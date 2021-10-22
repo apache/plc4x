@@ -32,7 +32,7 @@
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'COTPPacket' [uint 16 'cotpLen']
+[discriminatedType 'COTPPacket' (uint 16 'cotpLen')
     [implicit      uint 8 'headerLength' 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
@@ -64,11 +64,11 @@
             [simple uint 8  'rejectCause']
         ]
     ]
-    [array    COTPParameter ['(headerLength + 1) - curPos'] 'parameters' length '(headerLength + 1) - curPos']
+    [array    COTPParameter ('(headerLength + 1) - curPos') 'parameters' length '(headerLength + 1) - curPos']
     [optional S7Message                                     'payload'    'curPos < cotpLen']
 ]
 
-[discriminatedType 'COTPParameter' [uint 8 'rest']
+[discriminatedType 'COTPParameter' (uint 8 'rest')
     [discriminator uint 8 'parameterType']
     [implicit      uint 8 'parameterLength' 'lengthInBytes - 2']
     [typeSwitch 'parameterType'
@@ -115,14 +115,14 @@
         ['0x07' S7MessageUserData
         ]
     ]
-    [optional S7Parameter ['messageType']              'parameter' 'parameterLength > 0']
-    [optional S7Payload   ['messageType', 'parameter'] 'payload'   'payloadLength > 0'  ]
+    [optional S7Parameter ('messageType')              'parameter' 'parameterLength > 0']
+    [optional S7Payload   ('messageType', 'parameter') 'payload'   'payloadLength > 0'  ]
 ]
 
 ////////////////////////////////////////////////////////////////
 // Parameters
 
-[discriminatedType 'S7Parameter' [uint 8 'messageType']
+[discriminatedType 'S7Parameter' (uint 8 'messageType')
     [discriminator uint 8 'parameterType']
     [typeSwitch 'parameterType','messageType'
         ['0xF0' S7ParameterSetupCommunication
@@ -220,25 +220,25 @@
 ////////////////////////////////////////////////////////////////
 // Payloads
 
-[discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
+[discriminatedType 'S7Payload' (uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.parameterType', 'messageType'
-        ['0x04','0x03' S7PayloadReadVarResponse [S7Parameter 'parameter']
+        ['0x04','0x03' S7PayloadReadVarResponse(S7Parameter 'parameter')
             [array S7VarPayloadDataItem ['lastItem'] 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
-        ['0x05','0x01' S7PayloadWriteVarRequest [S7Parameter 'parameter']
+        ['0x05','0x01' S7PayloadWriteVarRequest(S7Parameter 'parameter')
             [array S7VarPayloadDataItem ['lastItem'] 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
-        ['0x05','0x03' S7PayloadWriteVarResponse [S7Parameter 'parameter']
+        ['0x05','0x03' S7PayloadWriteVarResponse(S7Parameter 'parameter')
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
-        ['0x00','0x07' S7PayloadUserData [S7Parameter 'parameter']
-            [array S7PayloadUserDataItem ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction'] 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
+        ['0x00','0x07' S7PayloadUserData (S7Parameter 'parameter')
+            [array S7PayloadUserDataItem('CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction') 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
         ]
     ]
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
-[type 'S7VarPayloadDataItem' [bit 'lastItem']
+[type 'S7VarPayloadDataItem'(bit 'lastItem')
     [simple   DataTransportErrorCode 'returnCode']
     [simple   DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
@@ -256,7 +256,7 @@
 ////////////////////////////////////////////////////////////////
 
 //Under test
-[discriminatedType  'S7DataAlarmMessage' [uint 4 'cpuFunctionType']
+[discriminatedType  'S7DataAlarmMessage'(uint 4 'cpuFunctionType')
     [const    uint 8 'functionId'       '0x00']
     [const    uint 8 'numberMessageObj' '0x01']
     [typeSwitch 'cpuFunctionType'
@@ -412,7 +412,7 @@
 // 0x16 NOTIFY8_IND
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType', uint 8 'cpuSubfunction']
+[discriminatedType 'S7PayloadUserDataItem'(uint 4 'cpuFunctionType', uint 8 'cpuSubfunction')
     [simple     DataTransportErrorCode 'returnCode']
     [simple     DataTransportSize      'transportSize']
     [implicit   uint 16                'dataLength'    'lengthInBytes - 4']
@@ -521,7 +521,7 @@
     ]
 ]
 
-[dataIo 'DataItem' [vstring 'dataProtocolId', int 32 'stringLength']
+[dataIo 'DataItem'(vstring 'dataProtocolId', int 32 'stringLength')
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
         // Bit
@@ -647,7 +647,7 @@
     ]
 ]
 
-[enum int 8 'COTPTpduSize' [uint 16 'sizeInBytes']
+[enum int 8 'COTPTpduSize'(uint 16 'sizeInBytes')
     ['0x07' SIZE_128 ['128']]
     ['0x08' SIZE_256 ['256']]
     ['0x09' SIZE_512 ['512']]
@@ -665,7 +665,7 @@
     ['0x40' CLASS_4]
 ]
 
-[enum int 8 'DataTransportSize' [bit 'sizeInBits']
+[enum int 8 'DataTransportSize'(bit 'sizeInBits')
     ['0x00' NULL            ['false']]
     ['0x03' BIT             ['true']]
     ['0x04' BYTE_WORD_DWORD ['true']]
@@ -681,7 +681,7 @@
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 'TransportSize'  [uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
+[enum int 8 'TransportSize'(uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO')
     // Bit Strings
     ['0x01' BOOL             ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' BYTE             ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
@@ -722,7 +722,7 @@
     ['0x1B' DT               ['0x0F'       , 'X'               , '12'                , 'null'                  , 'null'             , 'IEC61131_DATE_AND_TIME', 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
-[enum uint 8 'MemoryArea'             [string 24 'shortName']
+[enum uint 8 'MemoryArea'(string 24 'shortName')
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
@@ -734,7 +734,7 @@
     ['0x86' LOCAL_DATA               ['LD']]
 ]
 
-[enum uint 8 'DataTransportSize' [bit 'sizeInBits']
+[enum uint 8 'DataTransportSize'(bit 'sizeInBits')
     ['0x00' NULL                ['false']]
     ['0x03' BIT                 ['true']]
     ['0x04' BYTE_WORD_DWORD     ['true']]

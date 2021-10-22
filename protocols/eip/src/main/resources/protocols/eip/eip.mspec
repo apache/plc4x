@@ -35,7 +35,7 @@
             ]
             ['0x0066' EipDisconnectRequest
             ]
-            ['0x006F' CipRRData [uint  16  'len']
+            ['0x006F' CipRRData(uint  16  'len')
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
                 [simple    CipExchange   'exchange' ['len-6']]
@@ -50,7 +50,7 @@
     [simple         CipService          'service' ['exchangeLen - 10'] ]
 ]
 
-[discriminatedType  'CipService' [uint 16 'serviceLen']
+[discriminatedType  'CipService'(uint 16 'serviceLen')
     [discriminator  uint    8   'service']
     [typeSwitch 'service'
         ['0x4C' CipReadRequest
@@ -58,7 +58,7 @@
             [array      int     8   'tag'   length  '(RequestPathSize*2)']
             [simple     uint    16  'elementNb']
         ]
-        ['0xCC' CipReadResponse [uint 16 'serviceLen']
+        ['0xCC' CipReadResponse(uint 16 'serviceLen')
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
@@ -77,12 +77,12 @@
             [simple     uint        8   'status']
             [simple     uint        8   'extStatus']
         ]
-        ['0x0A' MultipleServiceRequest [uint 16 'serviceLen']
+        ['0x0A' MultipleServiceRequest(uint 16 'serviceLen')
                [const  int     8   'RequestPathSize'   '0x02']
                [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
-               [simple Services  'data'         ['serviceLen - 6 '] ]
+               [simple Services('serviceLen - 6 ')  'data' ]
         ]
-        ['0x8A' MultipleServiceResponse [uint 16 'serviceLen']
+        ['0x8A' MultipleServiceResponse(uint 16 'serviceLen')
                [reserved   uint    8   '0x0']
                [simple     uint    8   'status']
                [simple     uint    8   'extStatus']
@@ -98,7 +98,7 @@
                [reserved   uint    8   '0x01']   // setRequestPathInstance
                [reserved   uint    16  '0x9D05']   //Timeout 5s
                [implicit   uint    16  'messageSize'   'lengthInBytes - 10 - 4']   //subtract above and routing
-               [simple     CipService  'unconnectedService' ['messageSize'] ]
+               [simple     CipService('messageSize')  'unconnectedService' ]
                [const      uint    16  'route' '0x0001']
                [simple     int     8   'backPlane']
                [simple     int     8   'slot']
@@ -112,19 +112,19 @@
     [array  CipService   'services'      count  'serviceNb' ['servicesLen/serviceNb'] ]
 ]
 
-[enum uint   16   'CIPDataTypeCode' [uint 8  'size']
-    ['0X00C1'   BOOL            ['1']]
-    ['0X00C2'   SINT            ['1']]
-    ['0X00C3'   INT             ['2']]
-    ['0X00C4'   DINT            ['4']]
-    ['0X00C5'   LINT            ['8']]
-    ['0X00CA'   REAL            ['4']]
-    ['0X00D3'   DWORD           ['4']]
-    ['0X02A0'   STRUCTURED      ['88']]
-    ['0X02A0'   STRING          ['88']]
-    ['0X02A0'   STRING36        ['40']]
+[enum uint   16   'CIPDataTypeCode'(uint 8  'size')
+    ['0X00C1'   BOOL            ('1')]
+    ['0X00C2'   SINT            ('1')]
+    ['0X00C3'   INT             ('2')]
+    ['0X00C4'   DINT            ('4')]
+    ['0X00C5'   LINT            ('8')]
+    ['0X00CA'   REAL            ('4')]
+    ['0X00D3'   DWORD           ('4')]
+    ['0X02A0'   STRUCTURED      ('88')]
+    ['0X02A0'   STRING          ('88')]
+    ['0X02A0'   STRING36        ('40')]
     //TODO: -1 is not a valid value for uint
-    //['-1'       UNKNOWN         ['-1']]
+    //['-1'       UNKNOWN         ('-1')]
 ]
 
 [enum   uint    16  'EiPCommand'
