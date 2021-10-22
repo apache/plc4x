@@ -32,6 +32,10 @@ public class DataReaderFactory {
         return new DataReaderSimpleUnsignedByte(readBuffer, bitLength);
     }
 
+    public static DataReader<Byte> readByte(ReadBuffer readBuffer, int bitLength) {
+        return new DataReaderSimpleByte(readBuffer, bitLength);
+    }
+
     public static DataReader<Short> readUnsignedShort(ReadBuffer readBuffer, int bitLength) {
         return new DataReaderSimpleUnsignedShort(readBuffer, bitLength);
     }
