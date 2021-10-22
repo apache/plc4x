@@ -133,7 +133,7 @@
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple      uint        32  'invokeId'                                 ]
     // The payload
-    [simple     AdsData    'data'   ['commandId', 'state.response']         ]
+    [simple     AdsData ['commandId', 'state.response']    'data'           ]
 ]
 
 [enum uint 16 'CommandId'
