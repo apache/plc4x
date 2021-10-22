@@ -148,6 +148,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#-- TODO: Port this -->
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
+
         <#if arrayField.type.isByteBased()>
         // Byte Array field (${arrayField.name})
             <#assign numberOfBytesExpression>
@@ -169,7 +170,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         byte[] ${arrayField.name} = readBuffer.readByteArray("${arrayField.name}", numberOfBytes);
         <#else>
         // Array field (${arrayField.name})
-        readBuffer.pullContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
             <#-- Only update curPos if the length expression uses it -->
             <#if arrayField.loopExpression.contains("curPos")>
         curPos = readBuffer.getPos() - startPos;
@@ -177,130 +177,22 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- If this is a count array, we can directly initialize an array with the given size -->
             <#if field.isCountArrayField()>
         // Count array
-        if(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)} > Integer.MAX_VALUE) {
-            throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-        }
-        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name};
-        {
-            int itemCount = Math.max(0, (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
-            ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
-            for(int curItem = 0; curItem < itemCount; curItem++) {
-                <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
-                <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-            <@compress single_line=true>
-                ${arrayField.name}[curItem] =
-                <#if helper.isSimpleTypeReference(arrayField.type)>
-                    ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
-                <#else>
-                    ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#--if field.params.isPresent()>
-                        ,
-                        <#list field.params.orElseThrow() as parserArgument>
-                            <#if helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true) = 'String'>
-                                ${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}.valueOf(${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
-                            <#else>
-                                (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
-                            </#if>
-                        </#list>
-                    </#if-->
-                    <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
-                    <#-- We expose the parentParserArguments to the child here too-->
-                    <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
-                    <#assign parentParseArguments><#if hasParentParseArguments><#list typeDefinition.parentType.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-                    <#if hasParentParseArguments>, ${tracer.dive("count array parent parse arguments")} ${parentParseArguments}</#if>
-                    )
-                    <#if helper.getTypeDefinitionForTypeReference(arrayField.type).isDiscriminatedChildTypeDefinition()>
-                        .build()
-                    </#if>
-                </#if>;
-            </@compress>
-            }
-        }
+        Object ${arrayField.name}Object = readCountArrayField(${helper.getLanguageTypeNameForField(field)}.class, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = (${helper.getLanguageTypeNameForField(field)}[]) ${arrayField.name}Object;
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
             <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                 <#if field.isLengthArrayField()>
         // Length array
-        long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        long ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
-        while(readBuffer.getPos() < ${arrayField.name}EndPos) {
-                    <@compress single_line=true>
-            _${arrayField.name}List.add(
-                        <#if helper.isSimpleTypeReference(arrayField.type)>
-                            ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
-                        <#else>
-                            ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                            <#--if field.params.isPresent()>
-                                ,
-                                <#list field.params.orElseThrow() as parserArgument>
-                                    (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)})
-                                    (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
-                                </#list>
-                            </#if-->
-                            <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
-                        <#-- We expose the parentParserArguments to the child here too-->
-                            <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
-                            <#assign parentParseArguments><#if hasParentParseArguments><#list typeDefinition.parentType.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-                            <#if hasParentParseArguments>, ${tracer.dive("count array parent parse arguments")} ${parentParseArguments}</#if>
-                            )
-                        </#if>
-                        );
-                    </@compress>
-            <#-- After parsing, update the current position, but only if it's needed -->
-                <#if arrayField.loopExpression.contains("curPos")>
-            curPos = readBuffer.getPos() - startPos;
-                </#if>
-        }
+        Object ${arrayField.name}Object = readLengthArrayField(${helper.getLanguageTypeNameForField(field)}.class, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = (${helper.getLanguageTypeNameForField(field)}[]) ${arrayField.name}Object;
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                 <#elseif field.isTerminatedArrayField()>
         // Terminated array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}))) {
-                    <@compress single_line=true>
-            _${arrayField.name}List.add(
-                        <#if helper.isSimpleTypeReference(arrayField.type)>
-                            ${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}
-                        <#else>
-                            ${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                            <#--if field.params.isPresent()>
-                                ,
-                                <#list field.params.orElseThrow() as parserArgument>
-                                    (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)})
-                                    (${helper.toParseExpression(arrayField, parserArgument, parserArguments)})<#sep>, </#sep>
-                                </#list>
-                            </#if-->
-                            <#assign typeDefinition=helper.getTypeDefinitionForTypeReference(arrayField.type)>
-                        <#-- We expose the parentParserArguments to the child here too-->
-                            <#assign hasParentParseArguments=typeDefinition.parentType?? && typeDefinition.parentType.parserArguments.isPresent()>
-                            <#assign parentParseArguments><#if hasParentParseArguments><#list typeDefinition.parentType.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-                            <#if hasParentParseArguments>, ${tracer.dive("count array parent parse arguments")} ${parentParseArguments}</#if>
-                            )
-                        </#if>
-                        );
-                    </@compress>
-
-            <#-- After parsing, update the current position, but only if it's needed -->
-                <#if arrayField.loopExpression.contains("curPos")>
-            curPos = readBuffer.getPos() - startPos;
-                </#if>
-        }
-                </#if>
-                <#--
-                    Convert the list into an array. However if the array is of a primitive
-                    type we have to iterate over it's elements and explicitly cast them.
-                    Otherwise a simple toArray call is fine.
-                -->
-                <#if helper.isSimpleTypeReference(arrayField.type)>
-        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${arrayField.name}List.size()];
-        for(int i = 0; i < _${arrayField.name}List.size(); i++) {
-            ${arrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${arrayField.name}List.get(i);
-        }
-                <#else>
-        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}[0]);
+        Object ${arrayField.name}Object = readTerminatedArrayField(${helper.getLanguageTypeNameForField(field)}.class, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)})));
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = (${helper.getLanguageTypeNameForField(field)}[]) ${arrayField.name}Object;
                 </#if>
             </#if>
-            readBuffer.closeContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         </#if>
         <#break>
     <#case "assert">

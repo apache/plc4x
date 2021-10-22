@@ -25,6 +25,7 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
 public interface FieldReader<T> extends FieldCommons {
 
+    // TODO: this is useless here as you always operate on the concrete instance
     T readField(String logicalName, DataReader<T> dataIO, WithReaderArgs... readerArgs) throws ParseException;
 
 }
