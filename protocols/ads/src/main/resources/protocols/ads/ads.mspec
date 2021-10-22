@@ -133,7 +133,7 @@
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple      uint        32  'invokeId'                                 ]
     // The payload
-    [simple     AdsData ['commandId', 'state.response']    'data'           ]
+    [simple     AdsData('commandId', 'state.response')    'data'           ]
 ]
 
 [enum uint 16 'CommandId'
@@ -190,7 +190,7 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'AdsData' [CommandId 'commandId', bit 'response']
+[discriminatedType 'AdsData' (CommandId 'commandId', bit 'response')
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -319,7 +319,7 @@
             // 4 bytes	Length of the data (in bytes) which should be written. (if it's ADSIGRP_MULTIPLE_READ_WRITE, this is 16 otherwise 12)
             [implicit uint 32 'writeLength' '(COUNT(items) * ((indexGroup == 61570) ? 16 : 12)) + COUNT(data)']
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
-            [array  AdsMultiRequestItem 'items' count '((indexGroup == 61568) || (indexGroup == 61569) || (indexGroup == 61570)) ? indexOffset : 0' ['indexGroup']]
+            [array  AdsMultiRequestItem('indexGroup') 'items' count '((indexGroup == 61568) || (indexGroup == 61569) || (indexGroup == 61570)) ? indexOffset : 0']
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
@@ -334,7 +334,7 @@
     ]
 ]
 
-[discriminatedType 'AdsMultiRequestItem' [uint 32 'indexGroup']
+[discriminatedType 'AdsMultiRequestItem' (uint 32 'indexGroup')
     [typeSwitch 'indexGroup'
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
         ['61568' AdsMultiRequestItemRead
@@ -386,7 +386,7 @@
     [array int 8 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' [vstring 'dataFormatName', int 32 'stringLength']
+[dataIo 'DataItem' (vstring 'dataFormatName', int 32 'stringLength')
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -498,7 +498,7 @@
     ]
 ]
 
-[enum int 8 'AdsDataType' [uint 16 'numBytes', vstring 'dataFormatName']
+[enum int 8 'AdsDataType' (uint 16 'numBytes', vstring 'dataFormatName')
     ['0x01' BOOL       ['1', 'IEC61131_BOOL']]
     ['0x02' BIT        ['1', 'IEC61131_BOOL']]
     ['0x03' BIT8       ['1', 'IEC61131_BOOL']]

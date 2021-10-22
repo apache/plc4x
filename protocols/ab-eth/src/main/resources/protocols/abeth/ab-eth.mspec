@@ -53,7 +53,7 @@
     ]
 ]
 
-[discriminatedType 'DF1ResponseMessage' [uint 16 'payloadLength']
+[discriminatedType 'DF1ResponseMessage' (uint 16 'payloadLength')
     [reserved      uint 8  '0x00']
     [simple        uint 8  'destinationAddress']
     [simple        uint 8  'sourceAddress']
