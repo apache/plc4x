@@ -34,7 +34,7 @@
             [simple   DF1RequestMessage  'request']
         ]
         ['0x0207' CIPEncapsulationReadResponse [uint 16 'len']
-            [simple   DF1ResponseMessage 'response' ['len']]
+            [simple   DF1ResponseMessage ['len'] 'response']
         ]
     ]
 ]
