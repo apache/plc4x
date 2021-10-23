@@ -48,10 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -240,7 +237,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
                 (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .toArray(AdsMultiRequestItem[]::new), null);
+                .collect(Collectors.toList()), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -503,7 +500,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemWrite(
                 directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
                 ((long) directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
-                .toArray(AdsMultiRequestItem[]::new), writeBuffer);
+                .collect(Collectors.toList()), writeBuffer);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -690,7 +687,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             symbolicAdsFields.size(), expectedResponseDataSize, symbolicAdsFields.stream().map(symbolicAdsField ->
             new AdsMultiRequestItemReadWrite(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
                 4, symbolicAdsField.getSymbolicAddress().length())
-        ).toArray(AdsMultiRequestItem[]::new), addressData);
+        ).collect(Collectors.toList()), addressData);
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, getInvokeId(), adsData);
