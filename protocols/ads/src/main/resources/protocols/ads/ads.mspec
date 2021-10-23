@@ -206,7 +206,7 @@
             // Build	2 bytes	Build number
             [simple uint 16  'version']
             // Name	16 bytes	Name of ADS device
-            [array int 8  'device' count '16']
+            [array byte  'device' count '16']
         ]
 
         ['ADS_READ', 'false' AdsReadRequest
@@ -223,7 +223,7 @@
             // 4 bytes	Length of data which are supplied back.
             [implicit uint 32 'length' 'COUNT(data)']
             // n bytes	Data which are supplied back.
-            [array int 8 'data' count 'length']
+            [array byte 'data' count 'length']
         ]
 
         ['ADS_WRITE', 'false' AdsWriteRequest
@@ -234,7 +234,7 @@
             // 4 bytes	Length of the data (in bytes) which should be written.
             [implicit uint 32 'length' 'COUNT(data)']
             // n bytes	Data which are written in the ADS device.
-            [array int 8 'data' count 'length']
+            [array byte 'data' count 'length']
         ]
         ['ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
@@ -259,7 +259,7 @@
             // 4 bytes	Length of data in byte.
             [implicit uint 32 'length' 'COUNT(data)']
             // n bytes	Additional data which are sent to the ADS device
-            [array int 8 'data' count 'length']
+            [array byte 'data' count 'length']
         ]
         ['ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
@@ -321,7 +321,7 @@
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
             [array  AdsMultiRequestItem('indexGroup') 'items' count '((indexGroup == 61568) || (indexGroup == 61569) || (indexGroup == 61570)) ? indexOffset : 0']
             // n bytes	Data which are written in the ADS device.
-            [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
+            [array byte 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
         ['ADS_READ_WRITE', 'true' AdsReadWriteResponse
             // 4 bytes	ADS error number
@@ -329,7 +329,7 @@
             // 4 bytes	Length of data in byte.
             [implicit uint 32 'length'  'COUNT(data)']
             // n bytes Additional data which are sent to the ADS device
-            [array int 8 'data' count 'length']
+            [array byte 'data' count 'length']
         ]
     ]
 ]
@@ -383,7 +383,7 @@
     // 4 Bytes	Size of data range in bytes.
     [simple uint 32 'sampleSize']
     // n Bytes	Data
-    [array int 8 'data' count 'sampleSize']
+    [array byte 'data' count 'sampleSize']
 ]
 
 [dataIo 'DataItem' (vstring 'dataFormatName', int 32 'stringLength')

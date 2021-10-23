@@ -49,7 +49,7 @@ public class FieldReaderArray<T> implements FieldReader<T> {
         int itemCount = Math.max(0, (int) count);
         List<T> result = new ArrayList<>(itemCount);
         for (int curItem = 0; curItem < itemCount; curItem++) {
-            result.set(curItem, dataReader.read("", readerArgs));
+            result.add(dataReader.read("", readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);
         return result;
@@ -59,8 +59,9 @@ public class FieldReaderArray<T> implements FieldReader<T> {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);
-        List<T> result = new LinkedList<>();
-        while (dataReader.getPos() < length) {
+        int startPos = dataReader.getPos();
+        List<T> result = new ArrayList<>();
+        while (dataReader.getPos() < startPos + length) {
             result.add(dataReader.read("", readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);
@@ -71,7 +72,7 @@ public class FieldReaderArray<T> implements FieldReader<T> {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);
-        List<T> result = new LinkedList<>();
+        List<T> result = new ArrayList<>();
         while (!termination.get()) {
             result.add(dataReader.read("", readerArgs));
         }

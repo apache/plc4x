@@ -111,7 +111,8 @@ public class ReadBufferXmlBased implements ReadBuffer, BufferCommons {
         hexString = hexString.substring(2);
         byte[] bytes = new byte[numberOfBytes];
         for (int i = 0; i < hexString.length(); i = i + 2) {
-            bytes[i / 2] = Byte.parseByte(hexString.substring(i, i + 2), 16);
+            // Without this hack, we can't parse values such as "0x80" into a byte.
+            bytes[i / 2] = (byte) Short.parseShort(hexString.substring(i, i + 2), 16);
         }
         return bytes;
     }

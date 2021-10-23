@@ -116,12 +116,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Properties.
 <#list type.propertyFields as field>
-    private final ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name};
+    private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
 </#list>
 </#if>
 
     <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-    public ${type.name}(<#list type.getAllPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+    public ${type.name}(<#list type.getAllPropertyFields() as field><#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name}<#sep>, </#sep></#list>) {
 <#if type.getParentPropertyFields()?has_content>
         super(<#list type.getParentPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
 </#if>
@@ -131,18 +131,18 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     }
 
 <#list type.abstractFields as field>
-    public abstract ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.asNamedField().orElseThrow().name?cap_first}();
+    public abstract <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.asNamedField().orElseThrow().name?cap_first}();
 
 </#list>
 <#list type.propertyFields as field>
-    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
+    public <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.name?cap_first}() {
         return ${field.name};
     }
 
 </#list>
 <#list type.virtualFields as field>
     <#if !type.isDiscriminatorField(field.name)>
-    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
+    public <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> get${field.name?cap_first}() {
         <#if helper.getLanguageTypeNameForField(field) = 'String'>
         return ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.toAccessExpression(field, field.valueExpression, parserArguments)});
         <#else>
@@ -175,12 +175,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         if(${arrayField.name} != null) {
         <#if helper.isSimpleTypeReference(arrayField.type)>
             <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
-            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
+            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.<#if arrayField.type.isByteBased()>length<#else>size()</#if>;
         <#elseif arrayField.isCountArrayField()>
             int i=0;
             <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
             for(${complexTypeReference.name} element : ${arrayField.name}) {
-                boolean last = ++i >= ${arrayField.name}.length;
+                boolean last = ++i >= ${arrayField.name}.size();
                 lengthInBits += element.getLengthInBitsConditional(last);
             }
         <#else>

@@ -24,9 +24,9 @@
 [discriminatedType 'AdsDiscovery' byteOrder='"BIG_ENDIAN"'
     [const uint 32 'header' '0x03661471L']
     [reserved   uint 32  '0x00000000L']
-    [enum Operation 'operation']
+    [simple     Operation 'operation']
     [reserved   uint 16  '0x0000']
-    [enum Direction 'direction']
+    [simple     Direction 'direction']
     [typeSwitch 'operation', 'direction'
         ['DISCOVERY', 'REQUEST' DiscoveryRequest
             [simple AmsNetId 'amsNetId']
@@ -63,7 +63,7 @@
             [reserved uint 16 '0x1027']
             [reserved uint 16 '0x0100']
             [reserved uint 32 '0x00000100']
-            [enum RouteStatus 'status']
+            [simple   RouteStatus 'status']
             [reserved uint 24 '0x000000']
         ]
     ]
