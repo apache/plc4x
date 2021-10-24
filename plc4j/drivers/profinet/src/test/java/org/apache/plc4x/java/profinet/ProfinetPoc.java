@@ -26,6 +26,8 @@ import org.apache.plc4x.java.spi.generation.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 public class ProfinetPoc {
@@ -40,7 +42,7 @@ public class ProfinetPoc {
             new DceRpc_InterfaceUuid_DeviceInterface(), generateActivityUuid(),
             0, 0, DceRpc_Operation.CONNECT,
             new PnIoCm_Packet_Req(404, 404, 0, 404,
-                new PnIoCm_Block[]{
+                Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
                         new MacAddress(Hex.decodeHex("606D3C3DA9A3")),
@@ -56,43 +58,45 @@ public class ProfinetPoc {
                         0xBBF0, 128, 8, 1, 0, 0xffffffff,
                         3, 3, 0xC000,
                         new MacAddress(Hex.decodeHex("000000000000")),
-                        new PnIoCm_IoCrBlockReqApi[]{
+                        Collections.singletonList(
                             new PnIoCm_IoCrBlockReqApi(
-                                new PnIoCm_IoDataObject[]{
+                                Arrays.asList(
                                     new PnIoCm_IoDataObject(0, 0x0001, 0),
                                     new PnIoCm_IoDataObject(0, 0x8000, 1),
                                     new PnIoCm_IoDataObject(0, 0x8001, 2),
                                     new PnIoCm_IoDataObject(0, 0x8002, 3),
                                     new PnIoCm_IoDataObject(1, 0x0001, 4)
-                                },
-                                new PnIoCm_IoCs[]{
+                                ),
+                                Collections.singletonList(
                                     new PnIoCm_IoCs(0x0001, 0x0001, 0x0019)
-                                })
-                        }),
+                                ))
+                        )),
                     new PnIoCm_Block_IoCrReq((short) 1, (short) 0, PnIoCm_IoCrType.OUTPUT_CR,
                         0x0002, 0x8892, false, false,
                         false, false, PnIoCm_RtClass.RT_CLASS_2, 40,
                         0x8000, 128, 8, 1, 0, 0xffffffff,
                         3, 3, 0xC000,
                         new MacAddress(Hex.decodeHex("000000000000")),
-                        new PnIoCm_IoCrBlockReqApi[]{
+                        Collections.singletonList(
                             new PnIoCm_IoCrBlockReqApi(
-                                new PnIoCm_IoDataObject[]{
+                                Collections.singletonList(
                                     new PnIoCm_IoDataObject(0x0001, 0x0001, 0x0005)
-                                },
-                                new PnIoCm_IoCs[]{
+                                ),
+                                Arrays.asList(
                                     new PnIoCm_IoCs(0, 0x0001, 0),
                                     new PnIoCm_IoCs(0, 0x8000, 1),
                                     new PnIoCm_IoCs(0, 0x8001, 2),
                                     new PnIoCm_IoCs(0, 0x8002, 3),
                                     new PnIoCm_IoCs(1, 0x0001, 4)
-                                })
-                        }
+                                )
+                            )
+                        )
                     ),
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        new PnIoCm_ExpectedSubmoduleBlockReqApi[]{
+                        Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(0,
-                                0x00000010, 0x00000000, new PnIoCm_Submodule[]{
+                                0x00000010, 0x00000000,
+                                Arrays.asList(
                                 new PnIoCm_Submodule_NoInputNoOutputData(0x0001,
                                     0x00000001, false, false,
                                     false, false),
@@ -105,24 +109,25 @@ public class ProfinetPoc {
                                 new PnIoCm_Submodule_NoInputNoOutputData(0x8002,
                                     0x00000003, false, false,
                                     false, false)
-                            })
-                        }
+                                )
+                            )
+                        )
                     ),
                     new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0,
-                        new PnIoCm_ExpectedSubmoduleBlockReqApi[]{
+                        Collections.singletonList(
                             new PnIoCm_ExpectedSubmoduleBlockReqApi(1,
-                                0x00000022, 0x00000000, new PnIoCm_Submodule[]{
+                                0x00000022, 0x00000000, Collections.singletonList(
                                 new PnIoCm_Submodule_InputAndOutputData(0x0001, 0x00000010,
                                     false, false, false,
                                     false, 20, (short) 1, (short) 1,
-                                    6, (short) 1, (short) 1)
-                            })
-                        }
+                                    6, (short) 1, (short) 1))
+                            )
+                        )
                     ),
                     new PnIoCm_Block_AlarmCrReq((short) 1, (short) 0,
                         PnIoCm_AlarmCrType.ALARM_CR, 0x8892, false, false, 1, 3,
                         0x0000, 200, 0xC000, 0xA000)
-                }, 404)
+                ), 404)
         );
 
         // Serialize the message

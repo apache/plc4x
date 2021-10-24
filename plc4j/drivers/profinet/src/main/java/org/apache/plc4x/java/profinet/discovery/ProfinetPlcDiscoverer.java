@@ -186,9 +186,9 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                         new PnDcp_ServiceType(false, false),
                                         1,
                                         256,
-                                        new PnDcp_Block[]{
+                                        Collections.singletonList(
                                             new PnDcp_Block_ALLSelector()
-                                        }))));
+                                        )))));
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
                         Ethernet_FrameIO.staticSerialize(buffer, identificationRequest);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
