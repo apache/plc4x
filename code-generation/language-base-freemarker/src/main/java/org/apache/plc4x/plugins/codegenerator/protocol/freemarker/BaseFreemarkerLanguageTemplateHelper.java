@@ -317,13 +317,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return Optional.empty();
     }
 
-    /**
-     * Enums are always based on a main type. This helper accesses this information in a safe manner.
-     *
-     * @param typeReference type reference
-     * @return simple type reference for the enum type referenced by the given type reference
-     */
-    public SimpleTypeReference getEnumBaseTypeReference(TypeReference typeReference) {
+    protected EnumTypeDefinition getEnumTypeDefinition(TypeReference typeReference) {
         if (!(typeReference instanceof ComplexTypeReference)) {
             throw new FreemarkerException("type reference for enum types must be of type complex type");
         }
@@ -335,9 +329,22 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (!(typeDefinition instanceof EnumTypeDefinition)) {
             throw new FreemarkerException("Referenced type with name " + typeName + " is not an enum type");
         }
-        EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) typeDefinition;
+        return (EnumTypeDefinition) typeDefinition;
+    }
+
+    /**
+     * Enums are always based on a main type. This helper accesses this information in a safe manner.
+     *
+     * @param typeReference type reference
+     * @return simple type reference for the enum type referenced by the given type reference
+     */
+    public SimpleTypeReference getEnumBaseTypeReference(TypeReference typeReference) {
         // Enum types always have simple type references.
-        return (SimpleTypeReference) enumTypeDefinition.getType();
+        return (SimpleTypeReference) getEnumTypeDefinition(typeReference).getType();
+    }
+
+    public SimpleTypeReference getEnumFieldTypeReference(TypeReference typeReference, String constantName) {
+        return (SimpleTypeReference) getEnumTypeDefinition(typeReference).getConstantType(constantName);
     }
 
     /* *********************************************************************************
