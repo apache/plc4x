@@ -28,5 +28,6 @@ public enum S7SubscriptionFieldType {
     ALARM_ACK,
     ALARM_QUERY,
     CYCLIC_SUBSCRIPTION,
+    CYCLIC_DB_SUBSCRIPTION,    
     CYCLIC_UNSUBSCRIPTION;    
 }

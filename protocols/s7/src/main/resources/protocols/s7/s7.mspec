@@ -196,9 +196,9 @@
             [simple   uint 4  'cpuFunctionGroup']
             [simple   uint 8  'cpuSubfunction']
             [simple   uint 8  'sequenceNumber']
-            [optional uint 8  'dataUnitReferenceNumber' 'cpuFunctionType == 8']
-            [optional uint 8  'lastDataUnit' 'cpuFunctionType == 8']
-            [optional uint 16 'errorCode' 'cpuFunctionType == 8']
+            [optional uint 8  'dataUnitReferenceNumber' '(cpuFunctionType == 8) || ((cpuFunctionType == 0) && (cpuFunctionGroup == 2))']
+            [optional uint 8  'lastDataUnit' '(cpuFunctionType == 8) || ((cpuFunctionType == 0) && (cpuFunctionGroup == 2))']
+            [optional uint 16 'errorCode' '(cpuFunctionType == 8) || ((cpuFunctionType == 0) && (cpuFunctionGroup == 2))']
         ]
     ]
 ]
@@ -422,7 +422,7 @@
     ]
 ]
 
-[type SubItem
+[type 'SubItem'
     [simple uint 8 'bytesToRead']
     [simple uint 16 'dbNumber']
     [simple uint 16 'startAddress']
@@ -466,15 +466,15 @@
     [typeSwitch     'cpuFunctionGroup', 'cpuFunctionType', 'cpuSubfunction', 'dataLength'
 
         ['0x02', '0x00', '0x01' S7PayloadUserDataItemCyclicServicesPush
-            [simple uint 16 'itemCount']
-            [array AssociatedQueryValueType count 'itemCount']
+            [simple uint 16 'itemsCount']
+            [array AssociatedValueType 'items' count 'itemsCount']
         ]
 
         ['0x02', '0x04', '0x01' S7PayloadUserDataItemCyclicServicesSubscribeRequest
-            [simple uint 16 'itemCount']
+            [simple uint 16 'itemsCount']
             [simple TimeBase 'timeBase']
             [simple uint 8 'timeFactor']
-            [array CycServiceItemType count 'itemCount']
+            [array CycServiceItemType 'item' count 'itemsCount']
         ]
 
         ['0x02', '0x04', '0x04' S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
@@ -483,8 +483,8 @@
         ]
 
         ['0x02', '0x08', '0x01' S7PayloadUserDataItemCyclicServicesSubscribeResponse
-            [simple uint 16 'itemCount']
-            [array AssociatedQueryValueType count 'itemCount']
+            [simple uint 16 'itemsCount']
+            [array AssociatedValueType 'items' count 'itemsCount']
         ]
 
         ['0x02', '0x08', '0x04' S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
@@ -554,7 +554,7 @@
         ['0x04', '0x08', '0x02', '0x05' S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
             [simple uint 8    'result']
             [simple uint 8    'reserved01']
-            [simple AlarmType 'alarmType']
+            [simple AlarmStateType 'alarmType']
             [simple uint 8    'reserved02']
             [simple uint 8    'reserved03']
         ]
@@ -864,6 +864,7 @@
     ['0x02' SYS]
     ['0x04' USR]
     ['0x80' ALM]
+    ['0x69' CYC] //Not from s7 standar, only for internal processing.
 ]
 
 [enum uint 8 'SyntaxIdType'
@@ -914,3 +915,10 @@
     ['0x11' LINK_UP]
     ['0x12' UPDATE]
 ]
+
+[enum uint 8 'TimeBase'
+    ['0x00' B01SEC]
+    ['0x01' B1SEC]
+    ['0X02' B10SEC]
+]
+

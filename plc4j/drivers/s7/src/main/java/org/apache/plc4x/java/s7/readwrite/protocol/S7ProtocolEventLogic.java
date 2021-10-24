@@ -36,15 +36,22 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.events.S7AlarmEvent;
+import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectQueryType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageQueryType;
+import org.apache.plc4x.java.s7.readwrite.S7Message;
+import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmQuery;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesPush;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -160,6 +167,24 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
                                 dispathqueue.add(alarmevent);
                             }
+                        } else
+                        //TODO: Check parameter for diferentation                            
+                        if ((obj instanceof S7Message) &&
+                                (((S7PayloadUserData) ((S7MessageUserData) obj).getPayload()).getItems()[0] instanceof S7PayloadUserDataItemCyclicServicesPush)){
+                            S7MessageUserData s7msg = (S7MessageUserData) obj;
+                            S7ParameterUserData parameter = (S7ParameterUserData) s7msg.getParameter();
+                            S7ParameterUserDataItemCPUFunctions parameteritem = 
+                                    (S7ParameterUserDataItemCPUFunctions)
+                                    parameter.getItems()[0];
+                            S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
+                            
+                            S7PayloadUserDataItemCyclicServicesPush payloaditem = 
+                                    (S7PayloadUserDataItemCyclicServicesPush )
+                                    payload.getItems()[0];
+                            
+                            S7CyclicEvent cycevent = new S7CyclicEvent(parameteritem.getSequenceNumber(),payloaditem);
+                            dispathqueue.add(cycevent);   
+                            
                         } else {
                             S7AlarmEvent alarmevent = new S7AlarmEvent(obj);
                             dispathqueue.add(alarmevent);
@@ -212,6 +237,11 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
                                 mapConsumers.forEach((x,y) -> y.accept(obj)); 
                             }
+                        }else if (obj instanceof S7CyclicEvent) {
+                            if (mapIndex.containsKey(EventType.CYC)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.CYC);
+                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                            }                            
                         }                         
                     }
                 } catch (Exception ex) {
