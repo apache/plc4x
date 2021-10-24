@@ -223,10 +223,10 @@
 [discriminatedType 'S7Payload' (uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','0x03' S7PayloadReadVarResponse(S7Parameter 'parameter')
-            [array S7VarPayloadDataItem('lastItem') 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
+            [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest(S7Parameter 'parameter')
-            [array S7VarPayloadDataItem('lastItem') 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
+            [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse(S7Parameter 'parameter')
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
@@ -238,12 +238,12 @@
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
-[type 'S7VarPayloadDataItem'(bit 'lastItem')
+[type 'S7VarPayloadDataItem'
     [simple   DataTransportErrorCode 'returnCode']
     [simple   DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
     [array    byte                   'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
-    [padding  uint 8                 'pad'        '0x00' 'lastItem ? 0 : COUNT(data) % 2']
+    [padding  uint 8                 'pad'        '0x00' 'COUNT(data) % 2']
 ]
 
 [type 'S7VarPayloadStatusItem'

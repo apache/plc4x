@@ -169,10 +169,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         byte[] ${arrayField.name} = readBuffer.readByteArray("${arrayField.name}", ${numberOfBytesExpression});
         <#else>
         // Array field (${arrayField.name})
-            <#-- Only update curPos if the length expression uses it -->
-            <#if arrayField.loopExpression.contains("curPos")>
-        curPos = readBuffer.getPos() - startPos;
-            </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
             <#if field.isCountArrayField()>
         // Count array
