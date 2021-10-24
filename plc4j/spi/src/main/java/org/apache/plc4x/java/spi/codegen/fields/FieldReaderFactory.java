@@ -64,6 +64,21 @@ public class FieldReaderFactory {
         return new FieldReaderArray<T>().readFieldLength(logicalName, dataReader, length, readerArgs);
     }
 
+    /**
+     * In some protocols a long is used as length, but we simply can't address that many bytes,
+     * so we simply cast it down to int as on java we couldn't even read more bytes as MAX-INT.
+     * @param logicalName
+     * @param dataReader
+     * @param length
+     * @param readerArgs
+     * @param <T>
+     * @return
+     * @throws ParseException
+     */
+    public static <T> List<T> readLengthArrayField(String logicalName, DataReader<T> dataReader, long length, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderArray<T>().readFieldLength(logicalName, dataReader, (int) length, readerArgs);
+    }
+
     @Deprecated
     @SuppressWarnings("unchecked")
     public static <T> T[] readTerminatedArrayField(Class<T> t, String logicalName, DataReader<T> dataReader, Supplier<Boolean> termination, WithReaderArgs... readerArgs) throws ParseException {

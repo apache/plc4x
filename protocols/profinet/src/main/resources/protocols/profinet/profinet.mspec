@@ -148,7 +148,7 @@
     [const            uint 8             'serialLow'                      '0x00'                 ]
 // RPC Header }
 // RPC Payload {
-    [simple PnIoCm_Packet 'payload' byteOrder='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"' ['packetType'] ]
+    [simple PnIoCm_Packet('packetType') 'payload' byteOrder='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"' ]
 // RPC Payload }
 ]
 
