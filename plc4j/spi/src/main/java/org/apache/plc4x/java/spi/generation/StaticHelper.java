@@ -22,10 +22,24 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Collection;
+import java.util.List;
 
 public class StaticHelper {
 
     public static int ARRAY_SIZE_IN_BYTES(Object obj) {
+        if (obj instanceof List) {
+            List list = (List) obj;
+            int numBytes = 0;
+            for (Object element : list) {
+                if (element instanceof Message) {
+                    numBytes += ((Message) element).getLengthInBytes();
+                } else {
+                    throw new RuntimeException(
+                        "Array elements for array size in bytes must implement Message interface");
+                }
+            }
+            return numBytes;
+        }
         if (obj.getClass().isArray() && !obj.getClass().getComponentType().isPrimitive()) {
             Object[] arr = (Object[]) obj;
             int numBytes = 0;

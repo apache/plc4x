@@ -38,39 +38,39 @@
             ['0x006F' CipRRData(uint  16  'len')
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple    CipExchange   'exchange' ['len-6']]
+                [simple    CipExchange('len - 6')   'exchange']
             ]
         ]
 ]
-[type  'CipExchange' [uint 16 'exchangeLen']  //We pass then length down to evey sub-type to be able to provide the remaining data size
+[type  'CipExchange' (uint 16 'exchangeLen')  //We pass then length down to evey sub-type to be able to provide the remaining data size
     [const          uint        16      'itemCount'           '0x02']                 //2 items
     [const          uint        32      'nullPtr'             '0x0']                    //NullPointerAddress
-    [const          uint        16      'UnconnectedData'     '0x00B2']                 //Connection Manager
+    [const          uint        16      'unconnectedData'     '0x00B2']                 //Connection Manager
     [implicit       uint        16      'size'                'lengthInBytes - 8 - 2']  //remove fields above and routing
-    [simple         CipService          'service' ['exchangeLen - 10'] ]
+    [simple         CipService('exchangeLen - 10')          'service']
 ]
 
 [discriminatedType  'CipService'(uint 16 'serviceLen')
     [discriminator  uint    8   'service']
     [typeSwitch 'service'
         ['0x4C' CipReadRequest
-            [simple     int     8   'RequestPathSize']
-            [array      int     8   'tag'   length  '(RequestPathSize*2)']
+            [simple     int     8   'requestPathSize']
+            [array      byte   'tag'   length  '(requestPathSize * 2)']
             [simple     uint    16  'elementNb']
         ]
         ['0xCC' CipReadResponse(uint 16 'serviceLen')
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
-              [enum       CIPDataTypeCode     'dataType']
-              [array      int             8   'data'  count  'serviceLen-6']
+              [simple     CIPDataTypeCode     'dataType']
+              [array      byte   'data'  count  'serviceLen - 6']
         ]
         ['0x4D' CipWriteRequest
-            [simple     int     8           'RequestPathSize']
-            [array      int     8           'tag'   length  '(RequestPathSize*2)']
-            [enum       CIPDataTypeCode     'dataType']
+            [simple     int     8           'requestPathSize']
+            [array      byte           'tag'   length  'requestPathSize * 2']
+            [simple     CIPDataTypeCode     'dataType']
             [simple     uint    16          'elementNb']
-            [array      int    8            'data'  length  'dataType.size*elementNb']
+            [array      byte            'data'  length  'dataType.size * elementNb']
         ]
         ['0xCD' CipWriteResponse
             [reserved   uint        8   '0x00']
@@ -78,8 +78,8 @@
             [simple     uint        8   'extStatus']
         ]
         ['0x0A' MultipleServiceRequest(uint 16 'serviceLen')
-               [const  int     8   'RequestPathSize'   '0x02']
-               [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
+               [const  int     8   'requestPathSize'   '0x02']
+               [const  uint    32  'requestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
                [simple Services('serviceLen - 6 ')  'data' ]
         ]
         ['0x8A' MultipleServiceResponse(uint 16 'serviceLen')
@@ -88,7 +88,7 @@
                [simple     uint    8   'extStatus']
                [simple     uint    16  'serviceNb']
                [array      uint    16  'offsets'       count  'serviceNb']
-               [array      int     8   'servicesData' count 'serviceLen-6-(2*serviceNb)']
+               [array      byte   'servicesData' count 'serviceLen - 6 - (2 * serviceNb)']
         ]
         ['0x52'   CipUnconnectedRequest
                [reserved   uint    8   '0x02']
@@ -106,25 +106,25 @@
     ]
 ]
 
-[type   'Services'  [uint   16   'servicesLen']
+[type   'Services'  (uint   16   'servicesLen')
     [simple uint        16  'serviceNb']
     [array  uint        16  'offsets'       count  'serviceNb']
-    [array  CipService   'services'      count  'serviceNb' ['servicesLen/serviceNb'] ]
+    [array  CipService('servicesLen / serviceNb')   'services'      count  'serviceNb' ]
 ]
 
 [enum uint   16   'CIPDataTypeCode'(uint 8  'size')
-    ['0X00C1'   BOOL            ('1')]
-    ['0X00C2'   SINT            ('1')]
-    ['0X00C3'   INT             ('2')]
-    ['0X00C4'   DINT            ('4')]
-    ['0X00C5'   LINT            ('8')]
-    ['0X00CA'   REAL            ('4')]
-    ['0X00D3'   DWORD           ('4')]
-    ['0X02A0'   STRUCTURED      ('88')]
-    ['0X02A0'   STRING          ('88')]
-    ['0X02A0'   STRING36        ('40')]
+    ['0X00C1'   BOOL            ['1']]
+    ['0X00C2'   SINT            ['1']]
+    ['0X00C3'   INT             ['2']]
+    ['0X00C4'   DINT            ['4']]
+    ['0X00C5'   LINT            ['8']]
+    ['0X00CA'   REAL            ['4']]
+    ['0X00D3'   DWORD           ['4']]
+    ['0X02A0'   STRUCTURED      ['88']]
+    ['0X02A0'   STRING          ['88']]
+    ['0X02A0'   STRING36        ['40']]
     //TODO: -1 is not a valid value for uint
-    //['-1'       UNKNOWN         ('-1')]
+    //['-1'       UNKNOWN         ['-1']]
 ]
 
 [enum   uint    16  'EiPCommand'

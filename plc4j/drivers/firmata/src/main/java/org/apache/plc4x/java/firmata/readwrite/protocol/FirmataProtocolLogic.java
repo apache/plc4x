@@ -278,19 +278,19 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         }
     }
 
-    protected int getAnalogValue(byte[] data) {
+    protected int getAnalogValue(List<Byte> data) {
         // In Firmata analog values are encoded as a 14bit integer with the least significant bits being located in
         // the bits 0-6 of the birst byte and the second half as the 0-6 bits of the second byte.
-        return ((data[0] & 0xFF)| (data[1] << 7)) & 0xFFFF;
+        return ((data.get(0) & 0xFF)| (data.get(1) << 7)) & 0xFFFF;
     }
 
-    protected int convertToSingleByteRepresentation(byte[] data) {
-        byte result = data[0];
-        result = (byte) (result | (((data[1] & 0x01) == 0x01) ? 0x80 : 0x00));
+    protected int convertToSingleByteRepresentation(List<Byte> data) {
+        byte result = data.get(0);
+        result = (byte) (result | (((data.get(1) & 0x01) == 0x01) ? 0x80 : 0x00));
         return result & 0xFF;
     }
 
-    protected BitSet getDigitalValues(int byteBlock, byte[] data) {
+    protected BitSet getDigitalValues(int byteBlock, List<Byte> data) {
         int singleByte = convertToSingleByteRepresentation(data);
         if(byteBlock > 0) {
             singleByte = singleByte * (256 * byteBlock);

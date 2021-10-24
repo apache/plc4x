@@ -59,13 +59,13 @@
 [discriminatedType 'FirmataCommand'(bit 'response')
     [discriminator uint 4 'commandCode']
     [typeSwitch 'commandCode'
-        ['0x0' FirmataCommandSysex [bit 'response']
+        ['0x0' FirmataCommandSysex(bit 'response')
             [simple SysexCommand('response') 'command']
             [reserved uint 8 '0xF7']
         ]
         ['0x4' FirmataCommandSetPinMode
             [simple uint 8 'pin']
-            [enum PinMode 'mode']
+            [simple PinMode 'mode']
         ]
         ['0x5' FirmataCommandSetDigitalPinValue
             [simple uint 8 'pin']
@@ -115,7 +115,7 @@
         ['0x79','true' SysexCommandReportFirmwareResponse
             [simple uint 8 'majorVersion']
             [simple uint 8 'minorVersion']
-            [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", writeBuffer, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
+            [manualArray byte 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", writeBuffer, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
         ]
         ['0x7A' SysexCommandSamplingInterval
         ]
