@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -165,8 +166,8 @@ public class S7AlarmEvent implements S7Event {
             this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
             map.put(S7SysEvent.Fields.TIMESTAMP.name(),this.timeStamp);            
 
-            AlarmMessageAckObjectPushType[] items = msg.getMessageObjects();
-            for (AlarmMessageAckObjectPushType item:items){
+            List<AlarmMessageAckObjectPushType> items = msg.getMessageObjects();
+            for (AlarmMessageAckObjectPushType item : items){
                 map.put(Fields.EVENT_ID.name(), item.getEventId()); 
                 map.put(Fields.TYPE.name(), "ALARMACK_IND");  
                 map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues()); 
@@ -217,8 +218,8 @@ public class S7AlarmEvent implements S7Event {
             this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
             map.put(S7SysEvent.Fields.TIMESTAMP.name(),this.timeStamp);
 
-            AlarmMessageObjectPushType[] items = msg.getMessageObjects();
-            for (AlarmMessageObjectPushType item:items){
+            List<AlarmMessageObjectPushType> items = msg.getMessageObjects();
+            for (AlarmMessageObjectPushType item : items){
                 map.put(Fields.EVENT_ID.name(), item.getEventId());
 
                 if (obj instanceof S7PayloadAlarm8)
@@ -273,14 +274,14 @@ public class S7AlarmEvent implements S7Event {
                 map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
                 map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());             
 
-                AssociatedValueType[] values = item.getAssociatedValues();
+                List<AssociatedValueType> values = item.getAssociatedValues();
                 int i=1;
                 int j = 0;
-                for (AssociatedValueType value:values) {
+                for (AssociatedValueType value : values) {
                     map.put("SIG_"+i+"_DATA_STATUS", value.getReturnCode().getValue());
                     map.put("SIG_"+i+"_DATA_SIZE", value.getTransportSize().getValue());
                     map.put("SIG_"+i+"_DATA_LENGTH", value.getValueLength());
-                    byte[] data = new byte[value.getData().length];
+                    byte[] data = new byte[value.getData().size()];
                     j = 0;
                     for (short s:value.getData()) {
                         data[j] = (byte) s;
