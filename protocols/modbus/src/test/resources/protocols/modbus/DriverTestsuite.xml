@@ -78,12 +78,7 @@
               <functionFlag dataType="uint" bitLength="7">3</functionFlag>
               <ModbusPDUReadHoldingRegistersResponse>
                 <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="32">0x40490fdb</value>
               </ModbusPDUReadHoldingRegistersResponse>
             </ModbusPDU>
           </pdu>
@@ -164,16 +159,7 @@
               <functionFlag dataType="uint" bitLength="7">3</functionFlag>
               <ModbusPDUReadHoldingRegistersResponse>
                 <byteCount dataType="uint" bitLength="8">8</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
               </ModbusPDUReadHoldingRegistersResponse>
             </ModbusPDU>
           </pdu>
@@ -261,12 +247,7 @@
               <functionFlag dataType="uint" bitLength="7">3</functionFlag>
               <ModbusPDUReadHoldingRegistersResponse>
                 <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="32">0x40490fdb</value>
               </ModbusPDUReadHoldingRegistersResponse>
             </ModbusPDU>
           </pdu>
@@ -308,12 +289,7 @@
               <functionFlag dataType="uint" bitLength="7">3</functionFlag>
               <ModbusPDUReadHoldingRegistersResponse>
                 <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="32">0x40490fdb</value>
               </ModbusPDUReadHoldingRegistersResponse>
             </ModbusPDU>
           </pdu>
@@ -389,12 +365,7 @@
                 <startingAddress dataType="uint" bitLength="16">0</startingAddress>
                 <quantity dataType="uint" bitLength="16">2</quantity>
                 <byteCount dataType="uint" bitLength="8">4</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="32">0x40490fdb</value>
               </ModbusPDUWriteMultipleHoldingRegistersRequest>
             </ModbusPDU>
           </pdu>
@@ -475,16 +446,7 @@
                 <startingAddress dataType="uint" bitLength="16">0</startingAddress>
                 <quantity dataType="uint" bitLength="16">4</quantity>
                 <byteCount dataType="uint" bitLength="8">8</byteCount>
-                <value isList="true">
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                  <value dataType="int" bitLength="8">64</value>
-                  <value dataType="int" bitLength="8">73</value>
-                  <value dataType="int" bitLength="8">15</value>
-                  <value dataType="int" bitLength="8">-37</value>
-                </value>
+                <value dataType="byte" bitLength="64">0x40490fdb40490fdb</value>
               </ModbusPDUWriteMultipleHoldingRegistersRequest>
             </ModbusPDU>
           </pdu>

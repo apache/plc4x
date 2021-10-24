@@ -117,12 +117,7 @@
                       <payload>
                         <SDOInitiateUploadResponsePayload>
                           <SDOInitiateExpeditedUploadResponse>
-                            <data isList="true">
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">115</value>
-                              <value dataType="int" bitLength="8">100</value>
-                              <value dataType="int" bitLength="8">102</value>
-                            </data>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
                             <padding isList="true">
                             </padding>
                           </SDOInitiateExpeditedUploadResponse>
@@ -167,12 +162,7 @@
                       <payload>
                         <SDOInitiateUploadResponsePayload>
                           <SDOInitiateExpeditedUploadResponse>
-                            <data isList="true">
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">115</value>
-                              <value dataType="int" bitLength="8">100</value>
-                              <value dataType="int" bitLength="8">102</value>
-                            </data>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
                             <padding isList="true">
                             </padding>
                           </SDOInitiateExpeditedUploadResponse>
@@ -295,12 +285,7 @@
                       <payload>
                         <SDOInitiateUploadResponsePayload>
                           <SDOInitiateExpeditedUploadResponse>
-                            <data isList="true">
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">115</value>
-                              <value dataType="int" bitLength="8">100</value>
-                              <value dataType="int" bitLength="8">102</value>
-                            </data>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
                             <padding isList="true">
                             </padding>
                           </SDOInitiateExpeditedUploadResponse>
@@ -424,12 +409,7 @@
                       <payload>
                         <SDOInitiateUploadResponsePayload>
                           <SDOInitiateExpeditedUploadResponse>
-                            <data isList="true">
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">115</value>
-                              <value dataType="int" bitLength="8">100</value>
-                              <value dataType="int" bitLength="8">102</value>
-                            </data>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
                             <padding isList="true">
                             </padding>
                           </SDOInitiateExpeditedUploadResponse>
@@ -474,12 +454,7 @@
                       <payload>
                         <SDOInitiateUploadResponsePayload>
                           <SDOInitiateExpeditedUploadResponse>
-                            <data isList="true">
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">115</value>
-                              <value dataType="int" bitLength="8">100</value>
-                              <value dataType="int" bitLength="8">102</value>
-                            </data>
+                            <data dataType="byte" bitLength="32">0x61736466</data>
                             <padding isList="true">
                             </padding>
                           </SDOInitiateExpeditedUploadResponse>
@@ -666,12 +641,7 @@
                       <toggle dataType="bit" bitLength="1">false</toggle>
                       <size dataType="uint" bitLength="3">3</size>
                       <last dataType="bit" bitLength="1">false</last>
-                      <data isList="true">
-                        <value dataType="int" bitLength="8">97</value>
-                        <value dataType="int" bitLength="8">115</value>
-                        <value dataType="int" bitLength="8">100</value>
-                        <value dataType="int" bitLength="8">102</value>
-                      </data>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
                       <padding isList="true">
                         <value dataType="uint" bitLength="8">0</value>
                         <value dataType="uint" bitLength="8">0</value>
@@ -736,12 +706,7 @@
                       <toggle dataType="bit" bitLength="1">true</toggle>
                       <size dataType="uint" bitLength="3">3</size>
                       <last dataType="bit" bitLength="1">false</last>
-                      <data isList="true">
-                        <value dataType="int" bitLength="8">97</value>
-                        <value dataType="int" bitLength="8">115</value>
-                        <value dataType="int" bitLength="8">100</value>
-                        <value dataType="int" bitLength="8">102</value>
-                      </data>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
                       <padding isList="true">
                         <value dataType="uint" bitLength="8">0</value>
                         <value dataType="uint" bitLength="8">0</value>
@@ -807,12 +772,7 @@
                       <toggle dataType="bit" bitLength="1">false</toggle>
                       <size dataType="uint" bitLength="3">3</size>
                       <last dataType="bit" bitLength="1">true</last>
-                      <data isList="true">
-                        <value dataType="int" bitLength="8">97</value>
-                        <value dataType="int" bitLength="8">115</value>
-                        <value dataType="int" bitLength="8">100</value>
-                        <value dataType="int" bitLength="8">102</value>
-                      </data>
+                      <data dataType="byte" bitLength="32">0x61736466</data>
                       <padding isList="true">
                         <value dataType="uint" bitLength="8">0</value>
                         <value dataType="uint" bitLength="8">0</value>

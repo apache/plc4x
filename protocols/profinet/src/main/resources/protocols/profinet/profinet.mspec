@@ -246,7 +246,7 @@
 ]
 
 // https://de.wikipedia.org/wiki/IEEE_802.1p
-[enum uint 3 'VirtualLanPriority'   [string 16 'acronym']
+[enum uint 3 'VirtualLanPriority'   (string 16 'acronym')
     ['0x0' BEST_EFFORT              ['BE'                ]]
     ['0x1' BACKGROUND               ['BK'                ]]
     ['0x2' EXCELLENT_EFFORT         ['EE'                ]]

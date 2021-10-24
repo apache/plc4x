@@ -55,11 +55,11 @@
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.
 
-[type 'OpcuaAPU' byteOrder='"LITTLE_ENDIAN"' [bit 'response']
+[type 'OpcuaAPU' (bit 'response') byteOrder='"LITTLE_ENDIAN"'
     [simple         MessagePDU   'message' ['response']]
 ]
 
-[discriminatedType 'MessagePDU' [bit 'response']
+[discriminatedType 'MessagePDU' (bit 'response')
     [discriminator string 24            'messageType']
     [typeSwitch 'messageType','response'
         ['HEL','false'     OpcuaHelloRequest
@@ -168,15 +168,15 @@
     [simple bit 'binaryBody']
 ]
 
-[type 'ExtensionObject' [bit 'includeEncodingMask']
+[type 'ExtensionObject' (bit 'includeEncodingMask')
     //A serialized object prefixed with its data type identifier.
     [simple ExpandedNodeId 'typeId']
     [optional ExtensionObjectEncodingMask 'encodingMask' 'includeEncodingMask']
     [virtual vstring '-1' 'identifier' 'typeId.identifier']
-    [simple ExtensionObjectDefinition 'body' ['identifier']]
+    [simple ExtensionObjectDefinition('identifier') 'body']
 ]
 
-[discriminatedType 'ExtensionObjectDefinition' [vstring '-1' 'identifier']
+[discriminatedType 'ExtensionObjectDefinition' (vstring '-1' 'identifier')
     [typeSwitch 'identifier'
         ['0' NullExtension
         ]
@@ -190,14 +190,14 @@
         ['811' DataChangeNotification
             [implicit int 32 'notificationLength' 'lengthInBytes']
             [simple int 32 'noOfMonitoredItems']
-            [array ExtensionObjectDefinition  'monitoredItems' count 'noOfMonitoredItems' ['808']]
+            [array ExtensionObjectDefinition('808')  'monitoredItems' count 'noOfMonitoredItems']
             [simple int 32 'noOfDiagnosticInfos']
             [array DiagnosticInfo  'diagnosticInfos' count 'noOfDiagnosticInfos']
         ]
         ['916' EventNotificationList
             [implicit int 32 'notificationLength' 'lengthInBytes']
             [simple int 32 'noOfEvents']
-            [array ExtensionObjectDefinition  'events' count 'noOfEvents' ['919']]
+            [array ExtensionObjectDefinition('919')  'events' count 'noOfEvents']
         ]
         ['820' StatusChangeNotification
             [implicit int 32 'notificationLength' 'lengthInBytes']
@@ -208,12 +208,12 @@
         ['316' UserIdentityToken
             [implicit int 32 'policyLength' 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
             [simple PascalString 'policyId']
-            [simple UserIdentityTokenDefinition 'userIdentityTokenDefinition' ['policyId.stringValue']]
+            [simple UserIdentityTokenDefinition('policyId.stringValue') 'userIdentityTokenDefinition']
         ]
     ]
 ]
 
-[discriminatedType 'UserIdentityTokenDefinition' [vstring '-1' 'identifier']
+[discriminatedType 'UserIdentityTokenDefinition' (vstring '-1' 'identifier')
     [typeSwitch 'identifier'
         ['anonymous' AnonymousIdentityToken
         ]
@@ -238,103 +238,103 @@
     [simple bit 'arrayDimensionsSpecified']
     [discriminator uint 6 'VariantType']
     [typeSwitch 'VariantType','arrayLengthSpecified'
-        ['1' VariantBoolean [bit 'arrayLengthSpecified']
+        ['1' VariantBoolean (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 8 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['2' VariantSByte [bit 'arrayLengthSpecified']
+        ['2' VariantSByte (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 8 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['3' VariantByte [bit 'arrayLengthSpecified']
+        ['3' VariantByte (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array uint 8 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['4' VariantInt16 [bit 'arrayLengthSpecified']
+        ['4' VariantInt16 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 16 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['5' VariantUInt16 [bit 'arrayLengthSpecified']
+        ['5' VariantUInt16 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array uint 16 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['6' VariantInt32 [bit 'arrayLengthSpecified']
+        ['6' VariantInt32 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 32 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['7' VariantUInt32 [bit 'arrayLengthSpecified']
+        ['7' VariantUInt32 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array uint 32 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['8' VariantInt64 [bit 'arrayLengthSpecified']
+        ['8' VariantInt64 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 64 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['9' VariantUInt64 [bit 'arrayLengthSpecified']
+        ['9' VariantUInt64 (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array uint 64 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['10' VariantFloat [bit 'arrayLengthSpecified']
+        ['10' VariantFloat (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array float 32 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['11' VariantDouble [bit 'arrayLengthSpecified']
+        ['11' VariantDouble (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array float 64 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['12' VariantString [bit 'arrayLengthSpecified']
+        ['12' VariantString (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['13' VariantDateTime [bit 'arrayLengthSpecified']
+        ['13' VariantDateTime (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array int 64 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['14' VariantGuid [bit 'arrayLengthSpecified']
+        ['14' VariantGuid (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array GuidValue 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['15' VariantByteString [bit 'arrayLengthSpecified']
+        ['15' VariantByteString (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array ByteStringArray 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['16' VariantXmlElement [bit 'arrayLengthSpecified']
+        ['16' VariantXmlElement (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['17' VariantNodeId [bit 'arrayLengthSpecified']
+        ['17' VariantNodeId (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array NodeId 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['18' VariantExpandedNodeId [bit 'arrayLengthSpecified']
+        ['18' VariantExpandedNodeId (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array ExpandedNodeId 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['19' VariantStatusCode [bit 'arrayLengthSpecified']
+        ['19' VariantStatusCode (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array StatusCode 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['20' VariantQualifiedName [bit 'arrayLengthSpecified']
+        ['20' VariantQualifiedName (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array QualifiedName 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['21' VariantLocalizedText [bit 'arrayLengthSpecified']
+        ['21' VariantLocalizedText (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array LocalizedText 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['22' VariantExtensionObject [bit 'arrayLengthSpecified']
+        ['22' VariantExtensionObject (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array ExtensionObject 'value' count 'arrayLength == null ? 1 : arrayLength' ['true']]
         ]
-        ['23' VariantDataValue [bit 'arrayLengthSpecified']
+        ['23' VariantDataValue (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array DataValue 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['24' VariantVariant [bit 'arrayLengthSpecified']
+        ['24' VariantVariant (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array Variant 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['25' VariantDiagnosticInfo [bit 'arrayLengthSpecified']
+        ['25' VariantDiagnosticInfo (bit 'arrayLengthSpecified')
             [optional int 32 'arrayLength' 'arrayLengthSpecified']
             [array DiagnosticInfo 'value' count 'arrayLength == null ? 1 : arrayLength']
         ]
@@ -413,7 +413,7 @@
 // OpaqueType
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
-[enum string 112 'OpcuaDataType' [uint 8 'variantType']
+[enum string 112 'OpcuaDataType' (uint 8 'variantType')
     ['NULL' NULL ['0']]
     ['BOOL' BOOL ['1']]
     ['BYTE' BYTE ['3']]

@@ -73,206 +73,7 @@
             <functionFlag dataType="uint" bitLength="7">4</functionFlag>
             <ModbusPDUReadInputRegistersResponse>
               <byteCount dataType="uint" bitLength="8">198</byteCount>
-              <value isList="true">
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">1</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">1</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">4</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">1</value>
-                <value dataType="int" bitLength="8">-37</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">1</value>
-                <value dataType="int" bitLength="8">-42</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">74</value>
-                <value dataType="int" bitLength="8">56</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">100</value>
-                <value dataType="int" bitLength="8">97</value>
-                <value dataType="int" bitLength="8">105</value>
-                <value dataType="int" bitLength="8">109</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">110</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">49</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">48</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-                <value dataType="int" bitLength="8">0</value>
-              </value>
+              <value dataType="byte" bitLength="1584">0x00000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000</value>
             </ModbusPDUReadInputRegistersResponse>
           </ModbusPDU>
         </pdu>
@@ -343,34 +144,12 @@
                 <ModbusPDUReadFileRecordResponseItem>
                   <dataLength dataType="uint" bitLength="8">5</dataLength>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </data>
+                  <data dataType="byte" bitLength="32">0x00000000</data>
                 </ModbusPDUReadFileRecordResponseItem>
                 <ModbusPDUReadFileRecordResponseItem>
                   <dataLength dataType="uint" bitLength="8">17</dataLength>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </data>
+                  <data dataType="byte" bitLength="128">0x00000000000000000000000000000000</data>
                 </ModbusPDUReadFileRecordResponseItem>
               </items>
             </ModbusPDUReadFileRecordResponse>
@@ -406,10 +185,7 @@
                   <fileNumber dataType="uint" bitLength="16">2</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">0</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">8</value>
-                  </recordData>
+                  <recordData dataType="byte" bitLength="16">0x0008</recordData>
                 </ModbusPDUWriteFileRecordRequestItem>
               </items>
             </ModbusPDUWriteFileRecordRequest>
@@ -444,20 +220,14 @@
                   <fileNumber dataType="uint" bitLength="16">1</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">9999</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </recordData>
+                  <recordData dataType="byte" bitLength="16">0x0000</recordData>
                 </ModbusPDUWriteFileRecordRequestItem>
                 <ModbusPDUWriteFileRecordRequestItem>
                   <referenceType dataType="uint" bitLength="8">6</referenceType>
                   <fileNumber dataType="uint" bitLength="16">2</fileNumber>
                   <recordNumber dataType="uint" bitLength="16">0</recordNumber>
                   <recordLength dataType="uint" bitLength="16">1</recordLength>
-                  <recordData isList="true">
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </recordData>
+                  <recordData dataType="byte" bitLength="16">0x0000</recordData>
                 </ModbusPDUWriteFileRecordRequestItem>
               </items>
             </ModbusPDUWriteFileRecordRequest>

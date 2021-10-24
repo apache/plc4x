@@ -67,19 +67,19 @@
             [simple uint 8 'communicationChannelId']
             [simple Status 'status']
         ]
-        ['0x020B' UnknownMessage [uint 16 'totalLength']
-            [array int 8 'unknownData' count 'totalLength - 6']
+        ['0x020B' UnknownMessage (uint 16 'totalLength')
+            [array byte 'unknownData' count 'totalLength - 6']
         ]
-        ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
+        ['0x0310' DeviceConfigurationRequest (uint 16 'totalLength')
             [simple DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
-            [simple CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
+            [simple CEMI('totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)') 'cemi']
         ]
         ['0x0311' DeviceConfigurationAck
             [simple DeviceConfigurationAckDataBlock 'deviceConfigurationAckDataBlock']
         ]
-        ['0x0420' TunnelingRequest [uint 16 'totalLength']
+        ['0x0420' TunnelingRequest (uint 16 'totalLength')
             [simple TunnelingRequestDataBlock 'tunnelingRequestDataBlock']
-            [simple CEMI                      'cemi' ['totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)']]
+            [simple CEMI('totalLength - (6 + tunnelingRequestDataBlock.lengthInBytes)') 'cemi']
         ]
         ['0x0421' TunnelingResponse
             [simple TunnelingResponseDataBlock 'tunnelingResponseDataBlock']
@@ -110,10 +110,10 @@
     [simple   DeviceStatus 'deviceStatus']
     [simple   KnxAddress   'knxAddress']
     [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
-    [array    int 8        'knxNetIpDeviceSerialNumber' count '6']
+    [array    byte         'knxNetIpDeviceSerialNumber' count '6']
     [simple   IPAddress    'knxNetIpDeviceMulticastAddress']
     [simple   MACAddress   'knxNetIpDeviceMacAddress']
-    [array    int 8        'deviceFriendlyName'         count '30']
+    [array    byte         'deviceFriendlyName'         count '30']
 ]
 
 [type 'DIBSuppSvcFamilies'
@@ -183,11 +183,11 @@
 ]
 
 [type 'IPAddress'
-    [array int 8 'addr' count '4']
+    [array byte 'addr' count '4']
 ]
 
 [type 'MACAddress'
-    [array int 8 'addr' count '6']
+    [array byte 'addr' count '6']
 ]
 
 [type 'KnxAddress'
@@ -241,7 +241,7 @@
 // NOTE: When inspecting traffic in WireShark it seems they got the
 // standard/extended frame thing wrong. When comparing to the spec most
 // normal traffic is actually extended frames.
-[discriminatedType 'CEMI' [uint 8 'size']
+[discriminatedType 'CEMI' (uint 16 'size')
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
         ['0x2B' LBusmonInd
@@ -355,7 +355,7 @@
     [discriminator bit          'polling']
     [simple        bit          'notRepeated']
     [discriminator bit          'notAckFrame']
-    [enum          CEMIPriority 'priority']
+    [simple        CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
     [simple        bit          'errorFlag']
     // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
@@ -368,14 +368,14 @@
             [simple   uint 3       'hopCount']
             [simple   uint 4       'extendedFrameFormat']
             [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'destinationAddress' count '2']
+            [array    byte         'destinationAddress' count '2']
             [implicit uint 8       'dataLength' 'apdu.lengthInBytes - 1']
-            [simple   Apdu         'apdu' ['dataLength']]
+            [simple   Apdu('dataLength') 'apdu']
         ]
         // Page 28ff
         //['true','false','true' LDataStandard
         //    [simple   KnxAddress   'sourceAddress']
-        //    [array    int 8        'destinationAddress' count '2']
+        //    [array    byte         'destinationAddress' count '2']
         //    [simple   bit          'groupAddress']
         //    [simple   uint 3       'hopCount']
         //    [simple   uint 4       'dataLength']
@@ -385,7 +385,7 @@
         //['true','true','true' LPollData
         ['true','true' LPollData
             [simple   KnxAddress   'sourceAddress']
-            [array    int 8        'targetAddress' count '2']
+            [array    byte         'targetAddress' count '2']
             [reserved uint 4       '0x00']
             [simple   uint 6       'numberExpectedPollData']
         ]
@@ -395,7 +395,7 @@
     ]
 ]
 
-[discriminatedType 'Apdu' [uint 8 'dataLength']
+[discriminatedType 'Apdu' (uint 8 'dataLength')
     // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
     [discriminator uint 1 'control']
     [simple        bit    'numbered']
@@ -404,8 +404,8 @@
         ['1' ApduControlContainer
             [simple ApduControl 'controlApdu']
         ]
-        ['0' ApduDataContainer [uint 8 'dataLength']
-            [simple ApduData 'dataApdu' ['dataLength']]
+        ['0' ApduDataContainer (uint 8 'dataLength')
+            [simple ApduData('dataLength') 'dataApdu']
         ]
     ]
 ]
@@ -424,20 +424,20 @@
     ]
 ]
 
-[discriminatedType 'ApduData' [uint 8 'dataLength']
+[discriminatedType 'ApduData' (uint 8 'dataLength')
     [discriminator uint 4 'apciType']
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
     [typeSwitch 'apciType'
         ['0x0' ApduDataGroupValueRead
             [reserved uint 6 '0x00']
         ]
-        ['0x1' ApduDataGroupValueResponse [uint 8 'dataLength']
+        ['0x1' ApduDataGroupValueResponse (uint 8 'dataLength')
             [simple int 6 'dataFirstByte']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+            [array  byte  'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
-        ['0x2' ApduDataGroupValueWrite [uint 8 'dataLength']
+        ['0x2' ApduDataGroupValueWrite (uint 8 'dataLength')
             [simple int 6 'dataFirstByte']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+            [array  byte  'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0x3' ApduDataIndividualAddressWrite
         ]
@@ -457,7 +457,7 @@
         ['0x9' ApduDataMemoryResponse
             [implicit uint 6  'numBytes' 'COUNT(data)']
             [simple   uint 16 'address']
-            [array    uint 8  'data'     count 'numBytes']
+            [array    byte    'data'     count 'numBytes']
         ]
         ['0xA' ApduDataMemoryWrite
         ]
@@ -467,20 +467,20 @@
         ['0xC' ApduDataDeviceDescriptorRead
             [simple uint 6 'descriptorType']
         ]
-        ['0xD' ApduDataDeviceDescriptorResponse [uint 8 'dataLength']
+        ['0xD' ApduDataDeviceDescriptorResponse (uint 8 'dataLength')
             [simple uint 6 'descriptorType']
-            [array  int 8 'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
+            [array  byte   'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0xE' ApduDataRestart
         ]
-        ['0xF' ApduDataOther [uint 8 'dataLength']
-            [simple ApduDataExt 'extendedApdu' ['dataLength']]
+        ['0xF' ApduDataOther (uint 8 'dataLength')
+            [simple ApduDataExt('dataLength') 'extendedApdu']
         ]
     ]
 ]
 
 // 03_03_07 Application Layer v01.06.02 AS Page 9ff
-[discriminatedType 'ApduDataExt' [uint 8 'length']
+[discriminatedType 'ApduDataExt' (uint 8 'length')
     [discriminator uint 6 'extApciType']
     [typeSwitch 'extApciType'
         ['0x00' ApduDataExtOpenRoutingTableRequest
@@ -509,7 +509,7 @@
 
         ['0x11' ApduDataExtAuthorizeRequest
             [simple uint 8 'level']
-            [array  uint 8 'data' count '4']
+            [array  byte   'data' count '4']
         ]
         ['0x12' ApduDataExtAuthorizeResponse
             [simple uint 8 'level']
@@ -525,19 +525,19 @@
             [simple uint 4  'count']
             [simple uint 12 'index']
         ]
-        ['0x16' ApduDataExtPropertyValueResponse [uint 8 'length']
+        ['0x16' ApduDataExtPropertyValueResponse (uint 8 'length')
             [simple uint 8  'objectIndex']
             [simple uint 8  'propertyId']
             [simple uint 4  'count']
             [simple uint 12 'index']
-            [array  uint 8  'data' count 'length - 5']
+            [array  byte    'data' count 'length - 5']
         ]
-        ['0x17' ApduDataExtPropertyValueWrite [uint 8 'length']
+        ['0x17' ApduDataExtPropertyValueWrite (uint 8 'length')
             [simple uint 8  'objectIndex']
             [simple uint 8  'propertyId']
             [simple uint 4  'count']
             [simple uint 12 'index']
-            [array  uint 8  'data' count 'length - 5']
+            [array  byte    'data' count 'length - 5']
         ]
         ['0x18' ApduDataExtPropertyDescriptionRead
             [simple uint 8 'objectIndex']
@@ -614,7 +614,7 @@
     [simple   uint 16 'timestamp']
 ]
 
-[discriminatedType 'KnxGroupAddress' [uint 2 'numLevels']
+[discriminatedType 'KnxGroupAddress' (uint 2 'numLevels')
     [typeSwitch 'numLevels'
         ['1' KnxGroupAddressFreeLevel
             [simple uint 16 'subGroup']
@@ -683,7 +683,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' [vstring 'description',                                         bit 'knxSupport']
+[enum uint 8 'SupportedPhysicalMedia' (vstring 'description',                                         bit 'knxSupport')
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -743,7 +743,7 @@
 // Helper enum that binds the combinations of medium type and firmware
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 16 'DeviceDescriptor'        [DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType'               ]
+[enum uint 16 'DeviceDescriptor'        (DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType')
     ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['TP1',          'SYSTEM_1'                  ]]
@@ -775,7 +775,7 @@
     ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
 ]
 
-[enum uint 4 'AccessLevel' [vstring 'purpose',        bit 'needsAuthentication']
+[enum uint 4 'AccessLevel' (vstring 'purpose',        bit 'needsAuthentication')
     ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
     ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
     ['0x2' Level2          ['"configuration"',        'true'                   ]]
@@ -813,7 +813,7 @@
 // - 03_05_01 Resources v01.09.03 AS.pdf
 // - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
-[dataIo 'KnxProperty' [KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes']
+[dataIo 'KnxProperty' (KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes')
     [typeSwitch 'propertyType','dataLengthInBytes'
         ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
@@ -866,16 +866,16 @@
             [simple   float 64   'value']
         ]
         ['PDT_CHAR_BLOCK' List
-            [array uint 8           'value' count '10']
+            [array byte             'value' count '10']
         ]
         ['PDT_POLL_GROUP_SETTINGS' Struct
-            [array    uint 8        'groupAddress' count '2']
+            [array    byte          'groupAddress' count '2']
             [simple   bit           'disable']
             [reserved uint 3        '0x0']
             [simple   uint 4        'pollingSoftNr']
         ]
         ['PDT_SHORT_CHAR_BLOCK' List
-            [array uint 8           'value' count '5']
+            [array byte             'value' count '5']
         ]
         ['PDT_DATE_TIME' Struct
             [simple uint 8 'year']
@@ -901,64 +901,64 @@
             [reserved uint 7 '0x00']
         ]
         ['PDT_GENERIC_01' List
-            [array uint 8           'value' count '1']
+            [array byte             'value' count '1']
         ]
         ['PDT_GENERIC_02' List
-            [array uint 8           'value' count '2']
+            [array byte             'value' count '2']
         ]
         ['PDT_GENERIC_03' List
-            [array uint 8           'value' count '3']
+            [array byte             'value' count '3']
         ]
         ['PDT_GENERIC_04' List
-            [array uint 8           'value' count '4']
+            [array byte             'value' count '4']
         ]
         ['PDT_GENERIC_05' List
-            [array uint 8           'value' count '5']
+            [array byte             'value' count '5']
         ]
         ['PDT_GENERIC_06' List
-            [array uint 8           'value' count '6']
+            [array byte             'value' count '6']
         ]
         ['PDT_GENERIC_07' List
-            [array uint 8           'value' count '7']
+            [array byte             'value' count '7']
         ]
         ['PDT_GENERIC_08' List
-            [array uint 8           'value' count '8']
+            [array byte             'value' count '8']
         ]
         ['PDT_GENERIC_09' List
-            [array uint 8           'value' count '9']
+            [array byte             'value' count '9']
         ]
         ['PDT_GENERIC_10' List
-            [array uint 8           'value' count '10']
+            [array byte             'value' count '10']
         ]
         ['PDT_GENERIC_11' List
-            [array uint 8           'value' count '11']
+            [array byte             'value' count '11']
         ]
         ['PDT_GENERIC_12' List
-            [array uint 8           'value' count '12']
+            [array byte             'value' count '12']
         ]
         ['PDT_GENERIC_13' List
-            [array uint 8           'value' count '13']
+            [array byte             'value' count '13']
         ]
         ['PDT_GENERIC_14' List
-            [array uint 8           'value' count '14']
+            [array byte             'value' count '14']
         ]
         ['PDT_GENERIC_15' List
-            [array uint 8           'value' count '15']
+            [array byte             'value' count '15']
         ]
         ['PDT_GENERIC_16' List
-            [array uint 8           'value' count '16']
+            [array byte             'value' count '16']
         ]
         ['PDT_GENERIC_17' List
-            [array uint 8           'value' count '17']
+            [array byte             'value' count '17']
         ]
         ['PDT_GENERIC_18' List
-            [array uint 8           'value' count '18']
+            [array byte             'value' count '18']
         ]
         ['PDT_GENERIC_19' List
-            [array uint 8           'value' count '19']
+            [array byte             'value' count '19']
         ]
         ['PDT_GENERIC_20' List
-            [array uint 8           'value' count '20']
+            [array byte             'value' count '20']
         ]
         // Defaults to PDT_VARIABLE_LENGTH
         //['PDT_UTF_8'
@@ -1012,14 +1012,14 @@
         //['PDT_ESCAPE'
         //]
         // 'KnxPropertyDataType.PDT_VARIABLE_LENGTH' == Catch all
-        [ List [uint 8 'dataLengthInBytes']
-            [array uint 8 'value' count 'dataLengthInBytes']
+        [ List (uint 8 'dataLengthInBytes')
+            [array byte   'value' count 'dataLengthInBytes']
         ]
     ]
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 171
-[enum uint 8 'ComObjectValueType' [uint 8 'sizeInBytes']
+[enum uint 8 'ComObjectValueType' (uint 8 'sizeInBytes')
     ['0x00' BIT1                  ['1']]
     ['0x01' BIT2                  ['1']]
     ['0x02' BIT3                  ['1']]
@@ -1037,7 +1037,7 @@
     ['0x0E' BYTE14                ['14']]
 ]
 
-[discriminatedType 'ComObjectTable' [FirmwareType 'firmwareType']
+[discriminatedType 'ComObjectTable' (FirmwareType 'firmwareType')
     [typeSwitch 'firmwareType'
         // The location of the Group Object Table - Realization Type 1 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which

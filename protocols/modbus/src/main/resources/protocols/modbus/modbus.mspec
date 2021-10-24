@@ -42,7 +42,7 @@
     [simple         uint 8      'unitIdentifier']
 
     // The actual modbus payload
-    [simple         ModbusPDU   'pdu' ['response']]
+    [simple         ModbusPDU('response')   'pdu']
 ]
 
 [type 'ModbusSerialADU' byteOrder='"LITTLE_ENDIAN"' (bit 'response')
@@ -52,7 +52,7 @@
     [simple         uint 8      'address']
 
     // The actual modbus payload
-    [simple         ModbusPDU   'pdu' ['response']]
+    [simple         ModbusPDU('response')   'pdu']
 ]
 
 [discriminatedType 'ModbusPDU' (bit 'response')
@@ -60,7 +60,7 @@
     [discriminator uint 7      'functionFlag']
     [typeSwitch 'errorFlag','functionFlag','response'
         ['true'                     ModbusPDUError
-            [enum ModbusErrorCode  'exceptionCode']
+            [simple ModbusErrorCode  'exceptionCode']
         ]
 
         // Bit Access
@@ -70,7 +70,7 @@
         ]
         ['false','0x02','true'      ModbusPDUReadDiscreteInputsResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x01','false'     ModbusPDUReadCoilsRequest
@@ -79,7 +79,7 @@
         ]
         ['false','0x01','true'      ModbusPDUReadCoilsResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x05','false'     ModbusPDUWriteSingleCoilRequest
@@ -95,7 +95,7 @@
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
         ['false','0x0F','true'      ModbusPDUWriteMultipleCoilsResponse
             [simple     uint 16     'startingAddress']
@@ -109,7 +109,7 @@
         ]
         ['false','0x04','true'      ModbusPDUReadInputRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x03','false'     ModbusPDUReadHoldingRegistersRequest
@@ -118,7 +118,7 @@
         ]
         ['false','0x03','true'      ModbusPDUReadHoldingRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x06','false'     ModbusPDUWriteSingleRegisterRequest
@@ -134,7 +134,7 @@
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
         ['false','0x10','true'      ModbusPDUWriteMultipleHoldingRegistersResponse
             [simple     uint 16     'startingAddress']
@@ -147,11 +147,11 @@
             [simple     uint 16     'writeStartingAddress']
             [simple     uint 16     'writeQuantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
         ['false','0x17','true'      ModbusPDUReadWriteMultipleHoldingRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x16','false'     ModbusPDUMaskWriteHoldingRegisterRequest
@@ -223,7 +223,7 @@
             [simple     uint 16     'status']
             [simple     uint 16     'eventCount']
             [simple     uint 16     'messageCount']
-            [array      int 8       'events'       count   'byteCount - 6']
+            [array      byte        'events'       count   'byteCount - 6']
         ]
 
         ['false','0x11','false'     ModbusPDUReportServerIdRequest
@@ -231,7 +231,7 @@
         ['false','0x11','true'      ModbusPDUReportServerIdResponse
             // TODO: This is not specified very well in the spec ... investigate.
             [implicit   uint 8      'byteCount'     'COUNT(value)']
-            [array      int 8       'value'         count   'byteCount']
+            [array      byte        'value'         count   'byteCount']
         ]
 
         ['false','0x2B','false'     ModbusPDUReadDeviceIdentificationRequest
@@ -251,7 +251,7 @@
 [type 'ModbusPDUReadFileRecordResponseItem'
     [implicit   uint 8     'dataLength'     'COUNT(data) + 1']
     [simple     uint 8     'referenceType']
-    [array      int 8      'data'           length  'dataLength - 1']
+    [array      byte       'data'           length  'dataLength - 1']
 ]
 
 [type 'ModbusPDUWriteFileRecordRequestItem'
@@ -259,7 +259,7 @@
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
     [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
-    [array      int 8      'recordData'     length  'recordLength * 2']
+    [array      byte       'recordData'     length  'recordLength * 2']
 ]
 
 [type 'ModbusPDUWriteFileRecordResponseItem'
@@ -267,10 +267,10 @@
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
     [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
-    [array      int 8      'recordData'     length  'recordLength']
+    [array      byte       'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [ModbusDataType 'dataType', uint 16 'numberOfValues']
+[dataIo 'DataItem' (ModbusDataType 'dataType', uint 16 'numberOfValues')
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
@@ -378,7 +378,7 @@
     ]
 ]
 
-[enum uint 8 'ModbusDataType' [uint 8 'dataTypeSize']
+[enum uint 8 'ModbusDataType' (uint 8 'dataTypeSize')
     ['1' BOOL ['1']]
     ['2' BYTE ['1']]
     ['3' WORD ['2']]

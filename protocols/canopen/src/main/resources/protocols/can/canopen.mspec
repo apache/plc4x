@@ -17,22 +17,22 @@
  * under the License.
  */
 
-[enum uint 4 'CANOpenService'(uint 8 'min', uint 8 'max', bit 'pdo')
-    ['0b0000' NMT             ('0',     '0'    , 'false') ]
-    ['0b0001' SYNC            ('0x80',  '0x80' , 'false') ]
-    ['0b0001' EMCY            ('0x81',  '0xFF' , 'false') ]
-    ['0b0010' TIME            ('0x100', '0x100', 'false') ]
-    ['0b0011' TRANSMIT_PDO_1  ('0x180', '0x1FF', 'true' ) ]
-    ['0b0100' RECEIVE_PDO_1   ('0x200', '0x27F', 'true' ) ]
-    ['0b0101' TRANSMIT_PDO_2  ('0x280', '0x2FF', 'true' ) ]
-    ['0b0110' RECEIVE_PDO_2   ('0x300', '0x37F', 'true' ) ]
-    ['0b0111' TRANSMIT_PDO_3  ('0x380', '0x3FF', 'true' ) ]
-    ['0b1000' RECEIVE_PDO_3   ('0x400', '0x47F', 'true' ) ]
-    ['0b1001' TRANSMIT_PDO_4  ('0x480', '0x4FF', 'true' ) ]
-    ['0b1010' RECEIVE_PDO_4   ('0x500', '0x57F', 'true' ) ]
-    ['0b1011' TRANSMIT_SDO    ('0x580', '0x5FF', 'false') ]
-    ['0b1100' RECEIVE_SDO     ('0x600', '0x67F', 'false') ]
-    ['0b1110' HEARTBEAT       ('0x700', '0x77F', 'false') ]
+[enum uint 4 'CANOpenService' (uint 8 'min', uint 8 'max', bit 'pdo')
+    ['0b0000' NMT             ['0',          '0'    ,      'false']]
+    ['0b0001' SYNC            ['0x80',       '0x80' ,      'false']]
+    ['0b0001' EMCY            ['0x81',       '0xFF' ,      'false']]
+    ['0b0010' TIME            ['0x100',      '0x100',      'false']]
+    ['0b0011' TRANSMIT_PDO_1  ['0x180',      '0x1FF',      'true' ]]
+    ['0b0100' RECEIVE_PDO_1   ['0x200',      '0x27F',      'true' ]]
+    ['0b0101' TRANSMIT_PDO_2  ['0x280',      '0x2FF',      'true' ]]
+    ['0b0110' RECEIVE_PDO_2   ['0x300',      '0x37F',      'true' ]]
+    ['0b0111' TRANSMIT_PDO_3  ['0x380',      '0x3FF',      'true' ]]
+    ['0b1000' RECEIVE_PDO_3   ['0x400',      '0x47F',      'true' ]]
+    ['0b1001' TRANSMIT_PDO_4  ['0x480',      '0x4FF',      'true' ]]
+    ['0b1010' RECEIVE_PDO_4   ['0x500',      '0x57F',      'true' ]]
+    ['0b1011' TRANSMIT_SDO    ['0x580',      '0x5FF',      'false']]
+    ['0b1100' RECEIVE_SDO     ['0x600',      '0x67F',      'false']]
+    ['0b1110' HEARTBEAT       ['0x700',      '0x77F',      'false']]
 ]
 
 [enum uint 8 'NMTStateRequest'
@@ -50,10 +50,10 @@
     ['0x7f' PRE_OPERATIONAL]
 ]
 
-[discriminatedType 'CANOpenPayload'(CANOpenService 'service')
+[discriminatedType 'CANOpenPayload' (CANOpenService 'service')
     [typeSwitch 'service'
         ['NMT' CANOpenNetworkPayload
-            [enum NMTStateRequest 'request']
+            [simple NMTStateRequest 'request']
             [reserved uint 1 '0x00']
             [simple uint 7 'node']
         ]
@@ -61,50 +61,50 @@
             [simple CANOpenTime 'timeOfDay']
         ]
         ['RECEIVE_PDO_1' CANOpenPDOPayload
-            [simple CANOpenPDO('1', 'true') 'pdo']
+            [simple CANOpenPDO/*('1', 'true')*/ 'pdo']
         ]
         ['TRANSMIT_PDO_1' CANOpenPDOPayload
-            [simple CANOpenPDO('1', 'false') 'pdo']
+            [simple CANOpenPDO/*('1', 'false')*/ 'pdo']
         ]
         ['RECEIVE_PDO_2' CANOpenPDOPayload
-            [simple CANOpenPDO('2', 'true') 'pdo']
+            [simple CANOpenPDO/*('2', 'true')*/ 'pdo']
         ]
         ['TRANSMIT_PDO_2' CANOpenPDOPayload
-            [simple CANOpenPDO('1', 'false') 'pdo']
+            [simple CANOpenPDO/*('1', 'false')*/ 'pdo']
         ]
         ['RECEIVE_PDO_3' CANOpenPDOPayload
-            [simple CANOpenPDO('3', 'true') 'pdo']
+            [simple CANOpenPDO/*('3', 'true')*/ 'pdo']
         ]
         ['TRANSMIT_PDO_3' CANOpenPDOPayload
-            [simple CANOpenPDO('1', 'false') 'pdo']
+            [simple CANOpenPDO/*('1', 'false')*/ 'pdo']
         ]
         ['RECEIVE_PDO_4' CANOpenPDOPayload
-            [simple CANOpenPDO('4', 'true') 'pdo']
+            [simple CANOpenPDO/*('4', 'true')*/ 'pdo']
         ]
         ['TRANSMIT_PDO_4' CANOpenPDOPayload
-            [simple CANOpenPDO('1', 'false') 'pdo']
+            [simple CANOpenPDO/*('1', 'false')*/ 'pdo']
         ]
         ['RECEIVE_SDO' CANOpenSDORequest
-            [enum SDORequestCommand 'command']
+            [simple SDORequestCommand 'command']
             [simple SDORequest('command') 'request']
         ]
         ['TRANSMIT_SDO' CANOpenSDOResponse
-            [enum SDOResponseCommand 'command']
+            [simple SDOResponseCommand 'command']
             [simple SDOResponse('command') 'response']
         ]
         ['HEARTBEAT' CANOpenHeartbeatPayload
-            [enum NMTState 'state']
+            [simple NMTState 'state']
         ]
     ]
 ]
 
-[type 'SDORequest' [SDORequestCommand 'command']
+[type 'SDORequest' (SDORequestCommand 'command')
     [typeSwitch 'command'
         ['SEGMENT_DOWNLOAD' SDOSegmentDownloadRequest
             [simple bit 'toggle']
             [implicit uint 3 'size' '7 - COUNT(data)']
             [simple bit 'last']
-            [array int 8 'data' count '7 - size']
+            [array byte 'data' count '7 - size']
             [padding uint 8 'alignment' '0x00' '7 - COUNT(data)']
         ]
         ['INITIATE_DOWNLOAD' SDOInitiateDownloadRequest
@@ -113,7 +113,7 @@
             [simple bit 'expedited']
             [simple bit 'indicated']
             [simple IndexAddress 'address']
-            [simple SDOInitiateUploadResponsePayload 'payload' ['expedited', 'indicated', 'size']]
+            [simple SDOInitiateUploadResponsePayload('expedited', 'indicated', 'size') 'payload']
         ]
         ['INITIATE_UPLOAD' SDOInitiateUploadRequest
             [reserved uint 5 '0x00']
@@ -136,16 +136,16 @@
 
 [type 'SDOBlockData'
     [simple uint 5 'flags']
-    [array int 8 'data' count '7']
+    [array byte 'data' count '7']
 ]
 
-[type 'SDOResponse' [SDOResponseCommand 'command']
+[type 'SDOResponse' (SDOResponseCommand 'command')
     [typeSwitch 'command'
         ['SEGMENT_UPLOAD' SDOSegmentUploadResponse
             [simple bit 'toggle']
             [implicit uint 3 'size' '7 - COUNT(data)']
             [simple bit 'last']
-            [array int 8 'data' count '7 - size']
+            [array byte 'data' count '7 - size']
             [padding uint 8 'alignment' '0x00' '7 - COUNT(data)']
         ]
         ['SEGMENT_DOWNLOAD' SDOSegmentDownloadResponse
@@ -159,7 +159,7 @@
             [simple bit 'expedited']
             [simple bit 'indicated']
             [simple IndexAddress 'address']
-            [simple SDOInitiateUploadResponsePayload 'payload' ['expedited', 'indicated', 'size']]
+            [simple SDOInitiateUploadResponsePayload('expedited', 'indicated', 'size') 'payload']
         ]
         ['INITIATE_DOWNLOAD' SDOInitiateDownloadResponse
             [reserved uint 5 '0x00']
@@ -175,10 +175,10 @@
     ]
 ]
 
-[type 'SDOInitiateUploadResponsePayload' [bit 'expedited', bit 'indicated', uint 2 'size']
+[type 'SDOInitiateUploadResponsePayload' (bit 'expedited', bit 'indicated', uint 2 'size')
     [typeSwitch 'expedited', 'indicated'
-        ['true', 'true' SDOInitiateExpeditedUploadResponse [uint 2 'size']
-            [array int 8 'data' count '4 - size']
+        ['true', 'true' SDOInitiateExpeditedUploadResponse (uint 2 'size')
+            [array byte 'data' count '4 - size']
             [padding uint 8 'alignment' '0x00' '4 - COUNT(data)']
         ]
         ['false', 'true' SDOInitiateSegmentedUploadResponse
@@ -202,7 +202,7 @@
     [simple bit 'expedited']
     [simple bit 'indicated']
     [simple IndexAddress 'address']
-    [array int 8 'data' count '(expedited && indicated) ? 4 - size : 0']
+    [array byte 'data' count '(expedited && indicated) ? 4 - size : 0']
     [padding uint 8 'alignment' '0x00' '4 - (COUNT(data))']
 ]
 
@@ -229,8 +229,8 @@
     ['0x06' BLOCK             ]
 ]
 
-[type 'CANOpenPDO' [uint 2 'index', bit 'receive']
-    [array int 8 'data' count '8']
+[type 'CANOpenPDO' /*(uint 2 'index', bit 'receive')*/
+    [array byte 'data' count '8']
 ]
 
 [type 'CANOpenTime'
@@ -240,7 +240,7 @@
     [simple uint 16 'days']
 ]
 
-[enum 'CANOpenDataType' [uint 8 'numBits']
+[enum 'CANOpenDataType' (uint 8 'numBits')
     [BOOLEAN     [ '1'] ]
     [UNSIGNED8   [ '8'] ]
     [UNSIGNED16  ['16'] ]
@@ -270,7 +270,7 @@
     [TIME_DIFFERENCE  ['48'] ]
 ]
 
-[dataIo 'DataItem' [CANOpenDataType 'dataType', int 32 'size']
+[dataIo 'DataItem' (CANOpenDataType 'dataType', int 32 'size')
     [typeSwitch 'dataType'
         ['BOOLEAN' BOOL
             [simple bit 'value']
@@ -329,8 +329,8 @@
         ['REAL64' LREAL
             [simple float 64 'value']
         ]
-        ['RECORD' List [int 32 'size']
-            [array int 8 'value' length 'size']
+        ['RECORD' List(int 32 'size')
+            [array byte 'value' length 'size']
         ]
         ['OCTET_STRING' STRING
            [simple vstring 'size' 'test']
@@ -350,7 +350,7 @@
 [type 'CANOpenMPDO'
     [simple uint 8 'node']
     [simple IndexAddress 'address']
-    [array int 8 'data' count '4']
+    [array byte 'data' count '4']
 ]
 
 // A compact, byte aligned structure for test and embedding purposes
@@ -358,6 +358,6 @@
     [simple uint 8 'nodeId']
     [simple CANOpenService 'service']
     [const uint 4 'alignment' '0x00']
-    [simple CANOpenPayload 'payload' ['service']]
+    [simple CANOpenPayload('service') 'payload']
     [padding uint 8 'alignment' '0x00' '8 - (payload.lengthInBytes)']
 ]

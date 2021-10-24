@@ -154,20 +154,19 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             <#assign numberOfBytesExpression>
                 <#compress>
                     <#if field.isCountArrayField()>
-                        int numberOfBytes = (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
+                        (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}
                     <#elseif field.isLengthArrayField()>
-                        int numberOfBytes = (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
+                        (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}
                     <#elseif field.isTerminatedArrayField()>
                     <#-- TODO: we need to find out to implement this-->
-                        int numberOfBytes := (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)};
+                        (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}
                     <#else>
                     <#-- TODO: we should throw a exception here-->
-                        int numberOfBytes := -1
+                        -1
                     </#if>
                 </#compress>
             </#assign>
-        ${numberOfBytesExpression}
-        byte[] ${arrayField.name} = readBuffer.readByteArray("${arrayField.name}", numberOfBytes);
+        byte[] ${arrayField.name} = readBuffer.readByteArray("${arrayField.name}", ${numberOfBytesExpression});
         <#else>
         // Array field (${arrayField.name})
             <#-- Only update curPos if the length expression uses it -->
