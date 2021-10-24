@@ -25,7 +25,7 @@
     [const    uint 8                 'protocolId' '0x03']
     [reserved uint 8                 '0x00']
     [implicit uint 16                'len'       'payload.lengthInBytes + 4']
-    [simple   COTPPacket ['len - 4'] 'payload']
+    [simple   COTPPacket('len - 4') 'payload']
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@
         ['0xC3' COTPParameterChecksum
             [simple uint 8 'crc']
         ]
-        ['0xE0' COTPParameterDisconnectAdditionalInformation [uint 8 'rest']
+        ['0xE0' COTPParameterDisconnectAdditionalInformation(uint 8 'rest')
             [array byte 'data' count 'rest']
         ]
     ]
@@ -223,15 +223,15 @@
 [discriminatedType 'S7Payload' (uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','0x03' S7PayloadReadVarResponse(S7Parameter 'parameter')
-            [array S7VarPayloadDataItem ['lastItem'] 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
+            [array S7VarPayloadDataItem('lastItem') 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest(S7Parameter 'parameter')
-            [array S7VarPayloadDataItem ['lastItem'] 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
+            [array S7VarPayloadDataItem('lastItem') 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse(S7Parameter 'parameter')
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
-        ['0x00','0x07' S7PayloadUserData (S7Parameter 'parameter')
+        ['0x00','0x07' S7PayloadUserData(S7Parameter 'parameter')
             [array S7PayloadUserDataItem('CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction') 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
         ]
     ]

@@ -54,10 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -218,7 +215,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Create a read request template.
         // tpuId will be inserted before sending in #readInternal so we insert -1 as dummy here
         final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1,
-            new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
+            new S7ParameterReadVarRequest(requestItems),
             null);
 
         // Just send a single response and chain it as Response
@@ -295,8 +292,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageRequest(tpduId,
-                new S7ParameterWriteVarRequest(parameterItems.toArray(new S7VarRequestParameterItem[0])),
-                new S7PayloadWriteVarRequest(payloadItems.toArray(new S7VarPayloadDataItem[0]))),
+                new S7ParameterWriteVarRequest(parameterItems),
+                new S7PayloadWriteVarRequest(payloadItems)),
             true, (short) tpduId));
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -367,8 +364,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageUserData(tpduId,
-                new S7ParameterUserData(parameterItems.toArray(new S7ParameterUserDataItem[0])),
-                new S7PayloadUserData(payloadItems.toArray(new S7PayloadUserDataItemCpuFunctionMsgSubscription[0]))),
+                new S7ParameterUserData(parameterItems),
+                new S7PayloadUserData(payloadItems)),
             true, (short) tpduId));
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -507,39 +504,36 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // In all other cases all went well.
         S7PayloadUserData payload = (S7PayloadUserData) responseMessage.getPayload();
 
-        S7PayloadUserDataItem[] payloadItems = payload.getItems();
+        List<S7PayloadUserDataItem> payloadItems = payload.getItems();
 
         //Only one item for any number of subscription (4)
-        if (payloadItems.length == 0) {
+        if (payloadItems.size() == 0) {
             throw new PlcProtocolException(
                     "The number of requested items doesn't match the number of returned items");
         }
 
         boolean responseOk = false;
-        if (payloadItems[0] instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) {
-                S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse item =
-                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse)
-                payloadItems[0];
-                if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
-                    (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
-                    responseOk = true;
-                }
-        } else if (payloadItems[0] instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) {
-                 S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse item =
-                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)
-                payloadItems[0];
-                if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
-                    (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
-                    responseOk = true;
-                }
-        } else if (payloadItems[0] instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) {
-                 S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse item =
-                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)
-                payloadItems[0];
-                if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
-                    (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
-                    responseOk = true;
-                }
+        if (payloadItems.get(0) instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) {
+            S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse item =
+                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) payloadItems.get(0);
+            if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
+                (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
+                responseOk = true;
+            }
+        } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) {
+            S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse item =
+                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) payloadItems.get(0);
+            if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
+                (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
+                responseOk = true;
+            }
+        } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) {
+            S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse item =
+                (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) payloadItems.get(0);
+            if ((item.getReturnCode() == DataTransportErrorCode.OK) &&
+                (item.getTransportSize() == DataTransportSize.OCTET_STRING)) {
+                responseOk = true;
+            }
         }
 
         if (responseOk) {
@@ -547,13 +541,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 DefaultPlcSubscriptionField dfield = (DefaultPlcSubscriptionField) plcSubscriptionRequest.getField(fieldName);
                 S7SubscriptionField field = (S7SubscriptionField) dfield.getPlcField();
                 switch(field.getEventtype()) {
-                    case MODE: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, modeHandle));
+                    case MODE: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, modeHandle));
                     break;
-                    case SYS: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, sysHandle));
+                    case SYS: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, sysHandle));
                     break;
-                    case USR: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, usrHandle));
+                    case USR: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, usrHandle));
                     break;
-                    case ALM: values.put(fieldName, new ResponseItem(PlcResponseCode.OK, almHandle));
+                    case ALM: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, almHandle));
                     break;
                 }
 
@@ -608,15 +602,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         } else
         if (parameter instanceof S7ParameterUserData) {
             S7ParameterUserData parameterud = (S7ParameterUserData) parameter;
-            S7ParameterUserDataItem[] parameterudis = parameterud.getItems();
+            List<S7ParameterUserDataItem> parameterudis = parameterud.getItems();
             for (S7ParameterUserDataItem parameterudi:parameterudis){
                 if (parameterudi instanceof S7ParameterUserDataItemCPUFunctions) {
                     S7ParameterUserDataItemCPUFunctions myparameter = (S7ParameterUserDataItemCPUFunctions) parameterudi;
                     //TODO: Check from mspec. We can try using "instanceof"
                     if ((myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x03)) {
                         S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-                        S7PayloadUserDataItem[] items = payload.getItems();
-                        for (S7PayloadUserDataItem item:items){
+                        List<S7PayloadUserDataItem> items = payload.getItems();
+                        for (S7PayloadUserDataItem item : items){
                             if (item instanceof S7PayloadDiagnosticMessage){
                                 eventqueue.add(item);
                             }
@@ -630,7 +624,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                (myparameter.getCpuSubfunction() == 0x13) ||
                                (myparameter.getCpuSubfunction() == 0x16))) {
                         S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-                        S7PayloadUserDataItem[] items = payload.getItems();
+                        List<S7PayloadUserDataItem> items = payload.getItems();
                         for (Object item:items){
                             eventqueue.add(item);
                         }
@@ -669,11 +663,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private TPKTPacket createIdentifyRemoteMessage() {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(Collections.singletonList(
                 new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-            }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
+        )), new S7PayloadUserData(Collections.singletonList(
                 new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-            }));
+        )));
         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
         return new TPKTPacket(cotpPacketData);
     }
@@ -709,11 +703,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
         return new COTPPacketConnectionRequest(
-            new COTPParameter[]{
+            Arrays.asList(
                 new COTPParameterCalledTsap(calledTsapId),
                 new COTPParameterCallingTsap(callingTsapId),
                 new COTPParameterTpduSize(cotpTpduSize)
-            }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
+            ), null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
 
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
@@ -762,16 +756,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcReadRequest.getNumberOfFields() != payload.getItems().length) {
+        if (plcReadRequest.getNumberOfFields() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        S7VarPayloadDataItem[] payloadItems = payload.getItems();
+        List<S7VarPayloadDataItem> payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
             S7Field field = (S7Field) plcReadRequest.getField(fieldName);
-            S7VarPayloadDataItem payloadItem = payloadItems[index];
+            S7VarPayloadDataItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
             PlcValue plcValue = null;
@@ -835,15 +829,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // If the numbers of items don't match, we're in big trouble as the only
         // way to know how to interpret the responses is by aligning them with the
         // items from the request as this information is not returned by the PLC.
-        if (plcWriteRequest.getNumberOfFields() != payload.getItems().length) {
+        if (plcWriteRequest.getNumberOfFields() != payload.getItems().size()) {
             throw new PlcProtocolException(
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        S7VarPayloadStatusItem[] payloadItems = payload.getItems();
+        List<S7VarPayloadStatusItem> payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcWriteRequest.getFieldNames()) {
-            S7VarPayloadStatusItem payloadItem = payloadItems[index];
+            S7VarPayloadStatusItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
             responses.put(fieldName, responseCode);
