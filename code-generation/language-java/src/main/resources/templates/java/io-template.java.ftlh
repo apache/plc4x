@@ -256,7 +256,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign namedField = field.asNamedField().orElseThrow()>
 
         // ${field.typeName?cap_first} field (${enumField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", new DataReaderEnumDefault<>(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumBaseTypeReference(enumField.type))}));
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", new DataReaderEnumDefault<>(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))}));
         <#break>
     <#case "implicit">
         <#assign implicitField = field.asImplicitField().orElseThrow()>

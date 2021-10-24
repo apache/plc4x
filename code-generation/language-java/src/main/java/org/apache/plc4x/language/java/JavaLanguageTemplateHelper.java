@@ -379,16 +379,17 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
+            StringBuilder sb = new StringBuilder();
             final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            String parserArguments = complexTypeReference.getParams()
-                .map(terms -> terms.stream()
-                    .map(term -> toParseExpression(null, term, null))
-                    .collect(Collectors.joining(", "))
-                ).orElse("");
-            if (StringUtils.isNotBlank(parserArguments)) {
-                parserArguments = ", " + parserArguments;
+            final Optional<List<Term>> params = complexTypeReference.getParams();
+            if(params.isPresent()) {
+                final List<Term> paramTerms = params.get();
+                for (int i = 0; i < paramTerms.size(); i++) {
+                    Term paramTerm = paramTerms.get(i);
+                    sb.append(", (").append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true)).append(") (").append(toParseExpression(null, paramTerm, null)).append(")");
+                }
             }
-            return "new DataReaderComplexDefault<>(() -> " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + parserArguments + "), readBuffer)";
+            return "new DataReaderComplexDefault<>(() -> " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + sb + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -703,7 +704,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             sb.append(")");
         }
         if (variableLiteral.getIndex() != VariableLiteral.NO_INDEX) {
-            sb.append("[").append(variableLiteral.getIndex()).append("]");
+            sb.append(".get(").append(variableLiteral.getIndex()).append(")");
         }
         return tracer + sb.toString() + variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(child)).orElse("");
     }
@@ -970,10 +971,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         String variableLiteralName = variableLiteral.getName();
         if (variableLiteralName.equals("length")) {
             tracer = tracer.dive("length");
-            return tracer + variableLiteralName + "()" + ((variableLiteral.isIndexed() ? "[" + variableLiteral.getIndex() + "]" : "") +
+            return tracer + variableLiteralName + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
                 variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(child)).orElse(""));
         }
-        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.isIndexed() ? "[" + variableLiteral.getIndex() + "]" : "") +
+        return tracer + "get" + WordUtils.capitalize(variableLiteralName) + "()" + ((variableLiteral.isIndexed() ? ".get(" + variableLiteral.getIndex() + ")" : "") +
             variableLiteral.getChild().map(child -> "." + toVariableExpressionRest(child)).orElse(""));
     }
 
