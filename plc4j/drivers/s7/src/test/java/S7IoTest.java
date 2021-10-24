@@ -29,6 +29,7 @@ import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -222,18 +223,18 @@ public class S7IoTest {
 
         TPKTPacket tpktPacket = new TPKTPacket(
             new COTPPacketData(
-                new COTPParameter[]{new COTPParameterTpduSize(COTPTpduSize.SIZE_4096)},
+                Collections.singletonList(new COTPParameterTpduSize(COTPTpduSize.SIZE_4096)),
                 new S7MessageResponseData(
                     11,
                     new S7ParameterReadVarResponse((short) 1),
                     new S7PayloadReadVarResponse(
-                        new S7VarPayloadDataItem[]{
+                        Collections.singletonList(
                             new S7VarPayloadDataItem(
                                 DataTransportErrorCode.OK,
                                 DataTransportSize.BIT,
                                 new byte[]{0x1}
                             )
-                        }
+                        )
                     ),
                     (short) 0,
                     (short) 0
