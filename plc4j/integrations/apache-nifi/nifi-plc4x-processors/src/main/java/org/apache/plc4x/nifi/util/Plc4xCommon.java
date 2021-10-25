@@ -46,26 +46,21 @@ import org.apache.plc4x.java.api.value.*;
 
 public class Plc4xCommon {
 
+	
+	public static final String PLC4X_RECORD_TIMESTAMP_FIELD_NAME = "ts";
+	
 	/**
-	 * This method could be used to infer output AVRO schema directly from the PlcReadResponse object. 
+	 * This is used to infer output AVRO schema directly from the PlcReadResponse object. 
 	 * And used directly from the RecordPlc4xWriter.writePlcReadResponse() method.
 	 * However, to make sure output schema does not change, it is built from the processor configuration (variable memory addresses).
 	 */
-	
-	//TODO this variable name could be configurable in the future
-	public static final String PLC4X_RECORD_TIMESTAMP_FIELD_NAME = "ts";
-	
-	//TODO please review this method so that it may be better way to map values 
 	public static Schema createSchema(Map<String, ? extends PlcValue> responseDataStructure){
 		//plc and record datatype map
 		final FieldAssembler<Schema> builder = SchemaBuilder.record("PlcReadResponse").namespace("any.data").fields();	
 		String fieldName = null;
 		
 		for (Map.Entry<String, ? extends PlcValue> entry : responseDataStructure.entrySet()) {
-			 
 			fieldName = entry.getKey();
-			
-			//TODO here many PLC values are mapped to string, just because i am not sure about which avro datatype should be used...
 			if (entry.getValue() instanceof PlcBigDecimal) {
 				builder.name(fieldName).type().unionOf().nullBuilder().endNull().and().floatType().endUnion().noDefault(); 				
 			}else if (entry.getValue() instanceof PlcBigInteger) {

@@ -15,31 +15,6 @@ import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.java.spi.values.PlcBYTE;
 import org.apache.plc4x.java.spi.values.PlcBigDecimal;
 import org.apache.plc4x.java.spi.values.PlcBigInteger;
-import org.apache.plc4x.java.spi.values.PlcBitString;
-import org.apache.plc4x.java.spi.values.PlcCHAR;
-import org.apache.plc4x.java.spi.values.PlcDATE;
-import org.apache.plc4x.java.spi.values.PlcDATE_AND_TIME;
-import org.apache.plc4x.java.spi.values.PlcDINT;
-import org.apache.plc4x.java.spi.values.PlcDWORD;
-import org.apache.plc4x.java.spi.values.PlcINT;
-import org.apache.plc4x.java.spi.values.PlcLINT;
-import org.apache.plc4x.java.spi.values.PlcLREAL;
-import org.apache.plc4x.java.spi.values.PlcLTIME;
-import org.apache.plc4x.java.spi.values.PlcLWORD;
-import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcNull;
-import org.apache.plc4x.java.spi.values.PlcREAL;
-import org.apache.plc4x.java.spi.values.PlcSINT;
-import org.apache.plc4x.java.spi.values.PlcSTRING;
-import org.apache.plc4x.java.spi.values.PlcStruct;
-import org.apache.plc4x.java.spi.values.PlcTIME;
-import org.apache.plc4x.java.spi.values.PlcTIME_OF_DAY;
-import org.apache.plc4x.java.spi.values.PlcUDINT;
-import org.apache.plc4x.java.spi.values.PlcUINT;
-import org.apache.plc4x.java.spi.values.PlcULINT;
-import org.apache.plc4x.java.spi.values.PlcUSINT;
-import org.apache.plc4x.java.spi.values.PlcWCHAR;
-import org.apache.plc4x.java.spi.values.PlcWORD;
 import org.junit.jupiter.api.Test;
 
 public class Plc4xSchemaTest {
@@ -49,8 +24,6 @@ public class Plc4xSchemaTest {
     	
     	Map<String, PlcValue> map = new HashMap<String, PlcValue>();
     	Map<String, Object> mapValues = new HashMap<String, Object>();
-    	//Map<String, ? extends PlcValue> map = new HashMap<String, PlcValue>();
-    	
     	
     	Double plcBigDecimalOriginal = 10.0;
     	PlcValue plcBigDecimal = new PlcBigDecimal(new BigDecimal(plcBigDecimalOriginal));
@@ -111,11 +84,6 @@ public class Plc4xSchemaTest {
     	assertEquals(plcBigIntegerOriginal, mr.getAsInt("plcBigInteger"));
     	assertEquals(plcBooleanOriginal, mr.getAsBoolean("plcBoolean"));
     	assertEquals(plcByteOriginal, mr.getAsInt("plcByte").byteValue());
-    	
-    	
-    	
-    	
-
     }
     
     public static void main(String[] args) {

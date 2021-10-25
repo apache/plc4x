@@ -18,7 +18,6 @@ import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
-//https://github.com/apache/nifi/blob/main/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/sql/RecordSqlWriter.java
 public class RecordPlc4xWriter implements Plc4xWriter {
 
 	private final RecordSetWriterFactory recordSetWriterFactory;
@@ -38,15 +37,12 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 
 	@Override
 	public long writePlcReadResponse(PlcReadResponse response, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
-		logger.info("Por aqui 0");
 		if (fullRecordSet == null) {
-			logger.info("Por aqui 1");
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(response, callback);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
 		Map<String, String> empty = new HashMap<>();
         try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, empty)) {
-        	logger.info("Por aqui 2");
             writeResultRef.set(resultSetWriter.write(fullRecordSet));
             if (mimeType == null) {
                 mimeType = resultSetWriter.getMimeType();

@@ -84,10 +84,6 @@
 			<type>nar</type>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.apache.nifi</groupId> <artifactId>nifi-standard-nar</artifactId> 
-			<version>${nifi.version}</version> <type>nar</type> <scope>compile</scope> 
-			</dependency> -->
 		<!-- PLC4X -->
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>

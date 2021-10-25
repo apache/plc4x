@@ -38,8 +38,6 @@ abstract class BasePlc4xProcessor extends AbstractProcessor {
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
         .addValidator(new Plc4xConnectionStringValidator())
-        //.expressionLanguageSupported(ExpressionLanguageScope.FLOWFILE_ATTRIBUTES)
-        //TODO this could be better implemented on a service
         .build();
     
     protected static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
@@ -61,7 +59,6 @@ abstract class BasePlc4xProcessor extends AbstractProcessor {
         .description("An error occurred processing")
         .build();
 
-    //TODO protected could be changed by private with getters
     protected List<PropertyDescriptor> properties;
     protected Set<Relationship> relationships;
   
@@ -114,7 +111,6 @@ abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
-    	//TODO add .evaluateAttributeExpressions()
         connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         addressMap = new HashMap<>();
         PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());

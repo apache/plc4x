@@ -94,14 +94,11 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
 
             final Object value;
             
-            //TODO
             if (rsColumnNames.contains(fieldName)) {
             	value = normalizeValue(readResponse.getAsPlcValue().getValue(fieldName));
             } else {
                 value = null;
             }
-            //TODO we are asuming that record schema is always inferred from request, not writen by the user, so maybe previous lines could be changed by the following one
-           // value = normalizeValue(readResponse.getObject(fieldName));
             
             logger.trace(String.format("Adding %s field value to record.", fieldName));
             values.put(fieldName, value);
