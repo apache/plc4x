@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -63,9 +64,13 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
     }
 
     public T read(String logicalName, ComplexTypeSupplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException {
-        readBuffer.pullContext(logicalName,readerArgs);
+        // TODO: it might be even better if we default to value like in other places... on the other hand a complex type has always a proper logical name so this might be fine like that
+        boolean hasLogicalName = StringUtils.isNotBlank(logicalName);
+        if (hasLogicalName)
+            readBuffer.pullContext(logicalName, readerArgs);
         final T t = complexSupplier.get();
-        readBuffer.closeContext(logicalName,readerArgs);
+        if (hasLogicalName)
+            readBuffer.closeContext(logicalName, readerArgs);
         return t;
     }
 
