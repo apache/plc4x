@@ -473,7 +473,7 @@
         <TPKTPacket>
           <protocolId dataType="uint" bitLength="8">3</protocolId>
           <reserved dataType="uint" bitLength="8">0</reserved>
-          <len dataType="uint" bitLength="16">26</len>
+          <len dataType="uint" bitLength="16">27</len>
           <payload>
             <COTPPacket>
               <headerLength dataType="uint" bitLength="8">2</headerLength>
@@ -490,7 +490,7 @@
                 <reserved dataType="uint" bitLength="16">0</reserved>
                 <tpduReference dataType="uint" bitLength="16">10</tpduReference>
                 <parameterLength dataType="uint" bitLength="16">2</parameterLength>
-                <payloadLength dataType="uint" bitLength="16">5</payloadLength>
+                <payloadLength dataType="uint" bitLength="16">6</payloadLength>
                 <S7MessageResponseData>
                   <errorClass dataType="uint" bitLength="8">0</errorClass>
                   <errorCode dataType="uint" bitLength="8">0</errorCode>
@@ -516,6 +516,7 @@
                         <dataLength dataType="uint" bitLength="16">1</dataLength>
                         <data dataType="byte" bitLength="8">0x01</data>
                         <padding isList="true">
+                          <value dataType="uint" bitLength="8">0</value>
                         </padding>
                       </S7VarPayloadDataItem>
                     </items>

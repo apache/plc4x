@@ -269,12 +269,10 @@
                   <items isList="true">
                     <S7PayloadUserDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="OCTET_STRING">9</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">4</dataLength>
                       <S7PayloadUserDataItemCpuFunctionReadSzlRequest>
@@ -459,14 +457,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -485,14 +481,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -511,14 +505,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -537,14 +529,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -566,13 +556,13 @@
 
   <testcase>
     <name>S7 Read Response</name>
-    <raw>0300002c02f08032030000000b0002001700000404ff0300010100ff0300010100ff0300010100ff03000101</raw>
+    <raw>0300002d02f08032030000000b0002001800000404ff0300010100ff0300010100ff0300010100ff0300010100</raw>
     <root-type>TPKTPacket</root-type>
     <xml>
       <TPKTPacket>
         <protocolId dataType="uint" bitLength="8">3</protocolId>
         <reserved dataType="uint" bitLength="8">0</reserved>
-        <len dataType="uint" bitLength="16">44</len>
+        <len dataType="uint" bitLength="16">45</len>
         <payload>
           <COTPPacket>
             <headerLength dataType="uint" bitLength="8">2</headerLength>
@@ -589,7 +579,7 @@
               <reserved dataType="uint" bitLength="16">0</reserved>
               <tpduReference dataType="uint" bitLength="16">11</tpduReference>
               <parameterLength dataType="uint" bitLength="16">2</parameterLength>
-              <payloadLength dataType="uint" bitLength="16">23</payloadLength>
+              <payloadLength dataType="uint" bitLength="16">24</payloadLength>
               <S7MessageResponseData>
                 <errorClass dataType="uint" bitLength="8">0</errorClass>
                 <errorCode dataType="uint" bitLength="8">0</errorCode>
@@ -605,12 +595,10 @@
                   <items isList="true">
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -620,12 +608,10 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -635,12 +621,10 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -650,16 +634,15 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
                       <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
                       </padding>
                     </S7VarPayloadDataItem>
                   </items>
@@ -712,14 +695,14 @@
   <testcase>
     <name>S7 Write Request</name>
     <raw>
-      0300005a02f08e32010000000e003200170504120a10010001000082000000120a10010001000082000001120a10010001000082000002120a10010001000082000003ff0300010100ff0300010100ff0300010100ff03000101
+      0300005b02f08e32010000000e003200180504120a10010001000082000000120a10010001000082000001120a10010001000082000002120a10010001000082000003ff0300010100ff0300010100ff0300010100ff0300010100
     </raw>
     <root-type>TPKTPacket</root-type>
     <xml>
       <TPKTPacket>
         <protocolId dataType="uint" bitLength="8">3</protocolId>
         <reserved dataType="uint" bitLength="8">0</reserved>
-        <len dataType="uint" bitLength="16">90</len>
+        <len dataType="uint" bitLength="16">91</len>
         <payload>
           <COTPPacket>
             <headerLength dataType="uint" bitLength="8">2</headerLength>
@@ -736,7 +719,7 @@
               <reserved dataType="uint" bitLength="16">0</reserved>
               <tpduReference dataType="uint" bitLength="16">14</tpduReference>
               <parameterLength dataType="uint" bitLength="16">50</parameterLength>
-              <payloadLength dataType="uint" bitLength="16">23</payloadLength>
+              <payloadLength dataType="uint" bitLength="16">24</payloadLength>
               <S7MessageRequest>
               </S7MessageRequest>
               <S7Parameter>
@@ -753,14 +736,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -779,14 +760,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -805,14 +784,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -831,14 +808,12 @@
                             <addressType dataType="uint" bitLength="8">16</addressType>
                             <S7AddressAny>
                               <transportSize>
-                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1
-                                </TransportSize>
+                                <TransportSize dataType="uint" bitLength="8" stringRepresentation="BOOL">1</TransportSize>
                               </transportSize>
                               <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                               <dbNumber dataType="uint" bitLength="16">0</dbNumber>
                               <area>
-                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130
-                                </MemoryArea>
+                                <MemoryArea dataType="uint" bitLength="8" stringRepresentation="OUTPUTS">130</MemoryArea>
                               </area>
                               <reserved dataType="uint" bitLength="5">0</reserved>
                               <byteAddress dataType="uint" bitLength="16">0</byteAddress>
@@ -856,12 +831,10 @@
                   <items isList="true">
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -871,12 +844,10 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -886,12 +857,10 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
@@ -901,16 +870,15 @@
                     </S7VarPayloadDataItem>
                     <S7VarPayloadDataItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                       <transportSize>
-                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3
-                        </DataTransportSize>
+                        <DataTransportSize dataType="uint" bitLength="8" stringRepresentation="BIT">3</DataTransportSize>
                       </transportSize>
                       <dataLength dataType="uint" bitLength="16">1</dataLength>
                       <data dataType="byte" bitLength="8">0x01</data>
                       <padding isList="true">
+                        <value dataType="uint" bitLength="8">0</value>
                       </padding>
                     </S7VarPayloadDataItem>
                   </items>
@@ -964,26 +932,22 @@
                   <items isList="true">
                     <S7VarPayloadStatusItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                     </S7VarPayloadStatusItem>
                     <S7VarPayloadStatusItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                     </S7VarPayloadStatusItem>
                     <S7VarPayloadStatusItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                     </S7VarPayloadStatusItem>
                     <S7VarPayloadStatusItem>
                       <returnCode>
-                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255
-                        </DataTransportErrorCode>
+                        <DataTransportErrorCode dataType="uint" bitLength="8" stringRepresentation="OK">255</DataTransportErrorCode>
                       </returnCode>
                     </S7VarPayloadStatusItem>
                   </items>

@@ -172,17 +172,17 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#-- If this is a count array, we can directly initialize an array with the given size -->
             <#if field.isCountArrayField()>
         // Count array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.class, ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
             <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                 <#if field.isLengthArrayField()>
         // Length array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.class, ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)});
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                 <#elseif field.isTerminatedArrayField()>
         // Terminated array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)})));
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getNonPrimitiveLanguageTypeNameForField(field)}.class, ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)})));
                 </#if>
             </#if>
         </#if>
@@ -527,6 +527,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         writeBuffer.pushContext("${enumField.name}");
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(enumField)}) _value.get${enumField.name?cap_first}();
+        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
         writeBuffer.popContext("${enumField.name}");
         <#break>
     <#case "implicit">

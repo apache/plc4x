@@ -683,11 +683,11 @@
 
 [enum int 8 'TransportSize'(uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO')
     // Bit Strings
-    ['0x01' BOOL             ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x02' BYTE             ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x03' WORD             ['0x04'       , 'W'               , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_WORD'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x04' DWORD            ['0x06'       , 'D'               , '4'                 , 'WORD'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_DWORD'        , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x05' LWORD            ['0x00'       , 'X'               , '8'                 , 'null'                  , 'null'             , 'IEC61131_LWORD'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+    ['0x01' BOOL           ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x02' BYTE           ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x03' WORD           ['0x04'       , 'W'               , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_WORD'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x04' DWORD          ['0x06'       , 'D'               , '4'                 , 'WORD'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_DWORD'        , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x05' LWORD          ['0x00'       , 'X'               , '8'                 , 'null'                  , 'null'             , 'IEC61131_LWORD'        , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
 
     // Integer values
     // INT and UINT moved out of order as the enum constant INT needs to be generated before it's used in java
