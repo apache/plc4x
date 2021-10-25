@@ -30,7 +30,7 @@ import java.util.Arrays;
 public class BenchmarkGeneratedS7 {
 
     public static void main(String[] args) throws Exception {
-        byte[] rData = Hex.decodeHex("0300006702f080320100000001005600000407120a10060001032b84000160120a10020001032b840001a0120a10010001032b840001a9120a10050001032b84000150120a10020001032b84000198120a10040001032b84000140120a10020001032b84000190");
+        byte[] rData = Hex.decodeHex("0300001611e00000000f00c2020100c1020311c0010a");
         long start = System.currentTimeMillis();
         int numRunsParse = 2000000;
         TPKTPacketIO tpktPacketIO = new TPKTPacketIO();

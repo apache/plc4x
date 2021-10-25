@@ -39,7 +39,7 @@
     <module>protocol-test</module>
 
     <module>language-java</module>
-    <module>language-java-old</module>
+    <!--module>language-java-old</module-->
   </modules>
 
   <profiles>

@@ -39,7 +39,7 @@ public class FieldReaderArray<T> implements FieldReader<T> {
         throw new NotImplementedException("use dedicated methods instead");
     }
 
-    public List<T> readFieldCount(String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
+    public List<T> readFieldCount(String logicalName, Class<?> type, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
         if (count > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + count + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
@@ -49,32 +49,32 @@ public class FieldReaderArray<T> implements FieldReader<T> {
         int itemCount = Math.max(0, (int) count);
         List<T> result = new ArrayList<>(itemCount);
         for (int curItem = 0; curItem < itemCount; curItem++) {
-            result.add(dataReader.read("", readerArgs));
+            result.add(dataReader.read(type.getSimpleName(), readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);
         return result;
     }
 
-    public List<T> readFieldLength(String logicalName, DataReader<T> dataReader, int length, WithReaderArgs... readerArgs) throws ParseException {
+    public List<T> readFieldLength(String logicalName, Class<?> type, DataReader<T> dataReader, int length, WithReaderArgs... readerArgs) throws ParseException {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);
         int startPos = dataReader.getPos();
         List<T> result = new ArrayList<>();
         while (dataReader.getPos() < startPos + length) {
-            result.add(dataReader.read("", readerArgs));
+            result.add(dataReader.read(type.getSimpleName(), readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);
         return result;
     }
 
-    public List<T> readFieldTerminated(String logicalName, DataReader<T> dataReader, Supplier<Boolean> termination, WithReaderArgs... readerArgs) throws ParseException {
+    public List<T> readFieldTerminated(String logicalName, Class<?> type, DataReader<T> dataReader, Supplier<Boolean> termination, WithReaderArgs... readerArgs) throws ParseException {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);
         List<T> result = new ArrayList<>();
         while (!termination.get()) {
-            result.add(dataReader.read("", readerArgs));
+            result.add(dataReader.read(type.getSimpleName(), readerArgs));
         }
         dataReader.closeContext(logicalName, readerArgs);
         return result;
