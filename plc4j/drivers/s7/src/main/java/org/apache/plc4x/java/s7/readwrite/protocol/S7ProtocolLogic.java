@@ -85,10 +85,12 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.readwrite.field.S7AckField;
 import org.apache.plc4x.java.s7.readwrite.field.S7SzlField;
 import org.apache.plc4x.java.s7.readwrite.field.S7SubscriptionField;
 import org.apache.plc4x.java.s7.readwrite.io.S7PayloadUserDataItemIO;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.ConversationContext.ContextHandler;
 import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
@@ -837,20 +839,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     userfield.getMemoryArea(),
                     (long) (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))                    
             );
+            i++;
         }
         
         //Length in bytes
         //4+12*items.legth
         int lengthInBytes = 4 + items.length * 12;
-        
+
         S7PayloadUserDataItemCyclicServicesSubscribeRequest payload =
                 new S7PayloadUserDataItemCyclicServicesSubscribeRequest(
                         DataTransportErrorCode.OK,
                         DataTransportSize.OCTET_STRING,
                         lengthInBytes,
                         items.length,
-                        TimeBase.B01SEC,
-                        (short) 1,
+                        s7field.getTimeBase(),
+                        s7field.getMultiplier(),
                         items
                 );
         
@@ -974,7 +977,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             S7PayloadUserDataItemCpuFunctionAlarmAckResponse items =
             (S7PayloadUserDataItemCpuFunctionAlarmAckResponse) 
             payloadItems[0];
-            //String fieldName = (String) plcSubscriptionRequest.getFieldNames().toArray()[0];   
+            //String fieldName = (String) S7PayloadUserDataItemCyclicServicesPush .getFieldNames().toArray()[0];   
             values.put(strField, new ResponseItem(PlcResponseCode.NOT_FOUND, null));              
            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values);  
            
@@ -1039,22 +1042,35 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             ReadBuffer readBuffer = new ReadBufferByteBased(ByteBufUtil.getBytes(rxbuffer));
 
             try {
-                S7PayloadUserDataItem payloaditem = S7PayloadUserDataItemIO.staticParse(readBuffer, 
+                S7PayloadUserDataItem payloaditem = 
+                        S7PayloadUserDataItemIO.staticParse(readBuffer, 
                         (byte) 0x04,
                         (byte) 0x00, 
                         itemparameter.getCpuSubfunction());
+                
+
+                
                 eventqueue.add(payloaditem);
             } catch (Exception ex) {
                 logger.info(ex.toString());
             }                  
             
             PlcResponseCode rescode = (items.getReturnCode() == DataTransportErrorCode.OK) ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
-            values.put(strField, new ResponseItem(rescode, null));     
-            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values); 
+            values.put(strField, new ResponseItem(rescode, null));
+            return new S7PlcSubscriptionResponse(plcSubscriptionRequest,itemparameter.getSequenceNumber(), values); 
             
         }  else if (payloadItems[0] instanceof S7PayloadUserDataItemCyclicServicesSubscribeResponse) {
             
             logger.info("Aqui responde al mensaje CYC...");
+            S7ParameterUserData parameter = (S7ParameterUserData) responseMessage.getParameter();            
+            S7ParameterUserDataItemCPUFunctions msgparameter = (S7ParameterUserDataItemCPUFunctions)
+                    parameter.getItems()[0];
+            
+                S7CyclicEvent cycevent = new S7CyclicEvent(plcSubscriptionRequest,
+                        msgparameter.getSequenceNumber(), 
+                        (S7PayloadUserDataItemCyclicServicesSubscribeResponse) payloadItems[0]); 
+            eventqueue.add(cycevent);       
+            eventqueue.add(cycevent);               
             values.put(strField, new ResponseItem(PlcResponseCode.OK, cycHandle));  
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values);              
         }
@@ -1122,7 +1138,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             eventqueue.add(item);
                         }
                     } else if ((myparameter.getCpuFunctionGroup() == 0x02) && (myparameter.getCpuFunctionType() == 0x00) && (myparameter.getCpuSubfunction() == 0x01)) {
-                        eventqueue.add(s7msg);
+                            S7ParameterUserDataItemCPUFunctions parameteritem = 
+                                    (S7ParameterUserDataItemCPUFunctions)
+                                    ((S7ParameterUserData) parameter).getItems()[0];
+                            
+                            S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
+                            
+                            S7PayloadUserDataItemCyclicServicesPush payloaditem = 
+                                    (S7PayloadUserDataItemCyclicServicesPush)
+                                    payload.getItems()[0];
+                            
+                            S7CyclicEvent cycevent = new S7CyclicEvent(null,
+                                    parameteritem.getSequenceNumber(),
+                                    payloaditem);
+                        eventqueue.add(cycevent);
+                        
                     } else if ((myparameter.getCpuFunctionType() == 0x08) && (myparameter.getCpuSubfunction() == 0x01)) {
 
                     } else if ((myparameter.getCpuFunctionType() == 0x08) && (myparameter.getCpuSubfunction() == 0x04)) {

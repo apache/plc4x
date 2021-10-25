@@ -54,6 +54,7 @@ import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesPush;
 import org.apache.plc4x.java.s7.readwrite.types.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
  * @author cgarcia
  */
 public class S7ProtocolEventLogic implements PlcSubscriber {
-    private final org.slf4j.Logger logger = LoggerFactory.getLogger(S7ProtocolEventLogic.class);
+    private final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(S7ProtocolEventLogic.class);
     
     private final BlockingQueue eventqueue;
     private final BlockingQueue dispachqueue = new ArrayBlockingQueue<>(1024);
@@ -169,22 +170,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                             }
                         } else
                         //TODO: Check parameter for diferentation                            
-                        if ((obj instanceof S7Message) &&
-                                (((S7PayloadUserData) ((S7MessageUserData) obj).getPayload()).getItems()[0] instanceof S7PayloadUserDataItemCyclicServicesPush)){
-                            S7MessageUserData s7msg = (S7MessageUserData) obj;
-                            S7ParameterUserData parameter = (S7ParameterUserData) s7msg.getParameter();
-                            S7ParameterUserDataItemCPUFunctions parameteritem = 
-                                    (S7ParameterUserDataItemCPUFunctions)
-                                    parameter.getItems()[0];
-                            S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-                            
-                            S7PayloadUserDataItemCyclicServicesPush payloaditem = 
-                                    (S7PayloadUserDataItemCyclicServicesPush )
-                                    payload.getItems()[0];
-                            
-                            S7CyclicEvent cycevent = new S7CyclicEvent(parameteritem.getSequenceNumber(),payloaditem);
-                            dispathqueue.add(cycevent);   
-                            
+                        if ((obj instanceof S7CyclicEvent)){
+                                dispathqueue.add(obj);                               
                         } else {
                             S7AlarmEvent alarmevent = new S7AlarmEvent(obj);
                             dispathqueue.add(alarmevent);
@@ -205,7 +192,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     private class EventDispacher implements Runnable {
         private final BlockingQueue dispachqueue; 
         private boolean shutdown = false;
-        private int delay = 5000;  
+        private int delay = 5000;
+        private Object cycDelayedObject = null;
 
         public EventDispacher(BlockingQueue dispachqueue) {
             this.dispachqueue = dispachqueue;
@@ -237,11 +225,17 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
                                 mapConsumers.forEach((x,y) -> y.accept(obj)); 
                             }
-                        }else if (obj instanceof S7CyclicEvent) {
+                        }else if (obj instanceof S7CyclicEvent) {                          
                             if (mapIndex.containsKey(EventType.CYC)) {
                                 Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.CYC);
-                                mapConsumers.forEach((x,y) -> y.accept(obj)); 
-                            }                            
+                                    if (cycDelayedObject != null) {                                                                          
+                                        mapConsumers.forEach((x,y) -> y.accept(cycDelayedObject)); 
+                                        cycDelayedObject = null;
+                                    }                                                                       
+                                    mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                            } else {
+                                cycDelayedObject = obj;
+                            }                           
                         }                         
                     }
                 } catch (Exception ex) {

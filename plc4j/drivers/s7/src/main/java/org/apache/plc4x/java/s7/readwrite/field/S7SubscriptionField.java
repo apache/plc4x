@@ -60,10 +60,30 @@ public class S7SubscriptionField implements PlcField {
     
     //All fields index 9
     private static final Pattern EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN =
-        Pattern.compile("(^CYC(\\((?<timebase>((B01SEC)|(B1SEC)|(B10SEC)):(?<multiplier>[1-99]))\\)):)(((?:,{0,1})(("+ ADDRESS_PATTERN + ")|("+ DATA_BLOCK_ADDRESS_PATTERN +")))+)");      
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(("+ ADDRESS_PATTERN + ")|("+ DATA_BLOCK_ADDRESS_PATTERN +")))+)");      
        
     private static final Pattern EVENT_SUBSCRIPTION_DB_QUERY_PATTERN =     
-        Pattern.compile("(^CYC(\\((?<timebase>((B01SEC)|(B1SEC)|(B10SEC)):(?<multiplier>[1-99]))\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[B]?)(?<byteOffset>\\d{1,7})(\\[(?<numElements>\\d+)]))?)+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>(B01SEC|B1SEC|B10SEC):(?<multiplier>[1-99]))\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
+    
+
+    private static final String MEMORY_AREA = "memoryArea";   
+    private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
+    private static final String BYTE_OFFSET = "byteOffset";
+    private static final String BIT_OFFSET = "bitOffset";    
+    private static final String DATA_TYPE = "dataType";    
+    private static final String NUM_ELEMENTS = "numElements";
+    
+    private static final String BLOCK_NUMBER = "blockNumber";      
+    private static final String TRANSFER_DB_SIZE_CODE = "transferSizeCode";
+    private static final String BYTE_DB_OFFSET = "byteOffset";
+    private static final String BIT_DB_OFFSET = "bitOffset";    
+    private static final String DATA_DB_TYPE = "dataType";    
+    private static final String NUM_DB_ELEMENTS = "numElements";    
+    
+    private static final String STRING_LENGTH = "stringLength";
+    private static final String TIME_BASE = "timeBase";    
+    private static final String TIME_BASE_MULTIPLIER = "multiplier";    
+    
     
     private final S7SubscriptionFieldType fieldtype;
     private final EventType eventtype;
@@ -216,9 +236,11 @@ public class S7SubscriptionField implements PlcField {
         
         {
             Matcher matcher = EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(fieldString);
-            TimeBase tb = null;
-            short multi = 0;
-            if (matcher.matches()){                    
+            if (matcher.matches()){     
+                System.out.println(matcher.group(TIME_BASE) + " : " + matcher.group(TIME_BASE_MULTIPLIER));
+                System.out.println(matcher.group(9));
+                TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
+                short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));
                 S7Field[] myFields = null;
                 String strAddress = matcher.group(9);  
                 String[] fieldAddress = strAddress.split(","); 

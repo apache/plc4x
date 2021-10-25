@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.events;
 
 import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 
 /**
  * Like JMS but different.
@@ -49,6 +50,6 @@ public interface S7Event extends PlcSubscriptionEvent{
     
         
     public Map<String, Object> getMap();
-    
+        
     
 }
