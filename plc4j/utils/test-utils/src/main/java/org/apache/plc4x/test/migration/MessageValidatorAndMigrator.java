@@ -19,6 +19,8 @@
 package org.apache.plc4x.test.migration;
 
 import java.util.Map;
+
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
@@ -44,7 +46,7 @@ public class MessageValidatorAndMigrator {
 
     /**
      * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true.
-     *
+     * <p>
      * Passed options should contain a single 'package' option or 'protocolName' and 'outputFlavor'.
      * In case if package is not specified then protocol name and output flavor (e.g read-write) are
      * used to construct lookup package.
@@ -59,7 +61,7 @@ public class MessageValidatorAndMigrator {
      * @param siteURI         the file which we want to auto migrate
      * @throws DriverTestsuiteException if something goes wrong
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
         validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
@@ -140,10 +142,9 @@ public class MessageValidatorAndMigrator {
                         throw new RuntimeException(ioException);
                     }
                     String indent = TestCasePatcher.determineIndent(content, referenceXmlString);
-                    String searchString = TestCasePatcher.indent(referenceXmlString, indent);
                     String newXml = ((MigrationException) e).newXml;
                     newXml = TestCasePatcher.indent(newXml, indent);
-                    content = StringUtils.replaceOnce(content, searchString, newXml);
+                    content = RegExUtils.replaceFirst(content, TestCasePatcher.getPatternForFragment(referenceXmlString), newXml);
                     try {
                         Files.write(path, content.getBytes(charset));
                     } catch (IOException ioException) {
