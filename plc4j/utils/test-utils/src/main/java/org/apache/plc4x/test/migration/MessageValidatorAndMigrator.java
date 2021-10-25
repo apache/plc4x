@@ -147,7 +147,7 @@ public class MessageValidatorAndMigrator {
                     newXml = TestCasePatcher.indent(newXml, indent);
                     Pattern patternForReferenceXmlString = TestCasePatcher.getPatternForFragment(referenceXmlString);
                     if (!patternForReferenceXmlString.matcher(content).find()) {
-                        throw new RuntimeException("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nCan't match content. Patching won't work..\nTry to copy the above xml manually. \n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        throw new RuntimeException("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nAutomigration failed: Can't match content. Patching won't work..\nTry to copy the above xml manually. \n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     }
                     content = RegExUtils.replaceFirst(content, patternForReferenceXmlString, newXml + "\n");
                     try {
