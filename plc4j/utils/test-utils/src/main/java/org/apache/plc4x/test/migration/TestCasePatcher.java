@@ -45,16 +45,16 @@ public class TestCasePatcher {
 
     private static Pattern getPatternForFragment(String xmlFragment) {
         StringBuilder patternString = new StringBuilder();
-        String[] lines = xmlFragment.split("\n");
+        String[] lines = xmlFragment.split("(\r)?\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             line = StringUtils.replace(line, "\"", "\\\"");
             line = StringUtils.replace(line, ".", "\\.");
             if (i == 0) {
-                patternString.append("([ ]*)").append(line).append("\\n");
+                patternString.append("([ ]*)").append(line).append("(\\r)?\\n");
                 continue;
             }
-            patternString.append("[ ]*").append(line).append("\\n");
+            patternString.append("[ ]*").append(line).append("(\\r)?\\n");
         }
         return Pattern.compile(patternString.toString());
     }
