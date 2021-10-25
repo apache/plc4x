@@ -432,31 +432,35 @@
           <status>
             <Status dataType="uint" bitLength="8" stringRepresentation="NO_ERROR">0</Status>
           </status>
-          <HPAIDataEndpoint>
-            <structureLength dataType="uint" bitLength="8">8</structureLength>
-            <hostProtocolCode>
-              <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
-            </hostProtocolCode>
-            <ipAddress>
-              <IPAddress>
-                <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
-              </IPAddress>
-            </ipAddress>
-            <ipPort dataType="uint" bitLength="16">3671</ipPort>
-          </HPAIDataEndpoint>
-          <ConnectionResponseDataBlock>
-            <structureLength dataType="uint" bitLength="8">4</structureLength>
-            <connectionType dataType="uint" bitLength="8">4</connectionType>
-            <ConnectionResponseDataBlockTunnelConnection>
-              <knxAddress>
-                <KnxAddress>
-                  <mainGroup dataType="uint" bitLength="4">15</mainGroup>
-                  <middleGroup dataType="uint" bitLength="4">15</middleGroup>
-                  <subGroup dataType="uint" bitLength="8">254</subGroup>
-                </KnxAddress>
-              </knxAddress>
-            </ConnectionResponseDataBlockTunnelConnection>
-          </ConnectionResponseDataBlock>
+          <hpaiDataEndpoint>
+            <HPAIDataEndpoint>
+              <structureLength dataType="uint" bitLength="8">8</structureLength>
+              <hostProtocolCode>
+                <HostProtocolCode dataType="uint" bitLength="8" stringRepresentation="IPV4_UDP">1</HostProtocolCode>
+              </hostProtocolCode>
+              <ipAddress>
+                <IPAddress>
+                  <addr dataType="byte" bitLength="32">0xc0a82a0b</addr>
+                </IPAddress>
+              </ipAddress>
+              <ipPort dataType="uint" bitLength="16">3671</ipPort>
+            </HPAIDataEndpoint>
+          </hpaiDataEndpoint>
+          <connectionResponseDataBlock>
+            <ConnectionResponseDataBlock>
+              <structureLength dataType="uint" bitLength="8">4</structureLength>
+              <connectionType dataType="uint" bitLength="8">4</connectionType>
+              <ConnectionResponseDataBlockTunnelConnection>
+                <knxAddress>
+                  <KnxAddress>
+                    <mainGroup dataType="uint" bitLength="4">15</mainGroup>
+                    <middleGroup dataType="uint" bitLength="4">15</middleGroup>
+                    <subGroup dataType="uint" bitLength="8">254</subGroup>
+                  </KnxAddress>
+                </knxAddress>
+              </ConnectionResponseDataBlockTunnelConnection>
+            </ConnectionResponseDataBlock>
+          </connectionResponseDataBlock>
         </ConnectionResponse>
       </KnxNetIpMessage>
     </xml>
