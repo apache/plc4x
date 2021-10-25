@@ -139,6 +139,9 @@ public class MessageValidatorAndMigrator {
                     String content;
                     try {
                         content = new String(Files.readAllBytes(path), charset);
+                        // Make sure this also works on Windows
+                        // (Mainly when using git to check out Windows style and commit in Unix style)
+                        content = content.replaceAll("\r\n", "\n");
                     } catch (IOException ioException) {
                         throw new RuntimeException(ioException);
                     }
@@ -160,6 +163,9 @@ public class MessageValidatorAndMigrator {
             }
         } catch (ParseException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
+        } catch (RuntimeException e) {
+            LOGGER.error("Something wen't wrong: siteURI='{}'", siteURI, e);
+            throw e;
         }
     }
 

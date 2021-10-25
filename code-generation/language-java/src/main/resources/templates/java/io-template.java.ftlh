@@ -145,7 +145,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         int curPos;
 <#list type.fields as field>
 <#switch field.typeName>
-    <#-- TODO: Port this -->
     <#case "array">
         <#assign arrayField = field.asArrayField().orElseThrow()>
 
@@ -357,7 +356,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // ${field.typeName?cap_first} Field
         read${field.typeName?cap_first}Field("reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)});
         <#break>
-    <#-- TODO: Port this -->
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
