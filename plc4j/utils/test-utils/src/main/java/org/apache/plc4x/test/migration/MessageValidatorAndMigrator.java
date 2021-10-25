@@ -39,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MessageValidatorAndMigrator {
 
@@ -144,7 +145,11 @@ public class MessageValidatorAndMigrator {
                     String indent = TestCasePatcher.determineIndent(content, referenceXmlString);
                     String newXml = ((MigrationException) e).newXml;
                     newXml = TestCasePatcher.indent(newXml, indent);
-                    content = RegExUtils.replaceFirst(content, TestCasePatcher.getPatternForFragment(referenceXmlString), newXml);
+                    Pattern patternForReferenceXmlString = TestCasePatcher.getPatternForFragment(referenceXmlString);
+                    if (!patternForReferenceXmlString.matcher(content).find()) {
+                        throw new RuntimeException("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nCan't match content. Patching won't work..\nTry to copy the above xml manually. \n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                    content = RegExUtils.replaceFirst(content, patternForReferenceXmlString, newXml + "\n");
                     try {
                         Files.write(path, content.getBytes(charset));
                     } catch (IOException ioException) {
