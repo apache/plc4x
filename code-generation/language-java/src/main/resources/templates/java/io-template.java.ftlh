@@ -571,7 +571,9 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                 <#if helper.isEnumField(field)>
             ${helper.getWriteBufferWriteMethodCall(optionalField.name, helper.getEnumBaseTypeReference(optionalField.type), "(" + optionalField.name + ".getValue())", optionalField)};
                 <#else>
+            writeBuffer.pushContext("${optionalField.name}");
             ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${optionalField.name});
+            writeBuffer.popContext("${optionalField.name}");
                 </#if>
             </#if>
         }
