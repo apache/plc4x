@@ -61,12 +61,15 @@ public class TestCasePatcher {
     }
 
     /**
-     * Returns a pattern for a xmlFragment which ignores leading indents
+     * Returns a pattern for a xmlFragment which ignores leading indents.
+     * The first group can be used to determine ident.
      *
      * @param xmlFragment the fragment where the pattern should be build for
      * @return the created pattern
      */
     public static Pattern getPatternForFragment(String xmlFragment) {
+        assert xmlFragment != null;
+
         StringBuilder patternString = new StringBuilder();
         String[] lines = xmlFragment.split("\n");
         for (int i = 0; i < lines.length; i++) {
