@@ -192,7 +192,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign namedField = field.asNamedField().orElseThrow()>
 
         // ${field.typeName?cap_first} Field (${namedField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.conditionExpression, parserArguments)});
         <#break>
     <#-- TODO: Port this -->
     <#case "checksum">
