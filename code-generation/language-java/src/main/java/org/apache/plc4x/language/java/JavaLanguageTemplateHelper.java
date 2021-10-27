@@ -379,6 +379,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            int parentParamIndex = -1;
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 List<Term> parentParamTerms = typeDefinition.getParentType().getTypeReference().asComplexTypeReference()
                     .orElseThrow(() -> new IllegalStateException("Shouldn't happen as the parent must be complex"))
@@ -386,6 +387,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     .orElse(Collections.emptyList());
                 ComplexTypeReference parentTypeReference = typeDefinition.getParentType().getTypeReference().asComplexTypeReference().orElseThrow(IllegalStateException::new);
                 for (int i = 0; i < parentParamTerms.size(); i++) {
+                    parentParamIndex++;
                     Term paramTerm = parentParamTerms.get(i);
                     paramsString
                         .append(", (")
@@ -396,6 +398,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
+                if (i <= parentParamIndex) {
+                    // Ignore params that are part of the parent
+                    continue;
+                }
                 Term paramTerm = paramTerms.get(i);
                 paramsString
                     .append(", (")
