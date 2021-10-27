@@ -376,27 +376,39 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            List<Term> parentTerms = typeDefinition.isDiscriminatedChildTypeDefinition() ?
-                typeDefinition.getParentType().getTypeReference().asComplexTypeReference().orElseThrow(
-                    () -> new IllegalStateException("Shouldn't happen as the parent must be complex")).getParams().orElse(Collections.emptyList()) :
-                Collections.emptyList();
-            List<Term> childTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
-            List<Term> allTerms = new ArrayList<>(parentTerms);
-            allTerms.addAll(childTerms);
-            for (int i = 0; i < allTerms.size(); i++) {
-                Term paramTerm = allTerms.get(i);
-                sb.append(", (").append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
-                    .append(") (").append(toParseExpression(null, paramTerm, null)).append(")");
+            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                List<Term> parentParamTerms = typeDefinition.getParentType().getTypeReference().asComplexTypeReference()
+                    .orElseThrow(() -> new IllegalStateException("Shouldn't happen as the parent must be complex"))
+                    .getParams()
+                    .orElse(Collections.emptyList());
+                ComplexTypeReference parentTypeReference = typeDefinition.getParentType().getTypeReference().asComplexTypeReference().orElseThrow(IllegalStateException::new);
+                for (int i = 0; i < parentParamTerms.size(); i++) {
+                    Term paramTerm = parentParamTerms.get(i);
+                    paramsString
+                        .append(", (")
+                        .append(getLanguageTypeNameForTypeReference(getArgumentType(parentTypeReference, i), true))
+                        .append(") (")
+                        .append(toParseExpression(null, paramTerm, null)).append(")");
+                }
+            }
+            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            for (int i = 0; i < paramTerms.size(); i++) {
+                Term paramTerm = paramTerms.get(i);
+                paramsString
+                    .append(", (")
+                    .append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
+                    .append(") (")
+                    .append(toParseExpression(null, paramTerm, null)).append(")");
             }
             String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
-            if(typeDefinition.isDiscriminatedChildTypeDefinition()) {
+            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
                 parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " +
                     getLanguageTypeNameForTypeReference(typeDefinition.getParentType().getTypeReference());
             }
-            return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + sb + "), readBuffer)";
+            return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
