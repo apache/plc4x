@@ -19,22 +19,12 @@
 package org.apache.plc4x.java.opcua.context;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageRequest;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageResponse;
-import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class SecureChannelTransactionManager {
@@ -93,10 +83,10 @@ public class SecureChannelTransactionManager {
         return transactionId;
     }
 
-    public class Transaction {
+    public static class Transaction {
 
-        private Integer transactionId;
-        private Consumer<Integer> consumer;
+        private final Integer transactionId;
+        private final Consumer<Integer> consumer;
 
         public Transaction(Consumer<Integer> consumer, Integer transactionId) {
             this.consumer = consumer;

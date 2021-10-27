@@ -134,7 +134,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             SecureChannel.REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        ReadValueId[] readValueArray = new ReadValueId[request.getFieldNames().size()];
+        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getFieldNames().size());
         Iterator<String> iterator = request.getFieldNames().iterator();
         for (int i = 0; i < request.getFieldNames().size(); i++ ) {
             String fieldName = iterator.next();
@@ -142,22 +142,22 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             NodeId nodeId = generateNodeId(field);
 
-            readValueArray[i] = new ReadValueId(nodeId,
+            readValueArray.add(new ReadValueId(nodeId,
                 0xD,
                 NULL_STRING,
-                new QualifiedName(0, NULL_STRING));
+                new QualifiedName(0, NULL_STRING)));
         }
 
         ReadRequest opcuaReadRequest = new ReadRequest(
             requestHeader,
             0.0d,
             TimestampsToReturn.timestampsToReturnNeither,
-            readValueArray.length,
+            readValueArray.size(),
             readValueArray);
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.valueOf(opcuaReadRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaReadRequest.getIdentifier())),
             null,
             null);
 
@@ -198,11 +198,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             };
 
             /* Functional Consumer example using inner class */
-            Consumer<TimeoutException> timeout = t -> {
-
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
+            // Pass the response back to the application.
+            Consumer<TimeoutException> timeout = future::completeExceptionally;
 
             /* Functional Consumer example using inner class */
             BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
@@ -223,9 +220,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private NodeId generateNodeId(OpcuaField field) {
         NodeId nodeId = null;
         if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.valueOf(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(field.getIdentifier())));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.valueOf(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.parseLong(field.getIdentifier())));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(field.getIdentifier());
             byte[] guidBytes = new byte[16];
@@ -238,196 +235,153 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return nodeId;
     }
 
-    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> fieldNames, DataValue[] results) {
+    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> fieldNames, List<DataValue> results) {
         PlcResponseCode responseCode = PlcResponseCode.OK;
         Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
         int count = 0;
         for ( String field : fieldNames ) {
             PlcValue value = null;
-            if (results[count].getValueSpecified()) {
-                Variant variant = results[count].getValue();
+            if (results.get(count).getValueSpecified()) {
+                Variant variant = results.get(count).getValue();
                 LOGGER.trace("Response of type {}", variant.getClass().toString());
                 if (variant instanceof VariantBoolean) {
                     byte[] array = ((VariantBoolean) variant).getValue();
                     int length = array.length;
                     Boolean[] tmpValue = new Boolean[length];
                     for (int i = 0; i < length; i++) {
-                        if (array[i] == 0) {
-                            tmpValue[i] = false;
-                        } else {
-                            tmpValue[i] = true;
-                        }
+                        tmpValue[i] = array[i] != 0;
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantSByte) {
                     byte[] array = ((VariantSByte) variant).getValue();
-                    int length = array.length;
-                    Byte[] tmpValue = new Byte[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
-                    value = IEC61131ValueHandler.of(tmpValue);
+                    value = IEC61131ValueHandler.of(array);
                 } else if (variant instanceof VariantByte) {
-                    short[] array = ((VariantByte) variant).getValue();
-                    int length = array.length;
-                    Short[] tmpValue = new Short[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Short> array = ((VariantByte) variant).getValue();
+                    Short[] tmpValue = array.toArray(new Short[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantInt16) {
-                    short[] array = ((VariantInt16) variant).getValue();
-                    int length = array.length;
-                    Short[] tmpValue = new Short[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Short> array = ((VariantInt16) variant).getValue();
+                    Short[] tmpValue = array.toArray(new Short[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantUInt16) {
-                    int[] array = ((VariantUInt16) variant).getValue();
-                    int length = array.length;
-                    Integer[] tmpValue = new Integer[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Integer> array = ((VariantUInt16) variant).getValue();
+                    Integer[] tmpValue = array.toArray(new Integer[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantInt32) {
-                    int[] array = ((VariantInt32) variant).getValue();
-                    int length = array.length;
-                    Integer[] tmpValue = new Integer[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Integer> array = ((VariantInt32) variant).getValue();
+                    Integer[] tmpValue = array.toArray(new Integer[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantUInt32) {
-                    long[] array = ((VariantUInt32) variant).getValue();
-                    int length = array.length;
-                    Long[] tmpValue = new Long[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Long> array = ((VariantUInt32) variant).getValue();
+                    Long[] tmpValue = array.toArray(new Long[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantInt64) {
-                    long[] array = ((VariantInt64) variant).getValue();
-                    int length = array.length;
-                    Long[] tmpValue = new Long[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Long> array = ((VariantInt64) variant).getValue();
+                    Long[] tmpValue = array.toArray(new Long[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantUInt64) {
                     value = IEC61131ValueHandler.of(((VariantUInt64) variant).getValue());
                 } else if (variant instanceof VariantFloat) {
-                    float[] array = ((VariantFloat) variant).getValue();
-                    int length = array.length;
-                    Float[] tmpValue = new Float[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Float> array = ((VariantFloat) variant).getValue();
+                    Float[] tmpValue = array.toArray(new Float[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantDouble) {
-                    double[] array = ((VariantDouble) variant).getValue();
-                    int length = array.length;
-                    Double[] tmpValue = new Double[length];
-                    for (int i = 0; i < length; i++) {
-                        tmpValue[i] = array[i];
-                    }
+                    List<Double> array = ((VariantDouble) variant).getValue();
+                    Double[] tmpValue = array.toArray(new Double[0]);
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantString) {
-                    int length = ((VariantString) variant).getValue().length;
-                    PascalString[] stringArray = ((VariantString) variant).getValue();
+                    int length = ((VariantString) variant).getValue().size();
+                    List<PascalString> stringArray = ((VariantString) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray[i].getStringValue();
+                        tmpValue[i] = stringArray.get(i).getStringValue();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantDateTime) {
-                    long[] array = ((VariantDateTime) variant).getValue();
-                    int length = array.length;
+                    List<Long> array = ((VariantDateTime) variant).getValue();
+                    int length = array.size();
                     LocalDateTime[] tmpValue = new LocalDateTime[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array[i])), ZoneOffset.UTC);
+                        tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantGuid) {
-                    GuidValue[] array = ((VariantGuid) variant).getValue();
-                    int length = array.length;
+                    List<GuidValue> array = ((VariantGuid) variant).getValue();
+                    int length = array.size();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
                         //These two data section aren't little endian like the rest.
-                        byte[] data4Bytes = array[i].getData4();
+                        byte[] data4Bytes = array.get(i).getData4();
                         int data4 = 0;
-                        for (int k = 0; k < data4Bytes.length; k++)
-                        {
-                            data4 = (data4 << 8) + (data4Bytes[k] & 0xff);
+                        for (byte data4Byte : data4Bytes) {
+                            data4 = (data4 << 8) + (data4Byte & 0xff);
                         }
-                        byte[] data5Bytes = array[i].getData5();
+                        byte[] data5Bytes = array.get(i).getData5();
                         long data5 = 0;
-                        for (int k = 0; k < data5Bytes.length; k++)
-                        {
-                            data5 = (data5 << 8) + (data5Bytes[k] & 0xff);
+                        for (byte data5Byte : data5Bytes) {
+                            data5 = (data5 << 8) + (data5Byte & 0xff);
                         }
-                        tmpValue[i] = Long.toHexString(array[i].getData1()) + "-" + Integer.toHexString(array[i].getData2()) + "-" + Integer.toHexString(array[i].getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
+                        tmpValue[i] = Long.toHexString(array.get(i).getData1()) + "-" + Integer.toHexString(array.get(i).getData2()) + "-" + Integer.toHexString(array.get(i).getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantXmlElement) {
-                    int length = ((VariantXmlElement) variant).getValue().length;
-                    PascalString[] stringArray = ((VariantXmlElement) variant).getValue();
+                    int length = ((VariantXmlElement) variant).getValue().size();
+                    List<PascalString> strings = ((VariantXmlElement) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray[i].getStringValue();
+                        tmpValue[i] = strings.get(i).getStringValue();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantLocalizedText) {
-                    int length = ((VariantLocalizedText) variant).getValue().length;
-                    LocalizedText[] stringArray = ((VariantLocalizedText) variant).getValue();
+                    int length = ((VariantLocalizedText) variant).getValue().size();
+                    List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = "";
-                        tmpValue[i] += stringArray[i].getLocaleSpecified() ? stringArray[i].getLocale().getStringValue() + "|" : "";
-                        tmpValue[i] += stringArray[i].getTextSpecified() ? stringArray[i].getText().getStringValue() : "";
+                        tmpValue[i] += strings.get(i).getLocaleSpecified() ? strings.get(i).getLocale().getStringValue() + "|" : "";
+                        tmpValue[i] += strings.get(i).getTextSpecified() ? strings.get(i).getText().getStringValue() : "";
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantQualifiedName) {
-                    int length = ((VariantQualifiedName) variant).getValue().length;
-                    QualifiedName[] stringArray = ((VariantQualifiedName) variant).getValue();
+                    int length = ((VariantQualifiedName) variant).getValue().size();
+                    List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = "ns=" + stringArray[i].getNamespaceIndex() + ";s=" + stringArray[i].getName().getStringValue();
+                        tmpValue[i] = "ns=" + strings.get(i).getNamespaceIndex() + ";s=" + strings.get(i).getName().getStringValue();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantExtensionObject) {
-                    int length = ((VariantExtensionObject) variant).getValue().length;
-                    ExtensionObject[] stringArray = ((VariantExtensionObject) variant).getValue();
+                    int length = ((VariantExtensionObject) variant).getValue().size();
+                    List<ExtensionObject> strings = ((VariantExtensionObject) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray[i].toString();
+                        tmpValue[i] = strings.get(i).toString();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantNodeId) {
-                    int length = ((VariantNodeId) variant).getValue().length;
-                    NodeId[] stringArray = ((VariantNodeId) variant).getValue();
+                    int length = ((VariantNodeId) variant).getValue().size();
+                    List<NodeId> strings = ((VariantNodeId) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray[i].toString();
+                        tmpValue[i] = strings.get(i).toString();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 }else if (variant instanceof VariantStatusCode) {
-                    int length = ((VariantStatusCode) variant).getValue().length;
-                    StatusCode[] stringArray = ((VariantStatusCode) variant).getValue();
+                    int length = ((VariantStatusCode) variant).getValue().size();
+                    List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
                     String[] tmpValue = new String[length];
                     for (int i = 0; i < length; i++) {
-                        tmpValue[i] = stringArray[i].toString();
+                        tmpValue[i] = strings.get(i).toString();
                     }
                     value = IEC61131ValueHandler.of(tmpValue);
                 } else if (variant instanceof VariantByteString) {
                     PlcList plcList = new PlcList();
-                    ByteStringArray[] array = ((VariantByteString) variant).getValue();
-                    for (int k = 0; k < array.length; k++) {
-                        int length = array[k].getValue().length;
+                    List<ByteStringArray> array = ((VariantByteString) variant).getValue();
+                    for (ByteStringArray byteStringArray : array) {
+                        int length = byteStringArray.getValue().size();
                         Short[] tmpValue = new Short[length];
                         for (int i = 0; i < length; i++) {
-                            tmpValue[i] = array[k].getValue()[i];
+                            tmpValue[i] = byteStringArray.getValue().get(i);
                         }
                         plcList.add(IEC61131ValueHandler.of(tmpValue));
                     }
@@ -437,12 +391,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     LOGGER.error("Data type - " +  variant.getClass() + " is not supported ");
                 }
             } else {
-                if (results[count].getStatusCode().getStatusCode() == OpcuaStatusCode.BadNodeIdUnknown.getValue()) {
+                if (results.get(count).getStatusCode().getStatusCode() == OpcuaStatusCode.BadNodeIdUnknown.getValue()) {
                     responseCode = PlcResponseCode.NOT_FOUND;
                 } else {
                     responseCode = PlcResponseCode.UNSUPPORTED;
                 }
-                LOGGER.error("Error while reading value from OPC UA server error code:- " + results[count].getStatusCode().toString());
+                LOGGER.error("Error while reading value from OPC UA server error code:- " + results.get(count).getStatusCode().toString());
             }
             count++;
             response.put(field, new ResponseItem<>(responseCode, value));
@@ -489,7 +443,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 for (int i = 0; i < length; i++) {
                     tmpBOOL[i] = valueObject.getIndex(i).getByte();
                 }
-                return new VariantBoolean(length == 1 ? false : true,
+                return new VariantBoolean(length != 1,
                     false,
                     null,
                     null,
@@ -500,11 +454,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "USINT":
             case "UINT8":
             case "BIT8":
-                short[] tmpBYTE = new short[length];
+                List<Short> tmpBYTE = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpBYTE[i] = valueObject.getIndex(i).getByte();
+                    tmpBYTE.add((short) valueObject.getIndex(i).getByte());
                 }
-                return new VariantByte(length == 1 ? false : true,
+                return new VariantByte(length != 1,
                     false,
                     null,
                     null,
@@ -516,7 +470,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 for (int i = 0; i < length; i++) {
                     tmpSINT[i] = valueObject.getIndex(i).getByte();
                 }
-                return new VariantSByte(length == 1 ? false : true,
+                return new VariantSByte(length != 1,
                     false,
                     null,
                     null,
@@ -524,11 +478,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     tmpSINT);
             case "INT":
             case "INT16":
-                short[] tmpINT16 = new short[length];
+                List<Short> tmpINT16 = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpINT16[i] = valueObject.getIndex(i).getShort();
+                    tmpINT16.add(valueObject.getIndex(i).getShort());
                 }
-                return new VariantInt16(length == 1 ? false : true,
+                return new VariantInt16(length != 1,
                     false,
                     null,
                     null,
@@ -538,11 +492,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "UINT16":
             case "WORD":
             case "BITARR16":
-                int[] tmpUINT = new int[length];
+                List<Integer> tmpUINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpUINT[i] = valueObject.getIndex(i).getInt();
+                    tmpUINT.add(valueObject.getIndex(i).getInt());
                 }
-                return new VariantUInt16(length == 1 ? false : true,
+                return new VariantUInt16(length != 1,
                     false,
                     null,
                     null,
@@ -550,11 +504,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     tmpUINT);
             case "DINT":
             case "INT32":
-                int[] tmpDINT = new int[length];
+                List<Integer> tmpDINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpDINT[i] = valueObject.getIndex(i).getInt();
+                    tmpDINT.add(valueObject.getIndex(i).getInt());
                 }
-                return new VariantInt32(length == 1 ? false : true,
+                return new VariantInt32(length != 1,
                     false,
                     null,
                     null,
@@ -564,11 +518,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "UINT32":
             case "DWORD":
             case "BITARR32":
-                long[] tmpUDINT = new long[length];
+                List<Long> tmpUDINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpUDINT[i] = valueObject.getIndex(i).getLong();
+                    tmpUDINT.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantUInt32(length == 1 ? false : true,
+                return new VariantUInt32(length != 1,
                     false,
                     null,
                     null,
@@ -576,11 +530,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     tmpUDINT);
             case "LINT":
             case "INT64":
-                long[] tmpLINT = new long[length];
+                List<Long> tmpLINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpLINT[i] = valueObject.getIndex(i).getLong();
+                    tmpLINT.add(valueObject.getIndex(i).getLong());
                 }
-                return new VariantInt64(length == 1 ? false : true,
+                return new VariantInt64(length != 1,
                     false,
                     null,
                     null,
@@ -590,11 +544,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "UINT64":
             case "LWORD":
             case "BITARR64":
-                BigInteger[] tmpULINT = new BigInteger[length];
+                List<BigInteger> tmpULINT = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpULINT[i] = valueObject.getIndex(i).getBigInteger();
+                    tmpULINT.add(valueObject.getIndex(i).getBigInteger());
                 }
-                return new VariantUInt64(length == 1 ? false : true,
+                return new VariantUInt64(length != 1,
                     false,
                     null,
                     null,
@@ -602,11 +556,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     tmpULINT);
             case "REAL":
             case "FLOAT":
-                float[] tmpREAL = new float[length];
+                List<Float> tmpREAL = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpREAL[i] = valueObject.getIndex(i).getFloat();
+                    tmpREAL.add(valueObject.getIndex(i).getFloat());
                 }
-                return new VariantFloat(length == 1 ? false : true,
+                return new VariantFloat(length != 1,
                     false,
                     null,
                     null,
@@ -614,11 +568,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     tmpREAL);
             case "LREAL":
             case "DOUBLE":
-                double[] tmpLREAL = new double[length];
+                List<Double> tmpLREAL = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpLREAL[i] = valueObject.getIndex(i).getDouble();
+                    tmpLREAL.add(valueObject.getIndex(i).getDouble());
                 }
-                return new VariantDouble(length == 1 ? false : true,
+                return new VariantDouble(length != 1,
                     false,
                     null,
                     null,
@@ -629,23 +583,23 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             case "STRING":
             case "WSTRING":
             case "STRING16":
-                PascalString[] tmpString = new PascalString[length];
+                List<PascalString> tmpString = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
                     String s = valueObject.getIndex(i).getString();
-                    tmpString[i] = new PascalString(s);
+                    tmpString.add(new PascalString(s));
                 }
-                return new VariantString(length == 1 ? false : true,
+                return new VariantString(length != 1,
                     false,
                     null,
                     null,
                     length == 1 ? null : length,
                     tmpString);
             case "DATE_AND_TIME":
-                long[] tmpDateTime = new long[length];
+                List<Long> tmpDateTime = new ArrayList<>(length);
                 for (int i = 0; i < length; i++) {
-                    tmpDateTime[i] = valueObject.getIndex(i).getDateTime().toEpochSecond(ZoneOffset.UTC);
+                    tmpDateTime.add(valueObject.getIndex(i).getDateTime().toEpochSecond(ZoneOffset.UTC));
                 }
-                return new VariantDateTime(length == 1 ? false : true,
+                return new VariantDateTime(length != 1,
                     false,
                     null,
                     null,
@@ -670,7 +624,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             SecureChannel.REQUEST_TIMEOUT_LONG,
             NULL_EXTENSION_OBJECT);
 
-        WriteValue[] writeValueArray = new WriteValue[request.getFieldNames().size()];
+        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getFieldNames().size());
         Iterator<String> iterator = request.getFieldNames().iterator();
         for (int i = 0; i < request.getFieldNames().size(); i++ ) {
             String fieldName = iterator.next();
@@ -678,7 +632,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             NodeId nodeId = generateNodeId(field);
 
-            writeValueArray[i] = new WriteValue(nodeId,
+            writeValueList.set(i, new WriteValue(nodeId,
                 0xD,
                 NULL_STRING,
                 new DataValue(
@@ -693,17 +647,17 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null,
                     null,
                     null,
-                    null));
+                    null)));
         }
 
         WriteRequest opcuaWriteRequest = new WriteRequest(
             requestHeader,
-            writeValueArray.length,
-            writeValueArray);
+            writeValueList.size(),
+            writeValueList);
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.valueOf(opcuaWriteRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(opcuaWriteRequest.getIdentifier())),
             null,
             null);
 
@@ -731,10 +685,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             };
 
             /* Functional Consumer example using inner class */
-            Consumer<TimeoutException> timeout = t -> {
-                // Pass the response back to the application.
-                future.completeExceptionally(t);
-            };
+            // Pass the response back to the application.
+            Consumer<TimeoutException> timeout = future::completeExceptionally;
 
             /* Functional Consumer example using inner class */
             BiConsumer<OpcuaAPU, Throwable> error = (message, t) -> {
@@ -753,11 +705,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     private PlcWriteResponse writeResponse(DefaultPlcWriteRequest request, WriteResponse writeResponse) {
         Map<String, PlcResponseCode> responseMap = new HashMap<>();
-        StatusCode[] results = writeResponse.getResults();
+        List<StatusCode> results = writeResponse.getResults();
         Iterator<String> responseIterator = request.getFieldNames().iterator();
         for (int i = 0; i < request.getFieldNames().size(); i++ ) {
             String fieldName = responseIterator.next();
-            OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results[i].getStatusCode());
+            OpcuaStatusCode statusCode = OpcuaStatusCode.enumForValue(results.get(i).getStatusCode());
             switch (statusCode) {
                 case Good:
                     responseMap.put(fieldName, PlcResponseCode.OK);
@@ -775,11 +727,11 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-            long subscriptionId = -1L;
+            long subscriptionId;
             ArrayList<String> fields = new ArrayList<>( subscriptionRequest.getFieldNames() );
-            long cycleTime = ((DefaultPlcSubscriptionField) subscriptionRequest.getField(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
+            long cycleTime = (subscriptionRequest.getField(fields.get(0))).getDuration().orElse(Duration.ofMillis(1000)).toMillis();
 
             try {
                 CompletableFuture<CreateSubscriptionResponse> subscription = onSubscribeCreateSubscription(cycleTime);
@@ -800,8 +752,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             }
             return new DefaultPlcSubscriptionResponse(subscriptionRequest, values);
         });
-
-        return future;
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
@@ -828,7 +778,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.valueOf(createSubscriptionRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(createSubscriptionRequest.getIdentifier())),
             null,
             null);
 
@@ -902,7 +852,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             final PlcConsumerRegistration consumerRegistration = subscriptionHandle.register(consumer);
             registrations.add(consumerRegistration);
         }
-        return new DefaultPlcConsumerRegistration((PlcSubscriber) this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
+        return new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
     }
 
     @Override

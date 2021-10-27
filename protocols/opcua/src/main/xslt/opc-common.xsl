@@ -224,9 +224,9 @@
                     <xsl:when test="$dataType = 'ExtensionObjectDefinition'">
                         <xsl:variable name="browseName" select="substring-after(@TypeName,':')"/>
                         <xsl:variable name="id" select="number(substring-after($file/node:UANodeSet/node:UADataType[@BrowseName=$browseName]/@NodeId, '=')) + 2"/><xsl:text>
-            </xsl:text>[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>' ['<xsl:value-of select='$id'/>']]
+            </xsl:text>[array <xsl:value-of select="$dataType"/>('"<xsl:value-of select='$id'/>"') '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
             </xsl:when>
-                    <xsl:when test="$dataType = 'ExtensionObject'">[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>' ['true']]
+                    <xsl:when test="$dataType = 'ExtensionObject'">[array <xsl:value-of select="$dataType"/>('true') '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
                     </xsl:when>
                     <xsl:otherwise>[array <xsl:value-of select="$dataType"/>  '<xsl:value-of select="$lowerCaseName"/>' count '<xsl:value-of select="$lowerCaseLengthField"/>']
             </xsl:otherwise>
@@ -247,9 +247,9 @@
             <xsl:when test="$dataType = 'ExtensionObjectDefinition'">
                 <xsl:variable name="browseName" select="substring-after(@TypeName,':')"/>
                 <xsl:variable name="id" select="number(substring-after($file/node:UANodeSet/node:UADataType[@BrowseName=$browseName]/@NodeId, '=')) + 2"/><xsl:text>
-            </xsl:text>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' ['<xsl:value-of select='$id'/>']]
+            </xsl:text>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/>('"<xsl:value-of select='$id'/>"') '<xsl:value-of select="$lowerCaseName"/>']
             </xsl:when>
-            <xsl:when test="$dataType = 'ExtensionObject'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>' ['true']]
+            <xsl:when test="$dataType = 'ExtensionObject'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/>('true') '<xsl:value-of select="$lowerCaseName"/>']
             </xsl:when>
             <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/> '<xsl:value-of select="$lowerCaseName"/>']
             </xsl:otherwise>

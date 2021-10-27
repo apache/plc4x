@@ -62,7 +62,7 @@
     [simple        uint 8  'status']
     [simple        uint 16 'transactionCounter']
     [typeSwitch 'commandCode'
-        ['0x4F' DF1CommandResponseMessageProtectedTypedLogicalRead (uint 16 'payloadLength', uint 8 'status')
+        ['0x4F' DF1CommandResponseMessageProtectedTypedLogicalRead (uint 8 'status')
             [array    uint 8 'data' length 'payloadLength - 8']
         ]
     ]
