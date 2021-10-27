@@ -850,6 +850,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         }
         return thisType.getDiscriminatorCaseToKeyValueMap();
     }
+
     public TypeReference getArgumentType(TypeReference typeReference, int index) {
         Objects.requireNonNull(typeReference, "type reference must not be null");
         ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(() -> new FreemarkerException("Only complex type references supported here."));
