@@ -23,12 +23,11 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.DefaultVariableLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class DefaultTypeDefinition {
 
@@ -49,7 +48,7 @@ public abstract class DefaultTypeDefinition {
     }
 
     public Optional<Term> getAttribute(String attributeName) {
-        if(attributes.containsKey(attributeName)) {
+        if (attributes.containsKey(attributeName)) {
             return Optional.of(attributes.get(attributeName));
         }
         return Optional.empty();
@@ -68,7 +67,13 @@ public abstract class DefaultTypeDefinition {
     }
 
     public TypeReference getTypeReference() {
-        return new DefaultComplexTypeReference(getName(), null);
+        List<Term> params = getParserArguments()
+            .map(arguments -> arguments.stream()
+                .map(argument -> new DefaultVariableLiteral(argument.getName(), null, -1, null))
+                .map(Term.class::cast)
+                .collect(Collectors.toList()))
+            .orElse(null);
+        return new DefaultComplexTypeReference(getName(), params);
     }
 
 }
