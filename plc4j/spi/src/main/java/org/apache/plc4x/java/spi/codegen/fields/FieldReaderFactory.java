@@ -59,8 +59,8 @@ public class FieldReaderFactory {
         return new FieldReaderArray<T>().readFieldTerminated(logicalName, dataReader, termination, readerArgs);
     }
 
-    public static <T> T readAssertField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderAssert<T>().readField(logicalName, dataReader, readerArgs);
+    public static <T> T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
+        return new FieldReaderAssert<T>().readAssertField(logicalName, dataReader, expectedValue, readerArgs);
     }
 
     public static <T> T readChecksumField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
