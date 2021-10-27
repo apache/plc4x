@@ -40,6 +40,7 @@ import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
+import org.apache.plc4x.java.s7.readwrite.Alarm8MessageQueryType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageObjectQueryType;
 import org.apache.plc4x.java.s7.readwrite.AlarmMessageQueryType;
 import org.apache.plc4x.java.s7.readwrite.S7Message;
@@ -47,6 +48,7 @@ import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarm8Query;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadAlarmQuery;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
@@ -167,7 +169,14 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                             for(AlarmMessageObjectQueryType msg:msgs.getMessageObjects()){
                                 S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
                                 dispathqueue.add(alarmevent);
-                            }
+                            }  
+                        }  else
+                        if (obj instanceof S7PayloadAlarm8Query){
+                            Alarm8MessageQueryType msgs = ((S7PayloadAlarm8Query) obj).getAlarmMessage();
+                            for(AlarmMessageObjectQueryType msg:msgs.getMessageObjects()){
+                                S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
+                                dispathqueue.add(alarmevent);
+                            }                                                                                      
                         } else
                         //TODO: Check parameter for diferentation                            
                         if ((obj instanceof S7CyclicEvent)){

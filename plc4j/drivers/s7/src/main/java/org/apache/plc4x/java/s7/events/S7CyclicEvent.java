@@ -40,6 +40,8 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesChangeDrivenPush;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesPush;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCyclicServicesSubscribeResponse;
 
@@ -89,6 +91,27 @@ public class S7CyclicEvent implements S7Event {
         }
     }
     
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
+        this.map = new HashMap();
+        this.timeStamp = Instant.now(); 
+        this.request = request;
+        map.put(Fields.TYPE.name(), "CYCEVENT");         
+        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
+        map.put(Fields.JOBID.name(), jobid);
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());        
+        for (int i=0; i<event.getItemsCount(); i++){
+            map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems()[i].getTransportSize().getValue());
+            byte[] buffer = new byte[event.getItems()[i].getData().length];
+            j = 0;
+            for(short s:event.getItems()[i].getData()){
+                buffer[j] = (byte) s;
+                j ++;
+            }
+            map.put(Fields.DATA_.name()+i, buffer);  
+        }
+    }    
+    
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
         this.map = new HashMap();
         this.timeStamp = Instant.now(); 
@@ -109,7 +132,28 @@ public class S7CyclicEvent implements S7Event {
             map.put(Fields.DATA_.name()+i, buffer); 
         }            
     }
-        
+
+    public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
+        this.map = new HashMap();
+        this.timeStamp = Instant.now(); 
+        this.request = request;
+        map.put(Fields.TYPE.name(), "CYCEVENT");         
+        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
+        map.put(Fields.JOBID.name(), jobid);
+        map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
+        for (int i=0; i<event.getItemsCount(); i++){
+            map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
+            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems()[i].getTransportSize().getValue());
+            byte[] buffer = new byte[event.getItems()[i].getData().length];
+            j = 0;
+            for(short s:event.getItems()[i].getData()){
+                buffer[j] = (byte) s;
+                j ++;
+            }
+            map.put(Fields.DATA_.name()+i, buffer); 
+        }            
+    }    
+    
     @Override
     public Map<String, Object> getMap() {
         return this.map;

@@ -166,9 +166,10 @@ public class S7AlarmEvent implements S7Event {
     public S7AlarmEvent(Object obj) {
         this.map = new HashMap();
         
-        if (obj instanceof AlarmMessageObjectQueryType) {
+        if ((obj instanceof AlarmMessageObjectQueryType)) {
             AlarmMessageObjectQueryType event = (AlarmMessageObjectQueryType) obj;
-            map.put(Fields.EVENT_ID.name(), event.getEventId());  
+            map.put(Fields.EVENT_ID.name(), event.getEventId());
+            
             if (event.getAlarmType() == AlarmType.ALARM_S) {
                 map.put(Fields.TYPE.name(), "ALARMS_QUERY");    
                 map.put(Fields.ASSOCIATED_VALUES.name(), 1); 

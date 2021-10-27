@@ -63,7 +63,7 @@ public class S7SubscriptionField implements PlcField {
         Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(("+ ADDRESS_PATTERN + ")|("+ DATA_BLOCK_ADDRESS_PATTERN +")))+)");      
        
     private static final Pattern EVENT_SUBSCRIPTION_DB_QUERY_PATTERN =     
-        Pattern.compile("(^CYC(\\((?<timeBase>(B01SEC|B1SEC|B10SEC):(?<multiplier>[1-99]))\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
     
 
     private static final String MEMORY_AREA = "memoryArea";   
@@ -213,10 +213,10 @@ public class S7SubscriptionField implements PlcField {
         }
         
         {
-            Matcher matcher = EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(fieldString);
-            TimeBase tb = null;
-            short multi = 0;            
+            Matcher matcher = EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(fieldString);          
             if (matcher.matches()){
+                TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
+                short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));                
                 String strAddress = matcher.group(9);
                 strAddress = strAddress.replaceAll("\\[", ".0:BYTE[");
                 String[] dbAddress = strAddress.split(",");       
@@ -237,8 +237,6 @@ public class S7SubscriptionField implements PlcField {
         {
             Matcher matcher = EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(fieldString);
             if (matcher.matches()){     
-                System.out.println(matcher.group(TIME_BASE) + " : " + matcher.group(TIME_BASE_MULTIPLIER));
-                System.out.println(matcher.group(9));
                 TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
                 short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));
                 S7Field[] myFields = null;

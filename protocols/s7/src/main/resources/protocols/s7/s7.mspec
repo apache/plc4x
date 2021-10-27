@@ -352,6 +352,7 @@
     [array  AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
+//TODO: Apply for S7-300
 [type 'AlarmMessageQueryType' [uint 16 'dataLength']
     [simple uint 8                      'functionId']
     [simple uint 8                      'numberOfObjects']
@@ -359,6 +360,16 @@
     [simple DataTransportSize           'transportSize']
     [const  uint 16                     'DataLength'     '0xFFFF']
     [array  AlarmMessageObjectQueryType 'messageObjects' count   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.countAMOQT", readBuffer, dataLength)' ]
+]
+
+//TODO: Apply for S7-400
+[type 'Alarm8MessageQueryType'
+    [simple uint 8                      'functionId']
+    [simple uint 8                      'numberOfObjects']
+    [simple DataTransportErrorCode      'returnCode']
+    [simple DataTransportSize           'transportSize']
+    [simple  uint 16                     'byteCount']
+    [array  AlarmMessageObjectQueryType 'messageObjects' count   'byteCount / 12' ]
 ]
 
 //TODO: Check for Alarm_8
@@ -470,6 +481,11 @@
             [array AssociatedValueType 'items' count 'itemsCount']
         ]
 
+        ['0x02', '0x00', '0x05' S7PayloadUserDataItemCyclicServicesChangeDrivenPush
+            [simple uint 16 'itemsCount']
+            [array AssociatedQueryValueType 'items' count 'itemsCount']
+        ]
+
         ['0x02', '0x04', '0x01' S7PayloadUserDataItemCyclicServicesSubscribeRequest
             [simple uint 16 'itemsCount']
             [simple TimeBase 'timeBase']
@@ -488,6 +504,14 @@
         ]
 
         ['0x02', '0x08', '0x04' S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
+        ]
+
+        ['0x02', '0x08', '0x05', '0x00' S7PayloadUserDataItemCyclicServicesErrorResponse
+        ]
+
+        ['0x02', '0x08', '0x05'  S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
+            [simple uint 16 'itemsCount']
+            [array AssociatedQueryValueType  'items' count 'itemsCount']
         ]
 
         //USER and SYSTEM Messages
@@ -517,9 +541,17 @@
         ['0x04', '0x00', '0x12' S7PayloadAlarmS
             [simple AlarmMessagePushType 'alarmMessage']
         ]
+
+        //TODO: Only for S7ProtocolLogic call in code. S7-300
         ['0x04', '0x00', '0x13' S7PayloadAlarmQuery [uint 16 'dataLength']
             [simple AlarmMessageQueryType 'alarmMessage' ['dataLength']]
-        ]
+        ]        
+        //TODO: Only for S7ProtocolLogic call in code. S7-400
+        //      The code 0xF0 is not from the controller.
+        ['0x04', '0x00', '0xF0' S7PayloadAlarm8Query
+            [simple Alarm8MessageQueryType 'alarmMessage']
+        ]  
+
         ['0x04', '0x00', '0x16' S7PayloadNotify8
             [simple AlarmMessagePushType 'alarmMessage']
         ]
@@ -902,6 +934,7 @@
     ['0x01' BYALARMTYPE]
     ['0x02' ALARM_8]
     ['0x04' ALARM_S]
+    ['0x09' ALARM_8P] //Under test with S7-400 PLC
 ]
 
 [enum uint 8 'ModeTransitionType'
