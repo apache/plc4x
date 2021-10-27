@@ -34,10 +34,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -380,16 +377,26 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return getDataReaderCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
             StringBuilder sb = new StringBuilder();
-            final ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            final Optional<List<Term>> params = complexTypeReference.getParams();
-            if(params.isPresent()) {
-                final List<Term> paramTerms = params.get();
-                for (int i = 0; i < paramTerms.size(); i++) {
-                    Term paramTerm = paramTerms.get(i);
-                    sb.append(", (").append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true)).append(") (").append(toParseExpression(null, paramTerm, null)).append(")");
-                }
+            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
+            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            List<Term> parentTerms = typeDefinition.isDiscriminatedChildTypeDefinition() ?
+                typeDefinition.getParentType().getTypeReference().asComplexTypeReference().orElseThrow(
+                    () -> new IllegalStateException("Shouldn't happen as the parent must be complex")).getParams().orElse(Collections.emptyList()) :
+                Collections.emptyList();
+            List<Term> childTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            List<Term> allTerms = new ArrayList<>(parentTerms);
+            allTerms.addAll(childTerms);
+            for (int i = 0; i < allTerms.size(); i++) {
+                Term paramTerm = allTerms.get(i);
+                sb.append(", (").append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
+                    .append(") (").append(toParseExpression(null, paramTerm, null)).append(")");
             }
-            return "new DataReaderComplexDefault<>(() -> " + getLanguageTypeNameForTypeReference(typeReference) + "IO.staticParse(readBuffer" + sb + "), readBuffer)";
+            String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
+            if(typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " +
+                    getLanguageTypeNameForTypeReference(typeDefinition.getParentType().getTypeReference());
+            }
+            return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + sb + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -606,7 +613,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return tracer + ((NumericLiteral) literal).getNumber().toString();
         } else if (literal instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
-            return tracer + "\"" + ((StringLiteral) literal).getValue() + "\"";
+            return tracer + ((StringLiteral) literal).getValue();
         } else if (literal instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
             VariableLiteral variableLiteral = (VariableLiteral) literal;

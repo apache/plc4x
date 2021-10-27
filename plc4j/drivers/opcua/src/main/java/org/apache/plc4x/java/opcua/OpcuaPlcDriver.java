@@ -36,8 +36,6 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import io.netty.buffer.ByteBuf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -48,8 +46,6 @@ import java.util.function.ToIntFunction;
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriver.class);
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>tcp))?://" +
                                                                         "(?<transportHost>[\\w.-]+)(:" +

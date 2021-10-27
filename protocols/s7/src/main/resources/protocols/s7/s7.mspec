@@ -84,7 +84,7 @@
         ['0xC3' COTPParameterChecksum
             [simple uint 8 'crc']
         ]
-        ['0xE0' COTPParameterDisconnectAdditionalInformation(uint 8 'rest')
+        ['0xE0' COTPParameterDisconnectAdditionalInformation
             [array byte 'data' count 'rest']
         ]
     ]

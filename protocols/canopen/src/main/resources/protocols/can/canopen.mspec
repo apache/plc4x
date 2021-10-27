@@ -177,7 +177,7 @@
 
 [type 'SDOInitiateUploadResponsePayload' (bit 'expedited', bit 'indicated', uint 2 'size')
     [typeSwitch 'expedited', 'indicated'
-        ['true', 'true' SDOInitiateExpeditedUploadResponse (uint 2 'size')
+        ['true', 'true' SDOInitiateExpeditedUploadResponse
             [array byte 'data' count '4 - size']
             [padding uint 8 'alignment' '0x00' '4 - COUNT(data)']
         ]

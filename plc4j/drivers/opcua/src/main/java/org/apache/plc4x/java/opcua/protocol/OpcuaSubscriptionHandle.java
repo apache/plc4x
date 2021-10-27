@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -63,7 +62,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
 
-    private ConversationContext context;
+    private ConversationContext<OpcuaAPU> context;
 
     public OpcuaSubscriptionHandle(ConversationContext<OpcuaAPU> context, OpcuaProtocolLogic plcSubscriber, SecureChannel channel, PlcSubscriptionRequest subscriptionRequest, Long subscriptionId, long cycleTime) {
         super(plcSubscriber);
@@ -87,7 +86,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     private CompletableFuture<CreateMonitoredItemsResponse> onSubscribeCreateMonitoredItemsRequest()  {
-        MonitoredItemCreateRequest[] requestList = new MonitoredItemCreateRequest[this.fieldNames.size()];
+        List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.fieldNames.size());
         for (int i = 0; i <  this.fieldNames.size(); i++) {
             final DefaultPlcSubscriptionField fieldDefaultPlcSubscription = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldNames.get(i));
 
@@ -127,7 +126,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
                 readValueId, monitoringMode, parameters);
 
-            requestList[i] = request;
+            requestList.set(i, request);
         }
 
         CompletableFuture<CreateMonitoredItemsResponse> future = new CompletableFuture<>();
@@ -144,13 +143,13 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             requestHeader,
             subscriptionId,
             TimestampsToReturn.timestampsToReturnNeither,
-            requestList.length,
+            requestList.size(),
             requestList
         );
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.valueOf(createMonitoredItemsRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(createMonitoredItemsRequest.getIdentifier())),
             null,
             null);
 
@@ -180,7 +179,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     e.printStackTrace();
                     plcSubscriber.onDisconnect(context);
                 }
-                for (MonitoredItemCreateResult result : Arrays.stream(responseMessage.getResults()).toArray(MonitoredItemCreateResult[]::new)) {
+                for (MonitoredItemCreateResult result : responseMessage.getResults().toArray(new MonitoredItemCreateResult[0])) {
                     if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
                         LOGGER.error("Invalid Field {}, subscription created without this field", fieldNames.get((int) result.getMonitoredItemId()));
                     } else {
@@ -230,8 +229,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         LOGGER.trace("Starting Subscription");
         CompletableFuture.supplyAsync(() -> {
             try {
-                LinkedList<SubscriptionAcknowledgement> outstandingAcknowledgements = new LinkedList<>();
-                LinkedList<Long> outstandingRequests = new LinkedList<>();
+                List<ExtensionObjectDefinition> outstandingAcknowledgements = new LinkedList<>();
+                List<Long> outstandingRequests = new LinkedList<>();
                 while (!this.destroy.get()) {
                     long requestHandle = channel.getRequestHandle();
 
@@ -245,13 +244,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             this.revisedCycleTime * 10,
                             OpcuaProtocolLogic.NULL_EXTENSION_OBJECT);
 
-                        //Make a copy of the outstanding requests so it isn't modified while we are putting the ack list together.
-                        LinkedList<Long> outstandingAcknowledgementsSnapshot = (LinkedList<Long>) outstandingAcknowledgements.clone();
-                        SubscriptionAcknowledgement[] acks = new SubscriptionAcknowledgement[outstandingAcknowledgementsSnapshot.size()];
-                        ;
-                        outstandingAcknowledgementsSnapshot.toArray(acks);
-                        int ackLength = outstandingAcknowledgementsSnapshot.size() == 0 ? -1 : outstandingAcknowledgementsSnapshot.size();
-                        outstandingAcknowledgements.removeAll(outstandingAcknowledgementsSnapshot);
+                        //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
+                        List<ExtensionObjectDefinition> acks = Collections.unmodifiableList(outstandingAcknowledgements);
+                        int ackLength = acks.size() == 0 ? -1 : acks.size();
+                        outstandingAcknowledgements.removeAll(acks);
 
                         PublishRequest publishRequest = new PublishRequest(
                             requestHeader,
@@ -261,7 +257,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
                         ExpandedNodeId extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                             false,            //Server Index Specified
-                            new NodeIdFourByte((short) 0, Integer.valueOf(publishRequest.getIdentifier())),
+                            new NodeIdFourByte((short) 0, Integer.parseInt(publishRequest.getIdentifier())),
                             null,
                             null);
 
@@ -304,8 +300,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                         ExtensionObjectDefinition notification = notificationMessage.getBody();
                                         if (notification instanceof DataChangeNotification) {
                                             LOGGER.trace("Found a Data Change notification");
-                                            ExtensionObjectDefinition[] items = ((DataChangeNotification) notification).getMonitoredItems();
-                                            onSubscriptionValue(Arrays.stream(items).toArray(MonitoredItemNotification[]::new));
+                                            List<ExtensionObjectDefinition> items = ((DataChangeNotification) notification).getMonitoredItems();
+                                            onSubscriptionValue(items.toArray(new MonitoredItemNotification[0]));
                                         } else {
                                             LOGGER.warn("Unsupported Notification type");
                                         }
@@ -345,7 +341,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             }
             return null;
         });
-        return;
     }
 
 
@@ -366,8 +361,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             this.revisedCycleTime * 10,
             OpcuaProtocolLogic.NULL_EXTENSION_OBJECT);
 
-        long[] subscriptions = new long[1];
-        subscriptions[0] = subscriptionId;
+        List<Long> subscriptions = new ArrayList<>(1);
+        subscriptions.add(subscriptionId);
         DeleteSubscriptionsRequest deleteSubscriptionrequest = new DeleteSubscriptionsRequest(requestHeader,
             1,
             subscriptions
@@ -375,7 +370,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
         ExpandedNodeId extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.valueOf(deleteSubscriptionrequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(deleteSubscriptionrequest.getIdentifier())),
             null,
             null);
 
@@ -434,19 +429,15 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      */
     private void onSubscriptionValue(MonitoredItemNotification[] values) {
         LinkedHashSet<String> fieldList = new LinkedHashSet<>();
-        DataValue[] dataValues = new DataValue[values.length];
-        int i = 0;
+        List<DataValue> dataValues = new ArrayList<>(values.length);
         for (MonitoredItemNotification value : values) {
             fieldList.add(fieldNames.get((int) value.getClientHandle() - 1));
-            dataValues[i] = value.getValue();
-            i++;
+            dataValues.add(value.getValue());
         }
         Map<String, ResponseItem<PlcValue>> fields = plcSubscriber.readResponse(fieldList, dataValues);
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
 
-        consumers.forEach(plcSubscriptionEventConsumer -> {
-            plcSubscriptionEventConsumer.accept(event);
-        });
+        consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }
 
     /**
@@ -469,9 +460,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private NodeId generateNodeId(OpcuaField field) {
         NodeId nodeId = null;
         if (field.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdTwoByte(Short.valueOf(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(field.getIdentifier())));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.NUMBER_IDENTIFIER) {
-            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.valueOf(field.getIdentifier())));
+            nodeId = new NodeId(new NodeIdNumeric((short) field.getNamespace(), Long.parseLong(field.getIdentifier())));
         } else if (field.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(field.getIdentifier());
             byte[] guidBytes = new byte[16];

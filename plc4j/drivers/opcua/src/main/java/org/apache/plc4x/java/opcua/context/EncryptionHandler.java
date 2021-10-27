@@ -96,8 +96,8 @@ public class EncryptionHandler {
             buf.setPos(tempPos);
             byte[] signature = sign(buf.getBytes(0, unencryptedLength + paddingSize + 1));
             //Write the signature to the end of the buffer
-            for (int i = 0; i < signature.length; i++) {
-                buf.writeByte(signature[i]);
+            for (byte b : signature) {
+                buf.writeByte(b);
             }
             buf.setPos(positionFirstBlock);
             encryptBlock(buf, buf.getBytes(positionFirstBlock, positionFirstBlock + preEncryptedLength));
