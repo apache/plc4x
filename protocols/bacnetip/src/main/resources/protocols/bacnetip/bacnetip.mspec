@@ -353,7 +353,7 @@
         ['DOUBLE' BACnetComplexTagDouble(uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 64 'value']
         ]
-        ['OCTET_STRING' BACnetComplexTagOctetString(uint 32 'actualLength')
+        ['OCTET_STRING' BACnetComplexTagOctetString
             // TODO: The reader expects int but uint32 get's mapped to long so even uint32 would easily overflow...
             [virtual    uint     16                  'actualLengthInBit' 'actualLength * 8']
             [simple     vstring 'actualLengthInBit'  'theString' encoding='ASCII']
@@ -554,27 +554,27 @@
         ]
         ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean
         ]
-        ['APPLICATION_TAGS','0x2' BACnetTagApplicationUnsignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x2' BACnetTagApplicationUnsignedInteger (uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['APPLICATION_TAGS','0x3' BACnetTagApplicationSignedInteger [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x3' BACnetTagApplicationSignedInteger (uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
-        ['APPLICATION_TAGS','0x4' BACnetTagApplicationReal [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x4' BACnetTagApplicationReal (uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 32 'value']
         ]
-        ['APPLICATION_TAGS','0x5' BACnetTagApplicationDouble [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x5' BACnetTagApplicationDouble (uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 64 'value']
         ]
         ['APPLICATION_TAGS','0x6' BACnetTagApplicationOctetString
         ]
         ['APPLICATION_TAGS','0x7' BACnetTagApplicationCharacterString
         ]
-        ['APPLICATION_TAGS','0x8' BACnetTagApplicationBitString [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x8' BACnetTagApplicationBitString (uint 3 'lengthValueType', uint 8 'extLength')
             [simple uint 8 'unusedBits']
             [array int 8 'data' length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
         ]
-        ['APPLICATION_TAGS','0x9' BACnetTagApplicationEnumerated [uint 3 'lengthValueType', uint 8 'extLength']
+        ['APPLICATION_TAGS','0x9' BACnetTagApplicationEnumerated (uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
         ['APPLICATION_TAGS','0xA' BACnetTagApplicationDate
@@ -583,7 +583,7 @@
         ]
         ['APPLICATION_TAGS','0xC' BACnetTagApplicationObjectIdentifier
         ]
-        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext [uint 4 'tagNumber', uint 8 'extTagNumber', uint 3 'lengthValueType', uint 8 'extLength']
+        ['CONTEXT_SPECIFIC_TAGS' BACnetTagContext (uint 4 'tagNumber', uint 8 'extTagNumber', uint 3 'lengthValueType', uint 8 'extLength')
             [array int 8 'data' length '(lengthValueType == 5) ? extLength : lengthValueType']
         ]
     ]
