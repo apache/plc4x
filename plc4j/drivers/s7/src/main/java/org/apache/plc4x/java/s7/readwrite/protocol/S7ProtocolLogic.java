@@ -627,8 +627,39 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     }
                 
                     break;
-                    case CYCLIC_UNSUBSCRIPTION:;
-                    //encodeCycledUnSubscriptionRequest(msg, out);
+                    case CYCLIC_UNSUBSCRIPTION:{
+                        System.out.println("CYCLIC_UNSUBSCRIPTION");
+                        encodeCycledUnSubscriptionRequest(request.getField(fieldName), parameterItems, payloadItems);
+                        txParameters = new S7ParameterUserData(parameterItems.toArray(new S7ParameterUserDataItem[0]));
+                        txPayloads = new S7PayloadUserData(payloadItems.toArray(new S7PayloadUserDataItemCyclicServicesUnsubscribeRequest[0]));                        
+                        
+                        //TODO: Diferent message type in the Payload
+                        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
+                                new S7MessageUserData(tpduId,
+                                        txParameters,
+                                        txPayloads),
+                                true, (short) tpduId)); 
+                        
+                        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+                        transaction.submit(() -> context.sendRequest(tpktPacket)
+                                .onTimeout(new TransactionErrorCallback<>(futures.get(fieldName), transaction))
+                                .onError(new TransactionErrorCallback<>(futures.get(fieldName), transaction))
+                                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                                .check(p -> p.getPayload() instanceof COTPPacketData)
+                                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                                .unwrap(COTPPacket::getPayload)
+                                .check(p -> p.getTpduReference() == tpduId)
+                                .handle(p -> {
+                                    try {
+                                        futures.get(fieldName).complete(p);
+                                    } catch (Exception e) {
+                                        logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
+                                    }
+                                    // Finish the request-transaction.
+                                    transaction.endRequest();
+                                }));                        
+                        
+                    }
                     break;
                     default:;
                 };
@@ -968,10 +999,39 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
   
     
 
-    private void encodeCycledUnSubscriptionRequest(DefaultPlcSubscriptionRequest request,
-                                                List<S7VarRequestParameterItem> parameterItems,
-                                                 List<S7VarPayloadDataItem> payloadItems){
+    private void encodeCycledUnSubscriptionRequest(PlcSubscriptionField  plcfield,
+                                                List<S7ParameterUserDataItem> parameterItems,
+                                                 List<S7PayloadUserDataItem> payloadItems){
+        S7ParameterUserDataItemCPUFunctions parameter = new S7ParameterUserDataItemCPUFunctions(
+                                                                (short) 0x11,   //Method
+                                                                (byte) 0x04,    //FunctionType
+                                                                (byte) 0x02,    //FunctionGroup
+                                                                (short) 0x04,   //SubFunction
+                                                                (short) 0x00,   //SequenceNumber
+                                                                null,   //DataUnitReferenceNumber
+                                                                null,   //LastDataUnit
+                                                                null         //errorCode
+                                                    );
+                                
+        parameterItems.clear();
+        parameterItems.add(parameter);
+        
+        PlcField field = ((DefaultPlcSubscriptionField) plcfield).getPlcField(); 
+        S7SubscriptionField s7field = (S7SubscriptionField) field;
+        
 
+        //TODO:Check CPU type
+        S7PayloadUserDataItemCyclicServicesUnsubscribeRequest payload =
+                new S7PayloadUserDataItemCyclicServicesUnsubscribeRequest (
+                        DataTransportErrorCode.OK,
+                        DataTransportSize.OCTET_STRING,
+                        0x02,
+                        (short) 0x05,
+                        s7field.getAckalarms().get(0).byteValue()
+                );        
+        
+        payloadItems.clear();
+        payloadItems.add(payload);        
     }    
     
     
@@ -1209,6 +1269,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             } else 
                 values.put(strField, new ResponseItem(PlcResponseCode.INTERNAL_ERROR, null));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values);                          
+        } else if (payloadItems[0] instanceof S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) {
+            values.put(strField, new ResponseItem(PlcResponseCode.OK, null));  
+            return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest,values);             
         }
         
         if (responseOk) {

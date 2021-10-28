@@ -494,7 +494,7 @@
         ]
 
         ['0x02', '0x04', '0x04' S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
-            [const   uint 8  'function'  '0x01']
+            [simple  uint 8  'function']
             [simple  uint 8  'jobId']
         ]
 
