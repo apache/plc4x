@@ -485,19 +485,19 @@ public class MessageFormatListener extends MSpecBaseListener {
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
-        // String types need an additional "encoding" field and length expression.
+        // String types need an additional length expression.
         if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
             if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
                 if (ctx.length != null) {
                     Term lengthExpression = getExpressionTerm(ctx.length);
-                    return new DefaultStringTypeReference(simpleBaseType, lengthExpression, "UTF-8");
+                    return new DefaultStringTypeReference(simpleBaseType, lengthExpression);
                 } else {
-                    return new DefaultStringTypeReference(simpleBaseType, null, "UTF-8");
+                    return new DefaultStringTypeReference(simpleBaseType, null);
                 }
             } else {
                 int size = Integer.parseInt(ctx.size.getText());
-                return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size), "UTF-8");
+                return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size));
             }
         }
         switch (simpleBaseType) {

@@ -31,12 +31,12 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
@@ -357,8 +357,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 String stringType = "String";
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                if(!(field.getEncoding().orElse(null) instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                 return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
-                    stringTypeReference.getEncoding() + "\")";
+                    encoding + "\")";
         }
         return "/*TODO: migrate me*/" + "";
     }
@@ -509,8 +513,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case STRING:
             case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                if(!(field.getEncoding().orElse(null) instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                 return "writeBuffer.writeString(\"" + logicalName + "\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList())) + ", \"" +
-                    stringTypeReference.getEncoding() + "\", (String) " + fieldName + "" + writerArgsString + ")";
+                    encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
     }
@@ -631,7 +639,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return tracer + ((NumericLiteral) literal).getNumber().toString();
         } else if (literal instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
-            return tracer + ((StringLiteral) literal).getValue();
+            return tracer + "\"" + ((StringLiteral) literal).getValue() + "\"";
         } else if (literal instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
             VariableLiteral variableLiteral = (VariableLiteral) literal;
@@ -756,7 +764,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
         // Cut off the double-quotes
-        methodName = methodName.substring(1, methodName.length() - 1);
+        //methodName = methodName.substring(1, methodName.length() - 1);
         sb.append(methodName).append("(");
         for (int i = 1; i < arguments.size(); i++) {
             Term arg = arguments.get(i);
@@ -788,9 +796,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                            // Cut off the single quotes.
-                            encoding = encoding.substring(1, encoding.length() - 1);
+                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }
@@ -864,9 +870,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case "length":
                     return tracer + "\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
                 case "encoding":
-                    String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                    // Cut off the single quotes.
-                    encoding = encoding.substring(1, encoding.length() - 1);
+                    String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                     return tracer + "\"" + encoding + "\"";
                 default:
                     return tracer + "";
@@ -911,9 +915,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                                 sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                                 break;
                             case "encoding":
-                                String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                                // Cut off the single quotes.
-                                encoding = encoding.substring(1, encoding.length() - 1);
+                                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
@@ -943,7 +945,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             .asStringLiteral()
             .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
-        methodName = methodName.substring(1, methodName.length() - 1);
+        //methodName = methodName.substring(1, methodName.length() - 1);
         sb.append(methodName).append("(");
         for (int i = 1; i < arguments.size(); i++) {
             Term arg = arguments.get(i);
@@ -975,9 +977,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                             sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                            // Cut off the single quotes.
-                            encoding = encoding.substring(1, encoding.length() - 1);
+                            String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }

@@ -77,7 +77,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void exitStringExpression(ExpressionParser.StringExpressionContext ctx) {
-        parserContexts.peek().add(new DefaultStringLiteral(ctx.getText()));
+        parserContexts.peek().add(new DefaultStringLiteral(ctx.getText().substring(1, ctx.getText().length() - 1)));
     }
 
     @Override

@@ -62,7 +62,7 @@
 [discriminatedType 'MessagePDU' (bit 'response')
     [discriminator string 24            'messageType']
     [typeSwitch 'messageType','response'
-        ['HEL','false'     OpcuaHelloRequest
+        ['"HEL"','false'     OpcuaHelloRequest
             [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'version']
@@ -72,7 +72,7 @@
             [simple          int 32             'maxChunkCount']
             [simple          PascalString       'endpoint']
         ]
-        ['ACK','true'     OpcuaAcknowledgeResponse
+        ['"ACK"','true'     OpcuaAcknowledgeResponse
             [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'version']
@@ -81,7 +81,7 @@
             [simple          int 32             'maxMessageSize']
             [simple          int 32             'maxChunkCount']
         ]
-        ['OPN','false'     OpcuaOpenRequest
+        ['"OPN"','false'     OpcuaOpenRequest
             [simple          string 8           'chunk']
             [implicit        int 32             'messageSize' 'lengthInBytes']
             [simple          int 32             'secureChannelId']
@@ -92,7 +92,7 @@
             [simple          int 32             'requestId']
             [array           byte               'message' count 'messageSize - (endpoint.stringLength == -1 ? 0 : endpoint.stringLength ) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
-       ['OPN','true'     OpcuaOpenResponse
+       ['"OPN"','true'     OpcuaOpenResponse
            [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
@@ -103,7 +103,7 @@
            [simple          int 32             'requestId']
            [array           byte               'message' count 'messageSize - (securityPolicyUri.stringLength == -1 ? 0 : securityPolicyUri.stringLength) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
-       ['CLO','false'     OpcuaCloseRequest
+       ['"CLO"','false'     OpcuaCloseRequest
            [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
@@ -112,7 +112,7 @@
            [simple          int 32             'requestId']
            [simple          ExtensionObject('false')       'message']
        ]
-       ['MSG','false'     OpcuaMessageRequest
+       ['"MSG"','false'     OpcuaMessageRequest
            [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
@@ -121,7 +121,7 @@
            [simple          int 32             'requestId']
            [array           byte               'message' count 'messageSize - 24']
        ]
-       ['MSG','true'     OpcuaMessageResponse
+       ['"MSG"','true'     OpcuaMessageResponse
            [simple          string 8           'chunk']
            [implicit        int 32             'messageSize' 'lengthInBytes']
            [simple          int 32             'secureChannelId']
@@ -178,7 +178,7 @@
 
 [discriminatedType 'ExtensionObjectDefinition' (vstring '-1' 'identifier')
     [typeSwitch 'identifier'
-        ['0' NullExtension
+        ['"0"' NullExtension
         ]
 
         <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[(@BaseType = 'ua:ExtensionObject') and not(@Name = 'UserIdentityToken') and not(@Name = 'PublishedDataSetDataType') and not(@Name = 'DataSetReaderDataType')]">
@@ -187,25 +187,25 @@
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>
 
-        ['811' DataChangeNotification
+        ['"811"' DataChangeNotification
             [implicit int 32 'notificationLength' 'lengthInBytes']
             [simple int 32 'noOfMonitoredItems']
             [array ExtensionObjectDefinition('"808"')  'monitoredItems' count 'noOfMonitoredItems']
             [simple int 32 'noOfDiagnosticInfos']
             [array DiagnosticInfo  'diagnosticInfos' count 'noOfDiagnosticInfos']
         ]
-        ['916' EventNotificationList
+        ['"916"' EventNotificationList
             [implicit int 32 'notificationLength' 'lengthInBytes']
             [simple int 32 'noOfEvents']
             [array ExtensionObjectDefinition('"919"')  'events' count 'noOfEvents']
         ]
-        ['820' StatusChangeNotification
+        ['"820"' StatusChangeNotification
             [implicit int 32 'notificationLength' 'lengthInBytes']
             [simple StatusCode 'status']
             [simple DiagnosticInfo 'diagnosticInfo']
         ]
 
-        ['316' UserIdentityToken
+        ['"316"' UserIdentityToken
             [implicit int 32 'policyLength' 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
             [simple PascalString 'policyId']
             [simple UserIdentityTokenDefinition('policyId.stringValue') 'userIdentityTokenDefinition']
@@ -215,17 +215,17 @@
 
 [discriminatedType 'UserIdentityTokenDefinition' (vstring '-1' 'identifier')
     [typeSwitch 'identifier'
-        ['anonymous' AnonymousIdentityToken
+        ['"anonymous"' AnonymousIdentityToken
         ]
-        ['username' UserNameIdentityToken
+        ['"username"' UserNameIdentityToken
             [simple PascalString 'userName']
             [simple PascalByteString 'password']
             [simple PascalString 'encryptionAlgorithm']
         ]
-        ['certificate' X509IdentityToken
+        ['"certificate"' X509IdentityToken
             [simple PascalByteString 'certificateData']
         ]
-        ['identity' IssuedIdentityToken
+        ['"identity"' IssuedIdentityToken
             [simple PascalByteString 'tokenData']
             [simple PascalString 'encryptionAlgorithm']
         ]
@@ -414,37 +414,37 @@
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
 [enum string 112 'OpcuaDataType' (uint 8 'variantType')
-    ['NULL' NULL ['0']]
-    ['BOOL' BOOL ['1']]
-    ['BYTE' BYTE ['3']]
-    ['SINT' SINT ['2']]
-    ['INT' INT ['4']]
-    ['DINT' DINT ['6']]
-    ['LINT' LINT ['8']]
-    ['USINT' USINT ['3']]
-    ['UINT' UINT ['5']]
-    ['UDINT' UDINT ['7']]
-    ['ULINT' ULINT ['9']]
-    ['REAL' REAL ['10']]
-    ['LREAL' LREAL ['11']]
-    ['TIME' TIME ['1']]
-    ['LTIME' LTIME ['1']]
-    ['DATE' DATE ['1']]
-    ['LDATE' LDATE ['1']]
-    ['TIME_OF_DAY' TIME_OF_DAY ['1']]
-    ['LTIME_OF_DAY' LTIME_OF_DAY ['1']]
-    ['DATE_AND_TIME' DATE_AND_TIME ['13']]
-    ['LDATE_AND_TIME' LDATE_AND_TIME ['1']]
-    ['CHAR' CHAR ['1']]
-    ['WCHAR' WCHAR ['1']]
-    ['STRING' STRING ['12']]
+    ['"NULL"' NULL ['0']]
+    ['"BOOL"' BOOL ['1']]
+    ['"BYTE"' BYTE ['3']]
+    ['"SINT"' SINT ['2']]
+    ['"INT"' INT ['4']]
+    ['"DINT"' DINT ['6']]
+    ['"LINT"' LINT ['8']]
+    ['"USINT"' USINT ['3']]
+    ['"UINT"' UINT ['5']]
+    ['"UDINT"' UDINT ['7']]
+    ['"ULINT"' ULINT ['9']]
+    ['"REAL"' REAL ['10']]
+    ['"LREAL"' LREAL ['11']]
+    ['"TIME"' TIME ['1']]
+    ['"LTIME"' LTIME ['1']]
+    ['"DATE"' DATE ['1']]
+    ['"LDATE"' LDATE ['1']]
+    ['"TIME_OF_DAY"' TIME_OF_DAY ['1']]
+    ['"LTIME_OF_DAY"' LTIME_OF_DAY ['1']]
+    ['"DATE_AND_TIME"' DATE_AND_TIME ['13']]
+    ['"LDATE_AND_TIME"' LDATE_AND_TIME ['1']]
+    ['"CHAR"' CHAR ['1']]
+    ['"WCHAR"' WCHAR ['1']]
+    ['"STRING"' STRING ['12']]
 ]
 
 [enum string 8 'OpcuaIdentifierType'
-    ['s' STRING_IDENTIFIER]
-    ['i' NUMBER_IDENTIFIER]
-    ['g' GUID_IDENTIFIER]
-    ['b' BINARY_IDENTIFIER]
+    ['"s"' STRING_IDENTIFIER]
+    ['"i"' NUMBER_IDENTIFIER]
+    ['"g"' GUID_IDENTIFIER]
+    ['"b"' BINARY_IDENTIFIER]
 ]
 
 

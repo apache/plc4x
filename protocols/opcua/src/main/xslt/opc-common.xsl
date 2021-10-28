@@ -65,7 +65,7 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName] != ''"><xsl:text>
-        </xsl:text>['<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>' </xsl:text><xsl:value-of select='$objectTypeId'/><xsl:text>
+        </xsl:text>['"<xsl:value-of select="number(substring(@NodeId,3)) + 2"/><xsl:text>"' </xsl:text><xsl:value-of select='$objectTypeId'/><xsl:text>
             </xsl:text>
                 <xsl:message><xsl:value-of select="serialize($originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName])"/></xsl:message>
                 <xsl:call-template name="plc4x:parseFields">
