@@ -353,10 +353,10 @@
         ['DOUBLE' BACnetComplexTagDouble(uint 3 'lengthValueType', uint 8 'extLength')
             [simple float 64 'value']
         ]
-        ['OCTET_STRING' BACnetComplexTagOctetString
-            // TODO: The reader expects int but uint32 get's mapped to long so even uint32 would easily overflow...
+        ['OCTET_STRING' BACnetComplexTagOctetString(uint 32 'actualLength')
+            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
             [virtual    uint     16                  'actualLengthInBit' 'actualLength * 8']
-            [simple     vstring 'actualLengthInBit'  'theString' encoding='ASCII']
+            [simple     vstring 'actualLengthInBit'  'theString' encoding='"ASCII"']
         ]
         ['CHARACTER_STRING' BACnetComplexTagCharacterString
         ]

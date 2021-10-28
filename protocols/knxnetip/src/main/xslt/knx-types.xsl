@@ -445,7 +445,7 @@
                         <xsl:when test="$datapointSubtype/knx:Format/knx:String/@Encoding = 'iso-8859-1'">ISO-8859-1</xsl:when>
                     </xsl:choose>
                 </xsl:variable>
-            [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> 'value' encoding='<xsl:value-of select="$encoding"/>']
+            [simple   string <xsl:value-of select="$datapointSubtype/knx:Format/knx:String/@Width"/> 'value' encoding='"<xsl:value-of select="$encoding"/>"']
             </xsl:when>
             <xsl:when test="$datapointSubtype/knx:Format/knx:UnsignedInteger">
                 <xsl:choose>

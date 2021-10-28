@@ -152,7 +152,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             // The actual value change is in the notifications ... iterate through them to get it.
             for (BACnetTagWithContent notification : valueChange.getNotifications()) {
                 // These are value change notifications. Ignore the rest.
-                if (notification.getPropertyIdentifier()[0] == (short) 0x55) {
+                if (notification.getPropertyIdentifier().get(0) == (short) 0x55) {
                     final BACnetTag baCnetTag = notification.getValue();
 
                     // Initialize an enriched version of the PlcStruct.

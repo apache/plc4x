@@ -379,7 +379,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
                     EvaluationHelper.equals(
                     ${helper.toParseExpression(null, discriminatorExpression, parserArguments)},
                     <#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>
-                        ${tracer.dive("discriminatorValueNeedsStringEqualityCheck")}"${discriminatorValue}"
+                        ${tracer.dive("discriminatorValueNeedsStringEqualityCheck")}${discriminatorValue}
                     <#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                         <#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                             ${tracer.dive("isEnumTypeReference")}${helper.getDiscriminatorTypes()[discriminatorExpression.name].asComplexTypeReference().orElseThrow().name}.${discriminatorValue}
