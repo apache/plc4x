@@ -32,7 +32,7 @@ set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BUILD_PHASE test-compile CACHE STRING "Phase of the Maven build we are executing cmake")
 
 # Access the Unity version the maven build is providing us with.
-set(UNITY_VERSION 2.5.0 CACHE STRING "Version of the used Unity test framework")
+set(UNITY_VERSION 2.5.2 CACHE STRING "Version of the used Unity test framework")
 
 # MinGW GCC versions above 4.7 on Windows include inline definitions of these functions
 # If you run into problems, please read this article: https://stackoverflow.com/questions/27853225/is-there-a-way-to-include-stdio-h-but-ignore-some-of-the-functions-therein
