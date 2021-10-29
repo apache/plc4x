@@ -340,13 +340,17 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case STRING:
             case VSTRING:
                 String stringType = "String";
-                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if(!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
-                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+                    VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                    length = toParseExpression(field, vstringTypeReference.getLengthExpression(), null);
+                }
+                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\")";
         }
         return "/*TODO: migrate me*/" + "";
@@ -433,8 +437,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 if (sizeInBits <= 64) return "readDouble(readBuffer, " + sizeInBits + ")";
                 return "readBigDecimal(readBuffer, " + sizeInBits + ")";
             case STRING:
-            case VSTRING:
                 return "readString(readBuffer, " + sizeInBits + ")";
+            case VSTRING:
+                VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                return "readString(readBuffer, " + toParseExpression(null, vstringTypeReference.getLengthExpression(), null) + ")";
         }
         return "";
     }
@@ -497,13 +503,17 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
             case STRING:
             case VSTRING:
-                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if(!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
-                return "writeBuffer.writeString(\"" + logicalName + "\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList())) + ", \"" +
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+                    VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                    length = toSerializationExpression(field, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
+                }
+                return "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
                     encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
@@ -961,8 +971,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     sb.append("(").append(toSerializationExpression(null, manualField.getLengthExpression(), parserArguments)).append(") + ");
                 } else if (type instanceof SimpleTypeReference) {
                     SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
-                    if (simpleTypeReference instanceof StringTypeReference) {
-                        sb.append(toSerializationExpression(null, ((StringTypeReference) simpleTypeReference).getLengthExpression(), parserArguments)).append(" + ");
+                    if (simpleTypeReference instanceof VstringTypeReference) {
+                        sb.append(toSerializationExpression(null, ((VstringTypeReference) simpleTypeReference).getLengthExpression(), parserArguments)).append(" + ");
                     } else {
                         sizeInBits += simpleTypeReference.getSizeInBits();
                     }

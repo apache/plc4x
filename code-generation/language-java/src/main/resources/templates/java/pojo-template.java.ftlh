@@ -215,7 +215,8 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         // Discriminator Field (${discriminatorField.name})
         <#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-            <#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
+            <#if simpleTypeReference.isVstringTypeReference()>
+                <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
         lengthInBits += ${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), parserArguments)};
             <#else>
         lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -259,8 +260,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         if(${optionalField.name} != null) {
         <#if helper.isSimpleTypeReference(optionalField.type)>
             <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
-            <#if helper.getLanguageTypeNameForTypeReference(optionalField.type) = "String">
-            lengthInBits += ${helper.toSerializationExpression(discriminatorField, simpleTypeReference.getLengthExpression(), parserArguments)};
+            <#if simpleTypeReference.isVstringTypeReference()>
+                <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
+            lengthInBits += ${helper.toSerializationExpression(optionalField, vstringTypeReference.getLengthExpression(), parserArguments)};
             <#else>
             lengthInBits += ${simpleTypeReference.sizeInBits};
             </#if>
@@ -293,14 +295,14 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#assign simpleField = field.asSimpleField().orElseThrow()>
 
         // Simple field (${simpleField.name})
-        <#if helper.isSimpleTypeReference(simpleField.type)>
-                <#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "String">
-                    <#assign stringTypeReference = simpleField.type.asStringTypeReference().orElseThrow()>
-        lengthInBits += ${helper.toSerializationExpression(simpleField, stringTypeReference.getLengthExpression(), parserArguments)};
-                <#else>
-                    <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
+        <#if simpleField.type.isSimpleTypeReference()>
+            <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
+            <#if simpleTypeReference.isVstringTypeReference()>
+                <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
+        lengthInBits += ${helper.toSerializationExpression(simpleField, vstringTypeReference.getLengthExpression(), parserArguments)};
+            <#else>
         lengthInBits += ${simpleTypeReference.sizeInBits};
-                </#if>
+            </#if>
         <#elseif helper.isEnumField(field)>
         lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits};
         <#else>
