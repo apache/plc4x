@@ -45,6 +45,7 @@ import java.nio.file.Paths;
 
 /**
  */
+@Disabled("We're getting strange OutOfMemoryErrors from this one")
 public class OpcuaPlcDriverTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
