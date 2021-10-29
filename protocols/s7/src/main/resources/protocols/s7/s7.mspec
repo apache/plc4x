@@ -526,7 +526,7 @@
         // -----------------------------------------
         // Bit
         // -----------------------------------------
-        ['IEC61131_BOOL' BOOL
+        ['"IEC61131_BOOL"' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
@@ -535,19 +535,19 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['IEC61131_BYTE' List
+        ['"IEC61131_BYTE"' List
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['IEC61131_WORD' List
+        ['"IEC61131_WORD"' List
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['IEC61131_DWORD' List
+        ['"IEC61131_DWORD"' List
             [array bit 'value' count '32']
         ]
         // 8 byte (64 bit)
-        ['IEC61131_LWORD' List
+        ['"IEC61131_LWORD"' List
             [array bit 'value' count '64']
         ]
 
@@ -555,58 +555,58 @@
         // Integers
         // -----------------------------------------
         // 8 bit:
-        ['IEC61131_SINT' SINT
+        ['"IEC61131_SINT"' SINT
             [simple int 8 'value']
         ]
-        ['IEC61131_USINT' USINT
+        ['"IEC61131_USINT"' USINT
             [simple uint 8 'value']
         ]
         // 16 bit:
-        ['IEC61131_INT' INT
+        ['"IEC61131_INT"' INT
             [simple int 16 'value']
         ]
-        ['IEC61131_UINT' UINT
+        ['"IEC61131_UINT"' UINT
             [simple uint 16 'value']
         ]
         // 32 bit:
-        ['IEC61131_DINT' DINT
+        ['"IEC61131_DINT"' DINT
             [simple int 32 'value']
         ]
-        ['IEC61131_UDINT' UDINT
+        ['"IEC61131_UDINT"' UDINT
             [simple uint 32 'value']
         ]
         // 64 bit:
-        ['IEC61131_LINT' LINT
+        ['"IEC61131_LINT"' LINT
             [simple int 64 'value']
         ]
-        ['IEC61131_ULINT' ULINT
+        ['"IEC61131_ULINT"' ULINT
             [simple uint 64 'value']
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
-        ['IEC61131_REAL' REAL
+        ['"IEC61131_REAL"' REAL
             [simple float 32  'value']
         ]
-        ['IEC61131_LREAL' LREAL
+        ['"IEC61131_LREAL"' LREAL
             [simple float 64 'value']
         ]
 
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['IEC61131_CHAR' CHAR
+        ['"IEC61131_CHAR"' CHAR
             [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
         ]
-        ['IEC61131_WCHAR' CHAR
+        ['"IEC61131_WCHAR"' CHAR
             [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='"UTF-16"']
         ]
-        ['IEC61131_STRING' STRING
+        ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
             [manual vstring 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
         ]
-        ['IEC61131_WSTRING' STRING
+        ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
             [manual vstring 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
         ]
@@ -615,26 +615,26 @@
         // TIA Date-Formats
         // -----------------------------------------
         // Interpreted as "milliseconds"
-        ['IEC61131_TIME' TIME
+        ['"IEC61131_TIME"' TIME
             [simple uint 32 'value']
         ]
-        //['S7_S5TIME' TIME
+        //['"S7_S5TIME"' TIME
         //    [reserved uint 2  '0x00']
         //    [uint     uint 2  'base']
         //    [simple   uint 12 'value']
         //]
         // Interpreted as "number of nanoseconds"
-        ['IEC61131_LTIME' LTIME
+        ['"IEC61131_LTIME"' LTIME
             [simple uint 64 'value']
         ]
         // Interpreted as "number of days since 1990-01-01"
-        ['IEC61131_DATE' DATE
+        ['"IEC61131_DATE"' DATE
             [simple uint 16 'value']
         ]
-        ['IEC61131_TIME_OF_DAY' TIME_OF_DAY
+        ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
             [simple uint 32 'value']
         ]
-        ['IEC61131_DATE_AND_TIME' DATE_AND_TIME
+        ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
             [simple uint 16 'year']
             [simple uint 8  'month']
             [simple uint 8  'day']

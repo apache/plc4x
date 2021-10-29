@@ -25,112 +25,112 @@
 
 [dataIo 'DataItem'(vstring 'dataType', uint 16 'numberOfValues')
     [typeSwitch 'dataType','numberOfValues'
-        ['BOOL','1' BOOL
+        ['"BOOL"','1' BOOL
             [simple   bit    'value']
         ]
-        ['BOOL' List
+        ['"BOOL"' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['BYTE','1' BYTE
+        ['"BYTE"','1' BYTE
             [simple uint 8 'value']
         ]
-        ['BYTE' List
+        ['"BYTE"' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['WORD','1' WORD
+        ['"WORD"','1' WORD
             [simple uint 16 'value']
         ]
-        ['WORD' List
+        ['"WORD"' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['DWORD','1' DWORD
+        ['"DWORD"','1' DWORD
             [simple uint 32 'value']
         ]
-        ['DWORD' List
+        ['"DWORD"' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['LWORD','1' LWORD
+        ['"LWORD"','1' LWORD
             [simple uint 64 'value']
         ]
-        ['LWORD' List
+        ['"LWORD"' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['SINT','1' SINT
+        ['"SINT"','1' SINT
             [simple int 8 'value']
         ]
-        ['SINT' List
+        ['"SINT"' List
             [array int 8 'value' count 'numberOfValues']
         ]
-        ['INT','1' INT
+        ['"INT"','1' INT
             [simple int 16 'value']
         ]
-        ['INT' List
+        ['"INT"' List
             [array int 16 'value' count 'numberOfValues']
         ]
-        ['DINT','1' DINT
+        ['"DINT"','1' DINT
             [simple int 32 'value']
         ]
-        ['DINT' List
+        ['"DINT"' List
             [array int 32 'value' count 'numberOfValues']
         ]
-        ['LINT','1' LINT
+        ['"LINT"','1' LINT
             [simple int 64 'value']
         ]
-        ['LINT' List
+        ['"LINT"' List
             [array int 64 'value' count 'numberOfValues']
         ]
-        ['USINT','1' USINT
+        ['"USINT"','1' USINT
             [simple uint 8 'value']
         ]
-        ['USINT' List
+        ['"USINT"' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['UINT','1' UINT
+        ['"UINT"','1' UINT
             [simple uint 16 'value']
         ]
-        ['UINT' List
+        ['"UINT"' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['UDINT','1' UDINT
+        ['"UDINT"','1' UDINT
             [simple uint 32 'value']
         ]
-        ['UDINT' List
+        ['"UDINT"' List
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['ULINT','1' ULINT
+        ['"ULINT"','1' ULINT
             [simple uint 64 'value']
         ]
-        ['ULINT' List
+        ['"ULINT"' List
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['REAL','1' REAL
+        ['"REAL"','1' REAL
             [simple float 32  'value']
         ]
-        ['REAL' List
+        ['"REAL"' List
             [array float 32 'value' count 'numberOfValues']
         ]
-        ['LREAL','1' LREAL
+        ['"LREAL"','1' LREAL
             [simple float 64  'value']
         ]
-        ['LREAL' List
+        ['"LREAL"' List
             [array float 64 'value' count 'numberOfValues']
         ]
-        ['CHAR','1' CHAR
+        ['"CHAR"','1' CHAR
             [simple uint 8 'value']
         ]
-        ['CHAR' List
+        ['"CHAR"' List
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['WCHAR','1' WCHAR
+        ['"WCHAR"','1' WCHAR
             [simple uint 16 'value']
         ]
-        ['WCHAR' List
+        ['"WCHAR"' List
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['STRING' STRING
+        ['"STRING"' STRING
             [simple string 255 'value']
         ]
-        ['WSTRING' STRING
+        ['"WSTRING"' STRING
             [simple string 255 'value']
         ]
     ]

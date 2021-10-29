@@ -486,18 +486,12 @@ public class MessageFormatListener extends MSpecBaseListener {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
         // String types need an additional length expression.
-        if ((simpleBaseType == SimpleTypeReference.SimpleBaseType.STRING) ||
-            (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING)) {
-            if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
-                if (ctx.length != null) {
-                    Term lengthExpression = getExpressionTerm(ctx.length);
-                    return new DefaultStringTypeReference(simpleBaseType, lengthExpression);
-                } else {
-                    return new DefaultStringTypeReference(simpleBaseType, null);
-                }
+        if (simpleBaseType == SimpleTypeReference.SimpleBaseType.VSTRING) {
+            if (ctx.length != null) {
+                Term lengthExpression = getExpressionTerm(ctx.length);
+                return new DefaultVstringTypeReference(simpleBaseType, lengthExpression);
             } else {
-                int size = Integer.parseInt(ctx.size.getText());
-                return new DefaultStringTypeReference(simpleBaseType, new DefaultNumericLiteral(size));
+                return new DefaultVstringTypeReference(simpleBaseType, null);
             }
         }
         switch (simpleBaseType) {
@@ -517,6 +511,9 @@ public class MessageFormatListener extends MSpecBaseListener {
                 return new DefaultBooleanTypeReference();
             case BYTE:
                 return new DefaultByteTypeReference();
+            case STRING:
+                int stringSize = Integer.parseInt(ctx.size.getText());
+                return new DefaultStringTypeReference(simpleBaseType, stringSize);
             default:
                 return new DefaultIntegerTypeReference(simpleBaseType, 1);
         }
