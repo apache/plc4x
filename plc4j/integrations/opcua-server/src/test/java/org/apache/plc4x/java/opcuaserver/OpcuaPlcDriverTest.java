@@ -39,6 +39,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 /**
  */
+@Disabled("We're getting strange OutOfMemoryErrors from this one")
 public class OpcuaPlcDriverTest {
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=1;s=Simulated_BOOL";

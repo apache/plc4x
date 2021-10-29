@@ -31,7 +31,6 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -269,21 +268,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    /*public String getArgumentType(TypeReference typeReference, int index) {
-        if(typeReference instanceof ComplexTypeReference) {
-            ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-            if(!getTypeDefinitions().containsKey(complexTypeReference.getName())) {
-                throw new RuntimeException("Could not find definition of complex type " + complexTypeReference.getName());
-            }
-            TypeDefinition complexTypeDefinition = getTypeDefinitions().get(complexTypeReference.getName());
-            if(complexTypeDefinition.getParserArguments().length <= index) {
-                throw new RuntimeException("Type " + complexTypeReference.getName() + " specifies too few parser arguments");
-            }
-            return getLanguageTypeNameForSpecType(complexTypeDefinition.getParserArguments()[index].getType());
-        }
-        return "Hurz";
-    }*/
-
     public int getNumBits(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
@@ -357,10 +341,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 String stringType = "String";
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                if(!(field.getEncoding().orElse(null) instanceof StringLiteral)) {
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if(!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
-                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                String encoding = ((StringLiteral) encodingTerm).getValue();
                 return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + ", \"" +
                     encoding + "\")";
         }
@@ -513,25 +498,16 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case STRING:
             case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                if(!(field.getEncoding().orElse(null) instanceof StringLiteral)) {
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if(!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
-                String encoding = ((StringLiteral) field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"))).getValue();
+                String encoding = ((StringLiteral) encodingTerm).getValue();
                 return "writeBuffer.writeString(\"" + logicalName + "\", " + toSerializationExpression(field, stringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList())) + ", \"" +
                     encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
     }
-
-    /*public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
-        String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
-        languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
-        if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
-            return "readUnsigned" + languageTypeName;
-        } else {
-            return "read" + languageTypeName;
-        }
-    }*/
 
     public String getReservedValue(ReservedField reservedField) {
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType(), true);
@@ -541,53 +517,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
         }
     }
-
-    /*public Collection<ComplexTypeReference> getComplexTypes(ComplexTypeDefinition complexTypeDefinition) {
-        Map<String, ComplexTypeReference> types = new HashMap<>();
-        for (Field field : complexTypeDefinition.getFields()) {
-            if(field instanceof TypedField) {
-                TypedField typedField = (TypedField) field;
-                if(typedField.getType() instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) typedField.getType();
-                    types.put(complexTypeReference.getName(),  complexTypeReference);
-                }
-            } else if(field instanceof SwitchField) {
-                SwitchField switchField = (SwitchField) field;
-                for (DiscriminatedComplexTypeDefinition cas : switchField.getCases()) {
-                    types.put(cas.getName(), new ComplexTypeReference() {
-                        @Override
-                        public String getName() {
-                            return cas.getName();
-                        }
-                    });
-                }
-            }
-        }
-        return types.values();
-    }*/
-
-    /*public Collection<ComplexTypeReference> getEnumTypes(ComplexTypeDefinition complexTypeDefinition) {
-        Map<String, ComplexTypeReference> types = new HashMap<>();
-        for (Field field : complexTypeDefinition.getFields()) {
-            if(field instanceof EnumField) {
-                EnumField enumField = (EnumField) field;
-                if(enumField.getType() instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) enumField.getType();
-                    types.put(complexTypeReference.getName(),  complexTypeReference);
-                }
-            }
-        }
-        for (Field field : complexTypeDefinition.getParentPropertyFields()) {
-            if(field instanceof EnumField) {
-                EnumField enumField = (EnumField) field;
-                if(enumField.getType() instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) enumField.getType();
-                    types.put(complexTypeReference.getName(),  complexTypeReference);
-                }
-            }
-        }
-        return types.values();
-    }*/
 
     public String toAccessExpression(TypedField field, Term term, List<Argument> parserArguments) {
         return toExpression(field, term, variableLiteral -> {
