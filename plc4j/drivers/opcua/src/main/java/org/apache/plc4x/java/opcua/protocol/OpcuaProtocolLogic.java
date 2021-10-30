@@ -611,14 +611,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NULL_EXTENSION_OBJECT);
 
         List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getFieldNames().size());
-        Iterator<String> iterator = request.getFieldNames().iterator();
-        for (int i = 0; i < request.getFieldNames().size(); i++ ) {
-            String fieldName = iterator.next();
+        for (String fieldName : request.getFieldNames()) {
             OpcuaField field = (OpcuaField) request.getField(fieldName);
 
             NodeId nodeId = generateNodeId(field);
 
-            writeValueList.set(i, new WriteValue(nodeId,
+            writeValueList.add(new WriteValue(nodeId,
                 0xD,
                 NULL_STRING,
                 new DataValue(

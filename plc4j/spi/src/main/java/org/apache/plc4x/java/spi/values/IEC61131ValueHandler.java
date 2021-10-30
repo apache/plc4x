@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class IEC61131ValueHandler implements PlcValueHandler {
 
@@ -53,6 +54,10 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         return of(new Object[]{value});
     }
 
+    public static PlcValue of(List<?> value) {
+        return of(value.toArray());
+    }
+
     public static PlcValue of(Object[] values) {
         if (values.length != 1) {
             PlcList list = new PlcList();
@@ -67,6 +72,9 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         }
         if (value instanceof Byte) {
             return PlcSINT.of(value);
+        }
+        if (value instanceof byte[]) {
+            return PlcByteArray.of(value);
         }
         if (value instanceof Short) {
             return PlcINT.of(value);

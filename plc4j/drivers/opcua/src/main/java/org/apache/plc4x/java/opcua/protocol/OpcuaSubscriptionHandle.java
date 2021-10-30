@@ -126,7 +126,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
                 readValueId, monitoringMode, parameters);
 
-            requestList.set(i, request);
+            requestList.add(request);
         }
 
         CompletableFuture<CreateMonitoredItemsResponse> future = new CompletableFuture<>();
