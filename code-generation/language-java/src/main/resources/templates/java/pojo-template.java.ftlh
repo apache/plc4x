@@ -165,7 +165,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 <#-- TODO: use serializer args instead of a fixed bool for one case -->
     public int getLengthInBitsConditional(boolean lastItem) {
         int lengthInBits = <#if type.parentType??>super.getLengthInBitsConditional(lastItem)<#else>0</#if>;
-        ${helper.getLanguageTypeNameForTypeReference(type.typeReference)} _value  = this;
+        ${type.name} _value  = this;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">

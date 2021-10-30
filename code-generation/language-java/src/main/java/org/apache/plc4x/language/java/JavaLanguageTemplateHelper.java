@@ -34,7 +34,10 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -341,12 +344,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 String stringType = "String";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if(!(encodingTerm instanceof StringLiteral)) {
+                if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+                if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, vstringTypeReference.getLengthExpression(), null);
                 }
@@ -372,40 +375,18 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            int parentParamIndex = -1;
+            String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                List<Term> parentParamTerms = typeDefinition.getParentType().getTypeReference().asComplexTypeReference()
-                    .orElseThrow(() -> new IllegalStateException("Shouldn't happen as the parent must be complex"))
-                    .getParams()
-                    .orElse(Collections.emptyList());
-                ComplexTypeReference parentTypeReference = typeDefinition.getParentType().getTypeReference().asComplexTypeReference().orElseThrow(IllegalStateException::new);
-                for (int i = 0; i < parentParamTerms.size(); i++) {
-                    parentParamIndex++;
-                    Term paramTerm = parentParamTerms.get(i);
-                    paramsString
-                        .append(", (")
-                        .append(getLanguageTypeNameForTypeReference(getArgumentType(parentTypeReference, i), true))
-                        .append(") (")
-                        .append(toParseExpression(null, paramTerm, null)).append(")");
-                }
+                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
             }
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
-                if (i <= parentParamIndex) {
-                    // Ignore params that are part of the parent
-                    continue;
-                }
                 Term paramTerm = paramTerms.get(i);
                 paramsString
                     .append(", (")
                     .append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
                     .append(") (")
                     .append(toParseExpression(null, paramTerm, null)).append(")");
-            }
-            String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
-            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " +
-                    getLanguageTypeNameForTypeReference(typeDefinition.getParentType().getTypeReference());
             }
             return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
@@ -504,12 +485,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case STRING:
             case VSTRING:
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if(!(encodingTerm instanceof StringLiteral)) {
+                if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
+                if (simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.VSTRING) {
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toSerializationExpression(field, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
                 }
