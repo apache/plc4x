@@ -23,6 +23,8 @@ import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.io.DF1CommandIO;
 import org.apache.plc4x.java.spi.generation.*;
 
+import java.util.List;
+
 public class DF1Utils {
 
     public static int crcCheck(short destinationAddress, short sourceAddress, DF1Command command) {
@@ -81,7 +83,7 @@ public class DF1Utils {
         }
     }
 
-    public static int dataLength(short[] data) {
+    public static int dataLength(byte[] data) {
         int i = 0;
         for (short dataByte : data) {
             // If a value is 0x10, this has to be duplicated which increases the message size by one.
