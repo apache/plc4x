@@ -66,14 +66,4 @@ public abstract class DefaultTypeDefinition {
         this.parentType = parentType;
     }
 
-    public TypeReference getTypeReference() {
-        List<Term> params = getParserArguments()
-            .map(arguments -> arguments.stream()
-                .map(argument -> new DefaultVariableLiteral(argument.getName(), null, -1, null))
-                .map(Term.class::cast)
-                .collect(Collectors.toList()))
-            .orElse(null);
-        return new DefaultComplexTypeReference(getName(), params);
-    }
-
 }
