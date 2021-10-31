@@ -28,7 +28,7 @@
 
   <artifactId>test-java-df1-driver</artifactId>
 
-  <name>Sandbox: Test Generated Df1 Driver</name>
+  <name>Sandbox: Test Df1 Driver</name>
 
   <dependencies>
     <dependency>
