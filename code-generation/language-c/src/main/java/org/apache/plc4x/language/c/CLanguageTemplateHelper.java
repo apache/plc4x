@@ -27,6 +27,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.function.Function;
 
@@ -523,6 +524,10 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    public String toSpecialParseExpression(TypeDefinition baseType, Field field, Term term, List<Argument> parserArguments) {
+        return toParseExpression(baseType, field, term, parserArguments);
+    }
+
     public String toParseExpression(TypeDefinition baseType, Field field, Term term, List<Argument> parserArguments) {
         return toExpression(baseType, field, term, variableLiteral -> toVariableParseExpression(baseType, field, variableLiteral, parserArguments));
     }
@@ -607,6 +612,10 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             return tracer + toStringLiteralExpression((StringLiteral) term);
         } else if (term instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
+            VariableLiteral variableLiteral = (VariableLiteral) term;
+            if ("curPos".equals(variableLiteral.getName())) {
+                return "(plc4c_spi_read_get_pos(readBuffer) - startPos)";
+            }
             return tracer + toVariableLiteralExpression(baseType, (VariableLiteral) term, variableExpressionGenerator, tracer);
         } else {
             throw new FreemarkerException("Unsupported Literal type " + term.getClass().getName());
@@ -680,12 +689,20 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
 
         // Try to find the type of the addressed property.
-        final Optional<TypeReference> propertyTypeOptional =
+        Optional<TypeReference> propertyTypeOptional =
             getTypeReferenceForProperty((ComplexTypeDefinition) baseType, name);
 
         // If we couldn't find the type, we didn't find the property.
         if (!propertyTypeOptional.isPresent()) {
-            throw new FreemarkerException("Could not find property with name '" + name + "' in type " + baseType.getName());
+            final List<Argument> arguments = baseType.getAllParserArguments().orElse(Collections.emptyList());
+            for (Argument argument : arguments) {
+                if(argument.getName().equals(name)) {
+                    propertyTypeOptional = Optional.of(argument.getType());
+                }
+            }
+            if(!propertyTypeOptional.isPresent()) {
+                throw new FreemarkerException("Could not find property with name '" + name + "' in type " + baseType.getName());
+            }
         }
 
         final TypeReference propertyType = propertyTypeOptional.get();
@@ -734,7 +751,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private String toTypeVariableParseExpression(Field field, VariableLiteral variableLiteral, Tracer tracer) {
         tracer = tracer.dive("type");
-        if ((variableLiteral.getChild().isPresent()) && "encoding".equals(variableLiteral.getChild().get().getName()) && (field instanceof TypedField) && (((TypedField) field).getType() instanceof StringTypeReference)) {
+        if (variableLiteral.getChild().isPresent() && "encoding".equals(variableLiteral.getChild().get().getName()) && (field instanceof TypedField) && ((((TypedField) field).getType() instanceof StringTypeReference) || (((TypedField) field).getType() instanceof VstringTypeReference))) {
             // TODO: replace with map join
             final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
             if (!(encodingTerm instanceof StringLiteral)) {
@@ -837,7 +854,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         String functionName = ((StringLiteral) terms.get(0)).getValue();
         // We'll cut off the java package structure and just take the segment after the last "."
-        functionName = functionName.substring(functionName.lastIndexOf('.') + 1, functionName.length() - 1);
+        functionName = functionName.substring(functionName.lastIndexOf('.') + 1);
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));
         if (terms.size() > 1) {
@@ -925,8 +942,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         throw new RuntimeException("Encoding must be a quoted string value");
                     }
                     String encoding = ((StringLiteral) encodingTerm).getValue();
-                    // Cut off the single quotes.
-                    encoding = encoding.substring(1, encoding.length() - 1);
                     return tracer + "\"" + encoding + "\"";
                 default:
                     return tracer + "";
@@ -1020,8 +1035,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                     throw new RuntimeException("Encoding must be a quoted string value");
                                 }
                                 String encoding = ((StringLiteral) encodingTerm).getValue();
-                                // Cut off the single quotes.
-                                encoding = encoding.substring(1, encoding.length() - 1);
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
@@ -1049,7 +1062,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         String functionName = ((StringLiteral) args.get(0)).getValue();
         // We'll cut off the java package structure and just take the segment after the last "."
-        functionName = functionName.substring(functionName.lastIndexOf('.') + 1, functionName.length() - 1);
+        functionName = functionName.substring(functionName.lastIndexOf('.') + 1);
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));
         sb.append("(");
@@ -1103,8 +1116,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 throw new RuntimeException("Encoding must be a quoted string value");
                             }
                             String encoding = ((StringLiteral) encodingTerm).getValue();
-                            // Cut off the single quotes.
-                            encoding = encoding.substring(1, encoding.length() - 1);
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }

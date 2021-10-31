@@ -27,7 +27,6 @@
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

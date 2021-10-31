@@ -27,7 +27,6 @@
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
@@ -78,8 +77,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     uint8_t _recordDataLength = recordLength;
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(readBuffer) + _recordDataLength;
     while(plc4c_spi_read_get_pos(readBuffer) < recordDataEndPos) {
-      int8_t _value = 0;
-      _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) &_value);
+      char _value = 0;
+      _res = plc4c_spi_read_char(readBuffer, (char*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -123,8 +122,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     uint8_t itemCount = plc4c_utils_list_size(_message->record_data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
 
-      int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->record_data, curItem);
-      plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+      char* _value = (char*) plc4c_utils_list_get_value(_message->record_data, curItem);
+      plc4c_spi_write_char(writeBuffer, *_value);
     }
   }
 

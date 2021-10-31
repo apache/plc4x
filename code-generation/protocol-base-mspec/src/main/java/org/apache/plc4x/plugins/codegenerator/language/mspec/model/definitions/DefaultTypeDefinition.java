@@ -21,13 +21,9 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.references.DefaultComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.terms.DefaultVariableLiteral;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class DefaultTypeDefinition {
 
@@ -56,6 +52,18 @@ public abstract class DefaultTypeDefinition {
 
     public Optional<List<Argument>> getParserArguments() {
         return Optional.ofNullable(parserArguments);
+    }
+
+    public Optional<List<Argument>> getAllParserArguments() {
+        List<Argument> allArguments = new ArrayList<>();
+        if(getParentType() != null) {
+            final TypeDefinition parentType = getParentType();
+            allArguments.addAll(parentType.getParserArguments().orElse(Collections.emptyList()));
+        }
+        if(parserArguments != null) {
+            allArguments.addAll(parserArguments);
+        }
+        return Optional.of(allArguments);
     }
 
     public TypeDefinition getParentType() {

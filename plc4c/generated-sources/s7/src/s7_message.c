@@ -60,7 +60,6 @@ uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

@@ -124,7 +124,6 @@ plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu_null() {
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* readBuffer, bool response, plc4c_modbus_read_write_modbus_pdu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
@@ -153,13 +152,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if(errorFlag == true) { /* ModbusPDUError */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error;
                     
-    // Enum field (exceptionCode)
-    plc4c_modbus_read_write_modbus_error_code exceptionCode = plc4c_modbus_read_write_modbus_error_code_null();
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &exceptionCode);
+    // Simple Field (exceptionCode)
+    plc4c_modbus_read_write_modbus_error_code* exceptionCode;
+    _res = plc4c_modbus_read_write_modbus_error_code_parse(readBuffer, (void*) &exceptionCode);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->modbus_pdu_error_exception_code = exceptionCode;
+    (*_message)->modbus_pdu_error_exception_code = *exceptionCode;
 
   } else 
   if((errorFlag == false) && (functionFlag == 0x02) && (response == false)) { /* ModbusPDUReadDiscreteInputsRequest */
@@ -207,8 +206,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -263,8 +262,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -361,8 +360,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -439,8 +438,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -495,8 +494,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -593,8 +592,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -689,8 +688,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -723,8 +722,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -1129,8 +1128,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) (byteCount) - (6);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -1166,8 +1165,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
       uint16_t itemCount = (uint16_t) byteCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-        int8_t* _value = malloc(sizeof(int8_t));
-        _res = plc4c_spi_read_signed_byte(readBuffer, 8, (int8_t*) _value);
+        char* _value = malloc(sizeof(char));
+        _res = plc4c_spi_read_char(readBuffer, (char*) _value);
         if(_res != OK) {
           return _res;
         }
@@ -1200,8 +1199,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
-      // Enum field (exceptionCode)
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->modbus_pdu_error_exception_code);
+      // Simple Field (exceptionCode)
+      _res = plc4c_modbus_read_write_modbus_error_code_serialize(writeBuffer, &_message->modbus_pdu_error_exception_code);
       if(_res != OK) {
         return _res;
       }
@@ -1237,8 +1236,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_discrete_inputs_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_discrete_inputs_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_discrete_inputs_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1273,8 +1272,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_coils_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_coils_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_coils_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1337,8 +1336,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_multiple_coils_request_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_coils_request_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_coils_request_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1389,8 +1388,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_input_registers_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_input_registers_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_input_registers_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1425,8 +1424,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_holding_registers_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_holding_registers_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_holding_registers_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1489,8 +1488,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_multiple_holding_registers_request_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_holding_registers_request_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_holding_registers_request_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1549,8 +1548,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_request_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_request_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_request_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1569,8 +1568,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1849,8 +1848,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_get_com_event_log_response_events);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_get_com_event_log_response_events, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_get_com_event_log_response_events, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1873,8 +1872,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_report_server_id_response_value);
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
-          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_report_server_id_response_value, curItem);
-          plc4c_spi_write_signed_byte(writeBuffer, 8, *_value);
+          char* _value = (char*) plc4c_utils_list_get_value(_message->modbus_pdu_report_server_id_response_value, curItem);
+          plc4c_spi_write_char(writeBuffer, *_value);
         }
       }
 
@@ -1910,8 +1909,8 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
   switch(_message->_type) {
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_error: {
 
-      // Enum Field (exceptionCode)
-      lengthInBits += 8;
+      // Simple field (exceptionCode)
+      lengthInBits += plc4c_modbus_read_write_modbus_error_code_length_in_bits(&_message->modbus_pdu_error_exception_code);
 
       break;
     }
