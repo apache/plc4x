@@ -28,7 +28,7 @@
 
   <artifactId>test-java-bacnetip-driver</artifactId>
 
-  <name>Sandbox: Test Generated BACNet/IP Driver</name>
+  <name>Sandbox: Test BACNet/IP Driver</name>
 
   <build>
     <plugins>

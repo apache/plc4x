@@ -409,9 +409,14 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
             case VSTRING:
-                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_read_string(readBuffer, " + toParseExpression(thisType, field, stringTypeReference.getLengthExpression(), null) + ", \"" +
-                    stringTypeReference.getEncoding() + "\"" + ", (char**) " + valueString + ")";
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                return "plc4c_spi_read_string(readBuffer, " + length + ", \"" +
+                    encoding + "\"" + ", (char**) " + valueString + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
@@ -464,9 +469,14 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 throw new FreemarkerException("Unsupported float type with " + floatTypeReference.getSizeInBits() + " bits");
             case STRING:
             case VSTRING:
-                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "plc4c_spi_write_string(writeBuffer, " + toSerializationExpression(thisType, field, stringTypeReference.getLengthExpression(), null) + ", \"" +
-                    stringTypeReference.getEncoding() + "\", " + fieldName + ")";
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                return "plc4c_spi_write_string(writeBuffer, " + length + ", \"" +
+                    encoding + "\", " + fieldName + ")";
             default:
                 throw new FreemarkerException("Unsupported type " + simpleTypeReference.getBaseType().name());
         }
@@ -726,9 +736,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         tracer = tracer.dive("type");
         if ((variableLiteral.getChild().isPresent()) && "encoding".equals(variableLiteral.getChild().get().getName()) && (field instanceof TypedField) && (((TypedField) field).getType() instanceof StringTypeReference)) {
             // TODO: replace with map join
-            TypedField typedField = (TypedField) field;
-            StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
-            return tracer + "\"" + stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) + "\"";
+            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+            if (!(encodingTerm instanceof StringLiteral)) {
+                throw new RuntimeException("Encoding must be a quoted string value");
+            }
+            String encoding = ((StringLiteral) encodingTerm).getValue();
+            return tracer + "\"" + encoding + "\"";
         } else {
             throw new FreemarkerException("_type is currently pretty much hard-coded for some use cases, please check CLanguageTemplateHelper.toVariableParseExpression");
         }
@@ -907,7 +920,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         throw new FreemarkerException("Can only access 'encoding' for string types.");
                     }
                     StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
-                    String encoding = stringTypeReference.getEncoding();
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    if (!(encodingTerm instanceof StringLiteral)) {
+                        throw new RuntimeException("Encoding must be a quoted string value");
+                    }
+                    String encoding = ((StringLiteral) encodingTerm).getValue();
                     // Cut off the single quotes.
                     encoding = encoding.substring(1, encoding.length() - 1);
                     return tracer + "\"" + encoding + "\"";
@@ -998,8 +1015,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 if (!(typedField.getType() instanceof StringTypeReference)) {
                                     throw new FreemarkerException("Can only access 'encoding' for string types.");
                                 }
-                                StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
-                                String encoding = stringTypeReference.getEncoding();
+                                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                                if (!(encodingTerm instanceof StringLiteral)) {
+                                    throw new RuntimeException("Encoding must be a quoted string value");
+                                }
+                                String encoding = ((StringLiteral) encodingTerm).getValue();
                                 // Cut off the single quotes.
                                 encoding = encoding.substring(1, encoding.length() - 1);
                                 sb.append("\"").append(encoding).append("\"");
@@ -1078,8 +1098,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             if (!(typedField.getType() instanceof StringTypeReference)) {
                                 throw new FreemarkerException("Can only access 'encoding' for string types.");
                             }
-                            StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
-                            String encoding = stringTypeReference.getEncoding();
+                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                            if (!(encodingTerm instanceof StringLiteral)) {
+                                throw new RuntimeException("Encoding must be a quoted string value");
+                            }
+                            String encoding = ((StringLiteral) encodingTerm).getValue();
                             // Cut off the single quotes.
                             encoding = encoding.substring(1, encoding.length() - 1);
                             sb.append("\"").append(encoding).append("\"");
