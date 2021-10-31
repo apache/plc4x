@@ -331,8 +331,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING:
             case VSTRING:
-                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + toParseExpression(field, stringTypeReference.getLengthExpression(), null) + "))";
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "))";
         }
         throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
     }
@@ -397,9 +402,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case STRING:
             case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                String encoding = ((stringTypeReference.getEncoding() != null) && (stringTypeReference.getEncoding().length() > 2)) ?
-                    stringTypeReference.getEncoding().substring(1, stringTypeReference.getEncoding().length() - 1) : "UTF-8";
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + toSerializationExpression(field, stringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList())) + "), \"" +
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String length = Integer.toString(simpleTypeReference.getSizeInBits());
+                return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
         }
         throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
@@ -850,9 +859,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                             sb.append("\"").append(((SimpleTypeReference) typeReference).getSizeInBits()).append("\"");
                             break;
                         case "encoding":
-                            String encoding = ((StringTypeReference) typeReference).getEncoding();
-                            // Cut off the single quotes.
-                            encoding = encoding.substring(1, encoding.length() - 1);
+                            final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                            if (!(encodingTerm instanceof StringLiteral)) {
+                                throw new RuntimeException("Encoding must be a quoted string value");
+                            }
+                            String encoding = ((StringLiteral) encodingTerm).getValue();
                             sb.append("\"").append(encoding).append("\"");
                             break;
                     }
@@ -882,9 +893,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .asVariableLiteral()
             .orElseThrow(() -> new RuntimeException("Second argument should be a Variable literal"));
         final TypeDefinition typeDefinition = getTypeDefinitions().get(typeLiteral.getName());
-        TypeReference type = typeDefinition.getTypeReference();
         StringBuilder sb = new StringBuilder();
-        if (type instanceof ComplexTypeReference) {
+        if (typeDefinition.isComplexTypeDefinition()) {
             sb.append("Cast");
         }
         sb.append(typeLiteral.getName());

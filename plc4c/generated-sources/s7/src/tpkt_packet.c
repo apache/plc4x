@@ -33,7 +33,6 @@ uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID() {
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_tpkt_packet** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

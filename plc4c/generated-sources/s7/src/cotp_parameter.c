@@ -56,7 +56,6 @@ plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter_null() {
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* readBuffer, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.

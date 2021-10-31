@@ -33,7 +33,6 @@ uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* readBuffer, bool response, plc4c_modbus_read_write_modbus_tcp_adu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
-  uint16_t curPos;
   plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
