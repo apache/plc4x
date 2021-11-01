@@ -17,9 +17,6 @@
  * under the License.
  */
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
@@ -29,7 +26,6 @@ import org.apache.plc4x.java.spi.generation.ReadBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.ReadBufferXmlBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -167,7 +163,7 @@ public class S7IoTest {
             "                          {\n" +
             "                            \"value__plc4x_dataType\": \"uint\",\n" +
             "                            \"value__plc4x_bitLength\": 8,\n" +
-            "                            \"\": 0\n" +
+            "                            \"value\": 0\n" +
             "                          }\n" +
             "                        ],\n" +
             "                        \"returnCode\": {\n" +

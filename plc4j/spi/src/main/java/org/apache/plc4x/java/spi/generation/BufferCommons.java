@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -35,7 +37,7 @@ public interface BufferCommons {
     String rwIsListKey = "isList";
 
     default String sanitizeLogicalName(String logicalName) {
-        if (logicalName.equals("")) {
+        if (StringUtils.isBlank(logicalName)) {
             return "value";
         }
         return logicalName;
