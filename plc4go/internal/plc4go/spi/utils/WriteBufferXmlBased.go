@@ -147,7 +147,7 @@ func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, valu
 	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint8, encoding string, value string, writerArgs ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error {
 	attr := x.generateAttr(rwStringKey, uint(bitLength), writerArgs...)
 	attr = append(attr, xml.Attr{Name: xml.Name{Local: rwEncodingKey}, Value: encoding})
 	return x.encodeElement(logicalName, value, attr, writerArgs...)

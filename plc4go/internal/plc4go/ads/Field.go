@@ -123,7 +123,7 @@ func (m DirectPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
 		return err
 	}
 
@@ -191,7 +191,7 @@ func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("symbolicAddress", uint8(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
+	if err := writeBuffer.WriteString("symbolicAddress", uint32(len([]rune(m.SymbolicAddress))*8), "UTF-8", m.SymbolicAddress); err != nil {
 		return err
 	}
 
@@ -199,7 +199,7 @@ func (m SymbolicPlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(m.Datatype.String()))*8), "UTF-8", m.Datatype.String()); err != nil {
 		return err
 	}
 

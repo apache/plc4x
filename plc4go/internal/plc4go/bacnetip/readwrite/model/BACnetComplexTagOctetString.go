@@ -116,7 +116,7 @@ func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgu
 	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
 
 	// Simple Field (theString)
-	theString, _theStringErr := readBuffer.ReadString("theString", uint32(-1))
+	theString, _theStringErr := readBuffer.ReadString("theString", uint32(actualLengthInBit))
 	if _theStringErr != nil {
 		return nil, errors.Wrap(_theStringErr, "Error parsing 'theString' field")
 	}
@@ -142,7 +142,7 @@ func (m *BACnetComplexTagOctetString) Serialize(writeBuffer utils.WriteBuffer) e
 
 		// Simple Field (theString)
 		theString := string(m.TheString)
-		_theStringErr := writeBuffer.WriteString("theString", uint8(-1), "ASCII", (theString))
+		_theStringErr := writeBuffer.WriteString("theString", uint32(m.ActualLengthInBit), "ASCII", (theString))
 		if _theStringErr != nil {
 			return errors.Wrap(_theStringErr, "Error serializing 'theString' field")
 		}

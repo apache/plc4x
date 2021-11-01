@@ -73,12 +73,12 @@ func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("node", uint8(len([]rune(m.Tag))*8), "UTF-8", m.Tag); err != nil {
+	if err := writeBuffer.WriteString("node", uint32(len([]rune(m.Tag))*8), "UTF-8", m.Tag); err != nil {
 		return err
 	}
 
 	if m.Type != 0 {
-		if err := writeBuffer.WriteString("type", uint8(len([]rune(m.Type.String()))*8), "UTF-8", m.Type.String()); err != nil {
+		if err := writeBuffer.WriteString("type", uint32(len([]rune(m.Type.String()))*8), "UTF-8", m.Type.String()); err != nil {
 			return err
 		}
 	}
@@ -88,7 +88,7 @@ func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 	}
 
 	// TODO: remove this from the spec
-	if err := writeBuffer.WriteString("defaultJavaType", uint8(len([]rune("java.lang.Object"))*8), "UTF-8", "java.lang.Object"); err != nil {
+	if err := writeBuffer.WriteString("defaultJavaType", uint32(len([]rune("java.lang.Object"))*8), "UTF-8", "java.lang.Object"); err != nil {
 		return err
 	}
 

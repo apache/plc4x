@@ -345,13 +345,13 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFo
 	case dataFormatName == "IEC61131_CHAR": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8(8), "UTF-8", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WCHAR": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8(16), "UTF-16", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_STRING": // STRING

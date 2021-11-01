@@ -101,7 +101,7 @@ func (m PlcField) Serialize(writeBuffer utils.WriteBuffer) error {
 		return err
 	}
 	dataType := m.GetDataType().String()
-	if err := writeBuffer.WriteString("dataType", uint8(len([]rune(dataType))*8), "UTF-8", dataType); err != nil {
+	if err := writeBuffer.WriteString("dataType", uint32(len([]rune(dataType))*8), "UTF-8", dataType); err != nil {
 		return err
 	}
 

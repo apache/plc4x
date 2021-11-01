@@ -85,7 +85,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 
 			// Array Field (${arrayField.name})
 			var ${arrayField.name} []api.PlcValue
-			for i := 0; i < int(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}); i++ {
+			for i := 0; i < int(${helper.toParseExpression(null, arrayField.loopExpression, parserArguments)}); i++ {
 				_item, _itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.name, arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
 					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/pkg/errors" />
@@ -188,7 +188,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 					<#assign arrayField = field.asArrayField().orElseThrow()>
 
 			// Array Field (${arrayField.name})
-			for i := uint32(0); i < uint32(${helper.toSerializationExpression(arrayField, arrayField.loopExpression, parserArguments)}); i++ {
+			for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, arrayField.loopExpression, parserArguments)}); i++ {
 					<#if case.name = "Struct">
 				${arrayField.name} := value.GetValue("${arrayField.name}")
 					</#if>

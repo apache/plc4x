@@ -209,7 +209,7 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 	return errors.New("not implemented yet")
 }
 
-func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint8, encoding string, value string, _ ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
 	// TODO: the implementation completely ignores encoding for now. Fix this
 	for _, theByte := range []byte(value) {
 		wb.writer.TryWriteByte(theByte)
