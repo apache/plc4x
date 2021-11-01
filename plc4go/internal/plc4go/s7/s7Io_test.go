@@ -253,85 +253,6 @@ func TestS7MessageBytes(t *testing.T) {
           "tpduRef__plc4x_bitLength": 7,
           "tpduRef__plc4x_dataType": "uint"
         },
-        "payload": {
-          "S7Message": {
-            "S7MessageResponseData": {
-              "errorClass": 0,
-              "errorClass__plc4x_bitLength": 8,
-              "errorClass__plc4x_dataType": "uint",
-              "errorCode": 0,
-              "errorCode__plc4x_bitLength": 8,
-              "errorCode__plc4x_dataType": "uint"
-            },
-            "parameter": {
-              "S7Parameter": {
-                "S7ParameterReadVarResponse": {
-                  "numItems": 1,
-                  "numItems__plc4x_bitLength": 8,
-                  "numItems__plc4x_dataType": "uint"
-                },
-                "parameterType": 4,
-                "parameterType__plc4x_bitLength": 8,
-                "parameterType__plc4x_dataType": "uint"
-              }
-            },
-            "payload": {
-              "S7Payload": {
-                "S7PayloadReadVarResponse": {
-                  "items": [
-                    {
-                      "S7VarPayloadDataItem": {
-                        "data": "0x01",
-                        "dataLength": 1,
-                        "dataLength__plc4x_bitLength": 16,
-                        "dataLength__plc4x_dataType": "uint",
-                        "data__plc4x_bitLength": 8,
-                        "data__plc4x_dataType": "byte",
-                        "padding": [
-                          {
-                            "value__plc4x_dataType": "uint",
-                            "value__plc4x_bitLength": 8,
-                            "value": 0
-                          }
-                        ],
-                        "returnCode": {
-                          "DataTransportErrorCode": 255,
-                          "DataTransportErrorCode__plc4x_bitLength": 8,
-                          "DataTransportErrorCode__plc4x_dataType": "uint",
-                          "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
-                        },
-                        "transportSize": {
-                          "DataTransportSize": 3,
-                          "DataTransportSize__plc4x_bitLength": 8,
-                          "DataTransportSize__plc4x_dataType": "uint",
-                          "DataTransportSize__plc4x_stringRepresentation": "BIT"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            },
-            "messageType": 3,
-            "messageType__plc4x_bitLength": 8,
-            "messageType__plc4x_dataType": "uint",
-            "parameterLength": 2,
-            "parameterLength__plc4x_bitLength": 16,
-            "parameterLength__plc4x_dataType": "uint",
-            "payloadLength": 6,
-            "payloadLength__plc4x_bitLength": 16,
-            "payloadLength__plc4x_dataType": "uint",
-            "protocolId": 50,
-            "protocolId__plc4x_bitLength": 8,
-            "protocolId__plc4x_dataType": "uint",
-            "reserved": 0,
-            "reserved__plc4x_bitLength": 16,
-            "reserved__plc4x_dataType": "uint",
-            "tpduReference": 11,
-            "tpduReference__plc4x_bitLength": 16,
-            "tpduReference__plc4x_dataType": "uint"
-          }
-        },
         "headerLength": 5,
         "headerLength__plc4x_bitLength": 8,
         "headerLength__plc4x_dataType": "uint",
@@ -355,6 +276,85 @@ func TestS7MessageBytes(t *testing.T) {
             }
           }
         ],
+        "payload": {
+          "S7Message": {
+            "S7MessageResponseData": {
+              "errorClass": 0,
+              "errorClass__plc4x_bitLength": 8,
+              "errorClass__plc4x_dataType": "uint",
+              "errorCode": 0,
+              "errorCode__plc4x_bitLength": 8,
+              "errorCode__plc4x_dataType": "uint"
+            },
+            "messageType": 3,
+            "messageType__plc4x_bitLength": 8,
+            "messageType__plc4x_dataType": "uint",
+            "parameter": {
+              "S7Parameter": {
+                "S7ParameterReadVarResponse": {
+                  "numItems": 1,
+                  "numItems__plc4x_bitLength": 8,
+                  "numItems__plc4x_dataType": "uint"
+                },
+                "parameterType": 4,
+                "parameterType__plc4x_bitLength": 8,
+                "parameterType__plc4x_dataType": "uint"
+              }
+            },
+            "parameterLength": 2,
+            "parameterLength__plc4x_bitLength": 16,
+            "parameterLength__plc4x_dataType": "uint",
+            "payload": {
+              "S7Payload": {
+                "S7PayloadReadVarResponse": {
+                  "items": [
+                    {
+                      "S7VarPayloadDataItem": {
+                        "data": "0x01",
+                        "dataLength": 1,
+                        "dataLength__plc4x_bitLength": 16,
+                        "dataLength__plc4x_dataType": "uint",
+                        "data__plc4x_bitLength": 8,
+                        "data__plc4x_dataType": "byte",
+                        "padding": [
+                          {
+                            "value": 0,
+                            "value__plc4x_bitLength": 8,
+                            "value__plc4x_dataType": "uint"
+                          }
+                        ],
+                        "returnCode": {
+                          "DataTransportErrorCode": 255,
+                          "DataTransportErrorCode__plc4x_bitLength": 8,
+                          "DataTransportErrorCode__plc4x_dataType": "uint",
+                          "DataTransportErrorCode__plc4x_stringRepresentation": "OK"
+                        },
+                        "transportSize": {
+                          "DataTransportSize": 3,
+                          "DataTransportSize__plc4x_bitLength": 8,
+                          "DataTransportSize__plc4x_dataType": "uint",
+                          "DataTransportSize__plc4x_stringRepresentation": "BIT"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "payloadLength": 6,
+            "payloadLength__plc4x_bitLength": 16,
+            "payloadLength__plc4x_dataType": "uint",
+            "protocolId": 50,
+            "protocolId__plc4x_bitLength": 8,
+            "protocolId__plc4x_dataType": "uint",
+            "reserved": 0,
+            "reserved__plc4x_bitLength": 16,
+            "reserved__plc4x_dataType": "uint",
+            "tpduReference": 11,
+            "tpduReference__plc4x_bitLength": 16,
+            "tpduReference__plc4x_dataType": "uint"
+          }
+        },
         "tpduCode": 240,
         "tpduCode__plc4x_bitLength": 8,
         "tpduCode__plc4x_dataType": "uint"
@@ -370,9 +370,9 @@ func TestS7MessageBytes(t *testing.T) {
 }
 `,
 			wantDump: `
-00|03 00 00 1d 05 f0 0d c0 01 0c '..........'
-10|32 03 00 00 00 0b 00 02 00 05 '2.........'
-20|00 00 04 01 ff 03 00 01 01    '......... '
+00|03 00 00 1e 05 f0 0d c0 01 0c '..........'
+10|32 03 00 00 00 0b 00 02 00 06 '2.........'
+20|00 00 04 01 ff 03 00 01 01 00 '..........'
 `,
 		},
 		{
