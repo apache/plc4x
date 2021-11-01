@@ -30,7 +30,7 @@ import (
 type SysexCommandReportFirmwareResponse struct {
 	MajorVersion uint8
 	MinorVersion uint8
-	FileName     []int8
+	FileName     []byte
 	Parent       *SysexCommand
 }
 
@@ -55,7 +55,7 @@ func (m *SysexCommandReportFirmwareResponse) Response() bool {
 func (m *SysexCommandReportFirmwareResponse) InitializeParent(parent *SysexCommand) {
 }
 
-func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []int8) *SysexCommand {
+func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint8, fileName []byte) *SysexCommand {
 	child := &SysexCommandReportFirmwareResponse{
 		MajorVersion: majorVersion,
 		MinorVersion: minorVersion,
@@ -134,14 +134,14 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer) (*Syse
 	}
 	// Manual Array Field (fileName)
 	// Terminated array
-	_fileNameList := make([]int8, 0)
+	_fileNameList := make([]byte, 0)
 	for !((bool)(FirmataUtilsIsSysexEnd(readBuffer))) {
-		_fileNameList = append(_fileNameList, ((int8)(FirmataUtilsParseSysexString(readBuffer))))
+		_fileNameList = append(_fileNameList, ((byte)(FirmataUtilsParseSysexString(readBuffer))))
 
 	}
-	fileName := make([]int8, len(_fileNameList))
+	fileName := make([]byte, len(_fileNameList))
 	for i := 0; i < len(_fileNameList); i++ {
-		fileName[i] = int8(_fileNameList[i])
+		fileName[i] = byte(_fileNameList[i])
 	}
 	if closeErr := readBuffer.CloseContext("fileName", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

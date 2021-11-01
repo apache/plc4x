@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type IPAddress struct {
-	Addr []int8
+	Addr []byte
 }
 
 // The corresponding interface
@@ -38,7 +38,7 @@ type IIPAddress interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewIPAddress(addr []int8) *IPAddress {
+func NewIPAddress(addr []byte) *IPAddress {
 	return &IPAddress{Addr: addr}
 }
 
@@ -82,22 +82,11 @@ func IPAddressParse(readBuffer utils.ReadBuffer) (*IPAddress, error) {
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Array field (addr)
-	if pullErr := readBuffer.PullContext("addr", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	addr := make([]int8, uint16(4))
-	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'addr' field")
-		}
-		addr[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("addr", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (addr)
+	numberOfBytes := int(uint16(4))
+	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("IPAddress"); closeErr != nil {
@@ -115,17 +104,10 @@ func (m *IPAddress) Serialize(writeBuffer utils.WriteBuffer) error {
 
 	// Array Field (addr)
 	if m.Addr != nil {
-		if pushErr := writeBuffer.PushContext("addr", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.Addr {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'addr' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("addr", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (addr)
+		_writeArrayErr := writeBuffer.WriteByteArray("addr", m.Addr)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'addr' field")
 		}
 	}
 

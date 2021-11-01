@@ -84,7 +84,7 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(utils.InlineIf(lastItem, func() interface{} { return uint8(uint8(0)) }, func() interface{} { return uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }).(uint8))
+	_timesPadding := uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2)))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -96,7 +96,7 @@ func (m *S7VarPayloadDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7VarPayloadDataItem, error) {
+func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -143,7 +143,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
 			return nil, pullErr
 		}
-		_timesPadding := (utils.InlineIf(lastItem, func() interface{} { return uint8(uint8(0)) }, func() interface{} { return uint8(uint8(uint8(len(data))) % uint8(uint8(2))) }).(uint8))
+		_timesPadding := (uint8(uint8(len(data))) % uint8(uint8(2)))
 		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
 			_, _err := readBuffer.ReadUint8("", 8)
@@ -164,7 +164,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer, lastItem bool) (*S7V
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem bool) error {
+func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("S7VarPayloadDataItem"); pushErr != nil {
 		return pushErr
 	}
@@ -216,7 +216,7 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		_timesPadding := uint8(utils.InlineIf(lastItem, func() interface{} { return uint8(uint8(0)) }, func() interface{} { return uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2))) }).(uint8))
+		_timesPadding := uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
 			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
@@ -233,4 +233,13 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer, lastItem
 		return popErr
 	}
 	return nil
+}
+
+func (m *S7VarPayloadDataItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	buffer := utils.NewBoxedWriteBufferWithOptions(true, true)
+	m.Serialize(buffer)
+	return buffer.GetBox().String()
 }

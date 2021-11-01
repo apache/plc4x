@@ -183,7 +183,7 @@ func DF1ResponseMessageParse(readBuffer utils.ReadBuffer, payloadLength uint16) 
 	var typeSwitchError error
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		_parent, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer, payloadLength, status)
+		_parent, typeSwitchError = DF1CommandResponseMessageProtectedTypedLogicalReadParse(readBuffer, status)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

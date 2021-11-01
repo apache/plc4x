@@ -166,7 +166,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_CHAR": // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((8)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(8))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -175,7 +175,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_WCHAR": // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((16)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(16))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -184,7 +184,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
-		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "TF-")
+		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -193,7 +193,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_WSTRING": // STRING
 
 		// Manual Field (value)
-		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "TF-")
+		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -345,26 +345,26 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFo
 	case dataFormatName == "IEC61131_CHAR": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((8)), "TF-", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint8(8), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WCHAR": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((16)), "TF-", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint8(16), "UTF-16", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
-		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "TF-")
+		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WSTRING": // STRING
 
 		// Manual Field (value)
-		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "TF-")
+		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

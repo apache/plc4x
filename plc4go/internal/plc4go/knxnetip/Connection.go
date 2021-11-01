@@ -50,9 +50,9 @@ type ConnectionMetadata struct {
 
 	ProjectNumber          uint8
 	InstallationNumber     uint8
-	DeviceSerialNumber     []int8
-	DeviceMulticastAddress []int8
-	DeviceMacAddress       []int8
+	DeviceSerialNumber     []byte
+	DeviceMulticastAddress []byte
+	DeviceMacAddress       []byte
 	SupportedServices      []string
 }
 
@@ -65,9 +65,9 @@ func (m ConnectionMetadata) GetConnectionAttributes() map[string]string {
 
 		"ProjectNumber":          strconv.Itoa(int(m.ProjectNumber)),
 		"InstallationNumber":     strconv.Itoa(int(m.InstallationNumber)),
-		"DeviceSerialNumber":     utils.Int8ArrayToString(m.DeviceSerialNumber, " "),
-		"DeviceMulticastAddress": utils.Int8ArrayToString(m.DeviceSerialNumber, "."),
-		"DeviceMacAddress":       utils.Int8ArrayToString(m.DeviceSerialNumber, ":"),
+		"DeviceSerialNumber":     utils.ByteArrayToString(m.DeviceSerialNumber, " "),
+		"DeviceMulticastAddress": utils.ByteArrayToString(m.DeviceSerialNumber, "."),
+		"DeviceMacAddress":       utils.ByteArrayToString(m.DeviceSerialNumber, ":"),
 		"SupportedServices":      strings.Join(m.SupportedServices, ", "),
 	}
 }
@@ -108,7 +108,7 @@ type Connection struct {
 	quitConnectionStateTimer chan struct{}
 	subscribers              []*Subscriber
 
-	valueCache      map[uint16][]int8
+	valueCache      map[uint16][]byte
 	valueCacheMutex sync.RWMutex
 	metadata        *ConnectionMetadata
 	defaultTtl      time.Duration
@@ -173,7 +173,7 @@ func NewConnection(transportInstance transports.TransportInstance, options map[s
 			internalModel.NewDefaultPlcWriteResponse,
 		),
 		subscribers:             []*Subscriber{},
-		valueCache:              map[uint16][]int8{},
+		valueCache:              map[uint16][]byte{},
 		valueCacheMutex:         sync.RWMutex{},
 		metadata:                &ConnectionMetadata{},
 		defaultTtl:              time.Second * 10,
@@ -216,8 +216,7 @@ func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 
 		// Save some important information
 		m.metadata.KnxMedium = searchResponse.DibDeviceInfo.KnxMedium
-		m.metadata.GatewayName = string(bytes.Trim(utils.Int8ArrayToByteArray(
-			searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+		m.metadata.GatewayName = string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
 		m.GatewayKnxAddress = searchResponse.DibDeviceInfo.KnxAddress
 		m.metadata.GatewayKnxAddress = KnxAddressToString(m.GatewayKnxAddress)
 		m.metadata.ProjectNumber = searchResponse.DibDeviceInfo.ProjectInstallationIdentifier.ProjectNumber

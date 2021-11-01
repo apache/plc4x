@@ -129,7 +129,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer) (*B
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger = nil
 	{
-		_val, _err := BACnetComplexTagParse(readBuffer, (0), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
 		}
@@ -139,7 +139,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer) (*B
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
-		_val, _err := BACnetComplexTagParse(readBuffer, (1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
 		}
@@ -149,7 +149,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer) (*B
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetComplexTagOctetString = nil
 	{
-		_val, _err := BACnetComplexTagParse(readBuffer, (2), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetComplexTagParse(readBuffer, uint8(2), BACnetDataType_OCTET_STRING)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
 		}
@@ -159,7 +159,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer) (*B
 	// Optional Field (objectName) (Can be skipped, if a given expression evaluates to false)
 	var objectName *BACnetComplexTagOctetString = nil
 	if bool((objectIdentifier) == (nil)) {
-		_val, _err := BACnetComplexTagParse(readBuffer, (3), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetComplexTagParse(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
 		}

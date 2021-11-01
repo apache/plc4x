@@ -172,19 +172,19 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	switch responseAdu.Pdu.Child.(type) {
 	case *readWriteModel.ModbusPDUReadDiscreteInputsResponse:
 		pdu := readWriteModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// Pure Boolean ...
 	case *readWriteModel.ModbusPDUReadCoilsResponse:
 		pdu := readWriteModel.CastModbusPDUReadCoilsResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// Pure Boolean ...
 	case *readWriteModel.ModbusPDUReadInputRegistersResponse:
 		pdu := readWriteModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 		// DataIo ...
 	case *readWriteModel.ModbusPDUReadHoldingRegistersResponse:
 		pdu := readWriteModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
-		data = utils.Int8ArrayToUint8Array(pdu.Value)
+		data = pdu.Value
 	case *readWriteModel.ModbusPDUError:
 		return nil, errors.Errorf("got an error from remote. Errorcode %x", responseAdu.Pdu.Child.(*readWriteModel.ModbusPDUError).ExceptionCode)
 	default:

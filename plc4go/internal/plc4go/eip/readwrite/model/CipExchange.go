@@ -78,7 +78,7 @@ func (m *CipExchange) LengthInBitsConditional(lastItem bool) uint16 {
 	// Const Field (nullPtr)
 	lengthInBits += 32
 
-	// Const Field (UnconnectedData)
+	// Const Field (unconnectedData)
 	lengthInBits += 16
 
 	// Implicit Field (size)
@@ -117,13 +117,13 @@ func CipExchangeParse(readBuffer utils.ReadBuffer, exchangeLen uint16) (*CipExch
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_NULLPTR) + " but got " + fmt.Sprintf("%d", nullPtr))
 	}
 
-	// Const Field (UnconnectedData)
-	UnconnectedData, _UnconnectedDataErr := readBuffer.ReadUint16("UnconnectedData", 16)
-	if _UnconnectedDataErr != nil {
-		return nil, errors.Wrap(_UnconnectedDataErr, "Error parsing 'UnconnectedData' field")
+	// Const Field (unconnectedData)
+	unconnectedData, _unconnectedDataErr := readBuffer.ReadUint16("unconnectedData", 16)
+	if _unconnectedDataErr != nil {
+		return nil, errors.Wrap(_unconnectedDataErr, "Error parsing 'unconnectedData' field")
 	}
-	if UnconnectedData != CipExchange_UNCONNECTEDDATA {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", UnconnectedData))
+	if unconnectedData != CipExchange_UNCONNECTEDDATA {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", CipExchange_UNCONNECTEDDATA) + " but got " + fmt.Sprintf("%d", unconnectedData))
 	}
 
 	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -170,10 +170,10 @@ func (m *CipExchange) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_nullPtrErr, "Error serializing 'nullPtr' field")
 	}
 
-	// Const Field (UnconnectedData)
-	_UnconnectedDataErr := writeBuffer.WriteUint16("UnconnectedData", 16, 0x00B2)
-	if _UnconnectedDataErr != nil {
-		return errors.Wrap(_UnconnectedDataErr, "Error serializing 'UnconnectedData' field")
+	// Const Field (unconnectedData)
+	_unconnectedDataErr := writeBuffer.WriteUint16("unconnectedData", 16, 0x00B2)
+	if _unconnectedDataErr != nil {
+		return errors.Wrap(_unconnectedDataErr, "Error serializing 'unconnectedData' field")
 	}
 
 	// Implicit Field (size) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type UnknownMessage struct {
-	UnknownData []int8
+	UnknownData []byte
 	Parent      *KnxNetIpMessage
 }
 
@@ -49,7 +49,7 @@ func (m *UnknownMessage) MsgType() uint16 {
 func (m *UnknownMessage) InitializeParent(parent *KnxNetIpMessage) {
 }
 
-func NewUnknownMessage(unknownData []int8) *KnxNetIpMessage {
+func NewUnknownMessage(unknownData []byte) *KnxNetIpMessage {
 	child := &UnknownMessage{
 		UnknownData: unknownData,
 		Parent:      NewKnxNetIpMessage(),
@@ -104,22 +104,11 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
 		return nil, pullErr
 	}
-
-	// Array field (unknownData)
-	if pullErr := readBuffer.PullContext("unknownData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'unknownData' field")
-		}
-		unknownData[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("unknownData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (unknownData)
+	numberOfBytes := int(uint16(totalLength) - uint16(uint16(6)))
+	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownData' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("UnknownMessage"); closeErr != nil {
@@ -143,17 +132,10 @@ func (m *UnknownMessage) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Array Field (unknownData)
 		if m.UnknownData != nil {
-			if pushErr := writeBuffer.PushContext("unknownData", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.UnknownData {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'unknownData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("unknownData", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (unknownData)
+			_writeArrayErr := writeBuffer.WriteByteArray("unknownData", m.UnknownData)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'unknownData' field")
 			}
 		}
 

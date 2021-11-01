@@ -72,11 +72,11 @@ func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 	case "RelativeTimestamp":
 		return model.RelativeTimestampParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CEMI":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
-		size := uint8(parsedUint0)
+		size := uint16(parsedUint0)
 		return model.CEMIParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
 	case "KnxNetIpMessage":
 		return model.KnxNetIpMessageParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

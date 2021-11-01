@@ -96,7 +96,7 @@ func (m *ModbusPDUError) LengthInBits() uint16 {
 func (m *ModbusPDUError) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
-	// Enum Field (exceptionCode)
+	// Simple field (exceptionCode)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -111,10 +111,10 @@ func ModbusPDUErrorParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
 		return nil, pullErr
 	}
 
+	// Simple Field (exceptionCode)
 	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := ModbusErrorCodeParse(readBuffer)
 	if _exceptionCodeErr != nil {
 		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field")
@@ -142,17 +142,16 @@ func (m *ModbusPDUError) Serialize(writeBuffer utils.WriteBuffer) error {
 			return pushErr
 		}
 
+		// Simple Field (exceptionCode)
 		if pushErr := writeBuffer.PushContext("exceptionCode"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (exceptionCode)
-		exceptionCode := CastModbusErrorCode(m.ExceptionCode)
-		_exceptionCodeErr := exceptionCode.Serialize(writeBuffer)
-		if _exceptionCodeErr != nil {
-			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
-		}
+		_exceptionCodeErr := m.ExceptionCode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("exceptionCode"); popErr != nil {
 			return popErr
+		}
+		if _exceptionCodeErr != nil {
+			return errors.Wrap(_exceptionCodeErr, "Error serializing 'exceptionCode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUError"); popErr != nil {

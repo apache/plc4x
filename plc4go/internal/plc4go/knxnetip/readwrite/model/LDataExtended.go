@@ -32,7 +32,7 @@ type LDataExtended struct {
 	HopCount            uint8
 	ExtendedFrameFormat uint8
 	SourceAddress       *KnxAddress
-	DestinationAddress  []int8
+	DestinationAddress  []byte
 	Apdu                *Apdu
 	Parent              *LDataFrame
 }
@@ -63,7 +63,7 @@ func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, not
 	m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []int8, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress *KnxAddress, destinationAddress []byte, apdu *Apdu, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LDataExtended{
 		GroupAddress:        groupAddress,
 		HopCount:            hopCount,
@@ -171,22 +171,11 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (destinationAddress)
-	if pullErr := readBuffer.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	destinationAddress := make([]int8, uint16(2))
-	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field")
-		}
-		destinationAddress[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (destinationAddress)
+	numberOfBytes := int(uint16(2))
+	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field")
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -267,17 +256,10 @@ func (m *LDataExtended) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Array Field (destinationAddress)
 		if m.DestinationAddress != nil {
-			if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.DestinationAddress {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (destinationAddress)
+			_writeArrayErr := writeBuffer.WriteByteArray("destinationAddress", m.DestinationAddress)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'destinationAddress' field")
 			}
 		}
 

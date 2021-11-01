@@ -106,11 +106,7 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(io)
 	case "S7VarPayloadDataItem":
-		lastItem, err := utils.StrToBool(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.S7VarPayloadDataItemParse(io, lastItem)
+		return model.S7VarPayloadDataItemParse(io)
 	case "AlarmMessageQueryType":
 		return model.AlarmMessageQueryTypeParse(io)
 	case "AlarmMessageAckResponseType":

@@ -30,7 +30,7 @@ import (
 // The data-structure of this message
 type LPollData struct {
 	SourceAddress          *KnxAddress
-	TargetAddress          []int8
+	TargetAddress          []byte
 	NumberExpectedPollData uint8
 	Parent                 *LDataFrame
 }
@@ -61,7 +61,7 @@ func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepe
 	m.Parent.ErrorFlag = errorFlag
 }
 
-func NewLPollData(sourceAddress *KnxAddress, targetAddress []int8, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
+func NewLPollData(sourceAddress *KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *LDataFrame {
 	child := &LPollData{
 		SourceAddress:          sourceAddress,
 		TargetAddress:          targetAddress,
@@ -139,22 +139,11 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (targetAddress)
-	if pullErr := readBuffer.PullContext("targetAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	targetAddress := make([]int8, uint16(2))
-	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'targetAddress' field")
-		}
-		targetAddress[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("targetAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (targetAddress)
+	numberOfBytes := int(uint16(2))
+	targetAddress, _readArrayErr := readBuffer.ReadByteArray("targetAddress", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'targetAddress' field")
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -212,17 +201,10 @@ func (m *LPollData) Serialize(writeBuffer utils.WriteBuffer) error {
 
 		// Array Field (targetAddress)
 		if m.TargetAddress != nil {
-			if pushErr := writeBuffer.PushContext("targetAddress", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.TargetAddress {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'targetAddress' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("targetAddress", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (targetAddress)
+			_writeArrayErr := writeBuffer.WriteByteArray("targetAddress", m.TargetAddress)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'targetAddress' field")
 			}
 		}
 
