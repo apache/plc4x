@@ -92,7 +92,7 @@ func (m *ApduDataExtDomainAddressSelectiveRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtDomainAddressSelectiveReadParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtDomainAddressSelectiveReadParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSelectiveRead"); pullErr != nil {
 		return nil, pullErr
 	}

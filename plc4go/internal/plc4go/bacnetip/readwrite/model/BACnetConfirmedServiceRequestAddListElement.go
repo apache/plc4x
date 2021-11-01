@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestAddListElement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestAddListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAddListElement"); pullErr != nil {
 		return nil, pullErr
 	}

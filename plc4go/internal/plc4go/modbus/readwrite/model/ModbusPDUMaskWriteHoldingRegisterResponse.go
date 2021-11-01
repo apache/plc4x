@@ -116,7 +116,7 @@ func (m *ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUMaskWriteHoldingRegisterResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUMaskWriteHoldingRegisterResponse"); pullErr != nil {
 		return nil, pullErr
 	}

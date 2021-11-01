@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestRemoveListElement) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemoveListElementParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemoveListElement"); pullErr != nil {
 		return nil, pullErr
 	}

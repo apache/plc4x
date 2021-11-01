@@ -100,11 +100,11 @@ func KnxGroupAddressParse(readBuffer utils.ReadBuffer, numLevels uint8) (*KnxGro
 	var typeSwitchError error
 	switch {
 	case numLevels == 1: // KnxGroupAddressFreeLevel
-		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer)
+		_parent, typeSwitchError = KnxGroupAddressFreeLevelParse(readBuffer, numLevels)
 	case numLevels == 2: // KnxGroupAddress2Level
-		_parent, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer)
+		_parent, typeSwitchError = KnxGroupAddress2LevelParse(readBuffer, numLevels)
 	case numLevels == 3: // KnxGroupAddress3Level
-		_parent, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer)
+		_parent, typeSwitchError = KnxGroupAddress3LevelParse(readBuffer, numLevels)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

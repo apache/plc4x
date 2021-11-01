@@ -102,7 +102,7 @@ func (m *AdsWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}

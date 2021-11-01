@@ -96,7 +96,7 @@ func (m *SysexCommandSamplingInterval) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandSamplingIntervalParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandSamplingInterval"); pullErr != nil {
 		return nil, pullErr
 	}

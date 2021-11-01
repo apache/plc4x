@@ -92,7 +92,7 @@ func (m *LRawCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LRawConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LRawConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LRawCon"); pullErr != nil {
 		return nil, pullErr
 	}

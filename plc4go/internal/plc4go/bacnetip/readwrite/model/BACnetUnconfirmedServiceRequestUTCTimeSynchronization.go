@@ -92,7 +92,7 @@ func (m *BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() 
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); pullErr != nil {
 		return nil, pullErr
 	}

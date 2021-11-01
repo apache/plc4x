@@ -100,7 +100,7 @@ func (m *ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdRequest"); pullErr != nil {
 		return nil, pullErr
 	}

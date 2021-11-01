@@ -134,17 +134,17 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	var typeSwitchError error
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		_parent, typeSwitchError = COTPPacketDataParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDataParse(readBuffer, cotpLen)
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketConnectionRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketConnectionResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDisconnectRequestParse(readBuffer, cotpLen)
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketDisconnectResponseParse(readBuffer, cotpLen)
 	case tpduCode == 0x70: // COTPPacketTpduError
-		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer)
+		_parent, typeSwitchError = COTPPacketTpduErrorParse(readBuffer, cotpLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

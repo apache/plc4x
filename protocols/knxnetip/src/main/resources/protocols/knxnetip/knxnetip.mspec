@@ -404,7 +404,7 @@
         ['1' ApduControlContainer
             [simple ApduControl 'controlApdu']
         ]
-        ['0' ApduDataContainer (uint 8 'dataLength')
+        ['0' ApduDataContainer
             [simple ApduData('dataLength') 'dataApdu']
         ]
     ]
@@ -431,11 +431,11 @@
         ['0x0' ApduDataGroupValueRead
             [reserved uint 6 '0x00']
         ]
-        ['0x1' ApduDataGroupValueResponse (uint 8 'dataLength')
+        ['0x1' ApduDataGroupValueResponse
             [simple int 6 'dataFirstByte']
             [array  byte  'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
-        ['0x2' ApduDataGroupValueWrite (uint 8 'dataLength')
+        ['0x2' ApduDataGroupValueWrite
             [simple int 6 'dataFirstByte']
             [array  byte  'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
@@ -467,13 +467,13 @@
         ['0xC' ApduDataDeviceDescriptorRead
             [simple uint 6 'descriptorType']
         ]
-        ['0xD' ApduDataDeviceDescriptorResponse (uint 8 'dataLength')
+        ['0xD' ApduDataDeviceDescriptorResponse
             [simple uint 6 'descriptorType']
             [array  byte   'data' count  '(dataLength < 1) ? 0 : dataLength - 1']
         ]
         ['0xE' ApduDataRestart
         ]
-        ['0xF' ApduDataOther (uint 8 'dataLength')
+        ['0xF' ApduDataOther
             [simple ApduDataExt('dataLength') 'extendedApdu']
         ]
     ]
@@ -525,14 +525,14 @@
             [simple uint 4  'count']
             [simple uint 12 'index']
         ]
-        ['0x16' ApduDataExtPropertyValueResponse (uint 8 'length')
+        ['0x16' ApduDataExtPropertyValueResponse
             [simple uint 8  'objectIndex']
             [simple uint 8  'propertyId']
             [simple uint 4  'count']
             [simple uint 12 'index']
             [array  byte    'data' count 'length - 5']
         ]
-        ['0x17' ApduDataExtPropertyValueWrite (uint 8 'length')
+        ['0x17' ApduDataExtPropertyValueWrite
             [simple uint 8  'objectIndex']
             [simple uint 8  'propertyId']
             [simple uint 4  'count']

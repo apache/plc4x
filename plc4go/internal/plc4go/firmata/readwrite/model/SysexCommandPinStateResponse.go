@@ -112,7 +112,7 @@ func (m *SysexCommandPinStateResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandPinStateResponseParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateResponse"); pullErr != nil {
 		return nil, pullErr
 	}

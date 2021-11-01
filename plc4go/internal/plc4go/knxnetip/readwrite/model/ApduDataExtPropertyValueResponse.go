@@ -149,8 +149,8 @@ func ApduDataExtPropertyValueResponseParse(readBuffer utils.ReadBuffer, length u
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(uint16(length) - uint16(uint16(5)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(uint16(length) - uint16(uint16(5)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

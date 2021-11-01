@@ -108,7 +108,7 @@ func (m *AdsMultiRequestItemWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer) (*AdsMultiRequestItem, error) {
+func AdsMultiRequestItemWriteParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*AdsMultiRequestItem, error) {
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItemWrite"); pullErr != nil {
 		return nil, pullErr
 	}

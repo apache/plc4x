@@ -100,7 +100,7 @@ func (m *ModbusPDUGetComEventCounterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventCounterRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUGetComEventCounterRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventCounterRequest"); pullErr != nil {
 		return nil, pullErr
 	}

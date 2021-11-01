@@ -92,7 +92,7 @@ func (m *ApduDataExtReadRoutingTableResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtReadRoutingTableResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtReadRoutingTableResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtReadRoutingTableResponse"); pullErr != nil {
 		return nil, pullErr
 	}

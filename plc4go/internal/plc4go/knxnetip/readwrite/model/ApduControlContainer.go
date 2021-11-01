@@ -100,7 +100,7 @@ func (m *ApduControlContainer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduControlContainerParse(readBuffer utils.ReadBuffer) (*Apdu, error) {
+func ApduControlContainerParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, pullErr
 	}

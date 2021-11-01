@@ -128,7 +128,7 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoIs"); pullErr != nil {
 		return nil, pullErr
 	}

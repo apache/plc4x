@@ -92,7 +92,7 @@ func (m *ApduDataExtFileStreamInfoReport) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtFileStreamInfoReportParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
 		return nil, pullErr
 	}

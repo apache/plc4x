@@ -131,7 +131,7 @@ func (m *APDUComplexAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUComplexAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUComplexAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, pullErr
 	}

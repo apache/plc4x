@@ -100,11 +100,11 @@ func AdsMultiRequestItemParse(readBuffer utils.ReadBuffer, indexGroup uint32) (*
 	var typeSwitchError error
 	switch {
 	case indexGroup == 61568: // AdsMultiRequestItemRead
-		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer)
+		_parent, typeSwitchError = AdsMultiRequestItemReadParse(readBuffer, indexGroup)
 	case indexGroup == 61569: // AdsMultiRequestItemWrite
-		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer)
+		_parent, typeSwitchError = AdsMultiRequestItemWriteParse(readBuffer, indexGroup)
 	case indexGroup == 61570: // AdsMultiRequestItemReadWrite
-		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer)
+		_parent, typeSwitchError = AdsMultiRequestItemReadWriteParse(readBuffer, indexGroup)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

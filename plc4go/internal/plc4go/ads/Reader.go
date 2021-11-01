@@ -331,7 +331,7 @@ func (m *Reader) resolveField(symbolicField SymbolicPlcField) (DirectPlcField, e
 		0,
 		4,
 		nil,
-		utils.ByteArrayToInt8Array([]byte(symbolicField.SymbolicAddress+"\000")),
+		[]byte(symbolicField.SymbolicAddress+"\000"),
 	)
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
@@ -370,14 +370,14 @@ func (m *Reader) ToPlc4xReadResponse(amsTcpPaket readWriteModel.AmsTCPPacket, re
 	switch amsTcpPaket.Userdata.Data.Child.(type) {
 	case *readWriteModel.AdsReadResponse:
 		readResponse := readWriteModel.CastAdsReadResponse(amsTcpPaket.Userdata.Data)
-		data := utils.Int8ArrayToUint8Array(readResponse.Data)
+		data := readResponse.Data
 		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		for _, fieldName := range readRequest.GetFieldNames() {
 			responseCodes[fieldName] = model.PlcResponseCode_OK
 		}
 	case *readWriteModel.AdsReadWriteResponse:
 		readResponse := readWriteModel.CastAdsReadWriteResponse(amsTcpPaket.Userdata.Data)
-		data := utils.Int8ArrayToUint8Array(readResponse.Data)
+		data := readResponse.Data
 		rb = utils.NewLittleEndianReadBufferByteBased(data)
 		// When parsing a multi-item response, the error codes of each items come
 		// in sequence and then come the values.

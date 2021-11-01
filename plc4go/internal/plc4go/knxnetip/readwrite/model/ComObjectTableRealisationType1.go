@@ -113,7 +113,7 @@ func (m *ComObjectTableRealisationType1) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer) (*ComObjectTable, error) {
+func ComObjectTableRealisationType1Parse(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (*ComObjectTable, error) {
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType1"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -92,7 +92,7 @@ func (m *ApduDataAdcResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataAdcResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataAdcResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataAdcResponse"); pullErr != nil {
 		return nil, pullErr
 	}

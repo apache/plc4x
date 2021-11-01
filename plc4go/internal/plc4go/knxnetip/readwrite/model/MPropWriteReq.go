@@ -92,7 +92,7 @@ func (m *MPropWriteReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MPropWriteReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MPropWriteReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MPropWriteReq"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -105,7 +105,7 @@ func (m *FirmataMessageDigitalIO) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer) (*FirmataMessage, error) {
+func FirmataMessageDigitalIOParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageDigitalIO"); pullErr != nil {
 		return nil, pullErr
 	}

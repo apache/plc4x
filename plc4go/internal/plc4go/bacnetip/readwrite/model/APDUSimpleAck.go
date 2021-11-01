@@ -107,7 +107,7 @@ func (m *APDUSimpleAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUSimpleAckParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, pullErr
 	}

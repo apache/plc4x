@@ -108,19 +108,19 @@ func CipServiceParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipServic
 	var typeSwitchError error
 	switch {
 	case service == 0x4C: // CipReadRequest
-		_parent, typeSwitchError = CipReadRequestParse(readBuffer)
+		_parent, typeSwitchError = CipReadRequestParse(readBuffer, serviceLen)
 	case service == 0xCC: // CipReadResponse
 		_parent, typeSwitchError = CipReadResponseParse(readBuffer, serviceLen)
 	case service == 0x4D: // CipWriteRequest
-		_parent, typeSwitchError = CipWriteRequestParse(readBuffer)
+		_parent, typeSwitchError = CipWriteRequestParse(readBuffer, serviceLen)
 	case service == 0xCD: // CipWriteResponse
-		_parent, typeSwitchError = CipWriteResponseParse(readBuffer)
+		_parent, typeSwitchError = CipWriteResponseParse(readBuffer, serviceLen)
 	case service == 0x0A: // MultipleServiceRequest
 		_parent, typeSwitchError = MultipleServiceRequestParse(readBuffer, serviceLen)
 	case service == 0x8A: // MultipleServiceResponse
 		_parent, typeSwitchError = MultipleServiceResponseParse(readBuffer, serviceLen)
 	case service == 0x52: // CipUnconnectedRequest
-		_parent, typeSwitchError = CipUnconnectedRequestParse(readBuffer)
+		_parent, typeSwitchError = CipUnconnectedRequestParse(readBuffer, serviceLen)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

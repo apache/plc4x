@@ -104,7 +104,7 @@ func (m *BACnetComplexTagReal) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagRealParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagRealParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagReal"); pullErr != nil {
 		return nil, pullErr
 	}

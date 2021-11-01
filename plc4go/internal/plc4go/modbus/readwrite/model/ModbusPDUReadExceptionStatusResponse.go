@@ -106,7 +106,7 @@ func (m *ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReadExceptionStatusResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
 		return nil, pullErr
 	}

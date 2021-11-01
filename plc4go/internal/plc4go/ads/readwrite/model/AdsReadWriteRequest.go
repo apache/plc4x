@@ -132,7 +132,7 @@ func (m *AdsReadWriteRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -179,8 +179,8 @@ func AdsReadWriteRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 		return nil, closeErr
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(uint16(writeLength) - uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(uint16(writeLength) - uint16(uint16(uint16(uint16(len(items)))*uint16(uint16(12)))))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

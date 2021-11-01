@@ -107,7 +107,7 @@ func (m *FirmataMessageSubscribeDigitalPinValue) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer) (*FirmataMessage, error) {
+func FirmataMessageSubscribeDigitalPinValueParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMessage, error) {
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeDigitalPinValue"); pullErr != nil {
 		return nil, pullErr
 	}

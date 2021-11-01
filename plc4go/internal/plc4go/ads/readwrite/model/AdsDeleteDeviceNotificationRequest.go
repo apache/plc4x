@@ -102,7 +102,7 @@ func (m *AdsDeleteDeviceNotificationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsDeleteDeviceNotificationRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationRequest"); pullErr != nil {
 		return nil, pullErr
 	}

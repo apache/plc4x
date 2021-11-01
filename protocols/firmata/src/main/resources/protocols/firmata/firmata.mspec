@@ -50,7 +50,7 @@
         ]
 
         // Command
-        ['0xF' FirmataMessageCommand(bit 'response')
+        ['0xF' FirmataMessageCommand
             [simple FirmataCommand('response') 'command']
         ]
     ]
@@ -59,7 +59,7 @@
 [discriminatedType 'FirmataCommand'(bit 'response')
     [discriminator uint 4 'commandCode']
     [typeSwitch 'commandCode'
-        ['0x0' FirmataCommandSysex(bit 'response')
+        ['0x0' FirmataCommandSysex
             [simple SysexCommand('response') 'command']
             [reserved uint 8 '0xF7']
         ]

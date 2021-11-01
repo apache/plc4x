@@ -131,7 +131,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBytes() uint16
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionMsgSubscription"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -97,7 +97,7 @@ func (m *ApduDataGroupValueRead) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataGroupValueReadParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueRead"); pullErr != nil {
 		return nil, pullErr
 	}

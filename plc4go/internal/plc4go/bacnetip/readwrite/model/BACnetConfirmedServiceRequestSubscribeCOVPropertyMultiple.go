@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInByte
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple"); pullErr != nil {
 		return nil, pullErr
 	}

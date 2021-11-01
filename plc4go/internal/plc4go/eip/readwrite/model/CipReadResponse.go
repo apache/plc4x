@@ -162,8 +162,8 @@ func CipReadResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipS
 		return nil, closeErr
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(uint16(serviceLen) - uint16(uint16(6)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(uint16(serviceLen) - uint16(uint16(6)))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

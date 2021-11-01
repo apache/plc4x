@@ -108,7 +108,7 @@ func (m *S7PayloadAlarmSC) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadAlarmSCParse(readBuffer utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadAlarmSCParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmSC"); pullErr != nil {
 		return nil, pullErr
 	}

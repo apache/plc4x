@@ -112,7 +112,7 @@ func (m *AdsReadWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -136,8 +136,8 @@ func AdsReadWriteResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(length)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(length)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

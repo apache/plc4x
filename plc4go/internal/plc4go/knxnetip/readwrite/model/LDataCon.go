@@ -112,7 +112,7 @@ func (m *LDataCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataConParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LDataConParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LDataCon"); pullErr != nil {
 		return nil, pullErr
 	}

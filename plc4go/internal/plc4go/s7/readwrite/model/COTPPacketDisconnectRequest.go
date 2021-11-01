@@ -110,7 +110,7 @@ func (m *COTPPacketDisconnectRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketDisconnectRequestParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketDisconnectRequest"); pullErr != nil {
 		return nil, pullErr
 	}

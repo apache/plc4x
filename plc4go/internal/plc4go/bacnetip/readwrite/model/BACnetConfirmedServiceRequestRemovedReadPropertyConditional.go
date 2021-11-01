@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestRemovedReadPropertyConditional) LengthInBy
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRemovedReadPropertyConditional"); pullErr != nil {
 		return nil, pullErr
 	}

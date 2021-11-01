@@ -226,7 +226,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -240,7 +240,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			groupAddress = append(groupAddress, values.NewPlcUINT(_item))
+			groupAddress = append(groupAddress, values.NewPlcBYTE(_item))
 		}
 
 		// Simple Field (disable)
@@ -272,7 +272,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -426,7 +426,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -439,7 +439,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -452,7 +452,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -465,7 +465,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -478,7 +478,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -491,7 +491,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -504,7 +504,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -517,7 +517,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -530,7 +530,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -543,7 +543,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -556,7 +556,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -569,7 +569,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -582,7 +582,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -595,7 +595,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -608,7 +608,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -621,7 +621,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -634,7 +634,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -647,7 +647,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -660,7 +660,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -673,7 +673,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
@@ -860,7 +860,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
-			value = append(value, values.NewPlcUINT(_item))
+			value = append(value, values.NewPlcBYTE(_item))
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil

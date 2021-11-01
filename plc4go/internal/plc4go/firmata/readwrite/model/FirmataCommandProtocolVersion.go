@@ -103,7 +103,7 @@ func (m *FirmataCommandProtocolVersion) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandProtocolVersionParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandProtocolVersion"); pullErr != nil {
 		return nil, pullErr
 	}

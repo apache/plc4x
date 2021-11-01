@@ -92,7 +92,7 @@ func (m *ApduDataExtLinkResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtLinkResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkResponse"); pullErr != nil {
 		return nil, pullErr
 	}

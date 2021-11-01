@@ -96,7 +96,7 @@ func (m *AdsReadDeviceInfoRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoRequest"); pullErr != nil {
 		return nil, pullErr
 	}

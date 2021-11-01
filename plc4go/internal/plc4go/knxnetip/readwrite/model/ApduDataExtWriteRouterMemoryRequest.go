@@ -92,7 +92,7 @@ func (m *ApduDataExtWriteRouterMemoryRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtWriteRouterMemoryRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterMemoryRequest"); pullErr != nil {
 		return nil, pullErr
 	}

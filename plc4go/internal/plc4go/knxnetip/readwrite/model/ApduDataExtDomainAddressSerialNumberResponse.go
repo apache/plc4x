@@ -92,7 +92,7 @@ func (m *ApduDataExtDomainAddressSerialNumberResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtDomainAddressSerialNumberResponseParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtDomainAddressSerialNumberResponseParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSerialNumberResponse"); pullErr != nil {
 		return nil, pullErr
 	}

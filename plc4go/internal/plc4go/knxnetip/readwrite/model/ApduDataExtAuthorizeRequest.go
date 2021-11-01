@@ -105,7 +105,7 @@ func (m *ApduDataExtAuthorizeRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtAuthorizeRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -116,8 +116,8 @@ func ApduDataExtAuthorizeRequestParse(readBuffer utils.ReadBuffer) (*ApduDataExt
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(uint16(4))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(uint16(4))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

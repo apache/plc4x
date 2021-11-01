@@ -92,7 +92,7 @@ func (m *LPollDataReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LPollDataReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LPollDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LPollDataReq"); pullErr != nil {
 		return nil, pullErr
 	}

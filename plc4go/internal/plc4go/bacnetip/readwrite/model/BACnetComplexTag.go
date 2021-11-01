@@ -224,31 +224,31 @@ func BACnetComplexTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	var typeSwitchError error
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetComplexTagNull
-		_parent, typeSwitchError = BACnetComplexTagNullParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagNullParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BOOLEAN: // BACnetComplexTagBoolean
-		_parent, typeSwitchError = BACnetComplexTagBooleanParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagBooleanParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetComplexTagUnsignedInteger
-		_parent, typeSwitchError = BACnetComplexTagUnsignedIntegerParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagUnsignedIntegerParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetComplexTagSignedInteger
-		_parent, typeSwitchError = BACnetComplexTagSignedIntegerParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagSignedIntegerParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_REAL: // BACnetComplexTagReal
-		_parent, typeSwitchError = BACnetComplexTagRealParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagRealParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_DOUBLE: // BACnetComplexTagDouble
-		_parent, typeSwitchError = BACnetComplexTagDoubleParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagDoubleParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetComplexTagOctetString
-		_parent, typeSwitchError = BACnetComplexTagOctetStringParse(readBuffer, actualLength)
+		_parent, typeSwitchError = BACnetComplexTagOctetStringParse(readBuffer, tagNumberArgument, dataType, actualLength)
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetComplexTagCharacterString
-		_parent, typeSwitchError = BACnetComplexTagCharacterStringParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagCharacterStringParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BIT_STRING: // BACnetComplexTagBitString
-		_parent, typeSwitchError = BACnetComplexTagBitStringParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagBitStringParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_ENUMERATED: // BACnetComplexTagEnumerated
-		_parent, typeSwitchError = BACnetComplexTagEnumeratedParse(readBuffer, lengthValueType, *extLength)
+		_parent, typeSwitchError = BACnetComplexTagEnumeratedParse(readBuffer, tagNumberArgument, dataType, lengthValueType, *extLength)
 	case dataType == BACnetDataType_DATE: // BACnetComplexTagDate
-		_parent, typeSwitchError = BACnetComplexTagDateParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagDateParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_TIME: // BACnetComplexTagTime
-		_parent, typeSwitchError = BACnetComplexTagTimeParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagTimeParse(readBuffer, tagNumberArgument, dataType)
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetComplexTagObjectIdentifier
-		_parent, typeSwitchError = BACnetComplexTagObjectIdentifierParse(readBuffer)
+		_parent, typeSwitchError = BACnetComplexTagObjectIdentifierParse(readBuffer, tagNumberArgument, dataType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

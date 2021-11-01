@@ -92,7 +92,7 @@ func (m *TDataIndividualReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataIndividualReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("TDataIndividualReq"); pullErr != nil {
 		return nil, pullErr
 	}

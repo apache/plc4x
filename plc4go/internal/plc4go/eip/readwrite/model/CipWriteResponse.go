@@ -107,7 +107,7 @@ func (m *CipWriteResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipWriteResponseParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipWriteResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
 		return nil, pullErr
 	}

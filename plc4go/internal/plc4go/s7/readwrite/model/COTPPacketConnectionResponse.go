@@ -110,7 +110,7 @@ func (m *COTPPacketConnectionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketConnectionResponseParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
 		return nil, pullErr
 	}

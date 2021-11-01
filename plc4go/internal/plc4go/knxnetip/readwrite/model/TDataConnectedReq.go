@@ -92,7 +92,7 @@ func (m *TDataConnectedReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataConnectedReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func TDataConnectedReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("TDataConnectedReq"); pullErr != nil {
 		return nil, pullErr
 	}

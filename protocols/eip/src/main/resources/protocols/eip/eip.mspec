@@ -58,7 +58,7 @@
             [array      byte   'tag'   length  '(requestPathSize * 2)']
             [simple     uint    16  'elementNb']
         ]
-        ['0xCC' CipReadResponse(uint 16 'serviceLen')
+        ['0xCC' CipReadResponse
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
@@ -77,12 +77,12 @@
             [simple     uint        8   'status']
             [simple     uint        8   'extStatus']
         ]
-        ['0x0A' MultipleServiceRequest(uint 16 'serviceLen')
+        ['0x0A' MultipleServiceRequest
                [const  int     8   'requestPathSize'   '0x02']
                [const  uint    32  'requestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
                [simple Services('serviceLen - 6 ')  'data' ]
         ]
-        ['0x8A' MultipleServiceResponse(uint 16 'serviceLen')
+        ['0x8A' MultipleServiceResponse
                [reserved   uint    8   '0x0']
                [simple     uint    8   'status']
                [simple     uint    8   'extStatus']

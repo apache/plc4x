@@ -96,7 +96,7 @@ func (m *SysexCommandSysexNonRealtime) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandSysexNonRealtimeParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandSysexNonRealtime"); pullErr != nil {
 		return nil, pullErr
 	}

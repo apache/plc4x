@@ -106,7 +106,7 @@ func (m *BACnetComplexTagEnumerated) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -92,7 +92,7 @@ func (m *ApduDataExtGroupPropertyValueWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtGroupPropertyValueWriteParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtGroupPropertyValueWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueWrite"); pullErr != nil {
 		return nil, pullErr
 	}

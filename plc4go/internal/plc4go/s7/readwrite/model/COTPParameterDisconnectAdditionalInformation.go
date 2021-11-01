@@ -105,8 +105,8 @@ func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuff
 		return nil, pullErr
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(rest)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(rest)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

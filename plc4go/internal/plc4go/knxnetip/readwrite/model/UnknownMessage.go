@@ -105,8 +105,8 @@ func UnknownMessageParse(readBuffer utils.ReadBuffer, totalLength uint16) (*KnxN
 		return nil, pullErr
 	}
 	// Byte Array field (unknownData)
-	numberOfBytes := int(uint16(totalLength) - uint16(uint16(6)))
-	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytes)
+	numberOfBytesunknownData := int(uint16(totalLength) - uint16(uint16(6)))
+	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytesunknownData)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownData' field")
 	}

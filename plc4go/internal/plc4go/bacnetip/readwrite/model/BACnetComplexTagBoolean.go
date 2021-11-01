@@ -98,7 +98,7 @@ func (m *BACnetComplexTagBoolean) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagBooleanParse(readBuffer utils.ReadBuffer) (*BACnetComplexTag, error) {
+func BACnetComplexTagBooleanParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagBoolean"); pullErr != nil {
 		return nil, pullErr
 	}

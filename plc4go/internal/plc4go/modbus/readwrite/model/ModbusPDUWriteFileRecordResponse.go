@@ -113,7 +113,7 @@ func (m *ModbusPDUWriteFileRecordResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteFileRecordResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordResponse"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedPrivateTransfer) LengthInBytes() 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, pullErr
 	}

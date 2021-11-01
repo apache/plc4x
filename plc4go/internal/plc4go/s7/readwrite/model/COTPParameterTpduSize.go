@@ -98,7 +98,7 @@ func (m *COTPParameterTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterTpduSizeParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, pullErr
 	}

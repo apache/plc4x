@@ -108,13 +108,13 @@ func FirmataMessageParse(readBuffer utils.ReadBuffer, response bool) (*FirmataMe
 	var typeSwitchError error
 	switch {
 	case messageType == 0xE: // FirmataMessageAnalogIO
-		_parent, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer)
+		_parent, typeSwitchError = FirmataMessageAnalogIOParse(readBuffer, response)
 	case messageType == 0x9: // FirmataMessageDigitalIO
-		_parent, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer)
+		_parent, typeSwitchError = FirmataMessageDigitalIOParse(readBuffer, response)
 	case messageType == 0xC: // FirmataMessageSubscribeAnalogPinValue
-		_parent, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer)
+		_parent, typeSwitchError = FirmataMessageSubscribeAnalogPinValueParse(readBuffer, response)
 	case messageType == 0xD: // FirmataMessageSubscribeDigitalPinValue
-		_parent, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer)
+		_parent, typeSwitchError = FirmataMessageSubscribeDigitalPinValueParse(readBuffer, response)
 	case messageType == 0xF: // FirmataMessageCommand
 		_parent, typeSwitchError = FirmataMessageCommandParse(readBuffer, response)
 	default:

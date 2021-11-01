@@ -132,8 +132,8 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(utils.InlineIf(transportSize.SizeInBits(), func() interface{} { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() interface{} { return uint16(dataLength) }).(uint16))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(utils.InlineIf(transportSize.SizeInBits(), func() interface{} { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() interface{} { return uint16(dataLength) }).(uint16))
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

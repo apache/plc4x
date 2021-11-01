@@ -106,7 +106,7 @@ func (m *BACnetComplexTagUnsignedInteger) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagUnsignedIntegerParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagUnsignedInteger"); pullErr != nil {
 		return nil, pullErr
 	}

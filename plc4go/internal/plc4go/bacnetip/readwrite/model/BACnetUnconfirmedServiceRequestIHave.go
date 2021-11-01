@@ -92,7 +92,7 @@ func (m *BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer) (*BACnetUnconfirmedServiceRequest, error) {
+func BACnetUnconfirmedServiceRequestIHaveParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetUnconfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestIHave"); pullErr != nil {
 		return nil, pullErr
 	}

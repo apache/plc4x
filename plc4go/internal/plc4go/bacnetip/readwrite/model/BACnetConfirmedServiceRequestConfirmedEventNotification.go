@@ -92,7 +92,7 @@ func (m *BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBytes(
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer utils.ReadBuffer) (*BACnetConfirmedServiceRequest, error) {
+func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(readBuffer utils.ReadBuffer, len uint16) (*BACnetConfirmedServiceRequest, error) {
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedEventNotification"); pullErr != nil {
 		return nil, pullErr
 	}

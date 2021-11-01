@@ -96,7 +96,7 @@ func (m *SysexCommandCapabilityQuery) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandCapabilityQueryParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityQuery"); pullErr != nil {
 		return nil, pullErr
 	}

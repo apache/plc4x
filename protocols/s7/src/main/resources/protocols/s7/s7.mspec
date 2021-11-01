@@ -222,16 +222,16 @@
 
 [discriminatedType 'S7Payload' (uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.parameterType', 'messageType'
-        ['0x04','0x03' S7PayloadReadVarResponse(S7Parameter 'parameter')
+        ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
-        ['0x05','0x01' S7PayloadWriteVarRequest(S7Parameter 'parameter')
+        ['0x05','0x01' S7PayloadWriteVarRequest
             [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
         ]
-        ['0x05','0x03' S7PayloadWriteVarResponse(S7Parameter 'parameter')
+        ['0x05','0x03' S7PayloadWriteVarResponse
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
-        ['0x00','0x07' S7PayloadUserData(S7Parameter 'parameter')
+        ['0x00','0x07' S7PayloadUserData
             [array S7PayloadUserDataItem('CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType', 'CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuSubfunction') 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)']
         ]
     ]
