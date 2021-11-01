@@ -118,7 +118,7 @@ func (m *S7PayloadUserDataItemCpuFunctionAlarmAckResponse) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmAckResponse"); pullErr != nil {
 		return nil, pullErr
 	}

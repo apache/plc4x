@@ -92,7 +92,7 @@ func (m *ApduDataExtNetworkParameterWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtNetworkParameterWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterWrite"); pullErr != nil {
 		return nil, pullErr
 	}

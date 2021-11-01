@@ -92,7 +92,7 @@ func (m *ApduDataExtMemoryBitWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtMemoryBitWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, pullErr
 	}

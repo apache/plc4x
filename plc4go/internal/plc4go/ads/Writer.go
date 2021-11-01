@@ -113,7 +113,7 @@ func (m *Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWrite
 			}
 			return
 		}
-		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
+		data := io.GetBytes()
 
 		userdata := readWriteModel.AmsPacket{
 			TargetAmsNetId: &m.targetAmsNetId,

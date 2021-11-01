@@ -98,7 +98,7 @@ func (m *BACnetComplexTagDate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagDateParse(readBuffer utils.ReadBuffer) (*BACnetComplexTag, error) {
+func BACnetComplexTagDateParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagDate"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -96,7 +96,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandAnalogMappingQueryRequestParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingQueryRequest"); pullErr != nil {
 		return nil, pullErr
 	}

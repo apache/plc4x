@@ -92,7 +92,7 @@ func (m *ApduDataExtKeyWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataExtKeyWriteParse(readBuffer utils.ReadBuffer) (*ApduDataExt, error) {
+func ApduDataExtKeyWriteParse(readBuffer utils.ReadBuffer, length uint8) (*ApduDataExt, error) {
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyWrite"); pullErr != nil {
 		return nil, pullErr
 	}

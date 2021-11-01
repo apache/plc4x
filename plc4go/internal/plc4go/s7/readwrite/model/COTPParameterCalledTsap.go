@@ -98,7 +98,7 @@ func (m *COTPParameterCalledTsap) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterCalledTsapParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
 		return nil, pullErr
 	}

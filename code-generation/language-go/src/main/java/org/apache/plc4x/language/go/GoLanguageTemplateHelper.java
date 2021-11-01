@@ -85,144 +85,142 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     @Override
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
-        if (typeReference instanceof SimpleTypeReference) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-            switch (simpleTypeReference.getBaseType()) {
-                case BIT: {
-                    return "bool";
-                }
-                case BYTE: {
-                    return "byte";
-                }
-                case UINT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "uint8";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "uint16";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "uint32";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "uint64";
-                    }
-                    emitRequiredImport("math/big");
-                    return "*big.Int";
-                }
-                case INT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "int8";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "int16";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "int32";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "int64";
-                    }
-                    emitRequiredImport("math/big");
-                    return "*big.Int";
-                }
-                case FLOAT:
-                case UFLOAT: {
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = floatTypeReference.getSizeInBits();
-                    if (sizeInBits <= 32) {
-                        return "float32";
-                    }
-                    if (sizeInBits <= 64) {
-                        return "float64";
-                    }
-                    emitRequiredImport("math/big");
-                    return "*big.Float";
-                }
-                case STRING:
-                case VSTRING:
-                    return "string";
-                case TIME: {
-                    return "Time";
-                }
-                case DATE: {
-                    return "Date";
-                }
-                case DATETIME: {
-                    return "Date";
-                }
-            }
-            throw new RuntimeException("Unsupported simple type");
-        } else {
-            return (typeReference != null) ? ((ComplexTypeReference) typeReference).getName() : "";
+        if (typeReference == null) {
+            // TODO: shouldn't this be an error case
+            return "";
         }
+        if (!(typeReference instanceof SimpleTypeReference)) {
+            return ((ComplexTypeReference) typeReference).getName();
+        }
+        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "bool";
+            case BYTE:
+                return "byte";
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    return "uint8";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    return "uint16";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    return "uint32";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                    return "uint64";
+                }
+                emitRequiredImport("math/big");
+                return "*big.Int";
+            case INT:
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return "int8";
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return "int16";
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return "int32";
+                }
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "int64";
+                }
+                emitRequiredImport("math/big");
+                return "*big.Int";
+            case FLOAT:
+            case UFLOAT:
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                int sizeInBits = floatTypeReference.getSizeInBits();
+                if (sizeInBits <= 32) {
+                    return "float32";
+                }
+                if (sizeInBits <= 64) {
+                    return "float64";
+                }
+                emitRequiredImport("math/big");
+                return "*big.Float";
+            case STRING:
+            case VSTRING:
+                return "string";
+            case TIME:
+                return "Time";
+            case DATE:
+                return "Date";
+            case DATETIME:
+                return "Date";
+        }
+        throw new RuntimeException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
-        if (typeReference instanceof SimpleTypeReference) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-            switch (simpleTypeReference.getBaseType()) {
-                case BIT:
-                    return "values.NewPlcBOOL";
-                case BYTE:
-                    return "values.NewPlcUINT";
-                case UINT:
-                    IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                        return "values.NewPlcUSINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                        return "values.NewPlcUINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                        return "values.NewPlcUDINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                        return "values.NewPlcULINT";
-                    }
-                    return "values.NewPlcBINT";
-                case INT:
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "values.NewPlcSINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "values.NewPlcINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "values.NewPlcDINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "values.NewPlcLINT";
-                    }
-                    return "values.NewPlcBINT";
-                case FLOAT:
-                case UFLOAT:
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = floatTypeReference.getSizeInBits();
-                    if (sizeInBits <= 32) {
-                        return "values.NewPlcREAL";
-                    }
-                    if (sizeInBits <= 64) {
-                        return "values.NewPlcLREAL";
-                    }
-                    return "values.NewPlcBREAL";
-                case STRING:
-                case VSTRING:
-                    return "values.NewPlcSTRING";
-                case TIME:
-                    return "values.NewPlcTIME";
-                case DATE:
-                    return "values.NewPlcDATE";
-                case DATETIME:
-                    return "values.NewPlcDATE_AND_TIME";
-            }
-            throw new FreemarkerException("Unsupported simple type" + simpleTypeReference.getBaseType());
-        } else {
-            return (typeReference != null) ? ((ComplexTypeReference) typeReference).getName() : "";
+        if (typeReference == null) {
+            // TODO: shouldn't this be an error case
+            return "";
         }
+        if (!(typeReference instanceof SimpleTypeReference)) {
+            return ((ComplexTypeReference) typeReference).getName();
+        }
+        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "values.NewPlcBOOL";
+            case BYTE:
+                return "values.NewPlcBYTE";
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    return "values.NewPlcUSINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    return "values.NewPlcUINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    return "values.NewPlcUDINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
+                    return "values.NewPlcULINT";
+                }
+                return "values.NewPlcBINT";
+            case INT:
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return "values.NewPlcSINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return "values.NewPlcINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return "values.NewPlcDINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "values.NewPlcLINT";
+                }
+                return "values.NewPlcBINT";
+            case FLOAT:
+            case UFLOAT:
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                int sizeInBits = floatTypeReference.getSizeInBits();
+                if (sizeInBits <= 32) {
+                    return "values.NewPlcREAL";
+                }
+                if (sizeInBits <= 64) {
+                    return "values.NewPlcLREAL";
+                }
+                return "values.NewPlcBREAL";
+            case STRING:
+            case VSTRING:
+                return "values.NewPlcSTRING";
+            case TIME:
+                return "values.NewPlcTIME";
+            case DATE:
+                return "values.NewPlcDATE";
+            case DATETIME:
+                return "values.NewPlcDATE_AND_TIME";
+        }
+        throw new FreemarkerException("Unsupported simple type" + simpleTypeReference.getBaseType());
     }
 
     @Override
@@ -252,7 +250,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return 1;
-
             case BYTE:
                 return 8;
             case UINT:
@@ -406,10 +403,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
-                }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String encoding = encodingTerm.asLiteral()
+                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
+                    .asStringLiteral()
+                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
@@ -417,10 +414,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
-                }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
+                String encoding = encodingTerm.asLiteral()
+                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
+                    .asStringLiteral()
+                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
                 // TODO: Port this to use the expression term instead.
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + length + "), \"" +
@@ -489,12 +486,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     String getCastExpressionForTypeReference(TypeReference typeReference) {
+        Tracer tracer = Tracer.start("castExpression");
         if (typeReference instanceof SimpleTypeReference) {
-            return getLanguageTypeNameForTypeReference(typeReference);
+            return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
         } else if (typeReference != null) {
-            return "Cast" + getLanguageTypeNameForTypeReference(typeReference);
+            return tracer.dive("anyTypeRef") + "Cast" + getLanguageTypeNameForTypeReference(typeReference);
         } else {
-            return "";
+            return tracer.dive("noTypeRef") + "";
         }
     }
 
@@ -677,7 +675,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         else if (variableLiteral.getName().equals(variableLiteral.getName().toUpperCase())) {
             return toUppercaseVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
         }
-
         // If the current property references a discriminator value, we have to serialize it differently.
         else if (thisType.isComplexTypeDefinition() && thisType.asComplexTypeDefinition()
             .orElseThrow(IllegalStateException::new)
@@ -690,19 +687,26 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // If the variable has a child element and we're able to find a type for this ... get the type.
         else if ((variableLiteral.getChild().isPresent()) && (getTypeReferenceForProperty(((ComplexTypeDefinition) thisType), variableLiteral.getName()).isPresent())) {
             tracer = tracer.dive("child element");
-            final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty(((ComplexTypeDefinition) thisType), variableLiteral.getName());
-            if (typeReferenceForProperty.isPresent() && typeReferenceForProperty.get() instanceof ComplexTypeReference) {
+            final Optional<ComplexTypeReference> typeReferenceForProperty = getTypeReferenceForProperty(((ComplexTypeDefinition) thisType), variableLiteral.getName())
+                .flatMap(TypeReferenceConversions::asComplexTypeReference);
+            if (typeReferenceForProperty.isPresent()) {
                 tracer = tracer.dive("complex");
                 final TypeReference complexTypeReference = typeReferenceForProperty.get();
                 TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(complexTypeReference);
                 if (typeDefinition instanceof ComplexTypeDefinition) {
                     tracer = tracer.dive("complex");
                     ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
-                    String childProperty = variableLiteral.getChild().orElseThrow(() -> new RuntimeException("complex needs a child")).getName();
-                    final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream().filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty)).findFirst();
+                    String childProperty = variableLiteral.getChild()
+                        .orElseThrow(() -> new RuntimeException("complex needs a child"))
+                        .getName();
+                    final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream()
+                        .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
+                        .findFirst();
                     if (matchingDiscriminatorField.isPresent()) {
                         return tracer + "Cast" + getLanguageTypeNameForTypeReference(complexTypeReference) + "(" + variableLiteral.getName() + ").Child." + StringUtils.capitalize(childProperty) + "()";
                     }
+                    // TODO: is this really meant to fall through?
+                    tracer = tracer.dive("we fell through the complex complex");
                 } else if (typeDefinition instanceof EnumTypeDefinition) {
                     tracer = tracer.dive("enum");
                     return tracer + (serialize ? "m." + StringUtils.capitalize(variableLiteral.getName()) : variableLiteral.getName()) +
@@ -710,6 +714,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
             }
             // TODO: is this really meant to fall through?
+            tracer = tracer.dive("we fell through the child comple");
         } else if (isVariableLiteralImplicitField(variableLiteral)) {
             tracer = tracer.dive("implicit");
             if (serialize) {
@@ -799,7 +804,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else {
             sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, true, suppressPointerAccess));
         }
-        return tracer + getCastExpressionForTypeReference(typeReference) + "(" + va.getName() + "ArraySizeInBytes(" + sb.toString() + "))";
+        return tracer + getCastExpressionForTypeReference(typeReference) + "(" + va.getName() + "ArraySizeInBytes(" + sb + "))";
     }
 
     private String toCountVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
@@ -859,7 +864,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         sb.append(va.getName().substring(1)).append(va.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess)).orElse(""));
                     } else {
                         sb.append(va.getName()).append((va.getChild().isPresent()) ?
-                            "." + toVariableExpression(field, typeReference, variableLiteral.getChild().get(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+                            "." + toVariableExpression(field, typeReference, variableLiteral.getChild().orElseThrow(IllegalStateException::new), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
                     }
                 }
                 // We have to manually evaluate the type information at code-generation time.
@@ -924,7 +929,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toConstantVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("enum constant");
-        VariableLiteral child = variableLiteral.getChild().get();
+        VariableLiteral child = variableLiteral.getChild().orElseThrow(IllegalStateException::new);
         return tracer + variableLiteral.getName() + "." + StringUtils.capitalize(child.getName()) + "()" +
             child.getChild().map(childChild -> "." + toVariableExpression(field, typeReference, childChild, parserArguments, serializerArguments, false, suppressPointerAccess)).orElse("");
     }
@@ -986,7 +991,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
                     sizeInBits += simpleTypeReference.getSizeInBits();
                 } else {
-                    // No ComplexTypeReference supported.
+                    throw new IllegalStateException("No ComplexTypeReference supported");
                 }
             }
         }

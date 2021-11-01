@@ -277,7 +277,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 	return result
 }
 
-func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]int8, error) {
+func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, elements uint16) ([]byte, error) {
 	buffer := utils.NewLittleEndianWriteBufferByteBased()
 	switch _type {
 	case readWriteModel.CIPDataTypeCode_SINT:
@@ -304,7 +304,7 @@ func encodeValue(value values.PlcValue, _type readWriteModel.CIPDataTypeCode, el
 		// TODO: what is the default type? write nothing?
 		//panic("unmapped type: " + strconv.Itoa(int(_type)))
 	}
-	return utils.ByteArrayToInt8Array(buffer.GetBytes()), nil
+	return buffer.GetBytes(), nil
 }
 
 func (m Writer) ToPlc4xWriteResponse(response *readWriteModel.CipService, writeRequest model.PlcWriteRequest) (model.PlcWriteResponse, error) {
@@ -319,7 +319,7 @@ func (m Writer) ToPlc4xWriteResponse(response *readWriteModel.CipService, writeR
 		multipleServiceResponse := response.Child.(*readWriteModel.MultipleServiceResponse)
 		nb := multipleServiceResponse.ServiceNb
 		arr := make([]*readWriteModel.CipService, nb)
-		read := utils.NewLittleEndianReadBufferByteBased(utils.Int8ArrayToByteArray(multipleServiceResponse.ServicesData))
+		read := utils.NewLittleEndianReadBufferByteBased(multipleServiceResponse.ServicesData)
 		total := read.GetTotalBytes()
 		for i := uint16(0); i < nb; i++ {
 			length := uint16(0)

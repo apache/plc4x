@@ -116,7 +116,7 @@ func (m *S7ParameterSetupCommunication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterSetupCommunicationParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, pullErr
 	}

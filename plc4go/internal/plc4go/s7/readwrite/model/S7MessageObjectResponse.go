@@ -107,7 +107,7 @@ func (m *S7MessageObjectResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer) (*S7DataAlarmMessage, error) {
+func S7MessageObjectResponseParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (*S7DataAlarmMessage, error) {
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
 		return nil, pullErr
 	}

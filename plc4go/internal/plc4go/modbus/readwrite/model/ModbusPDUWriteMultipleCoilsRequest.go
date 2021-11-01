@@ -121,7 +121,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -145,8 +145,8 @@ func ModbusPDUWriteMultipleCoilsRequestParse(readBuffer utils.ReadBuffer) (*Modb
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 	// Byte Array field (value)
-	numberOfBytes := int(byteCount)
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytes)
+	numberOfBytesvalue := int(byteCount)
+	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
 	}

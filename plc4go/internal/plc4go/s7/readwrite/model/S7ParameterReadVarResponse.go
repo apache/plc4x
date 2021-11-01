@@ -102,7 +102,7 @@ func (m *S7ParameterReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterReadVarResponseParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
 		return nil, pullErr
 	}

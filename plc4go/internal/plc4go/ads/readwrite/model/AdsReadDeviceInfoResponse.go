@@ -124,7 +124,7 @@ func (m *AdsReadDeviceInfoResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -159,8 +159,8 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer) (*AdsData, erro
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
 	// Byte Array field (device)
-	numberOfBytes := int(uint16(16))
-	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytes)
+	numberOfBytesdevice := int(uint16(16))
+	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytesdevice)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field")
 	}

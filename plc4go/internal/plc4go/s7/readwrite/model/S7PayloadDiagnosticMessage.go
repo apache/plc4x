@@ -138,7 +138,7 @@ func (m *S7PayloadDiagnosticMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer) (*S7PayloadUserDataItem, error) {
+func S7PayloadDiagnosticMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8, cpuSubfunction uint8) (*S7PayloadUserDataItem, error) {
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {
 		return nil, pullErr
 	}

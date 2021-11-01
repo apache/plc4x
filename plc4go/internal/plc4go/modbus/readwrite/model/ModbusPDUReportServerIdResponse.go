@@ -111,7 +111,7 @@ func (m *ModbusPDUReportServerIdResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusPDU, error) {
+func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer, response bool) (*ModbusPDU, error) {
 	if pullErr := readBuffer.PullContext("ModbusPDUReportServerIdResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -123,8 +123,8 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
 	// Byte Array field (value)
-	numberOfBytes := int(byteCount)
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytes)
+	numberOfBytesvalue := int(byteCount)
+	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
 	}

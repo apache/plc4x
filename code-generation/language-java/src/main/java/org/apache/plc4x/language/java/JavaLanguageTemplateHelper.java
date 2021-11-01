@@ -98,130 +98,128 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
-        if (typeReference instanceof SimpleTypeReference) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-            switch (simpleTypeReference.getBaseType()) {
-                case BIT:
-                    return allowPrimitive ? boolean.class.getSimpleName() : Boolean.class.getSimpleName();
-                case BYTE:
-                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
-                case UINT:
-                    IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                        return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                        return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                        return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                        return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
-                    }
-                    return BigInteger.class.getSimpleName();
-                case INT:
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
-                        return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
-                    }
-                    return BigInteger.class.getSimpleName();
-                case FLOAT:
-                case UFLOAT:
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = floatTypeReference.getSizeInBits();
-                    if (sizeInBits <= 32) {
-                        return allowPrimitive ? float.class.getSimpleName() : Float.class.getSimpleName();
-                    }
-                    if (sizeInBits <= 64) {
-                        return allowPrimitive ? double.class.getSimpleName() : Double.class.getSimpleName();
-                    }
-                    return BigDecimal.class.getSimpleName();
-                case STRING:
-                case VSTRING:
-                    return String.class.getSimpleName();
-                case TIME:
-                    return LocalTime.class.getSimpleName();
-                case DATE:
-                    return LocalDate.class.getSimpleName();
-                case DATETIME:
-                    return LocalDateTime.class.getSimpleName();
-
-            }
-            throw new RuntimeException("Unsupported simple type");
-        } else {
+        if (!(typeReference instanceof SimpleTypeReference)) {
             return ((ComplexTypeReference) typeReference).getName();
         }
+        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return allowPrimitive ? boolean.class.getSimpleName() : Boolean.class.getSimpleName();
+            case BYTE:
+                return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                }
+                return BigInteger.class.getSimpleName();
+            case INT:
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
+                }
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
+                }
+                return BigInteger.class.getSimpleName();
+            case FLOAT:
+            case UFLOAT:
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                int sizeInBits = floatTypeReference.getSizeInBits();
+                if (sizeInBits <= 32) {
+                    return allowPrimitive ? float.class.getSimpleName() : Float.class.getSimpleName();
+                }
+                if (sizeInBits <= 64) {
+                    return allowPrimitive ? double.class.getSimpleName() : Double.class.getSimpleName();
+                }
+                return BigDecimal.class.getSimpleName();
+            case STRING:
+            case VSTRING:
+                return String.class.getSimpleName();
+            case TIME:
+                return LocalTime.class.getSimpleName();
+            case DATE:
+                return LocalDate.class.getSimpleName();
+            case DATETIME:
+                return LocalDateTime.class.getSimpleName();
+
+        }
+        throw new RuntimeException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
-        if (typeReference instanceof SimpleTypeReference) {
-            SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
-            switch (simpleTypeReference.getBaseType()) {
-                case BIT:
-                    return "PlcBOOL";
-                case BYTE:
-                    return "PlcSINT";
-                case UINT:
-                    IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
-                        return "PlcUSINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                        return "PlcUINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                        return "PlcUDINT";
-                    }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                        return "PlcULINT";
-                    }
-                case INT:
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
-                        return "PlcSINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "PlcINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "PlcDINT";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "PlcLINT";
-                    }
-
-                case FLOAT:
-                case UFLOAT:
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = floatTypeReference.getSizeInBits();
-                    if (sizeInBits <= 32) {
-                        return "PlcREAL";
-                    }
-                    if (sizeInBits <= 64) {
-                        return "PlcLREAL";
-                    }
-                case STRING:
-                case VSTRING:
-                    return "PlcSTRING";
-                case TIME:
-                case DATE:
-                case DATETIME:
-                    return "PlcTIME";
-            }
-            throw new RuntimeException("Unsupported simple type");
-        } else {
+        if (!(typeReference instanceof SimpleTypeReference)) {
             return "PlcStruct";
         }
+        SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "PlcBOOL";
+            case BYTE:
+                return "PlcSINT";
+            case UINT:
+                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                    return "PlcUSINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    return "PlcUINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    return "PlcUDINT";
+                }
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    return "PlcULINT";
+                }
+            case INT:
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return "PlcSINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return "PlcINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return "PlcDINT";
+                }
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "PlcLINT";
+                }
+
+            case FLOAT:
+            case UFLOAT:
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                int sizeInBits = floatTypeReference.getSizeInBits();
+                if (sizeInBits <= 32) {
+                    return "PlcREAL";
+                }
+                if (sizeInBits <= 64) {
+                    return "PlcLREAL";
+                }
+            case STRING:
+            case VSTRING:
+                return "PlcSTRING";
+            case TIME:
+            case DATE:
+            case DATETIME:
+                return "PlcTIME";
+        }
+        throw new RuntimeException("Unsupported simple type");
     }
 
     @Override
@@ -683,8 +681,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             .asStringLiteral()
             .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
-        // Cut off the double-quotes
-        //methodName = methodName.substring(1, methodName.length() - 1);
         sb.append(methodName).append("(");
         for (int i = 1; i < arguments.size(); i++) {
             Term arg = arguments.get(i);

@@ -96,7 +96,7 @@ func (m *AdsReadStateRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func AdsReadStateRequestParse(readBuffer utils.ReadBuffer) (*AdsData, error) {
+func AdsReadStateRequestParse(readBuffer utils.ReadBuffer, commandId CommandId, response bool) (*AdsData, error) {
 	if pullErr := readBuffer.PullContext("AdsReadStateRequest"); pullErr != nil {
 		return nil, pullErr
 	}

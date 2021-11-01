@@ -96,7 +96,7 @@ func (m *SysexCommandStringData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandStringDataParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandStringDataParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandStringData"); pullErr != nil {
 		return nil, pullErr
 	}

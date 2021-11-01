@@ -140,8 +140,8 @@ func LPollDataParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, closeErr
 	}
 	// Byte Array field (targetAddress)
-	numberOfBytes := int(uint16(2))
-	targetAddress, _readArrayErr := readBuffer.ReadByteArray("targetAddress", numberOfBytes)
+	numberOfBytestargetAddress := int(uint16(2))
+	targetAddress, _readArrayErr := readBuffer.ReadByteArray("targetAddress", numberOfBytestargetAddress)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'targetAddress' field")
 	}

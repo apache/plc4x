@@ -123,8 +123,8 @@ func ModbusPDUWriteFileRecordRequestItemParse(readBuffer utils.ReadBuffer) (*Mod
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
 	// Byte Array field (recordData)
-	numberOfBytes := int(uint16(recordLength) * uint16(uint16(2)))
-	recordData, _readArrayErr := readBuffer.ReadByteArray("recordData", numberOfBytes)
+	numberOfBytesrecordData := int(uint16(recordLength) * uint16(uint16(2)))
+	recordData, _readArrayErr := readBuffer.ReadByteArray("recordData", numberOfBytesrecordData)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'recordData' field")
 	}

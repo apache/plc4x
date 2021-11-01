@@ -107,7 +107,7 @@ func (m *APDUReject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDURejectParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDURejectParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUReject"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -92,7 +92,7 @@ func (m *MFuncPropCommandReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MFuncPropCommandReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -112,7 +112,7 @@ func (m *APDUAbort) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUAbortParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUAbortParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
 		return nil, pullErr
 	}

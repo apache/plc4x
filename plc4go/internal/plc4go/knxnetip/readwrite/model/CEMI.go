@@ -108,51 +108,51 @@ func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	var typeSwitchError error
 	switch {
 	case messageCode == 0x2B: // LBusmonInd
-		_parent, typeSwitchError = LBusmonIndParse(readBuffer)
+		_parent, typeSwitchError = LBusmonIndParse(readBuffer, size)
 	case messageCode == 0x11: // LDataReq
-		_parent, typeSwitchError = LDataReqParse(readBuffer)
+		_parent, typeSwitchError = LDataReqParse(readBuffer, size)
 	case messageCode == 0x29: // LDataInd
-		_parent, typeSwitchError = LDataIndParse(readBuffer)
+		_parent, typeSwitchError = LDataIndParse(readBuffer, size)
 	case messageCode == 0x2E: // LDataCon
-		_parent, typeSwitchError = LDataConParse(readBuffer)
+		_parent, typeSwitchError = LDataConParse(readBuffer, size)
 	case messageCode == 0x10: // LRawReq
-		_parent, typeSwitchError = LRawReqParse(readBuffer)
+		_parent, typeSwitchError = LRawReqParse(readBuffer, size)
 	case messageCode == 0x2D: // LRawInd
-		_parent, typeSwitchError = LRawIndParse(readBuffer)
+		_parent, typeSwitchError = LRawIndParse(readBuffer, size)
 	case messageCode == 0x2F: // LRawCon
-		_parent, typeSwitchError = LRawConParse(readBuffer)
+		_parent, typeSwitchError = LRawConParse(readBuffer, size)
 	case messageCode == 0x13: // LPollDataReq
-		_parent, typeSwitchError = LPollDataReqParse(readBuffer)
+		_parent, typeSwitchError = LPollDataReqParse(readBuffer, size)
 	case messageCode == 0x25: // LPollDataCon
-		_parent, typeSwitchError = LPollDataConParse(readBuffer)
+		_parent, typeSwitchError = LPollDataConParse(readBuffer, size)
 	case messageCode == 0x41: // TDataConnectedReq
-		_parent, typeSwitchError = TDataConnectedReqParse(readBuffer)
+		_parent, typeSwitchError = TDataConnectedReqParse(readBuffer, size)
 	case messageCode == 0x89: // TDataConnectedInd
-		_parent, typeSwitchError = TDataConnectedIndParse(readBuffer)
+		_parent, typeSwitchError = TDataConnectedIndParse(readBuffer, size)
 	case messageCode == 0x4A: // TDataIndividualReq
-		_parent, typeSwitchError = TDataIndividualReqParse(readBuffer)
+		_parent, typeSwitchError = TDataIndividualReqParse(readBuffer, size)
 	case messageCode == 0x94: // TDataIndividualInd
-		_parent, typeSwitchError = TDataIndividualIndParse(readBuffer)
+		_parent, typeSwitchError = TDataIndividualIndParse(readBuffer, size)
 	case messageCode == 0xFC: // MPropReadReq
-		_parent, typeSwitchError = MPropReadReqParse(readBuffer)
+		_parent, typeSwitchError = MPropReadReqParse(readBuffer, size)
 	case messageCode == 0xFB: // MPropReadCon
-		_parent, typeSwitchError = MPropReadConParse(readBuffer)
+		_parent, typeSwitchError = MPropReadConParse(readBuffer, size)
 	case messageCode == 0xF6: // MPropWriteReq
-		_parent, typeSwitchError = MPropWriteReqParse(readBuffer)
+		_parent, typeSwitchError = MPropWriteReqParse(readBuffer, size)
 	case messageCode == 0xF5: // MPropWriteCon
-		_parent, typeSwitchError = MPropWriteConParse(readBuffer)
+		_parent, typeSwitchError = MPropWriteConParse(readBuffer, size)
 	case messageCode == 0xF7: // MPropInfoInd
-		_parent, typeSwitchError = MPropInfoIndParse(readBuffer)
+		_parent, typeSwitchError = MPropInfoIndParse(readBuffer, size)
 	case messageCode == 0xF8: // MFuncPropCommandReq
-		_parent, typeSwitchError = MFuncPropCommandReqParse(readBuffer)
+		_parent, typeSwitchError = MFuncPropCommandReqParse(readBuffer, size)
 	case messageCode == 0xF9: // MFuncPropStateReadReq
-		_parent, typeSwitchError = MFuncPropStateReadReqParse(readBuffer)
+		_parent, typeSwitchError = MFuncPropStateReadReqParse(readBuffer, size)
 	case messageCode == 0xFA: // MFuncPropCon
-		_parent, typeSwitchError = MFuncPropConParse(readBuffer)
+		_parent, typeSwitchError = MFuncPropConParse(readBuffer, size)
 	case messageCode == 0xF1: // MResetReq
-		_parent, typeSwitchError = MResetReqParse(readBuffer)
+		_parent, typeSwitchError = MResetReqParse(readBuffer, size)
 	case messageCode == 0xF0: // MResetInd
-		_parent, typeSwitchError = MResetIndParse(readBuffer)
+		_parent, typeSwitchError = MResetIndParse(readBuffer, size)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

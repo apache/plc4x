@@ -108,7 +108,7 @@ func (m *ApduDataMemoryResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryResponse"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -126,8 +126,8 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error)
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
 	// Byte Array field (data)
-	numberOfBytes := int(numBytes)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	numberOfBytesdata := int(numBytes)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}

@@ -92,7 +92,7 @@ func (m *ApduDataRestart) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataRestartParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataRestartParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataRestart"); pullErr != nil {
 		return nil, pullErr
 	}

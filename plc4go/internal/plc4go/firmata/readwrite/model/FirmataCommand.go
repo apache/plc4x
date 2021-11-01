@@ -110,13 +110,13 @@ func FirmataCommandParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCo
 	case commandCode == 0x0: // FirmataCommandSysex
 		_parent, typeSwitchError = FirmataCommandSysexParse(readBuffer, response)
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		_parent, typeSwitchError = FirmataCommandSetPinModeParse(readBuffer)
+		_parent, typeSwitchError = FirmataCommandSetPinModeParse(readBuffer, response)
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		_parent, typeSwitchError = FirmataCommandSetDigitalPinValueParse(readBuffer)
+		_parent, typeSwitchError = FirmataCommandSetDigitalPinValueParse(readBuffer, response)
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		_parent, typeSwitchError = FirmataCommandProtocolVersionParse(readBuffer)
+		_parent, typeSwitchError = FirmataCommandProtocolVersionParse(readBuffer, response)
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		_parent, typeSwitchError = FirmataCommandSystemResetParse(readBuffer)
+		_parent, typeSwitchError = FirmataCommandSystemResetParse(readBuffer, response)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

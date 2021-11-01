@@ -107,7 +107,7 @@ func (m *APDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUErrorParse(readBuffer utils.ReadBuffer) (*APDU, error) {
+func APDUErrorParse(readBuffer utils.ReadBuffer, apduLength uint16) (*APDU, error) {
 	if pullErr := readBuffer.PullContext("APDUError"); pullErr != nil {
 		return nil, pullErr
 	}

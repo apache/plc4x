@@ -92,7 +92,7 @@ func (m *LRawReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LRawReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LRawReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LRawReq"); pullErr != nil {
 		return nil, pullErr
 	}

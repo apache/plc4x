@@ -112,7 +112,7 @@ func (m *LDataReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataReqParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LDataReqParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LDataReq"); pullErr != nil {
 		return nil, pullErr
 	}

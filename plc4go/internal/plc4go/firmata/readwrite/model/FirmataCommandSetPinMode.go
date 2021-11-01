@@ -103,7 +103,7 @@ func (m *FirmataCommandSetPinMode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSetPinMode"); pullErr != nil {
 		return nil, pullErr
 	}

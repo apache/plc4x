@@ -105,7 +105,7 @@ func (m *COTPPacketData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDataParse(readBuffer utils.ReadBuffer) (*COTPPacket, error) {
+func COTPPacketDataParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, error) {
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
 		return nil, pullErr
 	}

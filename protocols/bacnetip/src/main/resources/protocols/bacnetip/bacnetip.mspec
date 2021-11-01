@@ -80,10 +80,10 @@
     [discriminator uint 8  'messageType']
     [optional      uint 16 'vendorId' '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch 'messageType'
-        ['0x0' NLMWhoIsRouterToNetwork(uint 16 'apduLength', uint 8  'messageType')
+        ['0x0' NLMWhoIsRouterToNetwork(uint 8  'messageType')
             [array uint 16 'destinationNetworkAddress' length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
-        ['0x1' NLMIAmRouterToNetwork(uint 16 'apduLength', uint 8  'messageType')
+        ['0x1' NLMIAmRouterToNetwork(uint 8  'messageType')
             [array uint 16 'destinationNetworkAddress' length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
     ]
@@ -92,7 +92,7 @@
 [discriminatedType 'APDU'(uint 16 'apduLength')
     [discriminator uint 4 'apduType']
     [typeSwitch 'apduType'
-        ['0x0' APDUConfirmedRequest(uint 16 'apduLength')
+        ['0x0' APDUConfirmedRequest
             [simple   bit    'segmentedMessage'                       ]
             [simple   bit    'moreFollows'                            ]
             [simple   bit    'segmentedResponseAccepted'              ]
@@ -104,7 +104,7 @@
             [optional uint 8 'proposedWindowSize'   'segmentedMessage']
             [simple   BACnetConfirmedServiceRequest('apduLength - (3 + (segmentedMessage ? 2 : 0))') 'serviceRequest']
         ]
-        ['0x1' APDUUnconfirmedRequest(uint 16 'apduLength')
+        ['0x1' APDUUnconfirmedRequest
             [reserved uint 4                          '0'             ]
             [simple   BACnetUnconfirmedServiceRequest('apduLength - 1') 'serviceRequest']
         ]
@@ -154,7 +154,7 @@
     [typeSwitch 'serviceChoice'
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
         ]
-        ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification(uint 16 'len')
+        ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
             [const  uint 8               'subscriberProcessIdentifierHeader'         '0x09'                 ]
             [simple uint 8               'subscriberProcessIdentifier'                                      ]
             [const  uint 8               'monitoredObjectIdentifierHeader'           '0x1C'                 ]
@@ -212,7 +212,7 @@
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
         ]
-        ['0x0F' BACnetConfirmedServiceRequestWriteProperty(uint 16 'len')
+        ['0x0F' BACnetConfirmedServiceRequestWriteProperty
             [const    uint 8    'objectIdentifierHeader'    '0x0C'                          ]
             [simple   uint 10   'objectType'                                                ]
             [simple   uint 22   'objectInstanceNumber'                                      ]
@@ -288,7 +288,7 @@
         ]
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
-        ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(uint 16 'len')
+        ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
             [const uint 8 'vendorIdHeader' '0x09']
             [simple uint 8 'vendorId']
             [const uint 8 'serviceNumberHeader' '0x1A']

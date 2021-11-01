@@ -110,7 +110,7 @@ func (m *CipReadRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipReadRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipReadRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
 		return nil, pullErr
 	}
@@ -121,8 +121,8 @@ func CipReadRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field")
 	}
 	// Byte Array field (tag)
-	numberOfBytes := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
-	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytes)
+	numberOfBytestag := int(uint16(uint16(requestPathSize) * uint16(uint16(2))))
+	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field")
 	}

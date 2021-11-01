@@ -112,7 +112,7 @@ func (m *LDataInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LDataIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LDataIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LDataInd"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -129,9 +129,9 @@ func S7DataAlarmMessageParse(readBuffer utils.ReadBuffer, cpuFunctionType uint8)
 	var typeSwitchError error
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		_parent, typeSwitchError = S7MessageObjectRequestParse(readBuffer)
+		_parent, typeSwitchError = S7MessageObjectRequestParse(readBuffer, cpuFunctionType)
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		_parent, typeSwitchError = S7MessageObjectResponseParse(readBuffer)
+		_parent, typeSwitchError = S7MessageObjectResponseParse(readBuffer, cpuFunctionType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

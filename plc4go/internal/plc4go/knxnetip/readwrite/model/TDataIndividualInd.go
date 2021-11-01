@@ -92,7 +92,7 @@ func (m *TDataIndividualInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TDataIndividualIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func TDataIndividualIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, pullErr
 	}

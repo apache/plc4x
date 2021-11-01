@@ -129,7 +129,7 @@ func (m *S7ParameterModeTransition) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer) (*S7Parameter, error) {
+func S7ParameterModeTransitionParse(readBuffer utils.ReadBuffer, messageType uint8) (*S7Parameter, error) {
 	if pullErr := readBuffer.PullContext("S7ParameterModeTransition"); pullErr != nil {
 		return nil, pullErr
 	}

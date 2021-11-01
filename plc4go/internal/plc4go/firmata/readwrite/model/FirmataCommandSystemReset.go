@@ -92,7 +92,7 @@ func (m *FirmataCommandSystemReset) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer) (*FirmataCommand, error) {
+func FirmataCommandSystemResetParse(readBuffer utils.ReadBuffer, response bool) (*FirmataCommand, error) {
 	if pullErr := readBuffer.PullContext("FirmataCommandSystemReset"); pullErr != nil {
 		return nil, pullErr
 	}

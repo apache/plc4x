@@ -137,7 +137,7 @@ func (m *CipUnconnectedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer) (*CipService, error) {
+func CipUnconnectedRequestParse(readBuffer utils.ReadBuffer, serviceLen uint16) (*CipService, error) {
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
 		return nil, pullErr
 	}

@@ -92,7 +92,7 @@ func (m *ApduDataMemoryWrite) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataMemoryWriteParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {
 		return nil, pullErr
 	}

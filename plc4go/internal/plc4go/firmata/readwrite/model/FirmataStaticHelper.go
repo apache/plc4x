@@ -35,11 +35,11 @@ func FirmataUtilsParseSysexString(io utils.ReadBuffer) int8 {
 	return aByte
 }
 
-func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, data int8) {
-	_ = io.WriteByte("", byte(data))
+func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, data byte) {
+	_ = io.WriteByte("", data)
 	_ = io.WriteByte("", 0x00)
 }
 
-func FirmataUtilsLengthSysexString(data []int8) uint16 {
+func FirmataUtilsLengthSysexString(data []byte) uint16 {
 	return uint16(len(data) * 2)
 }

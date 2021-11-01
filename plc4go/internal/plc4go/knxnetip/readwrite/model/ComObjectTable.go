@@ -100,11 +100,11 @@ func ComObjectTableParse(readBuffer utils.ReadBuffer, firmwareType FirmwareType)
 	var typeSwitchError error
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer)
+		_parent, typeSwitchError = ComObjectTableRealisationType1Parse(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer)
+		_parent, typeSwitchError = ComObjectTableRealisationType2Parse(readBuffer, firmwareType)
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer)
+		_parent, typeSwitchError = ComObjectTableRealisationType6Parse(readBuffer, firmwareType)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

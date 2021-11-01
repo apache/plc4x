@@ -104,7 +104,7 @@ func (m *SysexCommandExendedId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandExendedIdParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandExendedIdParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandExendedId"); pullErr != nil {
 		return nil, pullErr
 	}

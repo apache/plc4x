@@ -107,7 +107,7 @@ func (m *BACnetComplexTagOctetString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, actualLength uint32) (*BACnetComplexTag, error) {
+func BACnetComplexTagOctetStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagOctetString"); pullErr != nil {
 		return nil, pullErr
 	}

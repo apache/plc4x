@@ -172,8 +172,8 @@ func LDataExtendedParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, closeErr
 	}
 	// Byte Array field (destinationAddress)
-	numberOfBytes := int(uint16(2))
-	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytes)
+	numberOfBytesdestinationAddress := int(uint16(2))
+	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytesdestinationAddress)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field")
 	}

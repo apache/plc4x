@@ -92,7 +92,7 @@ func (m *ApduDataUserMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataUserMessageParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataUserMessageParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataUserMessage"); pullErr != nil {
 		return nil, pullErr
 	}

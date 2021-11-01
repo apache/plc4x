@@ -92,7 +92,7 @@ func (m *ApduDataIndividualAddressResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error) {
+func ApduDataIndividualAddressResponseParse(readBuffer utils.ReadBuffer, dataLength uint8) (*ApduData, error) {
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressResponse"); pullErr != nil {
 		return nil, pullErr
 	}

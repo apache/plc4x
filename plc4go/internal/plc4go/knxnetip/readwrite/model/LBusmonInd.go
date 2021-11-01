@@ -119,7 +119,7 @@ func (m *LBusmonInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func LBusmonIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func LBusmonIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("LBusmonInd"); pullErr != nil {
 		return nil, pullErr
 	}

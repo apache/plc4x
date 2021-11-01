@@ -98,7 +98,7 @@ func (m *COTPParameterChecksum) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
+func COTPParameterChecksumParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterChecksum"); pullErr != nil {
 		return nil, pullErr
 	}

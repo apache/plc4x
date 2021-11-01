@@ -96,7 +96,7 @@ func (m *SysexCommandExtendedAnalog) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer) (*SysexCommand, error) {
+func SysexCommandExtendedAnalogParse(readBuffer utils.ReadBuffer, response bool) (*SysexCommand, error) {
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
 		return nil, pullErr
 	}

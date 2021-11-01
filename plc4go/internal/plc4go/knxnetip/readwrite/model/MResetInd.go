@@ -92,7 +92,7 @@ func (m *MResetInd) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MResetIndParse(readBuffer utils.ReadBuffer) (*CEMI, error) {
+func MResetIndParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("MResetInd"); pullErr != nil {
 		return nil, pullErr
 	}
