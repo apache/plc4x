@@ -839,12 +839,21 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		}
 		${optionalField.name} = &_val
 			<#elseif helper.isEnumField(field)>
+		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = &_val
+		if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
+			return nil, closeErr
+		}
 			<#else>
+		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
+			return nil, pullErr
+		}
 				<@compress single_line=true>
                 <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
                 <#assign typeName=complexTypeReference.name>
@@ -871,6 +880,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = Cast${helper.getLanguageTypeNameForField(field)}(_val)
+		if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
+			return nil, closeErr
+		}
 			</#if>
 	}
 			<#break>
@@ -1307,8 +1319,14 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 		_${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "*(" + optionalField.name + ")", optionalField)}
 					<#else>
 						<#assign complexTypeReference = optionalField.type>
+		if pushErr := writeBuffer.PushContext("${optionalField.name}"); pushErr != nil {
+			return pushErr
+		}
 		${optionalField.name} = m.${optionalField.name?cap_first}
 		_${optionalField.name}Err := ${optionalField.name}.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("${optionalField.name}"); popErr != nil {
+			return popErr
+		}
 					</#if>
 		if _${optionalField.name}Err != nil {
 			return errors.Wrap(_${optionalField.name}Err, "Error serializing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />

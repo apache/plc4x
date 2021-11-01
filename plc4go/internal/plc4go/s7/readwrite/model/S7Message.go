@@ -202,21 +202,33 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
 	if bool((parameterLength) > (0)) {
+		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := S7ParameterParse(readBuffer, messageType)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
 		}
 		parameter = CastS7Parameter(_val)
+		if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
 	if bool((payloadLength) > (0)) {
+		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
 		}
 		payload = CastS7Payload(_val)
+		if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Message"); closeErr != nil {
@@ -289,8 +301,14 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	// Optional Field (parameter) (Can be skipped, if the value is null)
 	var parameter *S7Parameter = nil
 	if m.Parameter != nil {
+		if pushErr := writeBuffer.PushContext("parameter"); pushErr != nil {
+			return pushErr
+		}
 		parameter = m.Parameter
 		_parameterErr := parameter.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
+			return popErr
+		}
 		if _parameterErr != nil {
 			return errors.Wrap(_parameterErr, "Error serializing 'parameter' field")
 		}
@@ -299,8 +317,14 @@ func (m *S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child IS7Mess
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *S7Payload = nil
 	if m.Payload != nil {
+		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
+			return pushErr
+		}
 		payload = m.Payload
 		_payloadErr := payload.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
+			return popErr
+		}
 		if _payloadErr != nil {
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}

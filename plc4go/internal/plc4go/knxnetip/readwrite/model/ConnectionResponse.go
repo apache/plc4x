@@ -143,21 +143,33 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
+		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := HPAIDataEndpointParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
 		}
 		hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
+		if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
+		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
 		}
 		connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
+		if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponse"); closeErr != nil {
@@ -204,8 +216,14 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
 		var hpaiDataEndpoint *HPAIDataEndpoint = nil
 		if m.HpaiDataEndpoint != nil {
+			if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
+				return pushErr
+			}
 			hpaiDataEndpoint = m.HpaiDataEndpoint
 			_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
+				return popErr
+			}
 			if _hpaiDataEndpointErr != nil {
 				return errors.Wrap(_hpaiDataEndpointErr, "Error serializing 'hpaiDataEndpoint' field")
 			}
@@ -214,8 +232,14 @@ func (m *ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
 		var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 		if m.ConnectionResponseDataBlock != nil {
+			if pushErr := writeBuffer.PushContext("connectionResponseDataBlock"); pushErr != nil {
+				return pushErr
+			}
 			connectionResponseDataBlock = m.ConnectionResponseDataBlock
 			_connectionResponseDataBlockErr := connectionResponseDataBlock.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
+				return popErr
+			}
 			if _connectionResponseDataBlockErr != nil {
 				return errors.Wrap(_connectionResponseDataBlockErr, "Error serializing 'connectionResponseDataBlock' field")
 			}

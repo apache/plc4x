@@ -240,11 +240,17 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	curPos = readBuffer.GetPos() - startPos
 	var priority *BACnetTag = nil
 	if bool((curPos) < ((len) - (1))) {
+		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := BACnetTagParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
 		}
 		priority = CastBACnetTag(_val)
+		if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestWriteProperty"); closeErr != nil {
@@ -347,8 +353,14 @@ func (m *BACnetConfirmedServiceRequestWriteProperty) Serialize(writeBuffer utils
 		// Optional Field (priority) (Can be skipped, if the value is null)
 		var priority *BACnetTag = nil
 		if m.Priority != nil {
+			if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
+				return pushErr
+			}
 			priority = m.Priority
 			_priorityErr := priority.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("priority"); popErr != nil {
+				return popErr
+			}
 			if _priorityErr != nil {
 				return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 			}
