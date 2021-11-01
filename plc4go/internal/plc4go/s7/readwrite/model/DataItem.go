@@ -50,7 +50,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(bool(8)); i++ {
+		for i := 0; i < int((8)); i++ {
 			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
@@ -63,7 +63,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(bool(16)); i++ {
+		for i := 0; i < int((16)); i++ {
 			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
@@ -76,7 +76,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(bool(32)); i++ {
+		for i := 0; i < int((32)); i++ {
 			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
@@ -89,7 +89,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataProtocolId string, stringLen
 
 		// Array Field (value)
 		var value []api.PlcValue
-		for i := 0; i < int(bool(64)); i++ {
+		for i := 0; i < int((64)); i++ {
 			_item, _itemErr := readBuffer.ReadBit("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
@@ -334,7 +334,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 	case dataProtocolId == "IEC61131_BYTE": // List
 
 		// Array Field (value)
-		for i := uint32(0); i < uint32(bool(8)); i++ {
+		for i := uint32(0); i < uint32((8)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -343,7 +343,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 	case dataProtocolId == "IEC61131_WORD": // List
 
 		// Array Field (value)
-		for i := uint32(0); i < uint32(bool(16)); i++ {
+		for i := uint32(0); i < uint32((16)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -352,7 +352,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 	case dataProtocolId == "IEC61131_DWORD": // List
 
 		// Array Field (value)
-		for i := uint32(0); i < uint32(bool(32)); i++ {
+		for i := uint32(0); i < uint32((32)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
@@ -361,7 +361,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataPr
 	case dataProtocolId == "IEC61131_LWORD": // List
 
 		// Array Field (value)
-		for i := uint32(0); i < uint32(bool(64)); i++ {
+		for i := uint32(0); i < uint32((64)); i++ {
 			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")

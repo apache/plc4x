@@ -330,8 +330,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return "readBuffer.ReadFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
                 }
                 return "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
-            case STRING:
-            case VSTRING:
+            case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new RuntimeException("Encoding must be a quoted string value");
@@ -339,6 +338,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "))";
+            }
+            case VSTRING: {
+                VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                if (!(encodingTerm instanceof StringLiteral)) {
+                    throw new RuntimeException("Encoding must be a quoted string value");
+                }
+                String lengthExpression = toExpression(field, field.getType(), vstringTypeReference.getLengthExpression(), null, null, false, false);
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "))";
+            }
         }
         throw new FreemarkerException("Unsupported base type" + simpleTypeReference.getBaseType());
     }
@@ -408,7 +417,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .asStringLiteral()
                     .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + length + "), \"" +
+                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case VSTRING: {
@@ -418,9 +427,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
                     .asStringLiteral()
                     .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
-                // TODO: Port this to use the expression term instead.
+                String lengthExpression = toExpression(field, field.getType(), vstringTypeReference.getLengthExpression(), null, null, true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint8(" + length + "), \"" +
+                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
         }

@@ -221,7 +221,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 
 		// Simple Field (magicKey)
 		magicKey := string(m.MagicKey)
-		_magicKeyErr := writeBuffer.WriteString("magicKey", uint8(64), "UTF-8", (magicKey))
+		_magicKeyErr := writeBuffer.WriteString("magicKey", uint32(64), "UTF-8", (magicKey))
 		if _magicKeyErr != nil {
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}

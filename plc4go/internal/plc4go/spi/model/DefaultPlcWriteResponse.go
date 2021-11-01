@@ -67,7 +67,7 @@ func (m DefaultPlcWriteResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 	}
 	for _, fieldName := range m.GetFieldNames() {
 		responseCodeName := m.GetResponseCode(fieldName).GetName()
-		if err := writeBuffer.WriteString(fieldName, uint8(len([]rune(responseCodeName))*8), "UTF-8", responseCodeName); err != nil {
+		if err := writeBuffer.WriteString(fieldName, uint32(len([]rune(responseCodeName))*8), "UTF-8", responseCodeName); err != nil {
 			return err
 		}
 	}

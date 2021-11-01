@@ -190,7 +190,7 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		// If nothing was found in the cache, try to execute a group address read,
 		// Otherwise respond with values from the cache.
 		if !ok {
-			addr := []int8{int8(numericAddress >> 8), int8(numericAddress & 0xFF)}
+			addr := []byte{byte(numericAddress >> 8), byte(numericAddress & 0xFF)}
 			rrc := m.connection.ReadGroupAddress(addr, field.GetFieldType())
 			select {
 			case readResult := <-rrc:
@@ -211,10 +211,10 @@ func (m Reader) readGroupAddress(field GroupAddressField) (apiModel.PlcResponseC
 		} else {
 			// If we don't have any field-type information, add the raw data
 			if field.GetTypeName() == "" {
-				values[stringAddress] = internalValues.NewPlcByteArray(utils.Int8ArrayToByteArray(int8s))
+				values[stringAddress] = internalValues.NewPlcByteArray(int8s)
 			} else {
 				// Decode the data according to the fields type
-				rb := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(int8s))
+				rb := utils.NewReadBufferByteBased(int8s)
 				if field.GetFieldType() == nil {
 					return apiModel.PlcResponseCode_INVALID_DATATYPE, nil
 				}

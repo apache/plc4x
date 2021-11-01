@@ -43,7 +43,7 @@ import (
 // They expect the called private functions to handle timeouts, so these will not.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
+func (m *Connection) ReadGroupAddress(groupAddress []byte, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
 	result := make(chan KnxReadResult)
 
 	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
@@ -69,12 +69,13 @@ func (m *Connection) ReadGroupAddress(groupAddress []int8, datapointType *driver
 			return
 		}
 
-		var payload []int8
-		payload = append(payload, groupAddressReadResponse.DataFirstByte)
+		var payload []byte
+		// TODO: maybe groupAddressReadResponse.DataFirstByte can be written as uint 6 so the we wouldn't need to cast
+		payload = append(payload, byte(groupAddressReadResponse.DataFirstByte))
 		payload = append(payload, groupAddressReadResponse.Data...)
 
 		// Parse the response data.
-		rb := utils.NewReadBufferByteBased(utils.Int8ArrayToByteArray(payload))
+		rb := utils.NewReadBufferByteBased(payload)
 		// If the size of the field is greater than 6, we have to skip the first byte
 		if datapointType.DatapointMainType().SizeInBits() > 6 {
 			_, _ = rb.ReadUint8("datapointType", 8)

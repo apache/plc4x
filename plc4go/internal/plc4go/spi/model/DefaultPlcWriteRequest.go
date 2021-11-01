@@ -201,12 +201,12 @@ func (m DefaultPlcWriteRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 					return errors.New("value not serializable to string")
 				}
 				subValue.GetString()
-				if err := writeBuffer.WriteString("value", uint8(len([]rune(subValue.GetString()))*8), "UTF-8", subValue.GetString()); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len([]rune(subValue.GetString()))*8), "UTF-8", subValue.GetString()); err != nil {
 					return err
 				}
 			}
 		default:
-			if err := writeBuffer.WriteString("value", uint8(len([]rune(value.GetString()))*8), "UTF-8", value.GetString()); err != nil {
+			if err := writeBuffer.WriteString("value", uint32(len([]rune(value.GetString()))*8), "UTF-8", value.GetString()); err != nil {
 				return err
 			}
 		}
