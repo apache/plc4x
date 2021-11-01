@@ -166,15 +166,15 @@ func (m ${type.name}) LengthInBytes() uint16 {
 	<#assign simpleTypeReference = type.type.asSimpleTypeReference().orElseThrow()>
 	<#if simpleTypeReference.getSizeInBits() != -1>
 func ${type.name}Parse(readBuffer utils.ReadBuffer) (${type.name}, error) {
-	val, err := ${helper.getReadBufferReadMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference))}
+	val, err := ${helper.getReadBufferReadMethodCall(type.name, type.type, null)}
 	if err != nil {
-		return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil
+<#--		return <#if type.type.isStringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, nil-->
 	}
 	return ${type.name}ByValue(val), nil
 }
 
 func (e ${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
-	return ${helper.getWriteBufferWriteMethodCall(type.name, helper.getEnumBaseTypeReference(type.typeReference), helper.getLanguageTypeNameForTypeReference(helper.getEnumBaseTypeReference(type.typeReference)) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
+	return ${helper.getWriteBufferWriteMethodCall(type.name, type.type, helper.getLanguageTypeNameForTypeReference(type.type) + "(e)", null, "utils.WithAdditionalStringRepresentation(e.name())")}
 }
 	</#if>
 </#if>
