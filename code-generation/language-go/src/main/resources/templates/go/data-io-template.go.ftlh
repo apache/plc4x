@@ -85,8 +85,8 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 
 			// Array Field (${arrayField.name})
 			var ${arrayField.name} []api.PlcValue
-			for i := 0; i < int(${helper.toParseExpression(null, arrayField.loopExpression, parserArguments)}); i++ {
-				_item, _itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.name, arrayField.type.asSimpleTypeReference().orElseThrow())}<#else>Complex type array in data-io parsing currently not implemented</#if>
+			for i := 0; i < int(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}); i++ {
+				_item, _itemErr := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.name, arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>Complex type array in data-io parsing currently not implemented</#if>
 				if _itemErr != nil {
 					return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")<@emitImport import="github.com/pkg/errors" />
 				}
@@ -112,7 +112,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 					<#assign reservedField = field.asReservedField().orElseThrow()>
 
 			// Reserved Field (Just skip the bytes)
-			if _, _err := ${helper.getReadBufferReadMethodCall("reserved", reservedField.type.asSimpleTypeReference().orElseThrow())}; _err != nil {
+			if _, _err := ${helper.getReadBufferReadMethodCall("reserved", reservedField.type.asSimpleTypeReference().orElseThrow(), reservedField)}; _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing reserved field")<@emitImport import="github.com/pkg/errors" />
 			}
 					<#break>
@@ -120,7 +120,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
-			<#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds") || (simpleField.name == "secondsSinceEpoch"))) || ((case.name == "DATE") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) || simpleField.name == "value">${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow())}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.params.isPresent()>, <#list simpleField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+			<#if case.name == "Struct" || ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds") || (simpleField.name == "secondsSinceEpoch"))) || ((case.name == "DATE") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day"))) || ((case.name == "TIME_OF_DAY") && ((simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) || simpleField.name == "value">${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
 			if _${simpleField.name}Err != nil {
 				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -188,7 +188,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 					<#assign arrayField = field.asArrayField().orElseThrow()>
 
 			// Array Field (${arrayField.name})
-			for i := uint32(0); i < uint32(${helper.toSerializationExpression(null, field.loopExpression, parserArguments)}); i++ {
+			for i := uint32(0); i < uint32(${helper.toSerializationExpression(arrayField, arrayField.loopExpression, parserArguments)}); i++ {
 					<#if case.name = "Struct">
 				${arrayField.name} := value.GetValue("${arrayField.name}")
 					</#if>
@@ -202,7 +202,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 					<#assign manualField = field.asManualField().orElseThrow()>
 
 			// Manual Field (${manualField.name})
-			_${manualField.name}Err := ${helper.toSerializationExpression(field, manualField.serializeExpression, parserArguments)}
+			_${manualField.name}Err := ${helper.toSerializationExpression(manualField, manualField.serializeExpression, parserArguments)}
 			if _${manualField.name}Err != nil {
 				return errors.Wrap(_${manualField.name}Err, "Error serializing '${manualField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -219,7 +219,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
-			if _err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.Get" + helper.getLanguageTypeNameForTypeReference(simpleField.type)?cap_first + "()", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Serialize(io, <#if simpleField.params.isPresent()>, <#list simpleField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
+			if _err := <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), "value.Get" + helper.getLanguageTypeNameForTypeReference(simpleField.type)?cap_first + "()", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Serialize(io, <#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>; _err != nil {
 				return errors.Wrap(_err, "Error serializing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
 					<#break>

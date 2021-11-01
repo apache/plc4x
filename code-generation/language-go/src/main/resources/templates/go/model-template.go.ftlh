@@ -224,9 +224,9 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
-                    <#assign stringTypeReference = arrayField.type.asStringTypeReference().orElseThrow()>
-		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, stringTypeReference.lengthExpression, parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#if arrayField.type.isVstringTypeReference()>
+                    <#assign vstringTypeReference = arrayField.type.asVstringTypeReference().orElseThrow()>
+		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, vstringTypeReference.lengthExpression, parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
 				<#elseif helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
@@ -254,9 +254,9 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 					<#assign constField = field.asConstField().orElseThrow()>
 
 	// Const Field (${constField.name})
-				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
-					<#assign stringTypeReference = constField.type.asStringTypeReference().orElseThrow()>
-	lengthInBits += uint16(${helper.toSerializationExpression(constField, stringTypeReference.lengthExpression, parserArguments)})
+				<#if constField.type.isVstringTypeReference()>
+					<#assign vstringTypeReference = constField.type.asVstringTypeReference().orElseThrow()>
+	lengthInBits += uint16(${helper.toSerializationExpression(constField, vstringTypeReference.lengthExpression, parserArguments)})
 				<#else>
                     <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
 	lengthInBits += ${simpleTypeReference.sizeInBits}
@@ -267,9 +267,9 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 	// Discriminator Field (${discriminatorField.name})
 		<#if helper.isSimpleTypeReference(discriminatorField.type)>
             <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-			<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-                <#assign stringTypeReference = discriminatorField.type.asStringTypeReference().orElseThrow()>
-			lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, stringTypeReference.getLengthExpression(), parserArguments)})
+			<#if discriminatorField.type.isVstringTypeReference()>
+                <#assign vstringTypeReference = discriminatorField.type.asVstringTypeReference().orElseThrow()>
+			lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, vstringTypeReference.lengthExpression, parserArguments)})
 			<#else>
 			lengthInBits += ${simpleTypeReference.sizeInBits};
 			</#if>
@@ -342,9 +342,9 @@ func (m *${type.name}) LengthInBitsConditional(lastItem bool) uint16 {
 
 	// Simple field (${simpleField.name})
 					<#if helper.isSimpleTypeReference(simpleField.type)>
-						<#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
-							<#assign stringTypeReference = simpleField.type.asStringTypeReference().orElseThrow()>
-	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, stringTypeReference.lengthExpression, parserArguments)})
+						<#if simpleField.type.isVstringTypeReference()>
+							<#assign vstringTypeReference = simpleField.type.asVstringTypeReference().orElseThrow()>
+	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, vstringTypeReference.lengthExpression, parserArguments)})
 						<#else>
 							<#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
 	lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -391,9 +391,9 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 
 	// Array field
 	if len(m.${arrayField.name?cap_first}) > 0 {
-				<#if helper.getLanguageTypeNameForTypeReference(arrayField.type) = "string">
-					<#assign stringTypeReference=arrayField.type.asSimpleTypeReference().orElseThrow()>
-		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, stringTypeReference.asStringTypeReference().orElseThrow().getLengthExpression(), parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
+				<#if arrayField.type.isVstringTypeReference()>
+					<#assign vstringTypeReference=arrayField.type.asVstringTypeReference().orElseThrow()>
+		lengthInBits += uint16(${helper.toSerializationExpression(arrayField, vstringTypeReference.lengthExpression, parserArguments)}) * uint16(len(m.${arrayField.name?cap_first}))
 				<#elseif helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
@@ -422,8 +422,9 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#assign simpleTypeReference = constField.type>
 
 	// Const Field (${constField.name})
-				<#if helper.getLanguageTypeNameForTypeReference(constField.type) = "string">
-	lengthInBits += uint16(${helper.toSerializationExpression(constField, simpleTypeReference.asStringTypeReference().orElseThrow().getLengthExpression(), parserArguments)})
+				<#if constField.type.isVstringTypeReference()>
+                    <#assign vstringTypeReference = constField.type.asVstringTypeReference().orElseThrow()>
+					lengthInBits += uint16(${helper.toSerializationExpression(constField, vstringTypeReference.lengthExpression, parserArguments)})
 				<#elseif helper.isEnumTypeReference(constField.type)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(constField.type).sizeInBits};
 				<#else>
@@ -435,8 +436,9 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 				<#assign simpleTypeReference = discriminatorField.type>
 	// Discriminator Field (${discriminatorField.name})
 				<#if helper.isSimpleTypeReference(simpleTypeReference)>
-					<#if helper.getLanguageTypeNameForTypeReference(discriminatorField.type) = "String">
-	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, discriminatorField.type.asStringTypeReference().orElseThrow().getLengthExpression(), parserArguments)})
+					<#if discriminatorField.type.isVstringTypeReference()>
+                        <#assign vstringTypeReference = discriminatorField.type.asVstringTypeReference().orElseThrow()>
+	lengthInBits += uint16(${helper.toSerializationExpression(discriminatorField, discriminatorField.lengthExpression, parserArguments)})
 					<#else>
 	lengthInBits += ${simpleTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits};
 					</#if>
@@ -508,9 +510,9 @@ func (m *${type.name}) ParentLengthInBits() uint16 {
 
 	// Simple field (${simpleField.name})
 				<#if helper.isSimpleTypeReference(simpleField.type)>
-					<#if helper.getLanguageTypeNameForTypeReference(simpleField.type) = "string">
-						<#assign stringTypeReference = simpleField.type.asStringTypeReference().orElseThrow()>
-	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, stringTypeReference.lengthExpression, parserArguments)})
+					<#if simpleField.type.isVstringTypeReference()>
+						<#assign vstringTypeReference = simpleField.type.asVstringTypeReference().orElseThrow()>
+	lengthInBits += uint16(${helper.toSerializationExpression(simpleField, vstringTypeReference.lengthExpression, parserArguments)})
 					<#else>
 						<#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
 	lengthInBits += ${simpleTypeReference.sizeInBits};
@@ -566,12 +568,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	<#assign numberOfBytesExpression>
 		<#compress>
 		<#if field.isCountArrayField()>
-			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)})
+			numberOfBytes := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
 		<#elseif field.isLengthArrayField()>
-			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)})
+			numberOfBytes := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
 		<#elseif field.isTerminatedArrayField()>
 			<#-- TODO: we need to find out to implement this-->
-			numberOfBytes := int(${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)})
+			numberOfBytes := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
 		<#else>
 			<#-- TODO: we should throw a exception here-->
 			numberOfBytes := int(-1)
@@ -596,12 +598,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
-	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)})
-	for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)}); curItem++ {
+	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}); curItem++ {
 					<#if (!helper.isSimpleTypeReference(arrayField.type)) && helper.requiresVariable(arrayField, "lastItem")>
 		lastItem := curItem == uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)} - 1)
 					</#if>
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow())}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -612,10 +614,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 	// Length array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
-	_${arrayField.name}Length := ${helper.toIntegerParseExpression(16, arrayField.loopExpression, parserArguments)}
+	_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
 	_${arrayField.name}EndPos := readBuffer.GetPos() + uint16(_${arrayField.name}Length)
 	for ;readBuffer.GetPos() < _${arrayField.name}EndPos; {
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow())}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -630,7 +632,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	// Terminated array
 	${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>*</#if>${helper.getLanguageTypeNameForField(field)}, 0)
 	for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}); {
-		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow())}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if field.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
+		_item, _err := <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall("", arrayField.type.asSimpleTypeReference().orElseThrow(), arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}Parse(readBuffer<#if arrayField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list arrayField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if>)</#if>
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -653,7 +655,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Checksum Field (checksum)
 	{
-		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference)}
+		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference, checksumField)}
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -674,7 +676,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#--<#assign constField=constField.asEnumField().orElseThrow()>-->
 					<#-- TODO: finish me-->
                     <#if false && constField.fieldName.isPresent()>
-	${constField.name}${constField.fieldName.orElseThrow()?cap_first}, _${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err := ${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName.orElseThrow()))}
+	${constField.name}${constField.fieldName.orElseThrow()?cap_first}, _${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err := ${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName.orElseThrow()), constField)}
 	if _${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err != nil {
 		return nil, errors.Wrap(_${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -689,7 +691,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	}
                     </#if> 
 				<#else>
-	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(constField.name, constField.type.asSimpleTypeReference().orElseThrow())}
+	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(constField.name, constField.type.asSimpleTypeReference().orElseThrow(), constField)}
 				</#if>
 	if _${constField.name}Err != nil {
 		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -707,7 +709,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
 	<#else>
         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference)}
+	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference, discriminatorField)}
 	</#if>
 	if _${discriminatorField.name}Err != nil {
 	return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -719,23 +721,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	if pullErr := readBuffer.PullContext("${enumField.name}"); pullErr != nil {
 		return nil, pullErr
 	}
-				<#if enumField.fieldName.isPresent()>
 	// Enum field (${enumField.name})
-	${enumField.name}${enumField.fieldName.orElseThrow()?cap_first}, _${enumField.name}${enumField.fieldName.orElseThrow()?cap_first}Err := ${helper.getReadBufferReadMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName.orElseThrow()))}
-	if _${enumField.name}${enumField.fieldName.orElseThrow()?cap_first}Err != nil {
-		return nil, errors.Wrap(_${enumField.name}${enumField.fieldName.orElseThrow()?cap_first}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	${enumField.name}${enumField.fieldName?cap_first}, _${enumField.name}${enumField.fieldName?cap_first}Err := ${helper.getReadBufferReadMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumField)}
+	if _${enumField.name}${enumField.fieldName?cap_first}Err != nil {
+		return nil, errors.Wrap(_${enumField.name}${enumField.fieldName?cap_first}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}FirstEnumForField${enumField.fieldName.orElseThrow()?cap_first}(${enumField.name}${enumField.fieldName.orElseThrow()?cap_first})
+	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}FirstEnumForField${enumField.fieldName?cap_first}(${enumField.name}${enumField.fieldName?cap_first})
 	if _${enumField.name}Err != nil {
 		return nil, errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-				<#else>
-	// Enum field (${enumField.name})
-	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer)
-	if _${enumField.name}Err != nil {
-		return nil, errors.Wrap(_${enumField.name}Err, "Error parsing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-				</#if>
 	if closeErr := readBuffer.CloseContext("${enumField.name}"); closeErr != nil {
 		return nil, closeErr
 	}
@@ -745,7 +739,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
 
 	// Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference)}
+	${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference, implicitField)}
 	_ = ${implicitField.name}
 	if _${implicitField.name}Err != nil {
 		return nil, errors.Wrap(_${implicitField.name}Err, "Error parsing '${implicitField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -774,7 +768,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 					<#if field.isLengthArrayField()>
 	// Length array
-	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(16, manualArrayField.loopExpression, parserArguments)}
+	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(manualArrayField, 16, manualArrayField.loopExpression, parserArguments)}
 	_${manualArrayField.name}List := make([]${helper.getLanguageTypeNameForField(manualArrayField)}, 0)
 	${manualArrayField.name}EndPos := readBuffer.GetPos() + _${manualArrayField.name}Length
 	for ;readBuffer.GetPos() < ${manualArrayField.name}EndPos; {
@@ -839,9 +833,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 				</#if>
 	var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
 	<#if optionalField.conditionExpression.present>
-	if ${helper.toBooleanParseExpression(optionalField.conditionExpression.get(), parserArguments)} </#if>{
+	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
 			<#if helper.isSimpleTypeReference(optionalField.type)>
-		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow())}
+		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow(), optionalField)}
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -862,12 +856,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#assign typeName=typeDefinition.parentType.name>
                     <#assign typeDefinition=typeDefinition.parentType>
                 </#if>
-				<#assign hasFieldParams=field.params.isPresent()>
+				<#assign hasFieldParams=complexTypeReference.params.isPresent()>
 				<#assign fieldParams>
 					<#if hasFieldParams>
 						,
-						<#list field.params.orElseThrow() as parserArgument>
-							${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, parserArguments)}
+						<#list complexTypeReference.params.orElseThrow() as parserArgument>
+							${helper.toTypedParseExpression(optionalField, helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, parserArguments)}
 							<#sep>, </#sep>
 						</#list>
 					</#if>
@@ -877,7 +871,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#if hasRefParams>
 						,
 						<#list complexTypeReference.params.orElseThrow() as typeParam>
-							${helper.toTypedParseExpression(null, typeParam, null)}
+							${helper.toTypedParseExpression(optionalField, null, typeParam, null)}
 							<#sep>, </#sep>
 						</#list>
                     </#if>
@@ -900,7 +894,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	curPos = readBuffer.GetPos() - startPos
 				</#if>
 			<#if helper.isSimpleTypeReference(assertField.type)>
-	${assertField.name}, _err := ${helper.getReadBufferReadMethodCall(assertField.name, assertField.type.asSimpleTypeReference().orElseThrow())}
+	${assertField.name}, _err := ${helper.getReadBufferReadMethodCall(assertField.name, assertField.type.asSimpleTypeReference().orElseThrow(), assertField)}
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -919,10 +913,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#assign typeName=typeDefinition.parentType.name>
                     <#assign typeDefinition=typeDefinition.parentType>
                 </#if>
-				<#assign hasFieldParams=field.params.isPresent()>
-				<#assign fieldParams><#if hasFieldParams>, <#list field.params.orElseThrow() as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(assertField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if></#assign>
+				<#assign hasFieldParams=complexTypeReference.params.isPresent()>
+				<#assign fieldParams><#if hasFieldParams>, <#list complexTypeReference.params.orElseThrow() as parserArgument>${helper.toTypedParseExpression(assertField, helper.getArgumentType(assertField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if></#assign>
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
+				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
                 </@compress>
 	_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer${fieldParams}${refParams})
 	if _err != nil {
@@ -943,7 +937,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 		_timesPadding := (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)})
 		for ;(readBuffer.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {
 			// Just read the padding data and ignore it
-			_, _err := ${helper.getReadBufferReadMethodCall("", simpleTypeReference)}
+			_, _err := ${helper.getReadBufferReadMethodCall("", simpleTypeReference, paddingField)}
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -959,7 +953,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference)}
+		reserved, _err := ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference, reservedField)}
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -994,12 +988,12 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
             <#assign typeName=typeDefinition.parentType.name>
             <#assign typeDefinition=typeDefinition.parentType>
         </#if>
-        <#assign hasFieldParams=field.params.isPresent()>
+        <#assign hasFieldParams=complexTypeReference.params.isPresent()>
         <#assign fieldParams>
             <#if hasFieldParams>
 				,
-                <#list field.params.orElseThrow() as parserArgument>
-                    ${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)}
+                <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                    ${helper.toTypedParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)}
                     <#sep>, </#sep>
                 </#list>
             </#if>
@@ -1009,7 +1003,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
             <#if hasRefParams>
 				,
                 <#list complexTypeReference.params.orElseThrow() as typeParam>
-                    ${helper.toTypedParseExpression(null, typeParam, null)}
+                    ${helper.toTypedParseExpression(simpleField, null, typeParam, null)}
                     <#sep>, </#sep>
                 </#list>
             </#if>
@@ -1191,7 +1185,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 						<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
 						</#if>
-			_elementErr := _element.Serialize(writeBuffer<#if helper.getSerializerTerms(arrayField.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(arrayField.params.orElse(null)) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+			_elementErr := _element.Serialize(writeBuffer<#if helper.getSerializerTerms(arrayField.asTypedField().orElseThrow().type.asComplexTypeReference().orElseThrow().params.orElse(null))?has_content>, <#list helper.getSerializerTerms(arrayField.asTypedField().orElseThrow().type.asComplexTypeReference().orElseThrow().params.orElse(null)) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 					</#if>
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -1230,7 +1224,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
                         <#if constField.fieldName?has_content>
                             <#assign enumValueFieldAccessor=type.name+"_"+constField.name?upper_case>
 	// Const field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField.type.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName), enumValueFieldAccessor, constField, "utils.WithAdditionalStringRepresentation(${type.name}_${constField.name?upper_case}.name())")}
+	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField, constField.type.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName), enumValueFieldAccessor, constField, "utils.WithAdditionalStringRepresentation(${type.name}_${constField.name?upper_case}.name())")}
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1272,21 +1266,12 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 	if pushErr := writeBuffer.PushContext("${enumField.name}"); pushErr != nil {
 		return pushErr
 	}
-						<#if enumField.fieldName.isPresent()>
-							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName.orElseThrow()?cap_first+"()">
+							<#assign enumValueFieldAccessor="m."+enumField.name?cap_first+"."+enumField.fieldName?cap_first+"()">
 	// Enum field (${enumField.name})
-	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.asComplexTypeReference().orElseThrow().name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName.orElseThrow()), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.${enumField.name?cap_first}.name())")}
+	_${enumField.name}Err := ${helper.getWriteBufferWriteMethodCall(enumField.type.asComplexTypeReference().orElseThrow().name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumValueFieldAccessor, enumField, "utils.WithAdditionalStringRepresentation(m.${enumField.name?cap_first}.name())")}
 	if _${enumField.name}Err != nil {
 		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-						<#else>
-	// Enum field (${enumField.name})
-	${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
-	_${enumField.name}Err := ${enumField.name}.Serialize(writeBuffer)
-	if _${enumField.name}Err != nil {
-		return errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-						</#if>
 	if popErr := writeBuffer.PopContext("${enumField.name}"); popErr != nil {
 		return popErr
 	}
