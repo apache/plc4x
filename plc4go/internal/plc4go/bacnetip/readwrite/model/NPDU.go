@@ -313,21 +313,33 @@ func NPDUParse(readBuffer utils.ReadBuffer, npduLength uint16) (*NPDU, error) {
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
 	var nlm *NLM = nil
 	if messageTypeFieldPresent {
+		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := NLMParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'nlm' field")
 		}
 		nlm = CastNLM(_val)
+		if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
 	var apdu *APDU = nil
 	if !(messageTypeFieldPresent) {
+		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := APDUParse(readBuffer, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(utils.InlineIf(sourceSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*sourceLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(destinationSpecified, func() interface{} { return uint16(uint16(uint16(3)) + uint16((*destinationLength))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))+uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'apdu' field")
 		}
 		apdu = CastAPDU(_val)
+		if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDU"); closeErr != nil {
@@ -486,8 +498,14 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Optional Field (nlm) (Can be skipped, if the value is null)
 	var nlm *NLM = nil
 	if m.Nlm != nil {
+		if pushErr := writeBuffer.PushContext("nlm"); pushErr != nil {
+			return pushErr
+		}
 		nlm = m.Nlm
 		_nlmErr := nlm.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("nlm"); popErr != nil {
+			return popErr
+		}
 		if _nlmErr != nil {
 			return errors.Wrap(_nlmErr, "Error serializing 'nlm' field")
 		}
@@ -496,8 +514,14 @@ func (m *NPDU) Serialize(writeBuffer utils.WriteBuffer) error {
 	// Optional Field (apdu) (Can be skipped, if the value is null)
 	var apdu *APDU = nil
 	if m.Apdu != nil {
+		if pushErr := writeBuffer.PushContext("apdu"); pushErr != nil {
+			return pushErr
+		}
 		apdu = m.Apdu
 		_apduErr := apdu.Serialize(writeBuffer)
+		if popErr := writeBuffer.PopContext("apdu"); popErr != nil {
+			return popErr
+		}
 		if _apduErr != nil {
 			return errors.Wrap(_apduErr, "Error serializing 'apdu' field")
 		}

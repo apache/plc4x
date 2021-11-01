@@ -165,11 +165,17 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	// Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
 	var Alarmtype *AlarmStateType = nil
 	if bool((Subscription) >= (128)) {
+		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
+			return nil, pullErr
+		}
 		_val, _err := AlarmStateTypeParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field")
 		}
 		Alarmtype = &_val
+		if closeErr := readBuffer.CloseContext("Alarmtype"); closeErr != nil {
+			return nil, closeErr
+		}
 	}
 
 	// Optional Field (Reserve) (Can be skipped, if a given expression evaluates to false)
@@ -229,8 +235,14 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 		// Optional Field (Alarmtype) (Can be skipped, if the value is null)
 		var Alarmtype *AlarmStateType = nil
 		if m.Alarmtype != nil {
+			if pushErr := writeBuffer.PushContext("Alarmtype"); pushErr != nil {
+				return pushErr
+			}
 			Alarmtype = m.Alarmtype
 			_AlarmtypeErr := Alarmtype.Serialize(writeBuffer)
+			if popErr := writeBuffer.PopContext("Alarmtype"); popErr != nil {
+				return popErr
+			}
 			if _AlarmtypeErr != nil {
 				return errors.Wrap(_AlarmtypeErr, "Error serializing 'Alarmtype' field")
 			}
