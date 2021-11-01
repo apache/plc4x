@@ -902,6 +902,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#assign typeDefinition=typeDefinition.parentType>
                 </#if>
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
+				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
                 </@compress>
 	_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer${refParams})
 	if _err != nil {
