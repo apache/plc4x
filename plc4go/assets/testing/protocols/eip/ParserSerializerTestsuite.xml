@@ -84,7 +84,7 @@
             <CipExchange>
               <itemCount dataType="uint" bitLength="16">2</itemCount>
               <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
               <size dataType="uint" bitLength="16">24</size>
               <service>
                 <CipService>
@@ -101,18 +101,8 @@
                       <CipService>
                         <service dataType="uint" bitLength="8">76</service>
                         <CipReadRequest>
-                          <RequestPathSize dataType="int" bitLength="8">3</RequestPathSize>
-                          <!--Here the tag should be 'rate' which is in ANSI hex '91 04 72 61 74 65'
-                              but there seems to be some mismatch with the XML generation from Objects
-                              (arguments are also in the wrong order) -->
-                          <tag isList="true">
-                            <value dataType="int" bitLength="8">-111</value>
-                            <value dataType="int" bitLength="8">4</value>
-                            <value dataType="int" bitLength="8">114</value>
-                            <value dataType="int" bitLength="8">97</value>
-                            <value dataType="int" bitLength="8">116</value>
-                            <value dataType="int" bitLength="8">101</value>
-                          </tag>
+                          <requestPathSize dataType="int" bitLength="8">3</requestPathSize>
+                          <tag dataType="byte" bitLength="48">0x910472617465</tag>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
                         </CipReadRequest>
                       </CipService>
@@ -211,7 +201,7 @@
             <CipExchange>
               <itemCount dataType="uint" bitLength="16">2</itemCount>
               <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
               <size dataType="uint" bitLength="16">36</size>
               <service>
                 <CipService>
@@ -228,35 +218,13 @@
                       <CipService>
                         <service dataType="uint" bitLength="8">77</service>
                         <CipWriteRequest>
-                          <RequestPathSize dataType="int" bitLength="8">6</RequestPathSize>
-                          <!--Here the tag should be 'CartonSize'' which is in ANSI hex '91 0A 43 61 72 74 6F 6E 53 69 7A 65'
-                              but there seems to be some mismatch with the XML generation from Objects
-                              (arguments are also in the wrong order) -->
-                          <tag isList="true">
-                            <value dataType="int" bitLength="8">-111</value>
-                            <value dataType="int" bitLength="8">22</value>
-                            <value dataType="int" bitLength="8">67</value>
-                            <value dataType="int" bitLength="8">97</value>
-                            <value dataType="int" bitLength="8">114</value>
-                            <value dataType="int" bitLength="8">116</value>
-                            <value dataType="int" bitLength="8">111</value>
-                            <value dataType="int" bitLength="8">110</value>
-                            <value dataType="int" bitLength="8">83</value>
-                            <value dataType="int" bitLength="8">105</value>
-                            <value dataType="int" bitLength="8">122</value>
-                            <value dataType="int" bitLength="8">101</value>
-                          </tag>
+                          <requestPathSize dataType="int" bitLength="8">6</requestPathSize>
+                          <tag dataType="byte" bitLength="96">0x9116436172746f6e53697a65</tag>
                           <dataType>
-                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
-                            </CIPDataTypeCode>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
                           </dataType>
                           <elementNb dataType="uint" bitLength="16">1</elementNb>
-                          <data isList="true"> <!--0x14 but again issue when parsing Object to XML-->
-                            <value dataType="int" bitLength="8">0</value>
-                            <value dataType="int" bitLength="8">0</value>
-                            <value dataType="int" bitLength="8">0</value>
-                            <value dataType="int" bitLength="8">14</value>
-                          </data>
+                          <data dataType="byte" bitLength="32">0x0000000e</data>
                         </CipWriteRequest>
                       </CipService>
                     </unconnectedService>
