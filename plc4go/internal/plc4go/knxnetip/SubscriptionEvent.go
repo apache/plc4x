@@ -29,13 +29,13 @@ import (
 )
 
 type SubscriptionEvent struct {
-	addresses map[string][]int8
+	addresses map[string][]byte
 	internalMode.DefaultPlcSubscriptionEvent
 }
 
 func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
 	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	addresses map[string][]int8, values map[string]values.PlcValue) SubscriptionEvent {
+	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
 	return SubscriptionEvent{
 		addresses:                   addresses,
 		DefaultPlcSubscriptionEvent: internalMode.NewDefaultPlcSubscriptionEvent(fields, types, intervals, responseCodes, values),
@@ -51,7 +51,7 @@ func (m SubscriptionEvent) GetRequest() apiModel.PlcSubscriptionRequest {
  */
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBufferByteBased(utils.Int8ArrayToUint8Array(rawAddress))
+	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
 	field := m.DefaultPlcSubscriptionEvent.GetField(name)
 	var groupAddress *driverModel.KnxGroupAddress
 	var err error

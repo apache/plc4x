@@ -29,7 +29,7 @@ import (
 // The data-structure of this message
 type ApduDataMemoryResponse struct {
 	Address uint16
-	Data    []uint8
+	Data    []byte
 	Parent  *ApduData
 }
 
@@ -50,7 +50,7 @@ func (m *ApduDataMemoryResponse) ApciType() uint8 {
 func (m *ApduDataMemoryResponse) InitializeParent(parent *ApduData) {
 }
 
-func NewApduDataMemoryResponse(address uint16, data []uint8) *ApduData {
+func NewApduDataMemoryResponse(address uint16, data []byte) *ApduData {
 	child := &ApduDataMemoryResponse{
 		Address: address,
 		Data:    data,
@@ -125,22 +125,11 @@ func ApduDataMemoryResponseParse(readBuffer utils.ReadBuffer) (*ApduData, error)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field")
 	}
-
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	data := make([]uint8, numBytes)
-	for curItem := uint16(0); curItem < uint16(numBytes); curItem++ {
-		_item, _err := readBuffer.ReadUint8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'data' field")
-		}
-		data[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (data)
+	numberOfBytes := int(numBytes)
+	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryResponse"); closeErr != nil {
@@ -179,17 +168,10 @@ func (m *ApduDataMemoryResponse) Serialize(writeBuffer utils.WriteBuffer) error 
 
 		// Array Field (data)
 		if m.Data != nil {
-			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Data {
-				_elementErr := writeBuffer.WriteUint8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'data' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (data)
+			_writeArrayErr := writeBuffer.WriteByteArray("data", m.Data)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'data' field")
 			}
 		}
 

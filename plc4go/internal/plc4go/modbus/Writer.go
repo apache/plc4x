@@ -83,7 +83,7 @@ func (m Writer) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteR
 			}
 			return
 		}
-		data := utils.Uint8ArrayToInt8Array(io.GetBytes())
+		data := io.GetBytes()
 
 		// Calculate the number of words needed to send the data
 		numWords := uint16(math.Ceil(float64(len(data)) / 2))

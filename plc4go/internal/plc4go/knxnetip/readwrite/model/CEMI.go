@@ -92,7 +92,7 @@ func (m *CEMI) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIParse(readBuffer utils.ReadBuffer, size uint8) (*CEMI, error) {
+func CEMIParse(readBuffer utils.ReadBuffer, size uint16) (*CEMI, error) {
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
 		return nil, pullErr
 	}

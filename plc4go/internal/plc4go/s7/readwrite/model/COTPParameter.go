@@ -126,7 +126,7 @@ func COTPParameterParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter
 	case parameterType == 0xC3: // COTPParameterChecksum
 		_parent, typeSwitchError = COTPParameterChecksumParse(readBuffer)
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer, rest)
+		_parent, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(readBuffer)
 	default:
 		// TODO: return actual type
 		typeSwitchError = errors.New("Unmapped type")

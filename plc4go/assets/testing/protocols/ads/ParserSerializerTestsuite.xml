@@ -151,9 +151,7 @@
                     <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                  </data>
+                  <data dataType="byte" bitLength="8">0x01</data>
                 </AdsReadResponse>
               </AdsData>
             </data>
@@ -224,34 +222,7 @@
                   <writeLength dataType="uint" bitLength="32">26</writeLength>
                   <items isList="true">
                   </items>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">109</value>
-                    <value dataType="int" bitLength="8">97</value>
-                    <value dataType="int" bitLength="8">105</value>
-                    <value dataType="int" bitLength="8">110</value>
-                    <value dataType="int" bitLength="8">46</value>
-                    <value dataType="int" bitLength="8">102</value>
-                    <value dataType="int" bitLength="8">95</value>
-                    <value dataType="int" bitLength="8">116</value>
-                    <value dataType="int" bitLength="8">114</value>
-                    <value dataType="int" bitLength="8">105</value>
-                    <value dataType="int" bitLength="8">103</value>
-                    <value dataType="int" bitLength="8">68</value>
-                    <value dataType="int" bitLength="8">97</value>
-                    <value dataType="int" bitLength="8">116</value>
-                    <value dataType="int" bitLength="8">101</value>
-                    <value dataType="int" bitLength="8">105</value>
-                    <value dataType="int" bitLength="8">71</value>
-                    <value dataType="int" bitLength="8">101</value>
-                    <value dataType="int" bitLength="8">108</value>
-                    <value dataType="int" bitLength="8">101</value>
-                    <value dataType="int" bitLength="8">115</value>
-                    <value dataType="int" bitLength="8">101</value>
-                    <value dataType="int" bitLength="8">110</value>
-                    <value dataType="int" bitLength="8">46</value>
-                    <value dataType="int" bitLength="8">77</value>
-                    <value dataType="int" bitLength="8">0</value>
-                  </data>
+                  <data dataType="byte" bitLength="208">0x6d61696e2e665f74726967446174656947656c6573656e2e4d00</data>
                 </AdsReadWriteRequest>
               </AdsData>
             </data>
@@ -320,12 +291,7 @@
                     <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">4</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">-128</value>
-                    <value dataType="int" bitLength="8">27</value>
-                  </data>
+                  <data dataType="byte" bitLength="32">0x0100801b</data>
                 </AdsReadWriteResponse>
               </AdsData>
             </data>
@@ -461,9 +427,7 @@
                     <ReturnCode dataType="uint" bitLength="32" stringRepresentation="OK">0</ReturnCode>
                   </result>
                   <length dataType="uint" bitLength="32">1</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                  </data>
+                  <data dataType="byte" bitLength="8">0x01</data>
                 </AdsReadResponse>
               </AdsData>
             </data>
@@ -531,12 +495,7 @@
                   <indexGroup dataType="uint" bitLength="32">61446</indexGroup>
                   <indexOffset dataType="uint" bitLength="32">0</indexOffset>
                   <length dataType="uint" bitLength="32">4</length>
-                  <data isList="true">
-                    <value dataType="int" bitLength="8">1</value>
-                    <value dataType="int" bitLength="8">0</value>
-                    <value dataType="int" bitLength="8">-128</value>
-                    <value dataType="int" bitLength="8">27</value>
-                  </data>
+                  <data dataType="byte" bitLength="32">0x0100801b</data>
                 </AdsWriteRequest>
               </AdsData>
             </data>

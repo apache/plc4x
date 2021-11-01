@@ -100,7 +100,7 @@ func (m *COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer, rest uint8) (*COTPParameter, error) {
+func COTPParameterDisconnectAdditionalInformationParse(readBuffer utils.ReadBuffer) (*COTPParameter, error) {
 	if pullErr := readBuffer.PullContext("COTPParameterDisconnectAdditionalInformation"); pullErr != nil {
 		return nil, pullErr
 	}

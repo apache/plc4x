@@ -33,7 +33,7 @@ type MultipleServiceResponse struct {
 	ExtStatus    uint8
 	ServiceNb    uint16
 	Offsets      []uint16
-	ServicesData []int8
+	ServicesData []byte
 	Parent       *CipService
 }
 
@@ -54,7 +54,7 @@ func (m *MultipleServiceResponse) Service() uint8 {
 func (m *MultipleServiceResponse) InitializeParent(parent *CipService) {
 }
 
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []int8) *CipService {
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) *CipService {
 	child := &MultipleServiceResponse{
 		Status:       status,
 		ExtStatus:    extStatus,
@@ -179,22 +179,11 @@ func MultipleServiceResponseParse(readBuffer utils.ReadBuffer, serviceLen uint16
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr
 	}
-
-	// Array field (servicesData)
-	if pullErr := readBuffer.PullContext("servicesData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	servicesData := make([]int8, uint16(uint16(serviceLen)-uint16(uint16(6)))-uint16(uint16(uint16(uint16(2))*uint16(serviceNb))))
-	for curItem := uint16(0); curItem < uint16(uint16(uint16(serviceLen)-uint16(uint16(6)))-uint16(uint16(uint16(uint16(2))*uint16(serviceNb)))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'servicesData' field")
-		}
-		servicesData[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("servicesData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (servicesData)
+	numberOfBytes := int(uint16(uint16(serviceLen)-uint16(uint16(6))) - uint16(uint16(uint16(uint16(2))*uint16(serviceNb))))
+	servicesData, _readArrayErr := readBuffer.ReadByteArray("servicesData", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'servicesData' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceResponse"); closeErr != nil {
@@ -267,17 +256,10 @@ func (m *MultipleServiceResponse) Serialize(writeBuffer utils.WriteBuffer) error
 
 		// Array Field (servicesData)
 		if m.ServicesData != nil {
-			if pushErr := writeBuffer.PushContext("servicesData", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.ServicesData {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'servicesData' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("servicesData", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (servicesData)
+			_writeArrayErr := writeBuffer.WriteByteArray("servicesData", m.ServicesData)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'servicesData' field")
 			}
 		}
 

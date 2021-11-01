@@ -408,7 +408,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 	case dataType == "STRING": // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((255)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(255))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -417,7 +417,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType string, numberOfValues 
 	case dataType == "WSTRING": // STRING
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((255)))
+		value, _valueErr := readBuffer.ReadString("value", uint32(255))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -689,13 +689,13 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 	case dataType == "STRING": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((255)), "TF-", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint8(255), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WSTRING": // STRING
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint8((255)), "TF-", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint8(255), "UTF-8", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:

@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type DF1UnprotectedReadResponse struct {
-	Data   []uint8
+	Data   []byte
 	Parent *DF1Command
 }
 
@@ -50,7 +50,7 @@ func (m *DF1UnprotectedReadResponse) InitializeParent(parent *DF1Command, status
 	m.Parent.TransactionCounter = transactionCounter
 }
 
-func NewDF1UnprotectedReadResponse(data []uint8, status uint8, transactionCounter uint16) *DF1Command {
+func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *DF1Command {
 	child := &DF1UnprotectedReadResponse{
 		Data:   data,
 		Parent: NewDF1Command(status, transactionCounter),
@@ -109,14 +109,14 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 	}
 	// Manual Array Field (data)
 	// Terminated array
-	_dataList := make([]uint8, 0)
+	_dataList := make([]byte, 0)
 	for !((bool)(DF1UtilsDataTerminate(readBuffer))) {
-		_dataList = append(_dataList, ((uint8)(DF1UtilsReadData(readBuffer))))
+		_dataList = append(_dataList, ((byte)(DF1UtilsReadData(readBuffer))))
 
 	}
-	data := make([]uint8, len(_dataList))
+	data := make([]byte, len(_dataList))
 	for i := 0; i < len(_dataList); i++ {
-		data[i] = uint8(_dataList[i])
+		data[i] = byte(_dataList[i])
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
 		return nil, closeErr

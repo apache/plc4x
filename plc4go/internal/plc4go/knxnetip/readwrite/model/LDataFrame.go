@@ -99,7 +99,7 @@ func (m *LDataFrame) ParentLengthInBits() uint16 {
 	// Discriminator Field (notAckFrame)
 	lengthInBits += 1
 
-	// Enum Field (priority)
+	// Simple field (priority)
 	lengthInBits += 2
 
 	// Simple field (acknowledgeRequested)
@@ -144,10 +144,10 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field")
 	}
 
+	// Simple Field (priority)
 	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (priority)
 	priority, _priorityErr := CEMIPriorityParse(readBuffer)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field")
@@ -234,17 +234,16 @@ func (m *LDataFrame) SerializeParent(writeBuffer utils.WriteBuffer, child ILData
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
 	}
 
+	// Simple Field (priority)
 	if pushErr := writeBuffer.PushContext("priority"); pushErr != nil {
 		return pushErr
 	}
-	// Enum field (priority)
-	priority := CastCEMIPriority(m.Priority)
-	_priorityErr := priority.Serialize(writeBuffer)
-	if _priorityErr != nil {
-		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
-	}
+	_priorityErr := m.Priority.Serialize(writeBuffer)
 	if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 		return popErr
+	}
+	if _priorityErr != nil {
+		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (acknowledgeRequested)

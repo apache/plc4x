@@ -28,7 +28,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReportServerIdResponse struct {
-	Value  []int8
+	Value  []byte
 	Parent *ModbusPDU
 }
 
@@ -57,7 +57,7 @@ func (m *ModbusPDUReportServerIdResponse) Response() bool {
 func (m *ModbusPDUReportServerIdResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUReportServerIdResponse(value []int8) *ModbusPDU {
+func NewModbusPDUReportServerIdResponse(value []byte) *ModbusPDU {
 	child := &ModbusPDUReportServerIdResponse{
 		Value:  value,
 		Parent: NewModbusPDU(),
@@ -122,22 +122,11 @@ func ModbusPDUReportServerIdResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field")
 	}
-
-	// Array field (value)
-	if pullErr := readBuffer.PullContext("value", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	value := make([]int8, byteCount)
-	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'value' field")
-		}
-		value[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("value", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (value)
+	numberOfBytes := int(byteCount)
+	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReportServerIdResponse"); closeErr != nil {
@@ -168,17 +157,10 @@ func (m *ModbusPDUReportServerIdResponse) Serialize(writeBuffer utils.WriteBuffe
 
 		// Array Field (value)
 		if m.Value != nil {
-			if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Value {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'value' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (value)
+			_writeArrayErr := writeBuffer.WriteByteArray("value", m.Value)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'value' field")
 			}
 		}
 

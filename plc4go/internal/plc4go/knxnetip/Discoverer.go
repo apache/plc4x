@@ -33,7 +33,6 @@ import (
 	internalModel "github.com/apache/plc4x/plc4go/internal/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/udp"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 )
 
@@ -133,7 +132,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 				return errors.New("couldn't cast transport instance to UDP transport instance")
 			}
 			localAddress := udpTransportInstance.LocalAddress
-			localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
+			localAddr := driverModel.NewIPAddress(localAddress.IP)
 
 			// Prepare the discovery packet data
 			discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
@@ -162,8 +161,7 @@ func (d *Discoverer) Discover(callback func(event apiModel.PlcDiscoveryEvent), d
 								if err != nil {
 									continue
 								}
-								deviceName := string(bytes.Trim(utils.Int8ArrayToByteArray(
-									searchResponse.DibDeviceInfo.DeviceFriendlyName), "\x00"))
+								deviceName := string(bytes.Trim(searchResponse.DibDeviceInfo.DeviceFriendlyName, "\x00"))
 								discoveryEvent := &internalModel.DefaultPlcDiscoveryEvent{
 									ProtocolCode:  "knxnet-ip",
 									TransportCode: "udp",

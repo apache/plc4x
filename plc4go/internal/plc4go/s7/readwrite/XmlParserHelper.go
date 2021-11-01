@@ -124,8 +124,7 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	case "S7VarRequestParameterItem":
 		return model.S7VarRequestParameterItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "S7VarPayloadDataItem":
-		lastItem := parserArguments[0] == "true"
-		return model.S7VarPayloadDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)), lastItem)
+		return model.S7VarPayloadDataItemParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageQueryType":
 		return model.AlarmMessageQueryTypeParse(utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AlarmMessageAckResponseType":

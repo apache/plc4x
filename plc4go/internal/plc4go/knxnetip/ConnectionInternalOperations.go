@@ -47,7 +47,7 @@ func (m *Connection) sendGatewaySearchRequest() (*driverModel.SearchResponse, er
 		return nil, errors.Wrap(err, "error getting local address")
 	}
 
-	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP))
+	localAddr := driverModel.NewIPAddress(localAddress.IP)
 	discoveryEndpoint := driverModel.NewHPAIDiscoveryEndpoint(
 		driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port),
 	)
@@ -104,7 +104,7 @@ func (m *Connection) sendGatewayConnectionRequest() (*driverModel.ConnectionResp
 		return nil, errors.Wrap(err, "error getting local address")
 	}
 
-	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
+	localAddr := driverModel.NewIPAddress(localAddress.IP[len(localAddress.IP)-4:])
 	connectionRequest := driverModel.NewConnectionRequest(
 		driverModel.NewHPAIDiscoveryEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
 		driverModel.NewHPAIDataEndpoint(driverModel.HostProtocolCode_IPV4_UDP, localAddr, uint16(localAddress.Port)),
@@ -151,7 +151,7 @@ func (m *Connection) sendGatewayDisconnectionRequest() (*driverModel.DisconnectR
 		return nil, errors.Wrap(err, "error getting local address")
 	}
 
-	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
+	localAddr := driverModel.NewIPAddress(localAddress.IP[len(localAddress.IP)-4:])
 	disconnectRequest := driverModel.NewDisconnectRequest(
 		m.CommunicationChannelId,
 		driverModel.NewHPAIControlEndpoint(
@@ -201,7 +201,7 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 		return nil, errors.Wrap(err, "error getting local address")
 	}
 
-	localAddr := driverModel.NewIPAddress(utils.ByteArrayToInt8Array(localAddress.IP)[len(localAddress.IP)-4:])
+	localAddr := driverModel.NewIPAddress(localAddress.IP[len(localAddress.IP)-4:])
 	connectionStateRequest := driverModel.NewConnectionStateRequest(
 		m.CommunicationChannelId,
 		driverModel.NewHPAIControlEndpoint(
@@ -242,7 +242,7 @@ func (m *Connection) sendConnectionStateRequest() (*driverModel.ConnectionStateR
 	}
 }
 
-func (m *Connection) sendGroupAddressReadRequest(groupAddress []int8) (*driverModel.ApduDataGroupValueResponse, error) {
+func (m *Connection) sendGroupAddressReadRequest(groupAddress []byte) (*driverModel.ApduDataGroupValueResponse, error) {
 	// Send the property read request and wait for a confirmation that this property is readable.
 	groupAddressReadRequest := driverModel.NewTunnelingRequest(
 		driverModel.NewTunnelingRequestDataBlock(m.CommunicationChannelId, m.getNewSequenceCounter()),
@@ -336,7 +336,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 				false,
 				6,
 				uint8(0),
-				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
+				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlConnect(), false, 0),
 				true,
 				true,
@@ -367,7 +367,7 @@ func (m *Connection) sendDeviceConnectionRequest(targetAddress driverModel.KnxAd
 				return false
 			}
 			// Check if the address matches
-			if *Int8ArrayToKnxAddress(lDataFrameExt.DestinationAddress) != targetAddress {
+			if *ByteArrayToKnxAddress(lDataFrameExt.DestinationAddress) != targetAddress {
 				return false
 			}
 			apduControlContainer := driverModel.CastApduControlContainer(lDataFrameExt.Apdu)
@@ -426,7 +426,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 				false,
 				6,
 				uint8(0),
-				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
+				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlDisconnect(), false, 0),
 				true,
 				true,
@@ -456,7 +456,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(targetAddress driverModel.Kn
 			if dataFrameExt == nil {
 				return false
 			}
-			curTargetAddress := Int8ArrayToKnxAddress(dataFrameExt.DestinationAddress)
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
 			// Check if the address matches
 			if *curTargetAddress != targetAddress {
 				return false
@@ -526,7 +526,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 				false,
 				6,
 				uint8(0),
-				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
+				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(driverModel.NewApduDataOther(
 					driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey))),
 					true,
@@ -572,7 +572,7 @@ func (m *Connection) sendDeviceAuthentication(targetAddress driverModel.KnxAddre
 			if apduAuthorizeResponse == nil {
 				return false
 			}
-			curTargetAddress := Int8ArrayToKnxAddress(dataFrameExt.DestinationAddress)
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
 			// Check if the addresses match
 			if *curTargetAddress != *m.ClientKnxAddress {
 				return false
@@ -643,7 +643,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(targetAddress driverM
 				6,
 				uint8(0),
 				driverModel.NewKnxAddress(0, 0, 0),
-				KnxAddressToInt8Array(targetAddress),
+				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataDeviceDescriptorRead(0), true, counter),
 				true,
@@ -748,7 +748,7 @@ func (m *Connection) sendDevicePropertyReadRequest(targetAddress driverModel.Knx
 				6,
 				0,
 				driverModel.NewKnxAddress(0, 0, 0),
-				KnxAddressToInt8Array(targetAddress),
+				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
 						driverModel.NewApduDataExtPropertyValueRead(objectId, propertyId, numElements, propertyIndex),
@@ -863,7 +863,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(targetAddress driv
 				6,
 				0,
 				driverModel.NewKnxAddress(0, 0, 0),
-				KnxAddressToInt8Array(targetAddress),
+				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
 						driverModel.NewApduDataExtPropertyDescriptionRead(objectId, propertyId, 1),
@@ -979,7 +979,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(targetAddress driverModel.KnxAd
 				6,
 				0,
 				driverModel.NewKnxAddress(0, 0, 0),
-				KnxAddressToInt8Array(targetAddress),
+				KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataMemoryRead(numBytes, address),
 					true,
@@ -1084,7 +1084,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 				false,
 				6,
 				uint8(0),
-				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToInt8Array(targetAddress),
+				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduControlContainer(driverModel.NewApduControlAck(), true, counter),
 				true,
 				true,
@@ -1115,7 +1115,7 @@ func (m *Connection) sendDeviceAck(targetAddress driverModel.KnxAddress, counter
 			if *dataFrameExt.SourceAddress != *m.ClientKnxAddress {
 				return false
 			}
-			curTargetAddress := Int8ArrayToKnxAddress(dataFrameExt.DestinationAddress)
+			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.DestinationAddress)
 			if *curTargetAddress != targetAddress {
 				return false
 			}

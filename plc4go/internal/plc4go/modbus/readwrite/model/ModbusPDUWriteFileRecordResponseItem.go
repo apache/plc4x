@@ -31,7 +31,7 @@ type ModbusPDUWriteFileRecordResponseItem struct {
 	ReferenceType uint8
 	FileNumber    uint16
 	RecordNumber  uint16
-	RecordData    []int8
+	RecordData    []byte
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusPDUWriteFileRecordResponseItem interface {
 	Serialize(writeBuffer utils.WriteBuffer) error
 }
 
-func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []int8) *ModbusPDUWriteFileRecordResponseItem {
+func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) *ModbusPDUWriteFileRecordResponseItem {
 	return &ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
 }
 
@@ -122,24 +122,11 @@ func ModbusPDUWriteFileRecordResponseItemParse(readBuffer utils.ReadBuffer) (*Mo
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field")
 	}
-
-	// Array field (recordData)
-	if pullErr := readBuffer.PullContext("recordData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Length array
-	recordData := make([]int8, 0)
-	_recordDataLength := recordLength
-	_recordDataEndPos := readBuffer.GetPos() + uint16(_recordDataLength)
-	for readBuffer.GetPos() < _recordDataEndPos {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'recordData' field")
-		}
-		recordData = append(recordData, _item)
-	}
-	if closeErr := readBuffer.CloseContext("recordData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (recordData)
+	numberOfBytes := int(recordLength)
+	recordData, _readArrayErr := readBuffer.ReadByteArray("recordData", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'recordData' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteFileRecordResponseItem"); closeErr != nil {
@@ -185,17 +172,10 @@ func (m *ModbusPDUWriteFileRecordResponseItem) Serialize(writeBuffer utils.Write
 
 	// Array Field (recordData)
 	if m.RecordData != nil {
-		if pushErr := writeBuffer.PushContext("recordData", utils.WithRenderAsList(true)); pushErr != nil {
-			return pushErr
-		}
-		for _, _element := range m.RecordData {
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'recordData' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("recordData", utils.WithRenderAsList(true)); popErr != nil {
-			return popErr
+		// Byte Array field (recordData)
+		_writeArrayErr := writeBuffer.WriteByteArray("recordData", m.RecordData)
+		if _writeArrayErr != nil {
+			return errors.Wrap(_writeArrayErr, "Error serializing 'recordData' field")
 		}
 	}
 

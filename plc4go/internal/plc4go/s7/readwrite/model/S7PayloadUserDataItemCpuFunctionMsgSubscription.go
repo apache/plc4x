@@ -112,7 +112,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) LengthInBitsConditiona
 	lengthInBits += 8
 
 	// Simple field (magicKey)
-	lengthInBits += uint16((64))
+	lengthInBits += 64
 
 	// Optional Field (Alarmtype)
 	if m.Alarmtype != nil {
@@ -157,7 +157,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionParse(readBuffer utils.ReadB
 	}
 
 	// Simple Field (magicKey)
-	magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32((64)))
+	magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64))
 	if _magicKeyErr != nil {
 		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field")
 	}
@@ -221,7 +221,7 @@ func (m *S7PayloadUserDataItemCpuFunctionMsgSubscription) Serialize(writeBuffer 
 
 		// Simple Field (magicKey)
 		magicKey := string(m.MagicKey)
-		_magicKeyErr := writeBuffer.WriteString("magicKey", uint8((64)), "TF-", (magicKey))
+		_magicKeyErr := writeBuffer.WriteString("magicKey", uint8(64), "UTF-8", (magicKey))
 		if _magicKeyErr != nil {
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}

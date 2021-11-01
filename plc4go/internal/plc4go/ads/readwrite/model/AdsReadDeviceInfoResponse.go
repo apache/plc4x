@@ -32,7 +32,7 @@ type AdsReadDeviceInfoResponse struct {
 	MajorVersion uint8
 	MinorVersion uint8
 	Version      uint16
-	Device       []int8
+	Device       []byte
 	Parent       *AdsData
 }
 
@@ -57,7 +57,7 @@ func (m *AdsReadDeviceInfoResponse) Response() bool {
 func (m *AdsReadDeviceInfoResponse) InitializeParent(parent *AdsData) {
 }
 
-func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []int8) *AdsData {
+func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *AdsData {
 	child := &AdsReadDeviceInfoResponse{
 		Result:       result,
 		MajorVersion: majorVersion,
@@ -158,22 +158,11 @@ func AdsReadDeviceInfoResponseParse(readBuffer utils.ReadBuffer) (*AdsData, erro
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field")
 	}
-
-	// Array field (device)
-	if pullErr := readBuffer.PullContext("device", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	device := make([]int8, uint16(16))
-	for curItem := uint16(0); curItem < uint16(uint16(16)); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'device' field")
-		}
-		device[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("device", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (device)
+	numberOfBytes := int(uint16(16))
+	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {
@@ -234,17 +223,10 @@ func (m *AdsReadDeviceInfoResponse) Serialize(writeBuffer utils.WriteBuffer) err
 
 		// Array Field (device)
 		if m.Device != nil {
-			if pushErr := writeBuffer.PushContext("device", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Device {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'device' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("device", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (device)
+			_writeArrayErr := writeBuffer.WriteByteArray("device", m.Device)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'device' field")
 			}
 		}
 

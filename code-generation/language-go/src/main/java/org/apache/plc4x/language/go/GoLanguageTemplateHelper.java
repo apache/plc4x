@@ -829,8 +829,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .asStringLiteral()
             .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
-        // Cut off the double-quotes
-        staticCall = staticCall.substring(1, staticCall.length() - 1);
         // Remove all the previous parts prior to the Class name (Which starts with an uppercase letter)
         while (staticCall.contains(".") && !StringUtils.isAllUpperCase(staticCall.substring(0, 1))) {
             staticCall = staticCall.substring(staticCall.indexOf(".") + 1);

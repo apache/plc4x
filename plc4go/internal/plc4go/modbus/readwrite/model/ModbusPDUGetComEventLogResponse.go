@@ -31,7 +31,7 @@ type ModbusPDUGetComEventLogResponse struct {
 	Status       uint16
 	EventCount   uint16
 	MessageCount uint16
-	Events       []int8
+	Events       []byte
 	Parent       *ModbusPDU
 }
 
@@ -60,7 +60,7 @@ func (m *ModbusPDUGetComEventLogResponse) Response() bool {
 func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {
 }
 
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) *ModbusPDU {
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *ModbusPDU {
 	child := &ModbusPDUGetComEventLogResponse{
 		Status:       status,
 		EventCount:   eventCount,
@@ -155,22 +155,11 @@ func ModbusPDUGetComEventLogResponseParse(readBuffer utils.ReadBuffer) (*ModbusP
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field")
 	}
-
-	// Array field (events)
-	if pullErr := readBuffer.PullContext("events", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, pullErr
-	}
-	// Count array
-	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
-		_item, _err := readBuffer.ReadInt8("", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'events' field")
-		}
-		events[curItem] = _item
-	}
-	if closeErr := readBuffer.CloseContext("events", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, closeErr
+	// Byte Array field (events)
+	numberOfBytes := int(uint16(byteCount) - uint16(uint16(6)))
+	events, _readArrayErr := readBuffer.ReadByteArray("events", numberOfBytes)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field")
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {
@@ -225,17 +214,10 @@ func (m *ModbusPDUGetComEventLogResponse) Serialize(writeBuffer utils.WriteBuffe
 
 		// Array Field (events)
 		if m.Events != nil {
-			if pushErr := writeBuffer.PushContext("events", utils.WithRenderAsList(true)); pushErr != nil {
-				return pushErr
-			}
-			for _, _element := range m.Events {
-				_elementErr := writeBuffer.WriteInt8("", 8, _element)
-				if _elementErr != nil {
-					return errors.Wrap(_elementErr, "Error serializing 'events' field")
-				}
-			}
-			if popErr := writeBuffer.PopContext("events", utils.WithRenderAsList(true)); popErr != nil {
-				return popErr
+			// Byte Array field (events)
+			_writeArrayErr := writeBuffer.WriteByteArray("events", m.Events)
+			if _writeArrayErr != nil {
+				return errors.Wrap(_writeArrayErr, "Error serializing 'events' field")
 			}
 		}
 

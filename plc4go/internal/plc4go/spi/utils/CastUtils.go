@@ -35,6 +35,19 @@ func Int8ArrayToUint8Array(input []int8) []uint8 {
 	return output
 }
 
+func ByteArrayToString(data []byte, separator string) string {
+	var sb strings.Builder
+	if data != nil {
+		for i, element := range data {
+			sb.WriteString(strconv.Itoa(int(element)))
+			if i < (len(data) - 1) {
+				sb.WriteString(separator)
+			}
+		}
+	}
+	return sb.String()
+}
+
 func Int8ArrayToString(data []int8, separator string) string {
 	var sb strings.Builder
 	if data != nil {

@@ -93,7 +93,7 @@ func (m *FirmataCommandSetPinMode) LengthInBitsConditional(lastItem bool) uint16
 	// Simple field (pin)
 	lengthInBits += 8
 
-	// Enum Field (mode)
+	// Simple field (mode)
 	lengthInBits += 8
 
 	return lengthInBits
@@ -114,10 +114,10 @@ func FirmataCommandSetPinModeParse(readBuffer utils.ReadBuffer) (*FirmataCommand
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field")
 	}
 
+	// Simple Field (mode)
 	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
 		return nil, pullErr
 	}
-	// Enum field (mode)
 	mode, _modeErr := PinModeParse(readBuffer)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field")
@@ -153,17 +153,16 @@ func (m *FirmataCommandSetPinMode) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
 
+		// Simple Field (mode)
 		if pushErr := writeBuffer.PushContext("mode"); pushErr != nil {
 			return pushErr
 		}
-		// Enum field (mode)
-		mode := CastPinMode(m.Mode)
-		_modeErr := mode.Serialize(writeBuffer)
-		if _modeErr != nil {
-			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
-		}
+		_modeErr := m.Mode.Serialize(writeBuffer)
 		if popErr := writeBuffer.PopContext("mode"); popErr != nil {
 			return popErr
+		}
+		if _modeErr != nil {
+			return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FirmataCommandSetPinMode"); popErr != nil {

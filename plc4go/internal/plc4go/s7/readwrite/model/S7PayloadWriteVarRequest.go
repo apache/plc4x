@@ -119,8 +119,7 @@ func S7PayloadWriteVarRequestParse(readBuffer utils.ReadBuffer, parameter *S7Par
 	// Count array
 	items := make([]*S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
 	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
-		lastItem := curItem == uint16((len(CastS7ParameterWriteVarRequest(parameter).Items))-1)
-		_item, _err := S7VarPayloadDataItemParse(readBuffer, lastItem)
+		_item, _err := S7VarPayloadDataItemParse(readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'items' field")
 		}
@@ -154,15 +153,11 @@ func (m *S7PayloadWriteVarRequest) Serialize(writeBuffer utils.WriteBuffer) erro
 			if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			itemCount := uint16(len(m.Items))
-			var curItem uint16 = 0
 			for _, _element := range m.Items {
-				var lastItem bool = curItem == (itemCount - 1)
-				_elementErr := _element.Serialize(writeBuffer, lastItem)
+				_elementErr := _element.Serialize(writeBuffer)
 				if _elementErr != nil {
 					return errors.Wrap(_elementErr, "Error serializing 'items' field")
 				}
-				curItem++
 			}
 			if popErr := writeBuffer.PopContext("items", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr

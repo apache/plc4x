@@ -856,27 +856,17 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#assign typeName=typeDefinition.parentType.name>
                     <#assign typeDefinition=typeDefinition.parentType>
                 </#if>
-				<#assign hasFieldParams=complexTypeReference.params.isPresent()>
-				<#assign fieldParams>
-					<#if hasFieldParams>
-						,
-						<#list complexTypeReference.params.orElseThrow() as parserArgument>
-							${helper.toTypedParseExpression(optionalField, helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, parserArguments)}
-							<#sep>, </#sep>
-						</#list>
-					</#if>
-				</#assign>
-				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-				<#assign refParams>
-                    <#if hasRefParams>
-						,
-						<#list complexTypeReference.params.orElseThrow() as typeParam>
-							${helper.toTypedParseExpression(optionalField, null, typeParam, null)}
-							<#sep>, </#sep>
-						</#list>
-                    </#if>
-				</#assign>
-		_val, _err := ${typeName}Parse(readBuffer${fieldParams}${refParams})
+                    <#assign hasRefParams=complexTypeReference.params.isPresent()>
+                    <#assign refParams>
+                        <#if hasRefParams>
+							,
+                            <#list complexTypeReference.params.orElseThrow() as parserArgument>
+                                ${helper.toTypedParseExpression(optionalField, helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, parserArguments)}
+                                <#sep>, </#sep>
+                            </#list>
+                        </#if>
+                    </#assign>
+		_val, _err := ${typeName}Parse(readBuffer${refParams})
                 </@compress>
 
 		if _err != nil {
@@ -913,12 +903,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                     <#assign typeName=typeDefinition.parentType.name>
                     <#assign typeDefinition=typeDefinition.parentType>
                 </#if>
-				<#assign hasFieldParams=complexTypeReference.params.isPresent()>
-				<#assign fieldParams><#if hasFieldParams>, <#list complexTypeReference.params.orElseThrow() as parserArgument>${helper.toTypedParseExpression(assertField, helper.getArgumentType(assertField.type, parserArgument?index), parserArgument, parserArguments)}<#sep>, </#sep></#list></#if></#assign>
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
 				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
                 </@compress>
-	_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer${fieldParams}${refParams})
+	_val, _err := ${helper.getLanguageTypeNameForField(field)}Parse(readBuffer${refParams})
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -988,9 +976,9 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
             <#assign typeName=typeDefinition.parentType.name>
             <#assign typeDefinition=typeDefinition.parentType>
         </#if>
-        <#assign hasFieldParams=complexTypeReference.params.isPresent()>
-        <#assign fieldParams>
-            <#if hasFieldParams>
+        <#assign hasRefParams=complexTypeReference.params.isPresent()>
+        <#assign refParams>
+            <#if hasRefParams>
 				,
                 <#list complexTypeReference.params.orElseThrow() as parserArgument>
                     ${helper.toTypedParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)}
@@ -998,17 +986,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
                 </#list>
             </#if>
         </#assign>
-        <#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-        <#assign refParams>
-            <#if hasRefParams>
-				,
-                <#list complexTypeReference.params.orElseThrow() as typeParam>
-                    ${helper.toTypedParseExpression(simpleField, null, typeParam, null)}
-                    <#sep>, </#sep>
-                </#list>
-            </#if>
-        </#assign>
-		${typeName}Parse(readBuffer${fieldParams}${refParams})
+		${typeName}Parse(readBuffer${refParams})
 	</#if>
     </@compress>
 
