@@ -131,7 +131,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
-            generator.writeNumberField(logicalName, value);
+            generator.writeNumberField(sanitizedLogicalName, value);
         });
     }
 
