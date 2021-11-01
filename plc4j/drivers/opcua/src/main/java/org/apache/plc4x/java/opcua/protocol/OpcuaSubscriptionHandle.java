@@ -229,7 +229,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         LOGGER.trace("Starting Subscription");
         CompletableFuture.supplyAsync(() -> {
             try {
-                List<ExtensionObjectDefinition> outstandingAcknowledgements = new LinkedList<>();
+                LinkedList<ExtensionObjectDefinition> outstandingAcknowledgements = new LinkedList<>();
                 List<Long> outstandingRequests = new LinkedList<>();
                 while (!this.destroy.get()) {
                     long requestHandle = channel.getRequestHandle();
@@ -245,7 +245,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             OpcuaProtocolLogic.NULL_EXTENSION_OBJECT);
 
                         //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
-                        List<ExtensionObjectDefinition> acks = Collections.unmodifiableList(outstandingAcknowledgements);
+                        List<ExtensionObjectDefinition> acks = (LinkedList<ExtensionObjectDefinition>) outstandingAcknowledgements.clone();
                         int ackLength = acks.size() == 0 ? -1 : acks.size();
                         outstandingAcknowledgements.removeAll(acks);
 
