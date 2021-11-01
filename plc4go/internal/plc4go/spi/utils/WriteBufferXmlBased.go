@@ -96,7 +96,12 @@ func (x *xmlWriteBuffer) WriteByte(logicalName string, value byte, writerArgs ..
 }
 
 func (x *xmlWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
-	return x.encodeElement(logicalName, fmt.Sprintf("%#02x", data), x.generateAttr(rwByteKey, uint(len(data)*8), writerArgs...), writerArgs...)
+	hexString := fmt.Sprintf("%#02x", data)
+	if hexString == "00" {
+		// golang does mess up the formatting on empty arrays
+		hexString = "0x"
+	}
+	return x.encodeElement(logicalName, hexString, x.generateAttr(rwByteKey, uint(len(data)*8), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
