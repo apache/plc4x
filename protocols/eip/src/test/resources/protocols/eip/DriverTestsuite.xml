@@ -115,7 +115,7 @@
               <CipExchange>
                 <itemCount dataType="uint" bitLength="16">2</itemCount>
                 <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-                <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+                <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
                 <size dataType="uint" bitLength="16">24</size>
                 <service>
                   <CipService>
@@ -132,15 +132,8 @@
                         <CipService>
                           <service dataType="uint" bitLength="8">76</service>
                           <CipReadRequest>
-                            <RequestPathSize dataType="int" bitLength="8">3</RequestPathSize>
-                            <tag isList="true">
-                              <value dataType="int" bitLength="8">-111</value>
-                              <value dataType="int" bitLength="8">4</value>
-                              <value dataType="int" bitLength="8">114</value>
-                              <value dataType="int" bitLength="8">97</value>
-                              <value dataType="int" bitLength="8">116</value>
-                              <value dataType="int" bitLength="8">101</value>
-                            </tag>
+                            <requestPathSize dataType="int" bitLength="8">3</requestPathSize>
+                            <tag dataType="byte" bitLength="48">0x910472617465</tag>
                             <elementNb dataType="uint" bitLength="16">1</elementNb>
                           </CipReadRequest>
                         </CipService>
@@ -180,7 +173,7 @@
               <CipExchange>
                 <itemCount dataType="uint" bitLength="16">2</itemCount>
                 <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-                <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+                <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
                 <size dataType="uint" bitLength="16">10</size>
                 <service>
                   <CipService>
@@ -193,12 +186,7 @@
                         <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
                         </CIPDataTypeCode>
                       </dataType>
-                      <data isList="true">
-                        <value dataType="int" bitLength="8">0</value>
-                        <value dataType="int" bitLength="8">0</value>
-                        <value dataType="int" bitLength="8">2</value>
-                        <value dataType="int" bitLength="8">22</value>
-                      </data>
+                      <data dataType="byte" bitLength="32">0x00000216</data>
                     </CipReadResponse>
                   </CipService>
                 </service>
