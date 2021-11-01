@@ -105,7 +105,12 @@ func (j *jsonWriteBuffer) WriteByte(logicalName string, value byte, writerArgs .
 }
 
 func (j *jsonWriteBuffer) WriteByteArray(logicalName string, data []byte, writerArgs ...WithWriterArgs) error {
-	return j.encodeNode(logicalName, fmt.Sprintf("%#x", data), j.generateAttr(logicalName, rwByteKey, uint(len(data)*8), writerArgs...))
+	hexString := fmt.Sprintf("%#x", data)
+	if hexString == "00" {
+		// golang does mess up the formatting on empty arrays
+		hexString = "0x"
+	}
+	return j.encodeNode(logicalName, hexString, j.generateAttr(logicalName, rwByteKey, uint(len(data)*8), writerArgs...))
 }
 
 func (j *jsonWriteBuffer) WriteUint8(logicalName string, bitLength uint8, value uint8, writerArgs ...WithWriterArgs) error {
