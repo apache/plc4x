@@ -158,7 +158,7 @@
             <CipExchange>
               <itemCount dataType="uint" bitLength="16">2</itemCount>
               <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
               <size dataType="uint" bitLength="16">10</size>
               <service>
                 <CipService>
@@ -170,12 +170,7 @@
                     <dataType> <!--0xC4-->
                       <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
                     </dataType>
-                    <data isList="true">  <!--0x216 but again issue when parsing Object to XML-->
-                      <value dataType="int" bitLength="8">0</value>
-                      <value dataType="int" bitLength="8">0</value>
-                      <value dataType="int" bitLength="8">2</value>
-                      <value dataType="int" bitLength="8">22</value>
-                    </data>
+                    <data dataType="byte" bitLength="32">0x00000216</data>  <!--0x216 but again issue when parsing Object to XML-->
                   </CipReadResponse>
                 </CipService>
               </service>
@@ -306,7 +301,7 @@
             <CipExchange>
               <itemCount dataType="uint" bitLength="16">2</itemCount>
               <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-              <UnconnectedData dataType="uint" bitLength="16">178</UnconnectedData>
+              <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
               <size dataType="uint" bitLength="16">4</size>
               <service>
                 <CipService>
