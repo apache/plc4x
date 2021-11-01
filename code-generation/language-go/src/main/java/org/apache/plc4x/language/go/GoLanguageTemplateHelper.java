@@ -1157,15 +1157,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         return name;
                     }
                 }
-                if(curField.isTypedField()) {
-                    final TypedField typedField = curField.asTypedField().get();
-                    if(typedField.getType().isComplexTypeReference()) {
-                        final ComplexTypeReference complexTypeReference = typedField.getType().asComplexTypeReference().get();
-                        for (Term param : complexTypeReference.getParams().orElse(Collections.emptyList())) {
-                            if (param.contains(name)) {
-                                return name;
-                            }
-                        }
+                List<Term> params = field.asTypedField()
+                    .map(typedField -> typedField.getType().asComplexTypeReference()
+                        .map(ComplexTypeReference::getParams)
+                        .map(terms -> terms.orElse(Collections.emptyList()))
+                        .orElse(Collections.emptyList())
+                    )
+                    .orElse(Collections.emptyList());
+                for (Term param : params) {
+                    if (param.contains(name)) {
+                        return name;
                     }
                 }
             }
@@ -1180,19 +1181,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return true;
             }
         }
-        if(field.isTypedField()) {
-            final TypedField typedField = field.asTypedField().get();
-            if (typedField.getType().isComplexTypeReference()) {
-                final ComplexTypeReference complexTypeReference = typedField.getType().asComplexTypeReference().get();
-                List<Term> fieldParams = complexTypeReference.getParams().orElse(Collections.emptyList());
-                for (Term param : fieldParams) {
-                    if (param.contains(variableName)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return field.asTypedField()
+            .map(typedField -> typedField.getType().asComplexTypeReference()
+                .map(complexTypeReference -> complexTypeReference.getParams()
+                    .map(params -> params.stream()
+                        .anyMatch(param -> param.contains(variableName))
+                    )
+                    .orElse(false)
+                )
+                .orElse(false)
+            )
+            .orElse(false);
     }
 
     /**
@@ -1241,30 +1240,28 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean requiresVariable(Field curField, String variable) {
-        if (curField instanceof ArrayField) {
+        if (curField.isArrayField()) {
             ArrayField arrayField = (ArrayField) curField;
             if (arrayField.getLoopExpression().contains(variable)) {
                 return true;
             }
-        } else if (curField instanceof OptionalField) {
+        } else if (curField.isOptionalField()) {
             OptionalField optionalField = (OptionalField) curField;
             if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().orElseThrow(IllegalStateException::new).contains(variable)) {
                 return true;
             }
         }
-        if(curField.isTypedField()) {
-            final TypedField typedField = curField.asTypedField().get();
-            if (typedField.getType().isComplexTypeReference()) {
-                final ComplexTypeReference complexTypeReference = typedField.getType().asComplexTypeReference().get();
-                List<Term> fieldParams = complexTypeReference.getParams().orElse(Collections.emptyList());
-                for (Term param : fieldParams) {
-                    if (param.contains(variable)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return curField.asTypedField()
+            .map(typedField -> typedField.getType().asComplexTypeReference()
+                .map(complexTypeReference -> complexTypeReference.getParams()
+                    .map(params -> params.stream()
+                        .anyMatch(param -> param.contains(variable))
+                    )
+                    .orElse(false)
+                )
+                .orElse(false)
+            )
+            .orElse(false);
     }
 
     public Term findTerm(Term baseTerm, String name) {
