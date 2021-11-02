@@ -211,30 +211,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
     <#-- TODO: Port this -->
     <#case "discriminator">
         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-        <#if helper.isEnumField(field)>
-        ${helper.getLanguageTypeNameForField(discriminatorField)} ${discriminatorField.name} = ${helper.getLanguageTypeNameForField(discriminatorField)}.enumForValue(${helper.getReadBufferReadMethodCall(discriminatorField.name, helper.getEnumBaseTypeReference(discriminatorField.type), "", discriminatorField)});
-        <#else>
-            <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-            <@compress single_line=true>
-        ${helper.getLanguageTypeNameForField(discriminatorField)} ${discriminatorField.name} =
-                <#if helper.isSimpleTypeReference(discriminatorField.type)>
-                    ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference, "", discriminatorField)}
-                <#else>
-                    ${discriminatorField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
-                    <#if discriminatorField.type.asComplexTypeReference().orElseThrow().params.isPresent()>
-                        ,
-                        <#list discriminatorField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>
-                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleTypeReference, parserArgument?index), true)})
-                            (${helper.toParseExpression(discriminatorField, parserArgument, null)})<#sep>, </#sep>
-                        </#list>
-                    </#if>
-                    )
-                </#if>;
-            </@compress>
-        </#if>
-
+        // Discriminator Field (${discriminatorField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});
         <#break>
     <#case "enum">
         <#assign enumField = field.asEnumField().orElseThrow()>
@@ -358,7 +339,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         // Simple Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if helper.isEnumTypeReference(typedField.type)>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});</#if>
         <#break>
-    <#-- TODO: Port this -->
     <#case "switch">
         <#assign switchField = field.asSwitchField().orElseThrow()>
 
