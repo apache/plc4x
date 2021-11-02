@@ -42,6 +42,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -98,7 +101,9 @@ public class SecureChannel {
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private EncryptionHandler encryptionHandler;
+    private PascalByteString certificateThumbprint = null;
+    private boolean checkedEndpoints = false;
+    private EncryptionHandler encryptionHandler = null;
     private OpcuaConfiguration configuration;
     private AtomicInteger channelId = new AtomicInteger(1);
     private AtomicInteger tokenId = new AtomicInteger(1);
@@ -107,6 +112,9 @@ public class SecureChannel {
     private SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
     private long lifetime = DEFAULT_CONNECTION_LIFETIME;
     private CompletableFuture<Void> keepAlive;
+    private int sendBufferSize;
+    private int maxMessageSize;
+    private String[] endpoints = new String[3];
     private AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
@@ -134,6 +142,17 @@ public class SecureChannel {
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
             this.isEncrypted = false;
+        }
+        this.keyStoreFile = configuration.getKeyStoreFile();
+
+        // Generate a list of endpoints we can use.
+        try {
+            InetAddress address = InetAddress.getByName(this.configuration.getHost());
+            this.endpoints[0] = "opc.tcp://" + address.getHostAddress() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+            this.endpoints[1] = "opc.tcp://" + address.getHostName() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+            this.endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + configuration.getPort() +  configuration.getTransportEndpoint();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
     }
 
@@ -450,25 +469,7 @@ public class SecureChannel {
             e.printStackTrace();
         }
 
-        for (String hostEndpoints : endpoints) {
-            for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
-                EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
-                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
-                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        }
-                    }
-                }
-            }
-        }
+        selectEndpoint(sessionResponse);
 
         if (this.policyId == null) {
             throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
@@ -1067,6 +1068,52 @@ public class SecureChannel {
      */
     public int getChannelId() {
         return this.channelId.get();
+    }
+
+    /**
+     * Gets the Token Identifier
+     *
+     * @return int representing the token identifier
+     */
+    public int getTokenId() {
+        return this.tokenId.get();
+    }
+
+    private void selectEndpoint(CreateSessionResponse sessionResponse) {
+        List<String> returnedEndpoints = new LinkedList<String>();
+        for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
+            EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
+            returnedEndpoints.add(endpointDescription.getEndpointUrl().getStringValue());
+        }
+
+        List<EndpointDescription> filteredEndpoints = Arrays.stream(sessionResponse.getServerEndpoints())
+                                                            .filter(endpoint -> isEndpoint((EndpointDescription) endpoint).getEndpointUrl().getStringValue().equals(hostEndpoints));
+
+
+
+        for (String hostEndpoints : endpoints) {
+            for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
+                EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
+                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
+                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
+                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
+                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
+                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                            policyId = identityToken.getPolicyId();
+                            tokenType = identityToken.getTokenType();
+                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
+                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
+                            policyId = identityToken.getPolicyId();
+                            tokenType = identityToken.getTokenType();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (this.policyId == null) {
+            throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
+        }
     }
 
     /**
