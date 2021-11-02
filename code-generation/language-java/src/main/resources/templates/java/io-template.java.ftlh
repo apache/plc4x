@@ -316,9 +316,13 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "manual">
         <#assign manualField = field.asManualField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
+        readBuffer.pullContext("${manualField.name}");
         // Manual Field (${manualField.name})
         ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)});
+        readBuffer.closeContext("${manualField.name}");
         <#break>
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>
