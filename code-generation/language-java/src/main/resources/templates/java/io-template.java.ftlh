@@ -189,30 +189,23 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field (${namedField.name})
+        // Assert Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.conditionExpression, parserArguments)});
         <#break>
-    <#-- TODO: Port this -->
     <#case "checksum">
         <#assign checksumField = field.asChecksumField().orElseThrow()>
-        <#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
         // Checksum Field (checksum)
-        {
-            ${helper.getLanguageTypeNameForField(field)} checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
-            ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference, "", checksumField)};
-            checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, parserArguments)});
-            if(checksum != checksumRef) {
-                throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X", checksumRef & 0xFFFF, checksum & 0xFFFF));
-            }
-        }
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.checksumExpression, parserArguments)});
         <#break>
     <#case "const">
         <#assign constField = field.asConstField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field (${namedField.name})
+        // Const Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case});
         <#break>
     <#-- TODO: Port this -->
@@ -248,7 +241,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} field (${enumField.name})
+        // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", new DataReaderEnumDefault<>(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))}));
         <#break>
     <#case "implicit">
@@ -256,7 +249,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field (${namedField.name})
+        // Implicit Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});
         <#break>
     <#-- TODO: Port this -->
@@ -333,7 +326,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field (${namedField.name}) (Can be skipped, if a given expression evaluates to false)
+        // Optional Field (${namedField.name}) (Can be skipped, if a given expression evaluates to false)
         <#if optionalField.conditionExpression.present && optionalField.conditionExpression.orElseThrow().contains("curPos")>
             curPos = readBuffer.getPos();
         </#if>
@@ -351,7 +344,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign reservedField = field.asReservedField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field
+        // Reserved Field
         read${field.typeName?cap_first}Field("reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)});
         <#break>
     <#case "simple">
@@ -359,7 +352,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // ${field.typeName?cap_first} Field (${namedField.name})
+        // Simple Field (${namedField.name})
         ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = <#if helper.isEnumTypeReference(typedField.type)>readEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${helper.getDataReaderCall(typedField.type)});<#else>read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)});</#if>
         <#break>
     <#-- TODO: Port this -->
