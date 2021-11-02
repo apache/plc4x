@@ -24,6 +24,8 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class FieldReaderChecksum<T> implements FieldReader<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderChecksum.class);
@@ -34,7 +36,11 @@ public class FieldReaderChecksum<T> implements FieldReader<T> {
     }
 
     public T readField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        T checksumValue = switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        if (!Objects.equals(checksumValue, referenceValue)) {
+            throw new ParseException("Checksum value '" + checksumValue + "' doesn't match expected '" + referenceValue + "'");
+        }
+        return checksumValue;
     }
 
 }

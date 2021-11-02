@@ -19,6 +19,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 
 import org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.NamedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
