@@ -21,8 +21,10 @@ package _default
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
+	"runtime/debug"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/plcerrors"
@@ -231,7 +233,7 @@ func (m *defaultCodec) Work(codec *DefaultCodecRequirements) {
 	defer func() {
 		if err := recover(); err != nil {
 			// TODO: If this is an error, cast it to an error and log it with "Err(err)"
-			log.Error().Msgf("recovered from %v", err)
+			log.Error().Msgf("recovered from: %#v at %s", err, string(debug.Stack()))
 		}
 		log.Info().Msg("Keep running")
 		m.Work(codec)
