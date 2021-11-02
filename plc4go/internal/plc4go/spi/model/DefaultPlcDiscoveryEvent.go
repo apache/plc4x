@@ -32,7 +32,7 @@ type DefaultPlcDiscoveryEvent struct {
 }
 
 func (d *DefaultPlcDiscoveryEvent) GetProtocolCode() string {
-	return d.TransportCode
+	return d.ProtocolCode
 }
 
 func (d *DefaultPlcDiscoveryEvent) GetTransportCode() string {
