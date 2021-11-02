@@ -314,7 +314,6 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         </#if>
         readBuffer.closeContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
         <#break>
-    <#-- TODO: Port this -->
     <#case "manual">
         <#assign manualField = field.asManualField().orElseThrow()>
 
