@@ -202,9 +202,13 @@ innerExpression
  ;
 
 idExpression
+ // TODO: remove the old superfluos ticks ASAP
  : TICK id=IDENTIFIER_LITERAL TICK
+ | id=IDENTIFIER_LITERAL
  // Explicitly allow the loop type keywords in id-expressions
+ // TODO: remove the old superfluos ticks ASAP
  | TICK id=ARRAY_LOOP_TYPE TICK
+ | id=ARRAY_LOOP_TYPE
  ;
 
 TICK : '\'';
