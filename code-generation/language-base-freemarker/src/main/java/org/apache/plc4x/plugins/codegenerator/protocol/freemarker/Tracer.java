@@ -57,6 +57,11 @@ public class Tracer {
         Tracer that = this;
         return new Tracer(currentTrace + separator() + sub) {
             @Override
+            protected String separator() {
+                return that.separator();
+            }
+
+            @Override
             protected String prefix() {
                 return that.prefix();
             }
