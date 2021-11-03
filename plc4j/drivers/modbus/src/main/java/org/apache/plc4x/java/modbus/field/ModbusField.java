@@ -21,12 +21,10 @@ package org.apache.plc4x.java.modbus.field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.modbus.readwrite.types.*;
+import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;

@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.modbus.readwrite.types.ModbusDataType;
+import org.apache.plc4x.java.modbus.readwrite.ModbusDataType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

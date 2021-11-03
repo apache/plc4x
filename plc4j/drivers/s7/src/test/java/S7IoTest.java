@@ -19,9 +19,6 @@
 
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
-import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
 import org.apache.plc4x.java.spi.generation.ReadBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.ReadBufferXmlBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferJsonBased;

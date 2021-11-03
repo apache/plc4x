@@ -20,17 +20,10 @@ package org.apache.plc4x.java.opcua.connection;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
-import static org.apache.plc4x.java.opcua.UtilsTest.assertNoMatching;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  */

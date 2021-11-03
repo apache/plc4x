@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.canopen.field;
 
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 
 public interface CANOpenSubscriptionField {
     CANOpenService getService();

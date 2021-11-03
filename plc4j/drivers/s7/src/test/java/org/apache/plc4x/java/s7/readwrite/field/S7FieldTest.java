@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.s7.readwrite.field;
 
-import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
-import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
+import org.apache.plc4x.java.s7.readwrite.MemoryArea;
+import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

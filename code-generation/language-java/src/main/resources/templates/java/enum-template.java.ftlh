@@ -26,7 +26,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
 <#-- @ftlvariable name="tracer" type="org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/${type.name}.java
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.java
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -45,7 +45,7 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
  * specific language governing permissions and limitations
  * under the License.
  */
-package ${helper.packageName(protocolName, languageName, outputFlavor)}.types;
+package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;

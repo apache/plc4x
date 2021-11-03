@@ -108,8 +108,8 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 	var _parent *SysexCommand
 	var typeSwitchError error
 	switch {
-	case commandType == 0x00: // SysexCommandExendedId
-		_parent, typeSwitchError = SysexCommandExendedIdParse(readBuffer, response)
+	case commandType == 0x00: // SysexCommandExtendedId
+		_parent, typeSwitchError = SysexCommandExtendedIdParse(readBuffer, response)
 	case commandType == 0x69 && response == false: // SysexCommandAnalogMappingQueryRequest
 		_parent, typeSwitchError = SysexCommandAnalogMappingQueryRequestParse(readBuffer, response)
 	case commandType == 0x69 && response == true: // SysexCommandAnalogMappingQueryResponse

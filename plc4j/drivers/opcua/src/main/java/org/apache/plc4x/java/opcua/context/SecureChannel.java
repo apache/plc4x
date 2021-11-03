@@ -26,7 +26,6 @@ import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.readwrite.io.ExtensionObjectIO;
 import org.apache.plc4x.java.opcua.readwrite.io.OpcuaAPUIO;
-import org.apache.plc4x.java.opcua.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ParseException;

@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.firmata.readwrite.types.PinMode;
+import org.apache.plc4x.java.firmata.readwrite.PinMode;
 
 import java.util.BitSet;
 import java.util.regex.Matcher;

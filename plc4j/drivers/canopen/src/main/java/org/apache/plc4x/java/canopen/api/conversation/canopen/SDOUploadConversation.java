@@ -24,7 +24,6 @@ import org.apache.plc4x.java.canopen.api.segmentation.accumulator.ByteStorage;
 import org.apache.plc4x.java.canopen.transport.CANOpenAbortException;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.*;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

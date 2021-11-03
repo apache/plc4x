@@ -67,7 +67,6 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.readwrite.field.S7SubscriptionField;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
@@ -331,7 +330,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             final DefaultPlcSubscriptionField sf = (DefaultPlcSubscriptionField) request.getField(fieldName);
             final S7SubscriptionField  field =  (S7SubscriptionField) sf.getPlcField();
 
-            switch(field.getFieldtype()){
+            switch(field.getFieldType()){
                 case EVENT_SUBSCRIPTION:;
                     encodeEventSubcriptionRequest(request, parameterItems, payloadItems);
                     break;
@@ -408,7 +407,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             if (request.getField(fieldName) instanceof DefaultPlcSubscriptionField){
                 PlcField event = ((DefaultPlcSubscriptionField) request.getField(fieldName)).getPlcField();
                 if (event instanceof S7SubscriptionField) {
-                    subsevent = (byte) (subsevent | ((S7SubscriptionField) event).getEventtype().getValue());
+                    subsevent = (byte) (subsevent | ((S7SubscriptionField) event).getEventType().getValue());
                 }
             }
         }
@@ -540,7 +539,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             for (String fieldName : plcSubscriptionRequest.getFieldNames()) {
                 DefaultPlcSubscriptionField dfield = (DefaultPlcSubscriptionField) plcSubscriptionRequest.getField(fieldName);
                 S7SubscriptionField field = (S7SubscriptionField) dfield.getPlcField();
-                switch(field.getEventtype()) {
+                switch(field.getEventType()) {
                     case MODE: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, modeHandle));
                     break;
                     case SYS: values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, sysHandle));

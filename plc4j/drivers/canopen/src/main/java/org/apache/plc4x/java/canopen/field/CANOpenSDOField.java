@@ -19,11 +19,9 @@
 package org.apache.plc4x.java.canopen.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenDataType;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenDataType;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;

@@ -19,13 +19,10 @@
 package org.apache.plc4x.java.simulated.field;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.simulated.readwrite.types.SimulatedDataTypeSizes;
+import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.types.SimulatedFieldType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
