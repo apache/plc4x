@@ -1344,7 +1344,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String capitalize(String str) {
-        return StringUtils.capitalize(str);
+        Tracer dummyTracer = Tracer.start("");
+        String extractedTrace = dummyTracer.extractTraces(str);
+        String cleanedString = dummyTracer.removeTraces(str);
+        return extractedTrace + StringUtils.capitalize(cleanedString);
     }
-
 }
