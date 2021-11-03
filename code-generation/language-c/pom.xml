@@ -50,6 +50,7 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <debug>true</debug>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>

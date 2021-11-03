@@ -123,7 +123,7 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 	if pullErr := readBuffer.PullContext("valueLength"); pullErr != nil {
 		return nil, pullErr
 	}
-	valueLength, _valueLengthErr := S7EventHelperRightShift3(readBuffer)
+	valueLength, _valueLengthErr := RightShift3(readBuffer)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field")
 	}
@@ -136,8 +136,8 @@ func AssociatedValueTypeParse(readBuffer utils.ReadBuffer) (*AssociatedValueType
 		return nil, pullErr
 	}
 	// Count array
-	data := make([]uint8, S7EventHelperEventItemLength(readBuffer, valueLength))
-	for curItem := uint16(0); curItem < uint16(S7EventHelperEventItemLength(readBuffer, valueLength)); curItem++ {
+	data := make([]uint8, EventItemLength(readBuffer, valueLength))
+	for curItem := uint16(0); curItem < uint16(EventItemLength(readBuffer, valueLength)); curItem++ {
 		_item, _err := readBuffer.ReadUint8("", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'data' field")
@@ -189,7 +189,7 @@ func (m *AssociatedValueType) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return pushErr
 	}
-	_valueLengthErr := S7EventHelperLeftShift3(writeBuffer, m.ValueLength)
+	_valueLengthErr := LeftShift3(writeBuffer, m.ValueLength)
 	if popErr := writeBuffer.PopContext("valueLength"); popErr != nil {
 		return popErr
 	}

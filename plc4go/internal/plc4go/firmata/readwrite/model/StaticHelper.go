@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,24 +17,29 @@
  * under the License.
  */
 
-[type 'SocketCANFrame' byteOrder='"LITTLE_ENDIAN"'
-    [simple int 32 'rawId']
-    [virtual int 32 'identifier'
-        'STATIC_CALL("readIdentifier", rawId)'
-    ]
-    [virtual bit 'extended'
-        'STATIC_CALL("isExtended", rawId)'
-    ]
-    [virtual bit 'remote'
-        'STATIC_CALL("isRemote", rawId)'
-    ]
-    [virtual bit 'error'
-        'STATIC_CALL("isError", rawId)'
-    ]
-    [implicit uint 8 'size' 'COUNT(data)']
-    [reserved uint 8 '0x0'] //flags
-    [reserved uint 8 '0x0'] // padding 1
-    [reserved uint 8 '0x0'] // padding 2
-    [array byte 'data' count 'size']
-    [padding uint 8 'alignment' '0x00' '8 - (COUNT(data))']
-]
+package model
+
+import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+
+func IsSysexEnd(io utils.ReadBuffer) bool {
+	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
+}
+
+func ParseSysexString(io utils.ReadBuffer) int8 {
+	aByte, err := io.ReadInt8("", 8)
+	if err != nil {
+		return 0
+	}
+	// Skip the empty byte.
+	_, _ = io.ReadByte("")
+	return aByte
+}
+
+func SerializeSysexString(io utils.WriteBuffer, data byte) {
+	_ = io.WriteByte("", data)
+	_ = io.WriteByte("", 0x00)
+}
+
+func LengthSysexString(data []byte) uint16 {
+	return uint16(len(data) * 2)
+}

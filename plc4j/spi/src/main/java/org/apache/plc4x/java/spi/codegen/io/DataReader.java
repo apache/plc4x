@@ -18,21 +18,16 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public interface DataReader<T> {
+public interface DataReader<T> extends ByteOrderAware{
 
     T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 
     int getPos();
 
     void setPos(int position);
-
-    ByteOrder getByteOrder();
-
-    void setByteOrder(ByteOrder byteOrder);
 
     void pullContext(String logicalName, WithReaderArgs... readerArgs);
     void closeContext(String logicalName, WithReaderArgs... readerArgs);

@@ -104,7 +104,7 @@ func (m *SysexCommandReportFirmwareResponse) LengthInBitsConditional(lastItem bo
 
 	// Manual Array Field (fileName)
 	fileName := m.FileName
-	lengthInBits += FirmataUtilsLengthSysexString(fileName) * 8
+	lengthInBits += LengthSysexString(fileName) * 8
 
 	return lengthInBits
 }
@@ -135,8 +135,8 @@ func SysexCommandReportFirmwareResponseParse(readBuffer utils.ReadBuffer, respon
 	// Manual Array Field (fileName)
 	// Terminated array
 	_fileNameList := make([]byte, 0)
-	for !((bool)(FirmataUtilsIsSysexEnd(readBuffer))) {
-		_fileNameList = append(_fileNameList, ((byte)(FirmataUtilsParseSysexString(readBuffer))))
+	for !((bool)(IsSysexEnd(readBuffer))) {
+		_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(readBuffer))))
 
 	}
 	fileName := make([]byte, len(_fileNameList))
@@ -188,7 +188,7 @@ func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBu
 				return pushErr
 			}
 			for _, Element := range m.FileName {
-				FirmataUtilsSerializeSysexString(writeBuffer, Element)
+				SerializeSysexString(writeBuffer, Element)
 			}
 			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr

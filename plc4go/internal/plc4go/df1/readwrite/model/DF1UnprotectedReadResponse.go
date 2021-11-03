@@ -91,7 +91,7 @@ func (m *DF1UnprotectedReadResponse) LengthInBitsConditional(lastItem bool) uint
 
 	// Manual Array Field (data)
 	data := m.Data
-	lengthInBits += DF1UtilsDataLength(data) * 8
+	lengthInBits += DataLength(data) * 8
 
 	return lengthInBits
 }
@@ -110,8 +110,8 @@ func DF1UnprotectedReadResponseParse(readBuffer utils.ReadBuffer) (*DF1Command, 
 	// Manual Array Field (data)
 	// Terminated array
 	_dataList := make([]byte, 0)
-	for !((bool)(DF1UtilsDataTerminate(readBuffer))) {
-		_dataList = append(_dataList, ((byte)(DF1UtilsReadData(readBuffer))))
+	for !((bool)(DataTerminate(readBuffer))) {
+		_dataList = append(_dataList, ((byte)(ReadData(readBuffer))))
 
 	}
 	data := make([]byte, len(_dataList))
@@ -147,7 +147,7 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 				return pushErr
 			}
 			for _, Element := range m.Data {
-				DF1UtilsWriteData(writeBuffer, Element)
+				WriteData(writeBuffer, Element)
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr

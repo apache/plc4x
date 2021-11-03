@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 
 public class DataReaderFactory {
 
@@ -82,6 +83,10 @@ public class DataReaderFactory {
 
     public static DataReader<String> readString(ReadBuffer readBuffer, int bitLength) {
         return new DataReaderSimpleString(readBuffer, bitLength);
+    }
+
+    public static <T, I> DataReaderEnumDefault<T, I> readEnum(Function<I, T> enumResolver, DataReader<I> dataReader) {
+        return new DataReaderEnumDefault<>(enumResolver, dataReader);
     }
 
 }

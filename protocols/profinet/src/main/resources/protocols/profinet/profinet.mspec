@@ -369,13 +369,13 @@
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [array    byte        'deviceVendorValue' count 'blockLength-2'             ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", deviceVendorValue) % 2']
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("arrayLength", deviceVendorValue) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','2' PnDcp_Block_DevicePropertiesNameOfStation(uint 16 'blockLength')
             [reserved uint 16     '0x0000'                                              ]
             // TODO: Figure out how to do this correctly.
             [array    byte        'nameOfStation' count 'blockLength-2'                 ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", nameOfStation) % 2']
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("arrayLength", nameOfStation) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','3' PnDcp_Block_DevicePropertiesDeviceId
             [reserved uint 16 '0x0000'                                                  ]
@@ -398,7 +398,7 @@
         ['DEVICE_PROPERTIES_OPTION','6' PnDcp_Block_DevicePropertiesAliasName(uint 16 'blockLength')
             [reserved uint 16     '0x0000'                                              ]
             [array    byte        'aliasNameValue' count 'blockLength-2'                ]
-            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("org.apache.plc4x.java.profinet.utils.StaticHelper.arrayLength", aliasNameValue) % 2']
+            [padding  uint 8      'pad' '0x00' 'STATIC_CALL("arrayLength", aliasNameValue) % 2']
         ]
         ['DEVICE_PROPERTIES_OPTION','7' PnDcp_Block_DevicePropertiesDeviceInstance
             [reserved uint 16 '0x0000'                                                  ]

@@ -109,7 +109,7 @@
         ]
         ['INITIATE_DOWNLOAD' SDOInitiateDownloadRequest
             [reserved uint 1 '0x00']
-            [implicit uint 2 'size' 'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.count", expedited, indicated, payload)']
+            [implicit uint 2 'size' 'STATIC_CALL("count", expedited, indicated, payload)']
             [simple bit 'expedited']
             [simple bit 'indicated']
             [simple IndexAddress 'address']
@@ -155,7 +155,7 @@
         ]
         ['INITIATE_UPLOAD' SDOInitiateUploadResponse
             [reserved uint 1 '0x00']
-            [implicit uint 2 'size' 'STATIC_CALL("org.apache.plc4x.java.canopen.helper.CANOpenHelper.count", expedited, indicated, payload)']
+            [implicit uint 2 'size' 'STATIC_CALL("count", expedited, indicated, payload)']
             [simple bit 'expedited']
             [simple bit 'indicated']
             [simple IndexAddress 'address']

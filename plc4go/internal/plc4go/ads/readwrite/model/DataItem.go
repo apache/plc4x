@@ -184,7 +184,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
-		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "UTF-8")
+		value, _valueErr := ParseAmsString(readBuffer, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -193,7 +193,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataFormatName string, stringLen
 	case dataFormatName == "IEC61131_WSTRING": // STRING
 
 		// Manual Field (value)
-		value, _valueErr := StaticHelperParseAmsString(readBuffer, stringLength, "UTF-16")
+		value, _valueErr := ParseAmsString(readBuffer, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -357,14 +357,14 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataFo
 	case dataFormatName == "IEC61131_STRING": // STRING
 
 		// Manual Field (value)
-		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "UTF-8")
+		_valueErr := SerializeAmsString(writeBuffer, value, stringLength, "UTF-8")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case dataFormatName == "IEC61131_WSTRING": // STRING
 
 		// Manual Field (value)
-		_valueErr := StaticHelperSerializeAmsString(writeBuffer, value, stringLength, "UTF-16")
+		_valueErr := SerializeAmsString(writeBuffer, value, stringLength, "UTF-16")
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

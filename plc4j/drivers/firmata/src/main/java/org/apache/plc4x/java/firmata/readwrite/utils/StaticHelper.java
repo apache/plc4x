@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public class FirmataUtils {
+public class StaticHelper {
 
     public static boolean isSysexEnd(ReadBuffer io) {
         return ((ReadBufferByteBased) io).getBytes(io.getPos(), io.getPos() + 1)[0] == (byte) 0xF7;

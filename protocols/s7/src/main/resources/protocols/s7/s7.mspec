@@ -280,19 +280,19 @@
 [type 'AssociatedValueType'
     [simple DataTransportErrorCode 'returnCode']
     [simple DataTransportSize      'transportSize']
-    [manual uint 16                'valueLength'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
-    [array  uint 8                 'data'          count    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.EventItemLength", readBuffer, valueLength)']
+    [manual uint 16                'valueLength'   'STATIC_CALL("RightShift3", readBuffer)' 'STATIC_CALL("LeftShift3", writeBuffer, _value.valueLength)' '2']
+    [array  uint 8                 'data'          count    'STATIC_CALL("EventItemLength", readBuffer, valueLength)']
 ]
 
 //TODO: Convert BCD to uint
 [type 'DateAndTime'
-    [manual uint 8  'year'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.year)'    '1']
-    [manual uint 8  'month'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.month)'   '1']
-    [manual uint 8  'day'     'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.day)'     '1']
-    [manual uint 8  'hour'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.hour)'    '1']
-    [manual uint 8  'minutes' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.minutes)' '1']
-    [manual uint 8  'seconds' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.BcdToInt", readBuffer)'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.ByteToBcd", writeBuffer, _value.seconds)' '1']
-    [manual uint 12 'msec'    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.S7msecToInt", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.IntToS7msec", writeBuffer, _value.msec)'  '2']
+    [manual uint 8  'year'    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.year)'    '1']
+    [manual uint 8  'month'   'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.month)'   '1']
+    [manual uint 8  'day'     'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.day)'     '1']
+    [manual uint 8  'hour'    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.hour)'    '1']
+    [manual uint 8  'minutes' 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.minutes)' '1']
+    [manual uint 8  'seconds' 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.seconds)' '1']
+    [manual uint 12 'msec'    'STATIC_CALL("S7msecToInt", readBuffer)' 'STATIC_CALL("IntToS7msec", writeBuffer, _value.msec)'  '2']
     [simple uint 4  'dow']
 ]
 
@@ -597,18 +597,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' CHAR
-            [manual string 8 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
+            [manual string 8 'value'  'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '1']
         ]
         ['"IEC61131_WCHAR"' CHAR
-            [manual string 16 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='"UTF-16"']
+            [manual string 16 'value' 'STATIC_CALL("parseS7Char", readBuffer, _type.encoding)' 'STATIC_CALL("serializeS7Char", writeBuffer, _value, _type.encoding)' '2' encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring 'value'  'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
+            [manual vstring 'value'  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
+            [manual vstring 'value' 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------

@@ -16,30 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.spi.codegen.io;
 
-package model
+import org.apache.plc4x.java.spi.generation.ParseException;
 
-import "github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
+@FunctionalInterface
+public interface ParseSupplier<T> {
 
-func FirmataUtilsIsSysexEnd(io utils.ReadBuffer) bool {
-	return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
-}
+    T get() throws ParseException;
 
-func FirmataUtilsParseSysexString(io utils.ReadBuffer) int8 {
-	aByte, err := io.ReadInt8("", 8)
-	if err != nil {
-		return 0
-	}
-	// Skip the empty byte.
-	_, _ = io.ReadByte("")
-	return aByte
-}
-
-func FirmataUtilsSerializeSysexString(io utils.WriteBuffer, data byte) {
-	_ = io.WriteByte("", data)
-	_ = io.WriteByte("", 0x00)
-}
-
-func FirmataUtilsLengthSysexString(data []byte) uint16 {
-	return uint16(len(data) * 2)
 }

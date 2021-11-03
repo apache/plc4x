@@ -25,7 +25,7 @@ import (
 	"time"
 )
 
-func StaticHelperParseTiaTime(io utils.ReadBuffer) (uint32, error) {
+func ParseTiaTime(io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int millisSinceMidnight = io.readInt(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -36,12 +36,12 @@ func StaticHelperParseTiaTime(io utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func StaticHelperSerializeTiaTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseS5Time(io utils.ReadBuffer) (uint32, error) {
+func ParseS5Time(io utils.ReadBuffer) (uint32, error) {
 	/*try {
 	      int stuff = io.readInt(16);
 	      // TODO: Implement this correctly.
@@ -52,22 +52,22 @@ func StaticHelperParseS5Time(io utils.ReadBuffer) (uint32, error) {
 	return 0, nil
 }
 
-func StaticHelperSerializeS5Time(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeS5Time(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing S5TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaLTime(io utils.ReadBuffer) (uint32, error) {
+func ParseTiaLTime(io utils.ReadBuffer) (uint32, error) {
 	//throw new NotImplementedException("LTIME not implemented");
 	return 0, nil
 }
 
-func StaticHelperSerializeTiaLTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaLTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing LTIME not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      long millisSinceMidnight = io.readUnsignedLong(32);
 	      return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -78,12 +78,12 @@ func StaticHelperParseTiaTimeOfDay(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaTimeOfDay(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaTimeOfDay(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
@@ -93,12 +93,12 @@ func StaticHelperParseTiaDate(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaDate(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaDate(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE not implemented");
 	return nil
 }
 
-func StaticHelperParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	/*try {
 	      int year = io.readUnsignedInt(16);
 	      int month = io.readUnsignedInt(8);
@@ -117,37 +117,65 @@ func StaticHelperParseTiaDateTime(io utils.ReadBuffer) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-func StaticHelperSerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
+func SerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
 	return nil
 }
 
-func StaticHelperParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
 	return io.ReadString("", uint32(stringLength*multiplier))
 }
 
-func StaticHelperSerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
-		multiplier = 0
+		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
 	}
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func StaticHelperParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
+func ParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
 	return io.ReadUint8("", 8)
 }
 
-func StaticHelperSerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
+}
+
+func RightShift3(readBuffer utils.ReadBuffer) (uint16, error) {
+	return 0, nil
+}
+
+func LeftShift3(writeBuffer utils.WriteBuffer, valueLength uint16) error {
+	return nil
+}
+
+func EventItemLength(readBuffer utils.ReadBuffer, valueLength uint16) uint16 {
+	return 0
+}
+
+func BcdToInt(readBuffer utils.ReadBuffer) (uint8, error) {
+	return 0, nil
+}
+
+func ByteToBcd(writeBuffer utils.WriteBuffer, value uint8) error {
+	return nil
+}
+
+func S7msecToInt(readBuffer utils.ReadBuffer) (uint16, error) {
+	return 0, nil
+}
+
+func IntToS7msec(writeBuffer utils.WriteBuffer, value uint16) error {
+	return nil
 }

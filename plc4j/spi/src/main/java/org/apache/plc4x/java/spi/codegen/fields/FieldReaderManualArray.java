@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.codegen.fields;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
+import org.apache.plc4x.java.spi.codegen.io.ParseSupplier;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -41,7 +42,7 @@ public class FieldReaderManualArray<T> implements FieldReader<T> {
         throw new NotImplementedException();
     }
 
-    public byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, Supplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+    public byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         readBuffer.pullContext(logicalName, readerArgs);
@@ -53,7 +54,7 @@ public class FieldReaderManualArray<T> implements FieldReader<T> {
         return ArrayUtils.toPrimitive(result.toArray(new Byte[0]));
     }
 
-    public List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, Supplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
+    public List<T> readManualArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         readBuffer.pullContext(logicalName, readerArgs);
