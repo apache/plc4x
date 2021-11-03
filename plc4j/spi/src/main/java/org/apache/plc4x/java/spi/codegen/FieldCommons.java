@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen;
 
-import org.apache.plc4x.java.spi.codegen.io.DataReader;
+import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.util.Objects;
@@ -44,18 +44,18 @@ public interface FieldCommons {
         return Optional.empty();
     }
 
-    default <T> T switchByteOrderIfNecessary(RunWrapped<T> runnable, DataReader<T> dataReader, ByteOrder wantedByteOrder) throws ParseException {
+    default <T> T switchByteOrderIfNecessary(RunWrapped<T> runnable, ByteOrderAware byteOrderAware, ByteOrder wantedByteOrder) throws ParseException {
         Objects.requireNonNull(runnable);
-        Objects.requireNonNull(dataReader);
-        ByteOrder currentByteOrder = dataReader.getByteOrder();
+        Objects.requireNonNull(byteOrderAware);
+        ByteOrder currentByteOrder = byteOrderAware.getByteOrder();
         if (wantedByteOrder == null || currentByteOrder == wantedByteOrder) {
             return runnable.run();
         }
         try {
-            dataReader.setByteOrder(wantedByteOrder);
+            byteOrderAware.setByteOrder(wantedByteOrder);
             return runnable.run();
         } finally {
-            dataReader.setByteOrder(currentByteOrder);
+            byteOrderAware.setByteOrder(currentByteOrder);
         }
     }
 

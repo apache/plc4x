@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.canopen.helper;
+package org.apache.plc4x.java.canopen.readwrite.utils;
 
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse;
@@ -29,7 +29,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.COUNT;
 
-public class CANOpenHelper {
+public class StaticHelper {
 
     public static CANOpenService serviceId(short identifier) {
         return CANOpenService.enumForValue((byte) (identifier >> 7));

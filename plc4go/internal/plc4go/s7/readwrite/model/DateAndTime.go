@@ -113,7 +113,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("year"); pullErr != nil {
 		return nil, pullErr
 	}
-	year, _yearErr := S7EventHelperBcdToInt(readBuffer)
+	year, _yearErr := BcdToInt(readBuffer)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 	}
@@ -125,7 +125,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("month"); pullErr != nil {
 		return nil, pullErr
 	}
-	month, _monthErr := S7EventHelperBcdToInt(readBuffer)
+	month, _monthErr := BcdToInt(readBuffer)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 	}
@@ -137,7 +137,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("day"); pullErr != nil {
 		return nil, pullErr
 	}
-	day, _dayErr := S7EventHelperBcdToInt(readBuffer)
+	day, _dayErr := BcdToInt(readBuffer)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 	}
@@ -149,7 +149,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("hour"); pullErr != nil {
 		return nil, pullErr
 	}
-	hour, _hourErr := S7EventHelperBcdToInt(readBuffer)
+	hour, _hourErr := BcdToInt(readBuffer)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 	}
@@ -161,7 +161,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("minutes"); pullErr != nil {
 		return nil, pullErr
 	}
-	minutes, _minutesErr := S7EventHelperBcdToInt(readBuffer)
+	minutes, _minutesErr := BcdToInt(readBuffer)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 	}
@@ -173,7 +173,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("seconds"); pullErr != nil {
 		return nil, pullErr
 	}
-	seconds, _secondsErr := S7EventHelperBcdToInt(readBuffer)
+	seconds, _secondsErr := BcdToInt(readBuffer)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 	}
@@ -185,7 +185,7 @@ func DateAndTimeParse(readBuffer utils.ReadBuffer) (*DateAndTime, error) {
 	if pullErr := readBuffer.PullContext("msec"); pullErr != nil {
 		return nil, pullErr
 	}
-	msec, _msecErr := S7EventHelperS7msecToInt(readBuffer)
+	msec, _msecErr := S7msecToInt(readBuffer)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field")
 	}
@@ -216,7 +216,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_yearErr := S7EventHelperByteToBcd(writeBuffer, m.Year)
+	_yearErr := ByteToBcd(writeBuffer, m.Year)
 	if popErr := writeBuffer.PopContext("year"); popErr != nil {
 		return popErr
 	}
@@ -228,7 +228,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_monthErr := S7EventHelperByteToBcd(writeBuffer, m.Month)
+	_monthErr := ByteToBcd(writeBuffer, m.Month)
 	if popErr := writeBuffer.PopContext("month"); popErr != nil {
 		return popErr
 	}
@@ -240,7 +240,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_dayErr := S7EventHelperByteToBcd(writeBuffer, m.Day)
+	_dayErr := ByteToBcd(writeBuffer, m.Day)
 	if popErr := writeBuffer.PopContext("day"); popErr != nil {
 		return popErr
 	}
@@ -252,7 +252,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_hourErr := S7EventHelperByteToBcd(writeBuffer, m.Hour)
+	_hourErr := ByteToBcd(writeBuffer, m.Hour)
 	if popErr := writeBuffer.PopContext("hour"); popErr != nil {
 		return popErr
 	}
@@ -264,7 +264,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_minutesErr := S7EventHelperByteToBcd(writeBuffer, m.Minutes)
+	_minutesErr := ByteToBcd(writeBuffer, m.Minutes)
 	if popErr := writeBuffer.PopContext("minutes"); popErr != nil {
 		return popErr
 	}
@@ -276,7 +276,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_secondsErr := S7EventHelperByteToBcd(writeBuffer, m.Seconds)
+	_secondsErr := ByteToBcd(writeBuffer, m.Seconds)
 	if popErr := writeBuffer.PopContext("seconds"); popErr != nil {
 		return popErr
 	}
@@ -288,7 +288,7 @@ func (m *DateAndTime) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("dow"); pushErr != nil {
 		return pushErr
 	}
-	_msecErr := S7EventHelperIntToS7msec(writeBuffer, m.Msec)
+	_msecErr := IntToS7msec(writeBuffer, m.Msec)
 	if popErr := writeBuffer.PopContext("msec"); popErr != nil {
 		return popErr
 	}

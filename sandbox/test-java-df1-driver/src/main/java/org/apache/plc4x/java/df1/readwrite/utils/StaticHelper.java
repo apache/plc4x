@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.df1.util;
+package org.apache.plc4x.java.df1.readwrite.utils;
 
 import com.github.snksoft.crc.CRC;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
@@ -25,7 +25,7 @@ import org.apache.plc4x.java.spi.generation.*;
 
 import java.util.List;
 
-public class DF1Utils {
+public class StaticHelper {
 
     public static int crcCheck(short destinationAddress, short sourceAddress, DF1Command command) {
         // CRC-16/DF-1

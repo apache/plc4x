@@ -64,7 +64,7 @@ Here is the MSpec to model the behaviour:
             [simple   DF1Command   'command']
             [const    uint 8       'messageEnd' '0x10']
             [const    uint 8       'endTransaction' '0x03']
-            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.crcCheck", destinationAddress, sourceAddress, command)']
+            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.crcCheck", destinationAddress, sourceAddress, command)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
@@ -83,7 +83,7 @@ Here is the MSpec to model the behaviour:
             [simple uint 8     'size']
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataLength", data)']
+            [manualArray  uint 8 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.dataTerminate", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.readData", io)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.writeData", io, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.dataLength", data)']
         ]
     ]
 ]

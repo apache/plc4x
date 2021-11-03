@@ -27,7 +27,7 @@
             [simple   DF1Command   'command']
             [const    uint 8       'messageEnd' '0x10']
             [const    uint 8       'endTransaction' '0x03']
-            [checksum uint 16      'crc' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.crcCheck", destinationAddress, sourceAddress, command)']
+            [checksum uint 16      'crc' 'STATIC_CALL("crcCheck", destinationAddress, sourceAddress, command)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
         ]
@@ -46,7 +46,7 @@
             [simple uint 8     'size']
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [manualArray  byte 'data' terminated 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataTerminate", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.readData", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.writeData", writeBuffer, element)' 'STATIC_CALL("org.apache.plc4x.java.df1.util.DF1Utils.dataLength", data)']
+            [manualArray  byte 'data' terminated 'STATIC_CALL("dataTerminate", readBuffer)' 'STATIC_CALL("readData", readBuffer)' 'STATIC_CALL("writeData", writeBuffer, element)' 'STATIC_CALL("dataLength", data)']
         ]
     ]
 ]

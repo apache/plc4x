@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.transport.socketcan.helper;
+package org.apache.plc4x.java.socketcan.readwrite.utils;
 
-public class HeaderParser {
+public class StaticHelper {
 
     public static final int EFF_FLAG = 0b10000000_00000000_00000000_00000000;
     public static final int RTR_FLAG = 0b01000000_00000000_00000000_00000000;

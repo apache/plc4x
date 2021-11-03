@@ -50,6 +50,7 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <!-- These option allow that openjdk >=16 can run the google-code-format -->
               <!-- TODO: Add this to a self-activating maven profile -->
               <!--mavenOpts>
@@ -68,7 +69,6 @@
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-language-base:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-maven-plugin:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-protocol-base:${plc4x-code-generation.version}</extraArtifact>
-                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
               </extraArtifacts>
               <pomIncludes>

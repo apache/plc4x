@@ -51,6 +51,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         this.options = options;
     }
 
+    public String packageName() {
+        return packageName(protocolName, "java", flavorName);
+    }
+
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
         return Optional.ofNullable(options.get("package")).orElseGet(() ->
             "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
@@ -675,6 +679,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (arguments.size() < 1) {
             throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
         }
+        // TODO: make it as static import with a emitImport so if a static call is present a "utils" package must be present in the import
+        sb.append(packageName()).append(".utils.StaticHelper.");
         // Get the class and method name
         String methodName = arguments.get(0).asLiteral()
             .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
@@ -855,6 +861,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (arguments.size() < 1) {
             throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
         }
+        // TODO: make it as static import with a emitImport so if a static call is present a "utils" package must be present in the import
+        sb.append(packageName()).append(".utils.StaticHelper.");
         // Get the class and method name
         String methodName = arguments.get(0).asLiteral()
             .orElseThrow(() -> new RuntimeException("First argument should be a literal"))

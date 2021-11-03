@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.canopen.transport;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.canopen.helper.CANOpenHelper;
+import org.apache.plc4x.java.canopen.readwrite.utils.StaticHelper;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
@@ -41,7 +41,7 @@ public class IdentityCANOpenFrameBuilder implements CANFrameBuilder<CANOpenFrame
 
     @Override
     public CANFrameBuilder<CANOpenFrame> withId(int nodeId) {
-        this.service = CANOpenHelper.serviceId((short) nodeId);
+        this.service = StaticHelper.serviceId((short) nodeId);
         this.nodeId = (short) Math.abs(service.getMin() - nodeId);
         return this;
     }

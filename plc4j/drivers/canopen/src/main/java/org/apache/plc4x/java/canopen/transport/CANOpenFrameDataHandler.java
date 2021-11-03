@@ -20,7 +20,7 @@ package org.apache.plc4x.java.canopen.transport;
 
 import java.util.function.Supplier;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.canopen.helper.CANOpenHelper;
+import org.apache.plc4x.java.canopen.readwrite.utils.StaticHelper;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenPayload;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
@@ -47,7 +47,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
 
     @Override
     public CANOpenFrame fromCAN(FrameData frame) {
-        CANOpenService service = CANOpenHelper.serviceId((short) frame.getNodeId());
+        CANOpenService service = StaticHelper.serviceId((short) frame.getNodeId());
         int nodeId = Math.abs(service.getMin() - frame.getNodeId());
         return new CANOpenFrame((short) nodeId, service, frame.read(new CANOpenPayloadIO(), service));
     }

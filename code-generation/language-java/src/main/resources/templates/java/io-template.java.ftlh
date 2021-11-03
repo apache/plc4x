@@ -199,7 +199,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", new DataReaderEnumDefault<>(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))}));
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", "${helper.getTypeDefinitionForTypeReference(enumField.type).name}", readEnum(${helper.getTypeDefinitionForTypeReference(enumField.type).name}::firstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))}));
         <#break>
     <#case "implicit">
         <#assign implicitField = field.asImplicitField().orElseThrow()>
@@ -224,9 +224,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        readBuffer.pullContext("${manualField.name}");
-        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)});
-        readBuffer.closeContext("${manualField.name}");
+        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = readManualField("${namedField.name}", readBuffer, () -> (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)}));
         <#break>
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>

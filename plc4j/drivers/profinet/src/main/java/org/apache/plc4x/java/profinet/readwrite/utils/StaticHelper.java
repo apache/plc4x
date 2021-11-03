@@ -16,32 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.profinet.readwrite.utils;
 
-package model
+public class StaticHelper {
 
-import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-	"github.com/apache/plc4x/plc4go/pkg/plc4go/values"
-)
+    public static int stringLength(String str) {
+        if (str == null) {
+            return 0;
+        }
+        return str.length();
+    }
 
-func StaticHelperParseAmsString(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
-	var multiplier int32
-	switch encoding {
-	case "UTF-8":
-		multiplier = 0
-	case "UTF-16":
-		multiplier = 16
-	}
-	return io.ReadString("", uint32(stringLength*multiplier))
-}
+    public static int arrayLength(byte[] arr) {
+        return arr.length;
+    }
 
-func StaticHelperSerializeAmsString(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
-	var multiplier int32
-	switch encoding {
-	case "UTF-8":
-		multiplier = 0
-	case "UTF-16":
-		multiplier = 16
-	}
-	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }

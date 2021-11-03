@@ -27,7 +27,6 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.function.Function;
 
@@ -845,16 +844,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
      */
     private String toStaticCallVariableParseExpression(TypeDefinition baseType, Field field, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("STATIC_CALL");
-        if (!variableLiteral.getArgs().isPresent()) {
-            throw new FreemarkerException("'STATIC_CALL' needs at least one args");
-        }
-        List<Term> terms = variableLiteral.getArgs().get();
-        if (!(terms.get(0) instanceof StringLiteral)) {
-            throw new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
-        }
-        String functionName = ((StringLiteral) terms.get(0)).getValue();
-        // We'll cut off the java package structure and just take the segment after the last "."
-        functionName = functionName.substring(functionName.lastIndexOf('.') + 1);
+        List<Term> terms = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("'STATIC_CALL' needs at least one args"));
+        String functionName = terms.get(0).asLiteral()
+            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
+            .asStringLiteral()
+            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
+            .getValue();
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));
         if (terms.size() > 1) {
@@ -936,7 +931,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (!(typedField.getType() instanceof StringTypeReference)) {
                         throw new FreemarkerException("Can only access 'encoding' for string types.");
                     }
-                    StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
                     final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                     if (!(encodingTerm instanceof StringLiteral)) {
                         throw new RuntimeException("Encoding must be a quoted string value");
@@ -1053,16 +1047,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private String toStaticCallSerializationExpression(TypeDefinition baseType, Field field, List<Argument> serializerArguments, VariableLiteral vl, Tracer tracer) {
         tracer = tracer.dive("toStaticCallSerializationExpression");
-        if (!vl.getArgs().isPresent()) {
-            throw new FreemarkerException("'STATIC_CALL' needs at least one attribute");
-        }
-        List<Term> args = vl.getArgs().get();
-        if (!(args.get(0) instanceof StringLiteral)) {
-            throw new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
-        }
-        String functionName = ((StringLiteral) args.get(0)).getValue();
-        // We'll cut off the java package structure and just take the segment after the last "."
-        functionName = functionName.substring(functionName.lastIndexOf('.') + 1);
+        List<Term> args = vl.getArgs().orElseThrow(() -> new FreemarkerException("'STATIC_CALL' needs at least one attribute"));
+        String functionName = args.get(0).asLiteral()
+            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a Literal"))
+            .asStringLiteral()
+            .orElseThrow(()-> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral"))
+            .getValue();
         // But to make the function name unique, well add the driver prefix to it.
         StringBuilder sb = new StringBuilder(getCTypeName(functionName));
         sb.append("(");

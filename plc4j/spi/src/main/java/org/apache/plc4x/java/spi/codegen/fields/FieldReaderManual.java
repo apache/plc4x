@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
+import org.apache.plc4x.java.spi.codegen.io.ParseSupplier;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.function.Function;
 
 public class FieldReaderManual<T> implements FieldReader<T> {
 
@@ -35,8 +35,11 @@ public class FieldReaderManual<T> implements FieldReader<T> {
         throw new IllegalStateException("not possible with checksum field");
     }
 
-    public T readField(String logicalName, DataReader<T> dataReader, Function parseFunction, Function serializeFunction, Function lengthFunction, WithReaderArgs... readerArgs) throws ParseException {
-        return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+    public T readManualField(String logicalName, ReadBuffer readBuffer, ParseSupplier<T> parseFunction, WithReaderArgs... readerArgs) throws ParseException {
+        readBuffer.pullContext(logicalName);
+        T value = switchByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOder(readerArgs).orElse(null));
+        readBuffer.closeContext(logicalName);
+        return value;
     }
 
 }

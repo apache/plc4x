@@ -16,37 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.spi.codegen.io;
 
-package model
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 
-import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/utils"
-)
+public interface ByteOrderAware {
+    ByteOrder getByteOrder();
 
-func S7EventHelperRightShift3(readBuffer utils.ReadBuffer) (uint16, error) {
-	return 0, nil
-}
-
-func S7EventHelperLeftShift3(writeBuffer utils.WriteBuffer, valueLength uint16) error {
-	return nil
-}
-
-func S7EventHelperEventItemLength(readBuffer utils.ReadBuffer, valueLength uint16) uint16 {
-	return 0
-}
-
-func S7EventHelperBcdToInt(readBuffer utils.ReadBuffer) (uint8, error) {
-	return 0, nil
-}
-
-func S7EventHelperByteToBcd(writeBuffer utils.WriteBuffer, value uint8) error {
-	return nil
-}
-
-func S7EventHelperS7msecToInt(readBuffer utils.ReadBuffer) (uint16, error) {
-	return 0, nil
-}
-
-func S7EventHelperIntToS7msec(writeBuffer utils.WriteBuffer, value uint16) error {
-	return nil
+    void setByteOrder(ByteOrder byteOrder);
 }
