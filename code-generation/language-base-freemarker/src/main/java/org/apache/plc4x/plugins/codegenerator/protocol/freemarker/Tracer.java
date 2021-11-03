@@ -18,6 +18,10 @@
  */
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Can be used to annotate generated code with traces out of the generator
  * <p>
@@ -50,7 +54,18 @@ public class Tracer {
      * @return a new trace with current trace + sub trace
      */
     public Tracer dive(String sub) {
-        return new Tracer(currentTrace + separator() + sub);
+        Tracer that = this;
+        return new Tracer(currentTrace + separator() + sub) {
+            @Override
+            protected String prefix() {
+                return that.prefix();
+            }
+
+            @Override
+            protected String suffix() {
+                return that.suffix();
+            }
+        };
     }
 
     /**
@@ -63,7 +78,22 @@ public class Tracer {
         if (somethingContainingTraces == null) {
             return null;
         }
-        return somethingContainingTraces.replaceAll("/\\*.*\\*/", "");
+        return somethingContainingTraces.replaceAll(Pattern.quote(prefix()) + ".*" + Pattern.quote(suffix()), "");
+    }
+
+    /**
+     * Can be used to extract traces from a traced string.
+     *
+     * @param somethingContainingTraces something containing traces
+     * @return trace of something containing traces or "" if not traces available
+     */
+    public String extractTraces(String somethingContainingTraces) {
+        Pattern pattern = Pattern.compile("(" + Pattern.quote(prefix()) + ".*" + Pattern.quote(suffix()) + ").*");
+        Matcher matcher = pattern.matcher(somethingContainingTraces);
+        if (!matcher.find()) {
+            return "";
+        }
+        return matcher.group(1);
     }
 
     protected String separator() {
