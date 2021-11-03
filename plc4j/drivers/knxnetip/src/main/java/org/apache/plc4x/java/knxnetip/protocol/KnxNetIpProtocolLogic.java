@@ -37,7 +37,6 @@ import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
-import org.apache.plc4x.java.knxnetip.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;

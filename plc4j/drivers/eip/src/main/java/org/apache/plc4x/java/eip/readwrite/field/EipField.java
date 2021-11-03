@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
+import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;

@@ -31,7 +31,6 @@ import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.field.ModbusFieldInputRegister;
 import org.apache.plc4x.java.modbus.field.ModbusExtendedRegister;
 import org.apache.plc4x.java.modbus.readwrite.*;
-import org.apache.plc4x.java.modbus.readwrite.types.*;
 import org.apache.plc4x.java.modbus.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;

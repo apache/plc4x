@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
+import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 

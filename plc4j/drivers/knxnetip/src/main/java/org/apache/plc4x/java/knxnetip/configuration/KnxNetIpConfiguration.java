@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.knxnetip.configuration;
 
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
-import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
+import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;

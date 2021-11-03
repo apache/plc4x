@@ -20,7 +20,6 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.readwrite.types.*;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.net.DatagramPacket;

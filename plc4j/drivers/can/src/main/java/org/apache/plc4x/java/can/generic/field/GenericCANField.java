@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.plc4x.java.genericcan.readwrite.types.GenericCANDataType;
+import org.apache.plc4x.java.genericcan.readwrite.GenericCANDataType;
 
 public class GenericCANField implements PlcField {
 

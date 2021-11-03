@@ -56,7 +56,6 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
-import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

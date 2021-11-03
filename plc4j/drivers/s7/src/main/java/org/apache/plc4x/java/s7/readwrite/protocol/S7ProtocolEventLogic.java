@@ -41,7 +41,7 @@ import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
-import org.apache.plc4x.java.s7.readwrite.types.EventType;
+import org.apache.plc4x.java.s7.readwrite.EventType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;

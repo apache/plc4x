@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.s7.readwrite.utils;
 
-import org.apache.plc4x.java.s7.readwrite.types.DeviceGroup;
+import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
 
 public class S7TsapIdEncoder {
 

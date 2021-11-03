@@ -18,12 +18,10 @@
  */
 package org.apache.plc4x.java.ads.field;
 
-import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
+import org.apache.plc4x.java.ads.readwrite.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;

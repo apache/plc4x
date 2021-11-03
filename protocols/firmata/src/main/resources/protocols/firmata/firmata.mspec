@@ -84,7 +84,7 @@
 [discriminatedType 'SysexCommand'(bit 'response')
     [discriminator uint 8 'commandType']
     [typeSwitch 'commandType','response'
-        ['0x00' SysexCommandExendedId
+        ['0x00' SysexCommandExtendedId
             [array int 8 'id' count '2']
         ]
         ['0x69','false' SysexCommandAnalogMappingQueryRequest

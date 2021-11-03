@@ -56,9 +56,8 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.java.ftlh"));
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) {
+        return Collections.emptyList();
     }
 
     @Override

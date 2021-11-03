@@ -53,7 +53,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     private final Logger logger = LoggerFactory.getLogger(GenericCANProtocolLogic.class);
 
     private RequestTransactionManager tm;
-    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
+    private final Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setDriverContext(DriverContext driverContext) {

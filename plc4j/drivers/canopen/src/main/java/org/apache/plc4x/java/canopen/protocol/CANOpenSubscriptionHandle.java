@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.canopen.protocol;
 
 import org.apache.plc4x.java.canopen.field.CANOpenSubscriptionField;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 

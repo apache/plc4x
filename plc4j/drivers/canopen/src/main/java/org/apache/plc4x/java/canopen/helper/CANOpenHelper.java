@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse;
 import org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponsePayload;
 import org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse;
-import org.apache.plc4x.java.canopen.readwrite.types.CANOpenService;
+import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;

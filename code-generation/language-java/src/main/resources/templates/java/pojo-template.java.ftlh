@@ -50,7 +50,6 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)};
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;
-import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
