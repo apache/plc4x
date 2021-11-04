@@ -19,7 +19,7 @@
 
 [discriminatedType Request byteOrder='"BIG_ENDIAN"'
     // TODO: Replace this with an discriminator field asap
-    [simple RequestType 'type']
+    [simple RequestType type]
     [typeSwitch 'type'
         ['RequestType.ReadRequest' 'ReadRequest'
             [simple

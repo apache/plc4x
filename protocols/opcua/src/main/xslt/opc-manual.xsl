@@ -38,9 +38,9 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
-    <xsl:param name="osType"></xsl:param>
+    <xsl:param name="osType"/>
 
-    <xsl:param name="services"></xsl:param>
+    <xsl:param name="services"/>
 
     <!-- Intermediate, to reformat the url on windows systems -->
     <xsl:param name="servicesUrl">
@@ -55,128 +55,128 @@
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.
 
-[type OpcuaAPU(bit 'response') byteOrder='"LITTLE_ENDIAN"'
-    [simple MessagePDU('response') 'message']
+[type OpcuaAPU(bit response) byteOrder='"LITTLE_ENDIAN"'
+    [simple MessagePDU('response') message]
 ]
 
-[discriminatedType MessagePDU(bit 'response')
-    [discriminator string 24            'messageType']
+[discriminatedType MessagePDU(bit response)
+    [discriminator string 24            messageType]
     [typeSwitch 'messageType','response'
         ['"HEL"','false'     OpcuaHelloRequest
-            [simple          string 8           'chunk']
-            [implicit        int 32             'messageSize' 'lengthInBytes']
-            [simple          int 32             'version']
-            [simple          int 32             'receiveBufferSize']
-            [simple          int 32             'sendBufferSize']
-            [simple          int 32             'maxMessageSize']
-            [simple          int 32             'maxChunkCount']
-            [simple          PascalString       'endpoint']
+            [simple          string 8           chunk]
+            [implicit        int 32             messageSize 'lengthInBytes']
+            [simple          int 32             version]
+            [simple          int 32             receiveBufferSize]
+            [simple          int 32             sendBufferSize]
+            [simple          int 32             maxMessageSize]
+            [simple          int 32             maxChunkCount]
+            [simple          PascalString       endpoint]
         ]
         ['"ACK"','true'     OpcuaAcknowledgeResponse
-            [simple          string 8           'chunk']
-            [implicit        int 32             'messageSize' 'lengthInBytes']
-            [simple          int 32             'version']
-            [simple          int 32             'receiveBufferSize']
-            [simple          int 32             'sendBufferSize']
-            [simple          int 32             'maxMessageSize']
-            [simple          int 32             'maxChunkCount']
+            [simple          string 8           chunk]
+            [implicit        int 32             messageSize 'lengthInBytes']
+            [simple          int 32             version]
+            [simple          int 32             receiveBufferSize]
+            [simple          int 32             sendBufferSize]
+            [simple          int 32             maxMessageSize]
+            [simple          int 32             maxChunkCount]
         ]
         ['"OPN"','false'     OpcuaOpenRequest
-            [simple          string 8           'chunk']
-            [implicit        int 32             'messageSize' 'lengthInBytes']
-            [simple          int 32             'secureChannelId']
-            [simple          PascalString       'endpoint']
-            [simple          PascalByteString   'senderCertificate']
-            [simple          PascalByteString   'receiverCertificateThumbprint']
-            [simple          int 32             'sequenceNumber']
-            [simple          int 32             'requestId']
-            [array           byte               'message' count 'messageSize - (endpoint.stringLength == -1 ? 0 : endpoint.stringLength ) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
+            [simple          string 8           chunk]
+            [implicit        int 32             messageSize 'lengthInBytes']
+            [simple          int 32             secureChannelId]
+            [simple          PascalString       endpoint]
+            [simple          PascalByteString   senderCertificate]
+            [simple          PascalByteString   receiverCertificateThumbprint]
+            [simple          int 32             sequenceNumber]
+            [simple          int 32             requestId]
+            [array           byte               message count 'messageSize - (endpoint.stringLength == -1 ? 0 : endpoint.stringLength ) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
        ['"OPN"','true'     OpcuaOpenResponse
-           [simple          string 8           'chunk']
-           [implicit        int 32             'messageSize' 'lengthInBytes']
-           [simple          int 32             'secureChannelId']
-           [simple          PascalString       'securityPolicyUri']
-           [simple          PascalByteString   'senderCertificate']
-           [simple          PascalByteString   'receiverCertificateThumbprint']
-           [simple          int 32             'sequenceNumber']
-           [simple          int 32             'requestId']
-           [array           byte               'message' count 'messageSize - (securityPolicyUri.stringLength == -1 ? 0 : securityPolicyUri.stringLength) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
+           [simple          string 8           chunk]
+           [implicit        int 32             messageSize 'lengthInBytes']
+           [simple          int 32             secureChannelId]
+           [simple          PascalString       securityPolicyUri]
+           [simple          PascalByteString   senderCertificate]
+           [simple          PascalByteString   receiverCertificateThumbprint]
+           [simple          int 32             sequenceNumber]
+           [simple          int 32             requestId]
+           [array           byte               message count 'messageSize - (securityPolicyUri.stringLength == -1 ? 0 : securityPolicyUri.stringLength) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
        ]
        ['"CLO"','false'     OpcuaCloseRequest
-           [simple          string 8           'chunk']
-           [implicit        int 32             'messageSize' 'lengthInBytes']
-           [simple          int 32             'secureChannelId']
-           [simple          int 32             'secureTokenId']
-           [simple          int 32             'sequenceNumber']
-           [simple          int 32             'requestId']
-           [simple          ExtensionObject('false')       'message']
+           [simple          string 8           chunk]
+           [implicit        int 32             messageSize 'lengthInBytes']
+           [simple          int 32             secureChannelId]
+           [simple          int 32             secureTokenId]
+           [simple          int 32             sequenceNumber]
+           [simple          int 32             requestId]
+           [simple          ExtensionObject('false')       message]
        ]
        ['"MSG"','false'     OpcuaMessageRequest
-           [simple          string 8           'chunk']
-           [implicit        int 32             'messageSize' 'lengthInBytes']
-           [simple          int 32             'secureChannelId']
-           [simple          int 32             'secureTokenId']
-           [simple          int 32             'sequenceNumber']
-           [simple          int 32             'requestId']
-           [array           byte               'message' count 'messageSize - 24']
+           [simple          string 8           chunk]
+           [implicit        int 32             messageSize 'lengthInBytes']
+           [simple          int 32             secureChannelId]
+           [simple          int 32             secureTokenId]
+           [simple          int 32             sequenceNumber]
+           [simple          int 32             requestId]
+           [array           byte               message count 'messageSize - 24']
        ]
        ['"MSG"','true'     OpcuaMessageResponse
-           [simple          string 8           'chunk']
-           [implicit        int 32             'messageSize' 'lengthInBytes']
-           [simple          int 32             'secureChannelId']
-           [simple          int 32             'secureTokenId']
-           [simple          int 32             'sequenceNumber']
-           [simple          int 32             'requestId']
-           [array           byte               'message' count 'messageSize - 24']
+           [simple          string 8           chunk]
+           [implicit        int 32             messageSize 'lengthInBytes']
+           [simple          int 32             secureChannelId]
+           [simple          int 32             secureTokenId]
+           [simple          int 32             sequenceNumber]
+           [simple          int 32             requestId]
+           [array           byte               message count 'messageSize - 24']
        ]
     ]
 ]
 
 [type ByteStringArray
-    [simple int 32 'arrayLength']
-    [array uint 8 'value' count 'arrayLength']
+    [simple int 32 arrayLength]
+    [array uint 8 value count 'arrayLength']
 ]
 
 [type GuidValue
-    [simple uint 32 'data1']
-    [simple uint 16 'data2']
-    [simple uint 16 'data3']
-    [array  byte    'data4' count '2']
-    [array  byte    'data5' count '6']
+    [simple uint 32 data1]
+    [simple uint 16 data2]
+    [simple uint 16 data3]
+    [array  byte    data4 count '2']
+    [array  byte    data5 count '6']
 ]
 
 [type ExpandedNodeId
-    [simple bit 'namespaceURISpecified']
-    [simple bit 'serverIndexSpecified']
-    [simple NodeIdTypeDefinition 'nodeId']
-    [virtual vstring '-1' 'identifier' 'nodeId.identifier']
-    [optional PascalString 'namespaceURI' 'namespaceURISpecified']
-    [optional uint 32 'serverIndex' 'serverIndexSpecified']
+    [simple bit namespaceURISpecified]
+    [simple bit serverIndexSpecified]
+    [simple NodeIdTypeDefinition nodeId]
+    [virtual vstring '-1' identifier 'nodeId.identifier']
+    [optional PascalString namespaceURI 'namespaceURISpecified']
+    [optional uint 32 serverIndex 'serverIndexSpecified']
 ]
 
 [type ExtensionHeader
     [reserved int 5 '0x00']
-    [simple bit 'xmlbody']
-    [simple bit 'binaryBody']
+    [simple bit xmlbody]
+    [simple bit binaryBody]
 ]
 
 [type ExtensionObjectEncodingMask
     [reserved int 5 '0x00']
-    [simple bit 'typeIdSpecified']
-    [simple bit 'xmlbody']
-    [simple bit 'binaryBody']
+    [simple bit typeIdSpecified]
+    [simple bit xmlbody]
+    [simple bit binaryBody]
 ]
 
-[type ExtensionObject(bit 'includeEncodingMask')
+[type ExtensionObject(bit includeEncodingMask)
     //A serialized object prefixed with its data type identifier.
-    [simple ExpandedNodeId 'typeId']
-    [optional ExtensionObjectEncodingMask 'encodingMask' 'includeEncodingMask']
-    [virtual vstring '-1' 'identifier' 'typeId.identifier']
-    [simple ExtensionObjectDefinition('identifier') 'body']
+    [simple ExpandedNodeId typeId]
+    [optional ExtensionObjectEncodingMask encodingMask 'includeEncodingMask']
+    [virtual vstring '-1' identifier 'typeId.identifier']
+    [simple ExtensionObjectDefinition('identifier') body]
 ]
 
-[discriminatedType ExtensionObjectDefinition(vstring '-1' 'identifier')
+[discriminatedType ExtensionObjectDefinition(vstring '-1' identifier)
     [typeSwitch 'identifier'
         ['"0"' NullExtension
         ]
@@ -188,212 +188,212 @@
         </xsl:for-each>
 
         ['"811"' DataChangeNotification
-            [implicit int 32 'notificationLength' 'lengthInBytes']
-            [simple int 32 'noOfMonitoredItems']
-            [array ExtensionObjectDefinition('"808"')  'monitoredItems' count 'noOfMonitoredItems']
-            [simple int 32 'noOfDiagnosticInfos']
-            [array DiagnosticInfo  'diagnosticInfos' count 'noOfDiagnosticInfos']
+            [implicit int 32 notificationLength 'lengthInBytes']
+            [simple int 32 noOfMonitoredItems]
+            [array ExtensionObjectDefinition('"808"')  monitoredItems count 'noOfMonitoredItems']
+            [simple int 32 noOfDiagnosticInfos]
+            [array DiagnosticInfo  diagnosticInfos count 'noOfDiagnosticInfos']
         ]
         ['"916"' EventNotificationList
-            [implicit int 32 'notificationLength' 'lengthInBytes']
-            [simple int 32 'noOfEvents']
-            [array ExtensionObjectDefinition('"919"')  'events' count 'noOfEvents']
+            [implicit int 32 notificationLength 'lengthInBytes']
+            [simple int 32 noOfEvents]
+            [array ExtensionObjectDefinition('"919"')  events count 'noOfEvents']
         ]
         ['"820"' StatusChangeNotification
-            [implicit int 32 'notificationLength' 'lengthInBytes']
-            [simple StatusCode 'status']
-            [simple DiagnosticInfo 'diagnosticInfo']
+            [implicit int 32 notificationLength 'lengthInBytes']
+            [simple StatusCode status]
+            [simple DiagnosticInfo diagnosticInfo]
         ]
 
         ['"316"' UserIdentityToken
-            [implicit int 32 'policyLength' 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
-            [simple PascalString 'policyId']
-            [simple UserIdentityTokenDefinition('policyId.stringValue') 'userIdentityTokenDefinition']
+            [implicit int 32 policyLength 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
+            [simple PascalString policyId]
+            [simple UserIdentityTokenDefinition('policyId.stringValue') userIdentityTokenDefinition]
         ]
     ]
 ]
 
-[discriminatedType UserIdentityTokenDefinition(vstring '-1' 'identifier')
+[discriminatedType UserIdentityTokenDefinition(vstring '-1' identifier)
     [typeSwitch 'identifier'
         ['"anonymous"' AnonymousIdentityToken
         ]
         ['"username"' UserNameIdentityToken
-            [simple PascalString 'userName']
-            [simple PascalByteString 'password']
-            [simple PascalString 'encryptionAlgorithm']
+            [simple PascalString userName]
+            [simple PascalByteString password]
+            [simple PascalString encryptionAlgorithm]
         ]
         ['"certificate"' X509IdentityToken
-            [simple PascalByteString 'certificateData']
+            [simple PascalByteString certificateData]
         ]
         ['"identity"' IssuedIdentityToken
-            [simple PascalByteString 'tokenData']
-            [simple PascalString 'encryptionAlgorithm']
+            [simple PascalByteString tokenData]
+            [simple PascalString encryptionAlgorithm]
         ]
     ]
 ]
 
 
 [discriminatedType Variant
-    [simple bit 'arrayLengthSpecified']
-    [simple bit 'arrayDimensionsSpecified']
-    [discriminator uint 6 'VariantType']
+    [simple bit arrayLengthSpecified]
+    [simple bit arrayDimensionsSpecified]
+    [discriminator uint 6 VariantType]
     [typeSwitch 'VariantType','arrayLengthSpecified'
-        ['1' VariantBoolean (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array byte 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['1' VariantBoolean (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array byte value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['2' VariantSByte (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array byte 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['2' VariantSByte (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array byte value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['3' VariantByte (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array uint 8 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['3' VariantByte (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array uint 8 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['4' VariantInt16 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array int 16 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['4' VariantInt16 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array int 16 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['5' VariantUInt16 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array uint 16 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['5' VariantUInt16 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array uint 16 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['6' VariantInt32 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array int 32 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['6' VariantInt32 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array int 32 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['7' VariantUInt32 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array uint 32 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['7' VariantUInt32 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array uint 32 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['8' VariantInt64 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array int 64 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['8' VariantInt64 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array int 64 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['9' VariantUInt64 (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array uint 64 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['9' VariantUInt64 (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array uint 64 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['10' VariantFloat (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array float 32 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['10' VariantFloat (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array float 32 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['11' VariantDouble (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array float 64 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['11' VariantDouble (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array float 64 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['12' VariantString (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['12' VariantString (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array PascalString value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['13' VariantDateTime (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array int 64 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['13' VariantDateTime (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array int 64 value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['14' VariantGuid (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array GuidValue 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['14' VariantGuid (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array GuidValue value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['15' VariantByteString (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array ByteStringArray 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['15' VariantByteString (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array ByteStringArray value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['16' VariantXmlElement (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array PascalString 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['16' VariantXmlElement (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array PascalString value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['17' VariantNodeId (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array NodeId 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['17' VariantNodeId (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array NodeId value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['18' VariantExpandedNodeId (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array ExpandedNodeId 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['18' VariantExpandedNodeId (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array ExpandedNodeId value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['19' VariantStatusCode (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array StatusCode 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['19' VariantStatusCode (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array StatusCode value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['20' VariantQualifiedName (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array QualifiedName 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['20' VariantQualifiedName (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array QualifiedName value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['21' VariantLocalizedText (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array LocalizedText 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['21' VariantLocalizedText (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array LocalizedText value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['22' VariantExtensionObject (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array ExtensionObject('true') 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['22' VariantExtensionObject (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array ExtensionObject('true') value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['23' VariantDataValue (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array DataValue 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['23' VariantDataValue (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array DataValue value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['24' VariantVariant (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array Variant 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['24' VariantVariant (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array Variant value count 'arrayLength == null ? 1 : arrayLength']
         ]
-        ['25' VariantDiagnosticInfo (bit 'arrayLengthSpecified')
-            [optional int 32 'arrayLength' 'arrayLengthSpecified']
-            [array DiagnosticInfo 'value' count 'arrayLength == null ? 1 : arrayLength']
+        ['25' VariantDiagnosticInfo (bit arrayLengthSpecified)
+            [optional int 32 arrayLength 'arrayLengthSpecified']
+            [array DiagnosticInfo value count 'arrayLength == null ? 1 : arrayLength']
         ]
     ]
-    [optional int 32 'noOfArrayDimensions' 'arrayDimensionsSpecified']
-    [array bit 'arrayDimensions' count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
+    [optional int 32 noOfArrayDimensions 'arrayDimensionsSpecified']
+    [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
 [discriminatedType NodeIdTypeDefinition
-    [abstract vstring '-1' 'identifier']
-    [discriminator NodeIdType 'nodeType']
+    [abstract vstring '-1' identifier]
+    [discriminator NodeIdType nodeType]
     [typeSwitch 'nodeType'
         ['nodeIdTypeTwoByte' NodeIdTwoByte
-            [simple uint 8 'id']
-            [virtual vstring '-1' 'identifier' 'id']
+            [simple uint 8 id]
+            [virtual vstring '-1' identifier 'id']
         ]
         ['nodeIdTypeFourByte' NodeIdFourByte
-            [simple uint 8 'namespaceIndex']
-            [simple uint 16 'id']
-            [virtual vstring '-1' 'identifier' 'id']
+            [simple uint 8 namespaceIndex]
+            [simple uint 16 id]
+            [virtual vstring '-1' identifier 'id']
         ]
         ['nodeIdTypeNumeric' NodeIdNumeric
-            [simple uint 16 'namespaceIndex']
-            [simple uint 32 'id']
-            [virtual vstring '-1' 'identifier' 'id']
+            [simple uint 16 namespaceIndex]
+            [simple uint 32 id]
+            [virtual vstring '-1' identifier 'id']
         ]
         ['nodeIdTypeString' NodeIdString
-            [simple uint 16 'namespaceIndex']
-            [simple PascalString 'id']
-            [virtual vstring '-1' 'identifier' 'id.stringValue']
+            [simple uint 16 namespaceIndex]
+            [simple PascalString id]
+            [virtual vstring '-1' identifier 'id.stringValue']
         ]
         ['nodeIdTypeGuid' NodeIdGuid
-            [simple uint 16 'namespaceIndex']
-            [array byte 'id' count '16']
-            [virtual vstring '-1' 'identifier' 'id']
+            [simple uint 16 namespaceIndex]
+            [array byte id count '16']
+            [virtual vstring '-1' identifier 'id']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
-            [simple uint 16 'namespaceIndex']
-            [simple PascalByteString 'id']
-            [virtual vstring '-1' 'identifier' 'id.stringValue']
+            [simple uint 16 namespaceIndex]
+            [simple PascalByteString id]
+            [virtual vstring '-1' identifier 'id.stringValue']
         ]
     ]
 ]
 
 [type NodeId
     [reserved int 2 '0x00']
-    [simple NodeIdTypeDefinition 'nodeId']
-    [virtual vstring '-1' 'id' 'nodeId.identifier']
+    [simple NodeIdTypeDefinition nodeId]
+    [virtual vstring '-1' id 'nodeId.identifier']
 ]
 
 [type PascalString
-    [implicit int 32 'sLength'          'stringValue.length == 0 ? -1 : stringValue.length']
-    [simple vstring 'sLength == -1 ? 0 : sLength * 8' 'stringValue']
-    [virtual  int 32 'stringLength'     'stringValue.length == -1 ? 0 : stringValue.length']
+    [implicit int 32 sLength          'stringValue.length == 0 ? -1 : stringValue.length']
+    [simple vstring 'sLength == -1 ? 0 : sLength * 8' stringValue]
+    [virtual  int 32 stringLength     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
 [type PascalByteString
-    [simple int 32 'stringLength']
-    [array byte 'stringValue' count 'stringLength == -1 ? 0 : stringLength' ]
+    [simple int 32 stringLength]
+    [array byte stringValue count 'stringLength == -1 ? 0 : stringLength' ]
 ]
 
 [type Structure
@@ -413,7 +413,7 @@
 // OpaqueType
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
-[enum string 112 OpcuaDataType(uint 8 'variantType')
+[enum string 112 OpcuaDataType(uint 8 variantType)
     ['"NULL"' NULL ['0']]
     ['"BOOL"' BOOL ['1']]
     ['"BYTE"' BYTE ['3']]

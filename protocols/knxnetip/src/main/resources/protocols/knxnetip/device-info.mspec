@@ -35,7 +35,7 @@
 // On this local copy.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////
-[enum uint 16 ComObjectTableAddresses(uint 16 'comObjectTableAddress')
+[enum uint 16 ComObjectTableAddresses(uint 16 comObjectTableAddress)
     ['   1' DEV0001914201               ['0x43FE'                       ]]
     ['   2' DEV0001140C13               ['0x4400'                       ]]
     ['   3' DEV0001140B11               ['0x4400'                       ]]

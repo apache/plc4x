@@ -18,23 +18,15 @@
  */
 
 [type SocketCANFrame byteOrder='"LITTLE_ENDIAN"'
-    [simple int 32 'rawId']
-    [virtual int 32 'identifier'
-        'STATIC_CALL("readIdentifier", rawId)'
-    ]
-    [virtual bit 'extended'
-        'STATIC_CALL("isExtended", rawId)'
-    ]
-    [virtual bit 'remote'
-        'STATIC_CALL("isRemote", rawId)'
-    ]
-    [virtual bit 'error'
-        'STATIC_CALL("isError", rawId)'
-    ]
-    [implicit uint 8 'size' 'COUNT(data)']
-    [reserved uint 8 '0x0'] //flags
-    [reserved uint 8 '0x0'] // padding 1
-    [reserved uint 8 '0x0'] // padding 2
-    [array byte 'data' count 'size']
-    [padding uint 8 'alignment' '0x00' '8 - (COUNT(data))']
+    [simple     int 32  rawId                                               ]
+    [virtual    int 32  identifier  'STATIC_CALL("readIdentifier", rawId)'  ]
+    [virtual    bit     extended    'STATIC_CALL("isExtended", rawId)'      ]
+    [virtual    bit     remote      'STATIC_CALL("isRemote", rawId)'        ]
+    [virtual    bit     error       'STATIC_CALL("isError", rawId)'         ]
+    [implicit   uint 8  size        'COUNT(data)'                           ]
+    [reserved   uint 8              '0x0'                                   ] // flags
+    [reserved   uint 8              '0x0'                                   ] // padding 1
+    [reserved   uint 8              '0x0'                                   ] // padding 2
+    [array      byte    data        count 'size'                            ]
+    [padding    uint 8  alignment   '0x00' '8 - (COUNT(data))'              ]
 ]
