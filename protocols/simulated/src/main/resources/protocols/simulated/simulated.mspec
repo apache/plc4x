@@ -23,7 +23,7 @@
     [simple uint        16  'dummy']
 ]
 
-[dataIo 'DataItem'(vstring 'dataType', uint 16 'numberOfValues')
+[dataIo DataItem(vstring 'dataType', uint 16 'numberOfValues')
     [typeSwitch 'dataType','numberOfValues'
         ['"BOOL"','1' BOOL
             [simple   bit    'value']
@@ -136,7 +136,7 @@
     ]
 ]
 
-[enum uint 8 'SimulatedDataTypeSizes'(uint 8 'dataTypeSize')
+[enum uint 8 SimulatedDataTypeSizes(uint 8 'dataTypeSize')
     ['1' BOOL ['1']]
     ['2' BYTE ['1']]
     ['3' WORD ['2']]

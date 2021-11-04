@@ -21,7 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsTCPPacket'
+[type AmsTCPPacket
     // The ams - tcp to be sent.
     [simple AmsTcpHeader 'amsTcpHeader']
     // The AMS packet to be sent.
@@ -29,7 +29,7 @@
 ]
 
 // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
-[type 'AmsTcpHeader'
+[type AmsTcpHeader
     // These bytes must be set to 0.
     [reserved   uint       16       '0x0000' ]
     // This array contains the length of the data packet.
@@ -47,7 +47,7 @@
  *
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
  */
-[type 'AmsSerialAcknowledgeFrame'
+[type AmsSerialAcknowledgeFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -75,7 +75,7 @@
  * exceeded. The CRC16 algorithm is used for calculating the checksum.
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
  */
-[type 'AmsSerialFrame'
+[type AmsSerialFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -100,7 +100,7 @@
  * sent. In this way the receiver is informed that a new communication is running and the receiver then accepts the
  * fragment number during the next AMS-Frame, without carrying out a check.
  */
-[type 'AmsSerialResetFrame'
+[type AmsSerialResetFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -122,13 +122,13 @@
 // AMS Common
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsPacket'
+[type AmsPacket
     [simple     AmsHeader  'amsHeader'                                                            ]
     [simple     ADSData('amsHeader.commandId', 'amsHeader.state.response')    'data'                 ]
 ]
 
 // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
-[type 'AmsHeader'
+[type AmsHeader
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AmsNetId        'targetAmsNetId'                            ]
     // This is the AmsPort of the station, for which the packet is intended.
@@ -150,7 +150,7 @@
     [simple      uint        32  'invokeId'                                 ]
 ]
 
-[enum uint 16 'CommandId'
+[enum uint 16 CommandId
     ['0x00' INVALID]
     ['0x01' ADS_READ_DEVICE_INFO]
     ['0x02' ADS_READ]
@@ -163,7 +163,7 @@
     ['0x09' ADS_READ_WRITE]
 ]
 
-[type 'State'
+[type State
     [simple     bit 'broadcast'             ]
     [reserved   int 7 '0x0'                 ]
     [simple     bit 'initCommand'           ]
@@ -197,7 +197,7 @@
  * documentation for notes about settings of the AMS NetId.
  * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
  */
-[type 'AmsNetId'
+[type AmsNetId
     [simple     uint        8   'octet1'            ]
     [simple     uint        8   'octet2'            ]
     [simple     uint        8   'octet3'            ]
@@ -206,7 +206,7 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'ADSData' (CommandId 'commandId', bit 'response')
+[discriminatedType ADSData(CommandId 'commandId', bit 'response')
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'true' AdsInvalidResponse]
         ['INVALID', 'false' AdsInvalidRequest]
@@ -339,7 +339,7 @@
     ]
 ]
 
-[type 'AdsStampHeader'
+[type AdsStampHeader
     // 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
     [simple uint 64 'timestamp']
     // 4 bytes	Number of elements of type AdsNotificationSample.
@@ -348,7 +348,7 @@
     [array AdsNotificationSample 'adsNotificationSamples' count 'samples']
 ]
 
-[type 'AdsNotificationSample'
+[type AdsNotificationSample
     // 4 bytes	Handle of notification
     [simple uint 32 'notificationHandle']
     // 4 Bytes	Size of data range in bytes.
@@ -358,7 +358,7 @@
 ]
 
 //Specific Case for variable string length
-[type 'VariableStringType'
+[type VariableStringType
     //Confirm implicit can be used in string length
     [implicit uint 32 'stringLength' 'stringValue.lengthInBytes']
     [simple vstring 'stringLength' 'stringValue']

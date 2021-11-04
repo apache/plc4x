@@ -21,7 +21,7 @@
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
 
-[type 'TPKTPacket' byteOrder='"BIG_ENDIAN"'
+[type TPKTPacket byteOrder='"BIG_ENDIAN"'
     [const    uint 8                 'protocolId' '0x03']
     [reserved uint 8                 '0x00']
     [implicit uint 16                'len'       'payload.lengthInBytes + 4']
@@ -32,7 +32,7 @@
 // COTP
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'COTPPacket' (uint 16 'cotpLen')
+[discriminatedType COTPPacket (uint 16 'cotpLen')
     [implicit      uint 8 'headerLength' 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 'tpduCode']
     [typeSwitch 'tpduCode'
@@ -68,7 +68,7 @@
     [optional S7Message                                     'payload'    'curPos < cotpLen']
 ]
 
-[discriminatedType 'COTPParameter' (uint 8 'rest')
+[discriminatedType COTPParameter (uint 8 'rest')
     [discriminator uint 8 'parameterType']
     [implicit      uint 8 'parameterLength' 'lengthInBytes - 2']
     [typeSwitch 'parameterType'
@@ -94,7 +94,7 @@
 // S7
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'S7Message'
+[discriminatedType S7Message
     [const         uint 8  'protocolId'      '0x32']
     [discriminator uint 8  'messageType']
     [reserved      uint 16 '0x0000']
@@ -122,7 +122,7 @@
 ////////////////////////////////////////////////////////////////
 // Parameters
 
-[discriminatedType 'S7Parameter' (uint 8 'messageType')
+[discriminatedType S7Parameter (uint 8 'messageType')
     [discriminator uint 8 'parameterType']
     [typeSwitch 'parameterType','messageType'
         ['0xF0' S7ParameterSetupCommunication
@@ -161,7 +161,7 @@
     ]
 ]
 
-[discriminatedType 'S7VarRequestParameterItem'
+[discriminatedType S7VarRequestParameterItem
     [discriminator uint 8 'itemType']
     [typeSwitch 'itemType'
         ['0x12' S7VarRequestParameterItemAddress
@@ -171,7 +171,7 @@
     ]
 ]
 
-[discriminatedType 'S7Address'
+[discriminatedType S7Address
     [discriminator uint 8 'addressType']
     [typeSwitch 'addressType'
         ['0x10' S7AddressAny
@@ -186,7 +186,7 @@
     ]
 ]
 
-[discriminatedType 'S7ParameterUserDataItem'
+[discriminatedType S7ParameterUserDataItem
     [discriminator uint 8 'itemType']
     [typeSwitch 'itemType'
         ['0x12' S7ParameterUserDataItemCPUFunctions
@@ -203,13 +203,13 @@
     ]
 ]
 
-[type 'SzlId'
+[type SzlId
     [simple SzlModuleTypeClass 'typeClass']
     [simple uint 4             'sublistExtract']
     [simple SzlSublist         'sublistList']
 ]
 
-[type 'SzlDataTreeItem'
+[type SzlDataTreeItem
     [simple uint 16 'itemIndex']
     [array  byte    'mlfb' count '20']
     [simple uint 16 'moduleTypeId']
@@ -220,7 +220,7 @@
 ////////////////////////////////////////////////////////////////
 // Payloads
 
-[discriminatedType 'S7Payload' (uint 8 'messageType', S7Parameter 'parameter')
+[discriminatedType S7Payload (uint 8 'messageType', S7Parameter 'parameter')
     [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
@@ -238,7 +238,7 @@
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
-[type 'S7VarPayloadDataItem'
+[type S7VarPayloadDataItem
     [simple   DataTransportErrorCode 'returnCode']
     [simple   DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
@@ -246,7 +246,7 @@
     [padding  uint 8                 'pad'        '0x00' 'COUNT(data) % 2']
 ]
 
-[type 'S7VarPayloadStatusItem'
+[type S7VarPayloadStatusItem
     [simple DataTransportErrorCode 'returnCode']
 ]
 
@@ -277,7 +277,7 @@
     ]
 ]
 
-[type 'AssociatedValueType'
+[type AssociatedValueType
     [simple DataTransportErrorCode 'returnCode']
     [simple DataTransportSize      'transportSize']
     [manual uint 16                'valueLength'   'STATIC_CALL("RightShift3", readBuffer)' 'STATIC_CALL("LeftShift3", writeBuffer, _value.valueLength)' '2']
@@ -285,7 +285,7 @@
 ]
 
 //TODO: Convert BCD to uint
-[type 'DateAndTime'
+[type DateAndTime
     [manual uint 8  'year'    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.year)'    '1']
     [manual uint 8  'month'   'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.month)'   '1']
     [manual uint 8  'day'     'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.day)'     '1']
@@ -296,7 +296,7 @@
     [simple uint 4  'dow']
 ]
 
-[type 'State'
+[type State
     [simple bit 'SIG_8']
     [simple bit 'SIG_7']
     [simple bit 'SIG_6']
@@ -307,7 +307,7 @@
     [simple bit 'SIG_1']
 ]
 
-[type 'AlarmMessageObjectPushType'
+[type AlarmMessageObjectPushType
     [const  uint 8              'variableSpec'     '0x12']
     [simple uint 8              'lengthSpec']
     [simple SyntaxIdType        'syntaxId']
@@ -320,7 +320,7 @@
     [array  AssociatedValueType 'AssociatedValues' count 'numberOfValues' ]
 ]
 
-[type 'AlarmMessageAckObjectPushType'
+[type AlarmMessageAckObjectPushType
     [const  uint 8       'variableSpec' '0x12']
     [simple uint 8       'lengthSpec']
     [simple SyntaxIdType 'syntaxId']
@@ -330,21 +330,21 @@
     [simple State        'ackStateComing']
 ]
 
-[type 'AlarmMessagePushType'
+[type AlarmMessagePushType
     [simple DateAndTime                'TimeStamp']
     [simple uint 8                     'functionId']
     [simple uint 8                     'numberOfObjects']
     [array  AlarmMessageObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageAckPushType'
+[type AlarmMessageAckPushType
     [simple DateAndTime                   'TimeStamp']
     [simple uint 8                        'functionId']
     [simple uint 8                        'numberOfObjects']
     [array  AlarmMessageAckObjectPushType 'messageObjects' count 'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageObjectQueryType'
+[type AlarmMessageObjectQueryType
     [simple   uint 8              'lengthDataset']
     [reserved uint 16             '0x0000']
     [const    uint 8              'variableSpec'   '0x12']
@@ -357,7 +357,7 @@
     [simple   AssociatedValueType 'valueGoing']
 ]
 
-[type 'AlarmMessageQueryType'
+[type AlarmMessageQueryType
     [simple uint 8                      'functionId']
     [simple uint 8                      'numberOfObjects']
     [simple DataTransportErrorCode      'returnCode']
@@ -366,7 +366,7 @@
     [array  AlarmMessageObjectQueryType 'messageObjects' count    'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageObjectAckType'
+[type AlarmMessageObjectAckType
     [const  uint 8       'variableSpec' '0x12']
     [const  uint 8       'length' '0x08']
     [simple SyntaxIdType 'syntaxId']
@@ -376,13 +376,13 @@
     [simple State        'ackStateComing']
 ]
 
-[type 'AlarmMessageAckType'
+[type AlarmMessageAckType
     [simple uint 8                    'functionId']
     [simple uint 8                    'numberOfObjects']
     [array  AlarmMessageObjectAckType 'messageObjects' count 'numberOfObjects' ]
 ]
 
-[type 'AlarmMessageAckResponseType'
+[type AlarmMessageAckResponseType
     [simple uint 8 'functionId']
     [simple uint 8 'numberOfObjects']
     [array  uint 8 'messageObjects'  count 'numberOfObjects' ]
@@ -412,7 +412,7 @@
 // 0x16 NOTIFY8_IND
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'S7PayloadUserDataItem'(uint 4 'cpuFunctionType', uint 8 'cpuSubfunction')
+[discriminatedType S7PayloadUserDataItem(uint 4 'cpuFunctionType', uint 8 'cpuSubfunction')
     [simple     DataTransportErrorCode 'returnCode']
     [simple     DataTransportSize      'transportSize']
     [implicit   uint 16                'dataLength'    'lengthInBytes - 4']
@@ -521,7 +521,7 @@
     ]
 ]
 
-[dataIo 'DataItem'(vstring 'dataProtocolId', int 32 'stringLength')
+[dataIo DataItem(vstring 'dataProtocolId', int 32 'stringLength')
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
         // Bit
@@ -647,7 +647,7 @@
     ]
 ]
 
-[enum int 8 'COTPTpduSize'(uint 16 'sizeInBytes')
+[enum int 8 COTPTpduSize(uint 16 'sizeInBytes')
     ['0x07' SIZE_128 ['128']]
     ['0x08' SIZE_256 ['256']]
     ['0x09' SIZE_512 ['512']]
@@ -657,7 +657,7 @@
     ['0x0d' SIZE_8192 ['8192']]
 ]
 
-[enum int 8 'COTPProtocolClass'
+[enum int 8 COTPProtocolClass
     ['0x00' CLASS_0]
     ['0x10' CLASS_1]
     ['0x20' CLASS_2]
@@ -665,7 +665,7 @@
     ['0x40' CLASS_4]
 ]
 
-[enum int 8 'DataTransportSize'(bit 'sizeInBits')
+[enum int 8 DataTransportSize(bit 'sizeInBits')
     ['0x00' NULL            ['false']]
     ['0x03' BIT             ['true']]
     ['0x04' BYTE_WORD_DWORD ['true']]
@@ -675,13 +675,13 @@
     ['0x09' OCTET_STRING    ['false']]
 ]
 
-[enum int 8 'DeviceGroup'
+[enum int 8 DeviceGroup
     ['0x01' PG_OR_PC]
     ['0x02' OS      ]
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 'TransportSize'(uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO')
+[enum int 8 TransportSize(uint 8 'code', uint 8 'shortName', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', vstring 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO')
     // Bit Strings
     ['0x01' BOOL           ['0x01'       , 'X'               , '1'                 , 'null'                  , 'BIT'              , 'IEC61131_BOOL'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' BYTE           ['0x02'       , 'B'               , '1'                 , 'null'                  , 'BYTE_WORD_DWORD'  , 'IEC61131_BYTE'         , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
@@ -722,7 +722,7 @@
     ['0x1B' DT               ['0x0F'       , 'X'               , '12'                , 'null'                  , 'null'             , 'IEC61131_DATE_AND_TIME', 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
-[enum uint 8 'MemoryArea'(string 24 'shortName')
+[enum uint 8 MemoryArea(string 24 'shortName')
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
@@ -734,7 +734,7 @@
     ['0x86' LOCAL_DATA               ['LD']]
 ]
 
-[enum uint 8 'DataTransportSize'(bit 'sizeInBits')
+[enum uint 8 DataTransportSize(bit 'sizeInBits')
     ['0x00' NULL                ['false']]
     ['0x03' BIT                 ['true']]
     ['0x04' BYTE_WORD_DWORD     ['true']]
@@ -744,7 +744,7 @@
     ['0x09' OCTET_STRING        ['false']]
 ]
 
-[enum uint 8 'DataTransportErrorCode'
+[enum uint 8 DataTransportErrorCode
     ['0x00' RESERVED               ]
     ['0xFF' OK                     ]
     ['0x03' ACCESS_DENIED          ]
@@ -753,14 +753,14 @@
     ['0x0A' NOT_FOUND              ]
 ]
 
-[enum uint 4 'SzlModuleTypeClass'
+[enum uint 4 SzlModuleTypeClass
     ['0x0' CPU]
     ['0x4' IM]
     ['0x8' FM]
     ['0xC' CP]
 ]
 
-[enum uint 8 'SzlSublist'
+[enum uint 8 SzlSublist
     ['0x11' MODULE_IDENTIFICATION]
     ['0x12' CPU_FEATURES]
     ['0x13' USER_MEMORY_AREA]
@@ -782,21 +782,21 @@
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
 
-[enum uint 8 'CpuSubscribeEvents'
+[enum uint 8 CpuSubscribeEvents
     ['0x01' CPU]
     ['0x02' IM]
     ['0x04' FM]
     ['0x80' CP]
 ]
 
-[enum uint 8 'EventType'
+[enum uint 8 EventType
     ['0x01' MODE]
     ['0x02' SYS]
     ['0x04' USR]
     ['0x80' ALM]
 ]
 
-[enum uint 8 'SyntaxIdType'
+[enum uint 8 SyntaxIdType
     ['0x01' S7ANY]
     ['0x13' PBC_ID]
     ['0x15' ALARM_LOCKFREESET]
@@ -812,13 +812,13 @@
     ['0xB0' DBREAD]
 ]
 
-[enum uint 8 'AlarmType'
+[enum uint 8 AlarmType
     ['0x01' SCAN]
     ['0x02' ALARM_8]
     ['0x04' ALARM_S]
 ]
 
-[enum uint 8 'AlarmStateType'
+[enum uint 8 AlarmStateType
     ['0x00' SCAN_ABORT]
     ['0x01' SCAN_INITIATE]
     ['0x04' ALARM_ABORT]
@@ -827,13 +827,13 @@
     ['0x09' ALARM_S_INITIATE]
 ]
 
-[enum uint 8 'QueryType'
+[enum uint 8 QueryType
     ['0x01' BYALARMTYPE]
     ['0x02' ALARM_8]
     ['0x04' ALARM_S]
 ]
 
-[enum uint 8 'ModeTransitionType'
+[enum uint 8 ModeTransitionType
     ['0x00' STOP]
     ['0x01' WARM_RESTART]
     ['0x02' RUN]

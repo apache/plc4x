@@ -55,11 +55,11 @@
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.
 
-[type 'OpcuaAPU' byteOrder='"LITTLE_ENDIAN"' (bit 'response')
+[type OpcuaAPU byteOrder='"LITTLE_ENDIAN"' (bit 'response')
     [simple MessagePDU('response') 'message']
 ]
 
-[discriminatedType 'MessagePDU' (bit 'response')
+[discriminatedType MessagePDU (bit 'response')
     [discriminator string 24            'messageType']
     [typeSwitch 'messageType','response'
         ['"HEL"','false'     OpcuaHelloRequest
@@ -133,12 +133,12 @@
     ]
 ]
 
-[type 'ByteStringArray'
+[type ByteStringArray
     [simple int 32 'arrayLength']
     [array uint 8 'value' count 'arrayLength']
 ]
 
-[type 'GuidValue'
+[type GuidValue
     [simple uint 32 'data1']
     [simple uint 16 'data2']
     [simple uint 16 'data3']
@@ -146,7 +146,7 @@
     [array  byte    'data5' count '6']
 ]
 
-[type 'ExpandedNodeId'
+[type ExpandedNodeId
     [simple bit 'namespaceURISpecified']
     [simple bit 'serverIndexSpecified']
     [simple NodeIdTypeDefinition 'nodeId']
@@ -155,20 +155,20 @@
     [optional uint 32 'serverIndex' 'serverIndexSpecified']
 ]
 
-[type 'ExtensionHeader'
+[type ExtensionHeader
     [reserved int 5 '0x00']
     [simple bit 'xmlbody']
     [simple bit 'binaryBody']
 ]
 
-[type 'ExtensionObjectEncodingMask'
+[type ExtensionObjectEncodingMask
     [reserved int 5 '0x00']
     [simple bit 'typeIdSpecified']
     [simple bit 'xmlbody']
     [simple bit 'binaryBody']
 ]
 
-[type 'ExtensionObject' (bit 'includeEncodingMask')
+[type ExtensionObject(bit 'includeEncodingMask')
     //A serialized object prefixed with its data type identifier.
     [simple ExpandedNodeId 'typeId']
     [optional ExtensionObjectEncodingMask 'encodingMask' 'includeEncodingMask']
@@ -176,7 +176,7 @@
     [simple ExtensionObjectDefinition('identifier') 'body']
 ]
 
-[discriminatedType 'ExtensionObjectDefinition' (vstring '-1' 'identifier')
+[discriminatedType ExtensionObjectDefinition(vstring '-1' 'identifier')
     [typeSwitch 'identifier'
         ['"0"' NullExtension
         ]
@@ -213,7 +213,7 @@
     ]
 ]
 
-[discriminatedType 'UserIdentityTokenDefinition' (vstring '-1' 'identifier')
+[discriminatedType UserIdentityTokenDefinition(vstring '-1' 'identifier')
     [typeSwitch 'identifier'
         ['"anonymous"' AnonymousIdentityToken
         ]
@@ -233,7 +233,7 @@
 ]
 
 
-[discriminatedType 'Variant'
+[discriminatedType Variant
     [simple bit 'arrayLengthSpecified']
     [simple bit 'arrayDimensionsSpecified']
     [discriminator uint 6 'VariantType']
@@ -343,7 +343,7 @@
     [array bit 'arrayDimensions' count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
-[discriminatedType 'NodeIdTypeDefinition'
+[discriminatedType NodeIdTypeDefinition
     [abstract vstring '-1' 'identifier']
     [discriminator NodeIdType 'nodeType']
     [typeSwitch 'nodeType'
@@ -379,28 +379,28 @@
     ]
 ]
 
-[type 'NodeId'
+[type NodeId
     [reserved int 2 '0x00']
     [simple NodeIdTypeDefinition 'nodeId']
     [virtual vstring '-1' 'id' 'nodeId.identifier']
 ]
 
-[type 'PascalString'
+[type PascalString
     [implicit int 32 'sLength'          'stringValue.length == 0 ? -1 : stringValue.length']
     [simple vstring 'sLength == -1 ? 0 : sLength * 8' 'stringValue']
     [virtual  int 32 'stringLength'     'stringValue.length == -1 ? 0 : stringValue.length']
 ]
 
-[type 'PascalByteString'
+[type PascalByteString
     [simple int 32 'stringLength']
     [array byte 'stringValue' count 'stringLength == -1 ? 0 : stringLength' ]
 ]
 
-[type 'Structure'
+[type Structure
 
 ]
 
-//[type 'DataTypeDefinition'
+//[type DataTypeDefinition
 //
 //]
 
@@ -413,7 +413,7 @@
 // OpaqueType
 <xsl:apply-templates select="/opc:TypeDictionary/opc:OpaqueType"/>
 
-[enum string 112 'OpcuaDataType' (uint 8 'variantType')
+[enum string 112 OpcuaDataType(uint 8 'variantType')
     ['"NULL"' NULL ['0']]
     ['"BOOL"' BOOL ['1']]
     ['"BYTE"' BYTE ['3']]
@@ -440,7 +440,7 @@
     ['"STRING"' STRING ['12']]
 ]
 
-[enum string 8 'OpcuaIdentifierType'
+[enum string 8 OpcuaIdentifierType
     ['"s"' STRING_IDENTIFIER]
     ['"i"' NUMBER_IDENTIFIER]
     ['"g"' GUID_IDENTIFIER]

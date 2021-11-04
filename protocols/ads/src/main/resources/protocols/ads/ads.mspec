@@ -21,7 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsTCPPacket' byteOrder='"LITTLE_ENDIAN"'
+[type AmsTCPPacket byteOrder='"LITTLE_ENDIAN"'
     // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
     // These bytes must be set to 0.
     [reserved   uint       16       '0x0000'                            ]
@@ -40,7 +40,7 @@
 // then the receiver has to send an acknowledge frame, to inform the transmitter that the frame has arrived.
 //
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
-[type 'AmsSerialAcknowledgeFrame'
+[type AmsSerialAcknowledgeFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -66,7 +66,7 @@
 // The frame number is simply accepted and not checked when receiving the first AMS frame or in case a timeout is
 // exceeded. The CRC16 algorithm is used for calculating the checksum.
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
-[type 'AmsSerialFrame'
+[type AmsSerialFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -89,7 +89,7 @@
 // In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
 // sent. In this way the receiver is informed that a new communication is running and the receiver then accepts the
 // fragment number during the next AMS-Frame, without carrying out a check.
-[type 'AmsSerialResetFrame'
+[type AmsSerialResetFrame
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
@@ -111,7 +111,7 @@
 // AMS Common
 ////////////////////////////////////////////////////////////////
 
-[type 'AmsPacket'
+[type AmsPacket
     // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AmsNetId        'targetAmsNetId'                            ]
@@ -136,7 +136,7 @@
     [simple     AdsData('commandId', 'state.response')    'data'           ]
 ]
 
-[enum uint 16 'CommandId'
+[enum uint 16 CommandId
     ['0x0000' INVALID]
     ['0x0001' ADS_READ_DEVICE_INFO]
     ['0x0002' ADS_READ]
@@ -149,7 +149,7 @@
     ['0x0009' ADS_READ_WRITE]
 ]
 
-[type 'State'
+[type State
     [simple     bit 'initCommand'           ]
     [simple     bit 'updCommand'            ]
     [simple     bit 'timestampAdded'        ]
@@ -181,7 +181,7 @@
 // target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
 // documentation for notes about settings of the AMS NetId.
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
-[type 'AmsNetId'
+[type AmsNetId
     [simple     uint        8   'octet1'            ]
     [simple     uint        8   'octet2'            ]
     [simple     uint        8   'octet3'            ]
@@ -190,7 +190,7 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'AdsData' (CommandId 'commandId', bit 'response')
+[discriminatedType AdsData(CommandId 'commandId', bit 'response')
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -334,7 +334,7 @@
     ]
 ]
 
-[discriminatedType 'AdsMultiRequestItem' (uint 32 'indexGroup')
+[discriminatedType AdsMultiRequestItem(uint 32 'indexGroup')
     [typeSwitch 'indexGroup'
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
         ['61568' AdsMultiRequestItemRead
@@ -368,7 +368,7 @@
     ]
 ]
 
-[type 'AdsStampHeader'
+[type AdsStampHeader
     // 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
     [simple uint 64 'timestamp']
     // 4 bytes	Number of elements of type AdsNotificationSample.
@@ -377,7 +377,7 @@
     [array AdsNotificationSample 'adsNotificationSamples' count 'samples']
 ]
 
-[type 'AdsNotificationSample'
+[type AdsNotificationSample
     // 4 bytes	Handle of notification
     [simple uint 32 'notificationHandle']
     // 4 Bytes	Size of data range in bytes.
@@ -386,7 +386,7 @@
     [array byte 'data' count 'sampleSize']
 ]
 
-[dataIo 'DataItem' (vstring 'dataFormatName', int 32 'stringLength')
+[dataIo DataItem(vstring 'dataFormatName', int 32 'stringLength')
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
@@ -498,7 +498,7 @@
     ]
 ]
 
-[enum int 8 'AdsDataType' (uint 16 'numBytes', vstring 'dataFormatName')
+[enum int 8 AdsDataType(uint 16 'numBytes', vstring 'dataFormatName')
     ['0x01' BOOL       ['1', '"IEC61131_BOOL"']]
     ['0x02' BIT        ['1', '"IEC61131_BOOL"']]
     ['0x03' BIT8       ['1', '"IEC61131_BOOL"']]
@@ -564,7 +564,7 @@
     ['0x28' DT             ['4', '"IEC61131_DATE_AND_TIME"']]
 ]
 
-[enum uint 32 'ReservedIndexGroups'
+[enum uint 32 ReservedIndexGroups
     ['0x0000F000' ADSIGRP_SYMTAB]
     ['0x0000F001' ADSIGRP_SYMNAME]
     ['0x0000F002' ADSIGRP_SYMVAL]
@@ -597,7 +597,7 @@
     ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE]
 ]
 
-[enum uint 32 'ReturnCode'
+[enum uint 32 ReturnCode
     // Global Return Codes
     ['0x00' OK]
     ['0x01' INTERNAL_ERROR]

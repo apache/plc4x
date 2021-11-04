@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'KnxNetIpMessage' byteOrder='"BIG_ENDIAN"'
+[discriminatedType KnxNetIpMessage byteOrder='"BIG_ENDIAN"'
     [implicit      uint 8  'headerLength'    '6']
     [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']
@@ -89,21 +89,21 @@
     ]
 ]
 
-[type 'HPAIDiscoveryEndpoint'
+[type HPAIDiscoveryEndpoint
     [implicit uint 8           'structureLength' 'lengthInBytes']
     [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
 
-[type 'HPAIControlEndpoint'
+[type HPAIControlEndpoint
     [implicit uint 8           'structureLength' 'lengthInBytes']
     [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
 
-[type 'DIBDeviceInfo'
+[type DIBDeviceInfo
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
     [simple   KnxMedium    'knxMedium']
@@ -116,20 +116,20 @@
     [array    byte         'deviceFriendlyName'         count '30']
 ]
 
-[type 'DIBSuppSvcFamilies'
+[type DIBSuppSvcFamilies
     [implicit uint 8       'structureLength' 'lengthInBytes']
     [simple   uint 8       'descriptionType']
     [array    ServiceId    'serviceIds' length 'structureLength - 2']
 ]
 
-[type 'HPAIDataEndpoint'
+[type HPAIDataEndpoint
     [implicit uint 8           'structureLength' 'lengthInBytes']
     [simple   HostProtocolCode 'hostProtocolCode']
     [simple   IPAddress        'ipAddress']
     [simple   uint 16          'ipPort']
 ]
 
-[discriminatedType 'ConnectionRequestInformation'
+[discriminatedType ConnectionRequestInformation
     [implicit      uint 8    'structureLength' 'lengthInBytes']
     [discriminator uint 8    'connectionType']
     [typeSwitch 'connectionType'
@@ -142,7 +142,7 @@
     ]
 ]
 
-[discriminatedType 'ConnectionResponseDataBlock'
+[discriminatedType ConnectionResponseDataBlock
     [implicit      uint 8     'structureLength' 'lengthInBytes']
     [discriminator uint 8     'connectionType']
     [typeSwitch 'connectionType'
@@ -154,59 +154,59 @@
     ]
 ]
 
-[type 'DeviceConfigurationRequestDataBlock'
+[type DeviceConfigurationRequestDataBlock
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
     [reserved uint 8 '0x00']
 ]
 
-[type 'DeviceConfigurationAckDataBlock'
+[type DeviceConfigurationAckDataBlock
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
     [simple   Status 'status']
 ]
 
-[type 'TunnelingRequestDataBlock'
+[type TunnelingRequestDataBlock
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
     [reserved uint 8 '0x00']
 ]
 
-[type 'TunnelingResponseDataBlock'
+[type TunnelingResponseDataBlock
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
     [simple   Status 'status']
 ]
 
-[type 'IPAddress'
+[type IPAddress
     [array byte 'addr' count '4']
 ]
 
-[type 'MACAddress'
+[type MACAddress
     [array byte 'addr' count '6']
 ]
 
-[type 'KnxAddress'
+[type KnxAddress
     [simple uint 4 'mainGroup']
     [simple uint 4 'middleGroup']
     [simple uint 8 'subGroup']
 ]
 
-[type 'DeviceStatus'
+[type DeviceStatus
     [reserved uint 7 '0x00']
     [simple   bit    'programMode']
 ]
 
-[type 'ProjectInstallationIdentifier'
+[type ProjectInstallationIdentifier
     [simple uint 8 'projectNumber']
     [simple uint 8 'installationNumber']
 ]
 
-[discriminatedType 'ServiceId'
+[discriminatedType ServiceId
     [discriminator uint 8 'serviceType']
     [typeSwitch 'serviceType'
         ['0x02' KnxNetIpCore
@@ -241,7 +241,7 @@
 // NOTE: When inspecting traffic in WireShark it seems they got the
 // standard/extended frame thing wrong. When comparing to the spec most
 // normal traffic is actually extended frames.
-[discriminatedType 'CEMI' (uint 16 'size')
+[discriminatedType CEMI(uint 16 'size')
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
         ['0x2B' LBusmonInd
@@ -329,7 +329,7 @@
     ]
 ]
 
-[discriminatedType 'CEMIAdditionalInformation'
+[discriminatedType CEMIAdditionalInformation
     [discriminator uint 8 'additionalInformationType']
     [typeSwitch 'additionalInformationType'
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
@@ -350,7 +350,7 @@
 
 // The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
 // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
-[discriminatedType 'LDataFrame'
+[discriminatedType LDataFrame
     [simple        bit          'frameType']
     [discriminator bit          'polling']
     [simple        bit          'notRepeated']
@@ -395,7 +395,7 @@
     ]
 ]
 
-[discriminatedType 'Apdu' (uint 8 'dataLength')
+[discriminatedType Apdu(uint 8 'dataLength')
     // 10_01 Logical Tag Extended v01.02.01 AS.pdf Page 74ff
     [discriminator uint 1 'control']
     [simple        bit    'numbered']
@@ -410,7 +410,7 @@
     ]
 ]
 
-[discriminatedType 'ApduControl'
+[discriminatedType ApduControl
     [discriminator uint 2 'controlType']
     [typeSwitch 'controlType'
         ['0x0' ApduControlConnect
@@ -424,7 +424,7 @@
     ]
 ]
 
-[discriminatedType 'ApduData' (uint 8 'dataLength')
+[discriminatedType ApduData(uint 8 'dataLength')
     [discriminator uint 4 'apciType']
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
     [typeSwitch 'apciType'
@@ -480,7 +480,7 @@
 ]
 
 // 03_03_07 Application Layer v01.06.02 AS Page 9ff
-[discriminatedType 'ApduDataExt' (uint 8 'length')
+[discriminatedType ApduDataExt(uint 8 'length')
     [discriminator uint 6 'extApciType']
     [typeSwitch 'extApciType'
         ['0x00' ApduDataExtOpenRoutingTableRequest
@@ -610,11 +610,11 @@
     ]
 ]
 
-[type 'RelativeTimestamp'
+[type RelativeTimestamp
     [simple   uint 16 'timestamp']
 ]
 
-[discriminatedType 'KnxGroupAddress' (uint 2 'numLevels')
+[discriminatedType KnxGroupAddress(uint 2 'numLevels')
     [typeSwitch 'numLevels'
         ['1' KnxGroupAddressFreeLevel
             [simple uint 16 'subGroup']
@@ -631,14 +631,14 @@
     ]
 ]
 
-[enum uint 2 'CEMIPriority'
+[enum uint 2 CEMIPriority
     ['0x0' SYSTEM]
     ['0x1' NORMAL]
     ['0x2' URGENT]
     ['0x3' LOW]
 ]
 
-[enum uint 8 'Status'
+[enum uint 8 Status
     ['0x00' NO_ERROR]
     ['0x01' PROTOCOL_TYPE_NOT_SUPPORTED]
     ['0x02' UNSUPPORTED_PROTOCOL_VERSION]
@@ -653,7 +653,7 @@
     ['0x29' TUNNELLING_LAYER_NOT_SUPPORTED]
 ]
 
-[enum uint 8 'HostProtocolCode'
+[enum uint 8 HostProtocolCode
     ['0x01' IPV4_UDP]
     ['0x02' IPV4_TCP]
 ]
@@ -668,13 +668,13 @@
 // TUNNEL_BUSMONITOR The client becomes a passive participant and all frames
 //                   on the KNX bus get forwarded to the client. Only one
 //                   Busmonitor connection is allowed at any given time.
-[enum uint 8 'KnxLayer'
+[enum uint 8 KnxLayer
     ['0x02' TUNNEL_LINK_LAYER]
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
 ]
 
-[enum uint 8 'KnxMedium'
+[enum uint 8 KnxMedium
     ['0x01' MEDIUM_RESERVED_1]
     ['0x02' MEDIUM_TP1]
     ['0x04' MEDIUM_PL110]
@@ -683,7 +683,7 @@
     ['0x20' MEDIUM_KNX_IP]
 ]
 
-[enum uint 8 'SupportedPhysicalMedia' (vstring 'description',                                         bit 'knxSupport')
+[enum uint 8 SupportedPhysicalMedia(vstring 'description',                                         bit 'knxSupport')
     ['0x00' OTHER                     ['used_for_undefined_physical_medium',                                    'true']]
     ['0x01' OIL_METER                 ['measures_volume_of_oil',                                                'true']]
     ['0x02' ELECTRICITY_METER         ['measures_electric_energy',                                              'true']]
@@ -709,7 +709,7 @@
 
 // The definition of the constants for medium type in the device descriptor differs from that of the other parts
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 4 'DeviceDescriptorMediumType'
+[enum uint 4 DeviceDescriptorMediumType
     ['0x0' TP1      ]
     ['0x1' PL110    ]
     ['0x2' RF       ]
@@ -720,7 +720,7 @@
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
 // REMARK: The last digit is intentionally set to 0 so this enum code can only be used as a mask.
-[enum uint 16 'FirmwareType'
+[enum uint 16 FirmwareType
     ['0x0010' SYSTEM_1                  ]
     ['0x0020' SYSTEM_2                  ]
     ['0x0300' SYSTEM_300                ]
@@ -743,7 +743,7 @@
 // Helper enum that binds the combinations of medium type and firmware
 // type to the pre-defined constants the spec defines
 // 03_05_01 Resources v01.09.03 AS.pdf Page 22
-[enum uint 16 'DeviceDescriptor'        (DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType')
+[enum uint 16 DeviceDescriptor(DeviceDescriptorMediumType 'mediumType',   FirmwareType 'firmwareType')
     ['0x0010' TP1_BCU_1_SYSTEM_1_0      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0011' TP1_BCU_1_SYSTEM_1_1      ['TP1',          'SYSTEM_1'                  ]]
     ['0x0012' TP1_BCU_1_SYSTEM_1_2      ['TP1',          'SYSTEM_1'                  ]]
@@ -775,7 +775,7 @@
     ['0x5705' KNX_IP_SYSTEM7            ['KNX_IP',       'SYSTEM_7'                  ]]
 ]
 
-[enum uint 4 'AccessLevel' (vstring 'purpose',        bit 'needsAuthentication')
+[enum uint 4 AccessLevel(vstring 'purpose',        bit 'needsAuthentication')
     ['0x0' Level0          ['"system manufacturer"',  'true'                   ]]
     ['0x1' Level1          ['"product manufacturer"', 'true'                   ]]
     ['0x2' Level2          ['"configuration"',        'true'                   ]]
@@ -784,7 +784,7 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 23ff
-[type 'DeviceDescriptorType2'
+[type DeviceDescriptorType2
     // Same manufacturer id as used elsewhere (Assigned by KNX Association)
     [simple uint 16            'manufacturerId' ]
     // Manufacturer specific device type id
@@ -803,7 +803,7 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS.pdf Page 24
-[type 'ChannelInformation'
+[type ChannelInformation
     [simple uint 3  'numChannels']
     [simple uint 13 'channelCode']
 ]
@@ -813,7 +813,7 @@
 // - 03_05_01 Resources v01.09.03 AS.pdf
 // - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
-[dataIo 'KnxProperty' (KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes')
+[dataIo KnxProperty(KnxPropertyDataType 'propertyType', uint 8 'dataLengthInBytes')
     [typeSwitch 'propertyType','dataLengthInBytes'
         ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
@@ -1019,7 +1019,7 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 171
-[enum uint 8 'ComObjectValueType' (uint 8 'sizeInBytes')
+[enum uint 8 ComObjectValueType(uint 8 'sizeInBytes')
     ['0x00' BIT1                  ['1']]
     ['0x01' BIT2                  ['1']]
     ['0x02' BIT3                  ['1']]
@@ -1037,7 +1037,7 @@
     ['0x0E' BYTE14                ['14']]
 ]
 
-[discriminatedType 'ComObjectTable' (FirmwareType 'firmwareType')
+[discriminatedType ComObjectTable(FirmwareType 'firmwareType')
     [typeSwitch 'firmwareType'
         // The location of the Group Object Table - Realization Type 1 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
@@ -1068,7 +1068,7 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 168ff
-[type 'GroupObjectDescriptorRealisationType1'
+[type GroupObjectDescriptorRealisationType1
     // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
     // if set to 'true' 0x100 has to be added to this value
     [simple uint 8              'dataPointer']
@@ -1091,7 +1091,7 @@
 
 // 03_05_01 Resources v01.09.03 AS page 172ff
 // It's generally identical to the type 1, but uses the reserved bit from type 1 as "updateEnable"
-[type 'GroupObjectDescriptorRealisationType2'
+[type GroupObjectDescriptorRealisationType2
     // Offset to the data (Also pay attention to the value of 'segmentSelectorEnable',
     // if set to 'true' 0x100 has to be added to this value
     [simple uint 8              'dataPointer']
@@ -1113,7 +1113,7 @@
 ]
 
 // 03_05_01 Resources v01.09.03 AS page 173ff
-[type 'GroupObjectDescriptorRealisationType6'
+[type GroupObjectDescriptorRealisationType6
     // TODO: Implement
 ]
 
@@ -1124,7 +1124,7 @@
 // the total number of entries. This seems to be followed by a 2-byte
 // Address and then by the entries themselves. Each entry seems to
 // be 4 bytes long.
-[type 'GroupObjectDescriptorRealisationType7'
+[type GroupObjectDescriptorRealisationType7
     // Offset of the value memory start address
     [simple   uint 16             'dataAddress']
     [simple   bit                 'updateEnable']
@@ -1150,7 +1150,7 @@
 // however when having a look at the payload in WireShark
 // if looks as if it's simply the realization type 1 or 2
 // without the leading 'dataPointer' field.
-[type 'GroupObjectDescriptorRealisationTypeB'
+[type GroupObjectDescriptorRealisationTypeB
     [simple bit                 'updateEnable']
     // The com object emits GroupValueWrites if the internal value changes
     [simple bit                 'transmitEnable']

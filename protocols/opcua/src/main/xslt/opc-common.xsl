@@ -88,7 +88,7 @@
             <xsl:when test="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]">
                 <xsl:choose>
                     <xsl:when test="not(@BrowseName='Vector') and not(substring(@BrowseName,1,1) = '&lt;') and not(number(substring(@BrowseName,1,1)))">
-                        [type '<xsl:value-of select='@BrowseName'/>'
+                        [type <xsl:value-of select='@BrowseName'/>
                         <xsl:apply-templates select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>]
                     </xsl:when>
                 </xsl:choose>
@@ -132,7 +132,7 @@
                 <xsl:with-param name="switchField" select="@SwitchField"/>
                 <xsl:with-param name="switchValue" select="@SwitchValue"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="@Name"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="@Name"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/>
         <xsl:choose>
@@ -148,7 +148,7 @@
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="$objectTypeId"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>
@@ -168,7 +168,7 @@
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
             </xsl:call-template>
-        </xsl:variable>[type '<xsl:value-of select="$objectTypeId"/>'<xsl:text>
+        </xsl:variable>[type <xsl:value-of select="$objectTypeId"/><xsl:text>
     </xsl:text>
         <xsl:apply-templates select="opc:Documentation"/><xsl:text>
     </xsl:text>

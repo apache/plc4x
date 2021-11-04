@@ -25,12 +25,12 @@
 // Bit Field Test Single
 // Java +, C +, Go +
 // tag::SimpleBitTypeTest[]
-[type 'SimpleBitTypeTest'
+[type SimpleBitTypeTest
     [simple bit 'bitField']
 ]
 // end::SimpleBitTypeTest[]
 
-[type 'FieldTypeTest'
+[type FieldTypeTest
     [simple         uint 8 'simpleField']
     //Abstract fields can only be used within discriminated base types.
     //[abstract       unit 8  'abstractField']
@@ -50,7 +50,7 @@
 ]
 
 // If a type has an unknown field, the entire serializer is reduced to firing an exception
-[type 'FieldTypeTestWithUnknownField'
+[type FieldTypeTestWithUnknownField
     [simple         uint 8 'simpleField']
     //Abstract fields can only be used within discriminated base types.
     //[abstract       unit 8  'abstractField']
@@ -72,7 +72,7 @@
 
 /*
  * TODO: doesn't compile in java
-[type 'UFloatTypeTest'
+[type UFloatTypeTest
     [simple ufloat 32 'ufloatField']
     [simple ufloat 64 'udoubleField']
 ]
@@ -80,14 +80,14 @@
 
 /*
  * TODO: doesn't compile in java
-[type 'TimeTypeTest'
+[type TimeTypeTest
     [simple time 8 'timeField']
     [simple date 8 'dateField']
     [simple dateTime 8 'dateTimeField']
 ]
 */
 
-[type 'SimpleTypeTest'
+[type SimpleTypeTest
     [simple bit 'bitField']
     [simple byte 'byteField']
     [simple int 8 'intField']
@@ -97,7 +97,7 @@
     [simple string 8 'stringField' encoding='UTF-8']
 ]
 
-[type 'AbstractTypeTest'
+[type AbstractTypeTest
     //Abstract fields can only be used within discriminated base types.
     [simple         uint 8 'simpleField']
     [abstract bit 'abstractBitField']
@@ -118,7 +118,7 @@
     ]
 ]
 
-[type 'AbstractTypeTest'
+[type AbstractTypeTest
     //Abstract fields can only be used within discriminated base types.
     [simple   uint 8 'simpleField']
     [abstract bit 'abstractBitField']
@@ -140,7 +140,7 @@
     ]
 ]
 
-[type 'ArrayTypeTest'
+[type ArrayTypeTest
     [array bit 'bitField' count      '5']
     [array int 8 'intField' count      '5']
     [array uint 8 'uintField' count      '5']
@@ -150,7 +150,7 @@
 ]
 
 //TODO: Checksums fields are not supported in C
-//[type 'CheckSumTypeTest'
+//[type CheckSumTypeTest
     //Bit field cannot be used for a checksum
     //[checksum bit 'bitField' true]
     //[checksum int 8 'intField' '100']
@@ -162,7 +162,7 @@
     //[checksum vstring '11 * 8' 'stringField' '"HELLO TODDY"' encoding='UTF-8']
 //]
 
-[type 'ConstTypeTest'
+[type ConstTypeTest
     [const bit 'bitField' 'true']
     [const int 8 'intField' '100']
     [const uint 8 'uintField' '100']
@@ -171,21 +171,21 @@
     [const string 8 'stringField' '"HELLO TODDY"' encoding='UTF-8']
 ]
 
-[type 'EnumTypeTest'
+[type EnumTypeTest
     [enum           EnumType  'enumField' 'lalala']
 ]
 
-[type 'PascalStringTypeTest'
+[type PascalStringTypeTest
     [simple int 8 'stringLength']
     [simple vstring 'stringLength' 'stringField' encoding='UTF-8']
 ]
 
-[type 'ImplicitPascalStringTypeTest'
+[type ImplicitPascalStringTypeTest
     [implicit int 8 'stringLength' 'stringField.length']
     [simple vstring 'stringLength' 'stringField' encoding='UTF-8']
 ]
 
-[type 'ImplicitTypeTest'
+[type ImplicitTypeTest
     //Implicit types have the requirement that the expression is of a similar type to the field
     //TODO: i.e Integers can't be cast to Booleans
     [simple   uint 8 'simpleField']
@@ -199,22 +199,22 @@
     //[implicit string 8 'stringField' 'simpleField > 0 ? "HELLO TODDY" : "BYE TODDY"' encoding='UTF-8']
 ]
 
-[type 'OptionalTypeTest'
+[type OptionalTypeTest
     [simple         uint 8 'simpleField']
     [optional       uint 8  'optionalField' 'simpleField == 5']
 ]
 
-[type 'PaddingTypeTest'
+[type PaddingTypeTest
     [simple         uint 8 'simpleField']
     [padding        uint 8  'paddingField'  '0x00'  'simpleField']
 ]
 
-[type 'ReservedTypeTest'
+[type ReservedTypeTest
     [reserved       uint 8  '0x00']
 ]
 
 //TODO: Virtual fields fail for GO, haven't checked C assuming fails.
-//[type 'VirtualFieldTest'
+//[type VirtualFieldTest
 //    [simple  uint 8 'simpleField']
 //    [virtual bit 'virtualBitField' 'simpleField == 0']
 //    [virtual int 8 'virtualIntField' 'simpleField']
@@ -225,7 +225,7 @@
 //]
 
 //TODO: Virtual fields fail for GO, haven't checked C assuming fails.
-//[discriminatedType 'DiscriminatedVirtualTypeTest'
+//[discriminatedType DiscriminatedVirtualTypeTest
 //    [simple  uint 8 'simpleField']
 //    [virtual bit 'virtualBitField' 'simpleField == 0']
 //    [virtual int 8 'virtualIntField' 'simpleField']
@@ -240,7 +240,7 @@
 //    ]
 //]
 
-[type 'IntTypeTest'
+[type IntTypeTest
     [simple int 3 'ThreeField']
     [simple int 8 'ByteField']
     [simple int 16 'WordField']
@@ -249,7 +249,7 @@
     [simple int 64 'QuadIntField']
 ]
 
-[type 'UIntTypeTest'
+[type UIntTypeTest
     [simple uint 3 'ThreeField']
     [simple uint 8 'ByteField']
     [simple uint 16 'WordField']
@@ -259,7 +259,7 @@
 ]
 
 //Specific test confirming a continuous loop isn't formed when working out the length.
-[type 'LentghLoopTest'
+[type LentghLoopTest
     [simple        uint 16 'commandType']
     [implicit      uint 16 'len' 'lengthInBytes - 8']
 ]
@@ -268,7 +268,7 @@
 // Discriminated Type Tests
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'EnumDiscriminatedType'
+[discriminatedType EnumDiscriminatedType
     [discriminator EnumType 'discr']
     [typeSwitch 'discr'
         ['BOOL' EnumDiscriminatedTypeA
@@ -284,7 +284,7 @@
 ]
 
 // Multiple Enumerated discriminators
-[discriminatedType 'EnumDiscriminatedTypeMultiple'
+[discriminatedType EnumDiscriminatedTypeMultiple
     [discriminator EnumType 'discr1']
     [discriminator EnumTypeInt 'discr2']
     [typeSwitch 'discr1','discr2'
@@ -301,7 +301,7 @@
 ]
 
 // Enumerated Parameter
-[discriminatedType 'EnumDiscriminatedTypeParameter' (EnumType 'discr')
+[discriminatedType EnumDiscriminatedTypeParameter(EnumType 'discr')
     [typeSwitch 'discr'
         ['BOOL' EnumDiscriminatedTypeAParameter
             [simple        uint 8 'simpA']
@@ -316,7 +316,7 @@
 ]
 
 // Multiple Enumerated Parameters
-[discriminatedType 'EnumDiscriminatedTypeParameterMultiple' (EnumType 'discr1', EnumTypeInt 'discr2')
+[discriminatedType EnumDiscriminatedTypeParameterMultiple(EnumType 'discr1', EnumTypeInt 'discr2')
     [typeSwitch 'discr1','discr2'
         ['BOOL','BOOLINT' EnumDiscriminatedTypeAParameterMultiple
             [simple        uint 8 'simpA']
@@ -330,7 +330,7 @@
     ]
 ]
 
-[discriminatedType 'SimpleDiscriminatedType'
+[discriminatedType SimpleDiscriminatedType
     [discriminator uint 8 'discr']
     [typeSwitch 'discr'
         ['0x00' SimpleDiscriminatedTypeA
@@ -347,7 +347,7 @@
 
 
 //Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
-//[discriminatedType 'SimpleDiscriminatedType'
+//[discriminatedType SimpleDiscriminatedType
 //    [discriminator uint 8 'discr']
 //    [typeSwitch 'discr'
 //        ['0x00' SimpleDiscriminatedTypeA
@@ -356,7 +356,7 @@
 //    ]
 //]
 
-//[discriminatedType 'AnotherSimpleDiscriminatedType'
+//[discriminatedType AnotherSimpleDiscriminatedType
 //    [discriminator uint 8 'discr']
 //    [typeSwitch 'discr'
 //        ['0x00' AnotherSimpleDiscriminatedTypeA
@@ -374,27 +374,27 @@
     ['false' FALSE]
 ]
 
-[enum int 8 'EnumTypeInt'
+[enum int 8 EnumTypeInt
     ['0x01' BOOLINT]
     ['0x02' UINTINT]
     ['0x03' INTINT]
 ]
 
-[enum uint 8 'EnumType'
+[enum uint 8 EnumType
     ['0x01' BOOL]
     ['0x02' UINT]
     ['0x03' INT]
 ]
 
 //TODO:  C doesn't support non integer switch fields
-//[enum float 32 'EnumTypeFloat'
+//[enum float 32 EnumTypeFloat
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
 //]
 
 //TODO:  C doesn't support non integer switch fields
-//[enum float 64 'EnumTypeDouble'
+//[enum float 64 EnumTypeDouble
 //    ['100.0' LOW]
 //    ['101.0' MID]
 //    ['102.0' BIG]
@@ -413,19 +413,19 @@
 //]
 
 //TODO:  Float parameters aren't implemented for constants in enums in C
-//[enum int 8 'EnumTypeAllTest'  (bit 'bitType', int 8 'intType', uint 8 'uintType', float 32 'floatType', float 64 'doubleType', string '-1' 'stringType', EnumType 'enumType')
+//[enum int 8 EnumTypeAllTest(bit 'bitType', int 8 'intType', uint 8 'uintType', float 32 'floatType', float 64 'doubleType', string '-1' 'stringType', EnumType 'enumType')
 //    ['0x01' BOOL             ['false'      , '1'               , '1'                 , '100.0'                  , '100.0'              , 'BOOL'         , 'BOOL']]
 //    ['0x02' BYTE             ['true'       , '2'               , '2'                 , '101.1'                  , '101.1'              , 'BYTE'         , 'UINT']]
 //]
 
 //TODO:  Keyword named parameters aren't allowed
-//[enum int 8 'EnumTypeIntTest'  (int 8 'int')
+//[enum int 8 EnumTypeIntTest  (int 8 'int')
 //    ['0x01' BOOL             ['1']]
 //    ['0x02' BYTE             ['2']]
 //]
 
 //Showing allowed parameter types for enums
-[enum int 8 'EnumTypeParameters'  (bit 'bitType', int 8 'intType', uint 8 'uintType', string 32 'stringType', EnumType 'enumType')
+[enum int 8 EnumTypeParameters(bit 'bitType', int 8 'intType', uint 8 'uintType', string 32 'stringType', EnumType 'enumType')
     ['0x01' BOOL             ['false'      , '1'               , '1'                 , 'BOOL'         , 'BOOL']]
     ['0x02' BYTE             ['true'       , '2'               , '2'                 , 'BYTE'         , 'UINT']]
 ]
@@ -434,7 +434,7 @@
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
 
-[dataIo 'DataIOType' (EnumType 'dataType')
+[dataIo DataIOType(EnumType 'dataType')
     [typeSwitch 'dataType'
         ['BOOL' BOOL
             [simple bit 'value']
