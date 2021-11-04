@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
