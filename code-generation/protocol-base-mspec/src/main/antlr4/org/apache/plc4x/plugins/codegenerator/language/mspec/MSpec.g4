@@ -27,10 +27,10 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)*
- | 'discriminatedType' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? (fieldDefinition|batchSetDefinition)+
- | 'enum' (type=typeReference)? name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? enumValues=enumValueDefinition+
- | 'dataIo' name=idExpression (attributes=attributeList) (LRBRACKET params=argumentList RRBRACKET)? dataIoTypeSwitch=dataIoDefinition
+ : 'type' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)*
+ | 'discriminatedType' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList (fieldDefinition|batchSetDefinition)+
+ | 'enum' (type=typeReference)? name=idExpression (LRBRACKET params=argumentList RRBRACKET)? attributes=attributeList enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (LRBRACKET params=argumentList RRBRACKET)? (attributes=attributeList) dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
