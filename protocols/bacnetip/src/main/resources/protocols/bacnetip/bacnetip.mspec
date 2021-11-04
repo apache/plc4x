@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'BVLC' byteOrder='"BIG_ENDIAN"'
+[discriminatedType BVLC byteOrder='"BIG_ENDIAN"'
     [const         uint 8  'bacnetType'   '0x81'       ]
     [discriminator uint 8  'bvlcFunction'              ]
     [implicit      uint 16 'bvlcLength' 'lengthInBytes']
@@ -56,7 +56,7 @@
     ]
 ]
 
-[type 'NPDU'(uint 16 'npduLength')
+[type NPDU(uint 16 'npduLength')
     [simple   uint 8        'protocolVersionNumber']
     [simple   bit           'messageTypeFieldPresent']
     [reserved uint 1        '0']
@@ -76,7 +76,7 @@
     [optional APDU('npduLength - (2 + (sourceSpecified ? 3 + sourceLength : 0) + (destinationSpecified ? 3 + destinationLength: 0) + ((destinationSpecified || sourceSpecified) ? 1 : 0))')          'apdu'                      '!messageTypeFieldPresent' ]
 ]
 
-[discriminatedType 'NLM'(uint 16 'apduLength')
+[discriminatedType NLM(uint 16 'apduLength')
     [discriminator uint 8  'messageType']
     [optional      uint 16 'vendorId' '(messageType >= 128) && (messageType <= 255)']
     [typeSwitch 'messageType'
@@ -89,7 +89,7 @@
     ]
 ]
 
-[discriminatedType 'APDU'(uint 16 'apduLength')
+[discriminatedType APDU(uint 16 'apduLength')
     [discriminator uint 4 'apduType']
     [typeSwitch 'apduType'
         ['0x0' APDUConfirmedRequest
@@ -149,7 +149,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetConfirmedServiceRequest'(uint 16 'len')
+[discriminatedType BACnetConfirmedServiceRequest(uint 16 'len')
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
@@ -267,7 +267,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetUnconfirmedServiceRequest'(uint 16 'len')
+[discriminatedType BACnetUnconfirmedServiceRequest(uint 16 'len')
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x00' BACnetUnconfirmedServiceRequestIAm
@@ -325,7 +325,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetComplexTag'(uint 4 'tagNumberArgument', BACnetDataType 'dataType')
+[discriminatedType BACnetComplexTag(uint 4 'tagNumberArgument', BACnetDataType 'dataType')
     [assert        uint 4           'tagNumber'                 'tagNumberArgument'                                           ]
     [const         TagClass         'tagClass'                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
     [simple        uint 3           'lengthValueType'                                                                         ]
@@ -376,7 +376,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetServiceAck'
+[discriminatedType BACnetServiceAck
     [discriminator   uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x03' BACnetServiceAckGetAlarmSummary
@@ -437,7 +437,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetConfirmedServiceACK'
+[discriminatedType BACnetConfirmedServiceACK
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x03' BACnetConfirmedServiceACKGetAlarmSummary
@@ -476,7 +476,7 @@
     ]
 ]
 
-[discriminatedType 'BACnetError'
+[discriminatedType BACnetError
     [discriminator uint 8 'serviceChoice']
     [typeSwitch 'serviceChoice'
         ['0x03' BACnetErrorGetAlarmSummary
@@ -521,12 +521,12 @@
     ]
 ]
 
-[type 'BACnetAddress'
+[type BACnetAddress
     [array  uint 8 'address' count '4']
     [simple uint 16 'port']
 ]
 
-[type 'BACnetTagWithContent'
+[type BACnetTagWithContent
     [simple        uint 4    'tagNumber'       ]
     [simple        TagClass  'tagClass'        ]
     [simple        uint 3    'lengthValueType' ]
@@ -538,7 +538,7 @@
     [const         uint 8    'closingTag'          '0x2f']
 ]
 
-[discriminatedType 'BACnetTag'
+[discriminatedType BACnetTag
     [simple        uint 4   'tagNumber'                                                   ]
     [discriminator TagClass 'tagClass'                                                    ]
     [simple        uint 3   'lengthValueType'                                             ]
@@ -589,12 +589,12 @@
     ]
 ]
 
-[enum uint 1 'TagClass'
+[enum uint 1 TagClass
     ['0x0' APPLICATION_TAGS]
     ['0x1' CONTEXT_SPECIFIC_TAGS]
 ]
 
-[enum int 4 'BACnetDataType'
+[enum int 4 BACnetDataType
     ['0x0' NULL]
     ['0x1' BOOLEAN]
     ['0x2' UNSIGNED_INTEGER]
@@ -610,7 +610,7 @@
     ['0xC' BACNET_OBJECT_IDENTIFIER]
 ]
 
-[enum uint 4 'BACnetNetworkType'
+[enum uint 4 BACnetNetworkType
     ['0x0' ETHERNET]
     ['0x1' ARCNET]
     ['0x2' MSTP]
@@ -624,7 +624,7 @@
     ['0xA' SERIAL]
 ]
 
-[enum uint 8 'BACnetNodeType'
+[enum uint 8 BACnetNodeType
     ['0x00' UNKNOWN]
     ['0x01' SYSTEM]
     ['0x02' NETWORK]
@@ -649,13 +649,13 @@
     ['0x15' ZONE]
 ]
 
-[enum uint 4 'BACnetNotifyType'
+[enum uint 4 BACnetNotifyType
     ['0x0' ALARM]
     ['0x1' EVENT]
     ['0x2' ACK_NOTIFICATION]
 ]
 
-[enum uint 10 'BACnetObjectType'
+[enum uint 10 BACnetObjectType
     ['0x000' ANALOG_INPUT]
     ['0x001' ANALOG_OUTPUT]
     ['0x002' ANALOG_VALUE]

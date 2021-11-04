@@ -37,14 +37,14 @@
  PnPtcp     PROFINET Precision Transparent Clock Protocol
 */
 
-[type 'Ethernet_Frame' byteOrder='"BIG_ENDIAN"'
+[type Ethernet_Frame byteOrder='"BIG_ENDIAN"'
     // When sending to the mac address prefix of 01:0e:cf are multicast packets
     [simple MacAddress            'destination']
     [simple MacAddress            'source'     ]
     [simple Ethernet_FramePayload 'payload'    ]
 ]
 
-[discriminatedType 'Ethernet_FramePayload'
+[discriminatedType Ethernet_FramePayload
     [discriminator uint 16 'packetType']
     [typeSwitch 'packetType'
         ['0x0800' Ethernet_FramePayload_IPv4
@@ -78,7 +78,7 @@
     ]
 ]
 
-[type 'Udp_Packet'
+[type Udp_Packet
     [simple   uint 16       'sourcePort'                                        ]
     [simple   uint 16       'destinationPort'                                   ]
     [implicit uint 16       'packetLength'    'lengthInBytes'                   ]
@@ -92,7 +92,7 @@
 // usually be dynamic. However are we trying to limit the number of
 // arguments needed to construct the messages and Profinet only seems
 // be using a very limited subset of all possible DCE/RPC packets.
-[type 'DceRpc_Packet' byteOrder='"BIG_ENDIAN"'
+[type DceRpc_Packet byteOrder='"BIG_ENDIAN"'
 // RPC Header {
     // RPCVersion 4.10.3.2.1
     [const         uint 8                'version'                        '0x04'                 ]
@@ -153,7 +153,7 @@
 ]
 
 // RPCObjectUUID 4.10.3.2.8
-[type 'DceRpc_ObjectUuid'
+[type DceRpc_ObjectUuid
     [const  uint 32 'data1'      '0xDEA00000'                         ]
     [const  uint 16 'data2'      '0x6C97'                             ]
     [const  uint 16 'data3'      '0x11D1'                             ]
@@ -169,7 +169,7 @@
 //       implemented this via an enum. However as the first 8 bytes are
 //       dynamically endianed and the last 8 bytes are set to Big Endian, we
 //       had to do this trick.
-[discriminatedType 'DceRpc_InterfaceUuid'
+[discriminatedType DceRpc_InterfaceUuid
     [discriminator  uint 32 'interfaceType'                                   ]
     [const          uint 16 'data1'      '0x6C97'                             ]
     [const          uint 16 'data2'      '0x11D1'                             ]
@@ -195,7 +195,7 @@
 //       and used throughout the entire communication. Unfortunately,
 //       the first parts are effected by endianess, and the last 8
 //       bytes are fixed big-endian. Therefore the complicated notation.
-[type 'DceRpc_ActivityUuid'
+[type DceRpc_ActivityUuid
     [simple  uint 32 'data1'                         ]
     [simple  uint 16 'data2'                         ]
     [simple  uint 16 'data3'                         ]
@@ -211,16 +211,16 @@
 // 01-0E-CF-00-01-01:      As multicast destination for RT_CLASS_3
 // 01-0E-CF-00-01-02:      As invalid frame multicast destination for RT_CLASS_3
 // 01-0E-CF-00-01-03 - FF: Reserved for further multicast addresses within the Type 10 context
-[type 'MacAddress'
+[type MacAddress
     [array byte 'address' count '6']
 ]
 
-[type 'IpAddress'
+[type IpAddress
     [array byte 'data' count '4']
 ]
 
 // 4.10.3.2.2
-[enum uint 8 'DceRpc_PacketType'
+[enum uint 8 DceRpc_PacketType
     ['0x00' REQUEST              ]
     ['0x01' PING                 ]
     ['0x02' RESPONSE             ]
@@ -236,7 +236,7 @@
 ]
 
 // 4.10.3.2.14
-[enum uint 16 'DceRpc_Operation'
+[enum uint 16 DceRpc_Operation
     ['0x0000' CONNECT      ]
     ['0x0001' RELEASE      ]
     ['0x0002' READ         ]
@@ -246,7 +246,7 @@
 ]
 
 // https://de.wikipedia.org/wiki/IEEE_802.1p
-[enum uint 3 'VirtualLanPriority'   (string 16 'acronym')
+[enum uint 3 VirtualLanPriority   (string 16 'acronym')
     ['0x0' BEST_EFFORT              ['BE'                ]]
     ['0x1' BACKGROUND               ['BK'                ]]
     ['0x2' EXCELLENT_EFFORT         ['EE'                ]]
@@ -266,7 +266,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Page 90
-[discriminatedType 'PnDcp_Pdu'
+[discriminatedType PnDcp_Pdu
     [discriminator PnDcp_FrameId     'frameId'                           ]
     [discriminator PnDcp_ServiceId   'serviceId'                         ]
     [simple        PnDcp_ServiceType 'serviceType'                       ]
@@ -331,7 +331,7 @@
     ]
 ]
 
-[discriminatedType 'PnDcp_Block'
+[discriminatedType PnDcp_Block
     [discriminator PnDcp_BlockOptions 'option'                   ]
     [discriminator uint 8       'suboption'                      ]
     [implicit      uint 16      'blockLength' 'lengthInBytes - 4']
@@ -491,13 +491,13 @@
    ]
 ]
 
-[type 'PnDcp_SupportedDeviceOption'
+[type PnDcp_SupportedDeviceOption
     [simple   PnDcp_BlockOptions 'option']
     [simple   uint 8       'suboption'   ]
 ]
 
 // 4.3.1.3.2 (Page 94ff)
-[type 'PnDcp_ServiceType'
+[type PnDcp_ServiceType
     [reserved uint 5 '0x00'     ]
     [simple   bit 'notSupported']
     [reserved uint 1 '0x00'     ]
@@ -505,7 +505,7 @@
 ]
 
 // Page 86ff: Coding of the field FrameID
-[enum uint 16 'PnDcp_FrameId'
+[enum uint 16 PnDcp_FrameId
     // Range 1
     ['0x0020' PTCP_RTSyncPDUWithFollowUp     ]
     // Range 2
@@ -536,7 +536,7 @@
 
 // Page 94
 // All other values are "Reserved"
-[enum uint 8 'PnDcp_ServiceId'
+[enum uint 8 PnDcp_ServiceId
     ['0x03' GET     ]
     ['0x04' SET     ]
     ['0x05' IDENTIFY]
@@ -546,7 +546,7 @@
 
 // 4.3.1.4.1 (Page 97)
 // All other values are "Reserved"
-[enum uint 8 'PnDcp_BlockOptions'
+[enum uint 8 PnDcp_BlockOptions
     ['0x01' IP_OPTION               ]
     ['0x02' DEVICE_PROPERTIES_OPTION]
     ['0x03' DCP_OPTION              ]
@@ -566,7 +566,7 @@
 // TODO: Check if it's really Little Endian
 // 5.1.2
 // 5.5.2.2
-[discriminatedType 'PnIoCm_Packet'(DceRpc_PacketType 'packetType')
+[discriminatedType PnIoCm_Packet(DceRpc_PacketType 'packetType')
     [typeSwitch 'packetType'
         ['REQUEST' PnIoCm_Packet_Req
             [simple uint 32 'argsMaximum'            ]
@@ -586,7 +586,7 @@
 ]
 
 // Big Endian
-[discriminatedType 'PnIoCm_Block'
+[discriminatedType PnIoCm_Block
     [discriminator PnIoCm_BlockType 'blockType'                           ]
     [implicit      uint 16          'blockLength'      'lengthInBytes - 4']
     [simple        uint 8           'blockVersionHigh'                    ]
@@ -691,7 +691,7 @@
     ]
 ]
 
-[type 'PnIoCm_IoCrBlockReqApi'
+[type PnIoCm_IoCrBlockReqApi
     [const    uint 32            'api'              '0x00000000'             ]
     [implicit uint 16            'numIoDataObjects' 'COUNT(ioDataObjects)'   ]
     [array    PnIoCm_IoDataObject 'ioDataObjects'    count 'numIoDataObjects']
@@ -699,19 +699,19 @@
     [array    PnIoCm_IoCs         'ioCss'            count 'numIoCss'        ]
 ]
 
-[type 'PnIoCm_IoDataObject'
+[type PnIoCm_IoDataObject
     [simple   uint 16 'slotNumber'             ]
     [simple   uint 16 'subSlotNumber'          ]
     [simple   uint 16 'ioDataObjectFrameOffset']
 ]
 
-[type 'PnIoCm_IoCs'
+[type PnIoCm_IoCs
     [simple   uint 16 'slotNumber'   ]
     [simple   uint 16 'subSlotNumber']
     [simple   uint 16 'ioFrameOffset']
 ]
 
-[type 'PnIoCm_ExpectedSubmoduleBlockReqApi'
+[type PnIoCm_ExpectedSubmoduleBlockReqApi
     [const    uint 32          'api'               '0x00000000'                       ]
     [simple   uint 16          'slotNumber'                                           ]
     [simple   uint 32          'moduleIdentNumber'                                    ]
@@ -720,13 +720,13 @@
     [array    PnIoCm_Submodule 'submodules'        count               'numSubmodules']
 ]
 
-[type 'PnIoCm_ModuleDiffBlockApi'
+[type PnIoCm_ModuleDiffBlockApi
     [const    uint 32                          'api'        '0x00000000'                    ]
     [implicit uint 16                          'numModules' 'COUNT(modules)'                ]
     [array    PnIoCm_ModuleDiffBlockApi_Module 'modules'    count               'numModules']
 ]
 
-[type 'PnIoCm_ModuleDiffBlockApi_Module'
+[type PnIoCm_ModuleDiffBlockApi_Module
     [simple   uint 16                             'slotNumber'                                           ]
     [simple   uint 32                             'moduleIdentNumber'                                    ]
     [simple   PnIoCm_ModuleState                  'moduleState'                                          ]
@@ -734,7 +734,7 @@
     [array    PnIoCm_ModuleDiffBlockApi_Submodule 'submodules'        count               'numSubmodules']
 ]
 
-[type 'PnIoCm_ModuleDiffBlockApi_Submodule'
+[type PnIoCm_ModuleDiffBlockApi_Submodule
     [simple uint 16          'subslotNumber'       ]
     [simple uint 32          'submoduleIdentNumber']
     [simple bit              'codingUsesIdentInfo' ]
@@ -747,7 +747,7 @@
     [simple PnIoCm_AddInfo   'addInfo'             ]
 ]
 
-[discriminatedType 'PnIoCm_Submodule'
+[discriminatedType PnIoCm_Submodule
     [simple        uint 16                'slotNumber'                    ]
     [simple        uint 32                'submoduleIdentNumber'          ]
     // Begin SubmoduleProperties
@@ -778,11 +778,11 @@
     ]
 ]
 
-[type 'Uuid'
+[type Uuid
     [array byte 'data' count '16']
 ]
 
-[enum uint 16 'PnIoCm_BlockType'
+[enum uint 16 PnIoCm_BlockType
     ['0x0101' AR_BLOCK_REQ                ]
     ['0x8101' AR_BLOCK_RES                ]
     ['0x0102' IO_CR_BLOCK_REQ             ]
@@ -794,67 +794,67 @@
     ['0x8106' AR_SERVER_BLOCK             ]
 ]
 
-[enum uint 16 'PnIoCm_ArType'
+[enum uint 16 PnIoCm_ArType
     ['0x0001' IO_CONTROLLER]
 ]
 
-[enum uint 2 'PnIoCm_CompanionArType'
+[enum uint 2 PnIoCm_CompanionArType
     ['0x0' SINGLE_AR]
 ]
 
-[enum uint 3 'PnIoCm_State'
+[enum uint 3 PnIoCm_State
     ['0x1' ACTIVE]
 ]
 
-[enum uint 16 'PnIoCm_IoCrType'
+[enum uint 16 PnIoCm_IoCrType
     ['0x0001' INPUT_CR]
     ['0x0002' OUTPUT_CR]
 ]
 
-[enum uint 4 'PnIoCm_RtClass'
+[enum uint 4 PnIoCm_RtClass
     ['0x2' RT_CLASS_2]
 ]
 
-[enum uint 16 'PnIoCm_AlarmCrType'
+[enum uint 16 PnIoCm_AlarmCrType
     ['0x0001' ALARM_CR]
 ]
 
-[enum uint 16 'PnIoCm_ModuleState'
+[enum uint 16 PnIoCm_ModuleState
     ['0x0002' PROPER_MODULE]
 ]
 
-[enum uint 2 'PnIoCm_SubmoduleType'
+[enum uint 2 PnIoCm_SubmoduleType
     ['0x0' NO_INPUT_NO_OUTPUT_DATA]
     ['0x3' INPUT_AND_OUTPUT_DATA]
 ]
 
-[enum uint 16 'PnIoCm_DescriptionType'
+[enum uint 16 PnIoCm_DescriptionType
     ['0x0001' INPUT]
 ]
 
-[enum uint 4 'PnIoCm_IdentInfo'
+[enum uint 4 PnIoCm_IdentInfo
     ['0x0' OK]
 ]
 
-[enum uint 4 'PnIoCm_ArInfo'
+[enum uint 4 PnIoCm_ArInfo
     ['0x0' OWN]
 ]
 
-[enum uint 3 'PnIoCm_AddInfo'
+[enum uint 3 PnIoCm_AddInfo
     ['0x0' NONE]
 ]
 
-[enum uint 4 'IntegerEncoding'
+[enum uint 4 IntegerEncoding
     ['0x0' BIG_ENDIAN]
     ['0x1' LITTLE_ENDIAN]
 ]
 
-[enum uint 4 'CharacterEncoding'
+[enum uint 4 CharacterEncoding
     ['0x0' ASCII]
     ['0x0' EBCDIC]
 ]
 
-[enum uint 8 'FloatingPointEncoding'
+[enum uint 8 FloatingPointEncoding
     ['0x00' IEEE]
     ['0x01' VAX ]
     ['0x02' CRAY]

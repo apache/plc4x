@@ -57,7 +57,7 @@
 
     <xsl:template name="servicesEnumParsing" >
         <xsl:variable name="tokenizedLine" select="tokenize($servicesEnumFile, '\r\n|\r|\n')" />
-[enum int 32 'OpcuaNodeIdServices'<xsl:text>
+[enum int 32 OpcuaNodeIdServices<xsl:text>
     </xsl:text>
         <xsl:for-each select="$tokenizedLine">
             <xsl:variable select="tokenize(., ',')" name="values" />

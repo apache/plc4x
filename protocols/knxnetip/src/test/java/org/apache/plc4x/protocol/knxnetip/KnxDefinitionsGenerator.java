@@ -53,7 +53,7 @@ public class KnxDefinitionsGenerator {
         " * under the License.\n" +
         " */\n\n" +
         "\n" +
-        "[enum uint 16 'DeviceInformation' (uint 16 'deviceDescriptor', string 'name', uint 16 'comObjectTableAddress')\n";
+        "[enum uint 16 DeviceInformation(uint 16 'deviceDescriptor', string 'name', uint 16 'comObjectTableAddress')\n";
 
     public static final String FOOTER = "]\n";
 

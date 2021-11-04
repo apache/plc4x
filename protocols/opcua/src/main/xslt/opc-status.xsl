@@ -57,7 +57,7 @@
 
     <xsl:template name="statusCodeParsing" >
         <xsl:variable name="tokenizedLine" select="tokenize($statusCodeFile, '\r\n|\r|\n')" />
-[enum uint 32 'OpcuaStatusCode'<xsl:text>
+[enum uint 32 OpcuaStatusCode<xsl:text>
     </xsl:text>
         <xsl:for-each select="$tokenizedLine">
             <xsl:variable select="tokenize(., ',')" name="values" />    ['<xsl:value-of select="$values[2]"/>L'  <xsl:value-of select="$values[1]"/>]<xsl:text>

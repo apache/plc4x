@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'FirmataMessage' byteOrder='"BIG_ENDIAN"'(bit 'response')
+[discriminatedType FirmataMessage byteOrder='"BIG_ENDIAN"'(bit 'response')
     [discriminator uint 4 'messageType']
     [typeSwitch 'messageType'
         // Reading operations
@@ -56,7 +56,7 @@
     ]
 ]
 
-[discriminatedType 'FirmataCommand'(bit 'response')
+[discriminatedType FirmataCommand(bit 'response')
     [discriminator uint 4 'commandCode']
     [typeSwitch 'commandCode'
         ['0x0' FirmataCommandSysex
@@ -81,7 +81,7 @@
     ]
 ]
 
-[discriminatedType 'SysexCommand'(bit 'response')
+[discriminatedType SysexCommand(bit 'response')
     [discriminator uint 8 'commandType']
     [typeSwitch 'commandType','response'
         ['0x00' SysexCommandExtendedId
@@ -126,7 +126,7 @@
     ]
 ]
 
-[enum uint 8 'PinMode'
+[enum uint 8 PinMode
     ['0x0' PinModeInput]
     ['0x1' PinModeOutput]
     ['0x2' PinModeAnalog]

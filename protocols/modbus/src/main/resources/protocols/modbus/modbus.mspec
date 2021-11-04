@@ -19,11 +19,11 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[type 'ModbusConstants'
+[type ModbusConstants
     [const          uint 16     'modbusTcpDefaultPort' '502']
 ]
 
-[type 'ModbusTcpADU' byteOrder='"BIG_ENDIAN"' (bit 'response')
+[type ModbusTcpADU byteOrder='"BIG_ENDIAN"' (bit 'response')
     // It is used for transaction pairing, the MODBUS server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     'transactionIdentifier']
@@ -45,7 +45,7 @@
     [simple         ModbusPDU('response')   'pdu']
 ]
 
-[type 'ModbusSerialADU' byteOrder='"LITTLE_ENDIAN"' (bit 'response')
+[type ModbusSerialADU byteOrder='"LITTLE_ENDIAN"' (bit 'response')
     [simple         uint 16     'transactionId']
     [reserved       uint 16     '0x0000']
     [simple         uint 16     'length']
@@ -55,7 +55,7 @@
     [simple         ModbusPDU('response')   'pdu']
 ]
 
-[discriminatedType 'ModbusPDU' (bit 'response')
+[discriminatedType ModbusPDU(bit 'response')
     [discriminator bit         'errorFlag']
     [discriminator uint 7      'functionFlag']
     [typeSwitch 'errorFlag','functionFlag','response'
@@ -241,20 +241,20 @@
     ]
 ]
 
-[type 'ModbusPDUReadFileRecordRequestItem'
+[type ModbusPDUReadFileRecordRequestItem
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
     [simple     uint 16    'recordLength']
 ]
 
-[type 'ModbusPDUReadFileRecordResponseItem'
+[type ModbusPDUReadFileRecordResponseItem
     [implicit   uint 8     'dataLength'     'COUNT(data) + 1']
     [simple     uint 8     'referenceType']
     [array      byte       'data'           length  'dataLength - 1']
 ]
 
-[type 'ModbusPDUWriteFileRecordRequestItem'
+[type ModbusPDUWriteFileRecordRequestItem
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
@@ -262,7 +262,7 @@
     [array      byte       'recordData'     length  'recordLength * 2']
 ]
 
-[type 'ModbusPDUWriteFileRecordResponseItem'
+[type ModbusPDUWriteFileRecordResponseItem
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
@@ -270,7 +270,7 @@
     [array      byte       'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' (ModbusDataType 'dataType', uint 16 'numberOfValues')
+[dataIo DataItem(ModbusDataType 'dataType', uint 16 'numberOfValues')
     [typeSwitch 'dataType','numberOfValues'
         ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
@@ -378,7 +378,7 @@
     ]
 ]
 
-[enum uint 8 'ModbusDataType' (uint 8 'dataTypeSize')
+[enum uint 8 ModbusDataType(uint 8 'dataTypeSize')
     ['1' BOOL ['1']]
     ['2' BYTE ['1']]
     ['3' WORD ['2']]
@@ -408,7 +408,7 @@
     ['27' WSTRING ['2']]
 ]
 
-[enum uint 8 'ModbusErrorCode'
+[enum uint 8 ModbusErrorCode
     ['1'    ILLEGAL_FUNCTION]
     ['2'    ILLEGAL_DATA_ADDRESS]
     ['3'    ILLEGAL_DATA_VALUE]

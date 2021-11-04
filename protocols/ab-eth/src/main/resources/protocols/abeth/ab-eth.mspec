@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType 'CIPEncapsulationPacket' byteOrder='"BIG_ENDIAN"'
+[discriminatedType CIPEncapsulationPacket byteOrder='"BIG_ENDIAN"'
     [discriminator uint 16 'commandType']
     [implicit      uint 16 'len' 'lengthInBytes - 28']
     [simple        uint 32 'sessionHandle']
@@ -39,7 +39,7 @@
     ]
 ]
 
-[discriminatedType 'DF1RequestMessage'
+[discriminatedType DF1RequestMessage
     [simple        uint 8  'destinationAddress']
     [simple        uint 8  'sourceAddress']
     [reserved      uint 16 '0x0000']
@@ -53,7 +53,7 @@
     ]
 ]
 
-[discriminatedType 'DF1ResponseMessage' (uint 16 'payloadLength')
+[discriminatedType DF1ResponseMessage(uint 16 'payloadLength')
     [reserved      uint 8  '0x00']
     [simple        uint 8  'destinationAddress']
     [simple        uint 8  'sourceAddress']
@@ -68,7 +68,7 @@
     ]
 ]
 
-[discriminatedType 'DF1RequestCommand'
+[discriminatedType DF1RequestCommand
     [discriminator    uint 8 'functionCode']
     [typeSwitch 'functionCode'
         ['0xA2' DF1RequestProtectedTypedLogicalRead

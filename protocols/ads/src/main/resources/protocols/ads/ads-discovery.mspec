@@ -21,7 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType 'AdsDiscovery' byteOrder='"BIG_ENDIAN"'
+[discriminatedType AdsDiscovery byteOrder='"BIG_ENDIAN"'
     [const uint 32 'header' '0x03661471L']
     [reserved   uint 32  '0x00000000L']
     [simple     Operation 'operation']
@@ -69,29 +69,29 @@
     ]
 ]
 
-[enum uint 8 'Operation'
+[enum uint 8 Operation
     ['0x01' DISCOVERY]
     ['0x06' ROUTE    ]
 ]
 
-[enum uint 8 'Direction'
+[enum uint 8 Direction
     ['0x00' REQUEST ]
     ['0x80' RESPONSE]
 ]
 
-[enum uint 24 'RouteStatus'
+[enum uint 24 RouteStatus
     ['0x040000' SUCCESS]
     ['0x000407' FAILURE]
 ]
 
-[type 'AmsMagicString'
+[type AmsMagicString
     [implicit uint 16 'len' 'COUNT(text) + 1']
     [reserved uint 8 '0x00']
     [array int 8 'text' count 'len - 1']
     [reserved uint 8 '0x00']
 ]
 
-[type 'AmsNetId'
+[type AmsNetId
     [simple     uint        8   'octet1'            ]
     [simple     uint        8   'octet2'            ]
     [simple     uint        8   'octet3'            ]
