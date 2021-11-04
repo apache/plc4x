@@ -17,8 +17,8 @@
  * under the License.
  */
 
-[discriminatedType FirmataMessage(bit 'response') byteOrder='"BIG_ENDIAN"'
-    [discriminator uint 4 'messageType']
+[discriminatedType FirmataMessage(bit response) byteOrder='"BIG_ENDIAN"'
+    [discriminator uint 4 messageType]
     [typeSwitch 'messageType'
         // Reading operations
         // Data-Format is: in both bytes only the least significant 7 bits
@@ -26,71 +26,71 @@
         // The first byte contains the least significant part
         // The second byte contains the most significant part
         ['0xE' FirmataMessageAnalogIO
-            [simple uint 4 'pin']
-            [array int 8 'data' count '2']
+            [simple uint 4 pin]
+            [array int 8 data count '2']
         ]
         // Bitmask containing the first 7 bits in the least significant
         // bits of the first byte and bit 8 in the second byte
         // The 'pinBlock' refers to the block of bytes (0 refers to the
         // first 8 pins, 1 to the second and so on.
         ['0x9' FirmataMessageDigitalIO
-            [simple uint 4 'pinBlock']
-            [array int 8 'data' count '2']
+            [simple uint 4 pinBlock]
+            [array int 8 data count '2']
         ]
 
         ['0xC' FirmataMessageSubscribeAnalogPinValue
-            [simple uint 4 'pin']
+            [simple uint 4 pin]
             [reserved uint 7 '0x00']
-            [simple bit 'enable']
+            [simple bit enable]
         ]
         ['0xD' FirmataMessageSubscribeDigitalPinValue
-            [simple uint 4 'pin']
+            [simple uint 4 pin]
             [reserved uint 7 '0x00']
-            [simple bit 'enable']
+            [simple bit enable]
         ]
 
         // Command
         ['0xF' FirmataMessageCommand
-            [simple FirmataCommand('response') 'command']
+            [simple FirmataCommand('response') command]
         ]
     ]
 ]
 
-[discriminatedType FirmataCommand(bit 'response')
-    [discriminator uint 4 'commandCode']
+[discriminatedType FirmataCommand(bit response)
+    [discriminator uint 4 commandCode]
     [typeSwitch 'commandCode'
         ['0x0' FirmataCommandSysex
-            [simple SysexCommand('response') 'command']
+            [simple SysexCommand('response') command]
             [reserved uint 8 '0xF7']
         ]
         ['0x4' FirmataCommandSetPinMode
-            [simple uint 8 'pin']
-            [simple PinMode 'mode']
+            [simple uint 8 pin]
+            [simple PinMode mode]
         ]
         ['0x5' FirmataCommandSetDigitalPinValue
-            [simple uint 8 'pin']
+            [simple uint 8 pin]
             [reserved uint 7 '0x00']
-            [simple bit 'on']
+            [simple bit on]
         ]
         ['0x9' FirmataCommandProtocolVersion
-            [simple uint 8 'majorVersion']
-            [simple uint 8 'minorVersion']
+            [simple uint 8 majorVersion]
+            [simple uint 8 minorVersion]
         ]
         ['0xF' FirmataCommandSystemReset
         ]
     ]
 ]
 
-[discriminatedType SysexCommand(bit 'response')
-    [discriminator uint 8 'commandType']
+[discriminatedType SysexCommand(bit response)
+    [discriminator uint 8 commandType]
     [typeSwitch 'commandType','response'
         ['0x00' SysexCommandExtendedId
-            [array int 8 'id' count '2']
+            [array int 8 id count '2']
         ]
         ['0x69','false' SysexCommandAnalogMappingQueryRequest
         ]
         ['0x69','true' SysexCommandAnalogMappingQueryResponse
-            [simple uint 8 'pin']
+            [simple uint 8 pin]
         ]
         ['0x6A' SysexCommandAnalogMappingResponse
         ]
@@ -99,12 +99,12 @@
         ['0x6C' SysexCommandCapabilityResponse
         ]
         ['0x6D' SysexCommandPinStateQuery
-            [simple uint 8 'pin']
+            [simple uint 8 pin]
         ]
         ['0x6E' SysexCommandPinStateResponse
-            [simple uint 8 'pin']
-            [simple uint 8 'pinMode']
-            [simple uint 8 'pinState']
+            [simple uint 8 pin]
+            [simple uint 8 pinMode]
+            [simple uint 8 pinState]
         ]
         ['0x6F' SysexCommandExtendedAnalog
         ]
@@ -113,8 +113,8 @@
         ['0x79','false' SysexCommandReportFirmwareRequest
         ]
         ['0x79','true' SysexCommandReportFirmwareResponse
-            [simple uint 8 'majorVersion']
-            [simple uint 8 'minorVersion']
+            [simple uint 8 majorVersion]
+            [simple uint 8 minorVersion]
             [manualArray byte 'fileName' terminated 'STATIC_CALL("isSysexEnd", readBuffer)' 'STATIC_CALL("parseSysexString", readBuffer)' 'STATIC_CALL("serializeSysexString", writeBuffer, element)' 'STATIC_CALL("lengthSysexString", fileName)']
         ]
         ['0x7A' SysexCommandSamplingInterval

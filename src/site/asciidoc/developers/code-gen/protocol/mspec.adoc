@@ -32,9 +32,9 @@ An example would be the `TPKTPacket` of the S7 format:
 
 ....
 [type TPKTPacket
-    [const    uint 8     'protocolId' '0x03']
+    [const    uint 8     protocolId '0x03']
     [reserved uint 8     '0x00']
-    [implicit uint 16    'len'        'payload.lengthInBytes + 4']
+    [implicit uint 16    len        'payload.lengthInBytes + 4']
     [field    COTPPacket 'payload']
 ]
 ....
@@ -47,12 +47,12 @@ For example part of the spec for the S7 format looks like this:
 
 ....
 [discriminatedType S7Message
-    [const         uint 8  'protocolId'      '0x32']
-    [discriminator uint 8  'messageType']
+    [const         uint 8  protocolId      '0x32']
+    [discriminator uint 8  messageType]
     [reserved      uint 16 '0x0000']
     [field         uint 16 'tpduReference']
-    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
-    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [implicit      uint 16 parameterLength 'parameter.lengthInBytes']
+    [implicit      uint 16 payloadLength   'payload.lengthInBytes']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
         ]

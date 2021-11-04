@@ -37,9 +37,9 @@
 
     <xsl:variable name="originaldoc" select="/"/>
 
-    <xsl:param name="osType"></xsl:param>
+    <xsl:param name="osType"/>
 
-    <xsl:param name="statusCodes"></xsl:param>
+    <xsl:param name="statusCodes"/>
 
     <!-- Intermediate, to reformat the url on windows systems -->
     <xsl:param name="statusCodesUrl">

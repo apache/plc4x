@@ -27,9 +27,9 @@
     [reserved   uint       16       '0x0000'                            ]
     // This array contains the length of the data packet.
     // It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
-    [implicit   uint       32       'length'  'userdata.lengthInBytes'  ]
+    [implicit   uint       32       length  'userdata.lengthInBytes'  ]
     // The AMS packet to be sent.
-    [simple AmsPacket    'userdata'                                     ]
+    [simple AmsPacket    userdata                                     ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -42,20 +42,20 @@
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
 [type AmsSerialAcknowledgeFrame
     // Id for detecting an AMS serial frame.
-    [simple     uint        16  'magicCookie'        ]
+    [simple     uint        16  magicCookie        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
     // since it is a 1 to 1 connection and hence the participants are unique.
-    [simple     int          8  'transmitterAddress' ]
+    [simple     int          8  transmitterAddress ]
     // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
     // connection and hence the participants are unique.
-    [simple     int          8  'receiverAddress'    ]
+    [simple     int          8  receiverAddress    ]
     // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
     // number with an internal counter.
-    [simple     int          8  'fragmentNumber'     ]
+    [simple     int          8  fragmentNumber     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'length'             ]
-    [simple     uint        16  'crc'                ]
+    [simple     int          8  length             ]
+    [simple     uint        16  crc                ]
 ]
 
 // An AMS packet can be transferred via RS232 with the help of an AMS serial frame.
@@ -68,22 +68,22 @@
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
 [type AmsSerialFrame
     // Id for detecting an AMS serial frame.
-    [simple     uint        16  'magicCookie'        ]
+    [simple     uint        16  magicCookie        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
     // since it is a 1 to 1 connection and hence the participants are unique.
-    [simple     int          8  'transmitterAddress' ]
+    [simple     int          8  transmitterAddress ]
     // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
     // connection and hence the participants are unique.
-    [simple     int          8  'receiverAddress'    ]
+    [simple     int          8  receiverAddress    ]
     // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
     // number with an internal counter.
-    [simple     int          8  'fragmentNumber'     ]
+    [simple     int          8  fragmentNumber     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'length'             ]
+    [simple     int          8  length             ]
     // The AMS packet to be sent.
-    [simple AmsPacket           'userdata'           ]
-    [simple     uint        16  'crc'                ]
+    [simple AmsPacket           userdata           ]
+    [simple     uint        16  crc                ]
 ]
 
 // In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
@@ -91,20 +91,20 @@
 // fragment number during the next AMS-Frame, without carrying out a check.
 [type AmsSerialResetFrame
     // Id for detecting an AMS serial frame.
-    [simple     uint        16  'magicCookie'        ]
+    [simple     uint        16  magicCookie        ]
     // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
     // since it is a 1 to 1 connection and hence the participants are unique.
-    [simple     int          8  'transmitterAddress' ]
+    [simple     int          8  transmitterAddress ]
     // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
     // connection and hence the participants are unique.
-    [simple     int          8  'receiverAddress'    ]
+    [simple     int          8  receiverAddress    ]
     // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
     // number with an internal counter.
-    [simple     int          8  'fragmentNumber'     ]
+    [simple     int          8  fragmentNumber     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'length'     ]
-    [simple     uint        16  'crc'                ]
+    [simple     int          8  length     ]
+    [simple     uint        16  crc                ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -114,26 +114,26 @@
 [type AmsPacket
     // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
-    [simple     AmsNetId        'targetAmsNetId'                            ]
+    [simple     AmsNetId        targetAmsNetId                            ]
     // This is the AmsPort of the station, for which the packet is intended.
-    [simple     uint        16  'targetAmsPort'                             ]
+    [simple     uint        16  targetAmsPort                             ]
     // This contains the AmsNetId of the station, from which the packet was sent.
-    [simple     AmsNetId        'sourceAmsNetId'                            ]
+    [simple     AmsNetId        sourceAmsNetId                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
-    [simple     uint        16  'sourceAmsPort'                             ]
+    [simple     uint        16  sourceAmsPort                             ]
     // 2 bytes.
-    [simple     CommandId       'commandId'                                 ]
+    [simple     CommandId       commandId                                 ]
     // 2 bytes.
-    [simple     State           'state'                                     ]
+    [simple     State           state                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    [implicit   uint        32  'length'   'data.lengthInBytes'             ]
+    [implicit   uint        32  length   'data.lengthInBytes'             ]
     // 4 bytes	AMS error number. See ADS Return Codes.
-    [simple     uint        32  'errorCode'                                 ]
+    [simple     uint        32  errorCode                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple      uint        32  'invokeId'                                 ]
+    [simple      uint        32  invokeId                                 ]
     // The payload
-    [simple     AdsData('commandId', 'state.response')    'data'           ]
+    [simple     AdsData('commandId', 'state.response')    data           ]
 ]
 
 [enum uint 16 CommandId
@@ -150,15 +150,15 @@
 ]
 
 [type State
-    [simple     bit 'initCommand'           ]
-    [simple     bit 'updCommand'            ]
-    [simple     bit 'timestampAdded'        ]
-    [simple     bit 'highPriorityCommand'   ]
-    [simple     bit 'systemCommand'         ]
-    [simple     bit 'adsCommand'            ]
-    [simple     bit 'noReturn'              ]
-    [simple     bit 'response'              ]
-    [simple     bit 'broadcast'             ]
+    [simple     bit initCommand           ]
+    [simple     bit updCommand            ]
+    [simple     bit timestampAdded        ]
+    [simple     bit highPriorityCommand   ]
+    [simple     bit systemCommand         ]
+    [simple     bit adsCommand            ]
+    [simple     bit noReturn              ]
+    [simple     bit response              ]
+    [simple     bit broadcast             ]
     [reserved   int 7 '0x0'                 ]
 ]
 
@@ -182,15 +182,15 @@
 // documentation for notes about settings of the AMS NetId.
 // @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
 [type AmsNetId
-    [simple     uint        8   'octet1'            ]
-    [simple     uint        8   'octet2'            ]
-    [simple     uint        8   'octet3'            ]
-    [simple     uint        8   'octet4'            ]
-    [simple     uint        8   'octet5'            ]
-    [simple     uint        8   'octet6'            ]
+    [simple     uint        8   octet1            ]
+    [simple     uint        8   octet2            ]
+    [simple     uint        8   octet3            ]
+    [simple     uint        8   octet4            ]
+    [simple     uint        8   octet5            ]
+    [simple     uint        8   octet6            ]
 ]
 
-[discriminatedType AdsData(CommandId 'commandId', bit 'response')
+[discriminatedType AdsData(CommandId commandId, bit response)
     [typeSwitch 'commandId', 'response'
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
@@ -198,202 +198,202 @@
         ['ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
         ['ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
             // 4 bytes	ADS error number.
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
             // Version	1 byte	Major version number
-            [simple uint 8  'majorVersion']
+            [simple uint 8  majorVersion]
             // Version	1 byte	Minor version number
-            [simple uint 8  'minorVersion']
+            [simple uint 8  minorVersion]
             // Build	2 bytes	Build number
-            [simple uint 16  'version']
+            [simple uint 16  version]
             // Name	16 bytes	Name of ADS device
-            [array byte  'device' count '16']
+            [array byte  device count '16']
         ]
 
         ['ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
-            [simple uint 32 'indexGroup']
+            [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be read.
-            [simple uint 32 'indexOffset']
+            [simple uint 32 indexOffset]
             // 4 bytes	Length of the data (in bytes) which should be read.
-            [simple uint 32 'length']
+            [simple uint 32 length]
         ]
         ['ADS_READ', 'true' AdsReadResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
             // 4 bytes	Length of data which are supplied back.
-            [implicit uint 32 'length' 'COUNT(data)']
+            [implicit uint 32 length 'COUNT(data)']
             // n bytes	Data which are supplied back.
-            [array byte 'data' count 'length']
+            [array byte data count 'length']
         ]
 
         ['ADS_WRITE', 'false' AdsWriteRequest
             // 4 bytes	Index Group of the data which should be written.
-            [simple uint 32 'indexGroup']
+            [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be written.
-            [simple uint 32 'indexOffset']
+            [simple uint 32 indexOffset]
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [implicit uint 32 'length' 'COUNT(data)']
+            [implicit uint 32 length 'COUNT(data)']
             // n bytes	Data which are written in the ADS device.
-            [array byte 'data' count 'length']
+            [array byte data count 'length']
         ]
         ['ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
         ]
 
         ['ADS_READ_STATE', 'false' AdsReadStateRequest]
         ['ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
-            [simple uint 16 'adsState']
+            [simple uint 16 adsState]
             // 2 bytes	New device status.
-            [simple uint 16 'deviceState']
+            [simple uint 16 deviceState]
         ]
 
         ['ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
-            [simple uint 16 'adsState']
+            [simple uint 16 adsState]
             // 2 bytes	New device status.
-            [simple uint 16 'deviceState']
+            [simple uint 16 deviceState]
             // 4 bytes	Length of data in byte.
-            [implicit uint 32 'length' 'COUNT(data)']
+            [implicit uint 32 length 'COUNT(data)']
             // n bytes	Additional data which are sent to the ADS device
-            [array byte 'data' count 'length']
+            [array byte data count 'length']
         ]
         ['ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
         ]
 
         ['ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
-            [simple uint 32 'indexGroup']
+            [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data, which should be sent per notification.
-            [simple uint 32 'indexOffset']
+            [simple uint 32 indexOffset]
             // 4 bytes	Index Offset of the data, which should be sent per notification.
             // 4 bytes	Length of data in bytes, which should be sent per notification.
-            [simple uint 32 'length']
+            [simple uint 32 length]
             // 4 bytes	See description of the structure ADSTRANSMODE at the ADS-DLL.
-            [simple uint 32 'transmissionMode']
+            [simple uint 32 transmissionMode]
             // 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
-            [simple uint 32 'maxDelay']
+            [simple uint 32 maxDelay]
             // 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
-            [simple uint 32 'cycleTime']
+            [simple uint 32 cycleTime]
             // 16bytes	Must be set to 0
             [reserved   uint       128       '0x0000' ]
         ]
         ['ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
             // 4 bytes	Handle of notification
-            [simple uint 32 'notificationHandle']
+            [simple uint 32 notificationHandle]
         ]
 
         ['ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
             // 4 bytes	Handle of notification
-            [simple uint 32 'notificationHandle']
+            [simple uint 32 notificationHandle]
         ]
         ['ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
         ]
 
         ['ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
-            [simple uint 32 'length']
+            [simple uint 32 length]
             // 4 bytes	Number of elements of type AdsStampHeader.
-            [simple uint 32 'stamps']
+            [simple uint 32 stamps]
             // n bytes	Array with elements of type AdsStampHeader.
-            [array AdsStampHeader 'adsStampHeaders' count 'stamps']
+            [array AdsStampHeader adsStampHeaders count 'stamps']
         ]
         ['ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
 
         ['ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
-            [simple uint 32 'indexGroup']
+            [simple uint 32 indexGroup]
             // 4 bytes	Index Offset of the data which should be written.
-            [simple uint 32 'indexOffset']
+            [simple uint 32 indexOffset]
             // 4 bytes	Length of data in bytes, which should be read.
-            [simple uint 32 'readLength']
+            [simple uint 32 readLength]
             // 4 bytes	Length of the data (in bytes) which should be written. (if it's ADSIGRP_MULTIPLE_READ_WRITE, this is 16 otherwise 12)
-            [implicit uint 32 'writeLength' '(COUNT(items) * ((indexGroup == 61570) ? 16 : 12)) + COUNT(data)']
+            [implicit uint 32 writeLength '(COUNT(items) * ((indexGroup == 61570) ? 16 : 12)) + COUNT(data)']
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements. (ADSIGRP_MULTIPLE_READ, ADSIGRP_MULTIPLE_WRITE, ADSIGRP_MULTIPLE_READ_WRITE)
-            [array  AdsMultiRequestItem('indexGroup') 'items' count '((indexGroup == 61568) || (indexGroup == 61569) || (indexGroup == 61570)) ? indexOffset : 0']
+            [array  AdsMultiRequestItem('indexGroup') items count '((indexGroup == 61568) || (indexGroup == 61569) || (indexGroup == 61570)) ? indexOffset : 0']
             // n bytes	Data which are written in the ADS device.
-            [array byte 'data' count 'writeLength - (COUNT(items) * 12)']
+            [array byte data count 'writeLength - (COUNT(items) * 12)']
         ]
         ['ADS_READ_WRITE', 'true' AdsReadWriteResponse
             // 4 bytes	ADS error number
-            [simple ReturnCode 'result']
+            [simple ReturnCode result]
             // 4 bytes	Length of data in byte.
-            [implicit uint 32 'length'  'COUNT(data)']
+            [implicit uint 32 length  'COUNT(data)']
             // n bytes Additional data which are sent to the ADS device
-            [array byte 'data' count 'length']
+            [array byte data count 'length']
         ]
     ]
 ]
 
-[discriminatedType AdsMultiRequestItem(uint 32 'indexGroup')
+[discriminatedType AdsMultiRequestItem(uint 32 indexGroup)
     [typeSwitch 'indexGroup'
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
         ['61568' AdsMultiRequestItemRead
             // 4 bytes	Index Group of the data which should be written.
-            [simple uint 32 'itemIndexGroup']
+            [simple uint 32 itemIndexGroup]
             // 4 bytes	Index Offset of the data which should be written.
-            [simple uint 32 'itemIndexOffset']
+            [simple uint 32 itemIndexOffset]
             // 4 bytes	Length of data in bytes, which should be read.
-            [simple uint 32 'itemReadLength']
+            [simple uint 32 itemReadLength]
         ]
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE
         ['61569' AdsMultiRequestItemWrite
             // 4 bytes	Index Group of the data which should be written.
-            [simple uint 32 'itemIndexGroup']
+            [simple uint 32 itemIndexGroup]
             // 4 bytes	Index Offset of the data which should be written.
-            [simple uint 32 'itemIndexOffset']
+            [simple uint 32 itemIndexOffset]
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [simple uint 32 'itemWriteLength']
+            [simple uint 32 itemWriteLength]
         ]
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE
         ['61570' AdsMultiRequestItemReadWrite
             // 4 bytes	Index Group of the data which should be written.
-            [simple uint 32 'itemIndexGroup']
+            [simple uint 32 itemIndexGroup]
             // 4 bytes	Index Offset of the data which should be written.
-            [simple uint 32 'itemIndexOffset']
+            [simple uint 32 itemIndexOffset]
             // 4 bytes	Length of data in bytes, which should be read.
-            [simple uint 32 'itemReadLength']
+            [simple uint 32 itemReadLength]
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [simple uint 32 'itemWriteLength']
+            [simple uint 32 itemWriteLength]
         ]
     ]
 ]
 
 [type AdsStampHeader
     // 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
-    [simple uint 64 'timestamp']
+    [simple uint 64 timestamp]
     // 4 bytes	Number of elements of type AdsNotificationSample.
-    [simple uint 32 'samples']
+    [simple uint 32 samples]
     // n bytes	Array with elements of type AdsNotificationSample.
-    [array AdsNotificationSample 'adsNotificationSamples' count 'samples']
+    [array AdsNotificationSample adsNotificationSamples count 'samples']
 ]
 
 [type AdsNotificationSample
     // 4 bytes	Handle of notification
-    [simple uint 32 'notificationHandle']
+    [simple uint 32 notificationHandle]
     // 4 Bytes	Size of data range in bytes.
-    [simple uint 32 'sampleSize']
+    [simple uint 32 sampleSize]
     // n Bytes	Data
-    [array byte 'data' count 'sampleSize']
+    [array byte data count 'sampleSize']
 ]
 
-[dataIo DataItem(vstring 'dataFormatName', int 32 'stringLength')
+[dataIo DataItem(vstring dataFormatName, int 32 stringLength)
     [typeSwitch 'dataFormatName'
         // -----------------------------------------
         // Bit
         // -----------------------------------------
         ['"IEC61131_BOOL"' BOOL
             [reserved uint 7 '0x00']
-            [simple   bit    'value']
+            [simple   bit    value]
         ]
 
         // -----------------------------------------
@@ -401,15 +401,15 @@
         // -----------------------------------------
         // 1 byte
         ['"IEC61131_BYTE"' BitString
-            [simple uint 8 'value']
+            [simple uint 8 value]
         ]
         // 2 byte (16 bit)
         ['"IEC61131_WORD"' BitString
-            [simple uint 16 'value']
+            [simple uint 16 value]
         ]
         // 4 byte (32 bit)
         ['"IEC61131_DWORD"' BitString
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
 
         // -----------------------------------------
@@ -417,59 +417,59 @@
         // -----------------------------------------
         // 8 bit:
         ['"IEC61131_SINT"' SINT
-            [simple int 8 'value']
+            [simple int 8 value]
         ]
         ['"IEC61131_USINT"' USINT
-            [simple uint 8 'value']
+            [simple uint 8 value]
         ]
         // 16 bit:
         ['"IEC61131_INT"' INT
-            [simple int 16 'value']
+            [simple int 16 value]
         ]
         ['"IEC61131_UINT"' UINT
-            [simple uint 16 'value']
+            [simple uint 16 value]
         ]
         // 32 bit:
         ['"IEC61131_DINT"' DINT
-            [simple int 32 'value']
+            [simple int 32 value]
         ]
         ['"IEC61131_UDINT"' UDINT
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
         // 64 bit:
         ['"IEC61131_LINT"' LINT
-            [simple int 64 'value']
+            [simple int 64 value]
         ]
         ['"IEC61131_ULINT"' ULINT
-            [simple uint 64 'value']
+            [simple uint 64 value]
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
         ['"IEC61131_REAL"' REAL
-            [simple float 32  'value']
+            [simple float 32  value]
         ]
         ['"IEC61131_LREAL"' LREAL
-            [simple float 64 'value']
+            [simple float 64 value]
         ]
 
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
         ['"IEC61131_CHAR"' STRING
-            [simple string 8 'value']
+            [simple string 8 value]
         ]
         ['"IEC61131_WCHAR"' STRING
-            [simple string 16 'value' encoding='"UTF-16"']
+            [simple string 16 value encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual   vstring 'value' 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' 'stringLength + 1']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring 'value' 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseAmsString", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeAmsString", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 2) + 2' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
@@ -477,28 +477,28 @@
         // -----------------------------------------
         // Interpreted as "milliseconds"
         ['"IEC61131_TIME"' TIME
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
         // Interpreted as "nanoseconds"
         ['"IEC61131_LTIME"' LTIME
-            [simple uint 64 'value']
+            [simple uint 64 value]
         ]
         // Interpreted as "seconds since epoch"
         ['"IEC61131_DATE"' DATE
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
         // Interpreted as "milliseconds since midnight"
         ['"IEC61131_TIME_OF_DAY"' TIME_OF_DAY
-            [simple uint 32 'value']
+            [simple uint 32 value]
         ]
         // Interpreted as "seconds since epoch"
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
-            [simple uint 32 'secondsSinceEpoch']
+            [simple uint 32 secondsSinceEpoch]
         ]
     ]
 ]
 
-[enum int 8 AdsDataType(uint 16 'numBytes', vstring 'dataFormatName')
+[enum int 8 AdsDataType(uint 16 numBytes, vstring dataFormatName)
     ['0x01' BOOL       ['1', '"IEC61131_BOOL"']]
     ['0x02' BIT        ['1', '"IEC61131_BOOL"']]
     ['0x03' BIT8       ['1', '"IEC61131_BOOL"']]

@@ -437,7 +437,6 @@ public class MessageFormatListener extends MSpecBaseListener {
             for (int i = 0; i < numConstantValues; i++) {
                 MSpecParser.ArgumentContext argumentContext = parentCtx.params.argument(i);
                 String constantName = argumentContext.name.getText();
-                constantName = constantName.substring(1, constantName.length() - 1);
                 MSpecParser.ExpressionContext expression = ctx.constantValueExpressions.expression(i);
                 String constant = unquoteString(expression.getText());
                 // String expressions are double escaped
