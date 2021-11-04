@@ -40,7 +40,7 @@
     [REAL64      ['64'] ]
 ]
 
-[dataIo DataItem byteOrder='"LITTLE_ENDIAN"' (GenericCANDataType 'dataType')
+[dataIo DataItem(GenericCANDataType 'dataType') byteOrder='"LITTLE_ENDIAN"'
     [typeSwitch 'dataType'
         ['BYTE' BYTE
             [simple byte 'value']

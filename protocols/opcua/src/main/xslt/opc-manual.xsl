@@ -55,11 +55,11 @@
     <xsl:template match="/">
 // Remark: The different fields are encoded in Little-endian.
 
-[type OpcuaAPU byteOrder='"LITTLE_ENDIAN"' (bit 'response')
+[type OpcuaAPU(bit 'response') byteOrder='"LITTLE_ENDIAN"'
     [simple MessagePDU('response') 'message']
 ]
 
-[discriminatedType MessagePDU (bit 'response')
+[discriminatedType MessagePDU(bit 'response')
     [discriminator string 24            'messageType']
     [typeSwitch 'messageType','response'
         ['"HEL"','false'     OpcuaHelloRequest
