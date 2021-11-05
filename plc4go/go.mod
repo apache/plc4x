@@ -23,7 +23,7 @@ go 1.16
 
 require (
 	github.com/ajankovic/xdiff v0.0.1
-	github.com/elastic/go-licenser v0.3.1 // indirect
+	github.com/elastic/go-licenser v0.4.0 // indirect
 	github.com/google/gopacket v1.1.19
 	github.com/icza/bitio v1.0.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
