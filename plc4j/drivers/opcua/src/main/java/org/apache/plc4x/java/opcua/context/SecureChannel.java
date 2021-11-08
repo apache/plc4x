@@ -1128,7 +1128,7 @@ public class SecureChannel {
      * @return true if this endpoint matches our configuration
      * @throws PlcRuntimeException - If the returned endpoint string doesn't match the format expected
      */
-    public boolean isEndpoint(EndpointDescription endpoint) throws PlcRuntimeException {
+    private boolean isEndpoint(EndpointDescription endpoint) throws PlcRuntimeException {
         // Split up the connection string into it's individual segments.
         Matcher matcher = URI_PATTERN.matcher(endpoint.getEndpointUrl().getStringValue());
         if (!matcher.matches()) {
