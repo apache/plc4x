@@ -1105,7 +1105,7 @@ public class SecureChannel {
      * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
      */
     private void selectEndpoint(CreateSessionResponse sessionResponse) throws PlcRuntimeException {
-        List<String> returnedEndpoints = new LinkedList<String>();
+        List<String> returnedEndpoints = new ArrayList<String>();
 
         // Get a list of the endpoints which match ours.
         Stream<EndpointDescription> filteredEndpoints = Arrays.stream(Arrays.copyOf(sessionResponse.getServerEndpoints(), sessionResponse.getServerEndpoints().length, EndpointDescription[].class))
