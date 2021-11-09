@@ -1157,8 +1157,9 @@ public class SecureChannel {
     }
 
     /**
-     *
-     * @param policies
+     * Confirms that a policy that matches the connection string is available from
+     * the returned endpoints. It sets the policyId and tokenType for the policy to use.
+     * @param policies - A list of policies returned with the endpoint description.
      */
     private void hasIdentity(UserTokenPolicy[] policies) {
         for (UserTokenPolicy identityToken : policies) {
