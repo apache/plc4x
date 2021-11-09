@@ -26,7 +26,6 @@
 
   <protocolName>opcua</protocolName>
   <outputFlavor>read-write</outputFlavor>
-
   <driver-name>opcua</driver-name>
 
   <testcase>
@@ -55,7 +54,8 @@
           </OpcuaHelloRequest>
         </MessagePDU>
       </outgoing-plc-message>
-      <incoming-plc-message name="Receive Modbus Input-Register Read Response">
+
+      <incoming-plc-message name="Receive Acknowledgement Response">
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
@@ -72,6 +72,7 @@
           </OpcuaAcknowledgeResponse>
         </MessagePDU>
       </incoming-plc-message>
+<!--
       <outgoing-plc-message name="Send Opcua Open Request">
         <parser-arguments>
           <response>false</response>
@@ -104,64 +105,11 @@
             </receiverCertificateThumbprint>
             <sequenceNumber dataType="int" bitLength="32">1</sequenceNumber>
             <requestId dataType="int" bitLength="32">1</requestId>
-            <message isList="true">
-              <value dataType="int" bitLength="8">1</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">-66</value>
-              <value dataType="int" bitLength="8">1</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">13</value>
-              <value dataType="int" bitLength="8">-12</value>
-              <value dataType="int" bitLength="8">3</value>
-              <value dataType="int" bitLength="8">-44</value>
-              <value dataType="int" bitLength="8">-44</value>
-              <value dataType="int" bitLength="8">-41</value>
-              <value dataType="int" bitLength="8">1</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">16</value>
-              <value dataType="int" bitLength="8">39</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">1</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">-1</value>
-              <value dataType="int" bitLength="8">0</value>
-              <value dataType="int" bitLength="8">81</value>
-              <value dataType="int" bitLength="8">37</value>
-              <value dataType="int" bitLength="8">2</value>
-            </message>
+            <message dataType="byte" bitLength="424">0x0100be010000f068ddb096d5d7010000000000000000ffffffff10270000000000000000000000000001000000ffffffff00512502</message>
           </OpcuaOpenRequest>
         </MessagePDU>
       </outgoing-plc-message>
+-->
     </steps>
   </testcase>
 

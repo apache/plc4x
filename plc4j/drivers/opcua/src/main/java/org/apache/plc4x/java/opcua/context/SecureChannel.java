@@ -171,7 +171,8 @@ public class SecureChannel {
             this.endpoints.add(address.getHostName());
             this.endpoints.add(address.getCanonicalHostName());
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server");
+            this.endpoints.add(this.configuration.getHost());
         }
     }
 
