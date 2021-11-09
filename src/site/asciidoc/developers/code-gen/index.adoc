@@ -175,7 +175,7 @@ Here's an example of a driver pom for building a `S7` driver for `java`:
 
   <parent>
     <groupId>org.apache.plc4x.plugins</groupId>
-    <artifactId>plc4x-code-generaton</artifactId>
+    <artifactId>plc4x-code-generation</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
