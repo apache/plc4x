@@ -22,19 +22,16 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.util.Objects;
+public class DataWriterSimpleUnsignedShort extends DataWriterSimpleBase<Short> {
 
-public class DataWriterUnsignedInt implements DataWriter<Integer> {
-
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterUnsignedInt(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleUnsignedShort(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Integer value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeUnsignedInt(logicalName, bitLength, value, writerArgs);
+    public Short write(String logicalName, Short value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeUnsignedShort(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

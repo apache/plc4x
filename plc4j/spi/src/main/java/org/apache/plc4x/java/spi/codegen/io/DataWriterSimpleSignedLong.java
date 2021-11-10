@@ -24,17 +24,16 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterSignedLong implements DataWriter<Long> {
+public class DataWriterSimpleSignedLong extends DataWriterSimpleBase<Long> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterSignedLong(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleSignedLong(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Long value, WithWriterArgs... writerArgs) throws ParseException {
+    public Long write(String logicalName, Long value, WithWriterArgs... writerArgs) throws ParseException {
         writeBuffer.writeLong(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

@@ -22,20 +22,21 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
-public class DataWriterSignedBigInteger implements DataWriter<BigInteger> {
+public class DataWriterSimpleBoolean extends DataWriterSimpleBase<Boolean> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterSignedBigInteger(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleBoolean(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeBigInteger(logicalName, bitLength, value, writerArgs);
+    public Boolean write(String logicalName, Boolean value, WithWriterArgs... writerArgs) throws ParseException {
+        if (bitLength != 1) {
+            throw new ParseException("Bit fields only support bitLength of 1");
+        }
+        writeBuffer.writeBit(logicalName, value, writerArgs);
+        return value;
     }
 
 }

@@ -22,22 +22,16 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.util.Objects;
+public class DataWriterSimpleUnsignedLong extends DataWriterSimpleBase<Long> {
 
-public class DataWriterByte implements DataWriter<Byte> {
-
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterByte(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleUnsignedLong(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Byte value, WithWriterArgs... writerArgs) throws ParseException {
-        if(bitLength != 8) {
-            throw new ParseException("Byte fields only support bitLength of 8");
-        }
-        writeBuffer.writeByte(logicalName, value, writerArgs);
+    public Long write(String logicalName, Long value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeUnsignedLong(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

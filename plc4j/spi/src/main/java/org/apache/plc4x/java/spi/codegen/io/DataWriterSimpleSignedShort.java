@@ -24,17 +24,16 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterFloat implements DataWriter<Float> {
+public class DataWriterSimpleSignedShort extends DataWriterSimpleBase<Short> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterFloat(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleSignedShort(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Float value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeFloat(logicalName, bitLength, value);
+    public Short write(String logicalName, Short value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeShort(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

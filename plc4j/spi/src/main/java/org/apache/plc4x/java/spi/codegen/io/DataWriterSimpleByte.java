@@ -22,20 +22,21 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
-public class DataWriterUnsignedBigInteger implements DataWriter<BigInteger> {
+public class DataWriterSimpleByte extends DataWriterSimpleBase<Byte> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterUnsignedBigInteger(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleByte(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeUnsignedBigInteger(logicalName, bitLength, value, writerArgs);
+    public Byte write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws ParseException {
+        if(bitLength != 8) {
+            throw new ParseException("Byte fields only support bitLength of 8");
+        }
+        writeBuffer.writeByte(logicalName, value, writerArgs);
+        return value;
     }
 
 }

@@ -53,8 +53,10 @@ import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 
 import org.apache.plc4x.java.spi.codegen.fields.*;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
 import org.apache.plc4x.java.spi.codegen.io.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -482,28 +484,11 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#break>
     <#case "simple">
         <#assign simpleField = field.asSimpleField().orElseThrow()>
+        <#assign typedField = field.asTypedField().orElseThrow()>
+        <#assign namedField = field.asNamedField().orElseThrow()>
 
-        // Simple Field (${simpleField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
-        <#if simpleField.type.isSimpleTypeReference()>
-            <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
-            <#if helper.isEnumField(field)>
-        // enum based simple field with type ${simpleField.type.asComplexTypeReference().orElseThrow().name}
-        ${helper.getWriteBufferWriteMethodCall(simpleField.type.asComplexTypeReference().orElseThrow().name, simpleTypeReference, "(" + simpleField.name + ")", simpleField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${simpleField.name}.name())")};
-            <#else>
-        ${helper.getWriteBufferWriteMethodCall(simpleField.name, simpleTypeReference, "(" + simpleField.name + ")", simpleField)};
-            </#if>
-        <#else>
-        writeBuffer.pushContext("${simpleField.name}");
-            <#assign complexTypeReference = simpleField.type.asComplexTypeReference().orElseThrow()>
-            <#if helper.isEnumField(field)>
-        // enum field with type ${complexTypeReference.name}
-        ${helper.getWriteBufferWriteMethodCall(complexTypeReference.name, helper.getEnumBaseTypeReference(simpleField.type), "(" + simpleField.name + ".getValue())", simpleField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${simpleField.name}.name())")};
-            <#else>
-        ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${simpleField.name});
-            </#if>
-        writeBuffer.popContext("${simpleField.name}");
-        </#if>
+        // Simple Field (${namedField.name})
+        writeSimpleField("${namedField.name}", (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}(), ${helper.getDataWriterCall(typedField.type, namedField.name)});
         <#break>
     <#case "switch">
         <#assign switchField = field.asSwitchField().orElseThrow()>
