@@ -24,17 +24,20 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterSignedByte implements DataWriter<Byte> {
+public class DataWriterSimpleByteArray extends DataWriterSimpleBase<byte[]> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterSignedByte(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleByteArray(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Byte value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeSignedByte(logicalName, bitLength, value, writerArgs);
+    public byte[] write(String logicalName, byte[] value, WithWriterArgs... writerArgs) throws ParseException {
+        if (bitLength != 8) {
+            throw new ParseException("ByteArray fields only support bitLength of 8");
+        }
+        // TODO: Get a WirReaderArgs parameter for the number of bytes ...
+        writeBuffer.writeByteArray(logicalName, value, writerArgs);
+        return value;
     }
 
 }

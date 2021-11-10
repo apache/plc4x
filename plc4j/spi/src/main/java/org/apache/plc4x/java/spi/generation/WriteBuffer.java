@@ -18,11 +18,14 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.spi.codegen.io.ByteOrderAware;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface WriteBuffer {
+public interface WriteBuffer extends ByteOrderAware {
     // TODO: check if this is really needed or if this is just an artifact
+    @Deprecated
     int getPos();
 
     void pushContext(String logicalName, WithWriterArgs... writerArgs);

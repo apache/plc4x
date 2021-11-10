@@ -16,20 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.codegen.io;
+package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
-public interface DataReader<T> extends ByteOrderAware {
+public class FieldWriterFactory {
 
-    T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
-
-    int getPos();
-
-    void setPos(int position);
-
-    void pullContext(String logicalName, WithReaderArgs... readerArgs);
-    void closeContext(String logicalName, WithReaderArgs... readerArgs);
+    public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws ParseException {
+        new FieldWriterSimple<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
 
 }

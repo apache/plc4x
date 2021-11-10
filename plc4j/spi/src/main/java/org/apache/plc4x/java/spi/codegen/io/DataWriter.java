@@ -19,10 +19,14 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
-public interface DataWriter<T> {
+public interface DataWriter<T> extends ByteOrderAware {
 
-    void write(String logicalName, int bitLength, T value, WithWriterArgs... writerArgs) throws ParseException;
+    T write(String logicalName, T value, WithWriterArgs... writerArgs) throws ParseException;
+
+    void pushContext(String logicalName, WithWriterArgs... writerArgs);
+    void popContext(String logicalName, WithWriterArgs... writerArgs);
 
 }

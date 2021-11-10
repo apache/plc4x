@@ -45,6 +45,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public static final String CUR_POS = "curPos";
     public static final String START_POS = "startPos";
+    @Deprecated
     public static final String LAST_ITEM = "lastItem";
     public static final String IMPLICIT = "implicit";
     public static final String VIRTUAL = "virtual";

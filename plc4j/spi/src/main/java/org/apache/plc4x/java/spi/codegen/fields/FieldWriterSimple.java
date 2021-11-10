@@ -16,26 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.codegen.io;
+package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-public class DataWriterBigDecimal implements DataWriter<BigDecimal> {
-
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterBigDecimal(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
-    }
+public class FieldWriterSimple<T> implements FieldWriter<T> {
 
     @Override
-    public void write(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeBigDecimal(logicalName, bitLength, value, writerArgs);
+    public void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws ParseException {
+        switchByteOrderIfNecessary(() -> dataWriter.write(logicalName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
     }
 
 }

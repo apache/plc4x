@@ -22,19 +22,18 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
-public class DataWriterUnsignedByte implements DataWriter<Byte> {
+public class DataWriterSimpleBigDecimal extends DataWriterSimpleBase<BigDecimal> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterUnsignedByte(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleBigDecimal(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Byte value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeUnsignedByte(logicalName, bitLength, value, writerArgs);
+    public BigDecimal write(String logicalName, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeBigDecimal(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

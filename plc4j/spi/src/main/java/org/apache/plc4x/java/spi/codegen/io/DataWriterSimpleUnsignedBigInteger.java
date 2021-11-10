@@ -22,19 +22,19 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
-public class DataWriterUnsignedLong implements DataWriter<Long> {
+public class DataWriterSimpleUnsignedBigInteger extends DataWriterSimpleBase<BigInteger> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterUnsignedLong(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleUnsignedBigInteger(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Long value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeUnsignedLong(logicalName, bitLength, value, writerArgs);
+    public BigInteger write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeUnsignedBigInteger(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

@@ -24,17 +24,16 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterSignedShort implements DataWriter<Short> {
+public class DataWriterSimpleUnsignedByte extends DataWriterSimpleBase<Byte> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterSignedShort(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleUnsignedByte(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Short value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeShort(logicalName, bitLength, value, writerArgs);
+    public Byte write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeUnsignedByte(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

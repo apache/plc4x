@@ -64,6 +64,17 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
+    public ByteOrder getByteOrder() {
+        // NO OP
+        return ByteOrder.BIG_ENDIAN;
+    }
+
+    @Override
+    public void setByteOrder(ByteOrder byteOrder) {
+        // NO OP
+    }
+
+    @Override
     public int getPos() {
         return pos / 8;
     }

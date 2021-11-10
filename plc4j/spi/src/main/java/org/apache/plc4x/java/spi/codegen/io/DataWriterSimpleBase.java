@@ -19,45 +19,37 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public abstract class DataReaderSimpleBase<T> implements DataReader<T> {
+public abstract class DataWriterSimpleBase<T> implements DataWriter<T> {
 
-    protected final ReadBuffer readBuffer;
+    protected final WriteBuffer writeBuffer;
     protected final int bitLength;
 
-    public DataReaderSimpleBase(ReadBuffer readBuffer, int bitLength) {
-        this.readBuffer = readBuffer;
+    public DataWriterSimpleBase(WriteBuffer writeBuffer, int bitLength) {
+        this.writeBuffer = writeBuffer;
         this.bitLength = bitLength;
-    }
-
-    public int getPos() {
-        return readBuffer.getPos();
-    }
-
-    public void setPos(int position) {
-        readBuffer.reset(position);
     }
 
     @Override
     public ByteOrder getByteOrder() {
-        return readBuffer.getByteOrder();
+        return writeBuffer.getByteOrder();
     }
 
     @Override
     public void setByteOrder(ByteOrder byteOrder) {
-        readBuffer.setByteOrder(byteOrder);
+        writeBuffer.setByteOrder(byteOrder);
     }
 
     @Override
-    public void pullContext(String logicalName, WithReaderArgs... readerArgs) {
-        readBuffer.pullContext(logicalName, readerArgs);
+    public void pushContext(String logicalName, WithWriterArgs... writerArgs) {
+        writeBuffer.pushContext(logicalName, writerArgs);
     }
 
     @Override
-    public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
-        readBuffer.closeContext(logicalName, readerArgs);
+    public void popContext(String logicalName, WithWriterArgs... writerArgs) {
+        writeBuffer.popContext(logicalName, writerArgs);
     }
 
 }

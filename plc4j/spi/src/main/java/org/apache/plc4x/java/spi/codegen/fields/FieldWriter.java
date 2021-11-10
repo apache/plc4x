@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.plc4x.java.spi.codegen.WithOption;
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
-public interface FieldWriter<T> {
+public interface FieldWriter<T> extends FieldCommons {
 
-    void writeField(T value, DataWriter<T> dataWriter, WithOption... options);
+    void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws ParseException;
 
 }

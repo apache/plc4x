@@ -18,6 +18,23 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-public interface DataReaderSimple<T> extends DataReader<T> {
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+
+import java.math.BigInteger;
+import java.util.Objects;
+
+public class DataWriterSimpleSignedBigInteger extends DataWriterSimpleBase<BigInteger> {
+
+    public DataWriterSimpleSignedBigInteger(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
+    }
+
+    @Override
+    public BigInteger write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeBigInteger(logicalName, bitLength, value, writerArgs);
+        return value;
+    }
 
 }

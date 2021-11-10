@@ -388,7 +388,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     .append(", (")
                     .append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
                     .append(") (")
-                    .append(toParseExpression(null, paramTerm, null)).append(")");
+                    .append(toParseExpression(null, paramTerm, null))
+                    .append(")");
             }
             return "new DataReaderComplexDefault<>(() -> " + parserCallString + "IO.staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
@@ -424,8 +425,75 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                 return "readString(readBuffer, " + toParseExpression(null, vstringTypeReference.getLengthExpression(), null) + ")";
+            default:
+                throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
         }
-        return "";
+    }
+
+    public String getDataWriterCall(TypeReference typeReference, String fieldName) {
+        String resolverMethod = "asdads";
+        if (isEnumTypeReference(typeReference)) {
+            final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
+            final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
+            return "new DataWriterEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataWriterCall(enumBaseTypeReference, fieldName) + ")";
+        } else if (typeReference.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
+            return getDataWriterCall(simpleTypeReference, fieldName);
+        } else if (typeReference.isComplexTypeReference()) {
+            StringBuilder paramsString = new StringBuilder();
+            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
+            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            String serializerCallString = getLanguageTypeNameForTypeReference(typeReference);
+            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                serializerCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
+            }
+            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
+            for (int i = 0; i < paramTerms.size(); i++) {
+                Term paramTerm = paramTerms.get(i);
+                paramsString
+                    .append(", (")
+                    .append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
+                    .append(") (")
+                    .append(toParseExpression(null, paramTerm, null))
+                    .append(")");
+            }
+            return "new DataWriterComplexDefault<>(() -> " + serializerCallString + "IO.staticParse(writeBuffer" + paramsString + "), writeBuffer)";
+        } else {
+            throw new IllegalStateException("What is this type? " + typeReference);
+        }
+    }
+
+    public String getDataWriterCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+        final int sizeInBits = simpleTypeReference.getSizeInBits();
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT:
+                return "writeBoolean(writeBuffer)";
+            case BYTE:
+                return "writeByte(writeBuffer, " + sizeInBits + ")";
+            case UINT:
+                if (sizeInBits <= 4) return "writeUnsignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "writeUnsignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "writeUnsignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "writeUnsignedLong(writeBuffer, " + sizeInBits + ")";
+                return "writeUnsignedBigInteger(writeBuffer, " + sizeInBits + ")";
+            case INT:
+                if (sizeInBits <= 8) return "writeSignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "writeSignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "writeSignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "writeSignedLong(writeBuffer, " + sizeInBits + ")";
+                return "writeSignedBigInteger(writeBuffer, " + sizeInBits + ")";
+            case FLOAT:
+                if (sizeInBits <= 32) return "writeFloat(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "writeDouble(writeBuffer, " + sizeInBits + ")";
+                return "writeBigDecimal(writeBuffer, " + sizeInBits + ")";
+            case STRING:
+                return "writeString(writeBuffer, " + sizeInBits + ")";
+            case VSTRING:
+                VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
+                return "writeString(writeBuffer, " + toParseExpression(null, vstringTypeReference.getLengthExpression(), null) + ")";
+            default:
+                throw new UnsupportedOperationException("Unsupported type " + simpleTypeReference.getBaseType());
+        }
     }
 
     @Override

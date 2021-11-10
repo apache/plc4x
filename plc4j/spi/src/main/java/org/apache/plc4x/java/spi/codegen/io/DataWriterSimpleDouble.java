@@ -24,17 +24,16 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterSignedInt implements DataWriter<Integer> {
+public class DataWriterSimpleDouble extends DataWriterSimpleBase<Double> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterSignedInt(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleDouble(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Integer value, WithWriterArgs... writerArgs) throws ParseException {
-        writeBuffer.writeInt(logicalName, bitLength, value, writerArgs);
+    public Double write(String logicalName, Double value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeDouble(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

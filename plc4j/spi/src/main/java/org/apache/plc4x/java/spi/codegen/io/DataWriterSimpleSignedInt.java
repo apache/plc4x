@@ -24,20 +24,16 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Objects;
 
-public class DataWriterBoolean implements DataWriter<Boolean> {
+public class DataWriterSimpleSignedInt extends DataWriterSimpleBase<Integer> {
 
-    private final WriteBuffer writeBuffer;
-
-    public DataWriterBoolean(WriteBuffer writeBuffer) {
-        this.writeBuffer = Objects.requireNonNull(writeBuffer);
+    public DataWriterSimpleSignedInt(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
     }
 
     @Override
-    public void write(String logicalName, int bitLength, Boolean value, WithWriterArgs... writerArgs) throws ParseException {
-        if (bitLength != 1) {
-            throw new ParseException("Bit fields only support bitLength of 1");
-        }
-        writeBuffer.writeBit(logicalName, value, writerArgs);
+    public Integer write(String logicalName, Integer value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeInt(logicalName, bitLength, value, writerArgs);
+        return value;
     }
 
 }

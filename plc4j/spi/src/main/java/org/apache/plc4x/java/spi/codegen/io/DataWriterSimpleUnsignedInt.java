@@ -19,17 +19,19 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.WithReaderArgs;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public interface DataReader<T> extends ByteOrderAware {
+public class DataWriterSimpleUnsignedInt extends DataWriterSimpleBase<Integer> {
 
-    T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
+    public DataWriterSimpleUnsignedInt(WriteBuffer writeBuffer, int bitLength) {
+        super(writeBuffer, bitLength);
+    }
 
-    int getPos();
-
-    void setPos(int position);
-
-    void pullContext(String logicalName, WithReaderArgs... readerArgs);
-    void closeContext(String logicalName, WithReaderArgs... readerArgs);
+    @Override
+    public Integer write(String logicalName, Integer value, WithWriterArgs... writerArgs) throws ParseException {
+        writeBuffer.writeUnsignedInt(logicalName, bitLength, value, writerArgs);
+        return value;
+    }
 
 }
