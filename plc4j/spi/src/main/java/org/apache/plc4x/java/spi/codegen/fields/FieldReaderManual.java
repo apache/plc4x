@@ -37,7 +37,7 @@ public class FieldReaderManual<T> implements FieldReader<T> {
 
     public T readManualField(String logicalName, ReadBuffer readBuffer, ParseSupplier<T> parseFunction, WithReaderArgs... readerArgs) throws ParseException {
         readBuffer.pullContext(logicalName);
-        T value = switchByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOder(readerArgs).orElse(null));
+        T value = switchParseByteOrderIfNecessary(parseFunction::get, readBuffer, extractByteOder(readerArgs).orElse(null));
         readBuffer.closeContext(logicalName);
         return value;
     }

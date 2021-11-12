@@ -38,7 +38,7 @@ public class FieldReaderConst<T> implements FieldReader<T> {
     }
 
     public T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
-        T constValue = switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        T constValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(constValue, expectedValue)) {
             throw new ParseException("Actual value " + constValue + " doesn't match expected " + expectedValue);
         }

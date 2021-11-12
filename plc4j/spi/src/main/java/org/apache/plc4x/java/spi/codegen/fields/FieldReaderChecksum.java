@@ -36,7 +36,7 @@ public class FieldReaderChecksum<T> implements FieldReader<T> {
     }
 
     public T readField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
-        T checksumValue = switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        T checksumValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(checksumValue, referenceValue)) {
             throw new ParseException("Checksum value '" + checksumValue + "' doesn't match expected '" + referenceValue + "'");
         }

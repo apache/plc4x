@@ -48,14 +48,18 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
-
-import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.codegen.io.DataWriterComplexDefault;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 
 import java.time.*;
 import java.util.*;
@@ -115,7 +119,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Properties.
 <#list type.propertyFields as field>
-    private final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
+    protected final <#if field.loopType?? && field.type.isByteBased()>byte[]<#elseif field.loopType??>List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}><#else>${helper.getLanguageTypeNameForField(field)}</#if> ${field.name};
 </#list>
 </#if>
 
@@ -151,6 +155,198 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     </#if>
 
 </#list>
+
+    <#if outputFlavor != "passive">
+<#if type.isDiscriminatedChildTypeDefinition()>
+    @Override
+    protected void serialize${type.parentType.name}Child(WriteBuffer writeBuffer) throws SerializationException {
+<#else>
+    <#if type.isDiscriminatedParentTypeDefinition()>
+    abstract protected void serialize${type.name?cap_first}Child(WriteBuffer writeBuffer) throws SerializationException;
+
+    </#if>
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+</#if>
+        <#if helper.hasFieldOfType("unknown")>
+            throw new SerializationException("Unknown field not serializable");
+        <#else>
+            int startPos = writeBuffer.getPos();
+            writeBuffer.pushContext("${type.name}");
+            <#list type.fields as field>
+                <#switch field.typeName>
+                    <#case "array">
+                        <#assign arrayField = field.asArrayField().orElseThrow()>
+
+                        // Array Field (${arrayField.name})
+                        if(${arrayField.name} != null) {
+                        <#if arrayField.type.isByteBased()>
+                            // Byte Array field (${arrayField.name})
+                            writeBuffer.writeByteArray("${arrayField.name}", ${arrayField.name});
+                        <#else>
+                            writeBuffer.pushContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+                            int itemCount = (int) ${arrayField.name}.size();
+                            int curItem = 0;
+                            for(${helper.getLanguageTypeNameForField(arrayField)} element : ${arrayField.name}) {
+                            <#if helper.isSimpleTypeReference(arrayField.type)>
+                                <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
+                                ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "element", arrayField)};
+                            <#else>
+                                <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
+                                boolean lastItem = curItem == (itemCount - 1);
+                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, element<#--if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if-->);
+                            </#if>
+                            curItem++;
+                            }
+                            writeBuffer.popContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+                        </#if>
+                        }
+                        <#break>
+                    <#case "checksum">
+                        <#assign checksumField = field.asChecksumField().orElseThrow()>
+                        <#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
+
+                        // Checksum Field (checksum) (Calculated)
+                        {
+                        ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
+                        _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, parserArguments)});
+                        ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", checksumField)};
+                        }
+                        <#break>
+                    <#case "const">
+                        <#assign constField = field.asConstField().orElseThrow()>
+
+                        // Const Field (${constField.name})
+                        <#if helper.isSimpleTypeReference(constField.type)>
+                            <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
+                            <#if helper.getLanguageTypeNameForField(field) = 'float'>
+                                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue + "f", constField)};
+                            <#else>
+                                ${helper.getWriteBufferWriteMethodCall(constField.name, simpleTypeReference, constField.referenceValue, constField)};
+                            </#if>
+                        <#else>
+                            <#assign enumTypeReference = constField.type>
+                            ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumTypeReference).name, helper.getEnumBaseTypeReference(enumTypeReference), "(" + type.name + "." + constField.name?upper_case + ".getValue())", constField, "WithReaderWriterArgs.WithAdditionalStringRepresentation("+ type.name + "." + constField.name?upper_case + ".name())")};
+                        </#if>
+                        <#break>
+                    <#case "discriminator">
+                        <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
+
+                        // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+                        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) get${discriminatorField.name?cap_first}();
+                        <#if helper.isSimpleTypeReference(discriminatorField.type)>
+                            <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
+                            ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, simpleTypeReference, "(" + discriminatorField.name + ")", discriminatorField)};
+                        <#else>
+                            <#assign complexTypeReference = discriminatorField.type.asComplexTypeReference().orElseThrow()>
+                            <#if helper.isEnumField(field)>
+                                ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ".getValue())", discriminatorField)};
+                            <#else>
+                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${discriminatorField.name});
+                            </#if>
+                        </#if>
+                        <#break>
+                    <#case "enum">
+                        <#assign enumField = field.asEnumField().orElseThrow()>
+
+                        writeBuffer.pushContext("${enumField.name}");
+                        // Enum field (${enumField.name})
+                        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
+                        writeBuffer.popContext("${enumField.name}");
+                        <#break>
+                    <#case "implicit">
+                        <#assign implicitField = field.asImplicitField().orElseThrow()>
+                        <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
+
+                        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+                        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, parserArguments)});
+                        ${helper.getWriteBufferWriteMethodCall(implicitField.name, simpleTypeReference, "(" + implicitField.name + ")", implicitField)};
+                        <#break>
+                    <#case "manualArray">
+                        <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+
+                        // Manual Array Field (${manualArrayField.name})
+                        if(${manualArrayField.name} != null) {
+                        writeBuffer.pushContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+                        for(${helper.getLanguageTypeNameForField(field)} element : ${manualArrayField.name}) {
+                        ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, parserArguments)};
+                        }
+                        writeBuffer.popContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+                        }
+                        <#break>
+                    <#case "manual">
+                        <#assign manualField = field.asManualField().orElseThrow()>
+
+                        // Manual Field (${manualField.name})
+                        ${helper.toSerializationExpression(manualField, manualField.serializeExpression, parserArguments)};
+                        <#break>
+                    <#case "optional">
+                        <#assign optionalField = field.asOptionalField().orElseThrow()>
+
+                        // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
+                        ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
+                        if(${optionalField.name} != null) {
+                        ${optionalField.name} = (${helper.getLanguageTypeNameForField(field)}) ${optionalField.name};
+                        <#if optionalField.type.isSimpleTypeReference()>
+                            <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
+                            ${helper.getWriteBufferWriteMethodCall(optionalField.name, simpleTypeReference, "(" + optionalField.name + ")", optionalField)};
+                        <#else>
+                            <#assign complexTypeReference = optionalField.type.asComplexTypeReference().orElseThrow()>
+                            <#if helper.isEnumField(field)>
+                                ${helper.getWriteBufferWriteMethodCall(optionalField.name, helper.getEnumBaseTypeReference(optionalField.type), "(" + optionalField.name + ".getValue())", optionalField)};
+                            <#else>
+                                writeBuffer.pushContext("${optionalField.name}");
+                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${optionalField.name});
+                                writeBuffer.popContext("${optionalField.name}");
+                            </#if>
+                        </#if>
+                        }
+                        <#break>
+                    <#case "padding">
+                        <#assign paddingField = field.asPaddingField().orElseThrow()>
+                        <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
+
+                        // Padding Field (padding)
+                        {
+                        writeBuffer.pushContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
+                        int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, parserArguments)});
+                        while (_timesPadding-- > 0) {
+                        ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, parserArguments)});
+                        ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", paddingField)};
+                        }
+                        writeBuffer.popContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
+                        }
+                        <#break>
+                    <#case "reserved">
+                        <#assign reservedField = field.asReservedField().orElseThrow()>
+                        <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
+
+                        // Reserved Field (reserved)
+                        ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, helper.getReservedValue(reservedField), reservedField)};
+                        <#break>
+                    <#case "simple">
+                        <#assign simpleField = field.asSimpleField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
+
+                        // Simple Field (${namedField.name})
+                        writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
+                        <#break>
+                    <#case "switch">
+                        <#assign switchField = field.asSwitchField().orElseThrow()>
+
+                        // Switch field (Serialize the sub-type)
+                        serialize${type.name?cap_first}Child(writeBuffer);
+                        <#break>
+                    <#case "virtual">
+                        <#break>
+                </#switch>
+            </#list>
+
+            writeBuffer.popContext("${type.name}");
+        </#if>
+        }
+    </#if>
+
     @Override
     public int getLengthInBytes() {
         return getLengthInBits() / 8;
@@ -328,11 +524,6 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 </#list>
 
         return lengthInBits;
-    }
-
-    @Override
-    public MessageIO<<#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>, <#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>> getMessageIO() {
-        return new <#if type.parentType??>${type.parentType.name}<#else>${type.name}</#if>IO();
     }
 
     @Override

@@ -19,12 +19,12 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
 public class FieldWriterFactory {
 
-    public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws ParseException {
+    public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterSimple<T>().writeField(logicalName, value, dataWriter, writerArgs);
     }
 
