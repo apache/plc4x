@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -31,9 +32,9 @@ public class DataWriterSimpleByte extends DataWriterSimpleBase<Byte> {
     }
 
     @Override
-    public Byte write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public Byte write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws SerializationException {
         if(bitLength != 8) {
-            throw new ParseException("Byte fields only support bitLength of 8");
+            throw new SerializationException("Byte fields only support bitLength of 8");
         }
         writeBuffer.writeByte(logicalName, value, writerArgs);
         return value;

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -32,7 +33,7 @@ public class DataWriterSimpleUnsignedBigInteger extends DataWriterSimpleBase<Big
     }
 
     @Override
-    public BigInteger write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+    public BigInteger write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeUnsignedBigInteger(logicalName, bitLength, value, writerArgs);
         return value;
     }

@@ -32,6 +32,7 @@ import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -47,12 +48,12 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final ByteOrder byteOrder;
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
     private final Class<? extends DriverContext> driverContextClass;
-    private final MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO;
+    private final MessageInput<BASE_PACKET_CLASS> protocolIO;
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
     private final Object[] parserArgs;
 
-    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Class<? extends MessageIO<BPC, BPC>> messageIoClass) {
+    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Class<? extends MessageInput<BPC>> messageIoClass) {
         return new SingleProtocolStackBuilder<>(basePacketClass, messageIoClass);
     }
 
@@ -62,7 +63,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   Object[] parserArgs,
                                   Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                   Class<? extends DriverContext> driverContextClass,
-                                  MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO,
+                                  MessageInput<BASE_PACKET_CLASS> protocolIO,
                                   Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
         this.basePacketClass = basePacketClass;
@@ -115,7 +116,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     public static final class SingleProtocolStackBuilder<BASE_PACKET_CLASS extends Message> {
 
         private final Class<BASE_PACKET_CLASS> basePacketClass;
-        private final Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass;
+        private final Class<? extends MessageInput<BASE_PACKET_CLASS>> messageIoClass;
         private Class<? extends DriverContext> driverContextClass;
         private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
         private Object[] parserArgs;
@@ -123,7 +124,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
-        public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass) {
+        public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends MessageInput<BASE_PACKET_CLASS>> messageIoClass) {
             this.basePacketClass = basePacketClass;
             this.messageIoClass = messageIoClass;
         }
@@ -171,7 +172,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             try {
-                final MessageIO messageIo = messageIoClass.getDeclaredConstructor().newInstance();
+                final MessageInput messageIo = messageIoClass.getDeclaredConstructor().newInstance();
                 return new SingleProtocolStackConfigurer<>(
                     basePacketClass, byteOrder, parserArgs, protocol, driverContextClass, messageIo, packetSizeEstimator, corruptPacketRemover);
             } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {

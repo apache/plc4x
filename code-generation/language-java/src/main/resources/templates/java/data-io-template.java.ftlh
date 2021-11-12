@@ -52,6 +52,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.generation.EvaluationHelper;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
@@ -336,11 +337,11 @@ public class ${type.name}IO {
     }
 
 <#if outputFlavor != "passive">
-    public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws SerializationException {
         return staticSerialize(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder.BIG_ENDIAN);
     }
 
-    public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder byteOrder) throws ParseException {
+    public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder byteOrder) throws SerializationException {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
         <#list dataIoTypeDefinition.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments.orElseThrow())},<#if helper.discriminatorValueNeedsStringEqualityCheck(dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)><#if helper.isEnumTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type, false)}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}

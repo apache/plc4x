@@ -20,10 +20,10 @@ package org.apache.plc4x.java.spi.generation;
 
 public interface Message {
 
+    void serialize(WriteBuffer writeBuffer) throws SerializationException;
+
     int getLengthInBytes();
 
     int getLengthInBits();
-
-    MessageIO<? extends Message, ? extends Message> getMessageIO();
 
 }

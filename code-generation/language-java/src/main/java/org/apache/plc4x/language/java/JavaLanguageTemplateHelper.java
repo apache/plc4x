@@ -287,9 +287,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 return floatTypeReference.getSizeInBits();
             case STRING:
-            case VSTRING:
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 return stringTypeReference.getSizeInBits();
+            case VSTRING:
+                throw new IllegalArgumentException("getSizeInBits doesn't work for 'vstring' fields");
             default:
                 return 0;
         }
@@ -457,7 +458,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     .append(toParseExpression(null, paramTerm, null))
                     .append(")");
             }
-            return "new DataWriterComplexDefault<>(() -> " + serializerCallString + "IO.staticParse(writeBuffer" + paramsString + "), writeBuffer)";
+            return "new DataWriterComplexDefault<>(writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -835,7 +836,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return tracer + toSerializationExpression(getReferencedImplicitField(variableLiteral), getReferencedImplicitField(variableLiteral).getSerializeExpression(), serialzerArguments);
         } else if (isVariableLiteralVirtualField(variableLiteral)) {
             tracer = tracer.dive("virtual field");
-            return tracer + "_value." + toVariableExpressionRest(variableLiteral);
+            return tracer + toVariableExpressionRest(variableLiteral);
         }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
         boolean isSerializerArg = "checksumRawData".equals(variableLiteral.getName()) || "_value".equals(variableLiteral.getName()) || "element".equals(variableLiteral.getName()) || "size".equals(variableLiteral.getName());
@@ -866,7 +867,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return tracer + "";
             }
         } else {
-            return tracer + "_value." + toVariableExpressionRest(variableLiteral);
+            return tracer + toVariableExpressionRest(variableLiteral);
         }
     }
 

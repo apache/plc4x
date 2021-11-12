@@ -78,63 +78,63 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
             bo.writeBoolean(value);
         } catch (IOException e) {
-            throw new ParseException("Error writing bit", e);
+            throw new SerializationException("Error writing bit", e);
         }
     }
 
     @Override
-    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         writeSignedByte(logicalName, 8, value, writerArgs);
     }
 
     @Override
-    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws SerializationException {
         for (byte aByte : bytes) {
             writeSignedByte(logicalName, 8, aByte, writerArgs);
         }
     }
 
     @Override
-    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("unsigned byte must contain at least 1 bit");
+            throw new SerializationException("unsigned byte must contain at least 1 bit");
         }
         if (bitLength > 8) {
-            throw new ParseException("unsigned byte can only contain max 8 bits");
+            throw new SerializationException("unsigned byte can only contain max 8 bits");
         }
         try {
             bo.writeByte(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing unsigned byte", e);
+            throw new SerializationException("Error writing unsigned byte", e);
         }
     }
 
     @Override
-    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("unsigned short must contain at least 1 bit");
+            throw new SerializationException("unsigned short must contain at least 1 bit");
         }
         if (bitLength > 16) {
-            throw new ParseException("unsigned short can only contain max 16 bits");
+            throw new SerializationException("unsigned short can only contain max 16 bits");
         }
         try {
             bo.writeShort(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing unsigned short", e);
+            throw new SerializationException("Error writing unsigned short", e);
         }
     }
 
     @Override
-    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("unsigned int must contain at least 1 bit");
+            throw new SerializationException("unsigned int must contain at least 1 bit");
         }
         if (bitLength > 32) {
-            throw new ParseException("unsigned int can only contain max 32 bits");
+            throw new SerializationException("unsigned int can only contain max 32 bits");
         }
         try {
             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -142,17 +142,17 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeInt(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing unsigned int", e);
+            throw new SerializationException("Error writing unsigned int", e);
         }
     }
 
     @Override
-    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("unsigned long must contain at least 1 bit");
+            throw new SerializationException("unsigned long must contain at least 1 bit");
         }
         if (bitLength > 63) {
-            throw new ParseException("unsigned long can only contain max 63 bits");
+            throw new SerializationException("unsigned long can only contain max 63 bits");
         }
         try {
             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -160,12 +160,12 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeLong(true, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing unsigned long", e);
+            throw new SerializationException("Error writing unsigned long", e);
         }
     }
 
     @Override
-    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
             if (bitLength == 64) {
                 if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -186,35 +186,35 @@ public class WriteBufferByteBased implements WriteBuffer {
             } else if (bitLength < 64) {
                 writeUnsignedLong(logicalName, bitLength, value.longValue());
             } else {
-                throw new ParseException("Unsigned Big Integer can only contain max 64 bits");
+                throw new SerializationException("Unsigned Big Integer can only contain max 64 bits");
             }
         } catch (ArithmeticException e) {
-            throw new ParseException("Error writing unsigned big integer", e);
+            throw new SerializationException("Error writing unsigned big integer", e);
         }
     }
 
     @Override
-    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("byte must contain at least 1 bit");
+            throw new SerializationException("byte must contain at least 1 bit");
         }
         if (bitLength > 8) {
-            throw new ParseException("byte can only contain max 8 bits");
+            throw new SerializationException("byte can only contain max 8 bits");
         }
         try {
             bo.writeByte(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing signed byte", e);
+            throw new SerializationException("Error writing signed byte", e);
         }
     }
 
     @Override
-    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("short must contain at least 1 bit");
+            throw new SerializationException("short must contain at least 1 bit");
         }
         if (bitLength > 16) {
-            throw new ParseException("short can only contain max 16 bits");
+            throw new SerializationException("short can only contain max 16 bits");
         }
         try {
             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -222,17 +222,17 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeShort(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing signed short", e);
+            throw new SerializationException("Error writing signed short", e);
         }
     }
 
     @Override
-    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("int must contain at least 1 bit");
+            throw new SerializationException("int must contain at least 1 bit");
         }
         if (bitLength > 32) {
-            throw new ParseException("int can only contain max 32 bits");
+            throw new SerializationException("int can only contain max 32 bits");
         }
         try {
             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -240,17 +240,17 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeInt(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing signed int", e);
+            throw new SerializationException("Error writing signed int", e);
         }
     }
 
     @Override
-    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength <= 0) {
-            throw new ParseException("long must contain at least 1 bit");
+            throw new SerializationException("long must contain at least 1 bit");
         }
         if (bitLength > 64) {
-            throw new ParseException("long can only contain max 64 bits");
+            throw new SerializationException("long can only contain max 64 bits");
         }
         try {
             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -258,24 +258,24 @@ public class WriteBufferByteBased implements WriteBuffer {
             }
             bo.writeLong(false, bitLength, value);
         } catch (IOException e) {
-            throw new ParseException("Error writing signed long", e);
+            throw new SerializationException("Error writing signed long", e);
         }
     }
 
     @Override
-    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
             if (bitLength > 64) {
-                throw new ParseException("Big Integer can only contain max 64 bits");
+                throw new SerializationException("Big Integer can only contain max 64 bits");
             }
             writeLong(logicalName, bitLength, value.longValue());
         } catch (ArithmeticException e) {
-            throw new ParseException("Error writing big integer", e);
+            throw new SerializationException("Error writing big integer", e);
         }
     }
 
     @Override
-    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength != 32) {
             throw new UnsupportedOperationException("Error writing float: Exponent and/or Mantissa non standard size");
         }
@@ -284,7 +284,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength != 64) {
             throw new UnsupportedOperationException("Error writing double: Exponent and/or Mantissa non standard size");
         }
@@ -298,7 +298,7 @@ public class WriteBufferByteBased implements WriteBuffer {
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         final byte[] bytes = value.getBytes(Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]", "")));
         int fixedByteLength = bitLength / 8;
 
@@ -315,7 +315,7 @@ public class WriteBufferByteBased implements WriteBuffer {
                 }
             }
         } catch (IOException e) {
-            throw new ParseException("Error writing string", e);
+            throw new SerializationException("Error writing string", e);
         }
     }
 

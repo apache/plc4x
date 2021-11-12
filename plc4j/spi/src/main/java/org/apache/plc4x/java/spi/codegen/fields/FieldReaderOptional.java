@@ -42,7 +42,7 @@ public class FieldReaderOptional<T> implements FieldReader<T> {
 
         int curPos = dataReader.getPos();
         try {
-            return switchByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+            return switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         } catch (ParseAssertException e) {
             LOGGER.debug("Assertion doesnt match for field {}", logicalName, e);
             dataReader.setPos(curPos);

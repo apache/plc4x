@@ -32,7 +32,7 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
 
     public GeneratedProtocolMessageCodec(
         Class<BASE_PACKET_CLASS> basePacketClass,
-        MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> messageIO,
+        MessageInput<BASE_PACKET_CLASS> messageIO,
         ByteOrder byteOrder,
         Object[] parserArgs,
         ToIntFunction<ByteBuf> packetSizeEstimator,

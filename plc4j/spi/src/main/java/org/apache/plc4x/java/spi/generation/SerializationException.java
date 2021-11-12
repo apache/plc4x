@@ -16,25 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.codegen.io;
+package org.apache.plc4x.java.spi.generation;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+public class SerializationException extends Exception {
 
-import java.util.Objects;
-
-public class DataWriterSimpleSignedShort extends DataWriterSimpleBase<Short> {
-
-    public DataWriterSimpleSignedShort(WriteBuffer writeBuffer, int bitLength) {
-        super(writeBuffer, bitLength);
+    public SerializationException(String message) {
+        super(message);
     }
 
-    @Override
-    public Short write(String logicalName, Short value, WithWriterArgs... writerArgs) throws SerializationException {
-        writeBuffer.writeShort(logicalName, bitLength, value, writerArgs);
-        return value;
+    public SerializationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

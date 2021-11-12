@@ -37,7 +37,7 @@ public class FieldReaderEnum<T> implements FieldReader<T> {
 
     public T readField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         dataReader.pullContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        T result = switchByteOrderIfNecessary(() -> dataReader.read(innerName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
+        T result = switchParseByteOrderIfNecessary(() -> dataReader.read(innerName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         dataReader.closeContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
         return result;
     }

@@ -98,7 +98,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwBitKey, 1, writerArgs);
@@ -107,7 +107,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwByteKey, 8, writerArgs);
@@ -116,7 +116,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         StringBuilder hexString = new StringBuilder("0x");
         for (byte aByte : bytes) {
@@ -129,7 +129,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
@@ -138,7 +138,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
@@ -147,7 +147,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
@@ -156,7 +156,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
@@ -165,7 +165,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwUintKey, bitLength, writerArgs);
@@ -174,7 +174,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -183,7 +183,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -192,7 +192,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -201,7 +201,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -210,7 +210,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwIntKey, bitLength, writerArgs);
@@ -219,7 +219,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
@@ -228,7 +228,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
@@ -237,7 +237,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwFloatKey, bitLength, writerArgs);
@@ -246,7 +246,7 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws ParseException {
+    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
         final String sanitizedLogicalName = sanitizeLogicalName(logicalName);
         wrapIfNecessary(() -> {
             writeAttr(sanitizedLogicalName, rwStringKey, bitLength, writerArgs);
@@ -276,25 +276,25 @@ public class WriteBufferJsonBased implements WriteBuffer, BufferCommons, AutoClo
         }
     }
 
-    public void wrapIfNecessary(RunWrapped runnable) throws ParseException {
+    public void wrapIfNecessary(RunWrapped runnable) throws SerializationException {
         boolean inArray = generator.getOutputContext().inArray();
         if (inArray) {
             try {
                 generator.writeStartObject();
             } catch (IOException e) {
-                throw new ParseException("Error opening wrap", e);
+                throw new SerializationException("Error opening wrap", e);
             }
         }
         try {
             runnable.run();
         } catch (IOException e) {
-            throw new ParseException("Error running wrap", e);
+            throw new SerializationException("Error running wrap", e);
         }
         if (inArray) {
             try {
                 generator.writeEndObject();
             } catch (IOException e) {
-                throw new ParseException("Error closing wrap", e);
+                throw new SerializationException("Error closing wrap", e);
             }
         }
     }

@@ -20,7 +20,7 @@ package org.apache.plc4x.test.driver.internal.handlers;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
@@ -66,7 +66,7 @@ public class ApiResponseHandler {
         WriteBufferXmlBased writeBuffer = new WriteBufferXmlBased();
         try {
             value.serialize(writeBuffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new PlcRuntimeException(e);
         }
         return writeBuffer.getXmlString();
