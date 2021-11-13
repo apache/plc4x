@@ -18,18 +18,21 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.*;
 
-public class FieldWriterFactory {
+public class FieldWriterEnum<T> implements FieldWriter<T> {
 
-    public static <T> void writeEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
+    @Override
+    public void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        throw new NotImplementedException();
     }
 
-    public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        new FieldWriterSimple<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    public void writeField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        dataWriter.pushContext(logicalName);
+        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
+        dataWriter.popContext(logicalName);
     }
 
 }

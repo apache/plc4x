@@ -66,11 +66,13 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
     public T read(String logicalName, ComplexTypeSupplier<T> complexSupplier, WithReaderArgs... readerArgs) throws ParseException {
         // TODO: it might be even better if we default to value like in other places... on the other hand a complex type has always a proper logical name so this might be fine like that
         boolean hasLogicalName = StringUtils.isNotBlank(logicalName);
-        if (hasLogicalName)
+        if (hasLogicalName) {
             readBuffer.pullContext(logicalName, readerArgs);
+        }
         final T t = complexSupplier.get();
-        if (hasLogicalName)
+        if (hasLogicalName) {
             readBuffer.closeContext(logicalName, readerArgs);
+        }
         return t;
     }
 

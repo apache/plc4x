@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 
 public class DataWriterComplexDefault<T extends Message> implements DataWriterComplex<T> {
@@ -50,7 +51,14 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
 
     @Override
     public T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
+        boolean hasLogicalName = StringUtils.isNotBlank(logicalName);
+        if (hasLogicalName) {
+            writeBuffer.pushContext(logicalName);
+        }
         value.serialize(writeBuffer);
+        if (hasLogicalName) {
+            writeBuffer.popContext(logicalName);
+        }
         return value;
     }
 

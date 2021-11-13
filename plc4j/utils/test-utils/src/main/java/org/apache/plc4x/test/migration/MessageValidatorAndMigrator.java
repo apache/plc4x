@@ -64,15 +64,15 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings({"rawtypes"})
     public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
-        validateOutboundMessageAndMigrate(testCaseName, messageIO, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
+        MessageInput<Message> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName());
+        validateOutboundMessageAndMigrate(testCaseName, messageInput, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
     }
 
     /**
      * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
      *
      * @param testCaseName    name of the testcase
-     * @param messageIO       the pre-constructed MessageIO
+     * @param messageInput    the pre-constructed MessageInput
      * @param referenceXml    the xml we expect the outbound message to be
      * @param parserArguments the parser arguments to create an instance of the message
      * @param data            the bytes of the message
@@ -82,16 +82,16 @@ public class MessageValidatorAndMigrator {
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageIO messageIO, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+    public static void validateOutboundMessageAndMigrate(String testCaseName, MessageInput<Message> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
-            final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray());
+            final Message parsedOutput = messageInput.parse(readBuffer, parserArguments.toArray());
             final String referenceXmlString = referenceXml.asXML();
             try {
                 // First try to use the native xml writer
                 WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
-                messageIO.serialize(writeBufferXmlBased, parsedOutput);
+                parsedOutput.serialize(writeBufferXmlBased);
                 String xmlString = writeBufferXmlBased.getXmlString();
                 final Diff diff = DiffBuilder.compare(referenceXmlString)
                     .withTest(xmlString).checkForSimilar().ignoreComments().ignoreWhitespace()
@@ -127,7 +127,7 @@ public class MessageValidatorAndMigrator {
                         centeredTestCaseName));
                     throw new MigrationException(xmlString);
                 }
-            } catch (RuntimeException | ParseException e) {
+            } catch (RuntimeException | SerializationException e) {
                 if (!(e instanceof MigrationException)) {
                     LOGGER.error("Error in serializer", e);
                 }
@@ -159,6 +159,8 @@ public class MessageValidatorAndMigrator {
                         throw new RuntimeException(ioException);
                     }
                     LOGGER.info("Done migrating {}", path);
+                } else {
+                    throw new RuntimeException("Output doesn't match", e);
                 }
             }
         } catch (ParseException e) {
@@ -181,23 +183,23 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings("rawtypes")
     public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml, List<String> parserArguments) {
-        MessageIO messageIO = MessageResolver.getMessageIO(options, referenceXml.getName());
+        MessageInput<Message> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName());
         return validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
     }
 
     /**
      * Validates a inbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
      *
-     * @param messageIO       the pre-constructed MessageIO
+     * @param messageInput    the pre-constructed MessageInput
      * @param referenceXml    the xml we expect the outbound messag
      * @param parserArguments the parser arguments to create an instance of the message
      * @return the message if all went well
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Message validateInboundMessageAndGet(MessageIO messageIO, Element referenceXml, List<String> parserArguments) {
+    public static Message validateInboundMessageAndGet(MessageInput messageInput, Element referenceXml, List<String> parserArguments) {
         final String referenceXmlString = referenceXml.asXML();
         try {
-            return (Message) messageIO.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))), parserArguments.toArray(new String[0]));
+            return (Message) messageInput.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))), parserArguments.toArray(new String[0]));
         } catch (RuntimeException | ParseException e) {
             throw new DriverTestsuiteException(String.format("Error parsing message from:\n%s", referenceXmlString), e);
         }
