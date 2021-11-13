@@ -215,19 +215,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "const">
                         <#assign constField = field.asConstField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Const Field (${constField.name})
-                        <#if helper.isSimpleTypeReference(constField.type)>
-                            <#assign simpleTypeReference = constField.type.asSimpleTypeReference().orElseThrow()>
-                            <#if helper.getLanguageTypeNameForField(field) = 'float'>
-                                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue + "f", constField)};
-                            <#else>
-                                ${helper.getWriteBufferWriteMethodCall(constField.name, simpleTypeReference, constField.referenceValue, constField)};
-                            </#if>
-                        <#else>
-                            <#assign enumTypeReference = constField.type>
-                            ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumTypeReference).name, helper.getEnumBaseTypeReference(enumTypeReference), "(" + type.name + "." + constField.name?upper_case + ".getValue())", constField, "WithReaderWriterArgs.WithAdditionalStringRepresentation("+ type.name + "." + constField.name?upper_case + ".name())")};
-                        </#if>
+                        writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, "${constField.name}")});
                         <#break>
                     <#case "discriminator">
                         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -317,10 +309,10 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "reserved">
                         <#assign reservedField = field.asReservedField().orElseThrow()>
-                        <#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
                         // Reserved Field (reserved)
-                        ${helper.getWriteBufferWriteMethodCall("reserved", simpleTypeReference, helper.getReservedValue(reservedField), reservedField)};
+                        writeReservedField("reserved", ${helper.getReservedValue(reservedField)}, ${helper.getDataWriterCall(typedField.type, "reserved")});
                         <#break>
                     <#case "simple">
                         <#assign simpleField = field.asSimpleField().orElseThrow()>

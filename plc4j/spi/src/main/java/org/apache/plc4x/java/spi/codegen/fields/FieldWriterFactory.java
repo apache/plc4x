@@ -24,8 +24,16 @@ import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
 public class FieldWriterFactory {
 
+    public static <T> void writeConstField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterConst<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
+
     public static <T> void writeEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeReservedField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterReserved<T>().writeField(logicalName, value, dataWriter, writerArgs);
     }
 
     public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
