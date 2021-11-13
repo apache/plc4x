@@ -33,6 +33,7 @@ import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 import org.apache.plc4x.java.s7.utils.S7DiagnosticEventId;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.Charset;
@@ -1370,7 +1371,7 @@ public class StaticHelper {
         return (bcd >> 4) * 10 + (bcd & 0x0f);
     }
 
-    public static void ByteToBcd(final WriteBuffer buffer, short _value) throws ParseException {
+    public static void ByteToBcd(final WriteBuffer buffer, short _value) throws SerializationException {
         short incomingByte = _value;
         byte outputByte = 0;
         byte dec = (byte) ((incomingByte / 10) % 10);
@@ -1390,7 +1391,7 @@ public class StaticHelper {
         return centenas * 100 + decenas * 10 + unidad;
     }
 
-    public static void IntToS7msec(final WriteBuffer buffer, int _value) throws ParseException {
+    public static void IntToS7msec(final WriteBuffer buffer, int _value) throws SerializationException {
         int local = 0;
         if (_value > 999) {
             local = 999;
@@ -1406,7 +1407,7 @@ public class StaticHelper {
         buffer.writeUnsignedByte(4, (byte) unidad);
     }
 
-    public static void LeftShift3(final WriteBuffer buffer, int _value) throws ParseException {
+    public static void LeftShift3(final WriteBuffer buffer, int _value) throws SerializationException {
         int valor = _value << 3;
         buffer.writeUnsignedInt(16, valor);
     }
@@ -2044,7 +2045,7 @@ public class StaticHelper {
             io.writeByte(k);
             io.writeByte(m);
             io.writeByteArray(chars);
-        } catch (ParseException ex) {
+        } catch (SerializationException ex) {
             Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

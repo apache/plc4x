@@ -19,7 +19,8 @@
 package org.apache.plc4x.java.can.generic.transport;
 
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class GenericFrame implements Message {
 
@@ -40,6 +41,14 @@ public class GenericFrame implements Message {
     }
 
     @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        // TODO: Is this correct?
+        writeBuffer.writeUnsignedShort("length", 8, (short) data.length);
+        writeBuffer.writeUnsignedInt("nodeId", 32, nodeId);
+        writeBuffer.writeByteArray("data", data);
+    }
+
+    @Override
     public int getLengthInBytes() {
         return 0;
     }
@@ -49,9 +58,9 @@ public class GenericFrame implements Message {
         return 0;
     }
 
-    @Override
+    /*@Override
     public MessageIO<? extends Message, ? extends Message> getMessageIO() {
         return null;
-    }
+    }*/
 
 }

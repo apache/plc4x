@@ -118,8 +118,8 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
         };
     }
 
-    @Override
+    /*@Override
     public <X extends MessageIO<VirtualCANFrame, VirtualCANFrame>> X getMessageIO(Configuration configuration) {
         return (X) new VirtualCANFrameIO();
-    }
+    }*/
 }

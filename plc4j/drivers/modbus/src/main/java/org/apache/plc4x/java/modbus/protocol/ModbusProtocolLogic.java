@@ -449,7 +449,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     throw new PlcRuntimeException("Unable to parse PlcValue :- " + ((ModbusField) field).getPlcDataType());
                 }
             }
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
         }
 

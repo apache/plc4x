@@ -852,7 +852,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for(int i = 0; i < field.getNumberOfElements(); i++) {
-                WriteBufferByteBased writeBuffer = (WriteBufferByteBased) DataItemIO.staticSerialize(plcValue.getIndex(i),
+                WriteBufferByteBased writeBuffer = DataItemIO.staticSerialize(plcValue.getIndex(i),
                     field.getDataType().getDataProtocolId(), stringLength);
                 if(writeBuffer != null) {
                     // Allocate enough space for all items.
@@ -866,7 +866,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 byte[] data = byteBuffer.array();
                 return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
             }
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             logger.warn("Error serializing field item of type: '{}'", field.getDataType().name(), e);
         }
         return null;

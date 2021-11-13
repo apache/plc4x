@@ -18,11 +18,7 @@
  */
 package org.apache.plc4x.java.transport.virtualcan.io;
 
-import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.virtualcan.VirtualCANFrame;
 
 /**
@@ -31,9 +27,9 @@ import org.apache.plc4x.java.transport.virtualcan.VirtualCANFrame;
  * -  32 bits: nodeId
  * - variable: data
  */
-public class VirtualCANFrameIO implements MessageIO<VirtualCANFrame, VirtualCANFrame> {
+public class VirtualCANFrameIO implements MessageInput<VirtualCANFrame> {
 
-    public static final MessageIO<? extends Message, ? extends Message> INSTANCE = new VirtualCANFrameIO();
+    public static final MessageInput<? extends Message> INSTANCE = new VirtualCANFrameIO();
 
     @Override
     public VirtualCANFrame parse(ReadBuffer io, Object... args) throws ParseException {
@@ -44,11 +40,11 @@ public class VirtualCANFrameIO implements MessageIO<VirtualCANFrame, VirtualCANF
         return new VirtualCANFrame(nodeId, data);
     }
 
-    @Override
+    /*@Override
     public void serialize(WriteBuffer io, VirtualCANFrame value, Object... args) throws ParseException {
         io.writeUnsignedShort("length", 8, (short) value.getData().length);
         io.writeUnsignedInt("nodeId", 32, value.getNodeId());
         io.writeByteArray("data", value.getData());
-    }
+    }*/
 
 }

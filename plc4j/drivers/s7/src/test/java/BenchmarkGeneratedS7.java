@@ -50,7 +50,7 @@ public class BenchmarkGeneratedS7 {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBufferByteBased wBuf = new WriteBufferByteBased(packet.getLengthInBytes());
-            TPKTPacketIO.staticSerialize(wBuf, packet);
+            packet.serialize(wBuf);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();

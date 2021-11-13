@@ -55,6 +55,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.codegen.io.DataWriterComplexDefault;
+import org.apache.plc4x.java.spi.codegen.io.DataWriterEnumDefault;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -193,7 +194,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                             <#else>
                                 <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
                                 boolean lastItem = curItem == (itemCount - 1);
-                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, element<#--if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if-->);
+                                element.serialize(writeBuffer<#--if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if-->);
                             </#if>
                             curItem++;
                             }
@@ -241,7 +242,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                             <#if helper.isEnumField(field)>
                                 ${helper.getWriteBufferWriteMethodCall(discriminatorField.name, helper.getEnumBaseTypeReference(discriminatorField.type), "(" + discriminatorField.name + ".getValue())", discriminatorField)};
                             <#else>
-                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${discriminatorField.name});
+                                ${discriminatorField.name}.serialize(writeBuffer);
                             </#if>
                         </#if>
                         <#break>
@@ -295,7 +296,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                                 ${helper.getWriteBufferWriteMethodCall(optionalField.name, helper.getEnumBaseTypeReference(optionalField.type), "(" + optionalField.name + ".getValue())", optionalField)};
                             <#else>
                                 writeBuffer.pushContext("${optionalField.name}");
-                                ${complexTypeReference.name}IO.staticSerialize(writeBuffer, ${optionalField.name});
+                                ${optionalField.name}.serialize(writeBuffer);
                                 writeBuffer.popContext("${optionalField.name}");
                             </#if>
                         </#if>

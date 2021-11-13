@@ -16,27 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.mock.field;
+package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.values.PlcValueAdapter;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
-public class MockPlcValue extends PlcValueAdapter {
+public interface DataWriterEnum<T> extends DataWriter<T> {
 
-    final Object[] values;
-
-    public MockPlcValue(Object... values) {
-        this.values = values;
-    }
-
-    public Object getObject(int index) {
-        return values[index];
-    }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) {
-        throw new PlcNotImplementedException("Not implemented");
-    }
+    T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
 
 }

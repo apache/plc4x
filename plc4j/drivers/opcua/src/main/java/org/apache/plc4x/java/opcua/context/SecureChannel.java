@@ -28,10 +28,7 @@ import org.apache.plc4x.java.opcua.readwrite.io.ExtensionObjectIO;
 import org.apache.plc4x.java.opcua.readwrite.io.OpcuaAPUIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.context.DriverContext;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +268,7 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -324,7 +321,7 @@ public class SecureChannel {
                 });
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", transactionId);
             channelTransactionManager.submit(requestConsumer, transactionId);
-        } catch (ParseException e) {
+        } catch (SerializationException | ParseException e) {
             LOGGER.error("Unable to to Parse Open Secure Request");
         }
     }
@@ -381,7 +378,7 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                 try {
@@ -432,7 +429,7 @@ public class SecureChannel {
             };
 
             submit(context, timeout, error, consumer, buffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to to Parse Create Session Request");
         }
     }
@@ -514,7 +511,7 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                 try {
@@ -566,7 +563,7 @@ public class SecureChannel {
             };
 
             submit(context, timeout, error, consumer, buffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to to Parse Activate Session Request");
         }
     }
@@ -605,7 +602,7 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                 try {
@@ -651,7 +648,7 @@ public class SecureChannel {
             };
 
             submit(context, timeout, error, consumer, buffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to to Parse Close Session Request");
         }
     }
@@ -753,10 +750,10 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(openSecureChannelRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, new ExtensionObject(
+            new ExtensionObject(
                 expandedNodeId,
                 null,
-                openSecureChannelRequest));
+                openSecureChannelRequest).serialize(buffer);
 
             OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                 0,
@@ -792,7 +789,7 @@ public class SecureChannel {
                 });
 
             channelTransactionManager.submit(requestConsumer, transactionId);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to to Parse Create Session Request");
         }
     }
@@ -835,10 +832,10 @@ public class SecureChannel {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(endpointsRequest.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, new ExtensionObject(
+            new ExtensionObject(
                 expandedNodeId,
                 null,
-                endpointsRequest));
+                endpointsRequest).serialize(buffer);
 
             OpcuaMessageRequest messageRequest = new OpcuaMessageRequest(FINAL_CHUNK,
                 channelId.get(),
@@ -886,7 +883,7 @@ public class SecureChannel {
                 });
 
             channelTransactionManager.submit(requestConsumer, transactionId);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to to Parse Create Session Request");
         }
     }
@@ -987,7 +984,7 @@ public class SecureChannel {
 
                     try {
                         WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
-                        ExtensionObjectIO.staticSerialize(buffer, extObject);
+                        extObject.serialize(buffer);
 
                         OpcuaOpenRequest openRequest = new OpcuaOpenRequest(FINAL_CHUNK,
                             0,
@@ -1033,7 +1030,7 @@ public class SecureChannel {
                                 }
                             });
                         channelTransactionManager.submit(requestConsumer, transactionId);
-                    } catch (ParseException e) {
+                    } catch (SerializationException | ParseException e) {
                         LOGGER.error("Unable to to Parse Open Secure Request");
                     }
                 }

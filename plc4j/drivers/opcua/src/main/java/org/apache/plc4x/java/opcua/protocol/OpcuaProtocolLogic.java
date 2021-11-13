@@ -167,7 +167,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             /* Functional Consumer example using inner class */
             Consumer<byte []> consumer = opcuaResponse -> {
@@ -209,7 +209,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             channel.submit(context, timeout, error, consumer, buffer);
 
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to serialise the ReadRequest");
         }
 
@@ -665,7 +665,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
@@ -693,7 +693,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             channel.submit(context, timeout, error, consumer, buffer);
 
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Unable to serialise the ReadRequest");
         }
 
@@ -786,7 +786,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
@@ -819,7 +819,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             };
 
             channel.submit(context, timeout, error, consumer, buffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.error("Error while creating the subscription");
             e.printStackTrace();
             future.completeExceptionally(e);
