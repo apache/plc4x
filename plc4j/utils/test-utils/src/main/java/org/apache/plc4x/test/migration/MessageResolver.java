@@ -20,10 +20,7 @@ package org.apache.plc4x.test.migration;
 
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
 import org.slf4j.Logger;
@@ -49,19 +46,19 @@ public class MessageResolver {
      * @throws DriverTestsuiteException if a MessageIO couldn't be found.
      */
     @SuppressWarnings("rawtypes")
-    public static MessageIO getMessageIO(Map<String, String> options, String name) throws DriverTestsuiteException {
+    public static MessageInput getMessageInput(Map<String, String> options, String name) throws DriverTestsuiteException {
         try {
-            return MessageResolver.getMessageIOType(options, name).getMessageIo().newInstance();
+            return MessageResolver.getMessageIOType(options, name).getMessageInput().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new DriverTestsuiteException(e);
         }
     }
 
-    public static MessageIO getMessageIOStaticLinked(Map<String, String> options, String typeName) throws ParserSerializerTestsuiteException {
+    public static MessageInput<Message> getMessageIOStaticLinked(Map<String, String> options, String typeName) throws ParserSerializerTestsuiteException {
         try {
             TypePair typePair = getMessageIOType(options, typeName);
             Class<?> ioRootClass = typePair.getType();
-            Class<?> ioClass = typePair.getMessageIo();
+            Class<?> ioClass = typePair.getMessageInput();
             Method staticParseMethod = null;
             Method staticSerializeMethod = null;
             final List<Class<?>> parameterTypes = new LinkedList<>();
@@ -81,7 +78,7 @@ public class MessageResolver {
                     staticSerializeMethod = method;
                 }
             }
-            if ((staticParseMethod == null) || (staticSerializeMethod == null)) {
+            if (staticParseMethod == null) {
                 throw new ParserSerializerTestsuiteException(
                     "Unable to instantiate IO component. Missing static parse or serialize methods.");
             }
@@ -126,11 +123,18 @@ public class MessageResolver {
                 }
 
                 @Override
-                public void serialize(WriteBuffer io, Object value, Object... args) throws ParseException {
+                public void serialize(WriteBuffer io, Object value, Object... args) throws SerializationException {
                     try {
-                        serializeMethod.invoke(null, io, value);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new ParseException("error serializing", e);
+                        if(serializeMethod != null) {
+                            serializeMethod.invoke(null, io, value);
+                        } else if(value instanceof Message) {
+                            Message message = (Message) value;
+                            message.serialize(io);
+                        } else {
+                            throw new SerializationException("Error finding a serializer for this message");
+                        }
+                    } catch (IllegalAccessException | InvocationTargetException | SerializationException e) {
+                        throw new SerializationException("Error serializing", e);
                     }
                 }
             };
@@ -170,24 +174,24 @@ public class MessageResolver {
         String ioClassName = driverPackage + ".io." + typeName + "IO";
         // make sure both type and it's IO are present
         return new TypePair(
-            Class.forName(ioRootClassName),
-            (Class<? extends MessageIO<?, ?>>) Class.forName(ioClassName)
+            (Class<? extends Message>) Class.forName(ioRootClassName),
+            (Class<? extends MessageInput<?>>) Class.forName(ioClassName)
         );
     }
 
     static class TypePair {
-        private final Class<?> type;
-        private final Class<? extends MessageIO<?, ?>> messageIo;
+        private final Class<? extends Message> type;
+        private final Class<? extends MessageInput<?>> messageInput;
 
-        TypePair(Class<?> type, Class<? extends MessageIO<?, ?>> messageIo) {
+        TypePair(Class<? extends Message> type, Class<? extends MessageInput<?>> messageInput) {
             this.type = type;
-            this.messageIo = messageIo;
+            this.messageInput = messageInput;
         }
         Class<?> getType() {
             return type;
         }
-        Class<? extends MessageIO<?, ?>> getMessageIo() {
-            return messageIo;
+        Class<? extends MessageInput<?>> getMessageInput() {
+            return messageInput;
         }
     }
 

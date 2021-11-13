@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
@@ -141,14 +140,14 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(testcase.getRaw(), testSuite.getByteOrder());
 
         try {
-            MessageIO messageIO = MessageResolver.getMessageIOStaticLinked(
+            MessageInput<Message> messageInput = MessageResolver.getMessageIOStaticLinked(
                 testSuite.getOptions(),
                 testcase.getXml().elements().get(0).getName()
             );
-            Object parsedOutput = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());
+            Message parsedOutput = messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
             MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
                 testcase.getName(),
-                messageIO,
+                messageInput,
                 testcase.getXml().elements().get(0),
                 testcase.getParserArguments(),
                 testcase.getRaw(),
@@ -157,8 +156,8 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                 suiteUri
             );
 
-            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(((Message) parsedOutput).getLengthInBytes(), testSuite.getByteOrder());
-            messageIO.serialize(writeBuffer, parsedOutput);
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
+            parsedOutput.serialize(writeBuffer);
             byte[] data = writeBuffer.getData();
             if (testcase.getRaw().length != data.length) {
                 LOGGER.info("Expected a byte array with a length of " + testcase.getRaw().length +
@@ -176,7 +175,7 @@ public class ParserSerializerTestsuiteRunner extends XmlTestsuiteLoader {
                     Hex.encodeHexString(testcase.getRaw()) + "\nBut Got:  " + Hex.encodeHexString(data) +
                     "\n          " + String.join("", Collections.nCopies(i, "--")) + "^");
             }
-        } catch (ParseException e) {
+        } catch (SerializationException | ParseException e) {
             throw new ParserSerializerTestsuiteException("Unable to parse message", e);
         }
     }

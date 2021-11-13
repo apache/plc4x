@@ -24,12 +24,14 @@ import java.util.function.Function;
 
 public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
 
-    private final Function<I, T> enumResolver;
+    private final Function<T, I> enumSerializer;
+    private final Function<T, String> enumNamer;
     private final DataWriter<I> dataWriter;
 
-    public DataWriterEnumDefault(Function<I, T> enumResolver, DataWriter<I> dataWriter) {
-        this.enumResolver = enumResolver;
+    public DataWriterEnumDefault(Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> dataWriter) {
+        this.enumSerializer = enumSerializer;
         this.dataWriter = dataWriter;
+        this.enumNamer = enumNamer;
     }
 
     @Override
@@ -44,13 +46,13 @@ public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
 
     @Override
     public T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
-        throw new SerializationException("Unsupported");
+        return write(logicalName, value, enumSerializer, enumNamer, dataWriter, writerArgs);
     }
 
-    public T write(String logicalName, T value, Function<I, T> enumResolver, DataWriter<T> rawWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        final T enumValue = value;//enumResolver.apply(value);
-        rawWriter.write(logicalName, enumValue, writerArgs);
-        return null;
+    public T write(String logicalName, T value, Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> rawWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        final I rawValue = enumSerializer.apply(value);
+        rawWriter.write(logicalName, rawValue, WithReaderWriterArgs.WithAdditionalStringRepresentation(enumNamer.apply(value)));
+        return value;
     }
 
     @Override

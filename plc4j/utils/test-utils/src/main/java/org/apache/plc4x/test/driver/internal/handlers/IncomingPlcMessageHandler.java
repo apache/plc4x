@@ -53,17 +53,17 @@ public class IncomingPlcMessageHandler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public byte[] getBytesFromXml(Element referenceXml, ByteOrder byteOrder) throws DriverTestsuiteException {
         final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, byteOrder);
-        MessageIO messageIO = MessageResolver.getMessageIO(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
+        MessageInput messageInput = MessageResolver.getMessageInput(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
         // Get Message and Validate
-        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
+        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageInput, referenceXml, parserArguments);
 
         // Get Bytes
         try {
-            messageIO.serialize(writeBuffer, message);
+            message.serialize(writeBuffer);
             final byte[] data = new byte[message.getLengthInBytes()];
             System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
             return data;
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new DriverTestsuiteException("Error serializing message", e);
         }
     }

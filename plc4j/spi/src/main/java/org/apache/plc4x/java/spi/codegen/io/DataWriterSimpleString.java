@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -31,7 +30,7 @@ public class DataWriterSimpleString extends DataWriterSimpleBase<String> {
 
     @Override
     public String write(String logicalName, String value, WithWriterArgs... writerArgs) throws SerializationException {
-        writeBuffer.writeString(logicalName, bitLength, value, "UTF-8", writerArgs);
+        writeBuffer.writeString(logicalName, bitLength,"UTF-8", value, writerArgs);
         return value;
     }
 
