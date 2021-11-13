@@ -31,7 +31,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -47,13 +47,13 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final ByteOrder byteOrder;
     private final Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
     private final Function<Configuration, ? extends DriverContext> driverContext;
-    private final Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> protocolIO;
+    private final Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> protocolIO;
     private final Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
     private final Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover;
     private final Object[] parserArgs;
 
-    public static <BPC extends Message> CustomProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Function<Configuration, ? extends  MessageIO<BPC, BPC>> messageIo) {
-        return new CustomProtocolStackBuilder<>(basePacketClass, messageIo);
+    public static <BPC extends Message> CustomProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Function<Configuration, ? extends MessageInput<BPC>> messageInput) {
+        return new CustomProtocolStackBuilder<>(basePacketClass, messageInput);
     }
 
     /** Only accessible via Builder */
@@ -62,7 +62,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   Object[] parserArgs,
                                   Function<Configuration, ? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                   Function<Configuration, ? extends DriverContext> driverContext,
-                                  Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> protocolIO,
+                                  Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> protocolIO,
                                   Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator,
                                   Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover) {
         this.basePacketClass = basePacketClass;
@@ -104,7 +104,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     public static final class CustomProtocolStackBuilder<BASE_PACKET_CLASS extends Message> {
 
         private final Class<BASE_PACKET_CLASS> basePacketClass;
-        private final Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIo;
+        private final Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> messageInput;
         private Function<Configuration, ? extends DriverContext> driverContext;
         private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
         private Object[] parserArgs;
@@ -112,9 +112,9 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private Function<Configuration, ? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Function<Configuration, ? extends Consumer<ByteBuf>> corruptPacketRemover;
 
-        public CustomProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Function<Configuration, ? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIo) {
+        public CustomProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Function<Configuration, ? extends MessageInput<BASE_PACKET_CLASS>> messageInput) {
             this.basePacketClass = basePacketClass;
-            this.messageIo = messageIo;
+            this.messageInput = messageInput;
         }
 
         public CustomProtocolStackBuilder<BASE_PACKET_CLASS> withDriverContext(Function<Configuration, ? extends DriverContext> driverContextClass) {
@@ -160,7 +160,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public CustomProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             return new CustomProtocolStackConfigurer<>(
-                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageIo, packetSizeEstimator, corruptPacketRemover);
+                basePacketClass, byteOrder, parserArgs, protocol, driverContext, messageInput, packetSizeEstimator, corruptPacketRemover);
         }
 
     }

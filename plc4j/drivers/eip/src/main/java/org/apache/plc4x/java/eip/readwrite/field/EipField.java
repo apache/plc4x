@@ -20,7 +20,7 @@ package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -140,7 +140,7 @@ public class EipField implements PlcField, Serializable {
     }
 
     @Override
-    public void serialize(WriteBuffer writeBuffer) throws ParseException {
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
         writeBuffer.writeString("node", tag.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), tag);

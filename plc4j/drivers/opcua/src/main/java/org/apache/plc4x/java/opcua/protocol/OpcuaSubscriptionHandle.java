@@ -159,7 +159,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             Consumer<byte[]> consumer = opcuaResponse -> {
                 CreateMonitoredItemsResponse responseMessage = null;
@@ -202,7 +202,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
             channel.submit(context, timeout, error, consumer, buffer);
 
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.info("Unable to serialize the Create Monitored Item Subscription Message");
             e.printStackTrace();
             plcSubscriber.onDisconnect(context);
@@ -267,7 +267,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
                         try {
                             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-                            ExtensionObjectIO.staticSerialize(buffer, extObject);
+                            extObject.serialize(buffer);
 
                             /*  Create Consumer for the response message, error and timeout to be sent to the Secure Channel */
                             Consumer<byte[]> consumer = opcuaResponse -> {
@@ -323,7 +323,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             outstandingRequests.add(requestHandle);
                             channel.submit(context, timeout, error, consumer, buffer);
 
-                        } catch (ParseException e) {
+                        } catch (SerializationException e) {
                             LOGGER.warn("Unable to serialize subscription request");
                             e.printStackTrace();
                         }
@@ -380,7 +380,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
         try {
             WriteBufferByteBased buffer = new WriteBufferByteBased(extObject.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            ExtensionObjectIO.staticSerialize(buffer, extObject);
+            extObject.serialize(buffer);
 
             //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
             Consumer<byte[]> consumer = opcuaResponse -> {
@@ -413,7 +413,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             };
 
             channel.submit(context, timeout, error, consumer, buffer);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             LOGGER.warn("Unable to serialize subscription request");
             e.printStackTrace();
         }

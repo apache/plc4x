@@ -432,7 +432,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getDataWriterCall(TypeReference typeReference, String fieldName) {
-        String resolverMethod = "asdads";
+        String resolverMethod = "enumForValue";
         if (isEnumTypeReference(typeReference)) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);

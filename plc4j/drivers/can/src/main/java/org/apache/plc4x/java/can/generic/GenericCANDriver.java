@@ -115,7 +115,7 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
         }
 
         CANTransport<Message> canTransport = (CANTransport<Message>) transport;
-        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageIO)
+        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), configuration -> )
             .withProtocol(cfg -> {
                 GenericCANProtocolLogic protocolLogic = new GenericCANProtocolLogic();
                 ConfigurationFactory.configure(cfg, protocolLogic);

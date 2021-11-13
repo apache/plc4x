@@ -20,8 +20,8 @@ package org.apache.plc4x.java.transport.virtualcan;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.Message;
-import org.apache.plc4x.java.spi.generation.MessageIO;
-import org.apache.plc4x.java.transport.virtualcan.io.VirtualCANFrameIO;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class VirtualCANFrame implements Message {
     private final int nodeId;
@@ -41,6 +41,13 @@ public class VirtualCANFrame implements Message {
     }
 
     @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.writeUnsignedShort("length", 8, (short) data.length);
+        writeBuffer.writeUnsignedInt("nodeId", 32, nodeId);
+        writeBuffer.writeByteArray("data", data);
+    }
+
+    @Override
     public int getLengthInBytes() {
         return 0;
     }
@@ -50,10 +57,10 @@ public class VirtualCANFrame implements Message {
         return 0;
     }
 
-    @Override
+    /*@Override
     public MessageIO<? extends Message, ? extends Message> getMessageIO() {
         return VirtualCANFrameIO.INSTANCE;
-    }
+    }*/
 
     public String toString() {
         return "VirtualCANFrame " + nodeId + "[" + data.length + "]" + Hex.encodeHexString(data);

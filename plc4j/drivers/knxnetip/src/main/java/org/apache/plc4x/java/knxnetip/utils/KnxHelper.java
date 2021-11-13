@@ -20,10 +20,7 @@ package org.apache.plc4x.java.knxnetip.utils;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 
 public class KnxHelper {
 
@@ -57,7 +54,7 @@ public class KnxHelper {
             io.writeUnsignedInt(4,exponent + 15);
             io.writeUnsignedInt(11, mantissaInteger);
 
-        } catch(ParseException e) {
+        } catch(SerializationException e) {
             throw new PlcRuntimeException("Error serializing F16 value", e);
         }
     }

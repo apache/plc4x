@@ -33,7 +33,7 @@ public interface CANTransport<F extends Message> extends Transport {
 
     Class<F> getMessageType();
 
-    <X extends MessageIO<F, F>> X getMessageIO(Configuration configuration);
+    //<X extends MessageIO<F, F>> X getMessageIO(Configuration configuration);
 
     CANFrameBuilder<F> getTransportFrameBuilder();
 

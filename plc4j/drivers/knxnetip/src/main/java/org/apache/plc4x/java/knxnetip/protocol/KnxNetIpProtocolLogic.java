@@ -291,7 +291,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
-                } catch (ParseException e) {
+                } catch (SerializationException e) {
                     future.completeExceptionally(new PlcRuntimeException("Error serializing PlcValue.", e));
                     return future;
                 }

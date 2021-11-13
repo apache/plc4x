@@ -27,10 +27,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.profinet.ProfinetDriver;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.readwrite.io.Ethernet_FrameIO;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryResponse;
 import org.apache.plc4x.java.spi.messages.PlcDiscoverer;
@@ -189,13 +186,13 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
                                             new PnDcp_Block_ALLSelector()
                                         )))));
                         WriteBufferByteBased buffer = new WriteBufferByteBased(34);
-                        Ethernet_FrameIO.staticSerialize(buffer, identificationRequest);
+                        identificationRequest.serialize(buffer);
                         Packet packet = EthernetPacket.newPacket(buffer.getData(), 0, 34);
                         handle.sendPacket(packet);
                     }
                 }
             }
-        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | ParseException e) {
+        } catch (IllegalRawDataException | NotOpenException | PcapNativeException | SerializationException e) {
             logger.error("Got an exception while processing raw socket data", e);
             future.completeExceptionally(new PlcException("Got an internal error while performing discovery"));
             for (PcapHandle openHandle : openHandles) {

@@ -18,10 +18,7 @@
  */
 package org.apache.plc4x.java.firmata.readwrite.utils;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.*;
 
 public class StaticHelper {
 
@@ -44,7 +41,7 @@ public class StaticHelper {
         try {
             io.writeByte(data);
             io.writeByte((byte) 0x00);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
         }
     }
 

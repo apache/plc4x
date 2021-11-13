@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("unchecked")
 class SimularedFieldHandlerTest implements WithAssertions {
 
     SimulatedFieldHandler SUT = new SimulatedFieldHandler();

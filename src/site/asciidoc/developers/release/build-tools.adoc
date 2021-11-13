@@ -59,7 +59,7 @@ The plugin will then aks for the version:
 
 [subs="verbatim,attributes"]
 ----
-   What is the new working copy version for "PLC4X Build Tools: Code Generation"? (org.apache.plc4x.plugins:plc4x-code-generaton) {code-generation-bugfix-version}-SNAPSHOT: : {code-generation-development-version}-SNAPSHOT
+   What is the new working copy version for "PLC4X Build Tools: Code Generation"? (org.apache.plc4x.plugins:plc4x-code-generation) {code-generation-bugfix-version}-SNAPSHOT: : {code-generation-development-version}-SNAPSHOT
 ----
 
 Where the suggested default is manually overridden.

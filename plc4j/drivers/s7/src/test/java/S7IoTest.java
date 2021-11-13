@@ -264,7 +264,7 @@ public class S7IoTest {
         // Xml
         {
             WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
-            TPKTPacketIO.staticSerialize(writeBufferXmlBased, tpktPacket);
+            tpktPacket.serialize(writeBufferXmlBased);
             String gotXml = writeBufferXmlBased.getXmlString();
             assertEquals(wantXml, gotXml);
             ReadBufferXmlBased readBufferXmlBased = new ReadBufferXmlBased(new ByteArrayInputStream(gotXml.getBytes()));
@@ -274,7 +274,7 @@ public class S7IoTest {
         // json
         {
             WriteBufferJsonBased writeBufferJsonBased = new WriteBufferJsonBased();
-            TPKTPacketIO.staticSerialize(writeBufferJsonBased, tpktPacket);
+            tpktPacket.serialize(writeBufferJsonBased);
             String gotJson = writeBufferJsonBased.getJsonString();
             JSONAssert.assertEquals(wantJson, gotJson, JSONCompareMode.LENIENT);
             ReadBufferJsonBased readBufferXmlBased = new ReadBufferJsonBased(new ByteArrayInputStream(gotJson.getBytes()));

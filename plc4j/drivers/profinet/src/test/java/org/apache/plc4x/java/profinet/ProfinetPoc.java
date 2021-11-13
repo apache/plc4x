@@ -131,7 +131,7 @@ public class ProfinetPoc {
 
         // Serialize the message
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(connectionRequest.getLengthInBytes());
-        connectionRequest.getMessageIO().serialize(writeBuffer, connectionRequest);
+        connectionRequest.serialize(writeBuffer);
 
         // Send the message as UDP telegram.
         InetAddress[] deviceAddress = InetAddress.getAllByName("192.168.24.31");
@@ -156,7 +156,7 @@ public class ProfinetPoc {
 
             ReadBuffer rb = new ReadBufferByteBased(wb.getData());
             return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readBigInteger(64));
-        } catch (ParseException e) {
+        } catch (SerializationException | ParseException e) {
             // Ignore ... this should actually never happen.
         }
         return null;

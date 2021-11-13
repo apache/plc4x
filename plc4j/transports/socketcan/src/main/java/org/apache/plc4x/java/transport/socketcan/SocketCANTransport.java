@@ -60,10 +60,10 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
         return (buff) -> 16;
     }
 
-    @Override
+    /*@Override
     public MessageIO<SocketCANFrame, SocketCANFrame> getMessageIO(Configuration cfg) {
         return new SocketCANFrameIO();
-    }
+    }*/
 
     @Override
     public Class<SocketCANFrame> getMessageType() {
