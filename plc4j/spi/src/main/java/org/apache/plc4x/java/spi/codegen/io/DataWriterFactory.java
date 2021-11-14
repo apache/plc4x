@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 
 public class DataWriterFactory {
 
@@ -84,8 +85,8 @@ public class DataWriterFactory {
         return new DataWriterSimpleString(writeBuffer, bitLength);
     }
 
-    /*public static <T, I> DataWriterEnumDefault<T, I> writeEnum(Function<I, T> enumResolver, DataWriter<I> dataWriter) {
-        return new DataWriterEnumDefault<>(enumResolver, dataWriter);
-    }*/
+    public static <T, I> DataWriterEnumDefault<T, I> writeEnum(Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> dataWriter) {
+        return new DataWriterEnumDefault<>(enumSerializer, enumNamer, dataWriter);
+    }
 
 }

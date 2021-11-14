@@ -32,6 +32,10 @@ public class FieldWriterFactory {
         new FieldWriterEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
     }
 
+    public static <T> void writePaddingField(String logicalName, int timesPadding, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterPadding<T>().writeField(logicalName, timesPadding, value, dataWriter, writerArgs);
+    }
+
     public static <T> void writeReservedField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterReserved<T>().writeField(logicalName, value, dataWriter, writerArgs);
     }
