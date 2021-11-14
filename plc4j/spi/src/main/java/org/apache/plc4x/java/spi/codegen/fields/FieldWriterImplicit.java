@@ -16,26 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.codegen.io;
+package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public class DataWriterSimpleByteArray extends DataWriterSimpleBase<byte[]> {
-
-    public DataWriterSimpleByteArray(WriteBuffer writeBuffer, int bitLength) {
-        super(writeBuffer, bitLength);
-    }
+public class FieldWriterImplicit<T> implements FieldWriter<T> {
 
     @Override
-    public byte[] write(String logicalName, byte[] value, WithWriterArgs... writerArgs) throws SerializationException {
-        if (bitLength != 8) {
-            throw new SerializationException("ByteArray fields only support bitLength of 8");
-        }
-        // TODO: Get a WirReaderArgs parameter for the number of bytes ...
-        writeBuffer.writeByteArray(logicalName, value, writerArgs);
-        return value;
+    public void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(logicalName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
     }
 
 }

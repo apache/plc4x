@@ -37,6 +37,10 @@ public class DataWriterFactory {
         return new DataWriterSimpleByte(writeBuffer, bitLength);
     }
 
+    public static DataWriter<byte[]> writeByteArray(WriteBuffer writeBuffer, int bitLength) {
+        return new DataWriterSimpleByteArray(writeBuffer, bitLength);
+    }
+
     public static DataWriter<Short> writeUnsignedShort(WriteBuffer writeBuffer, int bitLength) {
         return new DataWriterSimpleUnsignedShort(writeBuffer, bitLength);
     }

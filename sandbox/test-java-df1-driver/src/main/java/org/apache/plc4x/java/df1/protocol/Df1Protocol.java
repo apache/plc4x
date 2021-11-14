@@ -62,7 +62,7 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
         // Serialize the message
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes());
-        DF1SymbolIO.staticSerialize(writeBuffer, frame);
+        frame.serialize(writeBuffer);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data

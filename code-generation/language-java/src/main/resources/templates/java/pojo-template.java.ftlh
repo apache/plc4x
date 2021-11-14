@@ -177,43 +177,25 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField = field.asArrayField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Array Field (${arrayField.name})
-                        <#-- TODO: Port this -->
-                        if(${arrayField.name} != null) {
                         <#if arrayField.type.isByteBased()>
-                            // Byte Array field (${arrayField.name})
-                            writeBuffer.writeByteArray("${arrayField.name}", ${arrayField.name});
+                        writeByteArrayField("${namedField.name}", ${namedField.name}, writeByteArray(writeBuffer, 8));
+                        <#elseif arrayField.type.isSimpleTypeReference()>
+                        writeSimpleTypeArrayField("${namedField.name}", ${namedField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
                         <#else>
-                            writeBuffer.pushContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
-                            int itemCount = (int) ${arrayField.name}.size();
-                            int curItem = 0;
-                            for(${helper.getLanguageTypeNameForField(arrayField)} element : ${arrayField.name}) {
-                            <#if helper.isSimpleTypeReference(arrayField.type)>
-                                <#assign simpleTypeReference = arrayField.type.asSimpleTypeReference().orElseThrow()>
-                                ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "element", arrayField)};
-                            <#else>
-                                <#assign complexTypeReference = arrayField.type.asComplexTypeReference().orElseThrow()>
-                                boolean lastItem = curItem == (itemCount - 1);
-                                element.serialize(writeBuffer<#--if helper.getSerializerTerms(field.params.orElse(null))?has_content>, <#list helper.getSerializerTerms(field.params.orElseThrow()) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if-->);
-                            </#if>
-                            curItem++;
-                            }
-                            writeBuffer.popContext("${arrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
+                        writeComplexTypeArrayField("${namedField.name}", ${namedField.name}, writeBuffer);
                         </#if>
-                        }
                         <#break>
                     <#case "checksum">
                         <#assign checksumField = field.asChecksumField().orElseThrow()>
-                        <#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Checksum Field (checksum) (Calculated)
-                        <#-- TODO: Port this -->
-                        {
-                        ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
-                        _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, parserArguments)});
-                        ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", checksumField)};
-                        }
+                        writeChecksumField("${namedField.name}", (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, parserArguments)}), ${helper.getDataWriterCall(typedField.type, namedField.name)});
                         <#break>
                     <#case "const">
                         <#assign constField = field.asConstField().orElseThrow()>
@@ -221,7 +203,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Const Field (${constField.name})
-                        writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, "${constField.name}")});
+                        <#if helper.isEnumTypeReference(typedField.type)>writeConstField("${constField.name}", ${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)});<#else>writeConstField("${constField.name}", ${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "discriminator">
                         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -241,12 +223,13 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "implicit">
                         <#assign implicitField = field.asImplicitField().orElseThrow()>
-                        <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-                        <#-- TODO: Port this -->
+                        <#-- Implicit field values might be used in expressions, in order to avoid problems, we generate a temporary variable with the given name. -->
                         ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, parserArguments)});
-                        ${helper.getWriteBufferWriteMethodCall(implicitField.name, simpleTypeReference, "(" + implicitField.name + ")", implicitField)};
+                        writeImplicitField("${namedField.name}", ${implicitField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});
                         <#break>
                     <#case "manualArray">
                         <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
@@ -296,7 +279,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Simple Field (${namedField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${simpleField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if helper.isEnumTypeReference(typedField.type)>writeSimpleEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "switch">
                         <#assign switchField = field.asSwitchField().orElseThrow()>
@@ -305,6 +288,12 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         serialize${type.name?cap_first}Child(writeBuffer);
                         <#break>
                     <#case "virtual">
+                        <#assign virtualField = field.asVirtualField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
+
+                        // Virtual field (doesn't actually serialize anything, just makes the value available)
+                        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = get${namedField.name?cap_first}();
                         <#break>
                 </#switch>
             </#list>
