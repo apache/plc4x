@@ -57,9 +57,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
         return Optional.ofNullable(options.get("package")).orElseGet(() ->
-            "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
-                String.join("", protocolName.split("\\-")) + "." +
-                String.join("", languageFlavorName.split("\\-")));
+            "org.apache.plc4x." + String.join("", languageName.split("-")) + "." +
+                String.join("", protocolName.split("-")) + "." +
+                String.join("", languageFlavorName.split("-")));
     }
 
     @Override
@@ -431,40 +431,32 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-    public String getDataWriterCall(TypeReference typeReference, String fieldName) {
-        String resolverMethod = "getValue";
-        if (isEnumTypeReference(typeReference)) {
-            final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
-            final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "new DataWriterEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + languageTypeName + "::name, " + getDataWriterCall(enumBaseTypeReference, fieldName) + ")";
-        } else if (typeReference.isSimpleTypeReference()) {
+   public String getDataWriterCall(TypeReference typeReference, String fieldName) {
+        if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
-            return getDataWriterCall(simpleTypeReference, fieldName);
+            return getDataWriterCall(simpleTypeReference);
         } else if (typeReference.isComplexTypeReference()) {
-            StringBuilder paramsString = new StringBuilder();
-            ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
-            TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
-            String serializerCallString = getLanguageTypeNameForTypeReference(typeReference);
-            if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                serializerCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().getName();
-            }
-            List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
-            for (int i = 0; i < paramTerms.size(); i++) {
-                Term paramTerm = paramTerms.get(i);
-                paramsString
-                    .append(", (")
-                    .append(getLanguageTypeNameForTypeReference(getArgumentType(complexTypeReference, i), true))
-                    .append(") (")
-                    .append(toParseExpression(null, paramTerm, null))
-                    .append(")");
-            }
             return "new DataWriterComplexDefault<>(writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
     }
 
-    public String getDataWriterCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getEnumDataWriterCall(TypeReference typeReference, String fieldName, String attributeName) {
+        if (!isEnumTypeReference(typeReference)) {
+            throw new IllegalArgumentException("this method should only be called for enum types");
+        }
+        final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
+        SimpleTypeReference outputTypeReference;
+        if("value".equals(attributeName)) {
+            outputTypeReference = getEnumBaseTypeReference(typeReference);
+        } else {
+            outputTypeReference = getEnumFieldSimpleTypeReference(typeReference, attributeName);
+        }
+        return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+    }
+
+    public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
@@ -675,13 +667,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         Term a = binaryTerm.getA();
         Term b = binaryTerm.getB();
         String operation = binaryTerm.getOperation();
-        switch (operation) {
-            case "^":
-                tracer = tracer.dive("^");
-                return tracer + "Math.pow((" + toExpression(field, a, variableExpressionGenerator) + "), (" + toExpression(field, b, variableExpressionGenerator) + "))";
-            default:
-                return tracer + "(" + toExpression(field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, b, variableExpressionGenerator) + ")";
+        if ("^".equals(operation)) {
+            tracer = tracer.dive("^");
+            return tracer + "Math.pow((" + toExpression(field, a, variableExpressionGenerator) + "), (" + toExpression(field, b, variableExpressionGenerator) + "))";
         }
+        return tracer + "(" + toExpression(field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, b, variableExpressionGenerator) + ")";
     }
 
     private String toTernaryTermExpression(TypedField field, TernaryTerm ternaryTerm, Function<VariableLiteral, String> variableExpressionGenerator, Tracer tracer) {
@@ -1030,8 +1020,6 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     } else {
                         sizeInBits += simpleTypeReference.getSizeInBits();
                     }
-                } else {
-                    // No ComplexTypeReference supported.
                 }
             }
         }

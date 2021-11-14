@@ -240,11 +240,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "enum">
                         <#assign enumField = field.asEnumField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
-                        writeBuffer.pushContext("${enumField.name}");
-                        // Enum field (${enumField.name})
-                        ${helper.getWriteBufferWriteMethodCall(helper.getTypeDefinitionForTypeReference(enumField.type).name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), "(" + enumField.name + ".get" + enumField.fieldName?cap_first + "())", enumField, "WithReaderWriterArgs.WithAdditionalStringRepresentation(${enumField.name}.name())")};
-                        writeBuffer.popContext("${enumField.name}");
+                        // Enum field (${namedField.name})
+                        writeEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${namedField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, enumField.fieldName)});
                         <#break>
                     <#case "implicit">
                         <#assign implicitField = field.asImplicitField().orElseThrow()>
@@ -294,18 +294,10 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "padding">
                         <#assign paddingField = field.asPaddingField().orElseThrow()>
-                        <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
 
                         // Padding Field (padding)
-                        {
-                        writeBuffer.pushContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
-                        int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, parserArguments)});
-                        while (_timesPadding-- > 0) {
-                        ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, parserArguments)});
-                        ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "(_paddingValue)", paddingField)};
-                        }
-                        writeBuffer.popContext("padding", WithReaderWriterArgs.WithRenderAsList(true));
-                        }
+                        writePaddingField("padding", (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)}), (${helper.getLanguageTypeNameForField(field)}) ${helper.toSerializationExpression(paddingField, paddingField.paddingValue, parserArguments)}, ${helper.getDataWriterCall(typedField.type, "padding")});
                         <#break>
                     <#case "reserved">
                         <#assign reservedField = field.asReservedField().orElseThrow()>
@@ -320,7 +312,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Simple Field (${namedField.name})
-                        <#if helper.isEnumTypeReference(typedField.type)>writeEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
+                        <#if helper.isEnumTypeReference(typedField.type)>writeEnumField("${namedField.name}", "${helper.getLanguageTypeNameForField(field)}", ${simpleField.name}, ${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")});<#else>writeSimpleField("${namedField.name}", ${simpleField.name}, ${helper.getDataWriterCall(typedField.type, namedField.name)});</#if>
                         <#break>
                     <#case "switch">
                         <#assign switchField = field.asSwitchField().orElseThrow()>

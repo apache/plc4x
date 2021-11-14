@@ -1005,7 +1005,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             && ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName) instanceof SimpleTypeReference) {
             return (SimpleTypeReference) ((EnumTypeDefinition) typeDefinition).getConstantType(fieldName);
         }
-        return null;
+        throw new IllegalArgumentException("not an enum type or enum constant is not a simple type");
     }
 
     /**
