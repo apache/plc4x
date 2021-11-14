@@ -32,6 +32,22 @@ public class FieldWriterFactory {
         new FieldWriterEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
     }
 
+    public static <T> void writeDiscriminatorField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterDiscriminator<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeDiscriminatorEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterDiscriminatorEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptional<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeOptionalEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterOptionalEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
+    }
+
     public static <T> void writePaddingField(String logicalName, int timesPadding, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterPadding<T>().writeField(logicalName, timesPadding, value, dataWriter, writerArgs);
     }
@@ -42,6 +58,10 @@ public class FieldWriterFactory {
 
     public static <T> void writeSimpleField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterSimple<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeSimpleEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterSimpleEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
     }
 
 }
