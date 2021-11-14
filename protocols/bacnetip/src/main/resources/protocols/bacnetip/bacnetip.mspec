@@ -335,7 +335,7 @@
     [optional      uint 8           extLength        'isPrimitiveAndNotBoolean && lengthValueType == 5'                     ]
     [optional      uint 16          extExtLength     'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
     [optional      uint 32          extExtExtLength  'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
-    [virtual       uint 32           actualLength     'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
+    [virtual       uint 32          actualLength     'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
     [typeSwitch 'dataType'
         ['NULL' BACnetComplexTagNull
         ]

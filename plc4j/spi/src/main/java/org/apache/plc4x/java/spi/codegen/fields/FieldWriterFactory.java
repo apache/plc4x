@@ -19,10 +19,30 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+
+import java.util.List;
 
 public class FieldWriterFactory {
+
+    public static <T> void writeSimpleTypeArrayField(String logicalName, List<T> value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterArray<T>().writeSimpleTypeArrayField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static void writeComplexTypeArrayField(String logicalName, List<? extends Message> value, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterArray<Message>().writeComplexTypeArrayField(logicalName, value, writeBuffer, writerArgs);
+    }
+
+    public static <T> void writeByteArrayField(String logicalName, byte[] value, DataWriter<byte[]> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterArray<T>().writeByteArrayField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeChecksumField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterChecksum<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
 
     public static <T> void writeConstField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterConst<T>().writeField(logicalName, value, dataWriter, writerArgs);
@@ -38,6 +58,10 @@ public class FieldWriterFactory {
 
     public static <T> void writeDiscriminatorEnumField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterDiscriminatorEnum<T>().writeField(logicalName, innerName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeImplicitField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterImplicit<T>().writeField(logicalName, value, dataWriter, writerArgs);
     }
 
     public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {

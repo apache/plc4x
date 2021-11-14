@@ -20,10 +20,7 @@ package org.apache.plc4x.java.df1.readwrite.utils;
 
 import com.github.snksoft.crc.CRC;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
-import org.apache.plc4x.java.df1.readwrite.io.DF1CommandIO;
 import org.apache.plc4x.java.spi.generation.*;
-
-import java.util.List;
 
 public class StaticHelper {
 
@@ -34,8 +31,8 @@ public class StaticHelper {
         df1crc = crc.update(df1crc, new byte[]{(byte) destinationAddress, (byte) sourceAddress});
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(command.getLengthInBytes(), ByteOrder.BIG_ENDIAN);
         try {
-            DF1CommandIO.staticSerialize(writeBuffer, command);
-        } catch (ParseException e) {
+            command.serialize(writeBuffer);
+        } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
         df1crc = crc.update(df1crc, writeBuffer.getData());
@@ -78,7 +75,7 @@ public class StaticHelper {
                 io.writeUnsignedShort(8, (short) 0x10);
             }
             io.writeUnsignedShort(8, data);
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new RuntimeException("Error parsing data", e);
         }
     }
