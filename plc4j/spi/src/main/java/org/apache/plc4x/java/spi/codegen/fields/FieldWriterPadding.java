@@ -32,11 +32,13 @@ public class FieldWriterPadding<T> implements FieldWriter<T> {
     }
 
     public void writeField(String logicalName, int timesPadding, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        for(int i = 0; i < timesPadding; i++) {
-            switchSerializeByteOrderIfNecessary(() -> dataWriter.write("value", value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
-        }
-        dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        switchSerializeByteOrderIfNecessary(() -> {
+            dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+            for (int i = 0; i < timesPadding; i++) {
+                dataWriter.write("value", value, writerArgs);
+            }
+            dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        }, dataWriter, extractByteOder(writerArgs).orElse(null));
     }
 
 }

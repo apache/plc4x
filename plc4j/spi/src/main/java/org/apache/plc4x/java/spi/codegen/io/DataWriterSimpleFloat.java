@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-
-import java.util.Objects;
 
 public class DataWriterSimpleFloat extends DataWriterSimpleBase<Float> {
 
@@ -32,9 +29,8 @@ public class DataWriterSimpleFloat extends DataWriterSimpleBase<Float> {
     }
 
     @Override
-    public Float write(String logicalName, Float value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, Float value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeFloat(logicalName, bitLength, value);
-        return value;
     }
 
 }

@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-
-import java.util.Objects;
 
 public class DataWriterSimpleBoolean extends DataWriterSimpleBase<Boolean> {
 
@@ -32,12 +29,11 @@ public class DataWriterSimpleBoolean extends DataWriterSimpleBase<Boolean> {
     }
 
     @Override
-    public Boolean write(String logicalName, Boolean value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, Boolean value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength != 1) {
             throw new SerializationException("Bit fields only support bitLength of 1");
         }
         writeBuffer.writeBit(logicalName, value, writerArgs);
-        return value;
     }
 
 }

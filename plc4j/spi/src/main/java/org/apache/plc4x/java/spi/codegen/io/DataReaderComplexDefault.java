@@ -24,8 +24,6 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-import java.util.function.Supplier;
-
 public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
 
     private final ComplexTypeSupplier<T> complexSupplier;

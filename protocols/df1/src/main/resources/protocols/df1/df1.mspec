@@ -46,7 +46,7 @@
             [simple uint  8    size     ]
         ]
         ['0x41' DF1UnprotectedReadResponse
-            [manualArray  byte data terminated 'STATIC_CALL("dataTerminate", readBuffer)' 'STATIC_CALL("readData", readBuffer)' 'STATIC_CALL("writeData", writeBuffer, element)' 'STATIC_CALL("dataLength", data)']
+            [manualArray byte data terminated 'STATIC_CALL("dataTerminate", readBuffer)' 'STATIC_CALL("readData", readBuffer)' 'STATIC_CALL("writeData", writeBuffer, _value)' 'STATIC_CALL("dataLength", data)']
         ]
     ]
 ]

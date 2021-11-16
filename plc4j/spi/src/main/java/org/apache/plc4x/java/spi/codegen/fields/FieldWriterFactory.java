@@ -18,12 +18,15 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FieldWriterFactory {
@@ -62,6 +65,18 @@ public class FieldWriterFactory {
 
     public static <T> void writeImplicitField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         new FieldWriterImplicit<T>().writeField(logicalName, value, dataWriter, writerArgs);
+    }
+
+    public static <T> void writeManualField(String logicalName, FieldCommons.RunSerializeWrapped runnable, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterManual<>().writeManualField(logicalName, runnable, writeBuffer, writerArgs);
+    }
+
+    public static void writeManualArrayField(String logicalName, byte[] bytes, FieldCommons.ConsumeSerializeWrapped<Byte> runnable, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterManualArray<Byte>().writeManualArrayField(logicalName, Arrays.asList(ArrayUtils.toObject(bytes)), runnable, writeBuffer, writerArgs);
+    }
+
+    public static <T> void writeManualArrayField(String logicalName, List<T> values, FieldCommons.ConsumeSerializeWrapped<T> runnable, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        new FieldWriterManualArray<T>().writeManualArrayField(logicalName, values, runnable, writeBuffer, writerArgs);
     }
 
     public static <T> void writeOptionalField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {

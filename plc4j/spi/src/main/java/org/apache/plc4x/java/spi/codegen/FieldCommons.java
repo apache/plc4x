@@ -59,18 +59,19 @@ public interface FieldCommons {
         }
     }
 
-    default <T> T switchSerializeByteOrderIfNecessary(RunSerializeWrapped<T> runnable, ByteOrderAware byteOrderAware, ByteOrder wantedByteOrder) throws SerializationException {
+    default void switchSerializeByteOrderIfNecessary(RunSerializeWrapped runnable, ByteOrderAware byteOrderAware, ByteOrder wantedByteOrder) throws SerializationException {
         Objects.requireNonNull(runnable);
         Objects.requireNonNull(byteOrderAware);
         ByteOrder currentByteOrder = byteOrderAware.getByteOrder();
         if (wantedByteOrder == null || currentByteOrder == wantedByteOrder) {
-            return runnable.run();
-        }
-        try {
-            byteOrderAware.setByteOrder(wantedByteOrder);
-            return runnable.run();
-        } finally {
-            byteOrderAware.setByteOrder(currentByteOrder);
+            runnable.run();
+        } else {
+            try {
+                byteOrderAware.setByteOrder(wantedByteOrder);
+                runnable.run();
+            } finally {
+                byteOrderAware.setByteOrder(currentByteOrder);
+            }
         }
     }
 
@@ -80,8 +81,13 @@ public interface FieldCommons {
     }
 
     @FunctionalInterface
-    interface RunSerializeWrapped<T> {
-        T run() throws SerializationException;
+    interface RunSerializeWrapped {
+        void run() throws SerializationException;
+    }
+
+    @FunctionalInterface
+    interface ConsumeSerializeWrapped<T> {
+        void consume(T value) throws SerializationException;
     }
 
 }

@@ -29,12 +29,11 @@ public class DataWriterSimpleByte extends DataWriterSimpleBase<Byte> {
     }
 
     @Override
-    public Byte write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, Byte value, WithWriterArgs... writerArgs) throws SerializationException {
         if(bitLength != 8) {
             throw new SerializationException("Byte fields only support bitLength of 8");
         }
         writeBuffer.writeByte(logicalName, value, writerArgs);
-        return value;
     }
 
 }
