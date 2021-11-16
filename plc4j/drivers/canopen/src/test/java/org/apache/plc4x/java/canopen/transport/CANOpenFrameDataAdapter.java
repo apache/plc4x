@@ -21,6 +21,7 @@ package org.apache.plc4x.java.canopen.transport;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenFrame;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.transport.can.FrameData;
 
 import java.util.function.Function;
@@ -43,7 +44,7 @@ public class CANOpenFrameDataAdapter implements Function<CANOpenFrame, FrameData
             }
 
             @Override
-            public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
+            public <T extends Message> T read(MessageInput<T> input, Object... args) {
                 return (T) frame.getPayload();
             }
 

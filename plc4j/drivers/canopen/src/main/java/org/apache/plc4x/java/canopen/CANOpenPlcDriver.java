@@ -124,7 +124,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
         }
 
         final CANTransport<Message> canTransport = (CANTransport<Message>) transport;
-        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageIO)
+        return CustomProtocolStackConfigurer.builder(canTransport.getMessageType(), canTransport::getMessageInput)
             .withProtocol(cfg -> {
                 CANOpenProtocolLogic protocolLogic = new CANOpenProtocolLogic();
                 ConfigurationFactory.configure(cfg, protocolLogic);

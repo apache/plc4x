@@ -40,11 +40,4 @@ public class VirtualCANFrameIO implements MessageInput<VirtualCANFrame> {
         return new VirtualCANFrame(nodeId, data);
     }
 
-    /*@Override
-    public void serialize(WriteBuffer io, VirtualCANFrame value, Object... args) throws ParseException {
-        io.writeUnsignedShort("length", 8, (short) value.getData().length);
-        io.writeUnsignedInt("nodeId", 32, value.getNodeId());
-        io.writeByteArray("data", value.getData());
-    }*/
-
 }

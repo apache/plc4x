@@ -25,6 +25,7 @@ import java.util.function.ToIntFunction;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 public interface CANTransport<F extends Message> extends Transport {
@@ -33,7 +34,7 @@ public interface CANTransport<F extends Message> extends Transport {
 
     Class<F> getMessageType();
 
-    //<X extends MessageIO<F, F>> X getMessageIO(Configuration configuration);
+    MessageInput<F> getMessageInput(Configuration configuration);
 
     CANFrameBuilder<F> getTransportFrameBuilder();
 

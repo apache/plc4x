@@ -120,7 +120,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
         }
     }
 
-    private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws ParseException {
+    private void write(WriteBuffer buffer, GenericCANField field, PlcValue value) throws SerializationException {
         WriteBufferByteBased data = DataItemIO.staticSerialize(value, field.getDataType());
         try {
             buffer.pushContext("write-" + field);
@@ -155,7 +155,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                 try {
                     write(buffer, canField, value);
                     statusMap.put(field, PlcResponseCode.OK);
-                } catch (ParseException e) {
+                } catch (SerializationException e) {
                     statusMap.put(field, PlcResponseCode.INVALID_DATA);
                 }
             }
