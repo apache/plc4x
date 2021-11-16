@@ -195,7 +195,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Checksum Field (checksum) (Calculated)
-                        writeChecksumField("${namedField.name}", (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, parserArguments)}), ${helper.getDataWriterCall(typedField.type, namedField.name)});
+                        writeChecksumField("${namedField.name}", (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, parserArguments)}), ${helper.getDataWriterCall(typedField.type, namedField.name)});
                         <#break>
                     <#case "const">
                         <#assign constField = field.asConstField().orElseThrow()>
@@ -233,23 +233,19 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                         <#break>
                     <#case "manualArray">
                         <#assign manualArrayField = field.asManualArrayField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Manual Array Field (${manualArrayField.name})
-                        <#-- TODO: Port this -->
-                        if(${manualArrayField.name} != null) {
-                        writeBuffer.pushContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
-                        for(${helper.getLanguageTypeNameForField(field)} element : ${manualArrayField.name}) {
-                        ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, parserArguments)};
-                        }
-                        writeBuffer.popContext("${manualArrayField.name}", WithReaderWriterArgs.WithRenderAsList(true));
-                        }
+                        writeManualArrayField("${namedField.name}", ${namedField.name}, (${helper.getNonPrimitiveLanguageTypeNameForField(typedField)} _value) -> ${helper.toParseExpression(manualArrayField, manualArrayField.serializeExpression, parserArguments)}, writeBuffer);
                         <#break>
                     <#case "manual">
                         <#assign manualField = field.asManualField().orElseThrow()>
+                        <#assign typedField = field.asTypedField().orElseThrow()>
+                        <#assign namedField = field.asNamedField().orElseThrow()>
 
                         // Manual Field (${manualField.name})
-                        <#-- TODO: Port this -->
-                        ${helper.toSerializationExpression(manualField, manualField.serializeExpression, parserArguments)};
+                        writeManualField("${namedField.name}", () -> ${helper.toParseExpression(manualField, manualField.serializeExpression, parserArguments)}, writeBuffer);
                         <#break>
                     <#case "optional">
                         <#assign optionalField = field.asOptionalField().orElseThrow()>

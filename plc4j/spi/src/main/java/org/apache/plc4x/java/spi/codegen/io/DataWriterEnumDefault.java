@@ -18,7 +18,11 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
 import java.util.function.Function;
 
@@ -45,14 +49,13 @@ public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
     }
 
     @Override
-    public T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
-        return write(logicalName, value, enumSerializer, enumNamer, dataWriter, writerArgs);
+    public void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
+        write(logicalName, value, enumSerializer, enumNamer, dataWriter, writerArgs);
     }
 
-    public T write(String logicalName, T value, Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> rawWriter, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, T value, Function<T, I> enumSerializer, Function<T, String> enumNamer, DataWriter<I> rawWriter, WithWriterArgs... writerArgs) throws SerializationException {
         final I rawValue = enumSerializer.apply(value);
-        rawWriter.write(logicalName, rawValue, WithReaderWriterArgs.WithAdditionalStringRepresentation(enumNamer.apply(value)));
-        return value;
+        rawWriter.write(logicalName, rawValue, ArrayUtils.addAll(writerArgs, WithReaderWriterArgs.WithAdditionalStringRepresentation(enumNamer.apply(value))));
     }
 
     @Override

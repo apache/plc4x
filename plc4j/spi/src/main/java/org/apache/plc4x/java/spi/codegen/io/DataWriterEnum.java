@@ -23,6 +23,6 @@ import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
 public interface DataWriterEnum<T> extends DataWriter<T> {
 
-    T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
+    void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
 
 }

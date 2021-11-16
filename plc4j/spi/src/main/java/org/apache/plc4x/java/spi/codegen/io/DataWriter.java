@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 
 public interface DataWriter<T> extends ByteOrderAware {
 
-    T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
+    void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
 
     void pushContext(String logicalName, WithWriterArgs... writerArgs);
     void popContext(String logicalName, WithWriterArgs... writerArgs);

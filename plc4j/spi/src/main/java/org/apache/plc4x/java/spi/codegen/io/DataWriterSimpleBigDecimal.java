@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -32,9 +31,8 @@ public class DataWriterSimpleBigDecimal extends DataWriterSimpleBase<BigDecimal>
     }
 
     @Override
-    public BigDecimal write(String logicalName, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeBigDecimal(logicalName, bitLength, value, writerArgs);
-        return value;
     }
 
 }

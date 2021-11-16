@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-
-import java.util.Objects;
 
 public class DataWriterSimpleSignedInt extends DataWriterSimpleBase<Integer> {
 
@@ -32,9 +29,8 @@ public class DataWriterSimpleSignedInt extends DataWriterSimpleBase<Integer> {
     }
 
     @Override
-    public Integer write(String logicalName, Integer value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, Integer value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeInt(logicalName, bitLength, value, writerArgs);
-        return value;
     }
 
 }

@@ -20,20 +20,27 @@ package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.*;
 
-public class FieldWriterEnum<T> implements FieldWriter<T> {
+import java.util.List;
+
+public class FieldWriterManualArray<T> implements FieldWriter<T> {
 
     @Override
     public void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
         throw new NotImplementedException();
     }
 
-    public void writeField(String logicalName, String innerName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        dataWriter.pushContext(logicalName);
-        switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
-        dataWriter.popContext(logicalName);
+    public void writeManualArrayField(String logicalName, List<T> values, ConsumeSerializeWrapped<T> consumer, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
+        switchSerializeByteOrderIfNecessary(() -> {
+            if (values != null) {
+                writeBuffer.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+                for (T value : values) {
+                    consumer.consume(value);
+                }
+                writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+            }
+        }, writeBuffer, extractByteOder(writerArgs).orElse(null));
     }
 
 }

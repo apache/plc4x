@@ -18,13 +18,11 @@
  */
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigInteger;
-import java.util.Objects;
 
 public class DataWriterSimpleSignedBigInteger extends DataWriterSimpleBase<BigInteger> {
 
@@ -33,9 +31,8 @@ public class DataWriterSimpleSignedBigInteger extends DataWriterSimpleBase<BigIn
     }
 
     @Override
-    public BigInteger write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeBigInteger(logicalName, bitLength, value, writerArgs);
-        return value;
     }
 
 }

@@ -32,32 +32,33 @@ public class FieldWriterArray<T> implements FieldWriter<T> {
     }
 
     public void writeByteArrayField(String logicalName, byte[] values, DataWriter<byte[]> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        if(values != null) {
+        if (values != null) {
             dataWriter.write(logicalName, values, writerArgs);
         }
     }
 
     public void writeSimpleTypeArrayField(String logicalName, List<T> values, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        if(values != null) {
-            for (T value : values) {
-                switchSerializeByteOrderIfNecessary(() -> dataWriter.write("value", value, writerArgs), dataWriter, extractByteOder(writerArgs).orElse(null));
+        switchSerializeByteOrderIfNecessary(() -> {
+            if (values != null) {
+                dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+                for (T value : values) {
+                    dataWriter.write("value", value, writerArgs);
+                }
+                dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             }
-        }
-        dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        }, dataWriter, extractByteOder(writerArgs).orElse(null));
     }
 
     public void writeComplexTypeArrayField(String logicalName, List<? extends Message> values, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
-        writeBuffer.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-        if(values != null) {
-            for (Message value : values) {
-                switchSerializeByteOrderIfNecessary(() -> {
+        switchSerializeByteOrderIfNecessary(() -> {
+            if (values != null) {
+                writeBuffer.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+                for (Message value : values) {
                     value.serialize(writeBuffer);
-                    return null;
-                }, writeBuffer, extractByteOder(writerArgs).orElse(null));
+                }
+                writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             }
-        }
-        writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
+        }, writeBuffer, extractByteOder(writerArgs).orElse(null));
     }
 
 }

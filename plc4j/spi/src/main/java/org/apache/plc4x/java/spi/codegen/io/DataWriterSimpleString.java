@@ -29,9 +29,8 @@ public class DataWriterSimpleString extends DataWriterSimpleBase<String> {
     }
 
     @Override
-    public String write(String logicalName, String value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, String value, WithWriterArgs... writerArgs) throws SerializationException {
         writeBuffer.writeString(logicalName, bitLength,"UTF-8", value, writerArgs);
-        return value;
     }
 
 }

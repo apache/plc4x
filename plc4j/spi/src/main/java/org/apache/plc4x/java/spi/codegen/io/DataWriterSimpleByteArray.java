@@ -29,13 +29,12 @@ public class DataWriterSimpleByteArray extends DataWriterSimpleBase<byte[]> {
     }
 
     @Override
-    public byte[] write(String logicalName, byte[] value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, byte[] value, WithWriterArgs... writerArgs) throws SerializationException {
         if (bitLength != 8) {
             throw new SerializationException("ByteArray fields only support bitLength of 8");
         }
         // TODO: Get a WirReaderArgs parameter for the number of bytes ...
         writeBuffer.writeByteArray(logicalName, value, writerArgs);
-        return value;
     }
 
 }

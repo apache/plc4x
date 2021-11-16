@@ -50,7 +50,7 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
     }
 
     @Override
-    public T write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException {
         boolean hasLogicalName = StringUtils.isNotBlank(logicalName);
         if (hasLogicalName) {
             writeBuffer.pushContext(logicalName);
@@ -59,7 +59,6 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
         if (hasLogicalName) {
             writeBuffer.popContext(logicalName);
         }
-        return value;
     }
 
 }
