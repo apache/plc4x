@@ -60,10 +60,10 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
         return (buff) -> 16;
     }
 
-    /*@Override
-    public MessageIO<SocketCANFrame, SocketCANFrame> getMessageIO(Configuration cfg) {
+    @Override
+    public MessageInput<SocketCANFrame> getMessageInput(Configuration cfg) {
         return new SocketCANFrameIO();
-    }*/
+    }
 
     @Override
     public Class<SocketCANFrame> getMessageType() {
@@ -97,9 +97,9 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
                     }
 
                     @Override
-                    public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
+                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
                         try {
-                            return serializer.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
+                            return input.parse(new ReadBufferByteBased(frame.getData(), ByteOrder.LITTLE_ENDIAN), args);
                         } catch (ParseException e) {
                             throw new PlcRuntimeException(e);
                         }

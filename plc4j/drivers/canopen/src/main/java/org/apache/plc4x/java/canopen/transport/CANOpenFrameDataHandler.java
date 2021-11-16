@@ -28,6 +28,7 @@ import org.apache.plc4x.java.canopen.readwrite.io.CANOpenPayloadIO;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
@@ -57,11 +58,11 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
         try {
             CANOpenPayload payload = frame.getPayload();
             WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            CANOpenPayloadIO.staticSerialize(buffer, payload);
+            payload.serialize(buffer);
             return builder.get().withId(frame.getService().getMin() + frame.getNodeId())
                 .withData(buffer.getData())
                 .create();
-        } catch (ParseException e) {
+        } catch (SerializationException e) {
             throw new PlcRuntimeException(e);
         }
     }

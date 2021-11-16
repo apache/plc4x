@@ -20,12 +20,13 @@ package org.apache.plc4x.java.transport.can;
 
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 
 public interface FrameData {
 
     int getNodeId();
 
-    <T extends Message> T read(MessageIO<T, T> serializer, Object ... args);
+    <T extends Message> T read(MessageInput<T> input, Object ... args);
 
     int getDataLength();
     byte[] getData();

@@ -57,11 +57,6 @@ public class VirtualCANFrame implements Message {
         return 0;
     }
 
-    /*@Override
-    public MessageIO<? extends Message, ? extends Message> getMessageIO() {
-        return VirtualCANFrameIO.INSTANCE;
-    }*/
-
     public String toString() {
         return "VirtualCANFrame " + nodeId + "[" + data.length + "]" + Hex.encodeHexString(data);
     }

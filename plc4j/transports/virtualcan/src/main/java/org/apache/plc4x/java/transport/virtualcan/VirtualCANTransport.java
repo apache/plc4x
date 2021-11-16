@@ -96,9 +96,9 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
                     }
 
                     @Override
-                    public <T extends Message> T read(MessageIO<T, T> serializer, Object... args) {
+                    public <T extends Message> T read(MessageInput<T> input, Object... args) {
                         try {
-                            return serializer.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
+                            return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
                         } catch (ParseException e) {
                             throw new PlcRuntimeException(e);
                         }
@@ -118,8 +118,9 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
         };
     }
 
-    /*@Override
-    public <X extends MessageIO<VirtualCANFrame, VirtualCANFrame>> X getMessageIO(Configuration configuration) {
-        return (X) new VirtualCANFrameIO();
-    }*/
+    @Override
+    public MessageInput<VirtualCANFrame> getMessageInput(Configuration configuration) {
+        return new VirtualCANFrameIO();
+    }
+
 }

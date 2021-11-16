@@ -25,6 +25,7 @@ import org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.COUNT;
@@ -51,7 +52,7 @@ public class StaticHelper {
         return io.readString(8 * length, charset);
     }
 
-    public static void serializeString(WriteBuffer io, PlcValue value, String charset) throws ParseException {
+    public static void serializeString(WriteBuffer io, PlcValue value, String charset) throws SerializationException {
         io.writeString(8, charset, value.getString());
     }
 
