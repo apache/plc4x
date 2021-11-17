@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -37,7 +38,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.2.2</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -51,15 +51,6 @@
             </goals>
             <configuration>
               <skipInvocation>${skip-code-generation-tests}</skipInvocation>
-              <!-- These option allow that openjdk >=16 can run the google-code-format -->
-              <!-- TODO: Add this to a self-activating maven profile -->
-              <!--mavenOpts>
-                - -add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-                - -add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                - -add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-                - -add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-                - -add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-              </mavenOpts-->
               <debug>true</debug>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
@@ -84,6 +75,40 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>java8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <!-- TODO: fix build for java 8-->
+    </profile>
+    <profile>
+      <id>java17</id>
+      <!-- NOTE: activate manually if you have a 17 version installed as this is getting picked up by the invoker plugin -->
+      <activation>
+        <jdk>17</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <configuration>
+              <mavenOpts>
+                --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+                --add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+                --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+                --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+                --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+              </mavenOpts>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <!-- We are using the Freemarker module to generate Java code -->
