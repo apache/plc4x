@@ -39,4 +39,4 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Run mvnw
-        run: ./mvn install
+        run: ./mvnw install
