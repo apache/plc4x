@@ -76,40 +76,6 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>java8</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <!-- TODO: fix build for java 8-->
-    </profile>
-    <profile>
-      <id>java17</id>
-      <!-- NOTE: activate manually if you have a 17 version installed as this is getting picked up by the invoker plugin -->
-      <activation>
-        <jdk>[17,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <configuration>
-              <mavenOpts>
-                --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-                --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-              </mavenOpts>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <dependencies>
     <!-- We are using the Freemarker module to generate Java code -->
     <dependency>
