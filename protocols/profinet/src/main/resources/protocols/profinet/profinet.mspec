@@ -96,29 +96,32 @@
 // RPC Header {
     // RPCVersion 4.10.3.2.1
     [const         uint 8                version                        '0x04'                 ]
-    // RPCPacketType 4.10.3.2.2
+    // RPCPacketType 4.10.3.2.2 (8 bit)
     [simple        DceRpc_PacketType     packetType                                            ]
     // PRCFlags 4.10.3.2.3
-    [reserved      bit                                                    'false'                ]
+    [reserved      bit                                                  'false'                ]
     [const         bit                   broadcast                      'false'                ]
-    [const         bit                   idempotent                     'false'                ]
+    [simple        bit                   idempotent                                            ]
     [const         bit                   maybe                          'false'                ]
-    [const         bit                   noFragmentAcknowledgeRequested 'false'                ]
+    [simple        bit                   noFragmentAcknowledgeRequested                        ]
     [const         bit                   fragment                       'false'                ]
-    [const         bit                   lastFragment                   'false'                ]
-    [reserved      bit                                                    'false'                ]
+    [simple        bit                   lastFragment                                          ]
+    [reserved      bit                                                  'false'                ]
     // PRCFlags2 4.10.3.2.4
-    [reserved      uint 6                                                 '0x00'                 ]
+    [reserved      uint 6                                               '0x00'                 ]
     [const         bit                   cancelWasPending               'false'                ]
-    [reserved      bit                                                    'false'                ]
-    // RPCDRep 4.10.3.2.5
+    [reserved      bit                                                  'false'                ]
+    // RPCDRep 4.10.3.2.5 (4 bit & 4 bit)
     [simple        IntegerEncoding       integerEncoding                                       ]
     [simple        CharacterEncoding     characterEncoding                                     ]
-    // RPCDRep2 4.10.3.2.5
+    // RPCDRep2 4.10.3.2.5 (8 bit)
     [simple        FloatingPointEncoding floatingPointEncoding                                 ]
+    // RPCDRep3 (8 bit shall be 0)
+    [reserved      uint 8                                               '0x00'                 ]
     // RPCSerialHigh 4.10.3.2.6
     [const         uint 8                serialHigh                     '0x00'                 ]
     [batchSet byteOrder='integerEncoding ? "BIG_ENDIAN" : "LITTLE_ENDIAN"'
+        // RPCObjectUUID 4.10.3.2.8
         // RPCObjectUUID 4.10.3.2.8
         [simple DceRpc_ObjectUuid        objectUuid                                            ]
         // RPCInterfaceUUID 4.10.3.2.9
@@ -196,11 +199,11 @@
 //       the first parts are effected by endianess, and the last 8
 //       bytes are fixed big-endian. Therefore the complicated notation.
 [type DceRpc_ActivityUuid
-    [simple  uint 32 data1                         ]
-    [simple  uint 16 data2                         ]
-    [simple  uint 16 data3                         ]
+    [simple  uint 32 data1          ]
+    [simple  uint 16 data2          ]
+    [simple  uint 16 data3          ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [simple  uint 64 data4 byteOrder='"BIG_ENDIAN"']
+    [array   byte    data4 count '8']
 ]
 
 // There are some special MAC addresses reserved:
@@ -851,7 +854,7 @@
 
 [enum uint 4 CharacterEncoding
     ['0x0' ASCII]
-    ['0x0' EBCDIC]
+    ['0x1' EBCDIC]
 ]
 
 [enum uint 8 FloatingPointEncoding

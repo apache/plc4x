@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.profinet;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.spi.generation.*;
@@ -35,16 +36,16 @@ public class ProfinetPoc {
 
         // Send Profinet IO Context Manager (PNIO-CM) Connection Request (UDP)
         DceRpc_Packet connectionRequest = new DceRpc_Packet(
-            DceRpc_PacketType.REQUEST,
+            DceRpc_PacketType.REQUEST, true, false, false,
             IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid(0x0000, 0x0904, 0x002A),
+            new DceRpc_ObjectUuid(0x0001, 0x0904, 0x002A),
             new DceRpc_InterfaceUuid_DeviceInterface(), generateActivityUuid(),
             0, 0, DceRpc_Operation.CONNECT,
             new PnIoCm_Packet_Req(404, 404, 0, 404,
                 Arrays.asList(
                     new PnIoCm_Block_ArReq((short) 1, (short) 0, PnIoCm_ArType.IO_CONTROLLER,
                         new Uuid(Hex.decodeHex("654519352df3b6428f874371217c2b51")), 2,
-                        new MacAddress(Hex.decodeHex("606D3C3DA9A3")),
+                        new MacAddress(Hex.decodeHex("806d970ff777")),
                         new Uuid(Hex.decodeHex("dea000006c9711d1827100640008002a")),
                         false, false, false,
                         false, PnIoCm_CompanionArType.SINGLE_AR, false,
@@ -155,7 +156,7 @@ public class ProfinetPoc {
             wb.writeLong(64, number.getLeastSignificantBits());
 
             ReadBuffer rb = new ReadBufferByteBased(wb.getData());
-            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readBigInteger(64));
+            return new DceRpc_ActivityUuid(rb.readLong(32), rb.readInt(16), rb.readInt(16), rb.readByteArray(8));
         } catch (SerializationException | ParseException e) {
             // Ignore ... this should actually never happen.
         }
