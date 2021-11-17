@@ -146,8 +146,8 @@ func (m *DF1UnprotectedReadResponse) Serialize(writeBuffer utils.WriteBuffer) er
 			if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			for _, Element := range m.Data {
-				WriteData(writeBuffer, Element)
+			for _, _value := range m.Data {
+				WriteData(writeBuffer, _value)
 			}
 			if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
