@@ -38,5 +38,19 @@ jobs:
           java-package: jdk
           java-version: ${{ matrix.java }}
 
+      - name: Calculate platform suffix
+        id: platform_suffix
+        uses: actions/github-script@v5.0.0
+        env:
+          OS: ${{ matrix.os }}
+        with:
+          script: |
+            const { OS } = process.env
+            if (OS.includes("windows")) {
+              core.setOutput('platform_suffix', `.cmd`)
+            } else {
+              core.setOutput('platform_suffix', ``)
+            }
+
       - name: Run mvnw
-        run: ./mvnw install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} install
