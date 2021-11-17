@@ -177,8 +177,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 S7AlarmEvent alarmevent = new S7AlarmEvent(msg);
                                 dispathqueue.add(alarmevent);
                             }                                                                                      
-                        } else
-                        //TODO: Check parameter for diferentation                            
+                        } else                           
                         if ((obj instanceof S7CyclicEvent)){
                                 dispathqueue.add(obj);                               
                         } else {
@@ -190,7 +189,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("ObjectProcessor Bye!");            
+            LOGGER.info("ObjectProcessor Bye!");            
         }
 
         public void doShutdown(){
@@ -251,7 +250,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                     Logger.getLogger(S7ProtocolEventLogic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("EventDispacher Bye!");
+            LOGGER.info("EventDispacher Bye!");
         }
 
         public void doShutdown(){

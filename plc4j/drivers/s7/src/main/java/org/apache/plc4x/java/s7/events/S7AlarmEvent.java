@@ -19,8 +19,11 @@
 package org.apache.plc4x.java.s7.events;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -214,7 +217,7 @@ public class S7AlarmEvent implements S7Event {
                 map.put(Fields.SIG_DATA_COMING.name(),  buffercoming);
                 map.put(Fields.SIG_DATA_COMING_STATUS.name(), datacoming.getReturnCode().getValue());
                 map.put(Fields.SIG_DATA_COMING_SIZE.name(), datacoming.getTransportSize().getValue());
-                map.put(Fields.SIG_DATA_COMING_LENGTH.name(), datacoming.getValueLength());                
+                map.put(Fields.SIG_DATA_COMING_LENGTH.name(), (short) datacoming.getValueLength());                
                 
                 j = 0;
                 for (short s:datagoing.getData()) {
@@ -225,7 +228,7 @@ public class S7AlarmEvent implements S7Event {
                 map.put(Fields.SIG_DATA_GOING.name(),  buffergoing);                   
                 map.put(Fields.SIG_DATA_GOING_STATUS.name(), datagoing.getReturnCode().getValue());
                 map.put(Fields.SIG_DATA_GOING_SIZE.name(), datagoing.getTransportSize().getValue());
-                map.put(Fields.SIG_DATA_GOING_LENGTH.name(), datagoing.getValueLength());              
+                map.put(Fields.SIG_DATA_GOING_LENGTH.name(), (short) datagoing.getValueLength());              
                                                            
             } else if (event.getAlarmType() == AlarmType.ALARM_8) {
                 map.put(Fields.TYPE.name(), "ALARM8_QUERY");
@@ -378,7 +381,7 @@ public class S7AlarmEvent implements S7Event {
                 for (AssociatedValueType value:values) {
                     map.put("SIG_"+i+"_DATA_STATUS", value.getReturnCode().getValue());
                     map.put("SIG_"+i+"_DATA_SIZE", value.getTransportSize().getValue());
-                    map.put("SIG_"+i+"_DATA_LENGTH", value.getValueLength());
+                    map.put("SIG_"+i+"_DATA_LENGTH", (short) value.getValueLength());
                     byte[] data = new byte[value.getData().length];
                     j = 0;
                     for (short s:value.getData()) {
@@ -472,7 +475,7 @@ public class S7AlarmEvent implements S7Event {
     }
 
     @Override
-    public boolean isValidByte(String name, int index) {
+    public boolean isValidByte(String name, int index) {  
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -483,7 +486,13 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Byte getByte(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Byte.BYTES) {
+                return bytebuf.getByte(index);
+            }
+        }; 
+        throw new UnsupportedOperationException("Not supported yet.");        
     }
 
     @Override
@@ -508,6 +517,12 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Short getShort(String name, int index) {
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Short.BYTES) {
+                return bytebuf.getShort(index);
+            }
+        };       
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -533,7 +548,13 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Integer getInteger(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Integer.BYTES) {
+                return bytebuf.getInt(index);
+            }
+        }; 
+        throw new UnsupportedOperationException("Not supported yet.");        
     }
 
     @Override
@@ -578,12 +599,18 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Long getLong(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (long) map.get(name);
     }
 
     @Override
     public Long getLong(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Long.BYTES) {
+                return bytebuf.getLong(index);
+            }
+        }; 
+        throw new UnsupportedOperationException("Not supported yet.");   
     }
 
     @Override
@@ -608,7 +635,13 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Float getFloat(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Long.BYTES) {
+                return bytebuf.getFloat(index);
+            }
+        }; 
+        throw new UnsupportedOperationException("Not supported yet.");   
     }
 
     @Override
@@ -633,7 +666,13 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public Double getDouble(String name, int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+            if (bytebuf.readableBytes() >= index * Double.BYTES) {
+                return bytebuf.getDouble(index);
+            }
+        }; 
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
@@ -678,7 +717,11 @@ public class S7AlarmEvent implements S7Event {
 
     @Override
     public String getString(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (map.get(name) instanceof byte[]) {
+            ByteBuf bytebuf = Unpooled.wrappedBuffer((byte[])map.get(name));
+             return bytebuf.readCharSequence(bytebuf.readableBytes(), Charset.forName("utf-8")).toString();            
+        }; 
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
@@ -780,6 +823,51 @@ public class S7AlarmEvent implements S7Event {
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public String toString() {
+        ByteBuf buffer;
+        StringBuilder str = new StringBuilder();
+        str.append(Fields.EVENT_ID.name() + ": " + Long.toHexString((long) map.get(Fields.EVENT_ID.name())));
+        str.append("\r\n");        
+        str.append(Fields.TYPE.name() + ": " + ((String) map.get(Fields.TYPE.name())));
+        str.append("\r\n");
+        short nvalues = (short) map.get(Fields.ASSOCIATED_VALUES.name());
+        str.append(Fields.ASSOCIATED_VALUES.name() + ": " + nvalues); 
+        str.append("\r\n");
+        str.append(Fields.TIMESTAMP.name() + ": " + ((Instant) map.get(Fields.TIMESTAMP.name()))); 
+        str.append("\r\n");
+        
+        str.append("SIG_X: ");
+        for (int i=8; i>=1; i--) {
+            str.append(map.get("SIG_"+i) + " ");
+        }        
+        str.append("\r\n"); 
+        str.append("SIG_X_DATA_GOING: ");
+        for (int i=8; i>=1; i--) {
+            str.append(map.get("SIG_"+i+"_DATA_GOING") + " ");
+        }  
+        str.append("\r\n"); 
+        str.append("SIG_X_DATA_COMING: ");
+        for (int i=8; i>=1; i--) {
+            str.append(map.get("SIG_"+i+"_DATA_COMING") + " ");
+        }   
+        str.append("\r\n");        
+        for (int i=1; i<= nvalues; i++){
+            str.append("SIG_"+i+"_DATA: " + ((short) map.get("SIG_"+i+"_DATA_STATUS")));
+            str.append(" " + ((short) map.get("SIG_"+i+"_DATA_SIZE")));
+            str.append(" " + ((short) map.get("SIG_"+i+"_DATA_LENGTH")));
+            buffer = Unpooled.wrappedBuffer((byte[]) map.get("SIG_"+i+"_DATA"));
+            str.append(" "  + ByteBufUtil.hexDump(buffer));   
+            str.append("\r\n");            
+        }
+        
+        
+        return str.toString();
+
+    }
     
+
+
     
 }

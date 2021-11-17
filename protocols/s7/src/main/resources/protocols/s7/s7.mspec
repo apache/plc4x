@@ -278,10 +278,14 @@
     ]
 ]
 
+//TODO: Se debe modificar el calculo para incluir el tipo
+//      . si es tipo 4 usa el desplazamiento
+//      . si es tipo 3, la longitud es la indicada
+//      . verificar calculo con los otros tipos
 [type 'AssociatedValueType'
     [simple DataTransportErrorCode 'returnCode']
     [simple DataTransportSize      'transportSize']
-    [manual uint 16                'valueLength'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
+    [manual uint 16                'valueLength'   'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.RightShift3", readBuffer, transportSize)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.LeftShift3", writeBuffer, _value.valueLength)' '2']
     [array  uint 8                 'data'          count    'STATIC_CALL("org.apache.plc4x.java.s7.utils.S7EventHelper.EventItemLength", readBuffer, valueLength)']
 ]
 

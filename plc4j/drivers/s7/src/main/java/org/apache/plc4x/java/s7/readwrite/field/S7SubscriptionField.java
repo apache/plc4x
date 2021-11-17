@@ -46,10 +46,7 @@ public class S7SubscriptionField implements PlcField {
     //TODO: Query SCAN 
     private static final Pattern EVENT_ALARM_QUERY_PATTERN = 
         Pattern.compile("(^QUERY:)((ALARM_S)|(ALARM_8))");    
-        
-      
-
-    
+                  
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
@@ -171,7 +168,6 @@ public class S7SubscriptionField implements PlcField {
             EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(fieldString).matches() ||
             EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(fieldString).matches() ||
             EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(fieldString).matches(); 
-
     }     
     
     public static S7SubscriptionField of(String fieldString) {

@@ -106,6 +106,9 @@ import org.apache.plc4x.java.spi.values.PlcUINT;
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
+ * 
+ * TODO: Evaluate the implementation of the "Visitor"  design pattern in the mspec code generator.
+ * 
  */
 public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
@@ -113,11 +116,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(10);
-
-    /*
-    *
-    */
-
 
     /*
      * Take into account that the size of this buffer depends on the final device.
@@ -375,7 +373,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return future;
     }    
     
-
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
@@ -693,7 +690,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return response;        
     }
 
-
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         CompletableFuture<PlcUnsubscriptionResponse> future = new CompletableFuture<>();
@@ -701,7 +697,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         return future;
     }
-
     
     private CompletableFuture<PlcSubscriptionResponse>  toPlcSubscriptionResponse(PlcSubscriptionRequest subscriptionRequest, CompletableFuture<S7Message> response) {
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();      
@@ -749,7 +744,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             payload = new S7PayloadUserDataItemCpuFunctionMsgSubscription(
                             DataTransportErrorCode.OK,
                             DataTransportSize.OCTET_STRING,
-                            0x00,
+                            0x0a,
                             subsevent,
                             "HmiRtm  ",
                             null,
@@ -1034,13 +1029,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         payloadItems.add(payload);        
     }    
     
-    
+
     private PlcSubscriptionResponse decodeEventSubcriptionRequest(String strField, 
                                     PlcSubscriptionRequest plcSubscriptionRequest,
                                     S7Message responseMessage
                                 ) throws PlcProtocolException
     {
-        logger.info("decodeEventSubcriptionRequest: " + responseMessage);
+        //logger.info("decodeEventSubcriptionRequest: " + responseMessage);
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         short errorClass = 0;
         short errorCode = 0;
@@ -1497,8 +1492,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
     
-    
-
     private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
         //logger.info("decodeReadResponse: " + responseMessage);
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
@@ -1657,11 +1650,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     }
     
-    
-   
-   /*
-    *
-    */
     private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, LinkedList<PlcSINT> plcValues){
         
         CompletableFuture<S7MessageUserData> future = new CompletableFuture<>();
@@ -1692,8 +1680,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         return future;
     }
-
-  
+    
     private CompletableFuture<S7MessageUserData>  reassembledAlarmEvents(short sequenceNumber) {
         CompletableFuture<S7MessageUserData> future = new CompletableFuture<>();
         
@@ -1723,8 +1710,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         return future;       
     }
-    
-    
+        
     private PlcResponse decodeWriteResponse(S7Message responseMessage, PlcWriteRequest plcWriteRequest) throws PlcProtocolException {
         Map<String, PlcResponseCode> responses = new HashMap<>();
         short errorClass;

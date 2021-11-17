@@ -32,16 +32,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.types.ModeTransitionType;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.values.PlcList;
+
 
 
 /**
@@ -1441,8 +1443,14 @@ public class S7EventHelper {
         buffer.writeUnsignedInt(16, valor);
     }
     
-    public static int RightShift3(final ReadBuffer buffer) throws ParseException {
-        return buffer.readUnsignedInt(16) >> 3;    
+    public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
+        int value = 0;
+        if (tsize == DataTransportSize.BIT){
+            value = buffer.readUnsignedInt(16);
+        } else {
+            value = buffer.readUnsignedInt(16) >> 3;
+        }
+        return value;    
     }
     
     //TODO: apply only if not the last item
@@ -1705,23 +1713,33 @@ public class S7EventHelper {
      * %[i]s                Character string (STRING ANSI)
      * %t#<Library name>    Access to text library
      * 
+     * Additional fields    Meaning
+     * =================    =======
+     * @100%s@              Computer name
+     * @101%s@              Application name (32 chars max.)
+     * @102%s@              User name (16 chars max.)
+     * @103%s@              Comments (255 chars max.)
+     * 
      * General representation:
      * @@<Associated Value><Type><Format><Library name>@
      * 
+     * 
      * @param alarm Alarm type from PLC.
      * @param alarmtext The text string to be processed.
-     * @param textlists List of texts for indexed replacement.
+     * @param textlists List of texts for indexed replacement. Follows the pattern used for PCS7.
      * @return The text string with the replacement values.
      */
-    public static String AlarmProcessing(final S7AlarmEvent alarm, String alarmtext, HashMap<String, HashMap<String, String>> textlists){
+    public static String AlarmProcessing(final S7AlarmEvent alarm, String alarmtext, HashMap<String, HashMap<Integer, Pair<Integer, HashMap<Integer, String>>>> textlist) {
         final Pattern ALARM_SIG =
-            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR](%([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@)");
+            Pattern.compile("(@[\\d]{0,3}[bycwixdrBYCWIXDR](%(([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1}))@)");
 
         final Pattern FIELDS =
-            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])(?<format>%([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1})@");
+            Pattern.compile("@(?<sig>[\\d]{0,3})(?<type>[bycwixdrBYCWIXDR])(?<format>%(([\\d]{0,2}[duxbs]){1}|(\\d\\.\\df){1}|(t#[a-zA-Z0-9]+){1}))@");
         
         final Pattern FIELD_FORMAT =
             Pattern.compile("%([\\d]{0,2})([duxbsDUXBS]{1})");
+        
+        if (alarmtext == null) return null;
         
         Map<String, Object> map = alarm.getMap();
         Matcher matcher = ALARM_SIG.matcher(alarmtext);        
@@ -1772,8 +1790,21 @@ public class S7EventHelper {
                     ; 
                     break;                
                 case "C":
+                    if (bytebuf.capacity() < Short.BYTES) break;                    
                     if (format.contains("%T#")) {
-                        
+                        if (textlist == null) break;
+                        String strlist = format.substring(
+                                format.indexOf("%T#") + 3,
+                                format.length());
+                        HashMap<Integer, Pair<Integer, HashMap<Integer, String>>>
+                                customlist = textlist.get(strlist);
+                        short libID = bytebuf.getShort(0);
+                        Pair<Integer, HashMap<Integer, String>> textIDmap
+                                = customlist.get(libID);
+                        String str = textIDmap.getRight().get(textIDmap.getLeft());
+                        //TODO: The recursive use of the function without a text list to avoid infinite loops.
+                        strField = AlarmProcessing(alarm,str, null);
+                                               
                     } else {
                         if (bytebuf.capacity() < Byte.BYTES) break;
                         fieldformat = FIELD_FORMAT.matcher(format);
@@ -1826,19 +1857,19 @@ public class S7EventHelper {
                     ;
                     break;                
                 case "X":
-                    if (bytebuf.capacity() < Long.BYTES) break;
+                    if (bytebuf.capacity() < Integer.BYTES) break;
                     if (format.contains("U")) {                    
                         value = bytebuf.getUnsignedInt(0);
                         String strReplace = format.replace("U", "d");
                         strField = String.format(strReplace, value);
                     } else if (format.contains("D")){
-                        value = bytebuf.getLong(0);
+                        value = (long) bytebuf.getInt(0);
                         strField = String.format(format, value);                        
                     } else if (format.contains("B")) {
                         value =   bytebuf.getUnsignedInt(0);
                         strField = Long.toBinaryString(value);
                     } else {
-                        value = bytebuf.getLong(0);                        
+                        value = (long) bytebuf.getInt(0);
                         strField = String.format(format, value);
                     };
                     strOut = strOut.replaceAll(matcher.group(0), strField);                      
@@ -1866,7 +1897,9 @@ public class S7EventHelper {
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break; 
                     if (format.contains("F")) { 
-                        strField = String.format(format, value); 
+                        format = format.toLowerCase();
+                        float fvalue = bytebuf.getFloat(0);
+                        strField = String.format(format, fvalue); 
                         strOut = strOut.replaceAll(matcher.group(0), strField);                         
                     }                     
                     ;
