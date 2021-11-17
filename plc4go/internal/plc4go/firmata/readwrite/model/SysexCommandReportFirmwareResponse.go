@@ -187,8 +187,8 @@ func (m *SysexCommandReportFirmwareResponse) Serialize(writeBuffer utils.WriteBu
 			if pushErr := writeBuffer.PushContext("fileName", utils.WithRenderAsList(true)); pushErr != nil {
 				return pushErr
 			}
-			for _, Element := range m.FileName {
-				SerializeSysexString(writeBuffer, Element)
+			for _, _value := range m.FileName {
+				SerializeSysexString(writeBuffer, _value)
 			}
 			if popErr := writeBuffer.PopContext("fileName", utils.WithRenderAsList(true)); popErr != nil {
 				return popErr
