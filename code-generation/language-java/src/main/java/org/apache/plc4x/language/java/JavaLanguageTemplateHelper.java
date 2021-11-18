@@ -96,6 +96,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case "long":
             case "Long":
                 return value + "L";
+            case "float":
+            case "Float":
+                return value + "F";
             default:
                 return value;
         }
@@ -702,7 +705,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         else if ("BIG_ENDIAN".equals(variableLiteral.getName())) {
             return "ByteOrder.BIG_ENDIAN";
         } else if ("LITTLE_ENDIAN".equals(variableLiteral.getName())) {
-                return "ByteOrder.LITTLE_ENDIAN";
+            return "ByteOrder.LITTLE_ENDIAN";
         } else if (isVariableLiteralImplicitField(variableLiteral)) { // If we are accessing implicit fields, we need to rely on a local variable instead.
             return toImplictVariableParseExpression(variableLiteral, tracer);
         } else if (variableLiteral.getName().equals(variableLiteral.getName().toUpperCase())) { // All uppercase names are not fields, but utility methods.
