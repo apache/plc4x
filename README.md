@@ -19,6 +19,7 @@
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
+[![Platform compatibility](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
 
 
