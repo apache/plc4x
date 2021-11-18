@@ -203,7 +203,7 @@ If you don't want to bother setting up the environment on your normal system and
 
 ### Getting Started
 
-You must have at least Java 8 installed on your system and connectivity to Maven Central
+You must have at least Java >=9 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). However in order to build all parts
 of PLC4X exactly Java 11 is required. Maven 3.6 is required to build, so be sure it's installed and available on your system. 
 

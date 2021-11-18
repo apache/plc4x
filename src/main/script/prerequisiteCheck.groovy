@@ -493,6 +493,9 @@ if (os == "win") {
 // profiles.
 /////////////////////////////////////////////////////
 
+// Codegen requires at least java 9
+checkJavaVersion("9", null)
+
 if (dotnetEnabled) {
     checkDotnet()
 }

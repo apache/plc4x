@@ -25,13 +25,13 @@ We have partitioned the build to allow selecting the parts that are of interest.
 This is done by selecting so-called `Maven profiles`.
 More about these later down in this manual.
 
-For your convenience we also have provided a `Maven-Wrapper`, that should allow building of PLC4X with only `Java 8` or greater as requirement.
+For your convenience we also have provided a `Maven-Wrapper`, that should allow building of PLC4X with only `Java 9` or greater as requirement.
 
 === Requirements
 
 The only requirements to building PLC4X should be:
 
-* Java 8 JDK (or newer - latest tested version: Java 12)
+* Java 9 JDK (or newer - latest tested version: Java 17)
 * Git (Even if you are building the source distribution, the Kafka plugin seems to require a `git` executable being available on the systems `PATH`)
 * Apache Maven (3.1.0 or newer) *(Optional)* (See next chapter)
 
