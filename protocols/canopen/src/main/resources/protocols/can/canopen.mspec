@@ -354,7 +354,7 @@
 ]
 
 // A compact, byte aligned structure for test and embedding purposes
-[type CANOpenFrame byteOrder='"LITTLE_ENDIAN"'
+[type CANOpenFrame byteOrder='LITTLE_ENDIAN'
     [simple uint 8 nodeId]
     [simple CANOpenService service]
     [const uint 4 alignment '0x00']

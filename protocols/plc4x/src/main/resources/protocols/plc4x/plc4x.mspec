@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType Request byteOrder='"BIG_ENDIAN"'
+[discriminatedType Request byteOrder='BIG_ENDIAN'
     // TODO: Replace this with an discriminator field asap
     [simple RequestType type]
     [typeSwitch 'type'

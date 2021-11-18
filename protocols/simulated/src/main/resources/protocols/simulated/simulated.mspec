@@ -19,7 +19,7 @@
 
 // Remark: The different fields are encoded in Big-endian.
 
-[type  Dummy byteOrder='"BIG_ENDIAN"'
+[type  Dummy byteOrder='BIG_ENDIAN'
     [simple uint        16  dummy]
 ]
 

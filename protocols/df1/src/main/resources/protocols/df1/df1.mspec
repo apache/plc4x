@@ -17,7 +17,7 @@
  * under the License.
  */
 
-[discriminatedType DF1Symbol byteOrder='"BIG_ENDIAN"'
+[discriminatedType DF1Symbol byteOrder='BIG_ENDIAN'
     [const            uint  8      messageStart '0x10']
     [discriminator    uint  8      symbolType]
     [typeSwitch 'symbolType'

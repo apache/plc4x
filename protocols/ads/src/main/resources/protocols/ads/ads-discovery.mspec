@@ -21,7 +21,7 @@
 // AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
-[discriminatedType AdsDiscovery byteOrder='"BIG_ENDIAN"'
+[discriminatedType AdsDiscovery byteOrder='BIG_ENDIAN'
     [const uint 32 header '0x03661471L']
     [reserved   uint 32  '0x00000000L']
     [simple     Operation operation]

@@ -267,7 +267,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case VSTRING:
                     return "null";
             }
-            throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
+            throw new FreemarkerException("Unmapped base-type" + simpleTypeReference.getBaseType());
         } else {
             return "null";
         }
@@ -431,7 +431,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
     }
 
-   public String getDataWriterCall(TypeReference typeReference, String fieldName) {
+    public String getDataWriterCall(TypeReference typeReference, String fieldName) {
         if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataWriterCall(simpleTypeReference);
@@ -448,7 +448,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         }
         final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
         SimpleTypeReference outputTypeReference;
-        if("value".equals(attributeName)) {
+        if ("value".equals(attributeName)) {
             outputTypeReference = getEnumBaseTypeReference(typeReference);
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference, attributeName);
@@ -697,6 +697,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return toCastVariableParseExpression(field, variableLiteral, parserArguments, tracer);
         } else if ("STATIC_CALL".equals(variableLiteral.getName())) {
             return toStaticCallVariableParseExpression(field, variableLiteral, parserArguments, tracer);
+        }
+        // Special handling for ByteOrder enums (Built in enums)
+        else if ("BIG_ENDIAN".equals(variableLiteral.getName())) {
+            return "ByteOrder.BIG_ENDIAN";
+        } else if ("LITTLE_ENDIAN".equals(variableLiteral.getName())) {
+                return "ByteOrder.LITTLE_ENDIAN";
         } else if (isVariableLiteralImplicitField(variableLiteral)) { // If we are accessing implicit fields, we need to rely on a local variable instead.
             return toImplictVariableParseExpression(variableLiteral, tracer);
         } else if (variableLiteral.getName().equals(variableLiteral.getName().toUpperCase())) { // All uppercase names are not fields, but utility methods.
@@ -1046,6 +1052,21 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             }
         }
         return valueString;
+    }
+
+    public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
+        StringBuilder sb = new StringBuilder();
+        final Optional<Term> encodingOptional = field.getEncoding();
+        if (encodingOptional.isPresent()) {
+            final String encoding = toParseExpression(field, encodingOptional.get(), parserArguments);
+            sb.append(", WithOption.WithEncoding(").append(encoding).append(")");
+        }
+        final Optional<Term> byteOrderOptional = field.getByteOrder();
+        if (byteOrderOptional.isPresent()) {
+            final String byteOrder = toParseExpression(field, byteOrderOptional.get(), parserArguments);
+            sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
+        }
+        return sb.toString();
     }
 
 }
