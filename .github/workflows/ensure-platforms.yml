@@ -24,7 +24,8 @@ jobs:
   test:
     strategy:
       matrix:
-        java: [ 8, 11, 17 ]
+        # 8 not anymore supported for building
+        java: [ 11, 17 ]
         os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
