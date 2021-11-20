@@ -935,27 +935,31 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
         if (typeDefinition instanceof ComplexTypeDefinition) {
             ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
-            boolean needsStringEquals = complexTypeDefinition.getFields().stream()
-                .filter(NamedField.class::isInstance)
-                .filter(field -> ((NamedField) field).getName().equals(variableLiteral.getName()))
-                .filter(TypedField.class::isInstance)
-                .map(TypedField.class::cast)
-                .map(TypedField::getType)
-                .map(StringTypeReference.class::isInstance)
-                .findFirst()
-                .orElse(false);
-            if (needsStringEquals) {
+            boolean found = false;
+            for (Field field : complexTypeDefinition.getFields()) {
+                if (field instanceof NamedField) {
+                    if (((NamedField) field).getName().equals(variableLiteral.getName())) {
+                        if (field instanceof TypedField) {
+                            TypedField typedField = (TypedField) field;
+                            TypeReference type = typedField.getType();
+                            found = (type instanceof StringTypeReference) || (type instanceof VstringTypeReference);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (found) {
                 return true;
             }
         }
-        return typeDefinition.getParserArguments()
-            .orElse(Collections.emptyList())
-            .stream()
-            .filter(argument -> argument.getName().equals(variableLiteral.getName()))
-            .map(Argument::getType)
-            .map(StringTypeReference.class::isInstance)
-            .findFirst()
-            .orElse(false);
+        for (Argument argument : typeDefinition.getParserArguments()
+            .orElse(Collections.emptyList())) {
+            if (argument.getName().equals(variableLiteral.getName())) {
+                TypeReference type = argument.getType();
+                return (type instanceof StringTypeReference) || (type instanceof VstringTypeReference);
+            }
+        }
+        return false;
     }
 
     public boolean isEnumExpression(String expression) {
