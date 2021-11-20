@@ -56,6 +56,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SecureChannel {
@@ -1108,11 +1109,16 @@ public class SecureChannel {
         List<String> returnedEndpoints = new ArrayList<String>();
 
         // Get a list of the endpoints which match ours.
-        Stream<EndpointDescription> filteredEndpoints = Arrays.stream(Arrays.copyOf(sessionResponse.getServerEndpoints(), sessionResponse.getServerEndpoints().length, EndpointDescription[].class))
+        Stream<EndpointDescription> filteredEndpoints = sessionResponse.getServerEndpoints().stream()
+            .map(e -> (EndpointDescription) e)
             .filter(this::isEndpoint);
 
         //Determine if the requested security policy is included in the endpoint
-        filteredEndpoints.forEach(endpoint -> hasIdentity(Arrays.copyOf(endpoint.getUserIdentityTokens(), endpoint.getUserIdentityTokens().length, UserTokenPolicy[].class)));
+        filteredEndpoints.forEach(endpoint -> hasIdentity(
+            endpoint.getUserIdentityTokens().stream()
+            .map(p -> (UserTokenPolicy) p)
+            .toArray(UserTokenPolicy[]::new)
+        ));
 
         if (this.policyId == null) {
             throw new PlcRuntimeException("Unable to find endpoint - " + this.endpoints.get(0));

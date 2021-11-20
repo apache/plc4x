@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:driver-testsuite xmlns:test="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
-                       bigEndian="false">
+                       byteOrder="LITTLE_ENDIAN">
 
   <!-- https://base64.guru/converter/encode/hex -->
 
@@ -48,7 +48,7 @@
             <endpoint>
               <PascalString>
                 <sLength dataType="int" bitLength="32">20</sLength>
-                <stringValue dataType="string" bitLength="160" encoding="'UTF-8'">opc.test://hurz:null</stringValue>
+                <stringValue dataType="string" bitLength="160" encoding="UTF-8">opc.test://hurz:null</stringValue>
               </PascalString>
             </endpoint>
           </OpcuaHelloRequest>
