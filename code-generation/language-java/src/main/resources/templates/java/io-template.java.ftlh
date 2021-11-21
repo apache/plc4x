@@ -246,9 +246,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
                     <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValue?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     EvaluationHelper.equals(
                     ${helper.toParseExpression(null, discriminatorExpression, parserArguments)},
-                    <#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>
-                        ${tracer.dive("discriminatorValueNeedsStringEqualityCheck")}${discriminatorValue}
-                    <#elseif helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
+                    <#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                         <#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                             ${tracer.dive("isEnumTypeReference")}${helper.getDiscriminatorTypes()[discriminatorExpression.name].asComplexTypeReference().orElseThrow().name}.${discriminatorValue}
                         <#else>

@@ -80,7 +80,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#--
     Define the serialize-method for elements of this tpye
 -->
-plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>);
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_data** data_item);
 
 uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_data* data_item);
 

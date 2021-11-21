@@ -210,6 +210,15 @@ public class MessageFormatListener extends MSpecBaseListener {
         TypeReference type = ctx.type.dataType() != null ? getSimpleTypeReference(ctx.type.dataType()) : getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
         String expected = getExprString(ctx.expected);
+        /*if (type.isIntegerTypeReference()) {
+            IntegerTypeReference integerTypeReference = type.asIntegerTypeReference().orElseThrow(IllegalStateException::new);
+            int sizeInBits = integerTypeReference.getSizeInBits();
+            SimpleTypeReference.SimpleBaseType baseType = integerTypeReference.getBaseType();
+            if (sizeInBits >= 32 && baseType == SimpleTypeReference.SimpleBaseType.UINT
+                || sizeInBits > 32 && baseType == SimpleTypeReference.SimpleBaseType.INT) {
+                expected += "L";
+            }
+        }*/
         Field field = new DefaultConstField(getAttributes(ctx), type, name, expected);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);

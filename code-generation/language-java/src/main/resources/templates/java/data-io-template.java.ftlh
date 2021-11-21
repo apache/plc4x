@@ -87,9 +87,7 @@ public class ${type.name}IO {
                 EvaluationHelper.equals(
                     ${helper.toParseExpression(null, discriminatorExpression, parserArguments)}
                     ,
-                    <#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>
-                        "${discriminatorValue}"
-                    <#elseif helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)>
+                    <#if helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)>
                         <#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>
                             ${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type, false)}
                             .
@@ -344,7 +342,7 @@ public class ${type.name}IO {
     public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder byteOrder) throws SerializationException {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments.orElseThrow())},<#if helper.discriminatorValueNeedsStringEqualityCheck(dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)><#if helper.isEnumTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type, false)}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
+        <#list dataIoTypeDefinition.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments.orElseThrow())},<#if helper.isComplexTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)><#if helper.isEnumTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type, false)}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) ${helper.getSizeInBits(case,parserArguments)}) / 8.0f), byteOrder);
 
             <#list case.fields as field>

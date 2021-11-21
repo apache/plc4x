@@ -382,7 +382,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#break>
     <#case "implicit">
         <#assign implicitField = field.asImplicitField().orElseThrow()>
-        <#assign simpleTypeReference = implicitField.type>
+        <#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
 
         // Implicit Field (${implicitField.name})
         lengthInBits += ${simpleTypeReference.sizeInBits};

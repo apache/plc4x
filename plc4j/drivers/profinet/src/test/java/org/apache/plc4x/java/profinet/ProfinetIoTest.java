@@ -28,7 +28,7 @@ public class ProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
         long val1 = -559939584;
-        long val2 = 3735027712l;
+        long val2 = 3735027712L;
         System.out.println(Long.toHexString(val1));
         System.out.println(Long.toHexString(val2));
         //  -559939584 == ffffffffdea00000
