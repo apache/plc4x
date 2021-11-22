@@ -910,16 +910,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
             .asVariableLiteral()
             .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
-        VariableLiteral typeLiteral = arguments.get(1).asLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a literal"))
-            .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a Variable literal"));
-        final TypeDefinition typeDefinition = getTypeDefinitions().get(typeLiteral.getName());
+        StringLiteral typeLiteral = arguments.get(1).asLiteral()
+            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+        final TypeDefinition typeDefinition = getTypeDefinitions().get(typeLiteral.getValue());
         StringBuilder sb = new StringBuilder();
         if (typeDefinition.isComplexTypeDefinition()) {
             sb.append("Cast");
         }
-        sb.append(typeLiteral.getName());
+        sb.append(typeLiteral.getValue());
         sb.append("(").append(toVariableExpression(field, typeReference, firstArgument, parserArguments, serializerArguments, serialize, suppressPointerAccess)).append(")");
         return tracer + sb.toString() + variableLiteral.getChild().map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess))).orElse("");
     }

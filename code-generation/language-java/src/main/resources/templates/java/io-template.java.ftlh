@@ -129,19 +129,19 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
             <#if !field.isCountArrayField() && !field.isLengthArrayField()>
         throw new ParseException("array fields of type byte only support 'count' and 'length' loop-types.");
             </#if>
-        byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        byte[] ${namedField.name} = readBuffer.readByteArray("${namedField.name}", (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#else>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
             <#if field.isCountArrayField()>
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readCountArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
             <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                 <#if field.isLengthArrayField()>
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readLengthArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                 <#elseif field.isTerminatedArrayField()>
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = readTerminatedArrayField("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, () -> ((boolean) (${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)});
                 </#if>
             </#if>
         </#if>
@@ -151,14 +151,14 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "checksum">
         <#assign checksumField = field.asChecksumField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "const">
         <#assign constField = field.asConstField().orElseThrow()>
@@ -194,9 +194,9 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign namedField = field.asNamedField().orElseThrow()>
 
         <#if manualArrayField.type.isByteBased()>
-        byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        byte[] ${namedField.name} = readManualByteArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         <#else>
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> ${namedField.name} = readManualArrayField("${namedField.name}", readBuffer, () -> (boolean) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), () -> (${helper.getLanguageTypeNameForField(manualArrayField)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         </#if>
         <#break>
     <#case "manual">
@@ -204,21 +204,21 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = readManualField("${namedField.name}", readBuffer, () -> (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = readManualField("${namedField.name}", readBuffer, () -> (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)}</#if>${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}</#if>${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "padding">
         <#assign paddingField = field.asPaddingField().orElseThrow()>
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
-        read${field.typeName?cap_first}Field(${helper.getDataReaderCall(typedField.type)}, (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+        read${field.typeName?cap_first}Field(${helper.getDataReaderCall(typedField.type)}, (int) (${helper.toParseExpression(paddingField, paddingField.type, paddingField.paddingCondition, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
     <#case "reserved">
         <#assign reservedField = field.asReservedField().orElseThrow()>
@@ -245,7 +245,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
                 <#list case.discriminatorValues as discriminatorValue>
                     <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValue?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     EvaluationHelper.equals(
-                    ${helper.toParseExpression(null, discriminatorExpression, parserArguments)},
+                    ${helper.toParseExpression(null, helper.anyTypeReference, discriminatorExpression, parserArguments)},
                     <#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                         <#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
                             ${tracer.dive("isEnumTypeReference")}${helper.getDiscriminatorTypes()[discriminatorExpression.name].asComplexTypeReference().orElseThrow().name}.${discriminatorValue}
@@ -283,7 +283,7 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         <#assign typedField = field.asTypedField().orElseThrow()>
         <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field(${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field(${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
         <#break>
 </#switch>
 </#list>

@@ -30,19 +30,19 @@ import java.util.List;
 
 public class StaticHelper {
 
-    public static String parseAmsString(ReadBuffer io, int stringLength, String encoding) {
+    public static String parseAmsString(ReadBuffer readBuffer, int stringLength, String encoding) {
         try {
             if ("UTF-8".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
-                for(int i = 0; (i < stringLength) && io.hasMore(8); i++) {
-                    final byte curByte = io.readByte();
+                for(int i = 0; (i < stringLength) && readBuffer.hasMore(8); i++) {
+                    final byte curByte = readBuffer.readByte();
                     if (curByte != 0) {
                         bytes.add(curByte);
                     } else {
                         // Gobble up the remaining data, which is not added to the string.
                         i++;
-                        for(; (i < stringLength) && io.hasMore(8); i++) {
-                            io.readByte();
+                        for(; (i < stringLength) && readBuffer.hasMore(8); i++) {
+                            readBuffer.readByte();
                         }
                         break;
                     }
@@ -54,16 +54,16 @@ public class StaticHelper {
                 return new String(byteArray, StandardCharsets.UTF_8);
             } else if ("UTF-16".equalsIgnoreCase(encoding)) {
                 List<Byte> bytes = new ArrayList<>();
-                for(int i = 0; (i < stringLength) && io.hasMore(16); i++) {
-                    final short curShort = io.readShort(16);
+                for(int i = 0; (i < stringLength) && readBuffer.hasMore(16); i++) {
+                    final short curShort = readBuffer.readShort(16);
                     if (curShort != 0) {
                         bytes.add((byte) (curShort >>> 8));
                         bytes.add((byte) (curShort & 0xFF));
                     } else {
                         // Gobble up the remaining data, which is not added to the string.
                         i++;
-                        for(; (i < stringLength) && io.hasMore(16); i++) {
-                            io.readShort(16);
+                        for(; (i < stringLength) && readBuffer.hasMore(16); i++) {
+                            readBuffer.readShort(16);
                         }
                         break;
                     }
@@ -81,7 +81,7 @@ public class StaticHelper {
         }
     }
 
-    public static void serializeAmsString(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {
+    public static void serializeAmsString(WriteBuffer writeBuffer, PlcValue value, int stringLength, Object encoding) {
         // TODO: Need to implement the serialization or we can't write strings
         throw new PlcRuntimeException("Not implemented yet");
     }

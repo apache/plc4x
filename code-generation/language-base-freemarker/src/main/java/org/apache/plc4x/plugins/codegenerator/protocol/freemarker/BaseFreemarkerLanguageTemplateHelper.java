@@ -41,10 +41,25 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     // In mspec we are using some virtual fields that are useful for code generation.
     // As they should be shared over all language template implementations,
     // these are defined here manually.
-    private static final Map<String, SimpleTypeReference> builtInFields;
+    private static final Map<String, TypeReference> builtInFields;
 
     public static final String CUR_POS = "curPos";
     public static final String START_POS = "startPos";
+    public static final String READ_BUFFER = "readBuffer";
+    public static final String WRITE_BUFFER = "writeBuffer";
+
+    public static final TypeReference INT_TYPE_REFERENCE = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32);
+    public TypeReference getIntTypeReference() {
+        return INT_TYPE_REFERENCE;
+    }
+    public static final TypeReference BOOL_TYPE_REFERENCE = new DefaultBooleanTypeReference();
+    public TypeReference getBoolTypeReference() {
+        return BOOL_TYPE_REFERENCE;
+    }
+    public static final TypeReference ANY_TYPE_REFERENCE = new DefaultUndefinedTypeReference();
+    public TypeReference getAnyTypeReference() {
+        return ANY_TYPE_REFERENCE;
+    }
 
     static {
         builtInFields = new HashMap<>();
@@ -68,6 +83,28 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             @Override
             public int getSizeInBits() {
                 return 16;
+            }
+        });
+        builtInFields.put(READ_BUFFER, new ComplexTypeReference() {
+            @Override
+            public String getName() {
+                return "ReadBuffer";
+            }
+
+            @Override
+            public Optional<List<Term>> getParams() {
+                return Optional.empty();
+            }
+        });
+        builtInFields.put(WRITE_BUFFER, new ComplexTypeReference() {
+            @Override
+            public String getName() {
+                return "WriteBuffer";
+            }
+
+            @Override
+            public Optional<List<Term>> getParams() {
+                return Optional.empty();
             }
         });
     }
