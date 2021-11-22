@@ -168,7 +168,7 @@
     <asciidoctorj.version>2.5.1</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.1.2</asciidoctorj.diagram.version>
 
-    <skip-code-generation-tests>false</skip-code-generation-tests>
+    <skip-code-generation-tests>true</skip-code-generation-tests>
   </properties>
 
   <modules>

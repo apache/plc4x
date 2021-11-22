@@ -136,12 +136,12 @@ func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageType
 <#if type.isDiscriminatedParentTypeDefinition()>
 
 type I${type.name}Parent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+	SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
 type I${type.name}Child interface {
-	Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+	Serialize(writeBuffer utils.WriteBuffer) error
 	InitializeParent(parent *${type.name}<#if type.getPropertyFields()?has_content>, <#list type.getPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list></#if><#if type.getPropertyFields()?has_content && type.virtualFields?has_content>, </#if><#list type.virtualFields as field>${field.name} <#if field.loopType??>[]</#if><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>)
 	GetTypeName() string
 	I${type.name}
@@ -1107,13 +1107,13 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
-	return m.Child.Serialize(writeBuffer<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
+	return m.Child.Serialize(writeBuffer)
 }
 
-func (m *${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func (m *${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child I${type.name}, serializeChildFunction func() error) error {
 <#else>
-func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSerializerArguments(parserArguments)?has_content>, <#list helper.getSerializerArguments(parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer) error {
 </#if>
 	<#if helper.hasFieldOfType("unknown")>
 	return errors.New("Unknown field not serializable")
@@ -1173,7 +1173,7 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 						<#if helper.needsVariable(arrayField, "lastItem", true)>
 			var lastItem bool = curItem == (itemCount - 1)
 						</#if>
-			_elementErr := _element.Serialize(writeBuffer<#if helper.getSerializerTerms(arrayField.asTypedField().orElseThrow().type.asComplexTypeReference().orElseThrow().params.orElse(null))?has_content>, <#list helper.getSerializerTerms(arrayField.asTypedField().orElseThrow().type.asComplexTypeReference().orElseThrow().params.orElse(null)) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+			_elementErr := _element.Serialize(writeBuffer)
 					</#if>
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -1424,7 +1424,6 @@ func (m *${type.name}) Serialize(writeBuffer utils.WriteBuffer<#if helper.getSer
 	</#if>
 }
 
-<#if !helper.getSerializerArguments(parserArguments)?has_content><#-- We only generate String() methods for serializer witout arguments -->
 func (m *${type.name}) String() string {
 	if m == nil {
 		return "<nil>"
@@ -1433,7 +1432,6 @@ func (m *${type.name}) String() string {
 	m.Serialize(buffer)
 	return buffer.GetBox().String()
 }
-</#if>
 
 </@importSectionWithContentBelow>
 

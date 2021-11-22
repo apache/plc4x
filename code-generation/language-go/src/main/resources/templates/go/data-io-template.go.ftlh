@@ -72,7 +72,7 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if parserArguments?has_conte
 	readBuffer.PullContext("${type.name}")
 	switch {
 	<#list type.switchField.cases as case>
-        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default</#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == <#if helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default</#if>: // ${case.name}
 		<#assign valueDefined=false>
 		<#if case.name == "Struct">
 			_map := map[string]api.PlcValue{}
@@ -181,7 +181,7 @@ func ${type.name}Serialize(writeBuffer utils.WriteBuffer, value api.PlcValue<#if
 	switch {
 	<#assign defaultSet=false>
 	<#list type.switchField.cases as case>
-        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#elseif helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default<#assign defaultSet=true></#if>: // ${case.name}
+        <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], parserArguments)} == <#if helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)><#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type)}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#sep> && </#list> <#else>default<#assign defaultSet=true></#if>: // ${case.name}
 		<#list case.fields as field>
 			<#switch field.typeName>
 				<#case "array">
