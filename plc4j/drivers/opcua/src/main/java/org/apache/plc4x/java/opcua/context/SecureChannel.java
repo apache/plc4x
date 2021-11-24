@@ -43,6 +43,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
@@ -50,6 +54,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SecureChannel {
 
@@ -80,6 +88,15 @@ public class SecureChannel {
         new ExtensionObjectEncodingMask(false, false, false),
         new NullExtension());               // Body
 
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(.(?<transportCode>tcp))?://" +
+        "(?<transportHost>[\\w.-]+)(:" +
+        "(?<transportPort>\\d*))?");
+
+    public static final Pattern URI_PATTERN = Pattern.compile("^(?<protocolCode>opc)" +
+        INET_ADDRESS_PATTERN +
+        "(?<transportEndpoint>[\\w/=]*)[\\?]?"
+    );
+
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private static final PascalString APPLICATION_URI = new PascalString("urn:apache:plc4x:client");
     private static final PascalString PRODUCT_URI = new PascalString("urn:apache:plc4x:client");
@@ -89,6 +106,11 @@ public class SecureChannel {
     private final byte[] clientNonce = RandomUtils.nextBytes(40);
     private final AtomicInteger requestHandleGenerator = new AtomicInteger(1);
     private PascalString policyId;
+    private UserTokenType tokenType;
+    private boolean discovery;
+    private String certFile;
+    private String keyStoreFile;
+    private CertificateKeyPair ckp;
     private final PascalString endpoint;
     private final String username;
     private final String password;
@@ -98,7 +120,9 @@ public class SecureChannel {
     private final boolean isEncrypted;
     private byte[] senderCertificate = null;
     private byte[] senderNonce = null;
-    private EncryptionHandler encryptionHandler;
+    private PascalByteString certificateThumbprint = null;
+    private boolean checkedEndpoints = false;
+    private EncryptionHandler encryptionHandler = null;
     private OpcuaConfiguration configuration;
     private AtomicInteger channelId = new AtomicInteger(1);
     private AtomicInteger tokenId = new AtomicInteger(1);
@@ -107,6 +131,10 @@ public class SecureChannel {
     private SecureChannelTransactionManager channelTransactionManager = new SecureChannelTransactionManager();
     private long lifetime = DEFAULT_CONNECTION_LIFETIME;
     private CompletableFuture<Void> keepAlive;
+    private int sendBufferSize;
+    private int maxMessageSize;
+    private List<String> endpoints = new ArrayList<>();
+
     private AtomicLong senderSequenceNumber = new AtomicLong();
 
     public SecureChannel(DriverContext driverContext, OpcuaConfiguration configuration) {
@@ -134,6 +162,18 @@ public class SecureChannel {
             this.publicCertificate = NULL_BYTE_STRING;
             this.thumbprint = NULL_BYTE_STRING;
             this.isEncrypted = false;
+        }
+        this.keyStoreFile = configuration.getKeyStoreFile();
+
+        // Generate a list of endpoints we can use.
+        try {
+            InetAddress address = InetAddress.getByName(this.configuration.getHost());
+            this.endpoints.add(address.getHostAddress());
+            this.endpoints.add(address.getHostName());
+            this.endpoints.add(address.getCanonicalHostName());
+        } catch (UnknownHostException e) {
+            LOGGER.warn("Unable to resolve host name. Using original host from connection string which may cause issues connecting to server");
+            this.endpoints.add(this.configuration.getHost());
         }
     }
 
@@ -439,7 +479,6 @@ public class SecureChannel {
         senderCertificate = sessionResponse.getServerCertificate().getStringValue();
         encryptionHandler.setServerCertificate(EncryptionHandler.getCertificateX509(senderCertificate));
         this.senderNonce = sessionResponse.getServerNonce().getStringValue();
-        UserTokenType tokenType = UserTokenType.userTokenTypeAnonymous;
         String[] endpoints = new String[3];
         try {
             InetAddress address = InetAddress.getByName(this.configuration.getHost());
@@ -450,31 +489,13 @@ public class SecureChannel {
             e.printStackTrace();
         }
 
-        for (String hostEndpoints : endpoints) {
-            for (ExtensionObjectDefinition extensionObject : sessionResponse.getServerEndpoints()) {
-                EndpointDescription endpointDescription = (EndpointDescription) extensionObject;
-                if (endpointDescription.getEndpointUrl().getStringValue().equals(hostEndpoints)) {
-                    for (ExtensionObjectDefinition userTokenCast : endpointDescription.getUserIdentityTokens()) {
-                        UserTokenPolicy identityToken = (UserTokenPolicy) userTokenCast;
-                        if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
-                            LOGGER.info("Using Endpoint {} with security {}", endpointDescription.getEndpointUrl().getStringValue(), identityToken.getPolicyId().getStringValue());
-                            policyId = identityToken.getPolicyId();
-                            tokenType = identityToken.getTokenType();
-                        }
-                    }
-                }
-            }
-        }
+        selectEndpoint(sessionResponse);
 
         if (this.policyId == null) {
             throw new PlcRuntimeException("Unable to find endpoint - " + endpoints[1]);
         }
 
-        ExtensionObject userIdentityToken = getIdentityToken(tokenType, policyId.getStringValue());
+        ExtensionObject userIdentityToken = getIdentityToken(this.tokenType, policyId.getStringValue());
 
         int requestHandle = getRequestHandle();
 
@@ -1070,6 +1091,95 @@ public class SecureChannel {
     }
 
     /**
+     * Gets the Token Identifier
+     *
+     * @return int representing the token identifier
+     */
+    public int getTokenId() {
+        return this.tokenId.get();
+    }
+
+    /**
+     * Selects the endpoint to use based on the connection string provided.
+     * If Discovery is disabled it will use the host address return from the server
+     * @param sessionResponse - The CreateSessionResponse message returned by the server
+     * @throws PlcRuntimeException - If no endpoint with a compatible policy is found raise and error.
+     */
+    private void selectEndpoint(CreateSessionResponse sessionResponse) throws PlcRuntimeException {
+        List<String> returnedEndpoints = new ArrayList<String>();
+
+        // Get a list of the endpoints which match ours.
+        Stream<EndpointDescription> filteredEndpoints = sessionResponse.getServerEndpoints().stream()
+            .map(e -> (EndpointDescription) e)
+            .filter(this::isEndpoint);
+
+        //Determine if the requested security policy is included in the endpoint
+        filteredEndpoints.forEach(endpoint -> hasIdentity(
+            endpoint.getUserIdentityTokens().stream()
+            .map(p -> (UserTokenPolicy) p)
+            .toArray(UserTokenPolicy[]::new)
+        ));
+
+        if (this.policyId == null) {
+            throw new PlcRuntimeException("Unable to find endpoint - " + this.endpoints.get(0));
+        }
+        if (this.tokenType == null) {
+            throw new PlcRuntimeException("Unable to find Security Policy for endpoint - " + this.endpoints.get(0));
+        }
+    }
+
+    /**
+     * Checks each component of the return endpoint description against the connection string.
+     * If all are correct then return true.
+     * @param endpoint - EndpointDescription returned from server
+     * @return true if this endpoint matches our configuration
+     * @throws PlcRuntimeException - If the returned endpoint string doesn't match the format expected
+     */
+    private boolean isEndpoint(EndpointDescription endpoint) throws PlcRuntimeException {
+        // Split up the connection string into it's individual segments.
+        Matcher matcher = URI_PATTERN.matcher(endpoint.getEndpointUrl().getStringValue());
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException(
+                "Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'");
+        }
+        LOGGER.trace("Using Endpoint {} {} {}", matcher.group("transportHost"), matcher.group("transportPort"), matcher.group("transportEndpoint"));
+        if (this.configuration.isDiscovery() && !this.endpoints.contains(matcher.group("transportHost"))) {
+            return false;
+        }
+
+        if (!this.configuration.getPort().equals(matcher.group("transportPort"))) {
+            return false;
+        }
+
+        if (!this.configuration.getTransportEndpoint().equals(matcher.group("transportEndpoint"))) {
+            return false;
+        }
+
+        if (!this.configuration.isDiscovery()) {
+            this.configuration.setHost(matcher.group("transportHost"));
+        }
+
+        return true;
+    }
+
+    /**
+     * Confirms that a policy that matches the connection string is available from
+     * the returned endpoints. It sets the policyId and tokenType for the policy to use.
+     * @param policies - A list of policies returned with the endpoint description.
+     */
+    private void hasIdentity(UserTokenPolicy[] policies) {
+        for (UserTokenPolicy identityToken : policies) {
+            if ((identityToken.getTokenType() == UserTokenType.userTokenTypeAnonymous) && (this.username == null)) {
+                policyId = identityToken.getPolicyId();
+                tokenType = identityToken.getTokenType();
+            } else if ((identityToken.getTokenType() == UserTokenType.userTokenTypeUserName) && (this.username != null)) {
+                policyId = identityToken.getPolicyId();
+                tokenType = identityToken.getTokenType();
+            }
+        }
+    }
+
+    /**
      * Creates an IdentityToken to authenticate with a server.
      *
      * @param tokenType      the token type
@@ -1129,4 +1239,5 @@ public class SecureChannel {
     public static long getCurrentDateTime() {
         return (System.currentTimeMillis() * 10000) + EPOCH_OFFSET;
     }
+
 }

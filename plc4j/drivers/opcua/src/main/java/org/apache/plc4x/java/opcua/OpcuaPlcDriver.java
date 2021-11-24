@@ -47,7 +47,7 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.confi
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
 
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>tcp))?://" +
+    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("(:(?<transportCode>[a-z0-9]*))?://" +
                                                                         "(?<transportHost>[\\w.-]+)(:" +
                                                                         "(?<transportPort>\\d*))?");
 
