@@ -807,13 +807,20 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private String toCastVariableParseExpression(TypeDefinition baseType, Field field, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("CAST");
-        if ((!variableLiteral.getArgs().isPresent()) || (variableLiteral.getArgs().get().size() != 2)) {
-            throw new FreemarkerException("A CAST expression expects exactly two arguments.");
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A Cast expression needs arguments"));
+        if (arguments.size() != 2) {
+            throw new RuntimeException("A CAST expression expects exactly two arguments.");
         }
-        List<Term> args = variableLiteral.getArgs().get();
-        final VariableLiteral sourceTerm = (VariableLiteral) args.get(0);
-        final VariableLiteral typeTerm = (VariableLiteral) variableLiteral.getArgs().get().get(1);
-        final TypeDefinition castType = getTypeDefinitions().get(typeTerm.getName());
+        VariableLiteral firstArgument = arguments.get(0).asLiteral()
+            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .asVariableLiteral()
+            .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
+        StringLiteral typeLiteral = arguments.get(1).asLiteral()
+            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .asStringLiteral()
+            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+
+        final TypeDefinition castType = getTypeDefinitions().get(typeLiteral.getValue());
         // If we're casting to a sub-type of a discriminated value, we got to cast to the parent
         // type instead and add the name of the sub-type as prefix to the property we're trying to
         // access next.
@@ -825,7 +832,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             sb.append(getCTypeName(castType.getName()));
         }
         sb.append("*) (");
-        sb.append(toVariableParseExpression(baseType, field, sourceTerm, parserArguments)).append("))");
+        sb.append(toVariableParseExpression(baseType, field, firstArgument, parserArguments)).append("))");
         if (variableLiteral.getChild().isPresent()) {
             if (castType.getParentType() != null) {
                 // Change the name of the property to contain the sub-type-prefix.

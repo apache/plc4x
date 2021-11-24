@@ -85,7 +85,7 @@ public class ${type.name}IO {
                 <#list case.discriminatorValues as discriminatorValue>
                     <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index]>
                 EvaluationHelper.equals(
-                    ${helper.toParseExpression(null, discriminatorExpression, parserArguments)}
+                    ${helper.toParseExpression(null, helper.anyTypeReference, discriminatorExpression, parserArguments)}
                     ,
                     <#if helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)>
                         <#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>
@@ -110,7 +110,7 @@ public class ${type.name}IO {
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
-                        <#assign arrayField=field.asArrayField().orElseThrow()>
+                        <#assign arrayField = field.asArrayField().orElseThrow()>
             // Array field (${arrayField.name})
             <#-- Only update curPos if the length expression uses it -->
                         <#if arrayField.loopExpression.contains("curPos")>
@@ -119,15 +119,15 @@ public class ${type.name}IO {
             <#-- If this is a count array, we can directly initialize an array with the given size -->
                         <#if field.isCountArrayField()>
             // Count array
-            if(${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)} > Integer.MAX_VALUE) {
-                throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+            if(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)} > Integer.MAX_VALUE) {
+                throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
             }
             List<PlcValue> ${arrayField.name};
             {
-                int itemCount = (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)};
+                int itemCount = (int) ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
                 ${arrayField.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if field.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+                    ${arrayField.name}.add(new ${helper.getPlcValueTypeForTypeReference(arrayField.type)}((${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}) <#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, arrayField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -135,7 +135,7 @@ public class ${type.name}IO {
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                             <#if arrayField.isLengthArrayField()>
             // Length array
-            long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)};
+            long _${arrayField.name}Length = ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)};
             long ${arrayField.name}EndPos = readBuffer.getPos() + _${arrayField.name}Length;
             List<PlcValue> value = new LinkedList<>();
             while(readBuffer.getPos() < ${arrayField.name}EndPos) {
@@ -157,7 +157,7 @@ public class ${type.name}IO {
                             <#elseif arrayField.isTerminatedArrayField()>
             // Terminated array
             List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> ${arrayField.name} = new LinkedList<>();
-            while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression,parserArguments)}))) {
+            while(!((boolean) (${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression,parserArguments)}))) {
                 ${arrayField.name}.add(<#if helper.isSimpleTypeReference(arrayField.type)>${helper.getReadBufferReadMethodCall(arrayField.type.asSimpleTypeReference().orElseThrow(), "", arrayField)}<#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
@@ -196,7 +196,7 @@ public class ${type.name}IO {
                         <#assign manualField=field.asManualField().orElseThrow()>
 
             // Manual Field (${manualField.name})
-            ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.parseExpression,parserArguments)});
+            ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression,parserArguments)});
                         <#if manualField.name == "value">
                             <#assign valueDefined=true>
                         </#if>
@@ -220,7 +220,7 @@ public class ${type.name}IO {
             ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(simpleField.type), "", simpleField)});
                         <#else>
             // Simple Field (${simpleField.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${helper.getNonPrimitiveLanguageTypeNameForField(simpleField)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)>${helper.getReadBufferReadMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "", simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if simpleField.params.isPresent()>, <#list field.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, simpleField.type, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                         </#if>
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
@@ -342,7 +342,7 @@ public class ${type.name}IO {
     public static WriteBufferByteBased staticSerialize(PlcValue _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder byteOrder) throws SerializationException {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments.orElseThrow())},<#if helper.isComplexTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)><#if helper.isEnumTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type, false)}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
+        <#list dataIoTypeDefinition.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, helper.anyTypeReference, dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments.orElseThrow())},<#if helper.isComplexTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)><#if helper.isEnumTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type)>${helper.getLanguageTypeNameForTypeReference(dataIoTypeDefinition.parserArguments.orElseThrow()[discriminatorValue?index].type, false)}.${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if>)<#sep> && </#sep></#list>) <#else><#assign defaultCaseOutput=true></#if>{ // ${case.name}
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) ${helper.getSizeInBits(case,parserArguments)}) / 8.0f), byteOrder);
 
             <#list case.fields as field>
@@ -383,7 +383,7 @@ public class ${type.name}IO {
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
             // Manual Field (${manualField.name})
-            ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments.orElse(null))};
+            ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, type.parserArguments.orElse(null))};
                     <#break>
                     <#case "reserved">
                         <#assign reservedField=field.asReservedField().orElseThrow()>

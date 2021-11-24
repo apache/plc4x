@@ -20,7 +20,6 @@
 package knxnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/internal/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports"
@@ -33,7 +32,6 @@ import (
 
 type Driver struct {
 	_default.DefaultDriver
-	fieldHandler spi.PlcFieldHandler
 }
 
 func NewDriver() *Driver {
@@ -43,7 +41,7 @@ func NewDriver() *Driver {
 }
 
 func (m Driver) CheckQuery(query string) error {
-	_, err := m.fieldHandler.ParseQuery(query)
+	_, err := m.GetPlcFieldHandler().ParseQuery(query)
 	return err
 }
 
@@ -70,7 +68,7 @@ func (m Driver) GetConnection(transportUrl url.URL, transports map[string]transp
 	}
 
 	// Create the new connection
-	connection := NewConnection(transportInstance, options, m.fieldHandler)
+	connection := NewConnection(transportInstance, options, m.GetPlcFieldHandler())
 	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
 	return connection.Connect()
 }
