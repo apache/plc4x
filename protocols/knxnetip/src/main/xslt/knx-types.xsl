@@ -291,6 +291,7 @@
                 <xsl:when test="@Name = '3ATEL'">THREEATEL</xsl:when>
                 <xsl:when test="@Name = '1Home'">ONEHOME</xsl:when>
                 <xsl:when test="@Name = 'Simon'">SIMON_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
+                <xsl:when test="@Name = &quot;Can&apos;nX&quot;">CannX</xsl:when>
                 <xsl:when test="@Name = 'Not Assigned'">NOT_ASSIGNED_<xsl:value-of select="@KnxManufacturerId"/></xsl:when>
                 <xsl:otherwise>
                     <xsl:call-template name="getIdFromText">
