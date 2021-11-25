@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -25,14 +26,7 @@ import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldReaderPadding<T> implements FieldReader<T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderPadding.class);
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with padding field");
-    }
+public class FieldReaderPadding<T> implements FieldCommons {
 
     public void readPaddingField(DataReader<T> dataReader, int timesPadding, WithReaderArgs... readerArgs) {
         dataReader.pullContext("padding", WithReaderWriterArgs.WithRenderAsList(true));

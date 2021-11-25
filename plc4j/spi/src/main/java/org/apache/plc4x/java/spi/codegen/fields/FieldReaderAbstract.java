@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -29,12 +30,11 @@ import org.slf4j.LoggerFactory;
  * abstract accessor methods are generated in the abstract parent type.
  * @param <T>
  */
-public class FieldReaderAbstract<T> implements FieldReader<T> {
+public class FieldReaderAbstract<T> implements FieldCommons {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAbstract.class);
 
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
+    public T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
         return null;
     }
 

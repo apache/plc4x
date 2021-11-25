@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.codegen.io.ParseSupplier;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -26,14 +27,7 @@ import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldReaderManual<T> implements FieldReader<T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderManual.class);
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with checksum field");
-    }
+public class FieldReaderManual<T> implements FieldCommons {
 
     public T readManualField(String logicalName, ReadBuffer readBuffer, ParseSupplier<T> parseFunction, WithReaderArgs... readerArgs) throws ParseException {
         readBuffer.pullContext(logicalName);

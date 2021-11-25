@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -29,12 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class FieldReaderArray<T> implements FieldReader<T> {
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new NotImplementedException("use dedicated methods instead");
-    }
+public class FieldReaderArray<T> implements FieldCommons {
 
     public List<T> readFieldCount(String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
         if (count > Integer.MAX_VALUE) {

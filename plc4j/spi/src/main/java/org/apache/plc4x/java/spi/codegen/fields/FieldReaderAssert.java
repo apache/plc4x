@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseAssertException;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -27,14 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class FieldReaderAssert<T> implements FieldReader<T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderAssert.class);
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with assert field");
-    }
+public class FieldReaderAssert<T> implements FieldCommons {
 
     public T readAssertField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         T assertValue = dataReader.read(logicalName, readerArgs);

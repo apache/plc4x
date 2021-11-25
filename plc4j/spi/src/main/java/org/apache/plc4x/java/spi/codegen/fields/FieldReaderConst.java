@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -26,16 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class FieldReaderConst<T> implements FieldReader<T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderConst.class);
-
-    public static final FieldReaderConst<?> INSTANCE = new FieldReaderConst<>();
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with const field");
-    }
+public class FieldReaderConst<T> implements FieldCommons {
 
     public T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
         T constValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));

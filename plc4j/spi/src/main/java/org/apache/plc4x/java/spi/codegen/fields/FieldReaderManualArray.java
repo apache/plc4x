@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.codegen.io.ParseSupplier;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -33,14 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class FieldReaderManualArray<T> implements FieldReader<T> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderManualArray.class);
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new NotImplementedException();
-    }
+public class FieldReaderManualArray<T> implements FieldCommons {
 
     public byte[] readManualByteArrayField(String logicalName, ReadBuffer readBuffer, Supplier<Boolean> termination, ParseSupplier<T> parse, WithReaderArgs... readerArgs) throws ParseException {
         // Ensure we have the render as list argument present

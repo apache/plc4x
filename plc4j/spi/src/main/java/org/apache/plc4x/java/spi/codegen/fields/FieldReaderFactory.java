@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 public class FieldReaderFactory {
 
     public static <T> T readAbstractField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderAbstract<T>().readField(logicalName, dataReader, readerArgs);
+        return new FieldReaderAbstract<T>().readAbstractField(logicalName, dataReader, readerArgs);
     }
 
     public static <T> List<T> readCountArrayField(String logicalName, DataReader<T> dataReader, long count, WithReaderArgs... readerArgs) throws ParseException {
@@ -66,7 +66,7 @@ public class FieldReaderFactory {
     }
 
     public static <T> T readChecksumField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderChecksum<T>().readField(logicalName, dataReader, expectedValue, readerArgs);
+        return new FieldReaderChecksum<T>().readChecksumField(logicalName, dataReader, expectedValue, readerArgs);
     }
 
     public static <T> T readConstField(String logicalName, DataReader<T> dataReader, T expectedValue, WithReaderArgs... readerArgs) throws ParseException {
@@ -74,15 +74,15 @@ public class FieldReaderFactory {
     }
 
     public static <T> T readDiscriminatorField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderDiscriminator<T>().readField(logicalName, dataReader, readerArgs);
+        return new FieldReaderDiscriminator<T>().readDiscriminatorField(logicalName, dataReader, readerArgs);
     }
 
     public static <T> T readEnumField(String logicalName, String innerName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderEnum<T>().readField(logicalName, innerName, dataReader, readerArgs);
+        return new FieldReaderEnum<T>().readEnumField(logicalName, innerName, dataReader, readerArgs);
     }
 
     public static <T> T readImplicitField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderImplicit<T>().readField(logicalName, dataReader, readerArgs);
+        return new FieldReaderImplicit<T>().readImplicitField(logicalName, dataReader, readerArgs);
     }
 
     public static <T> T readOptionalField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
@@ -114,7 +114,7 @@ public class FieldReaderFactory {
     }
 
     public static <T> T readSimpleField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        return new FieldReaderSimple<T>().readField(logicalName, dataReader, readerArgs);
+        return new FieldReaderSimple<T>().readSimpleField(logicalName, dataReader, readerArgs);
     }
 
     public static <T> T readUnknownField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {

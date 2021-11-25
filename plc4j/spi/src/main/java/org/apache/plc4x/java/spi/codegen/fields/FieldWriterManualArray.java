@@ -19,17 +19,13 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.util.List;
 
-public class FieldWriterManualArray<T> implements FieldWriter<T> {
-
-    @Override
-    public void writeField(String logicalName, T value, DataWriter<T> dataWriter, WithWriterArgs... writerArgs) throws SerializationException {
-        throw new NotImplementedException();
-    }
+public class FieldWriterManualArray<T> implements FieldCommons {
 
     public void writeManualArrayField(String logicalName, List<T> values, ConsumeSerializeWrapped<T> consumer, WriteBuffer writeBuffer, WithWriterArgs... writerArgs) throws SerializationException {
         switchSerializeByteOrderIfNecessary(() -> {

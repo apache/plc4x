@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
@@ -26,16 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class FieldReaderChecksum<T> implements FieldReader<T> {
+public class FieldReaderChecksum<T> implements FieldCommons {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FieldReaderChecksum.class);
-
-    @Override
-    public T readField(String logicalName, DataReader<T> dataReader, WithReaderArgs... readerArgs) throws ParseException {
-        throw new IllegalStateException("not possible with checksum field");
-    }
-
-    public T readField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
+    public T readChecksumField(String logicalName, DataReader<T> dataReader, T referenceValue, WithReaderArgs... readerArgs) throws ParseException {
         T checksumValue = switchParseByteOrderIfNecessary(() -> dataReader.read(logicalName, readerArgs), dataReader, extractByteOder(readerArgs).orElse(null));
         if (!Objects.equals(checksumValue, referenceValue)) {
             throw new ParseException("Checksum value '" + checksumValue + "' doesn't match expected '" + referenceValue + "'");
