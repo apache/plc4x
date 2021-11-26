@@ -244,10 +244,14 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
                 if(
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
                     <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
-                    <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
+                    <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.discriminatorName]>
                     EvaluationHelper.equals(
-                    ${helper.toParseExpression(switchField, typeRef, discriminatorExpression, parserArguments)},
-                    ${helper.toParseExpression(switchField, typeRef, discriminatorValueTerm, parserArguments)}
+                    ${helper.toParseExpression(switchField, discriminatorType, discriminatorExpression, parserArguments)},
+                    <#if helper.isEnumTypeReference(discriminatorType)>
+                    ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                    <#else>
+                    ${helper.toParseExpression(switchField, discriminatorType, discriminatorValueTerm, parserArguments)}
+                    </#if>
                     )
                     <#sep> && </#sep>
                     </#list>

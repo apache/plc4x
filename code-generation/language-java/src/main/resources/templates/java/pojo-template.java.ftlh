@@ -80,9 +80,18 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     // Accessors for discriminator values.
     <#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorValue>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)>
-    public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
-        return ${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorValue, parserArguments)};
+        <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
+            <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
+    public ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}() {
+            <#if discriminatorValue??>
+                <#if helper.isEnumTypeReference(discriminatorType)>
+        return ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
+                <#else>
+        return ${helper.toParseExpression(null, discriminatorType, discriminatorValue, parserArguments)};
+                </#if>
+            <#else>
+        return ${helper.getNullValueForTypeReference(discriminatorType)};
+            </#if>
     }
         </#if>
     </#list>
@@ -97,7 +106,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
     // Abstract accessors for discriminator values.
     <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !type.isNonDiscriminatorField(discriminatorName)>
+        <#if !type.isNonDiscriminatorField(discriminatorName)><#-- && !type.isParserArgument(discriminatorName)-->
     public abstract ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} get${discriminatorName?cap_first}();
         </#if>
     </#list>

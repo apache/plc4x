@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_discriminators[] = {
   {/* plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions */
-   .itemType = 0x12 }
+   .itemType = DefaultHexadecimalLiteral{hexString=0x12} }
 
 };
 
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(itemType == 0x12) { /* S7ParameterUserDataItemCPUFunctions */
+  { /* S7ParameterUserDataItemCPUFunctions */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions;
                     
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

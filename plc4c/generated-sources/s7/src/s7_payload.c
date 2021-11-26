@@ -28,13 +28,13 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_discriminators[] = {
   {/* plc4c_s7_read_write_s7_payload_read_var_response */
-   .parameterParameterType = 0x04, .messageType = 0x03 },
+   .parameterParameterType = DefaultHexadecimalLiteral{hexString=0x04}, .messageType = DefaultHexadecimalLiteral{hexString=0x03} },
   {/* plc4c_s7_read_write_s7_payload_write_var_request */
-   .parameterParameterType = 0x05, .messageType = 0x01 },
+   .parameterParameterType = DefaultHexadecimalLiteral{hexString=0x05}, .messageType = DefaultHexadecimalLiteral{hexString=0x01} },
   {/* plc4c_s7_read_write_s7_payload_write_var_response */
-   .parameterParameterType = 0x05, .messageType = 0x03 },
+   .parameterParameterType = DefaultHexadecimalLiteral{hexString=0x05}, .messageType = DefaultHexadecimalLiteral{hexString=0x03} },
   {/* plc4c_s7_read_write_s7_payload_user_data */
-   .parameterParameterType = 0x00, .messageType = 0x07 }
+   .parameterParameterType = DefaultHexadecimalLiteral{hexString=0x00}, .messageType = DefaultHexadecimalLiteral{hexString=0x07} }
 
 };
 
@@ -63,7 +63,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
+  { /* S7PayloadReadVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response;
                     
     // Array field (items)
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     (*_message)->s7_payload_read_var_response_items = items;
 
   } else 
-  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
+  { /* S7PayloadWriteVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request;
                     
     // Array field (items)
@@ -113,7 +113,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     (*_message)->s7_payload_write_var_request_items = items;
 
   } else 
-  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
+  { /* S7PayloadWriteVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response;
                     
     // Array field (items)
@@ -138,7 +138,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* re
     (*_message)->s7_payload_write_var_response_items = items;
 
   } else 
-  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
+  { /* S7PayloadUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data;
                     
     // Array field (items)

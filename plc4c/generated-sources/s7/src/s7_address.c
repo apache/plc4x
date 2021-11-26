@@ -28,7 +28,7 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminators[] = {
   {/* plc4c_s7_read_write_s7_address_any */
-   .addressType = 0x10 }
+   .addressType = DefaultHexadecimalLiteral{hexString=0x10} }
 
 };
 
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* re
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(addressType == 0x10) { /* S7AddressAny */
+  { /* S7AddressAny */
     (*_message)->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
                     
     // Enum field (transportSize)

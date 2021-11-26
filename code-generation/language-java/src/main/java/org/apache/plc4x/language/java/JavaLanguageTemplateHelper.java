@@ -615,7 +615,24 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return tracer + Boolean.toString(((BooleanLiteral) literal).getValue());
         } else if (literal instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
-            return tracer + ((NumericLiteral) literal).getNumber().toString();
+            final String numberString = ((NumericLiteral) literal).getNumber().toString();
+            if(resultType.isIntegerTypeReference()) {
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                    tracer = tracer.dive("uint >= 32bit");
+                    return tracer + numberString + "L";
+                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                    tracer = tracer.dive("int > 32bit");
+                    return tracer + numberString + "L";
+                }
+            } else if(resultType.isFloatTypeReference()) {
+                final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(RuntimeException::new);
+                if(floatTypeReference.getSizeInBits() < 32) {
+                    tracer = tracer.dive("float < 32bit");
+                    return tracer + numberString + "F";
+                }
+            }
+            return tracer + numberString;
         } else if (literal instanceof HexadecimalLiteral) {
             tracer = tracer.dive("hexadecimal literal instanceOf");
             final String hexString = ((HexadecimalLiteral) literal).getHexString();
@@ -625,7 +642,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     tracer = tracer.dive("uint >= 32bit");
                     return tracer + hexString + "L";
                 } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
-                    tracer = tracer.dive("uint > 32bit");
+                    tracer = tracer.dive("int > 32bit");
                     return tracer + hexString + "L";
                 }
             }

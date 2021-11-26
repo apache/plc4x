@@ -784,8 +784,9 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         // If we found something but there's a "rest" left, we got to use the type we
         // found in this level, get that type's definition and continue from there.
         if (!variableLiteral.getChild().isPresent()) {
-            return Optional.empty();
+            return Optional.of(typeReference);
         }
+        // If we're accessing a child, then the root must be a complex type.
         if (!(typeReference instanceof ComplexTypeReference)) {
             return Optional.empty();
         }
@@ -841,7 +842,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         Function<String, TypeReference> typeRefRetriever = null;
         if (thisType instanceof DiscriminatedComplexTypeDefinition) {
             switchField = ((ComplexTypeDefinition) thisType.getParentType()).getSwitchField().orElse(null);
-            typeRefRetriever = propertyName -> getTypeReferenceForProperty((ComplexTypeDefinition) thisType, propertyName).orElse(null);
+            typeRefRetriever = propertyName -> getTypeReferenceForProperty((ComplexTypeDefinition) thisType.getParentType(), propertyName).orElse(null);
         } else if (thisType instanceof ComplexTypeDefinition) {
             switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
             typeRefRetriever = propertyName -> getTypeReferenceForProperty((ComplexTypeDefinition) thisType, propertyName).orElse(null);
@@ -864,7 +865,8 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         for (VariableLiteral variableLiteral : switchField.getDiscriminatorExpressions()) {
             // Get some symbolic name we can use.
             String discriminatorName = variableLiteral.getDiscriminatorName();
-            Optional<TypeReference> discriminatorType = getDiscriminatorType(typeRefRetriever.apply(variableLiteral.getName()), variableLiteral);
+            final TypeReference typeReference = typeRefRetriever.apply(variableLiteral.getName());
+            Optional<TypeReference> discriminatorType = getDiscriminatorType(typeReference, variableLiteral);
             discriminatorTypes.put(discriminatorName, discriminatorType.orElse(null));
         }
         return discriminatorTypes;
