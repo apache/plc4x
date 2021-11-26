@@ -37,6 +37,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -209,11 +210,7 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterConstField(MSpecParser.ConstFieldContext ctx) {
         TypeReference type = ctx.type.dataType() != null ? getSimpleTypeReference(ctx.type.dataType()) : getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        Term expected = getExpressionTerm(ctx.expected);
-        if(!(expected instanceof Literal)) {
-            throw new RuntimeException("only literals allowed as constant value");
-        }
-        Field field = new DefaultConstField(getAttributes(ctx), type, name, (Literal) expected);
+        Field field = new DefaultConstField(getAttributes(ctx), type, name, getValueLiteral(ctx.expected));
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -347,7 +344,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         List<VariableLiteral> variableLiterals = ctx.discriminators.variableLiteral().stream()
             .map(this::getVariableLiteral)
             .collect(Collectors.toList());
-        DefaultSwitchField field = new DefaultSwitchField(discriminatorExpressions);
+        DefaultSwitchField field = new DefaultSwitchField(variableLiterals);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -473,6 +470,34 @@ public class MessageFormatListener extends MSpecBaseListener {
         } catch (Exception e) {
             throw new RuntimeException(String.format("Error parsing expression: '%s' at line %d column %d",
                 expressionString, expressionContext.start.getLine(), expressionContext.start.getStartIndex()), e);
+        }
+    }
+
+    private VariableLiteral getVariableLiteral(MSpecParser.VariableLiteralContext variableLiteralContext) {
+        // TODO: make nullsafe
+        final String variableLiteral = variableLiteralContext.getText();
+        InputStream inputStream = IOUtils.toInputStream(variableLiteral, Charset.defaultCharset());
+        ExpressionStringParser parser = new ExpressionStringParser();
+        try {
+            // As this come from a VariableLiteralContext we know that it is a VariableLiteral
+            return (VariableLiteral) parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error parsing variable literal: '%s' at line %d column %d",
+                variableLiteral, variableLiteralContext.start.getLine(), variableLiteralContext.start.getStartIndex()), e);
+        }
+    }
+
+    private Literal getValueLiteral(MSpecParser.ValueLiteralContext valueLiteralContext) {
+        // TODO: make nullsafe
+        final String valueLiteralContextText = valueLiteralContext.getText();
+        InputStream inputStream = IOUtils.toInputStream(valueLiteralContextText, Charset.defaultCharset());
+        ExpressionStringParser parser = new ExpressionStringParser();
+        try {
+            // As this come from a ValueLiteralContext we know that it is a Literal
+            return (Literal) parser.parse(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Error parsing variable literal: '%s' at line %d column %d",
+                valueLiteralContextText, valueLiteralContext.start.getLine(), valueLiteralContext.start.getStartIndex()), e);
         }
     }
 

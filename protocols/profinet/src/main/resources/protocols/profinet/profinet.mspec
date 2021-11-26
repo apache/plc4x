@@ -279,7 +279,7 @@
     [simple        uint 16           responseDelayFactorOrPadding      ]
     // 4.3.1.3.4 (Page 95)
     [implicit      uint 16           dcpDataLength 'lengthInBytes - 12']
-    [typeSwitch 'frameId','serviceId','serviceType.response'
+    [typeSwitch frameId,serviceId,serviceType.response
         ////////////////////////////////////////////////////////////////////////////
         // Multicast (Well theoretically)
         ////////////////////////////////////////////////////////////////////////////

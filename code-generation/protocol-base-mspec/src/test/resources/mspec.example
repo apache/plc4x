@@ -165,7 +165,7 @@
 
 [type State
     [simple     bit broadcast             ]
-    [reserved   int 7 '0x0'                 ]
+    [reserved   int 7 '0x0'               ]
     [simple     bit initCommand           ]
     [simple     bit updCommand            ]
     [simple     bit timestampAdded        ]
@@ -207,7 +207,7 @@
 ]
 
 [discriminatedType ADSData(CommandId commandId, bit response)
-    [typeSwitch 'commandId', 'response'
+    [typeSwitch commandId, response
         ['INVALID', 'true' AdsInvalidResponse]
         ['INVALID', 'false' AdsInvalidRequest]
         ['ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse

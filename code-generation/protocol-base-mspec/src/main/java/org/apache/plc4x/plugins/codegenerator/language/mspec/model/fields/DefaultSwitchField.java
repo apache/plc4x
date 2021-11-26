@@ -22,21 +22,22 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
+import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 
 import java.util.*;
 
 public class DefaultSwitchField implements SwitchField {
 
-    private final List<Term> discriminatorExpressions;
+    private final List<VariableLiteral> variableLiterals;
     private final List<DiscriminatedComplexTypeDefinition> cases;
 
-    public DefaultSwitchField(List<Term> discriminatorExpressions) {
-        this.discriminatorExpressions = Objects.requireNonNull(discriminatorExpressions);
+    public DefaultSwitchField(List<VariableLiteral> variableLiterals) {
+        this.variableLiterals = Objects.requireNonNull(variableLiterals);
         this.cases = new LinkedList<>();
     }
 
-    public List<Term> getDiscriminatorExpressions() {
-        return discriminatorExpressions;
+    public List<VariableLiteral> getDiscriminatorExpressions() {
+        return variableLiterals;
     }
 
     // TODO: replace with immutable

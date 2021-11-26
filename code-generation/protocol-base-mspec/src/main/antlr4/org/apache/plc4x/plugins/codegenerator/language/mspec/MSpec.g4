@@ -122,7 +122,7 @@ simpleField
  ;
 
 typeSwitchField
- : 'typeSwitch' discriminators=multipleExpressions caseStatement*
+ : 'typeSwitch' discriminators=multipleVariableLiterals caseStatement*
  ;
 
 unknownField
@@ -184,6 +184,16 @@ multipleExpressions
  : expression (',' expression)*
  ;
 
+multipleVariableLiterals
+ : variableLiteral (',' variableLiteral)*
+ ;
+
+variableLiteral
+ : IDENTIFIER_LITERAL
+ | IDENTIFIER_LITERAL '.' variableLiteral // Field Reference or method call
+ | variableLiteral '[' + INTEGER_LITERAL + ']' // Array index
+ ;
+
 innerExpression
  : valueLiteral
  // Explicitly allow the loop type keywords in expressions
@@ -196,6 +206,14 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
+ ;
+
+valueLiteral
+ : BOOLEAN_LITERAL
+ | HEX_LITERAL
+ | INTEGER_LITERAL
+ | FLOAT_LITERAL
+ | STRING_LITERAL
  ;
 
 idExpression
@@ -253,6 +271,10 @@ INTEGER_CHARACTERS
 fragment
 INTEGER_CHARACTER
  : [0-9]
+ ;
+
+FLOAT_LITERAL
+ : INTEGER_LITERAL.INTEGER_LITERAL
  ;
 
 // Hexadecimal literals

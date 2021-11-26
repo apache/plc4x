@@ -106,7 +106,7 @@
     [abstract float 32 abstractFloatField]
     [abstract float 64 abstractDoubleField]
     [abstract string 8 abstractStringField encoding='UTF-8']
-    [typeSwitch 'simpleField'
+    [typeSwitch simpleField
         ['0' AbstractedType
             [simple bit abstractBitField]
             [simple int 8 abstractIntField]
@@ -127,7 +127,7 @@
     [abstract float 32 abstractFloatField]
     [abstract float 64 abstractDoubleField]
     [abstract string 8 abstractStringField encoding='UTF-8']
-    [typeSwitch 'simpleField'
+    [typeSwitch simpleField
         ['0' AbstractedType
             //Abstract fields need to be overriden in child
             [simple bit abstractBitField]
@@ -233,7 +233,7 @@
 //    [virtual float 32  virtualFloatField 'simpleField']
 //    [virtual float 64  virtualDoubleField 'simpleField']
 //    [virtual string 24  virtualStringField 'simpleField' encoding='UTF-8']
-//    [typeSwitch 'simpleField'
+//    [typeSwitch simpleField
 //        ['0' DiscriminatedVirtualType
 //            [simple int 8 intField]
 //        ]
@@ -270,7 +270,7 @@
 
 [discriminatedType EnumDiscriminatedType
     [discriminator EnumType discr]
-    [typeSwitch 'discr'
+    [typeSwitch discr
         ['BOOL' EnumDiscriminatedTypeA
             [simple        uint 8 simpA]
         ]
@@ -287,7 +287,7 @@
 [discriminatedType EnumDiscriminatedTypeMultiple
     [discriminator EnumType discr1]
     [discriminator EnumTypeInt discr2]
-    [typeSwitch 'discr1','discr2'
+    [typeSwitch discr1,discr2
         ['BOOL','BOOLINT' EnumDiscriminatedTypeMultipleA
             [simple        uint 8 simpA]
         ]
@@ -302,7 +302,7 @@
 
 // Enumerated Parameter
 [discriminatedType EnumDiscriminatedTypeParameter(EnumType discr)
-    [typeSwitch 'discr'
+    [typeSwitch discr
         ['BOOL' EnumDiscriminatedTypeAParameter
             [simple        uint 8 simpA]
         ]
@@ -317,7 +317,7 @@
 
 // Multiple Enumerated Parameters
 [discriminatedType EnumDiscriminatedTypeParameterMultiple(EnumType discr1, EnumTypeInt discr2)
-    [typeSwitch 'discr1','discr2'
+    [typeSwitch discr1,discr2
         ['BOOL','BOOLINT' EnumDiscriminatedTypeAParameterMultiple
             [simple        uint 8 simpA]
         ]
@@ -332,7 +332,7 @@
 
 [discriminatedType SimpleDiscriminatedType
     [discriminator uint 8 discr]
-    [typeSwitch 'discr'
+    [typeSwitch discr
         ['0x00' SimpleDiscriminatedTypeA
             [simple        uint 8 simpA]
         ]
@@ -349,7 +349,7 @@
 //Test to check if we can include concrete types as fields. Doesn't work in any language at the moment.
 //[discriminatedType SimpleDiscriminatedType
 //    [discriminator uint 8 discr]
-//    [typeSwitch 'discr'
+//    [typeSwitch discr
 //        ['0x00' SimpleDiscriminatedTypeA
 //            [simple        AnotherSimpleDiscriminatedTypeA simpA]
 //        ]
@@ -358,7 +358,7 @@
 
 //[discriminatedType AnotherSimpleDiscriminatedType
 //    [discriminator uint 8 discr]
-//    [typeSwitch 'discr'
+//    [typeSwitch discr
 //        ['0x00' AnotherSimpleDiscriminatedTypeA
 //            [simple        uint 8 simpA]
 //        ]
@@ -434,8 +434,8 @@
 // Data IO Tests
 ////////////////////////////////////////////////////////////////
 
-[dataIo DataIOType(EnumType 'dataType')
-    [typeSwitch 'dataType'
+[dataIo DataIOType(EnumType dataType)
+    [typeSwitch dataType
         ['BOOL' BOOL
             [simple bit value]
         ]
