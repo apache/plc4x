@@ -37,7 +37,7 @@
     [array          uint 8  arrayField        count      '5']
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
-    [const          uint 8  constField        '5']
+    [const          uint 8  constField        5]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
     [enum           EnumType  enumField lalala]
@@ -57,7 +57,7 @@
     [array          uint 8  arrayField        count      '5']
     //TODO: Checksums fields are not supported in C
     //[checksum       uint 8  'checksumField'     '100']
-    [const          uint 8  constField        '5']
+    [const          uint 8  constField        5]
     // Discriminated Field can't be used in simple type
     //[discriminator  uint 8  discriminatorField]
     [enum           EnumType  enumField lalala]
@@ -163,12 +163,12 @@
 //]
 
 [type ConstTypeTest
-    [const bit bitField 'true']
-    [const int 8 intField '100']
-    [const uint 8 uintField '100']
-    [const float 32 floatField '100.0']
-    [const float 64 doubleField '100.0']
-    [const string 8 stringField '"HELLO TODDY"' encoding='UTF-8']
+    [const bit bitField true]
+    [const int 8 intField 100]
+    [const uint 8 uintField 100]
+    [const float 32 floatField 100.0]
+    [const float 64 doubleField 100.0]
+    [const string 8 stringField "HELLO TODDY" encoding='UTF-8']
 ]
 
 [type EnumTypeTest

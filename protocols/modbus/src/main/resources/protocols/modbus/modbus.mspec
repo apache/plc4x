@@ -20,7 +20,7 @@
 // Remark: The different fields are encoded in Big-endian.
 
 [type ModbusConstants
-    [const          uint 16     modbusTcpDefaultPort '502']
+    [const          uint 16     modbusTcpDefaultPort 502]
 ]
 
 [type ModbusTcpADU(bit response) byteOrder='BIG_ENDIAN'
@@ -29,7 +29,7 @@
     [simple         uint 16     transactionIdentifier]
 
     // It is used for intra-system multiplexing. The MODBUS protocol is identified by the value 0.
-    [const          uint 16     protocolIdentifier    '0x0000']
+    [const          uint 16     protocolIdentifier    0x0000]
 
     // The length field is a byte count of the following fields, including the Unit Identifier and
     // data fields.
@@ -58,7 +58,7 @@
 [discriminatedType ModbusPDU(bit response)
     [discriminator bit         errorFlag]
     [discriminator uint 7      functionFlag]
-    [typeSwitch 'errorFlag','functionFlag','response'
+    [typeSwitch errorFlag,functionFlag,response
         ['true'                     ModbusPDUError
             [simple ModbusErrorCode  exceptionCode]
         ]
@@ -271,7 +271,7 @@
 ]
 
 [dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
-    [typeSwitch 'dataType','numberOfValues'
+    [typeSwitch dataType,numberOfValues
         ['BOOL','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value]

@@ -46,8 +46,9 @@ func (m *BACnetComplexTagDouble) DataType() BACnetDataType {
 	return BACnetDataType_DOUBLE
 }
 
-func (m *BACnetComplexTagDouble) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
+func (m *BACnetComplexTagDouble) InitializeParent(parent *BACnetComplexTag, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32, actualTagNumber uint8, isPrimitiveAndNotBoolean bool, actualLength uint32) {
 	m.Parent.TagNumber = tagNumber
+	m.Parent.TagClass = tagClass
 	m.Parent.LengthValueType = lengthValueType
 	m.Parent.ExtTagNumber = extTagNumber
 	m.Parent.ExtLength = extLength
@@ -55,10 +56,10 @@ func (m *BACnetComplexTagDouble) InitializeParent(parent *BACnetComplexTag, tagN
 	m.Parent.ExtExtExtLength = extExtExtLength
 }
 
-func NewBACnetComplexTagDouble(value float64, tagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
+func NewBACnetComplexTagDouble(value float64, tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *BACnetComplexTag {
 	child := &BACnetComplexTagDouble{
 		Value:  value,
-		Parent: NewBACnetComplexTag(tagNumber, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
+		Parent: NewBACnetComplexTag(tagNumber, tagClass, lengthValueType, extTagNumber, extLength, extExtLength, extExtExtLength),
 	}
 	child.Parent.Child = child
 	return child.Parent

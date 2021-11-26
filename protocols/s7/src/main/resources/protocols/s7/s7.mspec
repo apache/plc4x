@@ -22,7 +22,7 @@
 ////////////////////////////////////////////////////////////////
 
 [type TPKTPacket byteOrder='BIG_ENDIAN'
-    [const    uint 8                 protocolId '0x03']
+    [const    uint 8                 protocolId 0x03]
     [reserved uint 8                 '0x00']
     [implicit uint 16                len       'payload.lengthInBytes + 4']
     [simple   COTPPacket('len - 4') payload]
@@ -35,7 +35,7 @@
 [discriminatedType COTPPacket (uint 16 cotpLen)
     [implicit      uint 8 headerLength 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 tpduCode]
-    [typeSwitch 'tpduCode'
+    [typeSwitch tpduCode
         ['0xF0' COTPPacketData
             [simple bit    eot]
             [simple uint 7 tpduRef]
@@ -71,7 +71,7 @@
 [discriminatedType COTPParameter (uint 8 rest)
     [discriminator uint 8 parameterType]
     [implicit      uint 8 parameterLength 'lengthInBytes - 2']
-    [typeSwitch 'parameterType'
+    [typeSwitch parameterType
         ['0xC0' COTPParameterTpduSize
             [simple COTPTpduSize tpduSize]
         ]
@@ -95,13 +95,13 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType S7Message
-    [const         uint 8  protocolId      '0x32']
+    [const         uint 8  protocolId      0x32]
     [discriminator uint 8  messageType]
     [reserved      uint 16 '0x0000']
     [simple        uint 16 tpduReference]
     [implicit      uint 16 parameterLength 'parameter != null ? parameter.lengthInBytes : 0']
     [implicit      uint 16 payloadLength   'payload != null ? payload.lengthInBytes : 0']
-    [typeSwitch 'messageType'
+    [typeSwitch messageType
         ['0x01' S7MessageRequest
         ]
         ['0x02' S7MessageResponse
@@ -124,7 +124,7 @@
 
 [discriminatedType S7Parameter (uint 8 messageType)
     [discriminator uint 8 parameterType]
-    [typeSwitch 'parameterType','messageType'
+    [typeSwitch parameterType,messageType
         ['0xF0' S7ParameterSetupCommunication
             [reserved uint 8  '0x00']
             [simple   uint 16 maxAmqCaller]
@@ -163,7 +163,7 @@
 
 [discriminatedType S7VarRequestParameterItem
     [discriminator uint 8 itemType]
-    [typeSwitch 'itemType'
+    [typeSwitch itemType
         ['0x12' S7VarRequestParameterItemAddress
             [implicit uint 8    itemLength 'address.lengthInBytes']
             [simple   S7Address address]
@@ -173,7 +173,7 @@
 
 [discriminatedType S7Address
     [discriminator uint 8 addressType]
-    [typeSwitch 'addressType'
+    [typeSwitch addressType
         ['0x10' S7AddressAny
             [enum     TransportSize transportSize code]
             [simple   uint 16       numberOfElements]
@@ -188,7 +188,7 @@
 
 [discriminatedType S7ParameterUserDataItem
     [discriminator uint 8 itemType]
-    [typeSwitch 'itemType'
+    [typeSwitch itemType
         ['0x12' S7ParameterUserDataItemCPUFunctions
             [implicit uint 8  itemLength 'lengthInBytes - 2']
             [simple   uint 8  method]
@@ -221,7 +221,7 @@
 // Payloads
 
 [discriminatedType S7Payload (uint 8 messageType, S7Parameter parameter)
-    [typeSwitch 'parameter.parameterType', 'messageType'
+    [typeSwitch parameter.parameterType, messageType
         ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem items count 'CAST(parameter, "S7ParameterReadVarResponse").numItems']
         ]
@@ -257,12 +257,12 @@
 
 //Under test
 [discriminatedType  S7DataAlarmMessage(uint 4 cpuFunctionType)
-    [const    uint 8 functionId       '0x00']
-    [const    uint 8 numberMessageObj '0x01']
-    [typeSwitch 'cpuFunctionType'
+    [const    uint 8 functionId       0x00]
+    [const    uint 8 numberMessageObj 0x01]
+    [typeSwitch cpuFunctionType
         ['0x04' S7MessageObjectRequest
-            [const    uint 8       variableSpec  '0x12']
-            [const    uint 8       length        '0x08']
+            [const    uint 8       variableSpec  0x12]
+            [const    uint 8       length        0x08]
             [simple   SyntaxIdType syntaxId]
             [reserved uint 8       '0x00']
             [simple   QueryType    queryType]
@@ -308,7 +308,7 @@
 ]
 
 [type AlarmMessageObjectPushType
-    [const  uint 8              variableSpec     '0x12']
+    [const  uint 8              variableSpec     0x12]
     [simple uint 8              lengthSpec]
     [simple SyntaxIdType        syntaxId]
     [simple uint 8              numberOfValues]
@@ -321,7 +321,7 @@
 ]
 
 [type AlarmMessageAckObjectPushType
-    [const  uint 8       variableSpec '0x12']
+    [const  uint 8       variableSpec 0x12]
     [simple uint 8       lengthSpec]
     [simple SyntaxIdType syntaxId]
     [simple uint 8       numberOfValues]
@@ -347,7 +347,7 @@
 [type AlarmMessageObjectQueryType
     [simple   uint 8              lengthDataset]
     [reserved uint 16             '0x0000']
-    [const    uint 8              variableSpec   '0x12']
+    [const    uint 8              variableSpec   0x12]
     [simple   State               eventState]
     [simple   State               ackStateGoing]
     [simple   State               ackStateComing]
@@ -362,13 +362,13 @@
     [simple uint 8                      numberOfObjects]
     [simple DataTransportErrorCode      returnCode]
     [simple DataTransportSize           transportSize]
-    [const  uint 16                     DataLength     '0xFFFF']
+    [const  uint 16                     DataLength     0xFFFF]
     [array  AlarmMessageObjectQueryType messageObjects count    'numberOfObjects' ]
 ]
 
 [type AlarmMessageObjectAckType
-    [const  uint 8       variableSpec '0x12']
-    [const  uint 8       length '0x08']
+    [const  uint 8       variableSpec 0x12]
+    [const  uint 8       length 0x08]
     [simple SyntaxIdType syntaxId]
     [simple uint 8       numberOfValues]
     [simple uint 32      eventId]
@@ -416,7 +416,7 @@
     [simple     DataTransportErrorCode returnCode]
     [simple     DataTransportSize      transportSize]
     [implicit   uint 16                dataLength    'lengthInBytes - 4']
-    [typeSwitch 'cpuFunctionType', 'cpuSubfunction', 'dataLength'
+    [typeSwitch cpuFunctionType, cpuSubfunction, dataLength
 
         //USER and SYSTEM Messages
         ['0x00', '0x03' S7PayloadDiagnosticMessage
@@ -460,7 +460,7 @@
         ['0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
             [simple   SzlId           szlId]
             [simple   uint 16         szlIndex]
-            [const    uint 16         szlItemLength '28']
+            [const    uint 16         szlItemLength 28]
             [implicit uint 16         szlItemCount  'COUNT(items)']
             [array    SzlDataTreeItem items         count 'szlItemCount']
         ]
@@ -501,10 +501,10 @@
 
         //ALARM_QUERY Request for alarms stored in the controller
         ['0x04', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQuery
-            [const    uint 8       functionId       '0x00']
-            [const    uint 8       numberMessageObj '0x01']
-            [const    uint 8       variableSpec     '0x12']
-            [const    uint 8       length           '0x08']
+            [const    uint 8       functionId       0x00]
+            [const    uint 8       numberMessageObj 0x01]
+            [const    uint 8       variableSpec     0x12]
+            [const    uint 8       length           0x08]
             [simple   SyntaxIdType syntaxId]
             [reserved uint 8       '0x00']
             [simple   QueryType    queryType]
@@ -512,8 +512,8 @@
             [simple   AlarmType    alarmType]
         ]
         ['0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-            [const    uint 8                 functionId          '0x00']
-            [const    uint 8                 numberMessageObj    '0x01']
+            [const    uint 8                 functionId          0x00]
+            [const    uint 8                 numberMessageObj    0x01]
             [simple   DataTransportErrorCode pudicfReturnCode]
             [simple   DataTransportSize      pudicftransportSize]
             [reserved uint 8                 '0x00']
@@ -522,7 +522,7 @@
 ]
 
 [dataIo DataItem(vstring dataProtocolId, int 32 stringLength)
-    [typeSwitch 'dataProtocolId'
+    [typeSwitch dataProtocolId
         // -----------------------------------------
         // Bit
         // -----------------------------------------

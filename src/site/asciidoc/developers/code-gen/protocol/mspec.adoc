@@ -32,7 +32,7 @@ An example would be the `TPKTPacket` of the S7 format:
 
 ....
 [type TPKTPacket
-    [const    uint 8     protocolId '0x03']
+    [const    uint 8     protocolId 0x03]
     [reserved uint 8     '0x00']
     [implicit uint 16    len        'payload.lengthInBytes + 4']
     [field    COTPPacket 'payload']
@@ -47,7 +47,7 @@ For example part of the spec for the S7 format looks like this:
 
 ....
 [discriminatedType S7Message
-    [const         uint 8  protocolId      '0x32']
+    [const         uint 8  protocolId      0x32]
     [discriminator uint 8  messageType]
     [reserved      uint 16 '0x0000']
     [field         uint 16 'tpduReference']
@@ -162,7 +162,7 @@ See also:
 
 A const field simply reads a given simple type and compares to a given reference value.
 
-    [const {simple-type} {size} '{name}' '{reference}']
+    [const {simple-type} {size} '{name}' {reference}]
 
 When parsing it makes the parser throw an Exception if the parsed value does not match.
 

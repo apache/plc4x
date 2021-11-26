@@ -28,10 +28,10 @@
     [simple        uint 32 status]
     [array         uint 8  senderContext count '8']
     [simple        uint 32 options]
-    [typeSwitch 'command'
+    [typeSwitch command
             ['0x0065' EipConnectionRequest
-                [const  uint    16   protocolVersion   '0x01']
-                [const  uint    16   flags             '0x00']
+                [const  uint    16   protocolVersion   0x01]
+                [const  uint    16   flags             0x00]
             ]
             ['0x0066' EipDisconnectRequest
             ]
@@ -42,17 +42,18 @@
             ]
         ]
 ]
+
 [type  CipExchange (uint 16 exchangeLen)  //We pass then length down to evey sub-type to be able to provide the remaining data size
-    [const          uint 16                         itemCount           '0x02'                  ]  //2 items
-    [const          uint 32                         nullPtr             '0x0'                   ]  //NullPointerAddress
-    [const          uint 16                         unconnectedData     '0x00B2'                ]  //Connection Manager
+    [const          uint 16                         itemCount           0x02                  ]  //2 items
+    [const          uint 32                         nullPtr             0x0                   ]  //NullPointerAddress
+    [const          uint 16                         unconnectedData     0x00B2                ]  //Connection Manager
     [implicit       uint 16                         size                'lengthInBytes - 8 - 2' ]  //remove fields above and routing
     [simple         CipService('exchangeLen - 10')  service                                     ]
 ]
 
 [discriminatedType  CipService(uint 16 serviceLen)
     [discriminator  uint    8   service]
-    [typeSwitch 'service'
+    [typeSwitch service
         ['0x4C' CipReadRequest
             [simple     int     8   requestPathSize]
             [array      byte   tag   length  '(requestPathSize * 2)']
@@ -78,8 +79,8 @@
             [simple     uint        8   extStatus]
         ]
         ['0x0A' MultipleServiceRequest
-               [const  int     8   requestPathSize   '0x02']
-               [const  uint    32  requestPath       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
+               [const  int     8   requestPathSize   0x02]
+               [const  uint    32  requestPath       0x01240220]   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
                [simple Services('serviceLen - 6 ')  data ]
         ]
         ['0x8A' MultipleServiceResponse
@@ -99,7 +100,7 @@
                [reserved   uint    16  '0x9D05']   //Timeout 5s
                [implicit   uint    16  messageSize   'lengthInBytes - 10 - 4']   //subtract above and routing
                [simple     CipService('messageSize')  unconnectedService ]
-               [const      uint    16  route '0x0001']
+               [const      uint    16  route 0x0001]
                [simple     int     8   backPlane]
                [simple     int     8   slot]
         ]

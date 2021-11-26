@@ -114,7 +114,7 @@
 ]
 
 [dataIo KnxDatapoint(KnxDatapointType datapointType)
-    [typeSwitch 'datapointType'
+    [typeSwitch datapointType
         ['BOOL' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    value]

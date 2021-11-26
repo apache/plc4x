@@ -24,7 +24,7 @@
 ]
 
 [dataIo DataItem(vstring dataType, uint 16 numberOfValues)
-    [typeSwitch 'dataType','numberOfValues'
+    [typeSwitch dataType,numberOfValues
         ['"BOOL"','1' BOOL
             [simple   bit    value]
         ]

@@ -18,15 +18,15 @@
  */
 
 [discriminatedType DF1Symbol byteOrder='BIG_ENDIAN'
-    [const            uint  8      messageStart '0x10']
+    [const            uint  8      messageStart 0x10]
     [discriminator    uint  8      symbolType]
-    [typeSwitch 'symbolType'
+    [typeSwitch symbolType
         ['0x02' DF1SymbolMessageFrame
             [simple   uint  8      destinationAddress]
             [simple   uint  8      sourceAddress]
             [simple   DF1Command   command]
-            [const    uint  8      messageEnd '0x10']
-            [const    uint  8      endTransaction '0x03']
+            [const    uint  8      messageEnd 0x10]
+            [const    uint  8      endTransaction 0x03]
             [checksum uint 16      crc 'STATIC_CALL("crcCheck", destinationAddress, sourceAddress, command)']
         ]
         ['0x06' DF1SymbolMessageFrameACK
@@ -40,7 +40,7 @@
     [discriminator  uint  8     commandCode         ]
     [simple         uint  8     status              ]
     [simple         uint 16     transactionCounter  ]
-    [typeSwitch 'commandCode'
+    [typeSwitch commandCode
         ['0x01' DF1UnprotectedReadRequest
             [simple uint 16    address  ]
             [simple uint  8    size     ]

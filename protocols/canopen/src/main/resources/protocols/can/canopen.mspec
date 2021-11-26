@@ -51,7 +51,7 @@
 ]
 
 [discriminatedType CANOpenPayload(CANOpenService service)
-    [typeSwitch 'service'
+    [typeSwitch service
         ['NMT' CANOpenNetworkPayload
             [simple NMTStateRequest request]
             [reserved uint 1 '0x00']
@@ -99,7 +99,7 @@
 ]
 
 [type SDORequest(SDORequestCommand command)
-    [typeSwitch 'command'
+    [typeSwitch command
         ['SEGMENT_DOWNLOAD' SDOSegmentDownloadRequest
             [simple bit toggle]
             [implicit uint 3 size '7 - COUNT(data)']
@@ -140,7 +140,7 @@
 ]
 
 [type SDOResponse(SDOResponseCommand command)
-    [typeSwitch 'command'
+    [typeSwitch command
         ['SEGMENT_UPLOAD' SDOSegmentUploadResponse
             [simple bit toggle]
             [implicit uint 3 size '7 - COUNT(data)']
@@ -176,7 +176,7 @@
 ]
 
 [type SDOInitiateUploadResponsePayload(bit expedited, bit indicated, uint 2 size)
-    [typeSwitch 'expedited', 'indicated'
+    [typeSwitch expedited, indicated
         ['true', 'true' SDOInitiateExpeditedUploadResponse
             [array byte data count '4 - size']
             [padding uint 8 alignment '0x00' '4 - COUNT(data)']
@@ -271,7 +271,7 @@
 ]
 
 [dataIo DataItem(CANOpenDataType dataType, int 32 size)
-    [typeSwitch 'dataType'
+    [typeSwitch dataType
         ['BOOLEAN' BOOL
             [simple bit value]
         ]
@@ -357,7 +357,7 @@
 [type CANOpenFrame byteOrder='LITTLE_ENDIAN'
     [simple uint 8 nodeId]
     [simple CANOpenService service]
-    [const uint 4 alignment '0x00']
+    [const uint 4 alignment 0x00]
     [simple CANOpenPayload('service') payload]
     [padding uint 8 alignment '0x00' '8 - (payload.lengthInBytes)']
 ]

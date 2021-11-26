@@ -19,10 +19,10 @@
 
 [discriminatedType KnxNetIpMessage byteOrder='BIG_ENDIAN'
     [implicit      uint 8  headerLength    '6']
-    [const         uint 8  protocolVersion '0x10']
+    [const         uint 8  protocolVersion 0x10]
     [discriminator uint 16 msgType]
     [implicit      uint 16 totalLength     'lengthInBytes']
-    [typeSwitch 'msgType'
+    [typeSwitch msgType
         ['0x0201' SearchRequest
             [simple HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint]
         ]
@@ -132,7 +132,7 @@
 [discriminatedType ConnectionRequestInformation
     [implicit      uint 8    structureLength 'lengthInBytes']
     [discriminator uint 8    connectionType]
-    [typeSwitch 'connectionType'
+    [typeSwitch connectionType
         ['0x03' ConnectionRequestInformationDeviceManagement
         ]
         ['0x04' ConnectionRequestInformationTunnelConnection
@@ -145,7 +145,7 @@
 [discriminatedType ConnectionResponseDataBlock
     [implicit      uint 8     structureLength 'lengthInBytes']
     [discriminator uint 8     connectionType]
-    [typeSwitch 'connectionType'
+    [typeSwitch connectionType
         ['0x03' ConnectionResponseDataBlockDeviceManagement
         ]
         ['0x04' ConnectionResponseDataBlockTunnelConnection
@@ -208,7 +208,7 @@
 
 [discriminatedType ServiceId
     [discriminator uint 8 serviceType]
-    [typeSwitch 'serviceType'
+    [typeSwitch serviceType
         ['0x02' KnxNetIpCore
             [simple uint 8 version]
         ]
@@ -243,7 +243,7 @@
 // normal traffic is actually extended frames.
 [discriminatedType CEMI(uint 16 size)
     [discriminator uint 8 messageCode]
-    [typeSwitch 'messageCode'
+    [typeSwitch messageCode
         ['0x2B' LBusmonInd
             [simple   uint 8                    additionalInformationLength]
             [array    CEMIAdditionalInformation additionalInformation length 'additionalInformationLength']
@@ -331,9 +331,9 @@
 
 [discriminatedType CEMIAdditionalInformation
     [discriminator uint 8 additionalInformationType]
-    [typeSwitch 'additionalInformationType'
+    [typeSwitch additionalInformationType
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
-            [const     uint 8 len '1']
+            [const     uint 8 len 1]
             [simple    bit    frameErrorFlag]
             [simple    bit    bitErrorFlag]
             [simple    bit    parityErrorFlag]
@@ -342,7 +342,7 @@
             [simple    uint 3 sequenceNumber]
         ]
         ['0x04' CEMIAdditionalInformationRelativeTimestamp
-            [const    uint 8            len '2']
+            [const    uint 8            len 2]
             [simple   RelativeTimestamp relativeTimestamp]
         ]
     ]
@@ -359,7 +359,7 @@
     [simple        bit          acknowledgeRequested]
     [simple        bit          errorFlag]
     // "03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27
-    [typeSwitch 'notAckFrame','polling'
+    [typeSwitch notAckFrame,polling
         // Page 29ff
         // TODO: For some reason it doesn't seem to matter what the frame format is set to, it always seems to be an extended frame
         // ['true','false','false' LDataExtended
@@ -400,7 +400,7 @@
     [discriminator uint 1 control]
     [simple        bit    numbered]
     [simple        uint 4 counter]
-    [typeSwitch 'control'
+    [typeSwitch control
         ['1' ApduControlContainer
             [simple ApduControl controlApdu]
         ]
@@ -412,7 +412,7 @@
 
 [discriminatedType ApduControl
     [discriminator uint 2 controlType]
-    [typeSwitch 'controlType'
+    [typeSwitch controlType
         ['0x0' ApduControlConnect
         ]
         ['0x1' ApduControlDisconnect
@@ -427,7 +427,7 @@
 [discriminatedType ApduData(uint 8 dataLength)
     [discriminator uint 4 apciType]
     // 03_03_07 Application Layer v01.06.02 AS Page 9ff
-    [typeSwitch 'apciType'
+    [typeSwitch apciType
         ['0x0' ApduDataGroupValueRead
             [reserved uint 6 '0x00']
         ]
@@ -482,7 +482,7 @@
 // 03_03_07 Application Layer v01.06.02 AS Page 9ff
 [discriminatedType ApduDataExt(uint 8 length)
     [discriminator uint 6 extApciType]
-    [typeSwitch 'extApciType'
+    [typeSwitch extApciType
         ['0x00' ApduDataExtOpenRoutingTableRequest
         ]
         ['0x01' ApduDataExtReadRoutingTableRequest
@@ -615,7 +615,7 @@
 ]
 
 [discriminatedType KnxGroupAddress(uint 2 numLevels)
-    [typeSwitch 'numLevels'
+    [typeSwitch numLevels
         ['1' KnxGroupAddressFreeLevel
             [simple uint 16 subGroup]
         ]
@@ -814,7 +814,7 @@
 // - 03_07_03 Standardized Identifier Tables v01.03.01 AS.pdf
 // - 03_07_02 Datapoint Types v01.08.02 AS.pdf
 [dataIo KnxProperty(KnxPropertyDataType propertyType, uint 8 dataLengthInBytes)
-    [typeSwitch 'propertyType','dataLengthInBytes'
+    [typeSwitch propertyType,dataLengthInBytes
         ['PDT_CONTROL' BOOL
             [reserved uint 7        '0x00']
             [simple   bit           value]
@@ -1038,7 +1038,7 @@
 ]
 
 [discriminatedType ComObjectTable(FirmwareType firmwareType)
-    [typeSwitch 'firmwareType'
+    [typeSwitch firmwareType
         // The location of the Group Object Table - Realization Type 1 is calculated by
         // adding 0x100 to the value of the resource 'Group Object Table Pointer', which
         // is a single byte located at memory address 0x112

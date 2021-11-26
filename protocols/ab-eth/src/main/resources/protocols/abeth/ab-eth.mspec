@@ -25,7 +25,7 @@
     [array         uint 8  senderContext count '8']
     [simple        uint 32 options]
     [reserved      uint 32 '0x00000000']
-    [typeSwitch 'commandType'
+    [typeSwitch commandType
         ['0x0101' CIPEncapsulationConnectionRequest
         ]
         ['0x0201' CIPEncapsulationConnectionResponse
@@ -46,7 +46,7 @@
     [discriminator uint 8  commandCode]
     [simple        uint 8  status]
     [simple        uint 16 transactionCounter]
-    [typeSwitch 'commandCode'
+    [typeSwitch commandCode
         ['0x0F' DF1CommandRequestMessage
             [simple DF1RequestCommand command]
         ]
@@ -61,7 +61,7 @@
     [discriminator uint 8  commandCode]
     [simple        uint 8  status]
     [simple        uint 16 transactionCounter]
-    [typeSwitch 'commandCode'
+    [typeSwitch commandCode
         ['0x4F' DF1CommandResponseMessageProtectedTypedLogicalRead (uint 8 status)
             [array    uint 8 data length 'payloadLength - 8']
         ]
@@ -70,7 +70,7 @@
 
 [discriminatedType DF1RequestCommand
     [discriminator    uint 8 functionCode]
-    [typeSwitch 'functionCode'
+    [typeSwitch functionCode
         ['0xA2' DF1RequestProtectedTypedLogicalRead
             [simple uint 8 byteSize]
             [simple uint 8 fileNumber]

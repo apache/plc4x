@@ -191,7 +191,7 @@
 ]
 
 [discriminatedType AdsData(CommandId commandId, bit response)
-    [typeSwitch 'commandId', 'response'
+    [typeSwitch commandId, response
         ['INVALID', 'false' AdsInvalidRequest]
         ['INVALID', 'true' AdsInvalidResponse]
 
@@ -335,7 +335,7 @@
 ]
 
 [discriminatedType AdsMultiRequestItem(uint 32 indexGroup)
-    [typeSwitch 'indexGroup'
+    [typeSwitch indexGroup
         // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
         ['61568' AdsMultiRequestItemRead
             // 4 bytes	Index Group of the data which should be written.
@@ -387,7 +387,7 @@
 ]
 
 [dataIo DataItem(vstring dataFormatName, int 32 stringLength)
-    [typeSwitch 'dataFormatName'
+    [typeSwitch dataFormatName
         // -----------------------------------------
         // Bit
         // -----------------------------------------

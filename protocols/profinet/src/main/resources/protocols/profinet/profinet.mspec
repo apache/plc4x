@@ -46,20 +46,20 @@
 
 [discriminatedType Ethernet_FramePayload
     [discriminator uint 16 packetType]
-    [typeSwitch 'packetType'
+    [typeSwitch packetType
         ['0x0800' Ethernet_FramePayload_IPv4
-            [const    uint 4              version                         '0x4'                      ]
-            [const    uint 4              headerLength                    '0x5'                      ]
-            [const    uint 6              differentiatedServicesCodepoint '0x00'                     ]
-            [const    uint 2              explicitCongestionNotification  '0x0'                      ]
+            [const    uint 4              version                         0x4                      ]
+            [const    uint 4              headerLength                    0x5                      ]
+            [const    uint 6              differentiatedServicesCodepoint 0x00                     ]
+            [const    uint 2              explicitCongestionNotification  0x0                      ]
             [implicit uint 16             totalLength                     '20 + packet.lengthInBytes']
             [simple   uint 15             identification                                             ]
-            [const    uint 3              flags                           '0x00'                     ]
-            [const    uint 13             fragmentOffset                  '0x00'                     ]
+            [const    uint 3              flags                           0x00                     ]
+            [const    uint 13             fragmentOffset                  0x00                     ]
             // Time to live: 64
-            [const    uint 8              timeToLive                      '0x40'                     ]
+            [const    uint 8              timeToLive                      0x40                     ]
             // Protocol: UDP
-            [const    uint 8              protocol                        '0x11'                     ]
+            [const    uint 8              protocol                        0x11                     ]
             // TODO: Implement ...
             //[checksum uint 16           'headerChecksum'                ''                         ]
             [simple   IpAddress           sourceAddress                                              ]
@@ -95,21 +95,21 @@
 [type DceRpc_Packet byteOrder='BIG_ENDIAN'
 // RPC Header {
     // RPCVersion 4.10.3.2.1
-    [const         uint 8                version                        '0x04'                 ]
+    [const         uint 8                version                        0x04                 ]
     // RPCPacketType 4.10.3.2.2 (8 bit)
     [simple        DceRpc_PacketType     packetType                                            ]
     // PRCFlags 4.10.3.2.3
     [reserved      bit                                                  'false'                ]
-    [const         bit                   broadcast                      'false'                ]
+    [const         bit                   broadcast                      false                ]
     [simple        bit                   idempotent                                            ]
-    [const         bit                   maybe                          'false'                ]
+    [const         bit                   maybe                          false                ]
     [simple        bit                   noFragmentAcknowledgeRequested                        ]
-    [const         bit                   fragment                       'false'                ]
+    [const         bit                   fragment                       false                ]
     [simple        bit                   lastFragment                                          ]
     [reserved      bit                                                  'false'                ]
     // PRCFlags2 4.10.3.2.4
     [reserved      uint 6                                               '0x00'                 ]
-    [const         bit                   cancelWasPending               'false'                ]
+    [const         bit                   cancelWasPending               false                ]
     [reserved      bit                                                  'false'                ]
     // RPCDRep 4.10.3.2.5 (4 bit & 4 bit)
     [simple        IntegerEncoding       integerEncoding                                       ]
@@ -119,7 +119,7 @@
     // RPCDRep3 (8 bit shall be 0)
     [reserved      uint 8                                               '0x00'                 ]
     // RPCSerialHigh 4.10.3.2.6
-    [const         uint 8                serialHigh                     '0x00'                 ]
+    [const         uint 8                serialHigh                     0x00                 ]
     [batchSet byteOrder='integerEncoding == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN'
         // RPCObjectUUID 4.10.3.2.8
         // RPCObjectUUID 4.10.3.2.8
@@ -131,24 +131,24 @@
         // RPCServerBootTime 4.10.3.2.11
         [simple uint 32                  serverBootTime                                        ]
         // RPCInterfaceVersion 4.10.3.2.12
-        [const  uint 32                  interfaceVer                   '0x00000001'           ]
+        [const  uint 32                  interfaceVer                   0x00000001           ]
         // RPCSequenceNmb 4.10.3.2.13
         [simple uint 32                  sequenceNumber                                        ]
         // RPCOperationNmb 4.10.3.2.14
         [simple DceRpc_Operation         operation                                             ]
         // RPCInterfaceHint 4.10.3.2.15
-        [const        uint 16            interfaceHint                  '0xFFFF'               ]
+        [const        uint 16            interfaceHint                  0xFFFF               ]
         // RPCActivityHint 4.10.3.2.16
-        [const        uint 16            activityHint                   '0xFFFF'               ]
+        [const        uint 16            activityHint                   0xFFFF               ]
         // RPCLengthOfBody 4.10.3.2.17
         [implicit     uint 16            lengthOfBody                   'payload.lengthInBytes']
         // RPCFragmentNmb 4.10.3.2.18 (Setting this to 0 as we will probably never have anything but 0 here
-        [const        uint 16            fragmentNum                    '0x0000'               ]
+        [const        uint 16            fragmentNum                    0x0000               ]
         // RPCAuthenticationProtocol 4.10.3.2.19
-        [const        uint 8             authProto                      '0x00'                 ]
+        [const        uint 8             authProto                      0x00                 ]
     ]
     // RPCSerialLow 4.10.3.2.7
-    [const            uint 8             serialLow                      '0x00'                 ]
+    [const            uint 8             serialLow                      0x00                 ]
 // RPC Header }
 // RPC Payload {
     [simple PnIoCm_Packet('packetType') payload byteOrder='integerEncoding == IntegerEncoding.BIG_ENDIAN ? BIG_ENDIAN : LITTLE_ENDIAN' ]
@@ -157,11 +157,11 @@
 
 // RPCObjectUUID 4.10.3.2.8
 [type DceRpc_ObjectUuid
-    [const  uint 32 data1      '0xDEA00000'                       ]
-    [const  uint 16 data2      '0x6C97'                           ]
-    [const  uint 16 data3      '0x11D1'                           ]
+    [const  uint 32 data1      0xDEA00000                       ]
+    [const  uint 16 data2      0x6C97                           ]
+    [const  uint 16 data3      0x11D1                           ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [const  uint 16 data4      '0x8271'     byteOrder='BIG_ENDIAN']
+    [const  uint 16 data4      0x8271       byteOrder='BIG_ENDIAN']
     [simple uint 16 nodeNumber              byteOrder='BIG_ENDIAN']
     [simple uint 16 deviceId                byteOrder='BIG_ENDIAN']
     [simple uint 16 vendorId                byteOrder='BIG_ENDIAN']
@@ -174,14 +174,14 @@
 //       had to do this trick.
 [discriminatedType DceRpc_InterfaceUuid
     [discriminator  uint 32 interfaceType                                 ]
-    [const          uint 16 data1      '0x6C97'                           ]
-    [const          uint 16 data2      '0x11D1'                           ]
+    [const          uint 16 data1      0x6C97                           ]
+    [const          uint 16 data2      0x11D1                           ]
     // This part is described as a byte array, so the byte order is always big-endian
-    [const          uint 16 data3      '0x8271'     byteOrder='BIG_ENDIAN']
-    [const          uint 16 data4      '0x00A0'     byteOrder='BIG_ENDIAN']
-    [const          uint 16 data5      '0x2442'     byteOrder='BIG_ENDIAN']
-    [const          uint 16 data6      '0xDF7D'     byteOrder='BIG_ENDIAN']
-    [typeSwitch 'interfaceType'
+    [const          uint 16 data3      0x8271     byteOrder='BIG_ENDIAN']
+    [const          uint 16 data4      0x00A0     byteOrder='BIG_ENDIAN']
+    [const          uint 16 data5      0x2442     byteOrder='BIG_ENDIAN']
+    [const          uint 16 data6      0xDF7D     byteOrder='BIG_ENDIAN']
+    [typeSwitch interfaceType
         ['0xDEA00001' DceRpc_InterfaceUuid_DeviceInterface
         ]
         ['0xDEA00002' DceRpc_InterfaceUuid_ControllerInterface
@@ -338,7 +338,7 @@
     [discriminator PnDcp_BlockOptions option                   ]
     [discriminator uint 8       suboption                      ]
     [implicit      uint 16      blockLength 'lengthInBytes - 4']
-    [typeSwitch 'option','suboption'
+    [typeSwitch option,suboption
 
         ////////////////////////////////////////////////////////////////////////////
         // IP_OPTION
@@ -570,7 +570,7 @@
 // 5.1.2
 // 5.5.2.2
 [discriminatedType PnIoCm_Packet(DceRpc_PacketType packetType)
-    [typeSwitch 'packetType'
+    [typeSwitch packetType
         ['REQUEST' PnIoCm_Packet_Req
             [simple uint 32 argsMaximum                       ]
         ]
@@ -594,7 +594,7 @@
     [implicit      uint 16          blockLength      'lengthInBytes - 4']
     [simple        uint 8           blockVersionHigh                    ]
     [simple        uint 8           blockVersionLow                     ]
-    [typeSwitch 'blockType'
+    [typeSwitch blockType
         ['AR_BLOCK_REQ' PnIoCm_Block_ArReq
             [simple   PnIoCm_ArType                   arType                                                 ]
             [simple   Uuid                            arUuid                                                 ]
@@ -695,7 +695,7 @@
 ]
 
 [type PnIoCm_IoCrBlockReqApi
-    [const    uint 32             api              '0x00000000'             ]
+    [const    uint 32             api              0x00000000             ]
     [implicit uint 16             numIoDataObjects 'COUNT(ioDataObjects)'   ]
     [array    PnIoCm_IoDataObject ioDataObjects    count 'numIoDataObjects' ]
     [implicit uint 16             numIoCss         'COUNT(ioCss)'           ]
@@ -715,7 +715,7 @@
 ]
 
 [type PnIoCm_ExpectedSubmoduleBlockReqApi
-    [const    uint 32          api               '0x00000000'                       ]
+    [const    uint 32          api               0x00000000                       ]
     [simple   uint 16          slotNumber                                           ]
     [simple   uint 32          moduleIdentNumber                                    ]
     [simple   uint 16          moduleProperties                                     ]
@@ -724,7 +724,7 @@
 ]
 
 [type PnIoCm_ModuleDiffBlockApi
-    [const    uint 32                          api        '0x00000000'                    ]
+    [const    uint 32                          api        0x00000000                    ]
     [implicit uint 16                          numModules 'COUNT(modules)'                ]
     [array    PnIoCm_ModuleDiffBlockApi_Module modules    count               'numModules']
 ]
@@ -761,19 +761,19 @@
     [simple        bit                    sharedInput                   ]
     [discriminator PnIoCm_SubmoduleType   submoduleType                 ]
     // End SubmoduleProperties
-    [typeSwitch 'submoduleType'
+    [typeSwitch submoduleType
         ['NO_INPUT_NO_OUTPUT_DATA' PnIoCm_Submodule_NoInputNoOutputData
-            [const    uint 16             dataDescription       '0x0001']
-            [const    uint 16             submoduleDataLength   '0x0000']
-            [const    uint 8              lengthIoCs            '0x01'  ]
-            [const    uint 8              lengthIoPs            '0x01'  ]
+            [const    uint 16             dataDescription       0x0001]
+            [const    uint 16             submoduleDataLength   0x0000]
+            [const    uint 8              lengthIoCs            0x01  ]
+            [const    uint 8              lengthIoPs            0x01  ]
         ]
         ['INPUT_AND_OUTPUT_DATA' PnIoCm_Submodule_InputAndOutputData
-            [const    uint 16             inputDataDescription  '0x0001']
+            [const    uint 16             inputDataDescription  0x0001]
             [simple   uint 16             inputSubmoduleDataLength      ]
             [simple   uint 8              inputLengthIoCs               ]
             [simple   uint 8              inputLengthIoPs               ]
-            [const    uint 16             outputDataDescription '0x0002']
+            [const    uint 16             outputDataDescription 0x0002]
             [simple   uint 16             outputSubmoduleDataLength     ]
             [simple   uint 8              outputLengthIoCs              ]
             [simple   uint 8              outputLengthIoPs              ]

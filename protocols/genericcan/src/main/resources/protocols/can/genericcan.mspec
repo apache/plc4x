@@ -41,7 +41,7 @@
 ]
 
 [dataIo DataItem(GenericCANDataType dataType) byteOrder='LITTLE_ENDIAN'
-    [typeSwitch 'dataType'
+    [typeSwitch dataType
         ['BYTE' BYTE
             [simple byte value]
         ]

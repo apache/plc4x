@@ -18,10 +18,10 @@
  */
 
 [discriminatedType BVLC byteOrder='BIG_ENDIAN'
-    [const         uint 8  bacnetType   '0x81'       ]
+    [const         uint 8  bacnetType   0x81       ]
     [discriminator uint 8  bvlcFunction              ]
     [implicit      uint 16 bvlcLength 'lengthInBytes']
-    [typeSwitch 'bvlcFunction'
+    [typeSwitch bvlcFunction
         ['0x00' BVLCResult
         ]
         ['0x01' BVLCWideBroadcastDistributionTable
@@ -79,7 +79,7 @@
 [discriminatedType NLM(uint 16 apduLength)
     [discriminator uint 8  messageType]
     [optional      uint 16 vendorId '(messageType >= 128) && (messageType <= 255)']
-    [typeSwitch 'messageType'
+    [typeSwitch messageType
         ['0x0' NLMWhoIsRouterToNetwork(uint 8 messageType)
             [array uint 16 destinationNetworkAddress length 'apduLength - (((messageType >= 128) && (messageType <= 255)) ? 3 : 1)']
         ]
@@ -91,7 +91,7 @@
 
 [discriminatedType APDU(uint 16 apduLength)
     [discriminator uint 4 apduType]
-    [typeSwitch 'apduType'
+    [typeSwitch apduType
         ['0x0' APDUConfirmedRequest
             [simple   bit    segmentedMessage                       ]
             [simple   bit    moreFollows                            ]
@@ -151,24 +151,24 @@
 
 [discriminatedType BACnetConfirmedServiceRequest(uint 16 len)
     [discriminator uint 8 serviceChoice]
-    [typeSwitch 'serviceChoice'
+    [typeSwitch serviceChoice
         ['0x00' BACnetConfirmedServiceRequestAcknowledgeAlarm
         ]
         ['0x01' BACnetConfirmedServiceRequestConfirmedCOVNotification
-            [const  uint 8               subscriberProcessIdentifierHeader         '0x09'                 ]
+            [const  uint 8               subscriberProcessIdentifierHeader         0x09                 ]
             [simple uint 8               subscriberProcessIdentifier                                      ]
-            [const  uint 8               monitoredObjectIdentifierHeader           '0x1C'                 ]
+            [const  uint 8               monitoredObjectIdentifierHeader           0x1C                 ]
             [simple uint 10              monitoredObjectType                                              ]
             [simple uint 22              monitoredObjectInstanceNumber                                    ]
-            [const  uint 8               issueConfirmedNotificationsHeader         '0x2C'                 ]
+            [const  uint 8               issueConfirmedNotificationsHeader         0x2C                 ]
             [simple uint 10              issueConfirmedNotificationsType                                  ]
             [simple uint 22              issueConfirmedNotificationsInstanceNumber                        ]
-            [const  uint 5               lifetimeHeader                            '0x07'                 ]
+            [const  uint 5               lifetimeHeader                            0x07                 ]
             [simple uint 3               lifetimeLength                                                   ]
             [array  int  8               lifetimeSeconds                           count  'lifetimeLength']
-            [const  uint 8               listOfValuesOpeningTag                    '0x4E'                 ]
+            [const  uint 8               listOfValuesOpeningTag                    0x4E                 ]
             [array  BACnetTagWithContent notifications                             length 'len - 18'      ]
-            [const  uint 8               listOfValuesClosingTag                    '0x4F'                 ]
+            [const  uint 8               listOfValuesClosingTag                    0x4F                 ]
         ]
         ['0x02' BACnetConfirmedServiceRequestConfirmedEventNotification
         ]
@@ -176,15 +176,15 @@
         ['0x04' BACnetConfirmedServiceRequestGetEnrollmentSummary
         ]
         ['0x05' BACnetConfirmedServiceRequestSubscribeCOV
-            [const  uint 8  subscriberProcessIdentifierHeader   '0x09'                ]
+            [const  uint 8  subscriberProcessIdentifierHeader   0x09                ]
             [simple uint 8  subscriberProcessIdentifier                               ]
-            [const  uint 8  monitoredObjectIdentifierHeader     '0x1C'                ]
+            [const  uint 8  monitoredObjectIdentifierHeader     0x1C                ]
             [simple uint 10 monitoredObjectType                                       ]
             [simple uint 22 monitoredObjectInstanceNumber                             ]
-            [const  uint 8  issueConfirmedNotificationsHeader   '0x29'                ]
-            [const  uint 7  issueConfirmedNotificationsSkipBits '0x00'                ]
+            [const  uint 8  issueConfirmedNotificationsHeader   0x29                ]
+            [const  uint 7  issueConfirmedNotificationsSkipBits 0x00                ]
             [simple bit     issueConfirmedNotifications                               ]
-            [const  uint 5  lifetimeHeader                      '0x07'                ]
+            [const  uint 5  lifetimeHeader                      0x07                ]
             [simple uint 3  lifetimeLength                                            ]
             [array  int 8   lifetimeSeconds                     count 'lifetimeLength']
         ]
@@ -203,25 +203,25 @@
         ['0x0B' BACnetConfirmedServiceRequestDeleteObject
         ]
         ['0x0C' BACnetConfirmedServiceRequestReadProperty
-            [const  uint 8  objectIdentifierHeader   '0x0C'                          ]
+            [const  uint 8  objectIdentifierHeader   0x0C                          ]
             [simple uint 10 objectType                                               ]
             [simple uint 22 objectInstanceNumber                                     ]
-            [const  uint 5  propertyIdentifierHeader '0x03'                          ]
+            [const  uint 5  propertyIdentifierHeader 0x03                          ]
             [simple uint 3  propertyIdentifierLength                                 ]
             [array  int 8   propertyIdentifier       count 'propertyIdentifierLength']
         ]
         ['0x0E' BACnetConfirmedServiceRequestReadPropertyMultiple
         ]
         ['0x0F' BACnetConfirmedServiceRequestWriteProperty
-            [const    uint 8    objectIdentifierHeader    '0x0C'                          ]
+            [const    uint 8    objectIdentifierHeader    0x0C                          ]
             [simple   uint 10   objectType                                                ]
             [simple   uint 22   objectInstanceNumber                                      ]
-            [const    uint 5    propertyIdentifierHeader '0x03'                           ]
+            [const    uint 5    propertyIdentifierHeader 0x03                           ]
             [simple   uint 3    propertyIdentifierLength                                  ]
             [array    int 8     propertyIdentifier        count 'propertyIdentifierLength']
-            [const    uint 8    openingTag                '0x3E'                          ]
+            [const    uint 8    openingTag                0x3E                          ]
             [simple   BACnetTag value                                                     ]
-            [const    uint 8    closingTag                '0x3F'                          ]
+            [const    uint 8    closingTag                0x3F                          ]
             [optional BACnetTag priority                  'curPos < (len - 1)'            ]
         ]
         ['0x10' BACnetConfirmedServiceRequestWritePropertyMultiple
@@ -269,17 +269,17 @@
 
 [discriminatedType BACnetUnconfirmedServiceRequest(uint 16 len)
     [discriminator uint 8 serviceChoice]
-    [typeSwitch 'serviceChoice'
+    [typeSwitch serviceChoice
         ['0x00' BACnetUnconfirmedServiceRequestIAm
-            [const uint 8 objectIdentifierHeader '0xC4']
+            [const uint 8 objectIdentifierHeader 0xC4]
             [simple uint 10 objectType]
             [simple uint 22 objectInstanceNumber]
-            [const uint 5 maximumApduLengthAcceptedHeader '0x04']
+            [const uint 5 maximumApduLengthAcceptedHeader 0x04]
             [simple uint 3 maximumApduLengthAcceptedLength]
             [array int 8 maximumApduLengthAccepted count 'maximumApduLengthAcceptedLength']
-            [const uint 8 segmentationSupportedHeader '0x91']
+            [const uint 8 segmentationSupportedHeader 0x91]
             [simple uint 8 segmentationSupported]
-            [const uint 8 vendorIdHeader '0x21']
+            [const uint 8 vendorIdHeader 0x21]
             [simple uint 8 vendorId]
         ]
         ['0x01' BACnetUnconfirmedServiceRequestIHave
@@ -289,13 +289,13 @@
         ['0x03' BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
         ]
         ['0x04' BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-            [const uint 8 vendorIdHeader '0x09']
+            [const uint 8 vendorIdHeader 0x09]
             [simple uint 8 vendorId]
-            [const uint 8 serviceNumberHeader '0x1A']
+            [const uint 8 serviceNumberHeader 0x1A]
             [simple uint 16 serviceNumber]
-            [const uint 8 listOfValuesOpeningTag '0x2E']
+            [const uint 8 listOfValuesOpeningTag 0x2E]
             [array int 8 values length 'len - 8']
-            [const uint 8 listOfValuesClosingTag '0x2F']
+            [const uint 8 listOfValuesClosingTag 0x2F]
         ]
         ['0x05' BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
         ]
@@ -309,10 +309,10 @@
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
             // TODO: here we need proper bacnet tags (like a discriminator etc... see line 494 BACnetTag)
-            [const uint 5 deviceInstanceRangeLowLimitHeader '0x01']
+            [const uint 5 deviceInstanceRangeLowLimitHeader 0x01]
             [simple uint 3 deviceInstanceRangeLowLimitLength]
             [array int 8 deviceInstanceRangeLowLimit count 'deviceInstanceRangeLowLimitLength']
-            [const uint 5 deviceInstanceRangeHighLimitHeader '0x03']
+            [const uint 5 deviceInstanceRangeHighLimitHeader 0x03]
             [simple uint 3 deviceInstanceRangeHighLimitLength]
             [array int 8 deviceInstanceRangeHighLimit count 'deviceInstanceRangeHighLimitLength']
         ]
@@ -327,7 +327,7 @@
 
 [discriminatedType BACnetComplexTag(uint 4 tagNumberArgument, BACnetDataType dataType)
     [assert        uint 4           tagNumber                 'tagNumberArgument'                                           ]
-    [const         TagClass         tagClass                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
+    [assert        TagClass         tagClass                  'TagClass.CONTEXT_SPECIFIC_TAGS'                              ]
     [simple        uint 3           lengthValueType                                                                         ]
     [optional      uint 8           extTagNumber              'tagNumber == 15'                                             ]
     [virtual       uint 8           actualTagNumber           'tagNumber < 15 ? tagNumber : extTagNumber'                   ]
@@ -336,7 +336,7 @@
     [optional      uint 16          extExtLength     'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
     [optional      uint 32          extExtExtLength  'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
     [virtual       uint 32          actualLength     'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
-    [typeSwitch 'dataType'
+    [typeSwitch dataType
         ['NULL' BACnetComplexTagNull
         ]
         ['BOOLEAN' BACnetComplexTagBoolean
@@ -378,7 +378,7 @@
 
 [discriminatedType BACnetServiceAck
     [discriminator   uint 8 serviceChoice]
-    [typeSwitch 'serviceChoice'
+    [typeSwitch serviceChoice
         ['0x03' BACnetServiceAckGetAlarmSummary
 
         ]
@@ -400,15 +400,15 @@
 
         ]
         ['0x0C' BACnetServiceAckReadProperty
-            [const uint 8 objectIdentifierHeader '0x0C']
+            [const uint 8 objectIdentifierHeader 0x0C]
             [simple uint 10 objectType]
             [simple uint 22 objectInstanceNumber]
-            [const uint 5 propertyIdentifierHeader '0x03']
+            [const uint 5 propertyIdentifierHeader 0x03]
             [simple uint 3 propertyIdentifierLength]
             [array int 8 propertyIdentifier count 'propertyIdentifierLength']
-            [const uint 8 openingTag '0x3E']
+            [const uint 8 openingTag 0x3E]
             [simple BACnetTag value]
-            [const uint 8 closingTag '0x3F']
+            [const uint 8 closingTag 0x3F]
         ]
         ['0x0E' BACnetServiceAckReadPropertyMultiple
 
@@ -439,7 +439,7 @@
 
 [discriminatedType BACnetConfirmedServiceACK
     [discriminator uint 8 serviceChoice]
-    [typeSwitch 'serviceChoice'
+    [typeSwitch serviceChoice
         ['0x03' BACnetConfirmedServiceACKGetAlarmSummary
         ]
         ['0x04' BACnetConfirmedServiceACKGetEnrollmentSummary
@@ -478,7 +478,7 @@
 
 [discriminatedType BACnetError
     [discriminator uint 8 serviceChoice]
-    [typeSwitch 'serviceChoice'
+    [typeSwitch serviceChoice
         ['0x03' BACnetErrorGetAlarmSummary
         ]
         ['0x04' BACnetErrorGetEnrollmentSummary
@@ -494,10 +494,10 @@
         ['0x0A' BACnetErrorCreateObject
         ]
         ['0x0C' BACnetErrorReadProperty
-            [const uint 5 errorClassHeader '0x12']
+            [const uint 5 errorClassHeader 0x12]
             [simple uint 3 errorClassLength]
             [array int 8 errorClass count 'errorClassLength']
-            [const uint 5 errorCodeHeader '0x12']
+            [const uint 5 errorCodeHeader 0x12]
             [simple uint 3 errorCodeLength]
             [array int 8 errorCode count 'errorCodeLength']
         ]
@@ -533,9 +533,9 @@
     [optional      uint 8    extTagNumber        'tagNumber == 15'     ]
     [optional      uint 8    extLength           'lengthValueType == 5']
     [array         uint 8    propertyIdentifier  length          '(lengthValueType == 5) ? extLength : lengthValueType']
-    [const         uint 8    openTag             '0x2e']
+    [const         uint 8    openTag             0x2e]
     [simple        BACnetTag value                     ]
-    [const         uint 8    closingTag          '0x2f']
+    [const         uint 8    closingTag          0x2f]
 ]
 
 [discriminatedType BACnetTag
@@ -549,7 +549,7 @@
     [optional      uint 16  extExtLength    'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 254' ]
     [optional      uint 32  extExtExtLength 'isPrimitiveAndNotBoolean && lengthValueType == 5 && extLength == 255' ]
     [virtual       uint 32  actualLength    'lengthValueType == 5 && extLength == 255 ? extExtExtLength : (lengthValueType == 5 && extLength == 254 ? extExtLength : (lengthValueType == 5 ? extLength : (isPrimitiveAndNotBoolean ? lengthValueType : 0)))']
-    [typeSwitch 'tagClass','tagNumber'
+    [typeSwitch tagClass, tagNumber
         ['APPLICATION_TAGS','0x0' BACnetTagApplicationNull
         ]
         ['APPLICATION_TAGS','0x1' BACnetTagApplicationBoolean

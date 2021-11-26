@@ -78,7 +78,7 @@ checksumField
  ;
 
 constField
- : 'const' type=typeReference name=idExpression expected=expression
+ : 'const' type=typeReference name=idExpression expected=valueLiteral
  ;
 
 discriminatorField
@@ -185,7 +185,7 @@ multipleExpressions
  ;
 
 innerExpression
- : BOOLEAN_LITERAL
+ : valueLiteral
  // Explicitly allow the loop type keywords in expressions
  | ARRAY_LOOP_TYPE
  | IDENTIFIER_LITERAL ('(' (innerExpression (',' innerExpression)* )? ')')? ('[' innerExpression ']')?
@@ -196,9 +196,6 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
- | HEX_LITERAL
- | INTEGER_LITERAL
- | STRING_LITERAL
  ;
 
 idExpression

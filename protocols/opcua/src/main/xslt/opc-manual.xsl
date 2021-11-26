@@ -61,7 +61,7 @@
 
 [discriminatedType MessagePDU(bit response)
     [discriminator string 24            messageType]
-    [typeSwitch 'messageType','response'
+    [typeSwitch messageType,response
         ['"HEL"','false'     OpcuaHelloRequest
             [simple          string 8           chunk]
             [implicit        int 32             messageSize 'lengthInBytes']
@@ -177,7 +177,7 @@
 ]
 
 [discriminatedType ExtensionObjectDefinition(vstring '-1' identifier)
-    [typeSwitch 'identifier'
+    [typeSwitch identifier
         ['"0"' NullExtension
         ]
 
@@ -214,7 +214,7 @@
 ]
 
 [discriminatedType UserIdentityTokenDefinition(vstring '-1' identifier)
-    [typeSwitch 'identifier'
+    [typeSwitch identifier
         ['"anonymous"' AnonymousIdentityToken
         ]
         ['"username"' UserNameIdentityToken
@@ -237,7 +237,7 @@
     [simple bit arrayLengthSpecified]
     [simple bit arrayDimensionsSpecified]
     [discriminator uint 6 VariantType]
-    [typeSwitch 'VariantType','arrayLengthSpecified'
+    [typeSwitch VariantType,arrayLengthSpecified
         ['1' VariantBoolean (bit arrayLengthSpecified)
             [optional int 32 arrayLength 'arrayLengthSpecified']
             [array byte value count 'arrayLength == null ? 1 : arrayLength']
@@ -346,7 +346,7 @@
 [discriminatedType NodeIdTypeDefinition
     [abstract vstring '-1' identifier]
     [discriminator NodeIdType nodeType]
-    [typeSwitch 'nodeType'
+    [typeSwitch nodeType
         ['nodeIdTypeTwoByte' NodeIdTwoByte
             [simple uint 8 id]
             [virtual vstring '-1' identifier 'id']

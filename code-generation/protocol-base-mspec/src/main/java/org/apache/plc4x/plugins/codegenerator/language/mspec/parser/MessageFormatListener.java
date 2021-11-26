@@ -344,8 +344,8 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterTypeSwitchField(MSpecParser.TypeSwitchFieldContext ctx) {
-        List<Term> discriminatorExpressions = ctx.discriminators.expression().stream()
-            .map(this::getExpressionTerm)
+        List<VariableLiteral> variableLiterals = ctx.discriminators.variableLiteral().stream()
+            .map(this::getVariableLiteral)
             .collect(Collectors.toList());
         DefaultSwitchField field = new DefaultSwitchField(discriminatorExpressions);
         if (parserContexts.peek() != null) {
