@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -31,7 +30,7 @@ public class FieldWriterPadding<T> implements FieldCommons {
         switchSerializeByteOrderIfNecessary(() -> {
             dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
             for (int i = 0; i < timesPadding; i++) {
-                dataWriter.write("value", value, writerArgs);
+                dataWriter.write("", value, writerArgs);
             }
             dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
         }, dataWriter, extractByteOder(writerArgs).orElse(null));

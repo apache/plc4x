@@ -135,6 +135,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         } else {
             LOGGER.debug(String.format("Unexpected NPDU type: %s", npdu.getClass().getName()));
         }
+
+        System.err.println(npdu);
     }
 
     private void decodeConfirmedRequest(APDUConfirmedRequest apduConfirmedRequest) {

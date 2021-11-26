@@ -26,7 +26,7 @@ import (
 	"strings"
 )
 
-// AsciiBox is a string surrounded by a ascii border (and a optional name)
+// AsciiBox is a string surrounded by an ascii border (and an optional name)
 type AsciiBox string
 
 // DebugAsciiBox set to true to get debug messages

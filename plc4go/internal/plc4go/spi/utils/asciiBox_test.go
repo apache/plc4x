@@ -152,7 +152,7 @@ func TestAsciiBox_IsEmpty(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "non empty box",
+			name: "name non empty box",
 			args: args{
 				box: BoxString("name", "a", 0),
 			},
@@ -419,7 +419,7 @@ func TestBoxString(t *testing.T) {
 `,
 		},
 		{
-			name: "simplebox",
+			name: "simplebox 2",
 			args: args{
 				name:      "sampleField",
 				data:      "123123123123\n123123123123123123123123",
