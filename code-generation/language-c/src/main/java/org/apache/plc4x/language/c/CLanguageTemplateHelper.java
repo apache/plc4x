@@ -606,6 +606,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         } else if (term instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
             return tracer + ((NumericLiteral) term).getNumber().toString();
+        } else if (term instanceof HexadecimalLiteral) {
+            tracer = tracer.dive("hexadecimal literal instanceOf");
+            return tracer + ((HexadecimalLiteral) term).getHexString();
         } else if (term instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
             return tracer + toStringLiteralExpression((StringLiteral) term);

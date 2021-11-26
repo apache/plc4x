@@ -112,7 +112,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     // Constant values.
 <#list type.constFields as field>
-    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = <#if helper.getLanguageTypeNameForField(field) = 'float'>${field.referenceValue}f<#else>${field.referenceValue}</#if>;
+    public static final ${helper.getLanguageTypeNameForField(field)} ${field.name?upper_case} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)};
 </#list>
 </#if>
 <#-- Property fields are fields that require a property in the pojo -->

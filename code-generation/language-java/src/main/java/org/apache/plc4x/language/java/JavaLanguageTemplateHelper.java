@@ -629,6 +629,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else if (literal instanceof NumericLiteral) {
             tracer = tracer.dive("numeric literal instanceOf");
             return tracer + ((NumericLiteral) literal).getNumber().toString();
+        } else if (literal instanceof HexadecimalLiteral) {
+            tracer = tracer.dive("hexadecimal literal instanceOf");
+            final String hexString = ((HexadecimalLiteral) literal).getHexString();
+            if(resultType.isIntegerTypeReference()) {
+                final IntegerTypeReference integerTypeReference = resultType.asIntegerTypeReference().orElseThrow(RuntimeException::new);
+                if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT && integerTypeReference.getSizeInBits() >= 32) {
+                    tracer = tracer.dive("uint >= 32bit");
+                    return tracer + hexString + "L";
+                } else if(integerTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.INT && integerTypeReference.getSizeInBits() > 32) {
+                    tracer = tracer.dive("uint > 32bit");
+                    return tracer + hexString + "L";
+                }
+            }
+            return tracer + hexString;
         } else if (literal instanceof StringLiteral) {
             tracer = tracer.dive("string literal instanceOf");
             return tracer + "\"" + ((StringLiteral) literal).getValue() + "\"";

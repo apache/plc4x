@@ -35,7 +35,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
-import org.apache.plc4x.plugins.codegenerator.types.terms.DefaultNumericLiteral;
+import org.apache.plc4x.plugins.codegenerator.types.terms.Literal;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.io.InputStream;
@@ -209,17 +209,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterConstField(MSpecParser.ConstFieldContext ctx) {
         TypeReference type = ctx.type.dataType() != null ? getSimpleTypeReference(ctx.type.dataType()) : getTypeReference(ctx.type);
         String name = getIdString(ctx.name);
-        String expected = getExprString(ctx.expected);
-        /*if (type.isIntegerTypeReference()) {
-            IntegerTypeReference integerTypeReference = type.asIntegerTypeReference().orElseThrow(IllegalStateException::new);
-            int sizeInBits = integerTypeReference.getSizeInBits();
-            SimpleTypeReference.SimpleBaseType baseType = integerTypeReference.getBaseType();
-            if (sizeInBits >= 32 && baseType == SimpleTypeReference.SimpleBaseType.UINT
-                || sizeInBits > 32 && baseType == SimpleTypeReference.SimpleBaseType.INT) {
-                expected += "L";
-            }
-        }*/
-        Field field = new DefaultConstField(getAttributes(ctx), type, name, expected);
+        Term expected = getExpressionTerm(ctx.expected);
+        if(!(expected instanceof Literal)) {
+            throw new RuntimeException("only literals allowed as constant value");
+        }
+        Field field = new DefaultConstField(getAttributes(ctx), type, name, (Literal) expected);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

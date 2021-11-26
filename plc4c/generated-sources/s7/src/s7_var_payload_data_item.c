@@ -131,7 +131,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
     int _timesPadding = (int) ((plc4c_spi_evaluation_helper_count(_message->data)) % (2));
     while (_timesPadding-- > 0) {
       // Just output the default padding data
-      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0);
+      _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
       if(_res != OK) {
         return _res;
       }

@@ -94,7 +94,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 
 // Constant values.
     <#list helper.getAllConstFields() as constField, parentType>
-static const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const = ${constField.referenceValue};
+static const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const = ${helper.toParseExpression(type, constField, constField.referenceValue, parserArguments)};
 ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}() {
   return ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const;
 }

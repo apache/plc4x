@@ -76,6 +76,12 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     @Override
+    public void exitHexExpression(ExpressionParser.HexExpressionContext ctx) {
+        String hexValue = ctx.HexExpression().getText();
+        parserContexts.peek().add(new DefaultHexadecimalLiteral(hexValue));
+    }
+
+    @Override
     public void exitStringExpression(ExpressionParser.StringExpressionContext ctx) {
         parserContexts.peek().add(new DefaultStringLiteral(ctx.getText().substring(1, ctx.getText().length() - 1)));
     }

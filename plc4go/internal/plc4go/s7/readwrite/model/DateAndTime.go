@@ -74,25 +74,25 @@ func (m *DateAndTime) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (year)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (month)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (day)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (hour)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (minutes)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (seconds)
-	lengthInBits += uint16(uint8(1) * 8)
+	lengthInBits += uint16(int32(1) * 8)
 
 	// Manual Field (msec)
-	lengthInBits += uint16(uint16(2) * 8)
+	lengthInBits += uint16(int32(2) * 8)
 
 	// Simple field (dow)
 	lengthInBits += 4

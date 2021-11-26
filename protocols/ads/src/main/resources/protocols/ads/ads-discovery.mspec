@@ -22,22 +22,22 @@
 ////////////////////////////////////////////////////////////////
 
 [discriminatedType AdsDiscovery byteOrder='BIG_ENDIAN'
-    [const uint 32 header '0x03661471L']
-    [reserved   uint 32  '0x00000000L']
+    [const      uint 32   header     '0x03661471']
+    [reserved   uint 32              '0x00000000']
     [simple     Operation operation]
-    [reserved   uint 16  '0x0000']
+    [reserved   uint 16              '0x0000']
     [simple     Direction direction]
     [typeSwitch 'operation', 'direction'
         ['DISCOVERY', 'REQUEST' DiscoveryRequest
             [simple AmsNetId amsNetId]
             [reserved uint 16 '0x1027']
-            [reserved uint 32 '0x00000000L']
+            [reserved uint 32 '0x00000000']
         ]
         ['DISCOVERY', 'RESPONSE' DiscoveryResponse
             [simple AmsNetId amsNetId]
             [reserved uint 16 '0x1027']
             [reserved uint 16 '0x0400']
-            [reserved uint 24 '0x000005L']
+            [reserved uint 24 '0x000005']
             [simple AmsMagicString name]
         ]
         ['ROUTE', 'REQUEST' RouteRequest

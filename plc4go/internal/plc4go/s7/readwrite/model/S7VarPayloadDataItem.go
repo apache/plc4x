@@ -84,7 +84,7 @@ func (m *S7VarPayloadDataItem) LengthInBitsConditional(lastItem bool) uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2)))
+	_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -143,7 +143,7 @@ func S7VarPayloadDataItemParse(readBuffer utils.ReadBuffer) (*S7VarPayloadDataIt
 		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
 			return nil, pullErr
 		}
-		_timesPadding := (uint8(uint8(len(data))) % uint8(uint8(2)))
+		_timesPadding := (int32(int32(len(data))) % int32(int32(2)))
 		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
 			_, _err := readBuffer.ReadUint8("", 8)
@@ -216,9 +216,9 @@ func (m *S7VarPayloadDataItem) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("padding", utils.WithRenderAsList(true)); pushErr != nil {
 			return pushErr
 		}
-		_timesPadding := uint8(uint8(uint8(len(m.Data))) % uint8(uint8(2)))
+		_timesPadding := uint8(int32(int32(len(m.Data))) % int32(int32(2)))
 		for ; _timesPadding > 0; _timesPadding-- {
-			_paddingValue := uint8(uint8(0))
+			_paddingValue := uint8(0x00)
 			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
