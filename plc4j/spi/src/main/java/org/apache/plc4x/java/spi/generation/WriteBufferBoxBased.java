@@ -95,79 +95,79 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + bitLength / 4 + "x %d%s", value, value, additionalStringRepresentation), 0)));
+        boxes.offerLast(Either.left(boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
     }
 
     @Override
