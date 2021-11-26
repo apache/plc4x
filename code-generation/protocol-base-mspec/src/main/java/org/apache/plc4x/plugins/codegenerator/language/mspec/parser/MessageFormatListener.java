@@ -394,10 +394,10 @@ public class MessageFormatListener extends MSpecBaseListener {
             parserArguments.addAll(getParserArguments(ctx.argumentList().argument()));
         }
 
-        List<String> discriminatorValues;
+        List<Term> discriminatorValues;
         if (ctx.discriminatorValues != null) {
             discriminatorValues = ctx.discriminatorValues.expression().stream()
-                .map(this::getExprString)
+                .map(this::getExpressionTerm)
                 .collect(Collectors.toList());
         } else {
             discriminatorValues = Collections.emptyList();

@@ -82,11 +82,7 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)>
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
-            <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>
-        return <#if discriminatorValue??>${helper.adjustLiterals(helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName]),discriminatorValue)}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
-            <#else>
-        return <#if discriminatorValue??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${discriminatorValue}<#else>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}.${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
-            </#if>
+        return ${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorValue, parserArguments)};
     }
         </#if>
     </#list>

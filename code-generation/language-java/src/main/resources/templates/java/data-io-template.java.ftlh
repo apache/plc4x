@@ -79,33 +79,21 @@ public class ${type.name}IO {
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
         <#list dataIoTypeDefinition.switchField.cases as case>
-            <#if case.discriminatorValues?has_content>
             <@compress single_line=true>
-            if(
-                <#list case.discriminatorValues as discriminatorValue>
-                    <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValue?index]>
-                EvaluationHelper.equals(
-                    ${helper.toParseExpression(null, helper.anyTypeReference, discriminatorExpression, parserArguments)}
-                    ,
-                    <#if helper.isComplexTypeReference(parserArguments[discriminatorValue?index].type)>
-                        <#if helper.isEnumTypeReference(parserArguments[discriminatorValue?index].type)>
-                            ${helper.getLanguageTypeNameForTypeReference(parserArguments[discriminatorValue?index].type, false)}
-                            .
-                            ${discriminatorValue}
-                        <#else>
-                        ${discriminatorValue}
-                        </#if>
-                    <#else>
-            ${discriminatorValue}
-                    </#if>
-                )
-                <#sep> && </#sep>
-                </#list>
-            )
-            </@compress>
-            <#else>
-                <#assign defaultCaseOutput=true>
-            </#if>{ // ${case.name}
+                <#if case.discriminatorValueTerms?has_content>
+                    if(
+                    <#list case.discriminatorValueTerms as discriminatorValueTerm>
+                        <#assign discriminatorExpression=dataIoTypeDefinition.switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                        <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
+                        EvaluationHelper.equals(
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField, typeRef, discriminatorExpression, parserArguments)},
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField, typeRef, discriminatorValueTerm, parserArguments)}
+                        )
+                        <#sep> && </#sep>
+                    </#list>
+                    ) {
+                </#if>
+            </@compress> { // ${case.name}
             <#assign valueDefined=false>
             <#list case.fields as field>
                 <#switch field.typeName>
@@ -145,7 +133,7 @@ public class ${type.name}IO {
                 <#else>${arrayField.type.asComplexTypeReference().orElseThrow().name}IO.staticParse(readBuffer
                     <#if arrayField.params.isPresent()>,
                         <#list arrayField.params.orElseThrow() as parserArgument>
-                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument,parserArguments)})
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField,arrayField.type, parserArgument,parserArguments)})
                             <#sep>, </#sep>
                         </#list>
                     </#if>

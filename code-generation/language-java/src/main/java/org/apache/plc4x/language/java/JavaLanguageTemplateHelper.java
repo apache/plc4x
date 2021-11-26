@@ -34,10 +34,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -91,20 +88,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return getLanguageTypeNameForTypeReference(typeReference, false);
     }
 
-    public String adjustLiterals(String javaType, String value) {
-        switch (javaType) {
-            case "long":
-            case "Long":
-                return value + "L";
-            case "float":
-            case "Float":
-                return value + "F";
-            default:
-                return value;
-        }
-    }
-
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean allowPrimitive) {
+        Objects.requireNonNull(typeReference);
         if (!(typeReference instanceof SimpleTypeReference)) {
             return ((ComplexTypeReference) typeReference).getName();
         }

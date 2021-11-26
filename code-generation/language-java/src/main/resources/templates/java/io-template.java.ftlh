@@ -240,21 +240,14 @@ public class ${type.name}IO implements MessageInput<${type.name}> {
         ${type.name}Builder builder = null;
         <#list switchField.cases as case>
             <@compress single_line=true>
-            <#if case.discriminatorValues?has_content>
+            <#if case.discriminatorValueTerms?has_content>
                 if(
-                <#list case.discriminatorValues as discriminatorValue>
-                    <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValue?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                <#list case.discriminatorValueTerms as discriminatorValueTerm>
+                    <#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
+                    <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
                     EvaluationHelper.equals(
-                    ${helper.toParseExpression(null, helper.anyTypeReference, discriminatorExpression, parserArguments)},
-                    <#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
-                        <#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorExpression.name])>
-                            ${tracer.dive("isEnumTypeReference")}${helper.getDiscriminatorTypes()[discriminatorExpression.name].asComplexTypeReference().orElseThrow().name}.${discriminatorValue}
-                        <#else>
-                            ${tracer.dive("!isEnumTypeReference")}${discriminatorValue}
-                        </#if>
-                    <#else>
-                        ${tracer.dive("else")}${discriminatorValue}
-                    </#if>
+                    ${helper.toParseExpression(switchField, typeRef, discriminatorExpression, parserArguments)},
+                    ${helper.toParseExpression(switchField, typeRef, discriminatorValueTerm, parserArguments)}
                     )
                     <#sep> && </#sep>
                     </#list>

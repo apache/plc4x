@@ -20,6 +20,7 @@ package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultDataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -28,6 +29,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -49,14 +51,19 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
     public static final String WRITE_BUFFER = "writeBuffer";
 
     public static final TypeReference INT_TYPE_REFERENCE = new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32);
+
     public TypeReference getIntTypeReference() {
         return INT_TYPE_REFERENCE;
     }
+
     public static final TypeReference BOOL_TYPE_REFERENCE = new DefaultBooleanTypeReference();
+
     public TypeReference getBoolTypeReference() {
         return BOOL_TYPE_REFERENCE;
     }
+
     public static final TypeReference ANY_TYPE_REFERENCE = new DefaultUndefinedTypeReference();
+
     public TypeReference getAnyTypeReference() {
         return ANY_TYPE_REFERENCE;
     }
@@ -768,25 +775,26 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * Methods related to discriminators.
      **********************************************************************************/
 
-    private Optional<TypeReference> getDiscriminatorType(ComplexTypeDefinition parentType, Term disciminatorExpression) {
-        if (!(disciminatorExpression instanceof VariableLiteral)) {
-            throw new FreemarkerException("Currently no arithmetic expressions are supported as discriminator expressions.");
-        }
-        VariableLiteral variableLiteral = (VariableLiteral) disciminatorExpression;
-        Optional<TypeReference> type = getTypeReferenceForProperty(parentType, variableLiteral.getName());
+    private Optional<TypeReference> getDiscriminatorType(ComplexTypeDefinition parentType, VariableLiteral variableLiteral) {
+        return getTypeReferenceForProperty(parentType, variableLiteral.getName())
+            .flatMap(typeReference -> getDiscriminatorType(typeReference, variableLiteral));
+    }
+
+    private Optional<TypeReference> getDiscriminatorType(TypeReference typeReference, VariableLiteral variableLiteral) {
         // If we found something but there's a "rest" left, we got to use the type we
         // found in this level, get that type's definition and continue from there.
-        if (type.isPresent() && (variableLiteral.getChild().isPresent())) {
-            TypeReference typeReference = type.get();
-            if (typeReference instanceof ComplexTypeReference) {
-                ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-                final TypeDefinition typeDefinition = this.types.get(complexTypeReference.getName());
-                if (typeDefinition instanceof ComplexTypeDefinition) {
-                    return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, variableLiteral.getChild().get());
-                }
-            }
+        if (!variableLiteral.getChild().isPresent()) {
+            return Optional.empty();
         }
-        return type;
+        if (!(typeReference instanceof ComplexTypeReference)) {
+            return Optional.empty();
+        }
+        ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
+        final TypeDefinition typeDefinition = this.types.get(complexTypeReference.getName());
+        if (!(typeDefinition instanceof ComplexTypeDefinition)) {
+            return Optional.empty();
+        }
+        return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, variableLiteral.getChild().get());
     }
 
     /**
@@ -829,23 +837,34 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public Map<String, TypeReference> getDiscriminatorTypes() {
         // Get the parent type (Which contains the typeSwitch field)
-        ComplexTypeDefinition parentType;
+        SwitchField switchField = null;
+        Function<String, TypeReference> typeRefRetriever = null;
         if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            parentType = (ComplexTypeDefinition) thisType.getParentType();
-        } else {
-            parentType = (ComplexTypeDefinition) thisType;
+            switchField = ((ComplexTypeDefinition) thisType.getParentType()).getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> getTypeReferenceForProperty((ComplexTypeDefinition) thisType, propertyName).orElse(null);
+        } else if (thisType instanceof ComplexTypeDefinition) {
+            switchField = ((ComplexTypeDefinition) thisType).getSwitchField().orElse(null);
+            typeRefRetriever = propertyName -> getTypeReferenceForProperty((ComplexTypeDefinition) thisType, propertyName).orElse(null);
+        } else if (thisType instanceof DefaultDataIoTypeDefinition) {
+            final DefaultDataIoTypeDefinition dataIoTypeDefinition = (DefaultDataIoTypeDefinition) this.thisType;
+            switchField = dataIoTypeDefinition.getSwitchField();
+            typeRefRetriever = propertyName -> thisType.getParserArguments()
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(argument -> argument.getName().equals(propertyName))
+                .findFirst()
+                .map(Argument::getType)
+                .orElse(null);
         }
         // Get the typeSwitch field from that.
-        // TODO: map
-        final SwitchField switchField = parentType.getSwitchField().orElse(null);
         if (switchField == null) {
             return Collections.emptyMap();
         }
         Map<String, TypeReference> discriminatorTypes = new TreeMap<>();
-        for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
+        for (VariableLiteral variableLiteral : switchField.getDiscriminatorExpressions()) {
             // Get some symbolic name we can use.
-            String discriminatorName = discriminatorExpression.getDiscriminatorName();
-            Optional<TypeReference> discriminatorType = getDiscriminatorType(parentType, discriminatorExpression);
+            String discriminatorName = variableLiteral.getDiscriminatorName();
+            Optional<TypeReference> discriminatorType = getDiscriminatorType(typeRefRetriever.apply(variableLiteral.getName()), variableLiteral);
             discriminatorTypes.put(discriminatorName, discriminatorType.orElse(null));
         }
         return discriminatorTypes;
@@ -855,7 +874,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @deprecated use field method.
      */
     @Deprecated
-    public Map<String, String> getDiscriminatorValues(TypeDefinition type) {
+    public Map<String, Term> getDiscriminatorValues(TypeDefinition type) {
         if (!(type instanceof DiscriminatedComplexTypeDefinition)) {
             return Collections.emptyMap();
         }
@@ -866,7 +885,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * @deprecated use field method.
      */
     @Deprecated
-    public Map<String, Map<String, String>> getDiscriminatorValues() {
+    public Map<String, Map<String, Term>> getDiscriminatorValues() {
         if (thisType == null) {
             return Collections.emptyMap();
         }

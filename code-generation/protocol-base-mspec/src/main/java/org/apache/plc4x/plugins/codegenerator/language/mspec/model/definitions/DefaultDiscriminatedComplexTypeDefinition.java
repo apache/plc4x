@@ -30,11 +30,11 @@ import java.util.Objects;
 
 public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTypeDefinition implements DiscriminatedComplexTypeDefinition {
 
-    private final List<String> discriminatorValues;
+    private final List<Term> discriminatorValueTerms;
 
-    public DefaultDiscriminatedComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, List<String> discriminatorValues, List<Field> fields) {
+    public DefaultDiscriminatedComplexTypeDefinition(String name, Map<String, Term> attributes, List<Argument> parserArguments, List<Term> discriminatorValueTerms, List<Field> fields) {
         super(name, attributes, parserArguments, false, fields);
-        this.discriminatorValues = Objects.requireNonNull(discriminatorValues);
+        this.discriminatorValueTerms = Objects.requireNonNull(discriminatorValueTerms);
     }
 
     public DiscriminatorField getDiscriminatorField() {
@@ -47,8 +47,8 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
             .orElse(null);
     }
 
-    public List<String> getDiscriminatorValues() {
-        return discriminatorValues;
+    public List<Term> getDiscriminatorValueTerms() {
+        return discriminatorValueTerms;
     }
 
 }
