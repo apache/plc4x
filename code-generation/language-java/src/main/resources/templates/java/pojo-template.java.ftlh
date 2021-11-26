@@ -51,8 +51,6 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.codegen.io.DataWriterComplexDefault;
 import org.apache.plc4x.java.spi.codegen.io.DataWriterEnumDefault;
@@ -60,6 +58,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBufferBoxBased;
 import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
 
 import java.time.*;
@@ -510,24 +509,13 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
 
     @Override
     public String toString() {
-        return toString(ToStringStyle.SHORT_PREFIX_STYLE);
+        WriteBufferBoxBased writeBufferBoxBased = new WriteBufferBoxBased(true, true);
+        try {
+            serialize(writeBufferBoxBased);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
+        return "\n" + writeBufferBoxBased.getBox().toString()+ "\n";
     }
-
-    public String toString(ToStringStyle style) {
-        return new ToStringBuilder(this, style)
-            <#if type.parentType??>
-            .appendSuper(super.toString(style))
-            </#if>
-            <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            </#if>
-            <#list type.virtualFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            .toString();
-    }
-
 }
 </#outputformat>
