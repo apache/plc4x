@@ -589,7 +589,7 @@
 ]
 
 // Big Endian
-[discriminatedType PnIoCm_Block
+[discriminatedType PnIoCm_Block byteOrder='BIG_ENDIAN'
     [discriminator PnIoCm_BlockType blockType                           ]
     [implicit      uint 16          blockLength      'lengthInBytes - 4']
     [simple        uint 8           blockVersionHigh                    ]
@@ -624,7 +624,7 @@
             [simple   Uuid                   arUuid                                                 ]
             [simple   uint 16                sessionKey                                             ]
             [simple   MacAddress             cmResponderMacAddr                                     ]
-            [simple   Uuid                   cmResponderObjectUuid                                  ]
+            [simple   uint 16                responderUDPRTPort                                     ]
         ]
         ['IO_CR_BLOCK_REQ' PnIoCm_Block_IoCrReq
             [simple PnIoCm_IoCrType          ioCrType                                               ]
