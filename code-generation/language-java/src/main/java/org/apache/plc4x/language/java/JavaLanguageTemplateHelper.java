@@ -627,7 +627,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 }
             } else if(resultType.isFloatTypeReference()) {
                 final FloatTypeReference floatTypeReference = resultType.asFloatTypeReference().orElseThrow(RuntimeException::new);
-                if(floatTypeReference.getSizeInBits() < 32) {
+                if(floatTypeReference.getSizeInBits() <= 32) {
                     tracer = tracer.dive("float < 32bit");
                     return tracer + numberString + "F";
                 }

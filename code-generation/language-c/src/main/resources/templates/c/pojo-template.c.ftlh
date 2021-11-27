@@ -67,7 +67,7 @@ const ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type
                    <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[key])>
                 .${key} = <#if term??>${helper.toParseExpression(type, null, term, parserArguments)}<#else>-1</#if><#sep>,
                    <#else>
-                .${key} = <#if term??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${helper.toParseExpression(type, null, term, parserArguments)}<#else>-1</#if><#sep>,
+                .${key} = <#if term??>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[key])}_${term.asLiteral().orElseThrow().asVariableLiteral().orElseThrow().name}<#else>-1</#if><#sep>,
                    </#if>
                </#list>}<#sep >,
             </@compress>
@@ -383,7 +383,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
             <#if !helper.isComplexTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[0].name])>
 <#if indentContent>  </#if>  <#if case.discriminatorValueTerms?has_content>if(<#list case.discriminatorValueTerms as discriminatorValueTerm><#if case.discriminatorValueTerms?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow(), parserArguments)} == ${helper.toParseExpression(type, null, discriminatorValueTerm, parserArguments)}<#if case.discriminatorValueTerms?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
             <#else>
-<#if indentContent>  </#if>  <#if case.discriminatorValueTerms?has_content>if(<#list case.discriminatorValueTerms as discriminatorValueTerm><#if case.discriminatorValueTerms?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow(), parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[field.discriminatorExpressions[discriminatorValueTerm?index].name])}_${helper.toParseExpression(type, null, discriminatorValueTerm, parserArguments)}<#if case.discriminatorValueTerms?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>  <#if case.discriminatorValueTerms?has_content>if(<#list case.discriminatorValueTerms as discriminatorValueTerm><#if case.discriminatorValueTerms?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow(), parserArguments)} == ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[switchField.discriminatorExpressions[discriminatorValueTerm?index].name])}_${discriminatorValueTerm.asLiteral().orElseThrow().asVariableLiteral().orElseThrow().name}<#if case.discriminatorValueTerms?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
            </#if>
 <#if baseType.isDiscriminatedChildTypeDefinition()>
     <#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
