@@ -45,7 +45,7 @@ func (m *AdsInvalidResponse) CommandId() CommandId {
 }
 
 func (m *AdsInvalidResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsInvalidResponse) InitializeParent(parent *AdsData) {

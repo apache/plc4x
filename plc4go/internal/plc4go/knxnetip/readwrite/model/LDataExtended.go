@@ -48,11 +48,11 @@ type ILDataExtended interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *LDataExtended) NotAckFrame() bool {
-	return true
+	return bool(true)
 }
 
 func (m *LDataExtended) Polling() bool {
-	return false
+	return bool(false)
 }
 
 func (m *LDataExtended) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {

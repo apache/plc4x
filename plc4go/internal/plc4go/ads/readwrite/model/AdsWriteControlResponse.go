@@ -47,7 +47,7 @@ func (m *AdsWriteControlResponse) CommandId() CommandId {
 }
 
 func (m *AdsWriteControlResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsWriteControlResponse) InitializeParent(parent *AdsData) {

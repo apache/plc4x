@@ -43,7 +43,7 @@ type IModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) FunctionFlag() uint
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) InitializeParent(parent *ModbusPDU) {

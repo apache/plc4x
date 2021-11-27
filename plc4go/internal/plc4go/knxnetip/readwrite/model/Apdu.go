@@ -127,9 +127,9 @@ func ApduParse(readBuffer utils.ReadBuffer, dataLength uint8) (*Apdu, error) {
 	var _parent *Apdu
 	var typeSwitchError error
 	switch {
-	case control == 1: // ApduControlContainer
+	case control == uint8(1): // ApduControlContainer
 		_parent, typeSwitchError = ApduControlContainerParse(readBuffer, dataLength)
-	case control == 0: // ApduDataContainer
+	case control == uint8(0): // ApduDataContainer
 		_parent, typeSwitchError = ApduDataContainerParse(readBuffer, dataLength)
 	default:
 		// TODO: return actual type

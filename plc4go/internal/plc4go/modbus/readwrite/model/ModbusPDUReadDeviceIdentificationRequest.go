@@ -41,7 +41,7 @@ type IModbusPDUReadDeviceIdentificationRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadDeviceIdentificationRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadDeviceIdentificationRequest) InitializeParent(parent *ModbusPDU) {

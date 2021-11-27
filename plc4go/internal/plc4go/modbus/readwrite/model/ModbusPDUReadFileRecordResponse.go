@@ -43,7 +43,7 @@ type IModbusPDUReadFileRecordResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadFileRecordResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFileRecordResponse) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadFileRecordResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadFileRecordResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUReadFileRecordResponse) InitializeParent(parent *ModbusPDU) {

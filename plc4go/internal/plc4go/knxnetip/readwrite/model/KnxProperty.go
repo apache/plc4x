@@ -72,7 +72,7 @@ func KnxPropertyParse(readBuffer utils.ReadBuffer, propertyType KnxPropertyDataT
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcINT(value), nil
-	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
@@ -901,7 +901,7 @@ func KnxPropertySerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, pro
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == 4: // UDINT
+	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {

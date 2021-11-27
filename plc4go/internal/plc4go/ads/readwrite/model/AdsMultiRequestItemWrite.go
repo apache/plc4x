@@ -45,7 +45,7 @@ type IAdsMultiRequestItemWrite interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *AdsMultiRequestItemWrite) IndexGroup() uint32 {
-	return 61569
+	return uint32(61569)
 }
 
 func (m *AdsMultiRequestItemWrite) InitializeParent(parent *AdsMultiRequestItem) {

@@ -45,7 +45,7 @@ func (m *SysexCommandReportFirmwareRequest) CommandType() uint8 {
 }
 
 func (m *SysexCommandReportFirmwareRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *SysexCommandReportFirmwareRequest) InitializeParent(parent *SysexCommand) {

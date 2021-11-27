@@ -44,7 +44,7 @@ type IModbusPDUDiagnosticResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUDiagnosticResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUDiagnosticResponse) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUDiagnosticResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUDiagnosticResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUDiagnosticResponse) InitializeParent(parent *ModbusPDU) {

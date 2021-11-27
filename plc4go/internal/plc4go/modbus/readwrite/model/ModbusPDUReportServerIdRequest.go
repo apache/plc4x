@@ -41,7 +41,7 @@ type IModbusPDUReportServerIdRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReportServerIdRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
@@ -49,7 +49,7 @@ func (m *ModbusPDUReportServerIdRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReportServerIdRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReportServerIdRequest) InitializeParent(parent *ModbusPDU) {

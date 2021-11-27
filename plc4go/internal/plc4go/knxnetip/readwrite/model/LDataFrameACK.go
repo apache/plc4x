@@ -41,7 +41,7 @@ type ILDataFrameACK interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *LDataFrameACK) NotAckFrame() bool {
-	return false
+	return bool(false)
 }
 
 func (m *LDataFrameACK) Polling() bool {

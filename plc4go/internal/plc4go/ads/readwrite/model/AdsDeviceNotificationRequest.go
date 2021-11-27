@@ -49,7 +49,7 @@ func (m *AdsDeviceNotificationRequest) CommandId() CommandId {
 }
 
 func (m *AdsDeviceNotificationRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsDeviceNotificationRequest) InitializeParent(parent *AdsData) {

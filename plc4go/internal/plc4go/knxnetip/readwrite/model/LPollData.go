@@ -46,11 +46,11 @@ type ILPollData interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *LPollData) NotAckFrame() bool {
-	return true
+	return bool(true)
 }
 
 func (m *LPollData) Polling() bool {
-	return true
+	return bool(true)
 }
 
 func (m *LPollData) InitializeParent(parent *LDataFrame, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) {

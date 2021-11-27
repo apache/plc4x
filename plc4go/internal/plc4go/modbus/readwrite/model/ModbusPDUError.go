@@ -43,7 +43,7 @@ type IModbusPDUError interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUError) ErrorFlag() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUError) FunctionFlag() uint8 {

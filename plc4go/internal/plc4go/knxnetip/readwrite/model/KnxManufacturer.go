@@ -604,8 +604,9 @@ const (
 	KnxManufacturer_M_GOLDENHOME_SMART                                   KnxManufacturer = 566
 	KnxManufacturer_M_GOLDMEDAL                                          KnxManufacturer = 567
 	KnxManufacturer_M_CannX                                              KnxManufacturer = 568
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 569
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 570
+	KnxManufacturer_M_EGI___EARTH_GOODNESS                               KnxManufacturer = 569
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 570
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 571
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1182,6 +1183,7 @@ func init() {
 		KnxManufacturer_M_GOLDENHOME_SMART,
 		KnxManufacturer_M_GOLDMEDAL,
 		KnxManufacturer_M_CannX,
+		KnxManufacturer_M_EGI___EARTH_GOODNESS,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3279,7 +3281,7 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 569:
 		{ /* '569' */
-			return 43954
+			return 627
 		}
 	case 57:
 		{ /* '57' */
@@ -3287,6 +3289,10 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 570:
 		{ /* '570' */
+			return 43954
+		}
+	case 571:
+		{ /* '571' */
 			return 43959
 		}
 	case 58:
@@ -5581,7 +5587,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 569:
 		{ /* '569' */
-			return "ABB - reserved"
+			return "EGI - Earth Goodness"
 		}
 	case 57:
 		{ /* '57' */
@@ -5589,6 +5595,10 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 570:
 		{ /* '570' */
+			return "ABB - reserved"
+		}
+	case 571:
+		{ /* '571' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 58:
@@ -6837,10 +6847,12 @@ func KnxManufacturerByValue(value uint16) KnxManufacturer {
 	case 568:
 		return KnxManufacturer_M_CannX
 	case 569:
-		return KnxManufacturer_M_ABB___RESERVED
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS
 	case 57:
 		return KnxManufacturer_M_ORAS
 	case 570:
+		return KnxManufacturer_M_ABB___RESERVED
+	case 571:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case 58:
 		return KnxManufacturer_M_DAETWYLER
@@ -7984,10 +7996,12 @@ func KnxManufacturerByName(value string) KnxManufacturer {
 		return KnxManufacturer_M_GOLDMEDAL
 	case "M_CannX":
 		return KnxManufacturer_M_CannX
-	case "M_ABB___RESERVED":
-		return KnxManufacturer_M_ABB___RESERVED
+	case "M_EGI___EARTH_GOODNESS":
+		return KnxManufacturer_M_EGI___EARTH_GOODNESS
 	case "M_ORAS":
 		return KnxManufacturer_M_ORAS
+	case "M_ABB___RESERVED":
+		return KnxManufacturer_M_ABB___RESERVED
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED
 	case "M_DAETWYLER":
@@ -9162,10 +9176,12 @@ func (e KnxManufacturer) name() string {
 		return "M_GOLDMEDAL"
 	case KnxManufacturer_M_CannX:
 		return "M_CannX"
-	case KnxManufacturer_M_ABB___RESERVED:
-		return "M_ABB___RESERVED"
+	case KnxManufacturer_M_EGI___EARTH_GOODNESS:
+		return "M_EGI___EARTH_GOODNESS"
 	case KnxManufacturer_M_ORAS:
 		return "M_ORAS"
+	case KnxManufacturer_M_ABB___RESERVED:
+		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
 	case KnxManufacturer_M_DAETWYLER:

@@ -44,7 +44,7 @@ type IModbusPDUReadCoilsRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadCoilsRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUReadCoilsRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadCoilsRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadCoilsRequest) InitializeParent(parent *ModbusPDU) {

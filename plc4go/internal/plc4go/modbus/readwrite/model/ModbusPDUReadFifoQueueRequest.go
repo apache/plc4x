@@ -43,7 +43,7 @@ type IModbusPDUReadFifoQueueRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadFifoQueueRequest) InitializeParent(parent *ModbusPDU) {

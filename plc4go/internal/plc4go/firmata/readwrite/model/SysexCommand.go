@@ -110,9 +110,9 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 	switch {
 	case commandType == 0x00: // SysexCommandExtendedId
 		_parent, typeSwitchError = SysexCommandExtendedIdParse(readBuffer, response)
-	case commandType == 0x69 && response == false: // SysexCommandAnalogMappingQueryRequest
+	case commandType == 0x69 && response == bool(false): // SysexCommandAnalogMappingQueryRequest
 		_parent, typeSwitchError = SysexCommandAnalogMappingQueryRequestParse(readBuffer, response)
-	case commandType == 0x69 && response == true: // SysexCommandAnalogMappingQueryResponse
+	case commandType == 0x69 && response == bool(true): // SysexCommandAnalogMappingQueryResponse
 		_parent, typeSwitchError = SysexCommandAnalogMappingQueryResponseParse(readBuffer, response)
 	case commandType == 0x6A: // SysexCommandAnalogMappingResponse
 		_parent, typeSwitchError = SysexCommandAnalogMappingResponseParse(readBuffer, response)
@@ -128,9 +128,9 @@ func SysexCommandParse(readBuffer utils.ReadBuffer, response bool) (*SysexComman
 		_parent, typeSwitchError = SysexCommandExtendedAnalogParse(readBuffer, response)
 	case commandType == 0x71: // SysexCommandStringData
 		_parent, typeSwitchError = SysexCommandStringDataParse(readBuffer, response)
-	case commandType == 0x79 && response == false: // SysexCommandReportFirmwareRequest
+	case commandType == 0x79 && response == bool(false): // SysexCommandReportFirmwareRequest
 		_parent, typeSwitchError = SysexCommandReportFirmwareRequestParse(readBuffer, response)
-	case commandType == 0x79 && response == true: // SysexCommandReportFirmwareResponse
+	case commandType == 0x79 && response == bool(true): // SysexCommandReportFirmwareResponse
 		_parent, typeSwitchError = SysexCommandReportFirmwareResponseParse(readBuffer, response)
 	case commandType == 0x7A: // SysexCommandSamplingInterval
 		_parent, typeSwitchError = SysexCommandSamplingIntervalParse(readBuffer, response)

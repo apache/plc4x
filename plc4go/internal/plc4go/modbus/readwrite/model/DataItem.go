@@ -31,7 +31,7 @@ import (
 func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberOfValues uint16) (api.PlcValue, error) {
 	readBuffer.PullContext("DataItem")
 	switch {
-	case dataType == ModbusDataType_BOOL && numberOfValues == 1: // BOOL
+	case dataType == ModbusDataType_BOOL && numberOfValues == uint16(1): // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
@@ -58,7 +58,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_BYTE && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -80,7 +80,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_WORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_WORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
@@ -102,7 +102,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_DWORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_DWORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
@@ -124,7 +124,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_LWORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_LWORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
@@ -146,7 +146,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_SINT && numberOfValues == 1: // SINT
+	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt8("value", 8)
@@ -168,7 +168,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_INT && numberOfValues == 1: // INT
+	case dataType == ModbusDataType_INT && numberOfValues == uint16(1): // INT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt16("value", 16)
@@ -190,7 +190,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_DINT && numberOfValues == 1: // DINT
+	case dataType == ModbusDataType_DINT && numberOfValues == uint16(1): // DINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt32("value", 32)
@@ -212,7 +212,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_LINT && numberOfValues == 1: // LINT
+	case dataType == ModbusDataType_LINT && numberOfValues == uint16(1): // LINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadInt64("value", 64)
@@ -234,7 +234,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_USINT && numberOfValues == 1: // USINT
+	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -256,7 +256,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_UINT && numberOfValues == 1: // UINT
+	case dataType == ModbusDataType_UINT && numberOfValues == uint16(1): // UINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
@@ -278,7 +278,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_UDINT && numberOfValues == 1: // UDINT
+	case dataType == ModbusDataType_UDINT && numberOfValues == uint16(1): // UDINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint32("value", 32)
@@ -300,7 +300,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_ULINT && numberOfValues == 1: // ULINT
+	case dataType == ModbusDataType_ULINT && numberOfValues == uint16(1): // ULINT
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint64("value", 64)
@@ -322,7 +322,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_REAL && numberOfValues == 1: // REAL
+	case dataType == ModbusDataType_REAL && numberOfValues == uint16(1): // REAL
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat32("value", 32)
@@ -344,7 +344,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_LREAL && numberOfValues == 1: // LREAL
+	case dataType == ModbusDataType_LREAL && numberOfValues == uint16(1): // LREAL
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadFloat64("value", 64)
@@ -366,7 +366,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_CHAR && numberOfValues == 1: // CHAR
+	case dataType == ModbusDataType_CHAR && numberOfValues == uint16(1): // CHAR
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -388,7 +388,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 		}
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
-	case dataType == ModbusDataType_WCHAR && numberOfValues == 1: // WCHAR
+	case dataType == ModbusDataType_WCHAR && numberOfValues == uint16(1): // WCHAR
 
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
@@ -418,7 +418,7 @@ func DataItemParse(readBuffer utils.ReadBuffer, dataType ModbusDataType, numberO
 func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataType ModbusDataType, numberOfValues uint16) error {
 	writeBuffer.PushContext("DataItem")
 	switch {
-	case dataType == ModbusDataType_BOOL && numberOfValues == 1: // BOOL
+	case dataType == ModbusDataType_BOOL && numberOfValues == uint16(1): // BOOL
 
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
@@ -438,7 +438,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_BYTE && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
@@ -453,7 +453,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_WORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_WORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
@@ -468,7 +468,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_DWORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_DWORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
@@ -483,7 +483,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_LWORD && numberOfValues == 1: // BitString
+	case dataType == ModbusDataType_LWORD && numberOfValues == uint16(1): // BitString
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
@@ -498,7 +498,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_SINT && numberOfValues == 1: // SINT
+	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
@@ -513,7 +513,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_INT && numberOfValues == 1: // INT
+	case dataType == ModbusDataType_INT && numberOfValues == uint16(1): // INT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
@@ -528,7 +528,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_DINT && numberOfValues == 1: // DINT
+	case dataType == ModbusDataType_DINT && numberOfValues == uint16(1): // DINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
@@ -543,7 +543,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_LINT && numberOfValues == 1: // LINT
+	case dataType == ModbusDataType_LINT && numberOfValues == uint16(1): // LINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
@@ -558,7 +558,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_USINT && numberOfValues == 1: // USINT
+	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
@@ -573,7 +573,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_UINT && numberOfValues == 1: // UINT
+	case dataType == ModbusDataType_UINT && numberOfValues == uint16(1): // UINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
@@ -588,7 +588,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_UDINT && numberOfValues == 1: // UDINT
+	case dataType == ModbusDataType_UDINT && numberOfValues == uint16(1): // UDINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
@@ -603,7 +603,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_ULINT && numberOfValues == 1: // ULINT
+	case dataType == ModbusDataType_ULINT && numberOfValues == uint16(1): // ULINT
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
@@ -618,7 +618,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_REAL && numberOfValues == 1: // REAL
+	case dataType == ModbusDataType_REAL && numberOfValues == uint16(1): // REAL
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
@@ -633,7 +633,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_LREAL && numberOfValues == 1: // LREAL
+	case dataType == ModbusDataType_LREAL && numberOfValues == uint16(1): // LREAL
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
@@ -648,7 +648,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_CHAR && numberOfValues == 1: // CHAR
+	case dataType == ModbusDataType_CHAR && numberOfValues == uint16(1): // CHAR
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
@@ -663,7 +663,7 @@ func DataItemSerialize(writeBuffer utils.WriteBuffer, value api.PlcValue, dataTy
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
-	case dataType == ModbusDataType_WCHAR && numberOfValues == 1: // WCHAR
+	case dataType == ModbusDataType_WCHAR && numberOfValues == uint16(1): // WCHAR
 
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {

@@ -46,7 +46,7 @@ type IModbusPDUGetComEventLogResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUGetComEventLogResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
@@ -54,7 +54,7 @@ func (m *ModbusPDUGetComEventLogResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUGetComEventLogResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUGetComEventLogResponse) InitializeParent(parent *ModbusPDU) {

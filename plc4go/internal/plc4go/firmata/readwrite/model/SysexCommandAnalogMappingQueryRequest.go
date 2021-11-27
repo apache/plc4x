@@ -45,7 +45,7 @@ func (m *SysexCommandAnalogMappingQueryRequest) CommandType() uint8 {
 }
 
 func (m *SysexCommandAnalogMappingQueryRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *SysexCommandAnalogMappingQueryRequest) InitializeParent(parent *SysexCommand) {

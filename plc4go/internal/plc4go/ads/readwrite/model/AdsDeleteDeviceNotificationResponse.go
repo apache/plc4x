@@ -47,7 +47,7 @@ func (m *AdsDeleteDeviceNotificationResponse) CommandId() CommandId {
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *AdsDeleteDeviceNotificationResponse) InitializeParent(parent *AdsData) {

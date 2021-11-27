@@ -172,11 +172,11 @@ func LDataFrameParse(readBuffer utils.ReadBuffer) (*LDataFrame, error) {
 	var _parent *LDataFrame
 	var typeSwitchError error
 	switch {
-	case notAckFrame == true && polling == false: // LDataExtended
+	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
 		_parent, typeSwitchError = LDataExtendedParse(readBuffer)
-	case notAckFrame == true && polling == true: // LPollData
+	case notAckFrame == bool(true) && polling == bool(true): // LPollData
 		_parent, typeSwitchError = LPollDataParse(readBuffer)
-	case notAckFrame == false: // LDataFrameACK
+	case notAckFrame == bool(false): // LDataFrameACK
 		_parent, typeSwitchError = LDataFrameACKParse(readBuffer)
 	default:
 		// TODO: return actual type

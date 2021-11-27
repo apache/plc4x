@@ -44,7 +44,7 @@ type IModbusPDUWriteSingleCoilRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUWriteSingleCoilRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUWriteSingleCoilRequest) FunctionFlag() uint8 {
@@ -52,7 +52,7 @@ func (m *ModbusPDUWriteSingleCoilRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUWriteSingleCoilRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUWriteSingleCoilRequest) InitializeParent(parent *ModbusPDU) {

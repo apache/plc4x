@@ -45,7 +45,7 @@ type IModbusPDUWriteMultipleCoilsRequest interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUWriteMultipleCoilsRequest) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) FunctionFlag() uint8 {
@@ -53,7 +53,7 @@ func (m *ModbusPDUWriteMultipleCoilsRequest) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUWriteMultipleCoilsRequest) InitializeParent(parent *ModbusPDU) {

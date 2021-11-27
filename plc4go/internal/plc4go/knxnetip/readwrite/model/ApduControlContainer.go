@@ -43,7 +43,7 @@ type IApduControlContainer interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ApduControlContainer) Control() uint8 {
-	return 1
+	return uint8(1)
 }
 
 func (m *ApduControlContainer) InitializeParent(parent *Apdu, numbered bool, counter uint8) {

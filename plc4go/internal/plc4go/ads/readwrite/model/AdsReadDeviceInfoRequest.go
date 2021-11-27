@@ -45,7 +45,7 @@ func (m *AdsReadDeviceInfoRequest) CommandId() CommandId {
 }
 
 func (m *AdsReadDeviceInfoRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsReadDeviceInfoRequest) InitializeParent(parent *AdsData) {

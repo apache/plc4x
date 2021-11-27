@@ -123,11 +123,11 @@ type I${type.name} interface {
 ///////////////////////////////////////////////////////////
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
-	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorValue>
+	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorTerm>
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
 func (m *${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
-	return <#if discriminatorValue??><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}_${discriminatorValue}<#else>${discriminatorValue}</#if><#else>${discriminatorValue}</#if><#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
+	return <#if discriminatorTerm??><#if helper.isComplexTypeReference(helper.getDiscriminatorTypes()[discriminatorName])><#if helper.isEnumTypeReference(helper.getDiscriminatorTypes()[discriminatorName])>${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}_${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}<#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.toParseExpression(null, helper.getDiscriminatorTypes()[discriminatorName], discriminatorTerm, parserArguments)}</#if><#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
 }
 
 		</#if>
@@ -1023,10 +1023,10 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 	switch {
 				<#list switchField.cases as case>
 					<@compress single_line=true>
-						<#if case.discriminatorValues?has_content>
+						<#if case.discriminatorValueTerms?has_content>
 							case
-							<#list case.discriminatorValues as discriminatorValue>
-								<#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValue?index]>
+							<#list case.discriminatorValueTerms as discriminatorValueTerm>
+								<#assign discriminatorExpression=switchField.discriminatorExpressions[discriminatorValueTerm?index]>
 								<#assign parsedDiscriminatorExpression=helper.toParseExpression(null, null, discriminatorExpression, parserArguments)>
 								<#-- We remove debug informations as we need them for lookup-->
 								<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
@@ -1035,15 +1035,15 @@ func ${type.name}Parse(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${pa
 									<#--TODO: What is meant to be here????-->
 								</#if>
 								${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
-								<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${discriminatorValue}"
+								<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
 								<#elseif helper.isComplexTypeReference(discriminatorType)>
 									<#if helper.isEnumTypeReference(discriminatorType)>
-										${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${discriminatorValue}
+										${helper.getLanguageTypeNameForTypeReference(discriminatorType)}_${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 									<#else>
-										${discriminatorValue}
+										${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 									</#if>
 								<#else>
-									${discriminatorValue}
+									${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}
 								</#if>
 								<#sep> && </#sep>
 							</#list>

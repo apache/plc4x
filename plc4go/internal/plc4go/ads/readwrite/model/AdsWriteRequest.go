@@ -49,7 +49,7 @@ func (m *AdsWriteRequest) CommandId() CommandId {
 }
 
 func (m *AdsWriteRequest) Response() bool {
-	return false
+	return bool(false)
 }
 
 func (m *AdsWriteRequest) InitializeParent(parent *AdsData) {

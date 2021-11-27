@@ -43,7 +43,7 @@ type IModbusPDUReadInputRegistersResponse interface {
 // Accessors for discriminator values.
 ///////////////////////////////////////////////////////////
 func (m *ModbusPDUReadInputRegistersResponse) ErrorFlag() bool {
-	return false
+	return bool(false)
 }
 
 func (m *ModbusPDUReadInputRegistersResponse) FunctionFlag() uint8 {
@@ -51,7 +51,7 @@ func (m *ModbusPDUReadInputRegistersResponse) FunctionFlag() uint8 {
 }
 
 func (m *ModbusPDUReadInputRegistersResponse) Response() bool {
-	return true
+	return bool(true)
 }
 
 func (m *ModbusPDUReadInputRegistersResponse) InitializeParent(parent *ModbusPDU) {

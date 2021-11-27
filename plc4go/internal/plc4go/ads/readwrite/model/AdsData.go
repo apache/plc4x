@@ -100,45 +100,45 @@ func AdsDataParse(readBuffer utils.ReadBuffer, commandId CommandId, response boo
 	var _parent *AdsData
 	var typeSwitchError error
 	switch {
-	case commandId == CommandId_INVALID && response == false: // AdsInvalidRequest
+	case commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
 		_parent, typeSwitchError = AdsInvalidRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_INVALID && response == true: // AdsInvalidResponse
+	case commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
 		_parent, typeSwitchError = AdsInvalidResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == false: // AdsReadDeviceInfoRequest
+	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
 		_parent, typeSwitchError = AdsReadDeviceInfoRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == true: // AdsReadDeviceInfoResponse
+	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
 		_parent, typeSwitchError = AdsReadDeviceInfoResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ && response == false: // AdsReadRequest
+	case commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
 		_parent, typeSwitchError = AdsReadRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ && response == true: // AdsReadResponse
+	case commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
 		_parent, typeSwitchError = AdsReadResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_WRITE && response == false: // AdsWriteRequest
+	case commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
 		_parent, typeSwitchError = AdsWriteRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_WRITE && response == true: // AdsWriteResponse
+	case commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
 		_parent, typeSwitchError = AdsWriteResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_STATE && response == false: // AdsReadStateRequest
+	case commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
 		_parent, typeSwitchError = AdsReadStateRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_STATE && response == true: // AdsReadStateResponse
+	case commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
 		_parent, typeSwitchError = AdsReadStateResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == false: // AdsWriteControlRequest
+	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
 		_parent, typeSwitchError = AdsWriteControlRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == true: // AdsWriteControlResponse
+	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
 		_parent, typeSwitchError = AdsWriteControlResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == false: // AdsAddDeviceNotificationRequest
+	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
 		_parent, typeSwitchError = AdsAddDeviceNotificationRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == true: // AdsAddDeviceNotificationResponse
+	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
 		_parent, typeSwitchError = AdsAddDeviceNotificationResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == false: // AdsDeleteDeviceNotificationRequest
+	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
 		_parent, typeSwitchError = AdsDeleteDeviceNotificationRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == true: // AdsDeleteDeviceNotificationResponse
+	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
 		_parent, typeSwitchError = AdsDeleteDeviceNotificationResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == false: // AdsDeviceNotificationRequest
+	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
 		_parent, typeSwitchError = AdsDeviceNotificationRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == true: // AdsDeviceNotificationResponse
+	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
 		_parent, typeSwitchError = AdsDeviceNotificationResponseParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_WRITE && response == false: // AdsReadWriteRequest
+	case commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
 		_parent, typeSwitchError = AdsReadWriteRequestParse(readBuffer, commandId, response)
-	case commandId == CommandId_ADS_READ_WRITE && response == true: // AdsReadWriteResponse
+	case commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
 		_parent, typeSwitchError = AdsReadWriteResponseParse(readBuffer, commandId, response)
 	default:
 		// TODO: return actual type
