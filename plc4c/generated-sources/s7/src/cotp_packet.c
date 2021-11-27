@@ -28,17 +28,17 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminators[] = {
   {/* plc4c_s7_read_write_cotp_packet_data */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0xF0} },
+   .tpduCode = 0xF0 },
   {/* plc4c_s7_read_write_cotp_packet_connection_request */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0xE0} },
+   .tpduCode = 0xE0 },
   {/* plc4c_s7_read_write_cotp_packet_connection_response */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0xD0} },
+   .tpduCode = 0xD0 },
   {/* plc4c_s7_read_write_cotp_packet_disconnect_request */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0x80} },
+   .tpduCode = 0x80 },
   {/* plc4c_s7_read_write_cotp_packet_disconnect_response */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0xC0} },
+   .tpduCode = 0xC0 },
   {/* plc4c_s7_read_write_cotp_packet_tpdu_error */
-   .tpduCode = DefaultHexadecimalLiteral{hexString=0x70} }
+   .tpduCode = 0x70 }
 
 };
 
@@ -82,7 +82,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  { /* COTPPacketData */
+  if(tpduCode == 0xF0) { /* COTPPacketData */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
                     
     // Simple Field (eot)
@@ -104,7 +104,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     (*_message)->cotp_packet_data_tpdu_ref = tpduRef;
 
   } else 
-  { /* COTPPacketConnectionRequest */
+  if(tpduCode == 0xE0) { /* COTPPacketConnectionRequest */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_request;
                     
     // Simple Field (destinationReference)
@@ -136,7 +136,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     (*_message)->cotp_packet_connection_request_protocol_class = *protocolClass;
 
   } else 
-  { /* COTPPacketConnectionResponse */
+  if(tpduCode == 0xD0) { /* COTPPacketConnectionResponse */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_response;
                     
     // Simple Field (destinationReference)
@@ -168,7 +168,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     (*_message)->cotp_packet_connection_response_protocol_class = *protocolClass;
 
   } else 
-  { /* COTPPacketDisconnectRequest */
+  if(tpduCode == 0x80) { /* COTPPacketDisconnectRequest */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_request;
                     
     // Simple Field (destinationReference)
@@ -200,7 +200,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     (*_message)->cotp_packet_disconnect_request_protocol_class = *protocolClass;
 
   } else 
-  { /* COTPPacketDisconnectResponse */
+  if(tpduCode == 0xC0) { /* COTPPacketDisconnectResponse */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_response;
                     
     // Simple Field (destinationReference)
@@ -222,7 +222,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* r
     (*_message)->cotp_packet_disconnect_response_source_reference = sourceReference;
 
   } else 
-  { /* COTPPacketTpduError */
+  if(tpduCode == 0x70) { /* COTPPacketTpduError */
     (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_tpdu_error;
                     
     // Simple Field (destinationReference)

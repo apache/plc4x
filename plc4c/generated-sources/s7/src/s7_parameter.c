@@ -28,19 +28,19 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
   {/* plc4c_s7_read_write_s7_parameter_setup_communication */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xF0}, .messageType = -1 },
+   .parameterType = 0xF0, .messageType = -1 },
   {/* plc4c_s7_read_write_s7_parameter_read_var_request */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x04}, .messageType = DefaultHexadecimalLiteral{hexString=0x01} },
+   .parameterType = 0x04, .messageType = 0x01 },
   {/* plc4c_s7_read_write_s7_parameter_read_var_response */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x04}, .messageType = DefaultHexadecimalLiteral{hexString=0x03} },
+   .parameterType = 0x04, .messageType = 0x03 },
   {/* plc4c_s7_read_write_s7_parameter_write_var_request */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x05}, .messageType = DefaultHexadecimalLiteral{hexString=0x01} },
+   .parameterType = 0x05, .messageType = 0x01 },
   {/* plc4c_s7_read_write_s7_parameter_write_var_response */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x05}, .messageType = DefaultHexadecimalLiteral{hexString=0x03} },
+   .parameterType = 0x05, .messageType = 0x03 },
   {/* plc4c_s7_read_write_s7_parameter_user_data */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x00}, .messageType = DefaultHexadecimalLiteral{hexString=0x07} },
+   .parameterType = 0x00, .messageType = 0x07 },
   {/* plc4c_s7_read_write_s7_parameter_mode_transition */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0x01}, .messageType = DefaultHexadecimalLiteral{hexString=0x07} }
+   .parameterType = 0x01, .messageType = 0x07 }
 
 };
 
@@ -77,7 +77,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  { /* S7ParameterSetupCommunication */
+  if(parameterType == 0xF0) { /* S7ParameterSetupCommunication */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication;
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -123,7 +123,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_setup_communication_pdu_length = pduLength;
 
   } else 
-  { /* S7ParameterReadVarRequest */
+  if((parameterType == 0x04) && (messageType == 0x01)) { /* S7ParameterReadVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -157,7 +157,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_read_var_request_items = items;
 
   } else 
-  { /* S7ParameterReadVarResponse */
+  if((parameterType == 0x04) && (messageType == 0x03)) { /* S7ParameterReadVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response;
                     
     // Simple Field (numItems)
@@ -169,7 +169,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_read_var_response_num_items = numItems;
 
   } else 
-  { /* S7ParameterWriteVarRequest */
+  if((parameterType == 0x05) && (messageType == 0x01)) { /* S7ParameterWriteVarRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_request;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -203,7 +203,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_write_var_request_items = items;
 
   } else 
-  { /* S7ParameterWriteVarResponse */
+  if((parameterType == 0x05) && (messageType == 0x03)) { /* S7ParameterWriteVarResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_write_var_response;
                     
     // Simple Field (numItems)
@@ -215,7 +215,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_write_var_response_num_items = numItems;
 
   } else 
-  { /* S7ParameterUserData */
+  if((parameterType == 0x00) && (messageType == 0x07)) { /* S7ParameterUserData */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data;
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -249,7 +249,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     (*_message)->s7_parameter_user_data_items = items;
 
   } else 
-  { /* S7ParameterModeTransition */
+  if((parameterType == 0x01) && (messageType == 0x07)) { /* S7ParameterModeTransition */
     (*_message)->_type = plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_mode_transition;
                     
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)

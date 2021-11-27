@@ -28,15 +28,15 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminators[] = {
   {/* plc4c_s7_read_write_cotp_parameter_tpdu_size */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xC0} },
+   .parameterType = 0xC0 },
   {/* plc4c_s7_read_write_cotp_parameter_calling_tsap */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xC1} },
+   .parameterType = 0xC1 },
   {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xC2} },
+   .parameterType = 0xC2 },
   {/* plc4c_s7_read_write_cotp_parameter_checksum */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xC3} },
+   .parameterType = 0xC3 },
   {/* plc4c_s7_read_write_cotp_parameter_disconnect_additional_information */
-   .parameterType = DefaultHexadecimalLiteral{hexString=0xE0} }
+   .parameterType = 0xE0 }
 
 };
 
@@ -80,7 +80,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  { /* COTPParameterTpduSize */
+  if(parameterType == 0xC0) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Simple Field (tpduSize)
@@ -92,7 +92,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_tpdu_size_tpdu_size = *tpduSize;
 
   } else 
-  { /* COTPParameterCallingTsap */
+  if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_calling_tsap;
                     
     // Simple Field (tsapId)
@@ -104,7 +104,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
 
   } else 
-  { /* COTPParameterCalledTsap */
+  if(parameterType == 0xC2) { /* COTPParameterCalledTsap */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_called_tsap;
                     
     // Simple Field (tsapId)
@@ -116,7 +116,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
 
   } else 
-  { /* COTPParameterChecksum */
+  if(parameterType == 0xC3) { /* COTPParameterChecksum */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_checksum;
                     
     // Simple Field (crc)
@@ -128,7 +128,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->cotp_parameter_checksum_crc = crc;
 
   } else 
-  { /* COTPParameterDisconnectAdditionalInformation */
+  if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information;
                     
     // Array field (data)

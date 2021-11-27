@@ -28,9 +28,9 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_data_alarm_message_discriminator plc4c_s7_read_write_s7_data_alarm_message_discriminators[] = {
   {/* plc4c_s7_read_write_s7_message_object_request */
-   .cpuFunctionType = DefaultHexadecimalLiteral{hexString=0x04} },
+   .cpuFunctionType = 0x04 },
   {/* plc4c_s7_read_write_s7_message_object_response */
-   .cpuFunctionType = DefaultHexadecimalLiteral{hexString=0x08} }
+   .cpuFunctionType = 0x08 }
 
 };
 
@@ -99,7 +99,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  { /* S7MessageObjectRequest */
+  if(cpuFunctionType == 0x04) { /* S7MessageObjectRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_request;
                     
     // Const Field (variableSpec)
@@ -185,7 +185,7 @@ plc4c_return_code plc4c_s7_read_write_s7_data_alarm_message_parse(plc4c_spi_read
     (*_message)->s7_message_object_request_alarm_type = *alarmType;
 
   } else 
-  { /* S7MessageObjectResponse */
+  if(cpuFunctionType == 0x08) { /* S7MessageObjectResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_data_alarm_message_type_plc4c_s7_read_write_s7_message_object_response;
                     
     // Simple Field (returnCode)
