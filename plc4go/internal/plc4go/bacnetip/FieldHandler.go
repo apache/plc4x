@@ -45,20 +45,44 @@ const (
 
 func (m FieldHandler) ParseQuery(query string) (model.PlcField, error) {
 	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
-		deviceIdentifier, err := strconv.ParseUint(match[DEVICE_IDENTIFIER], 10, 32)
-		if err != nil {
-			return nil, err
+		deviceIdentifierString := match[DEVICE_IDENTIFIER]
+		var deviceIdentifier uint32
+		if deviceIdentifierString == "*" {
+			// TODO: find a way to express a wildcard. -1 not an option here
+			deviceIdentifier = 0
+		} else {
+			if parsedDeviceIdentifier, err := strconv.ParseUint(deviceIdentifierString, 10, 32); err != nil {
+				return nil, err
+			} else {
+				deviceIdentifier = uint32(parsedDeviceIdentifier)
+			}
 		}
-		objectType, err := strconv.ParseUint(match[OBJECT_TYPE], 10, 16)
-		if err != nil {
-			return nil, err
+		objectTypeString := match[OBJECT_TYPE]
+		var objectType uint16
+		if objectTypeString == "*" {
+			// TODO: find a way to express a wildcard. -1 not an option here
+			deviceIdentifier = 0
+		} else {
+			if parsedObjectType, err := strconv.ParseUint(objectTypeString, 10, 16); err != nil {
+				return nil, err
+			} else {
+				objectType = uint16(parsedObjectType)
+			}
 		}
-		objectInstance, err := strconv.ParseUint(match[OBJECT_INSTANCE], 10, 32)
-		if err != nil {
-			return nil, err
+		objectInstanceString := match[OBJECT_INSTANCE]
+		var objectInstance uint32
+		if objectInstanceString == "*" {
+			// TODO: find a way to express a wildcard. -1 not an option here
+			objectInstance = 0
+		} else {
+			if parsedObjectInstance, err := strconv.ParseUint(objectInstanceString, 10, 32); err != nil {
+				return nil, err
+			} else {
+				objectInstance = uint32(parsedObjectInstance)
+			}
 		}
 
-		return NewField(uint32(deviceIdentifier), uint16(objectType), uint32(objectInstance)), nil
+		return NewField(deviceIdentifier, objectType, objectInstance), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", query)
 }
