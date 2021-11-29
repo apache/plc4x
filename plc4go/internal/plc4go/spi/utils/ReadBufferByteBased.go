@@ -94,6 +94,16 @@ func (rb *byteReadBuffer) GetPos() uint16 {
 	return uint16(rb.pos / 8)
 }
 
+func (rb *byteReadBuffer) SetPos(pos uint16) {
+	rb.Reset()
+	bytesToSkip := make([]byte, pos)
+	_, err := rb.reader.Read(bytesToSkip)
+	if err != nil {
+		panic(err)
+	}
+	rb.pos = uint64(pos * 8)
+}
+
 func (rb *byteReadBuffer) GetBytes() []byte {
 	return rb.data
 }

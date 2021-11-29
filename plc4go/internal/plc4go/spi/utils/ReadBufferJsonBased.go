@@ -80,6 +80,10 @@ func (j *jsonReadBuffer) GetPos() uint16 {
 	return uint16(j.pos / 8)
 }
 
+func (j *jsonReadBuffer) SetPos(pos uint16) {
+	j.pos = uint(pos * 8)
+}
+
 func (j *jsonReadBuffer) HasMore(bitLength uint8) bool {
 	// TODO: work with x.InputOffset() and check if we are at EOF
 	return true

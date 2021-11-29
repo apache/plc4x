@@ -139,11 +139,17 @@ func BACnetComplexTagParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8,
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tagNumber' field")
 	}
+	if tagNumber != tagNumberArgument {
+		return nil, utils.ParseAssertError
+	}
 
 	// Assert Field (tagClass) (Can be skipped, if a given expression evaluates to false)
 	tagClass, _err := TagClassParse(readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'tagClass' field")
+	}
+	if tagClass != TagClass_CONTEXT_SPECIFIC_TAGS {
+		return nil, utils.ParseAssertError
 	}
 
 	// Simple Field (lengthValueType)

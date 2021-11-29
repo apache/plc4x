@@ -54,7 +54,7 @@ func Test(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(bacnetip.NewDriver())
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport())
-	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=1")
+	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=4")
 	if result.GetErr() != nil {
 		panic(result.GetErr())
 	}

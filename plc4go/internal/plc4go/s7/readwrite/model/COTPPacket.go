@@ -178,16 +178,22 @@ func COTPPacketParse(readBuffer utils.ReadBuffer, cotpLen uint16) (*COTPPacket, 
 	curPos = readBuffer.GetPos() - startPos
 	var payload *S7Message = nil
 	if bool((curPos) < (cotpLen)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := S7MessageParse(readBuffer)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
-		}
-		payload = CastS7Message(_val)
-		if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			payload = CastS7Message(_val)
+			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 

@@ -240,16 +240,22 @@ func BACnetConfirmedServiceRequestWritePropertyParse(readBuffer utils.ReadBuffer
 	curPos = readBuffer.GetPos() - startPos
 	var priority *BACnetTag = nil
 	if bool((curPos) < ((len) - (1))) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetTagParse(readBuffer)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field")
-		}
-		priority = CastBACnetTag(_val)
-		if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			priority = CastBACnetTag(_val)
+			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 

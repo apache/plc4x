@@ -129,64 +129,88 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(readBuffer utils.ReadBuffer, len
 	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeLowLimit *BACnetComplexTagUnsignedInteger = nil
 	{
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field")
-		}
-		deviceInstanceRangeLowLimit = CastBACnetComplexTagUnsignedInteger(_val)
-		if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			deviceInstanceRangeLowLimit = CastBACnetComplexTagUnsignedInteger(_val)
+			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
 	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
 	var deviceInstanceRangeHighLimit *BACnetComplexTagUnsignedInteger = nil
 	if bool((deviceInstanceRangeLowLimit) != (nil)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field")
-		}
-		deviceInstanceRangeHighLimit = CastBACnetComplexTagUnsignedInteger(_val)
-		if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			deviceInstanceRangeHighLimit = CastBACnetComplexTagUnsignedInteger(_val)
+			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
 	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
 	var objectIdentifier *BACnetComplexTagOctetString = nil
 	{
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(2), BACnetDataType_OCTET_STRING)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field")
-		}
-		objectIdentifier = CastBACnetComplexTagOctetString(_val)
-		if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			objectIdentifier = CastBACnetComplexTagOctetString(_val)
+			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
 	// Optional Field (objectName) (Can be skipped, if a given expression evaluates to false)
 	var objectName *BACnetComplexTagOctetString = nil
 	if bool((objectIdentifier) == (nil)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := BACnetComplexTagParse(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'objectName' field")
-		}
-		objectName = CastBACnetComplexTagOctetString(_val)
-		if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			objectName = CastBACnetComplexTagOctetString(_val)
+			if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 

@@ -143,32 +143,44 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (*KnxNetIpMessage, err
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := HPAIDataEndpointParse(readBuffer)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field")
-		}
-		hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
-		if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			hpaiDataEndpoint = CastHPAIDataEndpoint(_val)
+			if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field")
-		}
-		connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
-		if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			connectionResponseDataBlock = CastConnectionResponseDataBlock(_val)
+			if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 

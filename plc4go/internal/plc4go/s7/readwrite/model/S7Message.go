@@ -202,32 +202,44 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (*S7Message, error) {
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
 	if bool((parameterLength) > (0)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := S7ParameterParse(readBuffer, messageType)
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field")
-		}
-		parameter = CastS7Parameter(_val)
-		if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			parameter = CastS7Parameter(_val)
+			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
 	if bool((payloadLength) > (0)) {
+		currentPos := readBuffer.GetPos()
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, pullErr
 		}
 		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
-		if _err != nil {
+
+		switch {
+		case _err != nil && _err != utils.ParseAssertError:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field")
-		}
-		payload = CastS7Payload(_val)
-		if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-			return nil, closeErr
+		case _err == utils.ParseAssertError:
+			readBuffer.SetPos(currentPos)
+		default:
+			payload = CastS7Payload(_val)
+			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
+				return nil, closeErr
+			}
 		}
 	}
 
