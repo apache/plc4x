@@ -308,13 +308,8 @@
             [optional BACnetComplexTagOctetString('3', 'BACnetDataType.OCTET_STRING')           objectName                    'objectIdentifier == null'            ]
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
-            // TODO: here we need proper bacnet tags (like a discriminator etc... see line 494 BACnetTag)
-            [const uint 5 deviceInstanceRangeLowLimitHeader 0x01]
-            [simple uint 3 deviceInstanceRangeLowLimitLength]
-            [array int 8 deviceInstanceRangeLowLimit count 'deviceInstanceRangeLowLimitLength']
-            [const uint 5 deviceInstanceRangeHighLimitHeader 0x03]
-            [simple uint 3 deviceInstanceRangeHighLimitLength]
-            [array int 8 deviceInstanceRangeHighLimit count 'deviceInstanceRangeHighLimitLength']
+            [optional BACnetComplexTagUnsignedInteger('0', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeLowLimit                                         ]
+            [optional BACnetComplexTagUnsignedInteger('1', 'BACnetDataType.UNSIGNED_INTEGER')   deviceInstanceRangeHighLimit  'deviceInstanceRangeLowLimit != null' ]
         ]
         ['0x09' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
         ]
@@ -341,17 +336,31 @@
         ]
         ['BOOLEAN' BACnetComplexTagBoolean
         ]
-        ['UNSIGNED_INTEGER' BACnetComplexTagUnsignedInteger(uint 3 lengthValueType, uint 8 extLength)
-            [array int 8 data length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ['UNSIGNED_INTEGER' BACnetComplexTagUnsignedInteger(uint 32 actualLength)
+            [virtual    bit     isUint8     'actualLength == 1' ]
+            [optional   uint  8 valueUint8  'isUint8'           ]
+            [virtual    bit     isUint16    'actualLength == 2' ]
+            [optional   uint 16 valueUint16 'isUint16'          ]
+            [virtual    bit     isUint32    'actualLength == 3' ]
+            [optional   uint 32 valueUint32 'isUint32'          ]
+            [virtual    bit     isUint64    'actualLength == 4' ]
+            [optional   uint 64 valueUint64 'isUint64'          ]
         ]
-        ['SIGNED_INTEGER' BACnetComplexTagSignedInteger(uint 3 lengthValueType, uint 8 extLength)
-            [array int 8 data length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ['SIGNED_INTEGER' BACnetComplexTagSignedInteger(uint 32 actualLength)
+            [virtual    bit     isInt8     'actualLength == 1'  ]
+            [optional   int 8   valueInt8  'isInt8'             ]
+            [virtual    bit     isInt16    'actualLength == 2'  ]
+            [optional   int 16  valueInt16 'isInt16'            ]
+            [virtual    bit     isInt32    'actualLength == 3'  ]
+            [optional   int 32  valueInt32 'isInt32'            ]
+            [virtual    bit     isInt64    'actualLength == 4'  ]
+            [optional   int 64  valueInt64 'isInt64'            ]
         ]
-        ['REAL' BACnetComplexTagReal(uint 3 lengthValueType, uint 8 extLength)
-            [simple float 32 value]
+        ['REAL' BACnetComplexTagReal(uint 32 actualLength)
+            [simple     float 32 value]
         ]
-        ['DOUBLE' BACnetComplexTagDouble(uint 3 lengthValueType, uint 8 extLength)
-            [simple float 64 value]
+        ['DOUBLE' BACnetComplexTagDouble(uint 32 actualLength)
+            [simple     float 64 value]
         ]
         ['OCTET_STRING' BACnetComplexTagOctetString(uint 32 actualLength)
             // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
@@ -360,12 +369,16 @@
         ]
         ['CHARACTER_STRING' BACnetComplexTagCharacterString
         ]
-        ['BIT_STRING' BACnetComplexTagBitString(uint 3 lengthValueType, uint 8 extLength)
-            [simple uint 8 unusedBits]
-            [array int 8 data length '(lengthValueType == 5) ? (extLength - 1) : (lengthValueType - 1)']
+        ['BIT_STRING' BACnetComplexTagBitString(uint 32 actualLength)
+            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
+            [virtual    uint 16                   actualLengthInBit 'actualLength * 8']
+            [simple     uint  8 unusedBits]
+            [array      int   8 data length 'actualLengthInBit']
         ]
-        ['ENUMERATED' BACnetComplexTagEnumerated(uint 3 lengthValueType, uint 8 extLength)
-            [array int 8 data length '(lengthValueType == 5) ? extLength : lengthValueType']
+        ['ENUMERATED' BACnetComplexTagEnumerated(uint 32 actualLength)
+            // TODO: The reader expects int but uint32 gets mapped to long so even uint32 would easily overflow...
+            [virtual    uint     16                   actualLengthInBit 'actualLength * 8']
+            [array int 8 data length 'actualLengthInBit']
         ]
         ['DATE' BACnetComplexTagDate
         ]

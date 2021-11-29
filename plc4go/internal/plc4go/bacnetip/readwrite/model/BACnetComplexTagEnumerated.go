@@ -28,8 +28,9 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagEnumerated struct {
-	Data   []int8
-	Parent *BACnetComplexTag
+	Data              []int8
+	ActualLengthInBit uint16
+	Parent            *BACnetComplexTag
 }
 
 // The corresponding interface
@@ -95,6 +96,8 @@ func (m *BACnetComplexTagEnumerated) LengthInBits() uint16 {
 func (m *BACnetComplexTagEnumerated) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
+	// A virtual field doesn't have any in- or output.
+
 	// Array field
 	if len(m.Data) > 0 {
 		lengthInBits += 8 * uint16(len(m.Data))
@@ -107,10 +110,13 @@ func (m *BACnetComplexTagEnumerated) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagEnumerated"); pullErr != nil {
 		return nil, pullErr
 	}
+
+	// Virtual field
+	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
 
 	// Array field (data)
 	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
@@ -118,7 +124,7 @@ func BACnetComplexTagEnumeratedParse(readBuffer utils.ReadBuffer, tagNumberArgum
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(extLength) }, func() interface{} { return uint16(lengthValueType) }).(uint16)
+	_dataLength := actualLengthInBit
 	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 	for readBuffer.GetPos() < _dataEndPos {
 		_item, _err := readBuffer.ReadInt8("", 8)

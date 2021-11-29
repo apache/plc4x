@@ -28,9 +28,10 @@ import (
 
 // The data-structure of this message
 type BACnetComplexTagBitString struct {
-	UnusedBits uint8
-	Data       []int8
-	Parent     *BACnetComplexTag
+	UnusedBits        uint8
+	Data              []int8
+	ActualLengthInBit uint16
+	Parent            *BACnetComplexTag
 }
 
 // The corresponding interface
@@ -97,6 +98,8 @@ func (m *BACnetComplexTagBitString) LengthInBits() uint16 {
 func (m *BACnetComplexTagBitString) LengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits := uint16(m.Parent.ParentLengthInBits())
 
+	// A virtual field doesn't have any in- or output.
+
 	// Simple field (unusedBits)
 	lengthInBits += 8
 
@@ -112,10 +115,13 @@ func (m *BACnetComplexTagBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, lengthValueType uint8, extLength uint8) (*BACnetComplexTag, error) {
+func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType, actualLength uint32) (*BACnetComplexTag, error) {
 	if pullErr := readBuffer.PullContext("BACnetComplexTagBitString"); pullErr != nil {
 		return nil, pullErr
 	}
+
+	// Virtual field
+	actualLengthInBit := uint16(actualLength) * uint16(uint16(8))
 
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
@@ -129,7 +135,7 @@ func BACnetComplexTagBitStringParse(readBuffer utils.ReadBuffer, tagNumberArgume
 	}
 	// Length array
 	data := make([]int8, 0)
-	_dataLength := utils.InlineIf(bool(bool((lengthValueType) == (5))), func() interface{} { return uint16(uint16(uint16(extLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(uint16(lengthValueType) - uint16(uint16(1)))) }).(uint16)
+	_dataLength := actualLengthInBit
 	_dataEndPos := readBuffer.GetPos() + uint16(_dataLength)
 	for readBuffer.GetPos() < _dataEndPos {
 		_item, _err := readBuffer.ReadInt8("", 8)
