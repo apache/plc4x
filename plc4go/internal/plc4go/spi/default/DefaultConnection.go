@@ -249,6 +249,7 @@ func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 }
 
 func (d *defaultConnection) IsConnected() bool {
+	// TODO: should we check here if the transport is connected?
 	return d.connected
 }
 
