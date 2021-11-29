@@ -24,6 +24,8 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/internal/plc4go/spi/transports/pcap"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/config"
+	"github.com/apache/plc4x/plc4go/pkg/plc4go/logging"
 	"github.com/apache/plc4x/plc4go/pkg/plc4go/model"
 	"github.com/rs/zerolog/log"
 	"io"
@@ -31,10 +33,16 @@ import (
 	"os"
 	"path"
 	"testing"
+	"time"
 )
 
 func Test(t *testing.T) {
 	t.Skip() // Manual test don't check in un-skipped
+
+	config.TraceTransactionManagerWorkers = false
+	config.TraceTransactionManagerTransactions = false
+	config.TraceDefaultMessageCodecWorker = false
+	logging.InfoLevel()
 	file := path.Join(os.TempDir(), "bacnet-stack-services.cap")
 	_, err := os.Stat(file)
 	if os.IsNotExist(err) {
@@ -46,7 +54,7 @@ func Test(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(bacnetip.NewDriver())
 	driverManager.(spi.TransportAware).RegisterTransport(pcap.NewTransport())
-	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp")
+	result := <-driverManager.GetConnection("bacnet-ip:pcap://" + file + "?transport-type=udp&speed-factor=1")
 	if result.GetErr() != nil {
 		panic(result.GetErr())
 	}
@@ -67,7 +75,10 @@ func Test(t *testing.T) {
 	}
 	log.Info().Msgf("got response %v", requestResult.GetResponse())
 
-	//time.Sleep(time.Hour)
+	for connection.IsConnected() {
+		log.Debug().Msg("Still sleeping")
+		time.Sleep(time.Second)
+	}
 }
 
 func download(dstPath string, url string) error {
